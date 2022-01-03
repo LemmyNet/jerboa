@@ -35,20 +35,20 @@ data class GetPosts(
    *
    * Post listing types are `All, Subscribed, Community`
    */
-  val type_: String,
+  val type_: String = ListingType.All.toString(),
   /**
   ?* The [[SortType]].
    */
-  val sort: String,
-  val page: Int?,
-  val limit: Int?,
-  val community_id: Int?,
+  val sort: String = SortType.Active.toString(),
+  val page: Int? = null,
+  val limit: Int? = null,
+  val community_id: Int? = null,
   /**
    * To get posts for a federated community by name, use `name@instance.tld` .
    */
-  val community_name: String,
-  val saved_only: Boolean?,
-  val auth: String?,
+  val community_name: String? = null,
+  val saved_only: Boolean? = null,
+  val auth: String? = null,
 )
 
 data class GetPostsResponse(

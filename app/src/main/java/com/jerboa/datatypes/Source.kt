@@ -95,7 +95,7 @@ data class Post(
   val deleted: Boolean,
   val nsfw: Boolean,
   val stickied: Boolean,
-  val embed_title: String,
+  val embed_title: String?,
   val embed_description: String?,
   val embed_html: String?,
   val thumbnail_url: String?,
