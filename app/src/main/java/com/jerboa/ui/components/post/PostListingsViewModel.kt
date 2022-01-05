@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 
 class PostListingsViewModel : ViewModel() {
 
-    private val api = API.getInstance()
     var posts: List<PostView> by mutableStateOf(listOf())
         private set
     var loading: Boolean by mutableStateOf(false)
@@ -23,6 +22,8 @@ class PostListingsViewModel : ViewModel() {
     lateinit var clickedPost: PostView
 
     fun fetchPosts(form: GetPosts) {
+        val api = API.getInstance()
+
         viewModelScope.launch {
             try {
                 Log.d(

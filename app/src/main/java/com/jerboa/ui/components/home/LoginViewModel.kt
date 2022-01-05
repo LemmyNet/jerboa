@@ -14,13 +14,11 @@ import com.jerboa.datatypes.api.GetSite
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppDB
 import com.jerboa.serializeToMap
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlin.system.exitProcess
 
-class UserViewModel : ViewModel() {
+class LoginViewModel : ViewModel() {
 
     var jwt: String by mutableStateOf("")
         private set
@@ -34,7 +32,7 @@ class UserViewModel : ViewModel() {
         accountViewModel: AccountViewModel,
         ctx: Context,
     ) {
-        val api = API.setInstance(instance)
+        val api = API.changeLemmyInstance(instance)
 
         viewModelScope.launch {
             try {
@@ -42,19 +40,27 @@ class UserViewModel : ViewModel() {
                 try {
                     jwt = api.login(form = form).jwt
                 } catch (e: java.net.UnknownHostException) {
-                    val msg = "Could not find instance $instance"
+                    loading = false
+                    val msg = "$instance is not a Lemmy Instance"
                     Log.e("login", e.toString())
                     Toast.makeText(
                         ctx,
                         msg,
                         Toast.LENGTH_SHORT
                     ).show()
-                    exitProcess(0)
+                    this.cancel()
                 }
             } catch (e: Exception) {
-                Log.e("ViewModel: LoginViewModel", e.toString())
-            } finally {
                 loading = false
+                val msg = "Incorrect Login"
+                Log.e("login", e.toString())
+                Toast.makeText(
+                    ctx,
+                    msg,
+                    Toast.LENGTH_SHORT
+                ).show()
+                this.cancel()
+            } finally {
 
                 // Fetch the site to get more info, such as your
                 // name and avatar
@@ -66,15 +72,20 @@ class UserViewModel : ViewModel() {
                 val luv = site.my_user!!.local_user_view
                 val account = Account(
                     id = luv.person.id,
-                    selected = true,
+                    default_ = true,
                     instance = instance,
                     avatar = luv.person.avatar,
                     name = luv.person.name,
                     jwt = jwt,
                 )
 
+                // Remove the default account
+                accountViewModel.removeDefault()
+
                 // Save that info in the DB
                 accountViewModel.insert(account)
+
+                loading = false
 
                 navController.navigate(route = "home")
             }

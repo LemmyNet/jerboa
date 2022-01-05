@@ -1,6 +1,5 @@
 package com.jerboa.api
 
-import android.util.Log
 import com.jerboa.datatypes.api.GetPostsResponse
 import com.jerboa.datatypes.api.GetSiteResponse
 import com.jerboa.datatypes.api.Login
@@ -13,6 +12,7 @@ import retrofit2.http.POST
 import retrofit2.http.QueryMap
 
 const val VERSION = "v3"
+const val DEFAULT_INSTANCE = "lemmy.ml"
 
 interface API {
     @GET("site")
@@ -32,27 +32,31 @@ interface API {
 
     companion object {
         private var api: API? = null
-        private var currentInstance: String? = null
+        private var currentInstance: String = DEFAULT_INSTANCE
 
         private fun buildUrl(): String {
             return "https://$currentInstance/api/$VERSION/"
         }
 
-        fun setInstance(instance: String): API {
+        fun changeLemmyInstance(instance: String): API {
             currentInstance = instance
-            api = Retrofit.Builder()
-                .baseUrl(buildUrl())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(API::class.java)
+            api = buildApi()
             return api!!
         }
 
         fun getInstance(): API {
-            if (currentInstance.isNullOrEmpty()) {
-                Log.e("Http", "Current http instance is null!")
+            if (api == null) {
+                api = buildApi()
             }
             return api!!
+        }
+
+        private fun buildApi(): API? {
+            return Retrofit.Builder()
+                .baseUrl(buildUrl())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(API::class.java)
         }
     }
 }

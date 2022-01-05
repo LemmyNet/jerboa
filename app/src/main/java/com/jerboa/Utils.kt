@@ -38,5 +38,9 @@ fun previewLines(text: String): String {
 @Composable
 fun getCurrentAccount(accountViewModel: AccountViewModel): Account? {
     val accounts by accountViewModel.allAccounts.observeAsState()
-    return accounts?.firstOrNull { it.selected }
+    return getCurrentAccount(accounts)
+}
+
+fun getCurrentAccount(accounts: List<Account>?): Account? {
+    return accounts?.firstOrNull { it.default_ }
 }

@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.api.API
 import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
@@ -220,13 +222,31 @@ fun DrawerAddAccountMode(
         )
         accounts?.forEach {
             IconAndTextDrawerItem(
-                text = "Switch to ${it.name}", onClick = {},
+                text = "Switch to ${it.name}",
+                onClick = {
+                    accountViewModel.removeDefault()
+                    accountViewModel.setDefault(it.id)
+                    API.changeLemmyInstance(it.instance)
+                },
                 icon = Icons.Default.Login,
             )
         }
-        IconAndTextDrawerItem(
-            text = "Sign Out", onClick = {}, icon = Icons.Default.Close,
-        )
+        accounts?.let {
+            val currentAccount = getCurrentAccount(it)!!
+            IconAndTextDrawerItem(
+                text = "Sign Out",
+                onClick = {
+                    accountViewModel.delete(currentAccount)
+                    var updatedList = it.toMutableList()
+                    updatedList.remove(currentAccount)
+
+                    if (updatedList.isNotEmpty()) {
+                        accountViewModel.setDefault(updatedList[0].id)
+                    }
+                },
+                icon = Icons.Default.Close,
+            )
+        }
     }
 }
 
@@ -251,6 +271,13 @@ fun PostListingsScreen(
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
+
+// Fetch initial posts for home screen
+    postListingsViewModel.fetchPosts(
+        GetPosts(
+            auth = getCurrentAccount(accountViewModel = accountViewModel)?.jwt
+        )
+    )
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(

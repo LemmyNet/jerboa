@@ -2,9 +2,6 @@ package com.jerboa.db
 
 import android.content.Context
 import androidx.annotation.WorkerThread
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.*
 import androidx.room.*
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +11,7 @@ import kotlinx.coroutines.launch
 @Entity
 data class Account(
     @PrimaryKey val id: Int,
-    @ColumnInfo(name = "selected") val selected: Boolean,
+    @ColumnInfo(name = "default_") val default_: Boolean,
     @ColumnInfo(name = "instance") val instance: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "avatar") val avatar: String?,
@@ -35,11 +32,11 @@ interface AccountDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Account::class)
     suspend fun insert(account: Account)
 
-    @Query("UPDATE account set selected = 0")
-    suspend fun removeAllSelected()
+    @Query("UPDATE account set default_ = 0 where default_ = 1")
+    suspend fun removeDefault()
 
-    @Update(entity = Account::class)
-    suspend fun setCurrentAccount(account: Account)
+    @Query("UPDATE account set default_ = 1 where id = :accountId")
+    suspend fun setDefault(accountId: Int)
 
     @Delete(entity = Account::class)
     suspend fun delete(account: Account)
@@ -56,10 +53,24 @@ class AccountRepository(private val accountDao: AccountDao) {
     // By default Room runs suspend queries off the main thread, therefore, we don't need to
     // implement anything else to ensure we're not doing long running database work
     // off the main thread.
-    @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insert(account: Account) {
         accountDao.insert(account)
+    }
+
+    @WorkerThread
+    suspend fun removeDefault() {
+        accountDao.removeDefault()
+    }
+
+    @WorkerThread
+    suspend fun setDefault(accountId: Int) {
+        accountDao.setDefault(accountId)
+    }
+
+    @WorkerThread
+    suspend fun delete(account: Account) {
+        accountDao.delete(account)
     }
 }
 
@@ -93,17 +104,22 @@ abstract class AppDB : RoomDatabase() {
 
 class AccountViewModel(private val repository: AccountRepository) : ViewModel() {
 
-    // Using LiveData and caching what allWords returns has several benefits:
-    // - We can put an observer on the data (instead of polling for changes) and only update the
-    //   the UI when the data actually changes.
-    // - Repository is completely separated from the UI through the ViewModel.
     val allAccounts: LiveData<List<Account>> = repository.allAccounts.asLiveData()
 
-    /**
-     * Launching a new coroutine to insert the data in a non-blocking way
-     */
-    fun insert(word: Account) = viewModelScope.launch {
-        repository.insert(word)
+    fun insert(account: Account) = viewModelScope.launch {
+        repository.insert(account)
+    }
+
+    fun removeDefault() = viewModelScope.launch {
+        repository.removeDefault()
+    }
+
+    fun setDefault(accountId: Int) = viewModelScope.launch {
+        repository.setDefault(accountId)
+    }
+
+    fun delete(account: Account) = viewModelScope.launch {
+        repository.delete(account)
     }
 }
 

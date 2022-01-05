@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.home
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +10,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,7 +77,7 @@ fun PasswordField(
 @Composable
 fun LoginForm(
     navController: NavController = rememberNavController(),
-    userViewModel: UserViewModel = viewModel(),
+    loginViewModel: LoginViewModel = viewModel(),
     accountViewModel: AccountViewModel = viewModel(),
 ) {
     var instance by rememberSaveable { mutableStateOf("") }
@@ -114,24 +114,19 @@ fun LoginForm(
             enabled = isValid,
             onClick = {
                 val form = Login(
-                    username_or_email = username,
-                    password = password
+                    username_or_email = username.trim(),
+                    password = password.trim()
                 )
-                userViewModel.login(
+                loginViewModel.login(
                     navController = navController,
                     form = form,
-                    instance = instance,
+                    instance = instance.trim(),
                     ctx = ctx,
                     accountViewModel = accountViewModel,
                 )
-                Toast.makeText(
-                    ctx,
-                    "Form: i is $instance and username is $username",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         ) {
-            if (userViewModel.loading) {
+            if (loginViewModel.loading) {
                 CircularProgressIndicator(
                     color = MaterialTheme
                         .colors.onSurface
@@ -151,8 +146,11 @@ fun LoginFormPreview() {
 
 @Composable
 private fun LoginHeader(
-    navController: NavController,
+    navController: NavController = rememberNavController(),
+    accountViewModel: AccountViewModel = viewModel(),
 ) {
+    val accounts by accountViewModel.allAccounts.observeAsState()
+
     TopAppBar(
         title = {
             Text(
@@ -160,9 +158,12 @@ private fun LoginHeader(
             )
         },
         navigationIcon = {
-            IconButton(onClick = {
-                navController.popBackStack()
-            }) {
+            IconButton(
+                enabled = !accounts.isNullOrEmpty(),
+                onClick = {
+                    navController.popBackStack()
+                }
+            ) {
                 Icon(
                     Icons.Filled.ArrowBack,
                     contentDescription = "Back"
@@ -175,14 +176,13 @@ private fun LoginHeader(
 @Preview
 @Composable
 fun LoginHeaderPreview() {
-    val navController = rememberNavController()
-    LoginHeader(navController = navController)
+    LoginHeader()
 }
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    userViewModel: UserViewModel,
+    loginViewModel: LoginViewModel,
     accountViewModel: AccountViewModel,
 ) {
     val scope = rememberCoroutineScope()
@@ -192,12 +192,14 @@ fun LoginScreen(
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
-                LoginHeader(navController)
+                LoginHeader(
+                    navController = navController, accountViewModel = accountViewModel
+                )
             },
             content = {
                 LoginForm(
                     navController = navController,
-                    userViewModel = userViewModel,
+                    loginViewModel = loginViewModel,
                     accountViewModel = accountViewModel,
                 )
             }
