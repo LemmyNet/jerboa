@@ -13,6 +13,7 @@ import com.jerboa.api.API
 import com.jerboa.datatypes.api.GetSite
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
+import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppDB
 import com.jerboa.serializeToMap
 import kotlinx.coroutines.Dispatchers
@@ -21,23 +22,19 @@ import kotlin.system.exitProcess
 
 class UserViewModel : ViewModel() {
 
-    var account: Account? by mutableStateOf(null)
+    var jwt: String by mutableStateOf("")
         private set
     var loading: Boolean by mutableStateOf(false)
         private set
-
-    fun setTheAccount(account: Account) {
-        this.account = account
-    }
 
     fun login(
         instance: String,
         form: Login,
         navController: NavController,
+        accountViewModel: AccountViewModel,
         ctx: Context,
     ) {
         val api = API.setInstance(instance)
-        var jwt = ""
 
         viewModelScope.launch {
             try {
@@ -67,7 +64,7 @@ class UserViewModel : ViewModel() {
                         .serializeToMap()
                 )
                 val luv = site.my_user!!.local_user_view
-                account = Account(
+                val account = Account(
                     id = luv.person.id,
                     selected = true,
                     instance = instance,
@@ -77,12 +74,7 @@ class UserViewModel : ViewModel() {
                 )
 
                 // Save that info in the DB
-                viewModelScope.launch(Dispatchers.IO) {
-                    AppDB
-                        .getInstance(ctx)
-                        .accountDao()
-                        .insert(account!!)
-                }
+                accountViewModel.insert(account)
 
                 navController.navigate(route = "home")
             }

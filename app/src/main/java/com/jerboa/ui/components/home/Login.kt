@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.api.Login
+import com.jerboa.db.AccountViewModel
 
 @Composable
 fun MyTextField(
@@ -76,7 +77,8 @@ fun PasswordField(
 @Composable
 fun LoginForm(
     navController: NavController = rememberNavController(),
-    userViewModel: UserViewModel = viewModel()
+    userViewModel: UserViewModel = viewModel(),
+    accountViewModel: AccountViewModel = viewModel(),
 ) {
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
@@ -120,6 +122,7 @@ fun LoginForm(
                     form = form,
                     instance = instance,
                     ctx = ctx,
+                    accountViewModel = accountViewModel,
                 )
                 Toast.makeText(
                     ctx,
@@ -180,6 +183,7 @@ fun LoginHeaderPreview() {
 fun LoginScreen(
     navController: NavController,
     userViewModel: UserViewModel,
+    accountViewModel: AccountViewModel,
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -193,7 +197,8 @@ fun LoginScreen(
             content = {
                 LoginForm(
                     navController = navController,
-                    userViewModel = userViewModel
+                    userViewModel = userViewModel,
+                    accountViewModel = accountViewModel,
                 )
             }
         )

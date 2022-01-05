@@ -12,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,9 +23,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.ui.components.home.UserViewModel
+import com.jerboa.db.AccountViewModel
+import com.jerboa.getCurrentAccount
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -98,7 +101,7 @@ fun PreviewPostListings() {
 
 @Composable
 fun DrawerHeader(
-    userViewModel: UserViewModel,
+    accountViewModel: AccountViewModel,
     clickShowAccountAddMode: () -> Unit,
     showAccountAddMode: Boolean
 ) {
@@ -110,12 +113,13 @@ fun DrawerHeader(
             .padding(16.dp)
             .clickable(onClick = clickShowAccountAddMode),
         content = {
-            userViewModel.account?.let { Text(text = it.name, color = Color.White) }
+            val currentAccount = getCurrentAccount(accountViewModel = accountViewModel)
+            currentAccount?.let { Text(text = it.name, color = Color.White) }
             Icon(
                 imageVector = if (showAccountAddMode) {
-                    Icons.Default.KeyboardArrowUp
+                    Icons.Default.ExpandLess
                 } else {
-                    Icons.Default.KeyboardArrowDown
+                    Icons.Default.ExpandMore
                 },
                 contentDescription = "TODO",
                 modifier = Modifier.align(Alignment.End)
@@ -156,25 +160,36 @@ fun IconAndTextDrawerItemPreview() {
 }
 
 @Composable
-fun Drawer(userViewModel: UserViewModel = viewModel()) {
+fun Drawer(
+    navController: NavController = rememberNavController(),
+    accountViewModel: AccountViewModel = viewModel(),
+) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
     DrawerHeader(
-        userViewModel = userViewModel,
+        accountViewModel = accountViewModel,
         showAccountAddMode = showAccountAddMode,
         clickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode }
     )
     Divider()
     // Drawer items
-    DrawerContent(showAccountAddMode)
+    DrawerContent(
+        accountViewModel = accountViewModel,
+        showAccountAddMode = showAccountAddMode,
+        navController = navController,
+    )
 }
 
 @Composable
-fun DrawerContent(showAccountAddMode: Boolean) {
+fun DrawerContent(
+    accountViewModel: AccountViewModel,
+    showAccountAddMode: Boolean,
+    navController: NavController
+) {
     AnimatedVisibility(
         visible = showAccountAddMode,
     ) {
-        DrawerAddAccountMode()
+        DrawerAddAccountMode(accountViewModel = accountViewModel, navController = navController)
     }
 
     AnimatedVisibility(
@@ -192,15 +207,33 @@ fun DrawerItemsStandard() {
 }
 
 @Composable
-fun DrawerAddAccountMode() {
+fun DrawerAddAccountMode(
+    accountViewModel: AccountViewModel = viewModel(),
+    navController: NavController = rememberNavController()
+) {
+    val ctx = LocalContext.current
+    val accounts by accountViewModel.allAccounts.observeAsState()
+
     Column {
         IconAndTextDrawerItem(
-            text = "Add Account", onClick = {}, icon = Icons.Default.Add,
+            text = "Add Account", onClick = { navController.navigate(route = "login") }, icon = Icons.Default.Add,
         )
+        accounts?.forEach {
+            IconAndTextDrawerItem(
+                text = "Switch to ${it.name}", onClick = {},
+                icon = Icons.Default.Login,
+            )
+        }
         IconAndTextDrawerItem(
             text = "Sign Out", onClick = {}, icon = Icons.Default.Close,
         )
     }
+}
+
+@Preview
+@Composable
+fun DrawerAddAccountModePreview() {
+    DrawerAddAccountMode()
 }
 
 @Preview
@@ -213,7 +246,7 @@ fun DrawerPreview() {
 fun PostListingsScreen(
     navController: NavController,
     postListingsViewModel: PostListingsViewModel,
-    userViewModel: UserViewModel,
+    accountViewModel: AccountViewModel,
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -226,7 +259,7 @@ fun PostListingsScreen(
                 PostListingsHeader(scope, scaffoldState)
             },
             drawerContent = {
-                Drawer(userViewModel = userViewModel)
+                Drawer(accountViewModel = accountViewModel, navController = navController)
             },
             content = {
                 if (postListingsViewModel.loading) {
