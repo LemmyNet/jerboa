@@ -15,22 +15,22 @@ import com.jerboa.datatypes.sampleCommunitySafe
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun CircularIcon(icon: String) {
-  Image(
-    painter = rememberImagePainter(
-      data = icon,
-      builder = {
-        crossfade(true)
-        placeholder(R.drawable.ic_launcher_foreground)
-        transformations(CircleCropTransformation())
-      }
-    ),
-    contentDescription = null,
-    modifier = Modifier.size(20.dp)
-  )
+    Image(
+        painter = rememberImagePainter(
+            data = icon,
+            builder = {
+                crossfade(true)
+                placeholder(R.drawable.ic_launcher_foreground)
+                transformations(CircleCropTransformation())
+            }
+        ),
+        contentDescription = null,
+        modifier = Modifier.size(20.dp)
+    )
 }
 
 @Preview
 @Composable
 fun CircularIconPreview() {
-  CircularIcon(icon = sampleCommunitySafe.icon!!)
+    CircularIcon(icon = sampleCommunitySafe.icon!!)
 }

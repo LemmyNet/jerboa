@@ -7,15 +7,15 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val DarkColorPalette = darkColors(
-  primary = Purple200,
-  primaryVariant = Purple700,
-  secondary = Teal200,
+    primary = Green200,
+    primaryVariant = Green700,
+    secondary = Blue200,
 )
 
 private val LightColorPalette = lightColors(
-  primary = Purple500,
-  primaryVariant = Purple700,
-  secondary = Teal200
+    primary = Green200,
+    primaryVariant = Green700,
+    secondary = Blue200,
 
   /* Other default colors to override
     background = Color.White,
@@ -28,17 +28,20 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun JerboaTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-  val colors = if (darkTheme) {
-    DarkColorPalette
-  } else {
-    LightColorPalette
-  }
+fun JerboaTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colors = if (darkTheme) {
+        DarkColorPalette
+    } else {
+        LightColorPalette
+    }
 
-  MaterialTheme(
-    colors = colors,
-    typography = Typography,
-    shapes = Shapes,
-    content = content
-  )
+    MaterialTheme(
+        colors = colors,
+        typography = Typography,
+        shapes = Shapes,
+        content = content
+    )
 }

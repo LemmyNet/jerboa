@@ -1,47 +1,67 @@
 package com.jerboa.api
 
+import android.util.Log
 import com.jerboa.datatypes.api.GetPostsResponse
 import com.jerboa.datatypes.api.GetSiteResponse
+import com.jerboa.datatypes.api.Login
+import com.jerboa.datatypes.api.LoginResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.QueryMap
 
 const val VERSION = "v3"
 
-// TODO switch instance here
-const val BASE_URL = "https://lemmy.ml/api/${VERSION}/"
+interface API {
+    @GET("site")
+    suspend fun getSite(@QueryMap form: Map<String, String>): GetSiteResponse
 
-interface APIService {
-  @GET("site")
-  suspend fun getSite(@QueryMap form: Map<String, String>): GetSiteResponse
+    /**
+     * Get / fetch posts, with various filters.
+     */
+    @GET("post/list")
+    suspend fun getPosts(@QueryMap form: Map<String, String>): GetPostsResponse
 
-  /**
-   * Get / fetch posts, with various filters.
-   */
-  @GET("post/list")
-  suspend fun getPosts(@QueryMap form: Map<String, String>): GetPostsResponse
+    /**
+     * Log into lemmy.
+     */
+    @POST("user/login")
+    suspend fun login(@Body form: Login): LoginResponse
 
-  companion object {
-    var apiService: APIService? = null
-    fun getInstance(): APIService {
-      if (apiService == null) {
-        apiService = Retrofit.Builder()
-          .baseUrl(BASE_URL)
-          .addConverterFactory(GsonConverterFactory.create())
-          .build()
-          .create(APIService::class.java)
-      }
-      return apiService!!
+    companion object {
+        private var api: API? = null
+        private var currentInstance: String? = null
+
+        private fun buildUrl(): String {
+            return "https://$currentInstance/api/$VERSION/"
+        }
+
+        fun setInstance(instance: String): API {
+            currentInstance = instance
+            api = Retrofit.Builder()
+                .baseUrl(buildUrl())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(API::class.java)
+            return api!!
+        }
+
+        fun getInstance(): API {
+            if (currentInstance.isNullOrEmpty()) {
+                Log.e("Http", "Current http instance is null!")
+            }
+            return api!!
+        }
     }
-  }
 }
 
 //
-///**
+// /**
 // * Helps build lemmy HTTP requests.
 // */
-//export class LemmyHttp {
+// export class LemmyHttp {
 //  private apiUrl: string;
 //  private headers: { [key: string]: string } = {};
 //
@@ -433,12 +453,6 @@ interface APIService {
 //    return this.wrapper(HttpType.Post, "/user/register", form);
 //  }
 //
-//  /**
-//   * Log into lemmy.
-//   */
-//  async login(form: Login): Promise<LoginResponse> {
-//    return this.wrapper(HttpType.Post, "/user/login", form);
-//  }
 //
 //  /**
 //   * Get the details for a person.
@@ -580,4 +594,4 @@ interface APIService {
 //      }).then(d => d.json() as Promise<ResponseType>);
 //    }
 //  }
-//}
+// }
