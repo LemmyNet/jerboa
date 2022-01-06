@@ -1,8 +1,14 @@
 package com.jerboa
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Color
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.db.Account
@@ -43,4 +49,18 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account? {
 
 fun getCurrentAccount(accounts: List<Account>?): Account? {
     return accounts?.firstOrNull { it.default_ }
+}
+
+fun toastException(ctx: Context, error: Exception) {
+    Log.e("jerboa", error.toString())
+    Toast.makeText(ctx, error.toString(), Toast.LENGTH_SHORT).show()
+}
+
+@Composable
+fun voteColor(myVote: Int?): Color {
+    return when (myVote) {
+        1 -> MaterialTheme.colors.secondary
+        -1 -> MaterialTheme.colors.error
+        else -> LocalContentColor.current
+    }
 }

@@ -1,9 +1,6 @@
 package com.jerboa.api
 
-import com.jerboa.datatypes.api.GetPostsResponse
-import com.jerboa.datatypes.api.GetSiteResponse
-import com.jerboa.datatypes.api.Login
-import com.jerboa.datatypes.api.LoginResponse
+import com.jerboa.datatypes.api.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -29,6 +26,12 @@ interface API {
      */
     @POST("user/login")
     suspend fun login(@Body form: Login): LoginResponse
+
+    /**
+     * Like / vote on a post.
+     */
+    @POST("post/like")
+    suspend fun likePost(@Body form: CreatePostLike): PostResponse
 
     companion object {
         private var api: API? = null
@@ -274,12 +277,6 @@ interface API {
 //  }
 //
 //
-//  /**
-//   * Like / vote on a post.
-//   */
-//  async likePost(form: CreatePostLike): Promise<PostResponse> {
-//    return this.wrapper(HttpType.Post, "/post/like", form);
-//  }
 //
 //  /**
 //   * Save a post.

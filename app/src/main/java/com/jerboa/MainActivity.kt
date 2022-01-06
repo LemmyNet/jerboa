@@ -84,6 +84,7 @@ class MainActivity : ComponentActivity() {
                         PostListingScreen(
                             navController = navController,
                             postView = postListingsViewModel.clickedPost,
+                            accountViewModel = accountViewModel,
                         )
                     }
                 }

@@ -37,7 +37,8 @@ import kotlinx.coroutines.launch
 fun PostListings(
     posts: List<PostView>,
     onItemClicked: (postView: PostView) -> Unit = {},
-    navController: NavController?,
+    navController: NavController? = null,
+    accountViewModel: AccountViewModel = viewModel(),
 ) {
     // Remember our own LazyListState, can be
     // used to move to any position in the column.
@@ -50,7 +51,8 @@ fun PostListings(
             PostListing(
                 postView = postView,
                 onItemClicked = onItemClicked,
-                navController = navController
+                navController = navController,
+                accountViewModel = accountViewModel,
             )
         }
     }
@@ -96,8 +98,6 @@ fun PreviewPostListingsHeader() {
 fun PreviewPostListings() {
     PostListings(
         posts = listOf(samplePostView, samplePostView),
-        onItemClicked = {},
-        navController = null,
     )
 }
 
@@ -272,7 +272,6 @@ fun PostListingsScreen(
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
 
-// Fetch initial posts for home screen
     postListingsViewModel.fetchPosts(
         GetPosts(
             auth = getCurrentAccount(accountViewModel = accountViewModel)?.jwt
@@ -294,8 +293,9 @@ fun PostListingsScreen(
                 }
                 PostListings(
                     posts = postListingsViewModel.posts,
-                    postListingsViewModel::onPostClicked,
-                    navController,
+                    onItemClicked = postListingsViewModel::onPostClicked,
+                    navController = navController,
+                    accountViewModel = accountViewModel
                 )
             }
         )

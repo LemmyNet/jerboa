@@ -25,7 +25,7 @@ fun CircularIcon(icon: String) {
             }
         ),
         contentDescription = null,
-        modifier = Modifier.size(20.dp)
+        modifier = Modifier.size(24.dp)
     )
 }
 

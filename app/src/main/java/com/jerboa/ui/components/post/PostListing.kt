@@ -6,27 +6,39 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.jerboa.api.API
 import com.jerboa.datatypes.Post
 import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.api.CreatePostLike
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.samplePostView
+import com.jerboa.db.AccountViewModel
+import com.jerboa.getCurrentAccount
 import com.jerboa.previewLines
+import com.jerboa.toastException
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonLink
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
+import com.jerboa.voteColor
+import kotlinx.coroutines.launch
 
 @Composable
 fun PostHeaderLine(postView: PostView) {
-    FlowRow {
+    FlowRow(
+        crossAxisAlignment = FlowCrossAxisAlignment.Center,
+    ) {
         CommunityLink(community = postView.community)
         DotSpacer()
         PersonLink(person = postView.creator)
@@ -85,7 +97,13 @@ fun PreviewStoryTitleAndMetadata() {
 }
 
 @Composable
-fun PostFooterLine(postView: PostView) {
+fun PostFooterLine(
+    postView: PostView,
+    accountViewModel: AccountViewModel = viewModel(),
+) {
+    val acct = getCurrentAccount(accountViewModel = accountViewModel)
+    val ctx = LocalContext.current
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -98,8 +116,11 @@ fun PostFooterLine(postView: PostView) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Upvotes(upvotes = postView.counts.upvotes)
-            Downvotes(downvotes = postView.counts.downvotes)
+            Upvotes(
+                postView = postView,
+                auth = acct?.jwt,
+            )
+            Downvotes(postView = postView, auth = acct?.jwt)
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = "TODO",
@@ -115,18 +136,52 @@ fun PostFooterLine(postView: PostView) {
 }
 
 @Composable
-fun Upvotes(upvotes: Int) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+fun Upvotes(postView: PostView, auth: String?) {
+    val ctx = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    var upvotes by remember { mutableStateOf(postView.counts.upvotes) }
+    var myVote by remember { mutableStateOf(postView.my_vote) }
+    val voteColor = voteColor(myVote = myVote)
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+
+        modifier = Modifier.clickable {
+            auth?.let {
+                coroutineScope.launch {
+                    try {
+                        val newVote = if (myVote == 1) {
+                            0
+                        } else {
+                            1
+                        }
+                        myVote = newVote
+                        val form = CreatePostLike(
+                            post_id = postView.post.id, score = newVote, auth = it
+                        )
+                        val post = API.getInstance().likePost(form)
+                        upvotes = post.post_view.counts.upvotes
+                    } catch (e: Exception) {
+                        toastException(ctx = ctx, error = e)
+                    }
+                }
+            }
+        }
+    ) {
         Icon(
             imageVector = Icons.Default.ArrowUpward,
+            tint = voteColor,
             contentDescription = "TODO",
             modifier = Modifier
                 .size(ACTION_BAR_ICON_SIZE)
                 .padding(end = 2.dp)
+
         )
         Text(
             text = upvotes.toString(),
-            style = MaterialTheme.typography.button
+            style = MaterialTheme.typography.button,
+            color = voteColor,
         )
     }
 }
@@ -134,22 +189,56 @@ fun Upvotes(upvotes: Int) {
 @Preview
 @Composable
 fun UpvotesPreview() {
-    Upvotes(upvotes = 31)
+    Upvotes(postView = samplePostView, auth = null)
 }
 
 @Composable
-fun Downvotes(downvotes: Int) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+fun Downvotes(postView: PostView, auth: String?) {
+    val ctx = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    var downvotes by remember { mutableStateOf(postView.counts.downvotes) }
+    var myVote by remember { mutableStateOf(postView.my_vote) }
+    val voteColor = voteColor(myVote = myVote)
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+
+        modifier = Modifier.clickable {
+            auth?.let {
+                coroutineScope.launch {
+                    try {
+                        val newVote = if (myVote == -1) {
+                            0
+                        } else {
+                            -1
+                        }
+                        myVote = newVote
+                        val form = CreatePostLike(
+                            post_id = postView.post.id, score = newVote, auth = it
+                        )
+                        val post = API.getInstance().likePost(form)
+                        downvotes = post.post_view.counts.downvotes
+                    } catch (e: Exception) {
+                        toastException(ctx = ctx, error = e)
+                    }
+                }
+            }
+        }
+    ) {
         Icon(
             imageVector = Icons.Default.ArrowDownward,
+            tint = voteColor,
             contentDescription = "TODO",
             modifier = Modifier
                 .size(ACTION_BAR_ICON_SIZE)
-                .padding(end = 2.dp),
+                .padding(end = 2.dp)
+
         )
         Text(
             text = downvotes.toString(),
-            style = MaterialTheme.typography.button
+            style = MaterialTheme.typography.button,
+            color = voteColor,
         )
     }
 }
@@ -157,7 +246,7 @@ fun Downvotes(downvotes: Int) {
 @Preview
 @Composable
 fun DownvotesPreview() {
-    Downvotes(downvotes = 6)
+    Downvotes(postView = samplePostView, auth = null)
 }
 
 @Composable
@@ -206,6 +295,7 @@ fun PostListing(
     fullBody: Boolean = false,
     onItemClicked: (postView: PostView) -> Unit = {},
     navController: NavController? = null,
+    accountViewModel: AccountViewModel = viewModel(),
 ) {
     Card(
         shape = RoundedCornerShape(0.dp),
@@ -228,7 +318,7 @@ fun PostListing(
                 PostTitleAndDesc(post = postView.post, fullBody)
 
                 // Footer bar
-                PostFooterLine(postView = postView)
+                PostFooterLine(postView = postView, accountViewModel = accountViewModel)
             }
         }
     }
@@ -268,6 +358,7 @@ fun PostListingHeaderPreview() {
 fun PostListingScreen(
     postView: PostView,
     navController: NavController,
+    accountViewModel: AccountViewModel = viewModel(),
 ) {
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
@@ -278,6 +369,7 @@ fun PostListingScreen(
             PostListing(
                 postView = postView,
                 fullBody = true,
+                accountViewModel = accountViewModel,
             )
         }
     }
@@ -289,6 +381,6 @@ fun PreviewPostListingScreen() {
     val navController = rememberNavController()
     PostListingScreen(
         postView = samplePostView,
-        navController
+        navController = navController
     )
 }
