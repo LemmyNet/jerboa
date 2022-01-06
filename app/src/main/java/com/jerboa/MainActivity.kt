@@ -17,10 +17,10 @@ import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
 import com.jerboa.db.AppDB
-import com.jerboa.ui.components.home.LoginScreen
-import com.jerboa.ui.components.home.LoginViewModel
-import com.jerboa.ui.components.post.PostListingScreen
-import com.jerboa.ui.components.post.PostListingsScreen
+import com.jerboa.ui.components.home.HomeActivity
+import com.jerboa.ui.components.login.LoginActivity
+import com.jerboa.ui.components.login.LoginViewModel
+import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.PostListingsViewModel
 import com.jerboa.ui.theme.JerboaTheme
 import kotlinx.coroutines.CoroutineScope
@@ -67,21 +67,21 @@ class MainActivity : ComponentActivity() {
                     startDestination = startRoute,
                 ) {
                     composable(route = "login") {
-                        LoginScreen(
+                        LoginActivity(
                             navController = navController,
                             loginViewModel = loginViewModel,
                             accountViewModel = accountViewModel,
                         )
                     }
                     composable(route = "home") {
-                        PostListingsScreen(
+                        HomeActivity(
                             navController = navController,
                             postListingsViewModel = postListingsViewModel,
                             accountViewModel = accountViewModel,
                         )
                     }
                     composable(route = "post") {
-                        PostListingScreen(
+                        PostActivity(
                             navController = navController,
                             postView = postListingsViewModel.clickedPost,
                             accountViewModel = accountViewModel,

@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.home
+package com.jerboa.ui.components.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,21 +10,18 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.api.Login
-import com.jerboa.db.AccountViewModel
+import com.jerboa.db.Account
 
 @Composable
 fun MyTextField(
@@ -76,18 +73,20 @@ fun PasswordField(
 
 @Composable
 fun LoginForm(
-    navController: NavController = rememberNavController(),
-    loginViewModel: LoginViewModel = viewModel(),
-    accountViewModel: AccountViewModel = viewModel(),
+    loading: Boolean = false,
+    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> },
 ) {
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
-    val ctx = LocalContext.current
-
     val isValid =
         instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()
+
+    val form = Login(
+        username_or_email = username.trim(),
+        password = password.trim()
+    )
 
     Column(
         modifier = Modifier
@@ -112,21 +111,9 @@ fun LoginForm(
         )
         Button(
             enabled = isValid,
-            onClick = {
-                val form = Login(
-                    username_or_email = username.trim(),
-                    password = password.trim()
-                )
-                loginViewModel.login(
-                    navController = navController,
-                    form = form,
-                    instance = instance.trim(),
-                    ctx = ctx,
-                    accountViewModel = accountViewModel,
-                )
-            }
+            onClick = { onClickLogin(form, instance) },
         ) {
-            if (loginViewModel.loading) {
+            if (loading) {
                 CircularProgressIndicator(
                     color = MaterialTheme
                         .colors.onSurface
@@ -145,12 +132,10 @@ fun LoginFormPreview() {
 }
 
 @Composable
-private fun LoginHeader(
+fun LoginHeader(
     navController: NavController = rememberNavController(),
-    accountViewModel: AccountViewModel = viewModel(),
+    accounts: List<Account>? = null,
 ) {
-    val accounts by accountViewModel.allAccounts.observeAsState()
-
     TopAppBar(
         title = {
             Text(
@@ -177,32 +162,4 @@ private fun LoginHeader(
 @Composable
 fun LoginHeaderPreview() {
     LoginHeader()
-}
-
-@Composable
-fun LoginScreen(
-    navController: NavController,
-    loginViewModel: LoginViewModel,
-    accountViewModel: AccountViewModel,
-) {
-    val scope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState()
-
-    Surface(color = MaterialTheme.colors.background) {
-        Scaffold(
-            scaffoldState = scaffoldState,
-            topBar = {
-                LoginHeader(
-                    navController = navController, accountViewModel = accountViewModel
-                )
-            },
-            content = {
-                LoginForm(
-                    navController = navController,
-                    loginViewModel = loginViewModel,
-                    accountViewModel = accountViewModel,
-                )
-            }
-        )
-    }
 }

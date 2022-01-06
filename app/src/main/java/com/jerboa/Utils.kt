@@ -57,10 +57,38 @@ fun toastException(ctx: Context, error: Exception) {
 }
 
 @Composable
-fun voteColor(myVote: Int?): Color {
+fun upvoteColor(myVote: Int?): Color {
     return when (myVote) {
         1 -> MaterialTheme.colors.secondary
+        else -> LocalContentColor.current
+    }
+}
+
+@Composable
+fun downvoteColor(myVote: Int?): Color {
+    return when (myVote) {
         -1 -> MaterialTheme.colors.error
         else -> LocalContentColor.current
+    }
+}
+
+enum class VoteType {
+    Upvote,
+    Downvote,
+}
+
+fun newVote(currentVote: Int?, voteType: VoteType): Int {
+    return if (voteType == VoteType.Upvote) {
+        if (currentVote == 1) {
+            0
+        } else {
+            1
+        }
+    } else {
+        if (currentVote == -1) {
+            0
+        } else {
+            -1
+        }
     }
 }

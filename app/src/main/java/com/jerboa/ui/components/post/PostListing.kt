@@ -6,33 +6,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import com.jerboa.api.API
 import com.jerboa.datatypes.Post
 import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.api.CreatePostLike
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.db.AccountViewModel
-import com.jerboa.getCurrentAccount
+import com.jerboa.db.Account
+import com.jerboa.downvoteColor
 import com.jerboa.previewLines
-import com.jerboa.toastException
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonLink
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
-import com.jerboa.voteColor
-import kotlinx.coroutines.launch
+import com.jerboa.upvoteColor
 
 @Composable
 fun PostHeaderLine(postView: PostView) {
@@ -99,11 +93,9 @@ fun PreviewStoryTitleAndMetadata() {
 @Composable
 fun PostFooterLine(
     postView: PostView,
-    accountViewModel: AccountViewModel = viewModel(),
+    onUpvoteClick: (postView: PostView) -> Unit = {},
+    onDownvoteClick: (postView: PostView) -> Unit = {}
 ) {
-    val acct = getCurrentAccount(accountViewModel = accountViewModel)
-    val ctx = LocalContext.current
-
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -118,9 +110,12 @@ fun PostFooterLine(
         ) {
             Upvotes(
                 postView = postView,
-                auth = acct?.jwt,
+                onUpvoteClick = onUpvoteClick,
             )
-            Downvotes(postView = postView, auth = acct?.jwt)
+            Downvotes(
+                postView = postView,
+                onDownvoteClick = onDownvoteClick,
+            )
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = "TODO",
@@ -136,38 +131,15 @@ fun PostFooterLine(
 }
 
 @Composable
-fun Upvotes(postView: PostView, auth: String?) {
-    val ctx = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
-    var upvotes by remember { mutableStateOf(postView.counts.upvotes) }
-    var myVote by remember { mutableStateOf(postView.my_vote) }
-    val voteColor = voteColor(myVote = myVote)
+fun Upvotes(
+    postView: PostView,
+    onUpvoteClick: (postView: PostView) -> Unit = {}
+) {
+    val voteColor = upvoteColor(myVote = postView.my_vote)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-
-        modifier = Modifier.clickable {
-            auth?.let {
-                coroutineScope.launch {
-                    try {
-                        val newVote = if (myVote == 1) {
-                            0
-                        } else {
-                            1
-                        }
-                        myVote = newVote
-                        val form = CreatePostLike(
-                            post_id = postView.post.id, score = newVote, auth = it
-                        )
-                        val post = API.getInstance().likePost(form)
-                        upvotes = post.post_view.counts.upvotes
-                    } catch (e: Exception) {
-                        toastException(ctx = ctx, error = e)
-                    }
-                }
-            }
-        }
+        modifier = Modifier.clickable(onClick = { onUpvoteClick(postView) })
     ) {
         Icon(
             imageVector = Icons.Default.ArrowUpward,
@@ -179,7 +151,7 @@ fun Upvotes(postView: PostView, auth: String?) {
 
         )
         Text(
-            text = upvotes.toString(),
+            text = postView.counts.upvotes.toString(),
             style = MaterialTheme.typography.button,
             color = voteColor,
         )
@@ -189,42 +161,19 @@ fun Upvotes(postView: PostView, auth: String?) {
 @Preview
 @Composable
 fun UpvotesPreview() {
-    Upvotes(postView = samplePostView, auth = null)
+    Upvotes(postView = samplePostView)
 }
 
 @Composable
-fun Downvotes(postView: PostView, auth: String?) {
-    val ctx = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
-    var downvotes by remember { mutableStateOf(postView.counts.downvotes) }
-    var myVote by remember { mutableStateOf(postView.my_vote) }
-    val voteColor = voteColor(myVote = myVote)
+fun Downvotes(
+    postView: PostView,
+    onDownvoteClick: (postView: PostView) -> Unit = {}
+) {
+    val voteColor = downvoteColor(myVote = postView.my_vote)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-
-        modifier = Modifier.clickable {
-            auth?.let {
-                coroutineScope.launch {
-                    try {
-                        val newVote = if (myVote == -1) {
-                            0
-                        } else {
-                            -1
-                        }
-                        myVote = newVote
-                        val form = CreatePostLike(
-                            post_id = postView.post.id, score = newVote, auth = it
-                        )
-                        val post = API.getInstance().likePost(form)
-                        downvotes = post.post_view.counts.downvotes
-                    } catch (e: Exception) {
-                        toastException(ctx = ctx, error = e)
-                    }
-                }
-            }
-        }
+        modifier = Modifier.clickable(onClick = { onDownvoteClick(postView) })
     ) {
         Icon(
             imageVector = Icons.Default.ArrowDownward,
@@ -236,7 +185,7 @@ fun Downvotes(postView: PostView, auth: String?) {
 
         )
         Text(
-            text = downvotes.toString(),
+            text = postView.counts.downvotes.toString(),
             style = MaterialTheme.typography.button,
             color = voteColor,
         )
@@ -246,7 +195,7 @@ fun Downvotes(postView: PostView, auth: String?) {
 @Preview
 @Composable
 fun DownvotesPreview() {
-    Downvotes(postView = samplePostView, auth = null)
+    Downvotes(postView = samplePostView)
 }
 
 @Composable
@@ -294,8 +243,10 @@ fun PostListing(
     postView: PostView,
     fullBody: Boolean = false,
     onItemClicked: (postView: PostView) -> Unit = {},
+    onUpvoteClick: (postView: PostView) -> Unit = {},
+    onDownvoteClick: (postView: PostView) -> Unit = {},
     navController: NavController? = null,
-    accountViewModel: AccountViewModel = viewModel(),
+    account: Account? = null,
 ) {
     Card(
         shape = RoundedCornerShape(0.dp),
@@ -318,14 +269,18 @@ fun PostListing(
                 PostTitleAndDesc(post = postView.post, fullBody)
 
                 // Footer bar
-                PostFooterLine(postView = postView, accountViewModel = accountViewModel)
+                PostFooterLine(
+                    postView = postView,
+                    onUpvoteClick = onUpvoteClick,
+                    onDownvoteClick = onDownvoteClick,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun PostListingHeader(
+fun PostListingHeader(
     navController: NavController,
 ) {
     TopAppBar(
@@ -352,35 +307,4 @@ private fun PostListingHeader(
 fun PostListingHeaderPreview() {
     val navController = rememberNavController()
     PostListingHeader(navController = navController)
-}
-
-@Composable
-fun PostListingScreen(
-    postView: PostView,
-    navController: NavController,
-    accountViewModel: AccountViewModel = viewModel(),
-) {
-    Surface(color = MaterialTheme.colors.background) {
-        Scaffold(
-            topBar = {
-                PostListingHeader(navController)
-            },
-        ) {
-            PostListing(
-                postView = postView,
-                fullBody = true,
-                accountViewModel = accountViewModel,
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewPostListingScreen() {
-    val navController = rememberNavController()
-    PostListingScreen(
-        postView = samplePostView,
-        navController = navController
-    )
 }

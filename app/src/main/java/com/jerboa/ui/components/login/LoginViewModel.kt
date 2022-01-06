@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.home
+package com.jerboa.ui.components.login
 
 import android.content.Context
 import android.util.Log
