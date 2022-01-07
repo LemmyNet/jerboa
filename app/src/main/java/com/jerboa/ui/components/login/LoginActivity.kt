@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.login
 
+import android.util.Log
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -9,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.jerboa.datatypes.api.Login
 import com.jerboa.db.AccountViewModel
 
 @Composable
@@ -18,6 +18,8 @@ fun LoginActivity(
     loginViewModel: LoginViewModel,
     accountViewModel: AccountViewModel,
 ) {
+    Log.d("jerboa", "Got to login activity")
+
     val scaffoldState = rememberScaffoldState()
     val accounts by accountViewModel.allAccounts.observeAsState()
     val ctx = LocalContext.current
@@ -27,7 +29,8 @@ fun LoginActivity(
             scaffoldState = scaffoldState,
             topBar = {
                 LoginHeader(
-                    navController = navController, accounts = accounts
+                    navController = navController,
+                    accounts = accounts
                 )
             },
             content = {

@@ -1,6 +1,12 @@
 package com.jerboa.api
 
+import android.content.Context
+import com.jerboa.VoteType
+import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.*
+import com.jerboa.db.Account
+import com.jerboa.newVote
+import com.jerboa.toastException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -20,6 +26,12 @@ interface API {
      */
     @GET("post/list")
     suspend fun getPosts(@QueryMap form: Map<String, String>): GetPostsResponse
+
+    /**
+     * Get / fetch a post.
+     */
+    @GET("post")
+    suspend fun getPost(@QueryMap form: Map<String, String>): GetPostResponse
 
     /**
      * Log into lemmy.
@@ -62,6 +74,26 @@ interface API {
                 .create(API::class.java)
         }
     }
+}
+
+suspend fun likePostWrapper(
+    pv: PostView,
+    voteType: VoteType,
+    account: Account,
+    ctx: Context,
+): PostResponse {
+    var updatedPost: PostResponse? = null
+    val api = API.getInstance()
+    try {
+        val newVote = newVote(currentVote = pv.my_vote, voteType = voteType)
+        val form = CreatePostLike(
+            post_id = pv.post.id, score = newVote, auth = account.jwt
+        )
+        updatedPost = api.likePost(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return updatedPost!!
 }
 
 //
@@ -234,12 +266,6 @@ interface API {
 //    return this.wrapper(HttpType.Post, "/post", form);
 //  }
 //
-//  /**
-//   * Get / fetch a post.
-//   */
-//  async getPost(form: GetPost): Promise<GetPostResponse> {
-//    return this.wrapper(HttpType.Get, "/post", form);
-//  }
 //
 //  /**
 //   * Edit a post.

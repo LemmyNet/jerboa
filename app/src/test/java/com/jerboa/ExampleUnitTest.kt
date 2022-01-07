@@ -3,6 +3,7 @@ package com.jerboa
 import com.jerboa.api.API
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.api.GetPost
 import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.datatypes.api.GetSite
 import com.jerboa.datatypes.api.Login
@@ -48,6 +49,18 @@ class ExampleUnitTest {
         val out = api.getPosts(form.serializeToMap())
         println(out.posts[0])
         assertNotNull(out.posts)
+    }
+
+    @Test
+    fun testGetPost() = runBlocking {
+        val api = API.getInstance()
+        val form = GetPost(
+            id = 139549,
+            auth = null,
+        )
+        val out = api.getPost(form.serializeToMap())
+        println(out.comments)
+        assertNotNull(out)
     }
 
     @Test

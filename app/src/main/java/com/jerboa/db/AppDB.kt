@@ -2,10 +2,11 @@ package com.jerboa.db
 
 import android.content.Context
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.room.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Entity
@@ -21,7 +22,7 @@ data class Account(
 @Dao
 interface AccountDao {
     @Query("SELECT * FROM account")
-    fun getAll(): Flow<List<Account>>
+    fun getAll(): LiveData<List<Account>>
 
 //    @Query(
 //        "SELECT * FROM account WHERE selected = 1 " +
@@ -84,7 +85,6 @@ abstract class AppDB : RoomDatabase() {
 
         fun getDatabase(
             context: Context,
-            scope: CoroutineScope,
         ): AppDB {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
@@ -104,7 +104,7 @@ abstract class AppDB : RoomDatabase() {
 
 class AccountViewModel(private val repository: AccountRepository) : ViewModel() {
 
-    val allAccounts: LiveData<List<Account>> = repository.allAccounts.asLiveData()
+    val allAccounts = repository.allAccounts
 
     fun insert(account: Account) = viewModelScope.launch {
         repository.insert(account)
@@ -123,7 +123,8 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
     }
 }
 
-class AccountViewModelFactory(private val repository: AccountRepository) : ViewModelProvider.Factory {
+class AccountViewModelFactory(private val repository: AccountRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AccountViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

@@ -8,16 +8,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.db.Account
 
 @Composable
 fun PostListings(
     posts: List<PostView>,
-    onItemClicked: (postView: PostView) -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit = {},
     onDownvoteClick: (postView: PostView) -> Unit = {},
     navController: NavController? = null,
-    account: Account? = null,
 ) {
     // Remember our own LazyListState, can be
     // used to move to any position in the column.
@@ -28,11 +25,9 @@ fun PostListings(
         items(posts) { postView ->
             PostListing(
                 postView = postView,
-                onItemClicked = onItemClicked,
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
                 navController = navController,
-                account = account,
             )
         }
     }

@@ -2,13 +2,11 @@ package com.jerboa
 
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,20 +20,18 @@ import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.login.LoginViewModel
 import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.PostListingsViewModel
+import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.theme.JerboaTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 
 class JerboaApplication : Application() {
-    private val applicationScope = CoroutineScope(SupervisorJob())
-
-    val database by lazy { AppDB.getDatabase(this, applicationScope) }
+    val database by lazy { AppDB.getDatabase(this) }
     val repository by lazy { AccountRepository(database.accountDao()) }
 }
 
 class MainActivity : ComponentActivity() {
 
     private val postListingsViewModel by viewModels<PostListingsViewModel>()
+    private val postViewModel by viewModels<PostViewModel>()
     private val loginViewModel by viewModels<LoginViewModel>()
 
     private val accountViewModel: AccountViewModel by viewModels {
@@ -46,13 +42,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Log.e("jerboa", "got here")
-
             val navController = rememberNavController()
-            val ctx = LocalContext.current
-
             val accounts by accountViewModel.allAccounts.observeAsState()
-            val currentAccount = getCurrentAccount(accountViewModel)
+            val currentAccount = getCurrentAccount(accounts)
 
             val startRoute = if (currentAccount != null) {
                 API.changeLemmyInstance(currentAccount.instance)
@@ -60,6 +52,8 @@ class MainActivity : ComponentActivity() {
             } else {
                 "login"
             }
+
+//            val startRoute = "home"
 
             JerboaTheme {
                 NavHost(
@@ -80,11 +74,15 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                         )
                     }
-                    composable(route = "post") {
+                    composable(
+                        route = "post/{postId}",
+                    ) {
+                        val postId = it.arguments?.getString("postId")!!.toInt()
                         PostActivity(
-                            navController = navController,
-                            postView = postListingsViewModel.clickedPost,
+                            postId = postId,
+                            postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
+                            navController = navController,
                         )
                     }
                 }

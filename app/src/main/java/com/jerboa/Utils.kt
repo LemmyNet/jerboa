@@ -3,21 +3,24 @@ package com.jerboa
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.jerboa.datatypes.CommentView
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import org.ocpsoft.prettytime.PrettyTime
-import java.text.SimpleDateFormat
 import java.util.*
 
-val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
 val prettyTime = PrettyTime(Locale.getDefault())
 
 val gson = Gson()
@@ -91,4 +94,64 @@ fun newVote(currentVote: Int?, voteType: VoteType): Int {
             -1
         }
     }
+}
+
+data class CommentNodeData(
+    val commentView: CommentView,
+    val children: MutableList<CommentNodeData>?,
+    var depth: Number?,
+)
+
+fun buildCommentsTree(
+    comments: List<CommentView>?,
+//    commentSortType: CommentSortType,
+): List<CommentNodeData> {
+
+    val map = LinkedHashMap<Number, CommentNodeData>()
+    comments?.forEach { cv ->
+        val node = CommentNodeData(
+            commentView = cv,
+            children = mutableListOf(),
+            depth = null,
+        )
+        map[cv.comment.id] = node
+    }
+
+    val tree = mutableListOf<CommentNodeData>()
+    comments?.forEach { cv ->
+        val child = map[cv.comment.id]
+        child?.let { cChild ->
+            val parentId = cv.comment.parent_id
+            parentId?.let { cParentId ->
+                val parent = map[cParentId]
+
+                // Necessary because blocked comment might not exist
+                parent?.let { cParent ->
+                    cParent.children?.add(cChild)
+                }
+            } ?: run {
+                tree.add(cChild)
+            }
+            setDepth(cChild)
+        }
+    }
+
+//    commentSort(tree, commentSortType);
+
+    return tree
+}
+
+fun setDepth(node: CommentNodeData, i: Int = 0) {
+    node.children?.forEach { child ->
+        child.depth = i
+        setDepth(child, i + 1)
+    }
+}
+
+@Composable
+fun DotSpacer() {
+    Text(
+        text = "·",
+        modifier = Modifier.padding(horizontal = 8.dp)
+    )
 }

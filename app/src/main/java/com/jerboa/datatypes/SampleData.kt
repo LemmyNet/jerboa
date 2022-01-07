@@ -42,6 +42,27 @@ val samplePersonSafe = PersonSafe(
     ban_expires = null
 )
 
+val samplePersonSafe2 = PersonSafe(
+    id = 33403,
+    name = "gary_host_laptop",
+    display_name = null,
+    avatar = "https://lemmy.ml/pictrs/image/kykidJ1ssM.jpg",
+    banned = false,
+    published = "2021-08-08T01:47:44.437708",
+    updated = "2021-10-11T07:14:53.548707",
+    actor_id = "https://lemmy.ml/u/homeless",
+    bio = null,
+    local = true,
+    banner = null,
+    deleted = false,
+    inbox_url = "https://lemmy.ml/u/homeless/inbox",
+    shared_inbox_url = "https://lemmy.ml/inbox",
+    matrix_user_id = null,
+    admin = false,
+    bot_account = false,
+    ban_expires = null
+)
+
 val sampleCommunitySafe = CommunitySafe(
     id = 14681,
     name = "socialism",
@@ -80,4 +101,67 @@ val samplePostView = PostView(
     read = false,
     creator_blocked = false,
     my_vote = null
+)
+
+val sampleComment = Comment(
+    id = 1,
+    creator_id = 56450,
+    post_id = 139549,
+    parent_id = null,
+    content = "This looks really cool and similar to Joplin. Having issues getting LaTeX to work.",
+    removed = false,
+    read = false,
+    published = "2022-01-07T03:12:26.398434",
+    updated = "2022-01-07T03:15:37.360888",
+    deleted = false,
+    ap_id = "https://midwest.social/comment/24621",
+    local = false
+)
+
+val sampleCommentReply = Comment(
+    id = 2,
+    creator_id = 423,
+    post_id = 139549,
+    parent_id = 1,
+    content = "This is a reply comment.",
+    removed = false,
+    read = false,
+    published = "2022-01-07T04:12:26.398434",
+    updated = "2022-01-07T03:15:37.360888",
+    deleted = false,
+    ap_id = "https://midwest.social/comment/24622",
+    local = false
+)
+
+val sampleCommentAggregates = CommentAggregates(
+    id = 28, comment_id = 24, score = 8,
+    upvotes = 12, downvotes = 4
+)
+
+val sampleCommentView = CommentView(
+    comment = sampleComment,
+    creator = samplePersonSafe,
+    recipient = null,
+    post = samplePost,
+    community = sampleCommunitySafe,
+    counts = sampleCommentAggregates,
+    creator_banned_from_community = false,
+    subscribed = false,
+    saved = false,
+    creator_blocked = false,
+    my_vote = null,
+)
+
+val sampleCommentReplyView = CommentView(
+    comment = sampleCommentReply,
+    creator = samplePersonSafe2,
+    recipient = null,
+    post = samplePost,
+    community = sampleCommunitySafe,
+    counts = sampleCommentAggregates,
+    creator_banned_from_community = false,
+    subscribed = false,
+    saved = false,
+    creator_blocked = false,
+    my_vote = null,
 )

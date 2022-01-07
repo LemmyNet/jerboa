@@ -3,7 +3,6 @@ package com.jerboa.ui.components.post
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -12,34 +11,37 @@ import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.likePostWrapper
 import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.api.GetPosts
+import com.jerboa.datatypes.api.GetPost
+import com.jerboa.datatypes.api.GetPostResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import kotlinx.coroutines.launch
 
-class PostListingsViewModel : ViewModel() {
+class PostViewModel : ViewModel() {
 
-    var posts = mutableStateListOf<PostView>()
+    var res by mutableStateOf<GetPostResponse?>(null)
+        private set
+    var postView by mutableStateOf<PostView?>(null)
         private set
     var loading: Boolean by mutableStateOf(false)
         private set
 
-    fun fetchPosts(form: GetPosts) {
+    fun fetchPost(form: GetPost) {
         val api = API.getInstance()
 
         viewModelScope.launch {
             try {
                 Log.d(
-                    "ViewModel: PostListingsViewModel",
-                    "Fetching posts: $form"
+                    "jerboa",
+                    "Fetching post: $form"
                 )
                 loading = true
-                posts.clear()
-                posts.addAll(api.getPosts(form = form.serializeToMap()).posts)
+                res = api.getPost(form = form.serializeToMap())
+                postView = res?.post_view
             } catch (e: Exception) {
                 Log.e(
-                    "ViewModel: PostListingsViewModel",
-                    e.toString()
+                    "jerboa",
+                    e.toString(),
                 )
             } finally {
                 loading = false
@@ -48,23 +50,14 @@ class PostListingsViewModel : ViewModel() {
     }
 
     fun likePost(
-        postView: PostView,
         voteType: VoteType,
         account: Account?,
         ctx: Context,
     ) {
-        viewModelScope.launch {
-            account?.let { account ->
-                val updatedPost = likePostWrapper(
-                    postView, voteType, account,
-                    ctx
-                )
-                val foundIndex = posts.indexOfFirst {
-                    it.post.id == postView
-                        .post.id
-                }
-                foundIndex.let { index ->
-                    posts[index] = updatedPost.post_view
+        account?.let { acct ->
+            postView?.let { pv ->
+                viewModelScope.launch {
+                    postView = likePostWrapper(pv, voteType, acct, ctx).post_view
                 }
             }
         }

@@ -11,15 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.jerboa.DotSpacer
 import com.jerboa.datatypes.Post
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.db.Account
 import com.jerboa.downvoteColor
 import com.jerboa.previewLines
 import com.jerboa.ui.components.common.TimeAgo
@@ -39,14 +38,6 @@ fun PostHeaderLine(postView: PostView) {
         DotSpacer()
         TimeAgo(dateStr = postView.post.published)
     }
-}
-
-@Composable
-fun DotSpacer() {
-    Text(
-        text = "·",
-        modifier = Modifier.padding(horizontal = 8.dp)
-    )
 }
 
 @Preview
@@ -99,7 +90,7 @@ fun PostFooterLine(
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
     ) {
         Row {
             CommentCount(comments = postView.counts.comments)
@@ -148,7 +139,6 @@ fun Upvotes(
             modifier = Modifier
                 .size(ACTION_BAR_ICON_SIZE)
                 .padding(end = 2.dp)
-
         )
         Text(
             text = postView.counts.upvotes.toString(),
@@ -205,7 +195,6 @@ fun CommentCount(comments: Int) {
     ) {
         Icon(
             imageVector = Icons.Default.ChatBubble,
-//      painter = painterResource(id = R.drawable.ic_message_square),
             contentDescription = "TODO",
             modifier = Modifier
                 .size(ACTION_BAR_ICON_SIZE)
@@ -242,19 +231,16 @@ fun PreviewPostListing() {
 fun PostListing(
     postView: PostView,
     fullBody: Boolean = false,
-    onItemClicked: (postView: PostView) -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit = {},
     onDownvoteClick: (postView: PostView) -> Unit = {},
     navController: NavController? = null,
-    account: Account? = null,
 ) {
     Card(
         shape = RoundedCornerShape(0.dp),
         modifier = Modifier
             .padding(vertical = 8.dp)
             .clickable {
-                onItemClicked(postView)
-                navController?.navigate("post")
+                navController?.navigate("post/${postView.post.id}")
             }
     ) {
         Box(modifier = Modifier.padding(8.dp)) {
@@ -290,9 +276,7 @@ fun PostListingHeader(
             )
         },
         navigationIcon = {
-            IconButton(onClick = {
-                navController.popBackStack()
-            }) {
+            IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Filled.ArrowBack,
                     contentDescription = "Back"
@@ -306,5 +290,5 @@ fun PostListingHeader(
 @Composable
 fun PostListingHeaderPreview() {
     val navController = rememberNavController()
-    PostListingHeader(navController = navController)
+    PostListingHeader(navController)
 }

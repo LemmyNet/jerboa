@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.api.API
 import com.jerboa.db.Account
 import com.jerboa.getCurrentAccount
 import kotlinx.coroutines.CoroutineScope
@@ -98,7 +97,7 @@ fun DrawerAddAccountMode(
         accounts?.forEach {
             IconAndTextDrawerItem(
                 text = "Switch to ${it.name}",
-                onClick = {onSwitchAccountClick(it)},
+                onClick = { onSwitchAccountClick(it) },
                 icon = Icons.Default.Login,
             )
         }

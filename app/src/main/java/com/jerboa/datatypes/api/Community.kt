@@ -37,12 +37,12 @@ data class CommunityResponse(
 
 data class ListCommunities(
     /**  
-     * The [[ListingType]].  
+     * The [ListingType].  
      */  
     val type_: String,
 
     /**  
-     * The [[SortType]].  
+     * The [SortType].  
      */  
     val sort: String,
     val page: Int?,

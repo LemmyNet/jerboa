@@ -76,18 +76,18 @@ data class CreateCommentLike(
 )
 
 /**
-val * Comment listing types are `All, Subscribed, Community`
+ * Comment listing types are `All, Subscribed, Community`
  *
  * You can use either `community_id` or `community_name` as an id.
 val * To get posts for a federated community by name, use `name@instance.tld` .
  */
 data class GetComments(
     /**  
-     * The [[ListingType]].  
+     * The [ListingType].  
      */  
     val type_: String,
     /**  
-     * The [[SortType]].  
+     * The [SortType].  
      */  
     val sort: String,
     val page: Int?,

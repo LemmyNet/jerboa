@@ -5,13 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.prettyTime
-import com.jerboa.sdf
+import java.time.Instant
 import java.util.*
 
 @Composable
 fun TimeAgo(dateStr: String) {
-    val then = sdf.parse(dateStr).time
-    val ago = prettyTime.formatDuration(Date(then))
+    val then = Date.from(Instant.parse(dateStr + "Z"))
+    val ago = prettyTime.formatDuration(then)
 
     Text(
         text = ago,

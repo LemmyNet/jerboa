@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -23,11 +24,14 @@ fun HomeActivity(
     postListingsViewModel: PostListingsViewModel,
     accountViewModel: AccountViewModel,
 ) {
+
+    Log.d("jerboa", "got to home activity")
+
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
     val accounts by accountViewModel.allAccounts.observeAsState()
-    val account = getCurrentAccount(accountViewModel = accountViewModel)
+    val account = getCurrentAccount(accounts = accounts)
 
     postListingsViewModel.fetchPosts(
         GetPosts(
@@ -68,28 +72,28 @@ fun HomeActivity(
             content = {
                 if (postListingsViewModel.loading) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                } else {
+                    PostListings(
+                        posts = postListingsViewModel.posts,
+                        navController = navController,
+                        onUpvoteClick = {
+                            postListingsViewModel.likePost(
+                                voteType = VoteType.Upvote,
+                                postView = it,
+                                account = account,
+                                ctx = ctx,
+                            )
+                        },
+                        onDownvoteClick = {
+                            postListingsViewModel.likePost(
+                                voteType = VoteType.Downvote,
+                                postView = it,
+                                account = account,
+                                ctx = ctx,
+                            )
+                        }
+                    )
                 }
-                PostListings(
-                    posts = postListingsViewModel.posts,
-                    onItemClicked = postListingsViewModel::onPostClicked,
-                    navController = navController,
-                    onUpvoteClick = {
-                        postListingsViewModel.likePost(
-                            voteType = VoteType.Upvote,
-                            postView = it,
-                            account = account,
-                            ctx = ctx,
-                        )
-                    },
-                    onDownvoteClick = {
-                        postListingsViewModel.likePost(
-                            voteType = VoteType.Downvote,
-                            postView = it,
-                            account = account,
-                            ctx = ctx,
-                        )
-                    }
-                )
             }
         )
     }
