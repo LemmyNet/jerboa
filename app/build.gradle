@@ -49,6 +49,8 @@ android {
 dependencies {
     def room_version = "2.4.0"
 
+    implementation 'com.github.jeziellago:compose-markdown:0.2.6'
+
     // LiveData
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"

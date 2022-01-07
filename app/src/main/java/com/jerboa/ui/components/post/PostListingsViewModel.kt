@@ -34,8 +34,9 @@ class PostListingsViewModel : ViewModel() {
                     "Fetching posts: $form"
                 )
                 loading = true
+                val newPosts = api.getPosts(form = form.serializeToMap()).posts
                 posts.clear()
-                posts.addAll(api.getPosts(form = form.serializeToMap()).posts)
+                posts.addAll(newPosts)
             } catch (e: Exception) {
                 Log.e(
                     "ViewModel: PostListingsViewModel",

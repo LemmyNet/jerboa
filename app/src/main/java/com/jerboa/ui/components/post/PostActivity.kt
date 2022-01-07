@@ -14,7 +14,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.buildCommentsTree
-import com.jerboa.datatypes.api.GetPost
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.ui.components.comment.CommentNodes
@@ -32,14 +31,8 @@ fun PostActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    postViewModel.fetchPost(
-        GetPost(
-            id = postId,
-            auth = account?.jwt,
-        )
-    )
-
-    val commentNodes = buildCommentsTree(postViewModel.res?.comments)
+//    val commentNodes = buildCommentsTree(postViewModel.comments)
+    val commentNodes = buildCommentsTree(postViewModel.comments)
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
@@ -70,7 +63,25 @@ fun PostActivity(
                                     )
                                 }
                             )
-                            CommentNodes(commentNodes)
+                            CommentNodes(
+                                nodes = commentNodes,
+                                onUpvoteClick = { commentView ->
+                                    postViewModel.likeComment(
+                                        commentView = commentView,
+                                        voteType = VoteType.Upvote,
+                                        account = account,
+                                        ctx = ctx,
+                                    )
+                                },
+                                onDownvoteClick = { commentView ->
+                                    postViewModel.likeComment(
+                                        commentView = commentView,
+                                        voteType = VoteType.Downvote,
+                                        account = account,
+                                        ctx = ctx,
+                                    )
+                                }
+                            )
                         }
                     }
                 }

@@ -2,6 +2,7 @@ package com.jerboa.api
 
 import android.content.Context
 import com.jerboa.VoteType
+import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.*
 import com.jerboa.db.Account
@@ -44,6 +45,12 @@ interface API {
      */
     @POST("post/like")
     suspend fun likePost(@Body form: CreatePostLike): PostResponse
+
+    /**
+     * Like / vote on a comment.
+     */
+    @POST("comment/like")
+    suspend fun likeComment(@Body form: CreateCommentLike): CommentResponse
 
     companion object {
         private var api: API? = null
@@ -94,6 +101,26 @@ suspend fun likePostWrapper(
         toastException(ctx = ctx, error = e)
     }
     return updatedPost!!
+}
+
+suspend fun likeCommentWrapper(
+    cv: CommentView,
+    voteType: VoteType,
+    account: Account,
+    ctx: Context,
+): CommentResponse {
+    var updatedComment: CommentResponse? = null
+    val api = API.getInstance()
+    try {
+        val newVote = newVote(currentVote = cv.my_vote, voteType = voteType)
+        val form = CreateCommentLike(
+            comment_id = cv.comment.id, score = newVote, auth = account.jwt
+        )
+        updatedComment = api.likeComment(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return updatedComment!!
 }
 
 //
@@ -380,12 +407,6 @@ suspend fun likePostWrapper(
 //    return this.wrapper(HttpType.Post, "/comment/mark_as_read", form);
 //  }
 //
-//  /**
-//   * Like / vote on a comment.
-//   */
-//  async likeComment(form: CreateCommentLike): Promise<CommentResponse> {
-//    return this.wrapper(HttpType.Post, "/comment/like", form);
-//  }
 //
 //  /**
 //   * Save a comment.

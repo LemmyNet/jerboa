@@ -1,6 +1,5 @@
 package com.jerboa.datatypes.api
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.jerboa.datatypes.*
 
 data class CreatePost(

@@ -12,7 +12,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.api.API
-import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.ui.components.post.PostListings
@@ -32,12 +31,6 @@ fun HomeActivity(
     val ctx = LocalContext.current
     val accounts by accountViewModel.allAccounts.observeAsState()
     val account = getCurrentAccount(accounts = accounts)
-
-    postListingsViewModel.fetchPosts(
-        GetPosts(
-            auth = account?.jwt
-        )
-    )
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
@@ -76,18 +69,18 @@ fun HomeActivity(
                     PostListings(
                         posts = postListingsViewModel.posts,
                         navController = navController,
-                        onUpvoteClick = {
+                        onUpvoteClick = { postView ->
                             postListingsViewModel.likePost(
                                 voteType = VoteType.Upvote,
-                                postView = it,
+                                postView = postView,
                                 account = account,
                                 ctx = ctx,
                             )
                         },
-                        onDownvoteClick = {
+                        onDownvoteClick = { postView ->
                             postListingsViewModel.likePost(
                                 voteType = VoteType.Downvote,
-                                postView = it,
+                                postView = postView,
                                 account = account,
                                 ctx = ctx,
                             )

@@ -108,7 +108,10 @@ val sampleComment = Comment(
     creator_id = 56450,
     post_id = 139549,
     parent_id = null,
-    content = "This looks really cool and similar to Joplin. Having issues getting LaTeX to work.",
+    content = "This *looks* really cool and similar to Joplin. **Having issues** getting LaTeX to" +
+        " " +
+        "work" +
+        ".\n\nIts kind of a long comment\n\nbut I don't want...",
     removed = false,
     read = false,
     published = "2022-01-07T03:12:26.398434",
@@ -123,7 +126,22 @@ val sampleCommentReply = Comment(
     creator_id = 423,
     post_id = 139549,
     parent_id = 1,
-    content = "This is a reply comment.",
+    content = "This is a reply comment.\n\n# This is a header\n\n- list one\n\n- list two",
+    removed = false,
+    read = false,
+    published = "2022-01-07T04:12:26.398434",
+    updated = "2022-01-07T03:15:37.360888",
+    deleted = false,
+    ap_id = "https://midwest.social/comment/24622",
+    local = false
+)
+
+val sampleSecondCommentReply = Comment(
+    id = 3,
+    creator_id = 423,
+    post_id = 139549,
+    parent_id = 2,
+    content = "This is a sub-reply comment, mmmmk",
     removed = false,
     read = false,
     published = "2022-01-07T04:12:26.398434",
@@ -155,6 +173,20 @@ val sampleCommentView = CommentView(
 val sampleCommentReplyView = CommentView(
     comment = sampleCommentReply,
     creator = samplePersonSafe2,
+    recipient = null,
+    post = samplePost,
+    community = sampleCommunitySafe,
+    counts = sampleCommentAggregates,
+    creator_banned_from_community = false,
+    subscribed = false,
+    saved = false,
+    creator_blocked = false,
+    my_vote = null,
+)
+
+val sampleSecondCommentReplyView = CommentView(
+    comment = sampleSecondCommentReply,
+    creator = samplePersonSafe,
     recipient = null,
     post = samplePost,
     community = sampleCommunitySafe,

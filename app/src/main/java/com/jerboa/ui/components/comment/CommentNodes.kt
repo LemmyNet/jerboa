@@ -2,16 +2,16 @@ package com.jerboa.ui.components.comment
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.CommentNodeData
-import com.jerboa.buildCommentsTree
-import com.jerboa.datatypes.sampleCommentReplyView
-import com.jerboa.datatypes.sampleCommentView
+import com.jerboa.datatypes.CommentView
 
 @Composable
-fun CommentNodes(nodes: List<CommentNodeData>) {
+fun CommentNodes(
+    nodes: List<CommentNodeData>,
+    onUpvoteClick: (commentView: CommentView) -> Unit = {},
+    onDownvoteClick: (commentView: CommentView) -> Unit = {},
+) {
 
     val listState = rememberLazyListState()
     Column {
@@ -19,6 +19,8 @@ fun CommentNodes(nodes: List<CommentNodeData>) {
         nodes.forEach { node ->
             CommentNode(
                 node = node,
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
             )
         }
     }

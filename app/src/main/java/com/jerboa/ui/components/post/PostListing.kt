@@ -2,30 +2,31 @@ package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import com.jerboa.DotSpacer
+import com.jerboa.*
 import com.jerboa.datatypes.Post
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.downvoteColor
-import com.jerboa.previewLines
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonLink
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
-import com.jerboa.upvoteColor
+import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
 fun PostHeaderLine(postView: PostView) {
@@ -53,7 +54,7 @@ fun PostTitleAndDesc(
     fullBody: Boolean = false
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)
     ) {
         // Title of the post
         Text(
@@ -64,10 +65,18 @@ fun PostTitleAndDesc(
         // The desc
         post.body?.let {
             val text = if (fullBody) it else previewLines(it)
-            // TODO markdown
-            Text(
-                text = text,
-                style = MaterialTheme.typography.body2,
+            Card(
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .padding(MEDIUM_PADDING)
+                    .fillMaxWidth(),
+                backgroundColor = colorShade(MaterialTheme.colors.surface, 2.5f),
+                content = {
+                    MyMarkdownText(
+                        markdown = text,
+                        modifier = Modifier.padding(MEDIUM_PADDING)
+                    )
+                }
             )
         }
     }
@@ -90,22 +99,28 @@ fun PostFooterLine(
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = SMALL_PADDING)
     ) {
         Row {
             CommentCount(comments = postView.counts.comments)
         }
         Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Upvotes(
-                postView = postView,
-                onUpvoteClick = onUpvoteClick,
+            VoteGeneric(
+                myVote = postView.my_vote,
+                votes = postView.counts.upvotes, item = postView,
+                type = VoteType.Upvote,
+                onVoteClick = onUpvoteClick,
             )
-            Downvotes(
-                postView = postView,
-                onDownvoteClick = onDownvoteClick,
+            VoteGeneric(
+                myVote = postView.my_vote,
+                votes = postView.counts.downvotes, item = postView,
+                type = VoteType.Downvote,
+                onVoteClick = onDownvoteClick,
             )
             Icon(
                 imageVector = Icons.Filled.Star,
@@ -122,73 +137,6 @@ fun PostFooterLine(
 }
 
 @Composable
-fun Upvotes(
-    postView: PostView,
-    onUpvoteClick: (postView: PostView) -> Unit = {}
-) {
-    val voteColor = upvoteColor(myVote = postView.my_vote)
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable(onClick = { onUpvoteClick(postView) })
-    ) {
-        Icon(
-            imageVector = Icons.Default.ArrowUpward,
-            tint = voteColor,
-            contentDescription = "TODO",
-            modifier = Modifier
-                .size(ACTION_BAR_ICON_SIZE)
-                .padding(end = 2.dp)
-        )
-        Text(
-            text = postView.counts.upvotes.toString(),
-            style = MaterialTheme.typography.button,
-            color = voteColor,
-        )
-    }
-}
-
-@Preview
-@Composable
-fun UpvotesPreview() {
-    Upvotes(postView = samplePostView)
-}
-
-@Composable
-fun Downvotes(
-    postView: PostView,
-    onDownvoteClick: (postView: PostView) -> Unit = {}
-) {
-    val voteColor = downvoteColor(myVote = postView.my_vote)
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable(onClick = { onDownvoteClick(postView) })
-    ) {
-        Icon(
-            imageVector = Icons.Default.ArrowDownward,
-            tint = voteColor,
-            contentDescription = "TODO",
-            modifier = Modifier
-                .size(ACTION_BAR_ICON_SIZE)
-                .padding(end = 2.dp)
-
-        )
-        Text(
-            text = postView.counts.downvotes.toString(),
-            style = MaterialTheme.typography.button,
-            color = voteColor,
-        )
-    }
-}
-
-@Preview
-@Composable
-fun DownvotesPreview() {
-    Downvotes(postView = samplePostView)
-}
-
-@Composable
 fun CommentCount(comments: Int) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -198,7 +146,7 @@ fun CommentCount(comments: Int) {
             contentDescription = "TODO",
             modifier = Modifier
                 .size(ACTION_BAR_ICON_SIZE)
-                .padding(end = 2.dp)
+                .padding(end = SMALL_PADDING)
         )
         Text(
             text = "$comments comments",
@@ -236,16 +184,16 @@ fun PostListing(
     navController: NavController? = null,
 ) {
     Card(
-        shape = RoundedCornerShape(0.dp),
+        shape = MaterialTheme.shapes.small,
         modifier = Modifier
-            .padding(vertical = 8.dp)
+            .padding(vertical = MEDIUM_PADDING)
             .clickable {
                 navController?.navigate("post/${postView.post.id}")
             }
     ) {
-        Box(modifier = Modifier.padding(8.dp)) {
+        Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
             ) {
 
                 // Header

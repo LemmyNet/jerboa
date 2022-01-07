@@ -11,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.api.API
+import com.jerboa.datatypes.api.GetPost
+import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -42,12 +44,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val navController = rememberNavController()
             val accounts by accountViewModel.allAccounts.observeAsState()
-            val currentAccount = getCurrentAccount(accounts)
+            val account = getCurrentAccount(accounts)
 
-            val startRoute = if (currentAccount != null) {
-                API.changeLemmyInstance(currentAccount.instance)
+            val navController = rememberNavController()
+
+            val startRoute = if (account != null) {
+                API.changeLemmyInstance(account.instance)
                 "home"
             } else {
                 "login"
@@ -68,6 +71,13 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(route = "home") {
+
+                        postListingsViewModel.fetchPosts(
+                            GetPosts(
+                                auth = account?.jwt
+                            )
+                        )
+
                         HomeActivity(
                             navController = navController,
                             postListingsViewModel = postListingsViewModel,
@@ -78,6 +88,14 @@ class MainActivity : ComponentActivity() {
                         route = "post/{postId}",
                     ) {
                         val postId = it.arguments?.getString("postId")!!.toInt()
+
+                        postViewModel.fetchPost(
+                            GetPost(
+                                id = postId,
+                                auth = account?.jwt,
+                            )
+                        )
+
                         PostActivity(
                             postId = postId,
                             postViewModel = postViewModel,
