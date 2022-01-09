@@ -34,7 +34,7 @@ fun PersonLink(person: PersonSafe) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        person.avatar?.let {
+        person.avatar?.also {
             CircularIcon(icon = it)
         }
         PersonName(person = person)

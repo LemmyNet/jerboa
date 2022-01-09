@@ -1,53 +1,33 @@
 package com.jerboa.ui.components.comment
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Reply
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jerboa.*
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleSecondCommentReplyView
-import com.jerboa.ui.components.common.TimeAgo
-import com.jerboa.ui.components.person.PersonLink
-import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 
 @Composable
 fun CommentNodeHeader(commentView: CommentView) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = SMALL_PADDING)
-    ) {
-        Row {
-            PersonLink(person = commentView.creator)
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = commentView.counts.score.toString(),
-                color = scoreColor(myVote = commentView.my_vote)
-            )
-            DotSpacer(0.dp)
-            TimeAgo(dateStr = commentView.comment.published)
-        }
-    }
+    CommentOrPostNodeHeader(
+        creator = commentView.creator,
+        score = commentView.counts.score,
+        myVote = commentView.my_vote,
+        published = commentView.comment.published,
+    )
 }
 
 @Preview
@@ -59,6 +39,7 @@ fun CommentNodeHeaderPreview() {
 @Composable
 fun CommentBody(commentView: CommentView) {
     MyMarkdownText(markdown = commentView.comment.content)
+//  Text(text = commentView.comment.content)
 }
 
 @Preview
@@ -72,20 +53,26 @@ fun CommentNode(
     node: CommentNodeData,
     onUpvoteClick: (commentView: CommentView) -> Unit = {},
     onDownvoteClick: (commentView: CommentView) -> Unit = {},
+    onReplyClick: (commentView: CommentView) -> Unit = {},
 ) {
     val offset = calculateCommentOffset(node.depth)
     val borderColor = calculateBorderColor(node.depth)
     val commentView = node.commentView
+
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier.padding(
             start = offset
         )
     ) {
+
+        // TODO major glitch, when using this set height,
+        //  it fucks up the markdown field
         Row(
             modifier = Modifier
-                .height(IntrinsicSize.Min)
-                .fillMaxWidth(),
+                .height(IntrinsicSize.Max)
+                .fillMaxWidth()
         ) {
             Divider(
                 color = borderColor,
@@ -95,10 +82,12 @@ fun CommentNode(
             )
 
             Column(
-                modifier = Modifier.padding(
-                    horizontal = LARGE_PADDING,
-                    vertical = SMALL_PADDING
-                )
+                modifier = Modifier
+                    .padding(
+                        horizontal = LARGE_PADDING,
+                        vertical = SMALL_PADDING,
+                    )
+//                    .verticalScroll(scrollState)
             ) {
                 CommentNodeHeader(commentView = commentView)
                 CommentBody(commentView = commentView)
@@ -106,16 +95,17 @@ fun CommentNode(
                     commentView = commentView,
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
+                    onReplyClick = onReplyClick,
                 )
             }
         }
         Divider()
-        node.children?.let { nodes ->
+        node.children?.also { nodes ->
             CommentNodes(
                 nodes = nodes,
-                // TODO is this right? May not pass the correct commentView
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
+                onReplyClick = onReplyClick,
             )
         }
     }
@@ -125,18 +115,17 @@ fun CommentNode(
 fun CommentFooterLine(
     commentView: CommentView,
     onUpvoteClick: (commentView: CommentView) -> Unit = {},
-    onDownvoteClick: (commentView: CommentView) -> Unit = {}
+    onDownvoteClick: (commentView: CommentView) -> Unit = {},
+    onReplyClick: (commentView: CommentView) -> Unit = {},
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = SMALL_PADDING)
+            .padding(top = LARGE_PADDING)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XL_PADDING),
-            verticalAlignment = Alignment.CenterVertically
         ) {
             VoteGeneric(
                 myVote = commentView.my_vote,
@@ -150,16 +139,12 @@ fun CommentFooterLine(
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
             )
-            Icon(
-                imageVector = Icons.Filled.Star,
-                contentDescription = "TODO",
-                modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
+            ActionBarButton(icon = Icons.Filled.Star)
+            ActionBarButton(
+                icon = Icons.Filled.Reply,
+                onClick = { onReplyClick(commentView) },
             )
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = "TODO",
-                modifier = Modifier.size(ACTION_BAR_ICON_SIZE)
-            )
+            ActionBarButton(icon = Icons.Filled.MoreVert)
         }
     }
 }

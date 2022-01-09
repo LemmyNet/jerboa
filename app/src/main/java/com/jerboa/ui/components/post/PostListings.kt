@@ -1,34 +1,58 @@
 package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePostView
+import com.jerboa.isScrolledToEnd
 
 @Composable
 fun PostListings(
     posts: List<PostView>,
     onUpvoteClick: (postView: PostView) -> Unit = {},
     onDownvoteClick: (postView: PostView) -> Unit = {},
-    navController: NavController? = null,
+    onPostClick: (postView: PostView) -> Unit = {},
+    onSwipeRefresh: () -> Unit = {},
+    loading: Boolean = false,
+    isScrolledToEnd: () -> Unit = {},
 ) {
-    // Remember our own LazyListState, can be
-    // used to move to any position in the column.
     val listState = rememberLazyListState()
 
-    LazyColumn(state = listState) {
-        // List of items
-        items(posts) { postView ->
-            PostListing(
-                postView = postView,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                navController = navController,
-            )
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(false),
+        onRefresh = onSwipeRefresh,
+    ) {
+        LazyColumn(state = listState) {
+            // List of items
+            itemsIndexed(posts) { index, postView ->
+                PostListing(
+                    postView = postView,
+                    onUpvoteClick = onUpvoteClick,
+                    onDownvoteClick = onDownvoteClick,
+                    onPostClick = onPostClick,
+                )
+            }
+        }
+    }
+
+    // observer when reached end of list
+    val endOfListReached by remember {
+        derivedStateOf {
+            listState.isScrolledToEnd()
+        }
+    }
+
+    // act when end of list reached
+    val ctx = LocalContext.current
+    if (endOfListReached) {
+        LaunchedEffect(endOfListReached) {
+            isScrolledToEnd()
         }
     }
 }
@@ -37,6 +61,6 @@ fun PostListings(
 @Composable
 fun PreviewPostListings() {
     PostListings(
-        posts = listOf(samplePostView, samplePostView)
+        posts = listOf(samplePostView, samplePostView),
     )
 }

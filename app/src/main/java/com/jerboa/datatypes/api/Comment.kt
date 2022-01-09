@@ -7,13 +7,13 @@ import com.jerboa.datatypes.SortType
 
 data class CreateComment(
     val content: String,
-    val parent_id: Int,
+    val parent_id: Int?,
     val post_id: Int,
     /**  
      * An optional front end ID, to tell which is comment is coming back.  
      */  
-    val form_id: String,
-    val auth: String?,
+    val form_id: String? = null,
+    val auth: String,
 )
 
 data class EditComment(
@@ -22,8 +22,8 @@ data class EditComment(
     /**  
      * An optional front end ID, to tell which is comment is coming back.  
      */  
-    val form_id: String,
-    val auth: String?,
+    val form_id: String?,
+    val auth: String,
 )
 
 /**

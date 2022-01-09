@@ -88,20 +88,26 @@ fun DrawerAddAccountMode(
 ) {
     val ctx = LocalContext.current
 
+    val accountsWithoutCurrent = accounts?.toMutableList()
+    accounts?.also { accounts ->
+        val currentAccount = getCurrentAccount(accounts)
+        accountsWithoutCurrent?.remove(currentAccount)
+    }
+
     Column {
         IconAndTextDrawerItem(
             text = "Add Account",
             onClick = { navController.navigate(route = "login") },
             icon = Icons.Default.Add,
         )
-        accounts?.forEach {
+        accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
                 text = "Switch to ${it.name}",
                 onClick = { onSwitchAccountClick(it) },
                 icon = Icons.Default.Login,
             )
         }
-        accounts?.let {
+        accounts?.also {
             IconAndTextDrawerItem(
                 text = "Sign Out",
                 onClick = onSignOutClick,
@@ -137,7 +143,7 @@ fun DrawerHeader(
             .padding(16.dp)
             .clickable(onClick = clickShowAccountAddMode),
         content = {
-            account?.let { Text(text = it.name, color = Color.White) }
+            account?.also { Text(text = it.name, color = Color.White) }
             Icon(
                 imageVector = if (showAccountAddMode) {
                     Icons.Default.ExpandLess

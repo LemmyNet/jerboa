@@ -24,12 +24,6 @@ interface AccountDao {
     @Query("SELECT * FROM account")
     fun getAll(): LiveData<List<Account>>
 
-//    @Query(
-//        "SELECT * FROM account WHERE selected = 1 " +
-//            "LIMIT 1"
-//    )
-//    fun getSelected(): Account?
-
     @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Account::class)
     suspend fun insert(account: Account)
 

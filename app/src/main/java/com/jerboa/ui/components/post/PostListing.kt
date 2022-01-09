@@ -4,13 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -24,7 +21,6 @@ import com.jerboa.datatypes.samplePostView
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonLink
-import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 
@@ -49,12 +45,23 @@ fun PostHeaderLinePreview() {
 }
 
 @Composable
+fun PostNodeHeader(postView: PostView) {
+    CommentOrPostNodeHeader(
+        creator = postView.creator,
+        score = postView.counts.score,
+        myVote = postView.my_vote,
+        published = postView.post.published
+    )
+}
+
+@Composable
 fun PostTitleAndDesc(
     post: Post,
     fullBody: Boolean = false
 ) {
+    val ctx = LocalContext.current
     Column(
-        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)
+        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         // Title of the post
         Text(
@@ -63,7 +70,7 @@ fun PostTitleAndDesc(
         )
 
         // The desc
-        post.body?.let {
+        post.body?.also {
             val text = if (fullBody) it else previewLines(it)
             Card(
                 shape = MaterialTheme.shapes.medium,
@@ -74,7 +81,8 @@ fun PostTitleAndDesc(
                 content = {
                     MyMarkdownText(
                         markdown = text,
-                        modifier = Modifier.padding(MEDIUM_PADDING)
+                        modifier = Modifier
+                            .padding(MEDIUM_PADDING)
                     )
                 }
             )
@@ -94,21 +102,20 @@ fun PreviewStoryTitleAndMetadata() {
 fun PostFooterLine(
     postView: PostView,
     onUpvoteClick: (postView: PostView) -> Unit = {},
-    onDownvoteClick: (postView: PostView) -> Unit = {}
+    onDownvoteClick: (postView: PostView) -> Unit = {},
+    onReplyClick: (postView: PostView) -> Unit = {},
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = SMALL_PADDING)
+            .fillMaxWidth(),
     ) {
         Row {
             CommentCount(comments = postView.counts.comments)
         }
         Row(
-            horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+
         ) {
             VoteGeneric(
                 myVote = postView.my_vote,
@@ -122,15 +129,15 @@ fun PostFooterLine(
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
             )
-            Icon(
-                imageVector = Icons.Filled.Star,
-                contentDescription = "TODO",
-                modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
+            ActionBarButton(
+                icon = Icons.Default.Star,
             )
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = "TODO",
-                modifier = Modifier.size(ACTION_BAR_ICON_SIZE)
+            ActionBarButton(
+                icon = Icons.Default.Reply,
+                onClick = { onReplyClick(postView) },
+            )
+            ActionBarButton(
+                icon = Icons.Default.MoreVert,
             )
         }
     }
@@ -138,20 +145,11 @@ fun PostFooterLine(
 
 @Composable
 fun CommentCount(comments: Int) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            imageVector = Icons.Default.ChatBubble,
-            contentDescription = "TODO",
-            modifier = Modifier
-                .size(ACTION_BAR_ICON_SIZE)
-                .padding(end = SMALL_PADDING)
-        )
-        Text(
-            text = "$comments comments",
-        )
-    }
+    ActionBarButton(
+        icon = Icons.Default.ChatBubble,
+        text = "$comments comments",
+        noClick = true,
+    )
 }
 
 @Preview
@@ -181,34 +179,33 @@ fun PostListing(
     fullBody: Boolean = false,
     onUpvoteClick: (postView: PostView) -> Unit = {},
     onDownvoteClick: (postView: PostView) -> Unit = {},
-    navController: NavController? = null,
+    onReplyClick: (postView: PostView) -> Unit = {},
+    onPostClick: (postView: PostView) -> Unit = {},
 ) {
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
             .padding(vertical = MEDIUM_PADDING)
-            .clickable {
-                navController?.navigate("post/${postView.post.id}")
-            }
+            .clickable { onPostClick(postView) }
     ) {
-        Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
-            ) {
+        Column(
+            modifier = Modifier.padding(MEDIUM_PADDING),
+            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+        ) {
 
-                // Header
-                PostHeaderLine(postView = postView)
+            // Header
+            PostHeaderLine(postView = postView)
 
-                //  Title + metadata
-                PostTitleAndDesc(post = postView.post, fullBody)
+            //  Title + metadata
+            PostTitleAndDesc(post = postView.post, fullBody)
 
-                // Footer bar
-                PostFooterLine(
-                    postView = postView,
-                    onUpvoteClick = onUpvoteClick,
-                    onDownvoteClick = onDownvoteClick,
-                )
-            }
+            // Footer bar
+            PostFooterLine(
+                postView = postView,
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
+                onReplyClick = onReplyClick,
+            )
         }
     }
 }

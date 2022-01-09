@@ -52,6 +52,12 @@ interface API {
     @POST("comment/like")
     suspend fun likeComment(@Body form: CreateCommentLike): CommentResponse
 
+    /**
+     * Create a comment.
+     */
+    @POST("comment")
+    suspend fun createComment(@Body form: CreateComment): CommentResponse
+
     companion object {
         private var api: API? = null
         private var currentInstance: String = DEFAULT_INSTANCE
@@ -372,12 +378,6 @@ suspend fun likeCommentWrapper(
 //    return this.wrapper(HttpType.Get, "/post/site_metadata", form);
 //  }
 //
-//  /**
-//   * Create a comment.
-//   */
-//  async createComment(form: CreateComment): Promise<CommentResponse> {
-//    return this.wrapper(HttpType.Post, "/comment", form);
-//  }
 //
 //  /**
 //   * Edit a comment.

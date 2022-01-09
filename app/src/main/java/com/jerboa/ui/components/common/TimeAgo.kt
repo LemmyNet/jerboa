@@ -11,7 +11,7 @@ import java.util.*
 @Composable
 fun TimeAgo(dateStr: String) {
     val then = Date.from(Instant.parse(dateStr + "Z"))
-    val ago = prettyTime.formatDuration(then)
+    val ago = prettyTime.format(then)
 
     Text(
         text = ago,

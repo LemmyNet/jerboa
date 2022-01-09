@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.home
 
 import android.util.Log
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.api.API
+import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.ui.components.post.PostListings
@@ -22,6 +24,7 @@ fun HomeActivity(
     navController: NavController,
     postListingsViewModel: PostListingsViewModel,
     accountViewModel: AccountViewModel,
+    isScrolledToEnd: () -> Unit,
 ) {
 
     Log.d("jerboa", "got to home activity")
@@ -31,12 +34,16 @@ fun HomeActivity(
     val ctx = LocalContext.current
     val accounts by accountViewModel.allAccounts.observeAsState()
     val account = getCurrentAccount(accounts = accounts)
-
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
-                HomeHeader(scope, scaffoldState)
+                Column {
+                    HomeHeader(scope, scaffoldState)
+                    if (postListingsViewModel.loading) {
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    }
+                }
             },
             drawerContent = {
                 Drawer(
@@ -48,8 +55,8 @@ fun HomeActivity(
                         API.changeLemmyInstance(it.instance)
                     },
                     onSignOutClick = {
-                        accounts?.let { accounts ->
-                            getCurrentAccount(accounts)?.let {
+                        accounts?.also { accounts ->
+                            getCurrentAccount(accounts)?.also {
                                 accountViewModel.delete(it)
                                 val updatedList = accounts.toMutableList()
                                 updatedList.remove(it)
@@ -63,30 +70,37 @@ fun HomeActivity(
                 )
             },
             content = {
-                if (postListingsViewModel.loading) {
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                } else {
-                    PostListings(
-                        posts = postListingsViewModel.posts,
-                        navController = navController,
-                        onUpvoteClick = { postView ->
-                            postListingsViewModel.likePost(
-                                voteType = VoteType.Upvote,
-                                postView = postView,
-                                account = account,
-                                ctx = ctx,
+                PostListings(
+                    posts = postListingsViewModel.posts,
+                    onUpvoteClick = { postView ->
+                        postListingsViewModel.likePost(
+                            voteType = VoteType.Upvote,
+                            postView = postView,
+                            account = account,
+                            ctx = ctx,
+                        )
+                    },
+                    onDownvoteClick = { postView ->
+                        postListingsViewModel.likePost(
+                            voteType = VoteType.Downvote,
+                            postView = postView,
+                            account = account,
+                            ctx = ctx,
+                        )
+                    },
+                    onPostClick = { postView ->
+                        navController.navigate("post/${postView.post.id}?fetch=true")
+                    },
+                    onSwipeRefresh = {
+                        postListingsViewModel.fetchPosts(
+                            GetPosts(
+                                auth = account?.jwt
                             )
-                        },
-                        onDownvoteClick = { postView ->
-                            postListingsViewModel.likePost(
-                                voteType = VoteType.Downvote,
-                                postView = postView,
-                                account = account,
-                                ctx = ctx,
-                            )
-                        }
-                    )
-                }
+                        )
+                    },
+                    loading = postListingsViewModel.loading,
+                    isScrolledToEnd = isScrolledToEnd,
+                )
             }
         )
     }

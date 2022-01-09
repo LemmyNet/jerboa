@@ -51,6 +51,9 @@ dependencies {
 
     implementation 'com.github.jeziellago:compose-markdown:0.2.6'
 
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.22.0-rc"
+
+
     // LiveData
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"

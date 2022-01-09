@@ -23,8 +23,9 @@ class PostListingsViewModel : ViewModel() {
         private set
     var loading: Boolean by mutableStateOf(false)
         private set
+    var page: Int by mutableStateOf(1)
 
-    fun fetchPosts(form: GetPosts) {
+    fun fetchPosts(form: GetPosts, clear: Boolean = true) {
         val api = API.getInstance()
 
         viewModelScope.launch {
@@ -35,7 +36,11 @@ class PostListingsViewModel : ViewModel() {
                 )
                 loading = true
                 val newPosts = api.getPosts(form = form.serializeToMap()).posts
-                posts.clear()
+
+                if (clear) {
+                    page = 1
+                    posts.clear()
+                }
                 posts.addAll(newPosts)
             } catch (e: Exception) {
                 Log.e(
@@ -55,7 +60,7 @@ class PostListingsViewModel : ViewModel() {
         ctx: Context,
     ) {
         viewModelScope.launch {
-            account?.let { account ->
+            account?.also { account ->
                 val updatedPost = likePostWrapper(
                     postView, voteType, account,
                     ctx
@@ -64,7 +69,7 @@ class PostListingsViewModel : ViewModel() {
                     it.post.id == postView
                         .post.id
                 }
-                foundIndex.let { index ->
+                foundIndex.also { index ->
                     posts[index] = updatedPost.post_view
                 }
             }

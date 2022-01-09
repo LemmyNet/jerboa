@@ -4,13 +4,9 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -21,14 +17,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.ColorUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.PersonSafe
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.common.TimeAgo
+import com.jerboa.ui.components.person.PersonLink
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -36,6 +36,7 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
 
+// val current = LocalContext.current.resources.configuration.locales[0]
 val prettyTime = PrettyTime(Locale.getDefault())
 
 val gson = Gson()
@@ -144,13 +145,13 @@ fun buildCommentsTree(
     val tree = mutableListOf<CommentNodeData>()
     comments?.forEach { cv ->
         val child = map[cv.comment.id]
-        child?.let { cChild ->
+        child?.also { cChild ->
             val parentId = cv.comment.parent_id
-            parentId?.let { cParentId ->
+            parentId?.also { cParentId ->
                 val parent = map[cParentId]
 
                 // Necessary because blocked comment might not exist
-                parent?.let { cParent ->
+                parent?.also { cParent ->
                     cParent.children?.add(cChild)
                 }
             } ?: run {
@@ -218,6 +219,52 @@ fun calculateBorderColor(depth: Int?): Color {
 }
 
 @Composable
+fun ActionBarButton(
+    onClick: () -> Unit = {},
+    icon: ImageVector,
+    text: String? = null,
+    contentColor: Color = MaterialTheme.colors.onSurface,
+    noClick: Boolean = false,
+) {
+//    Button(
+//        onClick = onClick,
+//        colors = ButtonDefaults.buttonColors(
+//            backgroundColor = Color.Transparent,
+//            contentColor = contentColor,
+//        ),
+//        shape = MaterialTheme.shapes.large,
+//        contentPadding = PaddingValues(SMALL_PADDING),
+//        elevation = null,
+//        content = content,
+//        modifier = Modifier
+//            .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
+//    )
+    val modifier_ = if (noClick) {
+        Modifier
+    } else {
+        Modifier.clickable(onClick = onClick)
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier_,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = "TODO",
+            tint = contentColor,
+            modifier = Modifier.height(ACTION_BAR_ICON_SIZE)
+        )
+        text?.also {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            Text(
+                text = text,
+                color = contentColor,
+            )
+        }
+    }
+}
+
+@Composable
 fun <T> VoteGeneric(
     myVote: Int?,
     votes: Int,
@@ -235,24 +282,12 @@ fun <T> VoteGeneric(
         else -> Icons.Default.ArrowDownward
     }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable(onClick = { onVoteClick(item) })
-    ) {
-        Icon(
-            imageVector = voteIcon,
-            tint = voteColor,
-            contentDescription = "TODO",
-            modifier = Modifier
-                .size(ACTION_BAR_ICON_SIZE)
-                .padding(end = SMALL_PADDING)
-        )
-        Text(
-            text = votes.toString(),
-            style = MaterialTheme.typography.button,
-            color = voteColor,
-        )
-    }
+    ActionBarButton(
+        onClick = { onVoteClick(item) },
+        contentColor = voteColor,
+        icon = voteIcon,
+        text = votes.toString(),
+    )
 }
 
 @Composable
@@ -260,12 +295,60 @@ fun MyMarkdownText(
     markdown: String,
     modifier: Modifier = Modifier,
 ) {
-
     // Note, this actually scales down the font size quite a lot, so you need to use a bigger one
     MarkdownText(
         markdown = markdown,
         style = MaterialTheme.typography.body1,
         fontSize = MaterialTheme.typography.subtitle1.fontSize,
-        modifier = modifier,
+        modifier = modifier
     )
+}
+
+@Composable
+fun CommentOrPostNodeHeader(
+    creator: PersonSafe,
+    score: Int,
+    myVote: Int?,
+    published: String,
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = SMALL_PADDING)
+    ) {
+        Row {
+            PersonLink(person = creator)
+        }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = score.toString(),
+                color = scoreColor(myVote = myVote)
+            )
+            DotSpacer(0.dp)
+            TimeAgo(dateStr = published)
+        }
+    }
+}
+
+// fun LazyListState.isScrolledToEnd() =
+//    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
+
+fun LazyListState.isScrolledToEnd(): Boolean {
+    val totalItems = layoutInfo.totalItemsCount
+    val lastItemVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index
+
+    val out = if (totalItems > 0) {
+        lastItemVisible == totalItems - 1
+    } else {
+        false
+    }
+//    Log.d("jerboa", layoutInfo.visibleItemsInfo.lastOrNull()?.index.toString())
+//    Log.d("jerboa", layoutInfo.totalItemsCount.toString())
+//    Log.d("jerboa", out.toString())
+    return out
 }

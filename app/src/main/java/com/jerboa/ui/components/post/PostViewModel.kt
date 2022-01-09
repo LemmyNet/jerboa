@@ -8,16 +8,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.likeCommentWrapper
 import com.jerboa.api.likePostWrapper
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.datatypes.api.GetPost
 import com.jerboa.datatypes.api.GetPostResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
+import com.jerboa.toastException
 import kotlinx.coroutines.launch
 
 class PostViewModel : ViewModel() {
@@ -25,10 +28,13 @@ class PostViewModel : ViewModel() {
     var res by mutableStateOf<GetPostResponse?>(null)
         private set
     var postView by mutableStateOf<PostView?>(null)
-        private set
     var comments = mutableStateListOf<CommentView>()
     var loading: Boolean by mutableStateOf(false)
         private set
+    var replyLoading: Boolean by mutableStateOf(false)
+        private set
+
+    var replyToCommentParent: CommentView? = null // TODO does this need to be state?
 
     fun fetchPost(form: GetPost) {
         val api = API.getInstance()
@@ -61,8 +67,8 @@ class PostViewModel : ViewModel() {
         account: Account?,
         ctx: Context,
     ) {
-        account?.let { acct ->
-            postView?.let { pv ->
+        account?.also { acct ->
+            postView?.also { pv ->
                 viewModelScope.launch {
                     postView = likePostWrapper(pv, voteType, acct, ctx).post_view
                 }
@@ -77,7 +83,7 @@ class PostViewModel : ViewModel() {
         ctx: Context,
     ) {
         viewModelScope.launch {
-            account?.let { account ->
+            account?.also { account ->
                 val updatedComment = likeCommentWrapper(
                     commentView, voteType, account,
                     ctx,
@@ -86,9 +92,53 @@ class PostViewModel : ViewModel() {
                     it.comment.id == commentView
                         .comment.id
                 }
-                foundIndex.let { index ->
+                foundIndex.also { index ->
                     comments[index] = updatedComment.comment_view
                 }
+            }
+        }
+    }
+
+    fun createComment(
+        form: CreateComment,
+        ctx: Context,
+        navController: NavController,
+    ) {
+        val api = API.getInstance()
+
+        viewModelScope.launch {
+            try {
+                Log.d(
+                    "jerboa",
+                    "Creating comment: $form"
+                )
+                replyLoading = true
+                val out = api.createComment(form)
+                comments.add(0, out.comment_view)
+            } catch (e: Exception) {
+                Log.e(
+                    "jerboa",
+                    e.toString(),
+                )
+                toastException(ctx = ctx, error = e)
+            } finally {
+                replyLoading = false
+
+                // Can't call popbackstack here, because it might fetch again
+//                navController.popBackStack()
+//                navController.popBackStack("post/${form.post_id}", false, true)
+//                navController.clearBackStack("commentReply")
+//                navController.popBackStack("post/${form.post_id}?fetch=true", false, true)
+//                navController.popBackStack("commentReply", true, true)
+                navController.navigateUp()
+
+//                                navController.clearBackStack("post/${form.post_id}?fetch=true")
+
+//                navController.graph.
+//                navController.popBackStack("post/${form.post_id}?fetch=true", true, true)
+//                navController.navigate("post/${form.post_id}")
+//                navController.clearBackStack("post/${form.post_id}")
+//                navController.nav
             }
         }
     }
