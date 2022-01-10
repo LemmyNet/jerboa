@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.prettyTime
+import com.jerboa.ui.theme.Muted
 import java.time.Instant
 import java.util.*
 
@@ -15,6 +16,7 @@ fun TimeAgo(dateStr: String) {
 
     Text(
         text = ago,
+        color = Muted,
     )
 }
 

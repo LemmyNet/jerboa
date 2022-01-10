@@ -18,6 +18,7 @@ fun PostListings(
     onUpvoteClick: (postView: PostView) -> Unit = {},
     onDownvoteClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit = {},
+    onPostLinkClick: (url: String) -> Unit = {},
     onSwipeRefresh: () -> Unit = {},
     loading: Boolean = false,
     isScrolledToEnd: () -> Unit = {},
@@ -25,7 +26,7 @@ fun PostListings(
     val listState = rememberLazyListState()
 
     SwipeRefresh(
-        state = rememberSwipeRefreshState(false),
+        state = rememberSwipeRefreshState(loading),
         onRefresh = onSwipeRefresh,
     ) {
         LazyColumn(state = listState) {
@@ -36,6 +37,7 @@ fun PostListings(
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
                     onPostClick = onPostClick,
+                    onPostLinkClick = onPostLinkClick,
                 )
             }
         }

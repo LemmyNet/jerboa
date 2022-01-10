@@ -38,7 +38,7 @@ fun MyTextField(
         placeholder = { placeholder?.let { Text(text = it) } },
         keyboardOptions = KeyboardOptions.Default.copy(
             capitalization = KeyboardCapitalization.None,
-            keyboardType = KeyboardType.Password,
+            keyboardType = KeyboardType.Text,
             autoCorrect = false,
         )
     )

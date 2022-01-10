@@ -3,6 +3,7 @@ package com.jerboa.ui.components.comment
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -103,9 +105,9 @@ fun CommentReplyTextField(
             .fillMaxWidth()
             .focusRequester(focusRequester),
         keyboardOptions = KeyboardOptions.Default.copy(
-//            capitalization = KeyboardCapitalization.None,
-            keyboardType = KeyboardType.Password,
-            autoCorrect = false,
+            capitalization = KeyboardCapitalization.Sentences,
+            keyboardType = KeyboardType.Text,
+            autoCorrect = true,
         ),
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.Transparent,
@@ -126,10 +128,16 @@ fun CommentReply(
     reply: String,
     onReplyChange: (String) -> Unit
 ) {
-    Column {
-        RepliedComment(commentView = commentView)
-        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
-        CommentReplyTextField(reply = reply, onReplyChange = onReplyChange)
+    LazyColumn {
+        item {
+            RepliedComment(commentView = commentView)
+        }
+        item {
+            Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        }
+        item {
+            CommentReplyTextField(reply = reply, onReplyChange = onReplyChange)
+        }
     }
 }
 
@@ -139,9 +147,15 @@ fun PostReply(
     reply: String,
     onReplyChange: (String) -> Unit
 ) {
-    Column {
-        RepliedPost(postView = postView)
-        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
-        CommentReplyTextField(reply = reply, onReplyChange = onReplyChange)
+    LazyColumn {
+        item {
+            RepliedPost(postView = postView)
+        }
+        item {
+            Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        }
+        item {
+            CommentReplyTextField(reply = reply, onReplyChange = onReplyChange)
+        }
     }
 }

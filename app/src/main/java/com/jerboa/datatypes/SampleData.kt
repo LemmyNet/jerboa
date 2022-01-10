@@ -21,6 +21,48 @@ val samplePost = Post(
     ap_id = "https://lemmy.ml/post/135129", local = true
 )
 
+val sampleLinkPost = Post(
+    id = 135130,
+    name = "Omicron is not mild and is crushing health care systems worldwide, WHO warns",
+    url = "https://arstechnica.com/science/2022/01/omicron-is-not-mild-and-is-crushing-health-care-systems-worldwide-who-warns/",
+    body = "At least for me, finding work is hard and knowing i could be easily fired for the first 6 months is stressful .",
+    creator_id = 33401,
+    community_id = 14681,
+    removed = false,
+    locked = false,
+    published = "2022-01-01T09:53:46.904077",
+    updated = null,
+    deleted = false,
+    nsfw = false,
+    stickied = false,
+    embed_title = null,
+    embed_description = "Just like previous variants, omicron is hospitalizing people, and it is killing people.",
+    embed_html = null,
+    thumbnail_url = "https://lemmy.ml/pictrs/image/08967513-afcb-495a-9116-562a0cb1a44f.jpeg",
+    ap_id = "https://lemmy.ml/post/135129", local = true
+)
+
+val sampleLinkNoThumbnailPost = Post(
+    id = 135130,
+    name = "Omicron is not mild and is crushing health care systems worldwide, WHO warns",
+    url = "https://arstechnica.com/science/2022/01/omicron-is-not-mild-and-is-crushing-health-care-systems-worldwide-who-warns/",
+    body = "At least for me, finding work is hard and knowing i could be easily fired for the first 6 months is stressful .",
+    creator_id = 33401,
+    community_id = 14681,
+    removed = false,
+    locked = false,
+    published = "2022-01-01T09:53:46.904077",
+    updated = null,
+    deleted = false,
+    nsfw = false,
+    stickied = false,
+    embed_title = null,
+    embed_description = "Just like previous variants, omicron is hospitalizing people, and it is killing people.",
+    embed_html = null,
+    thumbnail_url = null,
+    ap_id = "https://lemmy.ml/post/135129", local = true
+)
+
 val samplePersonSafe = PersonSafe(
     id = 33401,
     name = "homeless",
@@ -92,6 +134,32 @@ val samplePostAggregates = PostAggregates(
 
 val samplePostView = PostView(
     post = samplePost,
+    creator = samplePersonSafe,
+    community = sampleCommunitySafe,
+    creator_banned_from_community = false,
+    counts = samplePostAggregates,
+    subscribed = false,
+    saved = false,
+    read = false,
+    creator_blocked = false,
+    my_vote = null
+)
+
+val sampleLinkPostView = PostView(
+    post = sampleLinkPost,
+    creator = samplePersonSafe,
+    community = sampleCommunitySafe,
+    creator_banned_from_community = false,
+    counts = samplePostAggregates,
+    subscribed = false,
+    saved = false,
+    read = false,
+    creator_blocked = false,
+    my_vote = null
+)
+
+val sampleLinkNoThumbnailPostView = PostView(
+    post = sampleLinkNoThumbnailPost,
     creator = samplePersonSafe,
     community = sampleCommunitySafe,
     creator_banned_from_community = false,

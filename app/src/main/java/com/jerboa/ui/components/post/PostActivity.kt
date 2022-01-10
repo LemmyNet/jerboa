@@ -22,6 +22,7 @@ import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.api.GetPost
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
+import com.jerboa.openLink
 import com.jerboa.ui.components.comment.CommentNode
 
 @Composable
@@ -40,11 +41,10 @@ fun PostActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val commentNodes = buildCommentsTree(postViewModel.comments)
 
-//    val swipeRefreshState = rememberSwipeRefreshState(
-//        postViewModel.loading && postViewModel
-//            .postView !== null
-//    )
-    val swipeRefreshState = rememberSwipeRefreshState(false)
+    val swipeRefreshState = rememberSwipeRefreshState(
+        isRefreshing = postViewModel.loading && postViewModel
+            .postView !== null
+    )
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
@@ -92,7 +92,11 @@ fun PostActivity(
                                     onReplyClick = {
                                         postViewModel.replyToCommentParent = null
                                         navController.navigate("commentReply")
-                                    }
+                                    },
+                                    onPostLinkClick = { url ->
+                                        openLink(url, ctx)
+                                    },
+                                    showReply = true,
                                 )
                             }
                             // Don't use CommentNodes here, otherwise lazy scrolling wont work

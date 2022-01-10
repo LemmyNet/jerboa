@@ -1,12 +1,17 @@
 package com.jerboa
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.*
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -18,8 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -31,6 +39,7 @@ import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.person.PersonLink
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.ui.theme.Muted
 import com.jerboa.ui.theme.SMALL_PADDING
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.ocpsoft.prettytime.PrettyTime
@@ -55,11 +64,6 @@ inline fun <I, reified O> I.convert(): O {
     )
 }
 
-fun previewLines(text: String): String {
-    val min = minOf(300, text.length)
-    return text.substring(0, min)
-}
-
 @Composable
 fun getCurrentAccount(accountViewModel: AccountViewModel): Account? {
     val accounts by accountViewModel.allAccounts.observeAsState()
@@ -79,7 +83,7 @@ fun toastException(ctx: Context, error: Exception) {
 fun upvoteColor(myVote: Int?): Color {
     return when (myVote) {
         1 -> MaterialTheme.colors.secondary
-        else -> LocalContentColor.current
+        else -> Muted
     }
 }
 
@@ -87,7 +91,7 @@ fun upvoteColor(myVote: Int?): Color {
 fun downvoteColor(myVote: Int?): Color {
     return when (myVote) {
         -1 -> MaterialTheme.colors.error
-        else -> LocalContentColor.current
+        else -> Muted
     }
 }
 
@@ -96,7 +100,7 @@ fun scoreColor(myVote: Int?): Color {
     return when (myVote) {
         1 -> MaterialTheme.colors.secondary
         -1 -> MaterialTheme.colors.error
-        else -> LocalContentColor.current
+        else -> Muted
     }
 }
 
@@ -223,7 +227,7 @@ fun ActionBarButton(
     onClick: () -> Unit = {},
     icon: ImageVector,
     text: String? = null,
-    contentColor: Color = MaterialTheme.colors.onSurface,
+    contentColor: Color = Muted,
     noClick: Boolean = false,
 ) {
 //    Button(
@@ -282,25 +286,41 @@ fun <T> VoteGeneric(
         else -> Icons.Default.ArrowDownward
     }
 
+    val votesStr = if (type == VoteType.Downvote && votes == 0) {
+        null
+    } else {
+        votes.toString()
+    }
+
     ActionBarButton(
         onClick = { onVoteClick(item) },
         contentColor = voteColor,
         icon = voteIcon,
-        text = votes.toString(),
+        text = votesStr,
     )
 }
 
+@OptIn(ExperimentalUnitApi::class)
 @Composable
 fun MyMarkdownText(
     markdown: String,
     modifier: Modifier = Modifier,
+    preview: Boolean = false,
 ) {
+
+//    val fontSize = TextUnit(MaterialTheme.typography.body1.fontSize.value, type = TextUnitType.Sp)
+
     // Note, this actually scales down the font size quite a lot, so you need to use a bigger one
     MarkdownText(
         markdown = markdown,
         style = MaterialTheme.typography.body1,
-        fontSize = MaterialTheme.typography.subtitle1.fontSize,
-        modifier = modifier
+        fontSize = 18.sp,
+        modifier = modifier,
+        maxLines = if (preview) {
+            5
+        } else {
+            Int.MAX_VALUE
+        }
     )
 }
 
@@ -351,4 +371,14 @@ fun LazyListState.isScrolledToEnd(): Boolean {
 //    Log.d("jerboa", layoutInfo.totalItemsCount.toString())
 //    Log.d("jerboa", out.toString())
     return out
+}
+
+fun openLink(url: String, ctx: Context) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    ctx.startActivity(intent)
+}
+
+@Composable
+fun PreviewLines(text: String) {
+    Text("Hello Compose ".repeat(50), maxLines = 5, overflow = TextOverflow.Ellipsis)
 }

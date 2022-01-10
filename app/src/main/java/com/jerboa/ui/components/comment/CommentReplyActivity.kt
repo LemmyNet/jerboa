@@ -13,6 +13,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.datatypes.api.CreateComment
@@ -34,6 +35,8 @@ fun CommentReplyActivity(
 
     var reply by rememberSaveable { mutableStateOf("") }
 
+    val focusManager = LocalFocusManager.current
+
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
             topBar = {
@@ -50,7 +53,7 @@ fun CommentReplyActivity(
                                         post_id = postView.post.id,
                                         auth = account.jwt
                                     )
-                                postViewModel.createComment(form, ctx, navController)
+                                postViewModel.createComment(form, ctx, navController, focusManager)
                             }
                         }
                     }

@@ -16,6 +16,7 @@ import com.jerboa.api.API
 import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
+import com.jerboa.openLink
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostListingsViewModel
 
@@ -91,6 +92,9 @@ fun HomeActivity(
                     onPostClick = { postView ->
                         navController.navigate("post/${postView.post.id}?fetch=true")
                     },
+                    onPostLinkClick = { url ->
+                        openLink(url, ctx)
+                    },
                     onSwipeRefresh = {
                         postListingsViewModel.fetchPosts(
                             GetPosts(
@@ -98,7 +102,8 @@ fun HomeActivity(
                             )
                         )
                     },
-                    loading = postListingsViewModel.loading,
+                    loading = postListingsViewModel.loading && postListingsViewModel.page == 1 &&
+                        postListingsViewModel.posts.isNotEmpty(),
                     isScrolledToEnd = isScrolledToEnd,
                 )
             }

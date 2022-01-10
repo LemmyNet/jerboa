@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -103,6 +104,7 @@ class PostViewModel : ViewModel() {
         form: CreateComment,
         ctx: Context,
         navController: NavController,
+        focusManager: FocusManager,
     ) {
         val api = API.getInstance()
 
@@ -123,6 +125,7 @@ class PostViewModel : ViewModel() {
                 toastException(ctx = ctx, error = e)
             } finally {
                 replyLoading = false
+                focusManager.clearFocus()
 
                 // Can't call popbackstack here, because it might fetch again
 //                navController.popBackStack()
