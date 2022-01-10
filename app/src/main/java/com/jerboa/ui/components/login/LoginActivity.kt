@@ -11,12 +11,14 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 
 @Composable
 fun LoginActivity(
     navController: NavController,
     loginViewModel: LoginViewModel,
     accountViewModel: AccountViewModel,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "Got to login activity")
 
@@ -43,6 +45,7 @@ fun LoginActivity(
                             instance = instance.trim(),
                             ctx = ctx,
                             accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
                         )
                     }
                 )

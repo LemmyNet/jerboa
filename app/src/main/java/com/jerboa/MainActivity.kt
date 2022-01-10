@@ -15,14 +15,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jerboa.api.API
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetPost
-import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
 import com.jerboa.db.AppDB
 import com.jerboa.ui.components.comment.CommentReplyActivity
 import com.jerboa.ui.components.home.HomeActivity
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.login.LoginViewModel
 import com.jerboa.ui.components.post.PostActivity
@@ -40,6 +42,7 @@ class MainActivity : ComponentActivity() {
     private val postListingsViewModel by viewModels<PostListingsViewModel>()
     private val postViewModel by viewModels<PostViewModel>()
     private val loginViewModel by viewModels<LoginViewModel>()
+    private val siteViewModel by viewModels<SiteViewModel>()
 
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).repository)
@@ -49,25 +52,40 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+
+            // Read the accounts from the DB
             val accounts by accountViewModel.allAccounts.observeAsState()
-
             val account = getCurrentAccount(accounts)
-
-            val navController = rememberNavController()
 
             val startRoute = if (account != null) {
                 API.changeLemmyInstance(account.instance)
-                LaunchedEffect(Unit, block = {
-                    postListingsViewModel.fetchPosts(
-                        auth = account?.jwt
-                    )
-                })
+                siteViewModel.fetchSite(auth = account.jwt)
+
+                // Use to get your users default sort and listing types
+                siteViewModel.siteRes?.my_user?.also { myUser ->
+                    LaunchedEffect(Unit, block = {
+
+                        postListingsViewModel.fetchPosts(
+                            auth = account.jwt,
+                            changeListingType = ListingType.values()[
+                                myUser.local_user_view.local_user
+                                    .default_listing_type
+                            ],
+                            changeSortType = SortType.values()[
+                                myUser.local_user_view.local_user
+                                    .default_sort_type
+                            ]
+                        )
+                    })
+                }
                 "home"
             } else {
                 "login"
             }
 
 //            val startRoute = "home"
+
+            val navController = rememberNavController()
 
             JerboaTheme {
                 NavHost(
@@ -79,6 +97,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             loginViewModel = loginViewModel,
                             accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(route = "home") {
@@ -86,6 +105,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             postListingsViewModel = postListingsViewModel,
                             accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
                             isScrolledToEnd = {
                                 postListingsViewModel.fetchPosts(
                                     auth = account?.jwt,

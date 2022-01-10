@@ -36,14 +36,7 @@ data class CommunityResponse(
 )
 
 data class ListCommunities(
-    /**  
-     * The [ListingType].  
-     */  
     val type_: String,
-
-    /**  
-     * The [SortType].  
-     */  
     val sort: String,
     val page: Int?,
     val limit: Int?,
@@ -58,15 +51,8 @@ data class BanFromCommunity(
     val community_id: Int,
     val person_id: Int,
     val ban: Boolean,
-
-    /**  
-     * Removes/Restores their comments and posts for that community.  
-     */  
     val remove_data: Boolean,
     val reason: String?,
-    /**  
-     * The expire time in Unix seconds  
-     */  
     val expires: Int,
     val auth: String?,
 )
@@ -113,9 +99,6 @@ data class RemoveCommunity(
     val community_id: Int,
     val removed: Boolean,
     val reason: String,
-    /**  
-     * The expire time in Unix seconds  
-     */  
     val expires: Int,
     val auth: String?,
 )

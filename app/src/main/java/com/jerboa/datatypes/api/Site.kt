@@ -6,25 +6,12 @@ import com.jerboa.datatypes.*
  * Search lemmy for different types of data.
  */
 data class Search(
-    /**  
-     * The search query String.  
-     */  
     val q: String,
-
-    /**  
-     * The [[SearchType]].  
-     */  
     val type_: String,
     val community_id: Int?,
     val community_name: String?,
     val creator_id: Int?,
-    /**  
-     * The [[SortType]].  
-     */  
     val sort: String,
-    /**  
-     * The [[ListingType]].  
-     */  
     val listing_type: String,
     val page: Int?,
     val limit: Int?,
@@ -32,9 +19,6 @@ data class Search(
 )
 
 data class SearchResponse(
-    /**  
-     * The [[SearchType]].  
-     */  
     val type_: String,
     val comments: List<CommentView>,
     val posts: List<PostView>,
@@ -97,17 +81,10 @@ data class SiteResponse(
 )
 
 data class GetSiteResponse(
-    /**  
-     * Optional, because the site might not be set up yet.  
-     */  
     val site_view: SiteView?,
     val admins: List<PersonViewSafe>,
-    val banned: List<PersonViewSafe>,
     val online: Int,
     val version: String,
-    /**  
-     * If you're logged in, you'll get back extra user info.  
-     */  
     val my_user: MyUserInfo?,
     val federated_instances: FederatedInstances?,
 )

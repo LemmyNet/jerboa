@@ -24,6 +24,7 @@ fun HomeActivity(
     navController: NavController,
     postListingsViewModel: PostListingsViewModel,
     accountViewModel: AccountViewModel,
+    siteViewModel: SiteViewModel,
     isScrolledToEnd: () -> Unit,
 ) {
 
@@ -34,6 +35,7 @@ fun HomeActivity(
     val ctx = LocalContext.current
     val accounts by accountViewModel.allAccounts.observeAsState()
     val account = getCurrentAccount(accounts = accounts)
+
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
             scaffoldState = scaffoldState,
@@ -41,6 +43,8 @@ fun HomeActivity(
                 Column {
                     HomeHeader(
                         scope, scaffoldState,
+                        selectedSortType = postListingsViewModel.sortType,
+                        selectedListingType = postListingsViewModel.listingType,
                         onClickSortType = { sortType ->
                             postListingsViewModel.fetchPosts(
                                 auth = account?.jwt,
@@ -66,9 +70,12 @@ fun HomeActivity(
                     accounts = accounts,
                     navController = navController,
                     onSwitchAccountClick = {
-                        accountViewModel.removeDefault()
-                        accountViewModel.setDefault(it.id)
+                        accountViewModel.removeCurrent()
+                        accountViewModel.setCurrent(it.id)
                         API.changeLemmyInstance(it.instance)
+
+                        // Refetch the site
+                        siteViewModel.fetchSite(it.jwt)
                     },
                     onSignOutClick = {
                         accounts?.also { accounts ->
@@ -78,7 +85,7 @@ fun HomeActivity(
                                 updatedList.remove(it)
 
                                 if (updatedList.isNotEmpty()) {
-                                    accountViewModel.setDefault(updatedList[0].id)
+                                    accountViewModel.setCurrent(updatedList[0].id)
                                 }
                             }
                         }

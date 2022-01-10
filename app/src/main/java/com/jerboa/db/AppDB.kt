@@ -12,10 +12,9 @@ import kotlinx.coroutines.launch
 @Entity
 data class Account(
     @PrimaryKey val id: Int,
-    @ColumnInfo(name = "default_") val default_: Boolean,
+    @ColumnInfo(name = "current") val current: Boolean,
     @ColumnInfo(name = "instance") val instance: String,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "avatar") val avatar: String?,
     @ColumnInfo(name = "jwt") val jwt: String,
 )
 
@@ -27,11 +26,11 @@ interface AccountDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Account::class)
     suspend fun insert(account: Account)
 
-    @Query("UPDATE account set default_ = 0 where default_ = 1")
-    suspend fun removeDefault()
+    @Query("UPDATE account set current = 0 where current = 1")
+    suspend fun removeCurrent()
 
-    @Query("UPDATE account set default_ = 1 where id = :accountId")
-    suspend fun setDefault(accountId: Int)
+    @Query("UPDATE account set current = 1 where id = :accountId")
+    suspend fun setCurrent(accountId: Int)
 
     @Delete(entity = Account::class)
     suspend fun delete(account: Account)
@@ -54,13 +53,13 @@ class AccountRepository(private val accountDao: AccountDao) {
     }
 
     @WorkerThread
-    suspend fun removeDefault() {
-        accountDao.removeDefault()
+    suspend fun removeCurrent() {
+        accountDao.removeCurrent()
     }
 
     @WorkerThread
-    suspend fun setDefault(accountId: Int) {
-        accountDao.setDefault(accountId)
+    suspend fun setCurrent(accountId: Int) {
+        accountDao.setCurrent(accountId)
     }
 
     @WorkerThread
@@ -69,7 +68,11 @@ class AccountRepository(private val accountDao: AccountDao) {
     }
 }
 
-@Database(entities = [Account::class], version = 1)
+@Database(
+    version = 1,
+    entities = [Account::class],
+    exportSchema = true,
+)
 abstract class AppDB : RoomDatabase() {
     abstract fun accountDao(): AccountDao
 
@@ -104,12 +107,12 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
         repository.insert(account)
     }
 
-    fun removeDefault() = viewModelScope.launch {
-        repository.removeDefault()
+    fun removeCurrent() = viewModelScope.launch {
+        repository.removeCurrent()
     }
 
-    fun setDefault(accountId: Int) = viewModelScope.launch {
-        repository.setDefault(accountId)
+    fun setCurrent(accountId: Int) = viewModelScope.launch {
+        repository.setCurrent(accountId)
     }
 
     fun delete(account: Account) = viewModelScope.launch {

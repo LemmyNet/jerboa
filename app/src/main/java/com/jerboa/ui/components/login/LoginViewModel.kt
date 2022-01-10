@@ -10,11 +10,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.api.API
-import com.jerboa.datatypes.api.GetSite
+import com.jerboa.api.getSiteWrapper
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
-import com.jerboa.serializeToMap
+import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
@@ -30,6 +30,7 @@ class LoginViewModel : ViewModel() {
         form: Login,
         navController: NavController,
         accountViewModel: AccountViewModel,
+        siteViewModel: SiteViewModel,
         ctx: Context,
     ) {
         val api = API.changeLemmyInstance(instance)
@@ -62,25 +63,21 @@ class LoginViewModel : ViewModel() {
                 this.cancel()
             } finally {
 
-                // Fetch the site to get more info, such as your
-                // name and avatar
-                val siteForm = GetSite(jwt)
-                val site = api.getSite(
-                    siteForm
-                        .serializeToMap()
-                )
-                val luv = site.my_user!!.local_user_view
+                // Refetch the site to get your name and id
+                // Can't do a co-routine within a co-routine
+                siteViewModel.siteRes = getSiteWrapper(auth = jwt)
+
+                val luv = siteViewModel.siteRes?.my_user!!.local_user_view
                 val account = Account(
                     id = luv.person.id,
-                    default_ = true,
-                    instance = instance,
-                    avatar = luv.person.avatar,
                     name = luv.person.name,
+                    current = true,
+                    instance = instance,
                     jwt = jwt,
                 )
 
                 // Remove the default account
-                accountViewModel.removeDefault()
+                accountViewModel.removeCurrent()
 
                 // Save that info in the DB
                 accountViewModel.insert(account)

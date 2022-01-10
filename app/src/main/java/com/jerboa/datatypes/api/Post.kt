@@ -30,22 +30,11 @@ data class GetPostResponse(
 )
 
 data class GetPosts(
-    /**  
-     * The [[ListingType]].  
-     *  
-     * Post listing types are `All, Subscribed, Community`  
-     */  
     val type_: String = ListingType.All.toString(),
-    /**  
-     ?* The [[SortType]].  
-     */  
     val sort: String = SortType.Active.toString(),
     val page: Int? = null,
     val limit: Int? = null,
     val community_id: Int? = null,
-    /**  
-     * To get posts for a federated community by name, use `name@instance.tld` .  
-     */  
     val community_name: String? = null,
     val saved_only: Boolean? = null,
     val auth: String? = null,
@@ -57,10 +46,6 @@ data class GetPostsResponse(
 
 data class CreatePostLike(
     val post_id: Int,
-
-    /**  
-     * `score` can be 0, -1, or 1. Anything else will be rejected.  
-     */  
     val score: Int,
     val auth: String,
 )
@@ -126,9 +111,6 @@ data class PostReportResponse(
 
 data class ResolvePostReport(
     val report_id: Int,
-    /**  
-     * Either resolve or unresolve a report.  
-     */  
     val resolved: Boolean,
     val auth: String,
 )
@@ -136,13 +118,7 @@ data class ResolvePostReport(
 data class ListPostReports(
     val page: Int,
     val limit: Int?,
-    /**  
-     * if no community is given, it returns reports for all communities moderated by the auth user.  
-     */  
     val community_id: Int,
-    /**  
-     * Only shows the unresolved reports.  
-     */  
     val unresolved_only: Boolean,
     val auth: String?,
 )

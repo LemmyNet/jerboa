@@ -70,7 +70,7 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account? {
 }
 
 fun getCurrentAccount(accounts: List<Account>?): Account? {
-    return accounts?.firstOrNull { it.default_ }
+    return accounts?.firstOrNull { it.current }
 }
 
 fun toastException(ctx: Context, error: Exception) {
@@ -242,14 +242,14 @@ fun ActionBarButton(
 //        modifier = Modifier
 //            .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
 //    )
-    val modifier_ = if (noClick) {
+    val barMod = if (noClick) {
         Modifier
     } else {
         Modifier.clickable(onClick = onClick)
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier_,
+        modifier = barMod,
     ) {
         Icon(
             imageVector = icon,
@@ -425,9 +425,7 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
     val host = split[0]
     val path = split[1]
 
-    val out = "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
-
-    return out
+    return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
 }
 
 fun isImage(url: String): Boolean {
@@ -435,5 +433,5 @@ fun isImage(url: String): Boolean {
 }
 
 val imageRegex = Regex(
-    pattern = "(http)?s?:?(\\/\\/[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))"
+    pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))"
 )

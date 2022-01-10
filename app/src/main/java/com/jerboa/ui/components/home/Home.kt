@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.colorShade
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
 import com.jerboa.db.Account
@@ -99,21 +100,21 @@ fun DrawerAddAccountMode(
     Column {
         IconAndTextDrawerItem(
             text = "Add Account",
-            onClick = { navController.navigate(route = "login") },
             icon = Icons.Default.Add,
+            onClick = { navController.navigate(route = "login") },
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
                 text = "Switch to ${it.name}",
-                onClick = { onSwitchAccountClick(it) },
                 icon = Icons.Default.Login,
+                onClick = { onSwitchAccountClick(it) },
             )
         }
         accounts?.also {
             IconAndTextDrawerItem(
                 text = "Sign Out",
-                onClick = onSignOutClick,
                 icon = Icons.Default.Close,
+                onClick = onSignOutClick,
             )
         }
     }
@@ -166,6 +167,7 @@ fun IconAndTextDrawerItem(
     icon: ImageVector? = null,
     onClick: () -> Unit,
     more: Boolean = false,
+    highlight: Boolean = false,
 ) {
 
     val spacingMod = Modifier
@@ -177,6 +179,16 @@ fun IconAndTextDrawerItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
+            .background(
+                color = if (highlight) {
+                    colorShade(
+                        MaterialTheme.colors.background, 2f
+                    )
+                } else {
+                    Color
+                        .Transparent
+                }
+            )
     ) {
         Row {
             icon?.also {
@@ -188,7 +200,11 @@ fun IconAndTextDrawerItem(
 
                 )
             }
-            Text(text = text, style = MaterialTheme.typography.subtitle1, modifier = spacingMod)
+            Text(
+                text = text,
+                style = MaterialTheme.typography.subtitle1,
+                modifier = spacingMod
+            )
         }
         if (more) {
             Icon(
@@ -204,13 +220,20 @@ fun IconAndTextDrawerItem(
 @Preview
 @Composable
 fun IconAndTextDrawerItemPreview() {
-    IconAndTextDrawerItem(text = "A test item", onClick = {})
+    IconAndTextDrawerItem(
+        text = "A test item",
+        onClick = {},
+    )
 }
 
 @Preview
 @Composable
 fun IconAndTextDrawerItemWithMorePreview() {
-    IconAndTextDrawerItem(text = "A test item", onClick = {}, more = true)
+    IconAndTextDrawerItem(
+        text = "A test item",
+        onClick = {},
+        more = true,
+    )
 }
 
 @Composable
@@ -219,6 +242,8 @@ fun HomeHeader(
     scaffoldState: ScaffoldState,
     onClickSortType: (SortType) -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
+    selectedSortType: SortType,
+    selectedListingType: ListingType,
 ) {
 
     var showSortOptions by remember { mutableStateOf(false) }
@@ -227,6 +252,7 @@ fun HomeHeader(
 
     if (showSortOptions) {
         SortOptionsDialog(
+            selectedSortType = selectedSortType,
             onDismissRequest = { showSortOptions = false },
             onClickSortType = {
                 showSortOptions = false
@@ -241,6 +267,7 @@ fun HomeHeader(
 
     if (showTopOptions) {
         SortTopOptionsDialog(
+            selectedSortType = selectedSortType,
             onDismissRequest = { showTopOptions = false },
             onClickSortType = {
                 showTopOptions = false
@@ -251,6 +278,7 @@ fun HomeHeader(
 
     if (showListingTypeOptions) {
         ListingTypeOptionsDialog(
+            selectedListingType = selectedListingType,
             onDismissRequest = { showListingTypeOptions = false },
             onClickListingType = {
                 showListingTypeOptions = false
@@ -315,6 +343,7 @@ fun SortOptionsDialog(
     onDismissRequest: () -> Unit = {},
     onClickSortType: (SortType) -> Unit = {},
     onClickSortTopOptions: () -> Unit = {},
+    selectedSortType: SortType,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -324,22 +353,26 @@ fun SortOptionsDialog(
                     text = "Active",
                     icon = Icons.Default.Moving,
                     onClick = { onClickSortType(SortType.Active) },
+                    highlight = (selectedSortType == SortType.Active),
                 )
                 IconAndTextDrawerItem(
                     text = "Hot",
                     icon = Icons.Default.LocalFireDepartment,
                     onClick = { onClickSortType(SortType.Hot) },
+                    highlight = (selectedSortType == SortType.Hot),
                 )
                 IconAndTextDrawerItem(
                     text = "New",
                     icon = Icons.Default.BrightnessLow,
                     onClick = { onClickSortType(SortType.New) },
+                    highlight = (selectedSortType == SortType.New),
                 )
                 IconAndTextDrawerItem(
                     text = "Top",
                     icon = Icons.Default.BarChart,
                     onClick = onClickSortTopOptions,
                     more = true,
+                    highlight = (topSortTypes.contains(selectedSortType)),
                 )
             }
         },
@@ -347,10 +380,19 @@ fun SortOptionsDialog(
     )
 }
 
+val topSortTypes = listOf(
+    SortType.TopDay,
+    SortType.TopWeek,
+    SortType.TopMonth,
+    SortType.TopYear,
+    SortType.TopAll,
+)
+
 @Composable
 fun SortTopOptionsDialog(
     onDismissRequest: () -> Unit = {},
     onClickSortType: (SortType) -> Unit = {},
+    selectedSortType: SortType,
 ) {
 
     AlertDialog(
@@ -360,22 +402,27 @@ fun SortTopOptionsDialog(
                 IconAndTextDrawerItem(
                     text = "Top Day",
                     onClick = { onClickSortType(SortType.TopDay) },
+                    highlight = (selectedSortType == SortType.TopDay),
                 )
                 IconAndTextDrawerItem(
                     text = "Top Week",
                     onClick = { onClickSortType(SortType.TopWeek) },
+                    highlight = (selectedSortType == SortType.TopWeek),
                 )
                 IconAndTextDrawerItem(
                     text = "Top Month",
                     onClick = { onClickSortType(SortType.TopMonth) },
+                    highlight = (selectedSortType == SortType.TopMonth),
                 )
                 IconAndTextDrawerItem(
                     text = "Top Year",
                     onClick = { onClickSortType(SortType.TopYear) },
+                    highlight = (selectedSortType == SortType.TopYear),
                 )
                 IconAndTextDrawerItem(
                     text = "Top All Time",
                     onClick = { onClickSortType(SortType.TopAll) },
+                    highlight = (selectedSortType == SortType.TopAll),
                 )
             }
         },
@@ -386,13 +433,14 @@ fun SortTopOptionsDialog(
 @Preview
 @Composable
 fun SortOptionsDialogPreview() {
-    SortOptionsDialog()
+    SortOptionsDialog(selectedSortType = SortType.Hot)
 }
 
 @Composable
 fun ListingTypeOptionsDialog(
     onDismissRequest: () -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
+    selectedListingType: ListingType,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -402,17 +450,20 @@ fun ListingTypeOptionsDialog(
                     text = "Subscribed",
                     icon = Icons.Default.Bookmarks,
                     onClick = { onClickListingType(ListingType.Subscribed) },
+                    highlight = (selectedListingType == ListingType.Subscribed),
                 )
                 // TODO hide local for non-federated instances
                 IconAndTextDrawerItem(
                     text = "Local",
                     icon = Icons.Default.LocationCity,
                     onClick = { onClickListingType(ListingType.Local) },
+                    highlight = (selectedListingType == ListingType.Local),
                 )
                 IconAndTextDrawerItem(
                     text = "All",
                     icon = Icons.Default.Public,
                     onClick = { onClickListingType(ListingType.All) },
+                    highlight = (selectedListingType == ListingType.All),
                 )
             }
         },
@@ -423,7 +474,7 @@ fun ListingTypeOptionsDialog(
 @Preview
 @Composable
 fun ListingTypeOptionsDialogPreview() {
-    ListingTypeOptionsDialog()
+    ListingTypeOptionsDialog(selectedListingType = ListingType.Local)
 }
 
 @Preview
@@ -432,5 +483,10 @@ fun HomeHeaderPreview() {
     val scope = rememberCoroutineScope()
     val scaffoldState =
         rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    HomeHeader(scope, scaffoldState)
+    HomeHeader(
+        scope,
+        scaffoldState,
+        selectedSortType = SortType.Hot,
+        selectedListingType = ListingType.All
+    )
 }

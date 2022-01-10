@@ -1,12 +1,14 @@
 package com.jerboa.api
 
 import android.content.Context
+import android.util.Log
 import com.jerboa.VoteType
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.*
 import com.jerboa.db.Account
 import com.jerboa.newVote
+import com.jerboa.serializeToMap
 import com.jerboa.toastException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -88,6 +90,28 @@ interface API {
                 .create(API::class.java)
         }
     }
+}
+
+suspend fun getSiteWrapper(auth: String?): GetSiteResponse {
+    var siteRes: GetSiteResponse? = null
+    val api = API.getInstance()
+
+    try {
+        // Fetch the site to get more info, such as your
+        // name and avatar
+        val form = GetSite(auth = auth)
+        Log.d(
+            "jerboa",
+            "Fetching site..."
+        )
+        siteRes = api.getSite(form = form.serializeToMap())
+    } catch (e: Exception) {
+        Log.e(
+            "jerboa",
+            e.toString()
+        )
+    }
+    return siteRes!!
 }
 
 suspend fun likePostWrapper(
