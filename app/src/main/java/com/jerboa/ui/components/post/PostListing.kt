@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.post
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -9,19 +8,17 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.rememberImagePainter
-import coil.transform.RoundedCornersTransformation
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.*
-import com.jerboa.R
 import com.jerboa.datatypes.*
+import com.jerboa.ui.components.common.PictrsThumbnailImage
+import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonLink
@@ -64,12 +61,58 @@ fun PostNodeHeader(postView: PostView) {
 }
 
 @Composable
-fun PostTitleAndImage(
+fun PostTitleBlock(
     post: Post,
     onPostLinkClick: (url: String) -> Unit = {},
 ) {
     val ctx = LocalContext.current
 
+    val imagePost = post.url?.let { isImage(it) } ?: run { false }
+
+    if (imagePost) {
+        PostTitleAndImageLink(
+            post = post,
+            onPostLinkClick = onPostLinkClick
+        )
+    } else {
+        PostTitleAndThumbnail(
+            post = post,
+            onPostLinkClick = onPostLinkClick
+        )
+    }
+}
+
+@Composable
+fun PostTitleAndImageLink(
+    post: Post,
+    onPostLinkClick: (url: String) -> Unit = {},
+) {
+    // This was tested, we know it exists
+    val url = post.url!!
+
+    Column {
+        // Title of the post
+        Text(
+            text = post.name,
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.padding(bottom = MEDIUM_PADDING)
+        )
+
+        val postLinkPicMod = Modifier
+            .fillMaxWidth()
+            .clickable { onPostLinkClick(url) }
+        PictrsUrlImage(
+            url = url,
+            modifier = postLinkPicMod,
+        )
+    }
+}
+
+@Composable
+fun PostTitleAndThumbnail(
+    post: Post,
+    onPostLinkClick: (url: String) -> Unit = {},
+) {
     Row {
         // Title of the post
         Text(
@@ -79,8 +122,6 @@ fun PostTitleAndImage(
         )
 
         post.url?.also { url ->
-
-            MaterialTheme.colors
             val postLinkPicMod = Modifier
                 .size(POST_LINK_PIC_SIZE)
                 .padding(
@@ -92,17 +133,8 @@ fun PostTitleAndImage(
                 .clickable { onPostLinkClick(url) }
 
             post.thumbnail_url?.also { thumbnail ->
-                Image(
-                    painter = rememberImagePainter(
-                        data = thumbnail,
-                        builder = {
-                            crossfade(true)
-                            placeholder(R.drawable.ic_launcher_foreground)
-                            transformations(RoundedCornersTransformation(12f))
-                        },
-                    ),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null,
+                PictrsThumbnailImage(
+                    thumbnail = thumbnail,
                     modifier = postLinkPicMod,
                 )
             } ?: run {
@@ -133,23 +165,31 @@ fun PostBody(
     Column(
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
-        PostTitleAndImage(post = post, onPostLinkClick = onPostLinkClick)
+        PostTitleBlock(post = post, onPostLinkClick = onPostLinkClick)
 
         // The desc
         post.body?.also { text ->
             Card(
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
-                    .padding(MEDIUM_PADDING)
+                    .padding(vertical = MEDIUM_PADDING)
                     .fillMaxWidth(),
                 backgroundColor = colorShade(MaterialTheme.colors.surface, 2.5f),
                 content = {
-                    MyMarkdownText(
-                        markdown = text,
-                        modifier = Modifier
-                            .padding(MEDIUM_PADDING),
-                        preview = !fullBody,
-                    )
+                    if (fullBody) {
+                        MyMarkdownText(
+                            markdown = text,
+                            modifier = Modifier
+                                .padding(MEDIUM_PADDING),
+                            preview = !fullBody,
+                        )
+                    } else {
+                        PreviewLines(
+                            text = text,
+                            modifier = Modifier
+                                .padding(MEDIUM_PADDING),
+                        )
+                    }
                 }
             )
         }
@@ -247,6 +287,15 @@ fun PreviewPostListing() {
 fun PreviewLinkPostListing() {
     PostListing(
         postView = sampleLinkPostView,
+        fullBody = true,
+    )
+}
+
+@Preview
+@Composable
+fun PreviewImagePostListing() {
+    PostListing(
+        postView = sampleImagePostView,
         fullBody = true,
     )
 }

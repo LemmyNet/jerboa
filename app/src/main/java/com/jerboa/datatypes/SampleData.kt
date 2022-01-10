@@ -63,6 +63,27 @@ val sampleLinkNoThumbnailPost = Post(
     ap_id = "https://lemmy.ml/post/135129", local = true
 )
 
+val sampleImagePost = Post(
+    id = 135130,
+    name = "This is a large image",
+    url = "https://lemmy.ml/pictrs/image/08967513-afcb-495a-9116-562a0cb1a44f.jpeg",
+    body = "The body of an image post",
+    creator_id = 33401,
+    community_id = 14681,
+    removed = false,
+    locked = false,
+    published = "2022-01-01T09:53:46.904077",
+    updated = null,
+    deleted = false,
+    nsfw = false,
+    stickied = false,
+    embed_title = null,
+    embed_description = "Just like previous variants, omicron is hospitalizing people, and it is killing people.",
+    embed_html = null,
+    thumbnail_url = "https://lemmy.ml/pictrs/image/08967513-afcb-495a-9116-562a0cb1a44f.jpeg",
+    ap_id = "https://lemmy.ml/post/135129", local = true
+)
+
 val samplePersonSafe = PersonSafe(
     id = 33401,
     name = "homeless",
@@ -160,6 +181,19 @@ val sampleLinkPostView = PostView(
 
 val sampleLinkNoThumbnailPostView = PostView(
     post = sampleLinkNoThumbnailPost,
+    creator = samplePersonSafe,
+    community = sampleCommunitySafe,
+    creator_banned_from_community = false,
+    counts = samplePostAggregates,
+    subscribed = false,
+    saved = false,
+    read = false,
+    creator_blocked = false,
+    my_vote = null
+)
+
+val sampleImagePostView = PostView(
+    post = sampleImagePost,
     creator = samplePersonSafe,
     community = sampleCommunitySafe,
     creator_banned_from_community = false,

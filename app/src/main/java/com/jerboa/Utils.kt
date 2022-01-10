@@ -45,7 +45,6 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
 
-// val current = LocalContext.current.resources.configuration.locales[0]
 val prettyTime = PrettyTime(Locale.getDefault())
 
 val gson = Gson()
@@ -316,11 +315,12 @@ fun MyMarkdownText(
         style = MaterialTheme.typography.body1,
         fontSize = 18.sp,
         modifier = modifier,
-        maxLines = if (preview) {
-            5
-        } else {
-            Int.MAX_VALUE
-        }
+// TODO Markdown preview doesn't make too much sense
+//        maxLines = if (preview) {
+//            5
+//        } else {
+//            Int.MAX_VALUE
+//        }
     )
 }
 
@@ -379,6 +379,61 @@ fun openLink(url: String, ctx: Context) {
 }
 
 @Composable
-fun PreviewLines(text: String) {
-    Text("Hello Compose ".repeat(50), maxLines = 5, overflow = TextOverflow.Ellipsis)
+fun PreviewLines(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = text,
+        maxLines = 5,
+        overflow = TextOverflow.Ellipsis,
+        modifier = modifier,
+        fontSize = 14.sp,
+    )
 }
+
+fun prettyTimeShortener(timeString: String): String {
+    return if (prettyTime.locale.language == "en") {
+        if (timeString.isEmpty()) {
+            "<1m"
+        } else {
+            timeString
+                .replace(Regex("minutes?"), "m")
+                .replace(Regex("hours?"), "h")
+                .replace(Regex("days?"), "d")
+                .replace(Regex("weeks?"), "w")
+                .replace(Regex("months?"), "M")
+                .replace(Regex("years?"), "Y")
+                .filter { !it.isWhitespace() }
+        }
+    } else {
+        timeString
+    }
+}
+
+fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
+    // sample url:
+    // http://localhost:8535/pictrs/image/file.png?thumbnail=256&format=jpg
+
+    val split = src.split("/pictrs/image/")
+
+    // If theres not multiple, then its not a pictrs image
+    if (split.size == 1) {
+        return src
+    }
+
+    val host = split[0]
+    val path = split[1]
+
+    val out = "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
+
+    return out
+}
+
+fun isImage(url: String): Boolean {
+    return imageRegex.matches(url)
+}
+
+val imageRegex = Regex(
+    pattern = "(http)?s?:?(\\/\\/[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))"
+)
