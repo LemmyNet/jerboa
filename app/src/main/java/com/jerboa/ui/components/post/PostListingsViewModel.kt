@@ -11,7 +11,9 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.likePostWrapper
+import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
@@ -24,21 +26,52 @@ class PostListingsViewModel : ViewModel() {
     var loading: Boolean by mutableStateOf(false)
         private set
     var page: Int by mutableStateOf(1)
+        private set
+    var sortType: SortType by mutableStateOf(SortType.Active)
+    var listingType: ListingType by mutableStateOf(ListingType.All)
 
-    fun fetchPosts(form: GetPosts, clear: Boolean = true) {
+    fun fetchPosts(
+        auth: String?,
+        nextPage: Boolean = false,
+        clear: Boolean = false,
+        changeListingType: ListingType? = null,
+        changeSortType: SortType? = null,
+    ) {
         val api = API.getInstance()
 
         viewModelScope.launch {
             try {
+                loading = true
+
+                if (nextPage) {
+                    page++
+                }
+
+                if (clear) {
+                    page = 1
+                }
+
+                changeListingType?.also {
+                    listingType = it
+                }
+
+                changeSortType?.also {
+                    sortType = it
+                }
+
+                val form = GetPosts(
+                    sort = sortType.toString(),
+                    type_ = listingType.toString(),
+                    page = page,
+                    auth = auth,
+                )
                 Log.d(
                     "ViewModel: PostListingsViewModel",
                     "Fetching posts: $form"
                 )
-                loading = true
                 val newPosts = api.getPosts(form = form.serializeToMap()).posts
 
                 if (clear) {
-                    page = 1
                     posts.clear()
                 }
                 posts.addAll(newPosts)

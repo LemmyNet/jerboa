@@ -395,7 +395,7 @@ fun PreviewLines(
 fun prettyTimeShortener(timeString: String): String {
     return if (prettyTime.locale.language == "en") {
         if (timeString.isEmpty()) {
-            "<1m"
+            "Now"
         } else {
             timeString
                 .replace(Regex("minutes?"), "m")

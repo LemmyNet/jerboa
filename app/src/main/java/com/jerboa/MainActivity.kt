@@ -57,18 +57,17 @@ class MainActivity : ComponentActivity() {
 
             val startRoute = if (account != null) {
                 API.changeLemmyInstance(account.instance)
+                LaunchedEffect(Unit, block = {
+                    postListingsViewModel.fetchPosts(
+                        auth = account?.jwt
+                    )
+                })
                 "home"
             } else {
                 "login"
             }
 
 //            val startRoute = "home"
-
-            postListingsViewModel.fetchPosts(
-                GetPosts(
-                    auth = account?.jwt
-                )
-            )
 
             JerboaTheme {
                 NavHost(
@@ -88,13 +87,9 @@ class MainActivity : ComponentActivity() {
                             postListingsViewModel = postListingsViewModel,
                             accountViewModel = accountViewModel,
                             isScrolledToEnd = {
-                                postListingsViewModel.page++
                                 postListingsViewModel.fetchPosts(
-                                    GetPosts(
-                                        auth = account?.jwt,
-                                        page = postListingsViewModel.page,
-                                    ),
-                                    clear = false,
+                                    auth = account?.jwt,
+                                    nextPage = true,
                                 )
                             },
                         )

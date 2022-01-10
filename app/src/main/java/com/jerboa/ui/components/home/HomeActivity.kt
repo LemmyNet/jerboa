@@ -13,7 +13,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.api.API
-import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.openLink
@@ -40,7 +39,23 @@ fun HomeActivity(
             scaffoldState = scaffoldState,
             topBar = {
                 Column {
-                    HomeHeader(scope, scaffoldState)
+                    HomeHeader(
+                        scope, scaffoldState,
+                        onClickSortType = { sortType ->
+                            postListingsViewModel.fetchPosts(
+                                auth = account?.jwt,
+                                clear = true,
+                                changeSortType = sortType,
+                            )
+                        },
+                        onClickListingType = { listingType ->
+                            postListingsViewModel.fetchPosts(
+                                auth = account?.jwt,
+                                clear = true,
+                                changeListingType = listingType,
+                            )
+                        }
+                    )
                     if (postListingsViewModel.loading) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
@@ -97,12 +112,12 @@ fun HomeActivity(
                     },
                     onSwipeRefresh = {
                         postListingsViewModel.fetchPosts(
-                            GetPosts(
-                                auth = account?.jwt
-                            )
+                            auth = account?.jwt,
+                            clear = true,
                         )
                     },
-                    loading = postListingsViewModel.loading && postListingsViewModel.page == 1 &&
+                    loading = postListingsViewModel.loading &&
+                        postListingsViewModel.page == 1 &&
                         postListingsViewModel.posts.isNotEmpty(),
                     isScrolledToEnd = isScrolledToEnd,
                 )

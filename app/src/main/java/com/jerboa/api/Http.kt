@@ -60,7 +60,8 @@ interface API {
 
     companion object {
         private var api: API? = null
-        private var currentInstance: String = DEFAULT_INSTANCE
+        var currentInstance: String = DEFAULT_INSTANCE
+            private set
 
         private fun buildUrl(): String {
             return "https://$currentInstance/api/$VERSION/"
