@@ -65,6 +65,7 @@ fun HomeActivity(
                     }
                 }
             },
+            drawerShape = MaterialTheme.shapes.small,
             drawerContent = {
                 Drawer(
                     accounts = accounts,
@@ -106,6 +107,13 @@ fun HomeActivity(
                     onDownvoteClick = { postView ->
                         postListingsViewModel.likePost(
                             voteType = VoteType.Downvote,
+                            postView = postView,
+                            account = account,
+                            ctx = ctx,
+                        )
+                    },
+                    onSaveClick = { postView ->
+                        postListingsViewModel.savePost(
                             postView = postView,
                             account = account,
                             ctx = ctx,

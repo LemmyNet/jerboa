@@ -11,6 +11,7 @@ fun CommentNodes(
     onUpvoteClick: (commentView: CommentView) -> Unit = {},
     onDownvoteClick: (commentView: CommentView) -> Unit = {},
     onReplyClick: (commentView: CommentView) -> Unit = {},
+    onSaveClick: (commentView: CommentView) -> Unit = {},
 ) {
     Column {
         nodes.forEach { node ->
@@ -19,6 +20,7 @@ fun CommentNodes(
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
                 onReplyClick = onReplyClick,
+                onSaveClick = onSaveClick,
             )
         }
     }

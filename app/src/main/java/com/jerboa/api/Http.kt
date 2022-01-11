@@ -12,10 +12,7 @@ import com.jerboa.serializeToMap
 import com.jerboa.toastException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.QueryMap
+import retrofit2.http.*
 
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
@@ -59,6 +56,18 @@ interface API {
      */
     @POST("comment")
     suspend fun createComment(@Body form: CreateComment): CommentResponse
+
+    /**
+     * Save a post.
+     */
+    @PUT("post/save")
+    suspend fun savePost(@Body form: SavePost): PostResponse
+
+    /**
+     * Save a comment.
+     */
+    @PUT("comment/save")
+    suspend fun saveComment(@Body form: SaveComment): CommentResponse
 
     companion object {
         private var api: API? = null
@@ -148,6 +157,42 @@ suspend fun likeCommentWrapper(
             comment_id = cv.comment.id, score = newVote, auth = account.jwt
         )
         updatedComment = api.likeComment(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return updatedComment!!
+}
+
+suspend fun savePostWrapper(
+    pv: PostView,
+    account: Account,
+    ctx: Context,
+): PostResponse {
+    var updatedPost: PostResponse? = null
+    val api = API.getInstance()
+    try {
+        val form = SavePost(
+            post_id = pv.post.id, save = !pv.saved, auth = account.jwt
+        )
+        updatedPost = api.savePost(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return updatedPost!!
+}
+
+suspend fun saveCommentWrapper(
+    cv: CommentView,
+    account: Account,
+    ctx: Context,
+): CommentResponse {
+    var updatedComment: CommentResponse? = null
+    val api = API.getInstance()
+    try {
+        val form = SaveComment(
+            comment_id = cv.comment.id, save = !cv.saved, auth = account.jwt
+        )
+        updatedComment = api.saveComment(form)
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -362,12 +407,6 @@ suspend fun likeCommentWrapper(
 //
 //
 //
-//  /**
-//   * Save a post.
-//   */
-//  async savePost(form: SavePost): Promise<PostResponse> {
-//    return this.wrapper(HttpType.Put, "/post/save", form);
-//  }
 //
 //  /**
 //   * Report a post.
@@ -433,12 +472,6 @@ suspend fun likeCommentWrapper(
 //  }
 //
 //
-//  /**
-//   * Save a comment.
-//   */
-//  async saveComment(form: SaveComment): Promise<CommentResponse> {
-//    return this.wrapper(HttpType.Put, "/comment/save", form);
-//  }
 //
 //  /**
 //   * Get / fetch comments.

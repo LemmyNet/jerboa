@@ -11,9 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.VoteType
-import com.jerboa.api.API
-import com.jerboa.api.likeCommentWrapper
-import com.jerboa.api.likePostWrapper
+import com.jerboa.api.*
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.CreateComment
@@ -85,17 +83,11 @@ class PostViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             account?.also { account ->
-                val updatedComment = likeCommentWrapper(
+                val updatedCommentView = likeCommentWrapper(
                     commentView, voteType, account,
                     ctx,
-                )
-                val foundIndex = comments.indexOfFirst {
-                    it.comment.id == commentView
-                        .comment.id
-                }
-                foundIndex.also { index ->
-                    comments[index] = updatedComment.comment_view
-                }
+                ).comment_view
+                findAndUpdateComment(updatedCommentView)
             }
         }
     }
@@ -142,6 +134,46 @@ class PostViewModel : ViewModel() {
 //                navController.navigate("post/${form.post_id}")
 //                navController.clearBackStack("post/${form.post_id}")
 //                navController.nav
+            }
+        }
+    }
+
+    fun savePost(
+        account: Account?,
+        ctx: Context,
+    ) {
+        account?.also { acct ->
+            postView?.also { pv ->
+                viewModelScope.launch {
+                    postView = savePostWrapper(pv, acct, ctx).post_view
+                }
+            }
+        }
+    }
+
+    private fun findAndUpdateComment(updatedCommentView: CommentView) {
+        val foundIndex = comments.indexOfFirst {
+            it.comment.id == updatedCommentView
+                .comment.id
+        }
+        foundIndex.also { index ->
+            comments[index] = updatedCommentView
+        }
+    }
+
+    fun saveComment(
+        commentView: CommentView,
+        account: Account?,
+        ctx: Context,
+    ) {
+        viewModelScope.launch {
+            account?.also { account ->
+                val updatedCommentView = saveCommentWrapper(
+                    commentView,
+                    account,
+                    ctx,
+                ).comment_view
+                findAndUpdateComment(updatedCommentView)
             }
         }
     }

@@ -23,6 +23,7 @@ import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
 import com.jerboa.db.Account
 import com.jerboa.getCurrentAccount
+import com.jerboa.ui.theme.Muted
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -237,6 +238,24 @@ fun IconAndTextDrawerItemWithMorePreview() {
 }
 
 @Composable
+fun HomeHeaderTitle(
+    selectedSortType: SortType,
+    selectedListingType: ListingType
+) {
+    Column {
+        Text(
+            text = selectedListingType.toString(),
+            style = MaterialTheme.typography.subtitle1
+        )
+        Text(
+            text = selectedSortType.toString(),
+            style = MaterialTheme.typography.body1,
+            color = Muted,
+        )
+    }
+}
+
+@Composable
 fun HomeHeader(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
@@ -289,8 +308,9 @@ fun HomeHeader(
 
     TopAppBar(
         title = {
-            Text(
-                text = "Top Stories",
+            HomeHeaderTitle(
+                selectedSortType = selectedSortType,
+                selectedListingType = selectedListingType
             )
         },
         navigationIcon = {

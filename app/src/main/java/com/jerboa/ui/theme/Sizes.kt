@@ -8,6 +8,7 @@ val SMALL_PADDING = 4.dp
 val MEDIUM_PADDING = 8.dp
 val LARGE_PADDING = 12.dp
 val XL_PADDING = 16.dp
+val XXL_PADDING = 20.dp
 
 val ICON_SIZE = 24.dp
 val LINK_ICON_SIZE = 36.dp

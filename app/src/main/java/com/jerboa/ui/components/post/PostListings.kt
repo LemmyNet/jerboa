@@ -19,6 +19,7 @@ fun PostListings(
     onDownvoteClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit = {},
     onPostLinkClick: (url: String) -> Unit = {},
+    onSaveClick: (postView: PostView) -> Unit = {},
     onSwipeRefresh: () -> Unit = {},
     loading: Boolean = false,
     isScrolledToEnd: () -> Unit = {},
@@ -38,6 +39,7 @@ fun PostListings(
                     onDownvoteClick = onDownvoteClick,
                     onPostClick = onPostClick,
                     onPostLinkClick = onPostLinkClick,
+                    onSaveClick = onSaveClick,
                 )
             }
         }

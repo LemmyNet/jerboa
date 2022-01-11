@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -210,6 +211,7 @@ fun PostFooterLine(
     onUpvoteClick: (postView: PostView) -> Unit = {},
     onDownvoteClick: (postView: PostView) -> Unit = {},
     onReplyClick: (postView: PostView) -> Unit = {},
+    onSaveClick: (postView: PostView) -> Unit = {},
     showReply: Boolean = false,
 ) {
     Row(
@@ -221,7 +223,7 @@ fun PostFooterLine(
             CommentCount(comments = postView.counts.comments)
         }
         Row(
-            horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
 
         ) {
             VoteGeneric(
@@ -238,6 +240,12 @@ fun PostFooterLine(
             )
             ActionBarButton(
                 icon = Icons.Default.Star,
+                onClick = { onSaveClick(postView) },
+                contentColor = if (postView.saved) {
+                    Color.Yellow
+                } else {
+                    Muted
+                },
             )
             if (showReply) {
                 ActionBarButton(
@@ -318,6 +326,7 @@ fun PostListing(
     onReplyClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit = {},
     onPostLinkClick: (url: String) -> Unit = {},
+    onSaveClick: (postView: PostView) -> Unit = {},
     showReply: Boolean = false,
 ) {
     Card(
@@ -346,6 +355,7 @@ fun PostListing(
                 postView = postView,
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
+                onSaveClick = onSaveClick,
                 onReplyClick = onReplyClick,
                 showReply = showReply,
             )

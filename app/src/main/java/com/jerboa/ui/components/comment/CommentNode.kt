@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Reply
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.*
 import com.jerboa.datatypes.CommentView
@@ -16,8 +17,9 @@ import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleSecondCommentReplyView
 import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.ui.theme.Muted
 import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.XL_PADDING
+import com.jerboa.ui.theme.XXL_PADDING
 
 @Composable
 fun CommentNodeHeader(commentView: CommentView) {
@@ -53,6 +55,7 @@ fun CommentNode(
     onUpvoteClick: (commentView: CommentView) -> Unit = {},
     onDownvoteClick: (commentView: CommentView) -> Unit = {},
     onReplyClick: (commentView: CommentView) -> Unit = {},
+    onSaveClick: (commentView: CommentView) -> Unit = {},
 ) {
     val offset = calculateCommentOffset(node.depth)
     val borderColor = calculateBorderColor(node.depth)
@@ -95,6 +98,7 @@ fun CommentNode(
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
                     onReplyClick = onReplyClick,
+                    onSaveClick = onSaveClick,
                 )
             }
         }
@@ -116,6 +120,7 @@ fun CommentFooterLine(
     onUpvoteClick: (commentView: CommentView) -> Unit = {},
     onDownvoteClick: (commentView: CommentView) -> Unit = {},
     onReplyClick: (commentView: CommentView) -> Unit = {},
+    onSaveClick: (commentView: CommentView) -> Unit = {},
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
@@ -124,7 +129,7 @@ fun CommentFooterLine(
             .padding(top = LARGE_PADDING)
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(XL_PADDING),
+            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
         ) {
             VoteGeneric(
                 myVote = commentView.my_vote,
@@ -138,7 +143,15 @@ fun CommentFooterLine(
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
             )
-            ActionBarButton(icon = Icons.Filled.Star)
+            ActionBarButton(
+                icon = Icons.Filled.Star,
+                onClick = { onSaveClick(commentView) },
+                contentColor = if (commentView.saved) {
+                    Color.Yellow
+                } else {
+                    Muted
+                },
+            )
             ActionBarButton(
                 icon = Icons.Filled.Reply,
                 onClick = { onReplyClick(commentView) },

@@ -89,6 +89,12 @@ fun PostActivity(
                                             ctx = ctx,
                                         )
                                     },
+                                    onSaveClick = {
+                                        postViewModel.savePost(
+                                            account = account,
+                                            ctx = ctx
+                                        )
+                                    },
                                     onReplyClick = {
                                         postViewModel.replyToCommentParent = null
                                         navController.navigate("commentReply")
@@ -123,7 +129,14 @@ fun PostActivity(
                                     onReplyClick = { commentView ->
                                         postViewModel.replyToCommentParent = commentView
                                         navController.navigate("commentReply")
-                                    }
+                                    },
+                                    onSaveClick = { commentView ->
+                                        postViewModel.saveComment(
+                                            commentView = commentView,
+                                            account = account,
+                                            ctx = ctx,
+                                        )
+                                    },
                                 )
                             }
                         }
