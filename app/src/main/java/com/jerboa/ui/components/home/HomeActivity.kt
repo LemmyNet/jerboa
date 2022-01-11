@@ -68,6 +68,7 @@ fun HomeActivity(
             drawerShape = MaterialTheme.shapes.small,
             drawerContent = {
                 Drawer(
+                    myPerson = siteViewModel.siteRes?.my_user?.local_user_view?.person,
                     accounts = accounts,
                     navController = navController,
                     onSwitchAccountClick = {

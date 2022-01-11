@@ -146,6 +146,7 @@ class MainActivity : ComponentActivity() {
                         PostActivity(
                             postId = postId,
                             postViewModel = postViewModel,
+                            postListingsViewModel = postListingsViewModel,
                             accountViewModel = accountViewModel,
                             navController = navController,
                         )

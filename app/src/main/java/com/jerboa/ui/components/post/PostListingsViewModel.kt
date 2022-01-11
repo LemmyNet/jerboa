@@ -87,12 +87,14 @@ class PostListingsViewModel : ViewModel() {
         }
     }
 
-    private fun findAndUpdatePost(updatedPostView: PostView) {
-        val foundIndex = posts.indexOfFirst {
-            it.post.id == updatedPostView.post.id
-        }
-        foundIndex.also { index ->
-            posts[index] = updatedPostView
+    fun findAndUpdatePost(updatedPostView: PostView?) {
+        updatedPostView?.also { updatedPostView ->
+            val foundIndex = posts.indexOfFirst {
+                it.post.id == updatedPostView.post.id
+            }
+            if (foundIndex != -1) {
+                posts[foundIndex] = updatedPostView
+            }
         }
     }
 

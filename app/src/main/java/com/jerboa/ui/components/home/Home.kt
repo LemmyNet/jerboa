@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -20,10 +21,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.colorShade
 import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.db.Account
 import com.jerboa.getCurrentAccount
+import com.jerboa.ui.components.common.LargerCircularIcon
+import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.person.PersonName
+import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.Muted
+import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.XL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -33,11 +42,12 @@ fun Drawer(
     accounts: List<Account>? = null,
     onSwitchAccountClick: (account: Account) -> Unit = {},
     onSignOutClick: () -> Unit = {},
+    myPerson: PersonSafe?,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
     DrawerHeader(
-        account = getCurrentAccount(accounts),
+        myPerson = myPerson,
         showAccountAddMode = showAccountAddMode,
         clickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode }
     )
@@ -64,23 +74,74 @@ fun DrawerContent(
         visible = showAccountAddMode,
     ) {
         DrawerAddAccountMode(
-            accounts = accounts, navController = navController,
-            onSwitchAccountClick = onSwitchAccountClick, onSignOutClick = onSignOutClick
+            accounts = accounts,
+            navController = navController,
+            onSwitchAccountClick = onSwitchAccountClick,
+            onSignOutClick = onSignOutClick
         )
     }
 
     AnimatedVisibility(
         visible = !showAccountAddMode,
     ) {
-        DrawerItemsStandard()
+        DrawerItemsMain()
     }
 }
 
 @Composable
-fun DrawerItemsStandard() {
-    Column {
-        Text("Standard mode")
+fun DrawerItemsMain(
+    onClickSubscribed: () -> Unit = {},
+    onClickLocal: () -> Unit = {},
+    onClickAll: () -> Unit = {},
+    onClickSaved: () -> Unit = {},
+    onClickProfile: () -> Unit = {},
+) {
+    LazyColumn {
+        item {
+            IconAndTextDrawerItem(
+                text = "Subscribed",
+                icon = Icons.Default.Bookmarks,
+                onClick = onClickSubscribed,
+            )
+        }
+        item {
+            IconAndTextDrawerItem(
+                text = "Local",
+                icon = Icons.Default.LocationCity,
+                onClick = onClickLocal,
+            )
+        }
+        item {
+            IconAndTextDrawerItem(
+                text = "All",
+                icon = Icons.Default.Public,
+                onClick = onClickAll,
+            )
+        }
+        item {
+            IconAndTextDrawerItem(
+                text = "Saved",
+                icon = Icons.Default.Star,
+                onClick = onClickSaved,
+            )
+        }
+        item {
+            Divider()
+        }
+        item {
+            IconAndTextDrawerItem(
+                text = "Profile",
+                icon = Icons.Default.Person,
+                onClick = onClickProfile,
+            )
+        }
     }
+}
+
+@Preview
+@Composable
+fun DrawerItemsMainPreview() {
+    DrawerItemsMain()
 }
 
 @Composable
@@ -127,27 +188,35 @@ fun DrawerAddAccountModePreview() {
     DrawerAddAccountMode()
 }
 
-@Preview
-@Composable
-fun DrawerPreview() {
-    Drawer()
-}
-
 @Composable
 fun DrawerHeader(
-    account: Account? = null,
-    clickShowAccountAddMode: () -> Unit,
-    showAccountAddMode: Boolean
+    myPerson: PersonSafe?,
+    clickShowAccountAddMode: () -> Unit = {},
+    showAccountAddMode: Boolean = false,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .background(Color.Blue)
-            .padding(16.dp)
+    val sizeMod = Modifier
+        .fillMaxWidth()
+        .height(DRAWER_BANNER_SIZE)
+
+    Box(
+        modifier = sizeMod
             .clickable(onClick = clickShowAccountAddMode),
-        content = {
-            account?.also { Text(text = it.name, color = Color.White) }
+    ) {
+        myPerson?.banner?.also {
+            PictrsBannerImage(
+                url = it,
+            )
+        }
+        // banner
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = sizeMod
+                .padding(XL_PADDING)
+        ) {
+            myPerson?.also {
+                AvatarAndAccountName(myPerson)
+            }
             Icon(
                 imageVector = if (showAccountAddMode) {
                     Icons.Default.ExpandLess
@@ -155,11 +224,28 @@ fun DrawerHeader(
                     Icons.Default.ExpandMore
                 },
                 contentDescription = "TODO",
-                modifier = Modifier.align(Alignment.End)
             )
-        },
-        verticalArrangement = Arrangement.Bottom,
-    )
+        }
+    }
+}
+
+@Composable
+fun AvatarAndAccountName(myPerson: PersonSafe) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)
+    ) {
+        myPerson.avatar?.also {
+            LargerCircularIcon(icon = it)
+        }
+        PersonName(person = myPerson, color = MaterialTheme.colors.onSurface)
+    }
+}
+
+@Preview
+@Composable
+fun DrawerHeaderPreview() {
+    DrawerHeader(myPerson = samplePersonSafe)
 }
 
 @Composable

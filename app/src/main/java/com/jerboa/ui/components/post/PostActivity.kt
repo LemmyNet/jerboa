@@ -29,6 +29,7 @@ import com.jerboa.ui.components.comment.CommentNode
 fun PostActivity(
     postId: Int,
     postViewModel: PostViewModel = viewModel(),
+    postListingsViewModel: PostListingsViewModel = viewModel(),
     accountViewModel: AccountViewModel = viewModel(),
     navController: NavController,
 ) {
@@ -69,7 +70,6 @@ fun PostActivity(
                     },
                 ) {
                     postViewModel.postView?.also { postView ->
-//                        if (!postViewModel.loading) {
                         LazyColumn(state = listState) {
                             item {
                                 PostListing(
@@ -81,6 +81,8 @@ fun PostActivity(
                                             account = account,
                                             ctx = ctx,
                                         )
+                                        // TODO will need to pass in postlistingsviewmodel
+                                        // for the Home page to also be updated
                                     },
                                     onDownvoteClick = {
                                         postViewModel.likePost(
@@ -141,7 +143,6 @@ fun PostActivity(
                             }
                         }
                     }
-//                    }
                 }
             }
         )

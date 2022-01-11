@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
@@ -14,17 +15,18 @@ import coil.transform.RoundedCornersTransformation
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunitySafe
 import com.jerboa.pictrsImageThumbnail
-import com.jerboa.ui.theme.ICON_SIZE
-import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
-import com.jerboa.ui.theme.MAX_IMAGE_SIZE
-import com.jerboa.ui.theme.THUMBNAIL_SIZE
+import com.jerboa.ui.theme.*
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun CircularIcon(icon: String) {
+fun CircularIcon(
+    icon: String,
+    size: Dp = ICON_SIZE,
+    thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
+) {
     Image(
         painter = rememberImagePainter(
-            data = pictrsImageThumbnail(icon, ICON_THUMBNAIL_SIZE),
+            data = pictrsImageThumbnail(icon, thumbnailSize),
             builder = {
                 crossfade(true)
                 placeholder(R.drawable.ic_launcher_foreground)
@@ -32,7 +34,16 @@ fun CircularIcon(icon: String) {
             }
         ),
         contentDescription = null,
-        modifier = Modifier.size(ICON_SIZE)
+        modifier = Modifier.size(size)
+    )
+}
+
+@Composable
+fun LargerCircularIcon(icon: String) {
+    CircularIcon(
+        icon = icon,
+        size = LARGER_ICON_SIZE,
+        thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
     )
 }
 
@@ -78,6 +89,26 @@ fun PictrsUrlImage(
             },
         ),
         contentScale = ContentScale.FillWidth,
+        contentDescription = null,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun PictrsBannerImage(
+    url: String,
+    modifier: Modifier = Modifier
+) {
+    Image(
+        painter = rememberImagePainter(
+            data = pictrsImageThumbnail(url, MAX_IMAGE_SIZE),
+            builder = {
+                size(OriginalSize)
+                crossfade(true)
+                placeholder(R.drawable.ic_launcher_foreground)
+            },
+        ),
+        contentScale = ContentScale.Crop,
         contentDescription = null,
         modifier = modifier,
     )

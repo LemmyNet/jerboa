@@ -13,8 +13,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -281,8 +280,8 @@ fun <T> VoteGeneric(
             else -> downvoteColor(myVote = myVote)
         }
     val voteIcon = when (type) {
-        VoteType.Upvote -> Icons.Default.ArrowUpward
-        else -> Icons.Default.ArrowDownward
+        VoteType.Upvote -> Icons.Default.ThumbUpAlt
+        else -> Icons.Default.ThumbDownAlt
     }
 
     val votesStr = if (type == VoteType.Downvote && votes == 0) {
