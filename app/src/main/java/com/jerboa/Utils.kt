@@ -8,12 +8,11 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ThumbDownAlt
+import androidx.compose.material.icons.filled.ThumbUpAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.datatypes.CommentView
@@ -41,6 +41,8 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.Muted
 import com.jerboa.ui.theme.SMALL_PADDING
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
 
@@ -434,3 +436,34 @@ fun isImage(url: String): Boolean {
 val imageRegex = Regex(
     pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))"
 )
+
+fun closeDrawer(
+    scope: CoroutineScope,
+    scaffoldState: ScaffoldState
+) {
+    scope.launch {
+        scaffoldState.drawerState.close()
+    }
+}
+
+@Composable
+fun SimpleTopAppBar(
+    text: String,
+    navController: NavController,
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = text,
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
+        },
+    )
+}

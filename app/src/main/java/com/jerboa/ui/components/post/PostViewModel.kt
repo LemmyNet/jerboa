@@ -11,7 +11,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.VoteType
-import com.jerboa.api.*
+import com.jerboa.api.API
+import com.jerboa.api.likeCommentWrapper
+import com.jerboa.api.saveCommentWrapper
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.CreateComment
@@ -26,8 +28,10 @@ class PostViewModel : ViewModel() {
 
     var res by mutableStateOf<GetPostResponse?>(null)
         private set
-    var postView by mutableStateOf<PostView?>(null)
+    var postView = mutableStateOf<PostView?>(null)
+        private set
     var comments = mutableStateListOf<CommentView>()
+        private set
     var loading: Boolean by mutableStateOf(false)
         private set
     var replyLoading: Boolean by mutableStateOf(false)
@@ -35,7 +39,7 @@ class PostViewModel : ViewModel() {
 
     var replyToCommentParent: CommentView? = null // TODO does this need to be state?
 
-    fun fetchPost(form: GetPost) {
+    fun fetchPost(form: GetPost, clear: Boolean = false) {
         val api = API.getInstance()
 
         viewModelScope.launch {
@@ -44,10 +48,15 @@ class PostViewModel : ViewModel() {
                     "jerboa",
                     "Fetching post: $form"
                 )
+
+                if (clear) {
+                    postView.value = null
+                }
+
                 loading = true
                 val out = api.getPost(form = form.serializeToMap())
                 res = out
-                postView = out.post_view
+                postView.value = out.post_view
                 comments.clear()
                 comments.addAll(out.comments)
             } catch (e: Exception) {
@@ -57,20 +66,6 @@ class PostViewModel : ViewModel() {
                 )
             } finally {
                 loading = false
-            }
-        }
-    }
-
-    fun likePost(
-        voteType: VoteType,
-        account: Account?,
-        ctx: Context,
-    ) {
-        account?.also { acct ->
-            postView?.also { pv ->
-                viewModelScope.launch {
-                    postView = likePostWrapper(pv, voteType, acct, ctx).post_view
-                }
             }
         }
     }
@@ -142,13 +137,7 @@ class PostViewModel : ViewModel() {
         account: Account?,
         ctx: Context,
     ) {
-        account?.also { acct ->
-            postView?.also { pv ->
-                viewModelScope.launch {
-                    postView = savePostWrapper(pv, acct, ctx).post_view
-                }
-            }
-        }
+        savePostRoutine(postView = postView, account = account, ctx = ctx, scope = viewModelScope)
     }
 
     private fun findAndUpdateComment(updatedCommentView: CommentView) {
@@ -176,5 +165,15 @@ class PostViewModel : ViewModel() {
                 findAndUpdateComment(updatedCommentView)
             }
         }
+    }
+
+    fun likePost(voteType: VoteType, account: Account?, ctx: Context) {
+        likePostRoutine(
+            postView = postView,
+            voteType = voteType,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
     }
 }

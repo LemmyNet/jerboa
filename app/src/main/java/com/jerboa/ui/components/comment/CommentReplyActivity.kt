@@ -43,7 +43,7 @@ fun CommentReplyActivity(
                 CommentReplyHeader(
                     navController = navController,
                     onSendClick = {
-                        postViewModel.postView?.also { postView ->
+                        postViewModel.postView.value?.also { postView ->
                             account?.also { account ->
                                 val parentId = postViewModel.replyToCommentParent?.comment?.id
                                 val form =
@@ -71,7 +71,7 @@ fun CommentReplyActivity(
                             onReplyChange = { reply = it },
                         )
                     } ?: run {
-                        postViewModel.postView?.also { postView ->
+                        postViewModel.postView.value?.also { postView ->
                             PostReply(
                                 postView = postView,
                                 reply = reply,

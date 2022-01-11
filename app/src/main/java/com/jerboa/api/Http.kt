@@ -69,6 +69,12 @@ interface API {
     @PUT("comment/save")
     suspend fun saveComment(@Body form: SaveComment): CommentResponse
 
+    /**
+     * Get / fetch a community.
+     */
+    @GET("community")
+    suspend fun getCommunity(@QueryMap form: Map<String, String>): GetCommunityResponse
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -284,12 +290,6 @@ suspend fun saveCommentWrapper(
 //    return this.wrapper(HttpType.Post, "/community", form);
 //  }
 //
-//  /**
-//   * Get / fetch a community.
-//   */
-//  async getCommunity(form: GetCommunity): Promise<GetCommunityResponse> {
-//    return this.wrapper(HttpType.Get, "/community", form);
-//  }
 //
 //  /**
 //   * Edit a community.

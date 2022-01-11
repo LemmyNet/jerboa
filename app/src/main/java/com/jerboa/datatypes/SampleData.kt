@@ -130,7 +130,7 @@ val sampleCommunitySafe = CommunitySafe(
     id = 14681,
     name = "socialism",
     title = "Socialism",
-    description = "Rules TBD .",
+    description = "This is the r/socialism community",
     removed = false,
     published = "2019-04-30T13:28:35.965035",
     updated = "2021-01-25T16:27:15.804739",
@@ -139,7 +139,7 @@ val sampleCommunitySafe = CommunitySafe(
     actor_id = "https://lemmy.ml/c/socialism",
     local = true,
     icon = "https://lemmy.ml/pictrs/image/QtiqDmp9XY.png",
-    banner = null
+    banner = "https://lemmy.ml/pictrs/image/386rk5OYWS.jpg"
 )
 
 val samplePostAggregates = PostAggregates(
@@ -298,4 +298,23 @@ val sampleSecondCommentReplyView = CommentView(
     saved = false,
     creator_blocked = false,
     my_vote = null,
+)
+
+val sampleCommunityAggregates = CommunityAggregates(
+    id = 84,
+    community_id = 834,
+    subscribers = 52,
+    posts = 82,
+    comments = 987,
+    users_active_day = 28,
+    users_active_week = 98,
+    users_active_month = 82,
+    users_active_half_year = 91,
+)
+
+val sampleCommunityView = CommunityView(
+    community = sampleCommunitySafe,
+    subscribed = false,
+    blocked = false,
+    counts = sampleCommunityAggregates,
 )

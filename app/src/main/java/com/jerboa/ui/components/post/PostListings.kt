@@ -8,18 +8,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.isScrolledToEnd
+import com.jerboa.ui.components.community.CommunityTopSection
 
 @Composable
 fun PostListings(
     posts: List<PostView>,
+    communityView: CommunityView? = null,
     onUpvoteClick: (postView: PostView) -> Unit = {},
     onDownvoteClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit = {},
     onPostLinkClick: (url: String) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
+    onCommunityClick: (communityId: Int) -> Unit = {},
     onSwipeRefresh: () -> Unit = {},
     loading: Boolean = false,
     isScrolledToEnd: () -> Unit = {},
@@ -31,6 +35,13 @@ fun PostListings(
         onRefresh = onSwipeRefresh,
     ) {
         LazyColumn(state = listState) {
+
+            communityView?.also {
+                item {
+                    CommunityTopSection(communityView = it)
+                }
+            }
+
             // List of items
             itemsIndexed(posts) { index, postView ->
                 PostListing(
@@ -40,6 +51,7 @@ fun PostListings(
                     onPostClick = onPostClick,
                     onPostLinkClick = onPostLinkClick,
                     onSaveClick = onSaveClick,
+                    onCommunityClick = onCommunityClick,
                 )
             }
         }

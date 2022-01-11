@@ -17,19 +17,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.jerboa.VoteType
-import com.jerboa.buildCommentsTree
+import com.jerboa.*
 import com.jerboa.datatypes.api.GetPost
 import com.jerboa.db.AccountViewModel
-import com.jerboa.getCurrentAccount
-import com.jerboa.openLink
 import com.jerboa.ui.components.comment.CommentNode
+import com.jerboa.ui.components.community.CommunityViewModel
+import com.jerboa.ui.components.community.communityClickWrapper
+import com.jerboa.ui.components.home.HomeViewModel
 
 @Composable
 fun PostActivity(
-    postId: Int,
     postViewModel: PostViewModel = viewModel(),
-    postListingsViewModel: PostListingsViewModel = viewModel(),
+    homeViewModel: HomeViewModel = viewModel(),
+    communityViewModel: CommunityViewModel = viewModel(),
     accountViewModel: AccountViewModel = viewModel(),
     navController: NavController,
 ) {
@@ -44,14 +44,14 @@ fun PostActivity(
 
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = postViewModel.loading && postViewModel
-            .postView !== null
+            .postView.value !== null
     )
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
             topBar = {
                 Column {
-                    PostListingHeader(navController = navController)
+                    SimpleTopAppBar("Post", navController = navController)
                     if (postViewModel.loading) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
@@ -61,15 +61,17 @@ fun PostActivity(
                 SwipeRefresh(
                     state = swipeRefreshState,
                     onRefresh = {
-                        postViewModel.fetchPost(
-                            GetPost(
-                                id = postId,
-                                auth = account?.jwt,
+                        postViewModel.postView.value?.also { postView ->
+                            postViewModel.fetchPost(
+                                GetPost(
+                                    id = postView.post.id,
+                                    auth = account?.jwt,
+                                )
                             )
-                        )
+                        }
                     },
                 ) {
-                    postViewModel.postView?.also { postView ->
+                    postViewModel.postView.value?.also { postView ->
                         LazyColumn(state = listState) {
                             item {
                                 PostListing(
@@ -103,6 +105,15 @@ fun PostActivity(
                                     },
                                     onPostLinkClick = { url ->
                                         openLink(url, ctx)
+                                    },
+                                    onCommunityClick = { communityId ->
+                                        communityClickWrapper(
+                                            communityViewModel,
+                                            communityId,
+                                            account,
+                                            navController,
+                                            ctx
+                                        )
                                     },
                                     showReply = true,
                                 )

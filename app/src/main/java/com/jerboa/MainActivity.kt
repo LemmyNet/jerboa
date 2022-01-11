@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,12 +24,14 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
 import com.jerboa.db.AppDB
 import com.jerboa.ui.components.comment.CommentReplyActivity
+import com.jerboa.ui.components.community.CommunityActivity
+import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.home.HomeActivity
+import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.login.LoginViewModel
 import com.jerboa.ui.components.post.PostActivity
-import com.jerboa.ui.components.post.PostListingsViewModel
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.theme.JerboaTheme
 
@@ -39,10 +42,11 @@ class JerboaApplication : Application() {
 
 class MainActivity : ComponentActivity() {
 
-    private val postListingsViewModel by viewModels<PostListingsViewModel>()
+    private val homeViewModel by viewModels<HomeViewModel>()
     private val postViewModel by viewModels<PostViewModel>()
     private val loginViewModel by viewModels<LoginViewModel>()
     private val siteViewModel by viewModels<SiteViewModel>()
+    private val communityViewModel by viewModels<CommunityViewModel>()
 
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).repository)
@@ -52,6 +56,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+
+            val ctx = LocalContext.current
 
             // Read the accounts from the DB
             val accounts by accountViewModel.allAccounts.observeAsState()
@@ -65,8 +71,8 @@ class MainActivity : ComponentActivity() {
                 siteViewModel.siteRes?.my_user?.also { myUser ->
                     LaunchedEffect(Unit, block = {
 
-                        postListingsViewModel.fetchPosts(
-                            auth = account.jwt,
+                        homeViewModel.fetchPosts(
+                            account = account,
                             changeListingType = ListingType.values()[
                                 myUser.local_user_view.local_user
                                     .default_listing_type
@@ -74,7 +80,8 @@ class MainActivity : ComponentActivity() {
                             changeSortType = SortType.values()[
                                 myUser.local_user_view.local_user
                                     .default_sort_type
-                            ]
+                            ],
+                            ctx = ctx,
                         )
                     })
                 }
@@ -103,18 +110,37 @@ class MainActivity : ComponentActivity() {
                     composable(route = "home") {
                         HomeActivity(
                             navController = navController,
-                            postListingsViewModel = postListingsViewModel,
+                            homeViewModel = homeViewModel,
+                            communityViewModel = communityViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             isScrolledToEnd = {
-                                postListingsViewModel.fetchPosts(
-                                    auth = account?.jwt,
+                                homeViewModel.fetchPosts(
+                                    account = account,
                                     nextPage = true,
+                                    ctx = ctx,
+                                )
+                            },
+                        )
+                    }
+                    composable(route = "community") {
+                        CommunityActivity(
+                            navController = navController,
+                            communityViewModel = communityViewModel,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            isScrolledToEnd = {
+                                communityViewModel.fetchPosts(
+                                    account = account,
+                                    nextPage = true,
+                                    ctx = ctx,
                                 )
                             },
                         )
                     }
                     composable(
+                        // TODO remove this fetch somehow, don't use navigate to fetch things
+                        //  WRONG, you should refactor to do it this way
                         route = "post/{postId}?fetch={fetch}",
                         arguments = listOf(
                             navArgument("postId") {
@@ -133,20 +159,19 @@ class MainActivity : ComponentActivity() {
                             Log.d("jerboa", "fetch = $fetch")
 
                             if (fetch) {
-                                postViewModel.postView = null
                                 postViewModel.fetchPost(
                                     GetPost(
                                         id = postId,
                                         auth = account?.jwt,
-                                    )
+                                    ),
+                                    clear = true,
                                 )
                             }
                         })
 
                         PostActivity(
-                            postId = postId,
                             postViewModel = postViewModel,
-                            postListingsViewModel = postListingsViewModel,
+                            homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             navController = navController,
                         )

@@ -16,6 +16,8 @@ val DRAWER_BANNER_SIZE = 96.dp
 val LINK_ICON_SIZE = 36.dp
 val POST_LINK_PIC_SIZE = 104.dp
 
+val DRAWER_ITEM_SPACING = 24.dp
+
 // TODO remove all DPs from code, put here.
 
 const val ICON_THUMBNAIL_SIZE = 96

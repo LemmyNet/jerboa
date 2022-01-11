@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -20,19 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.colorShade
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.datatypes.*
+import com.jerboa.datatypes.api.MyUserInfo
 import com.jerboa.db.Account
 import com.jerboa.getCurrentAccount
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.person.PersonName
-import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
-import com.jerboa.ui.theme.Muted
-import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.XL_PADDING
+import com.jerboa.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -42,12 +40,13 @@ fun Drawer(
     accounts: List<Account>? = null,
     onSwitchAccountClick: (account: Account) -> Unit = {},
     onSignOutClick: () -> Unit = {},
-    myPerson: PersonSafe?,
+    onClickListingType: (ListingType) -> Unit = {},
+    myUserInfo: MyUserInfo?,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
     DrawerHeader(
-        myPerson = myPerson,
+        myPerson = myUserInfo?.local_user_view?.person,
         showAccountAddMode = showAccountAddMode,
         clickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode }
     )
@@ -55,10 +54,12 @@ fun Drawer(
     // Drawer items
     DrawerContent(
         accounts = accounts,
+        follows = myUserInfo?.follows,
         showAccountAddMode = showAccountAddMode,
         navController = navController,
         onSwitchAccountClick = onSwitchAccountClick,
         onSignOutClick = onSignOutClick,
+        onClickListingType = onClickListingType,
     )
 }
 
@@ -69,6 +70,8 @@ fun DrawerContent(
     accounts: List<Account>?,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
+    onClickListingType: (ListingType) -> Unit = {},
+    follows: List<CommunityFollowerView>?,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
@@ -84,38 +87,42 @@ fun DrawerContent(
     AnimatedVisibility(
         visible = !showAccountAddMode,
     ) {
-        DrawerItemsMain()
+        DrawerItemsMain(
+            onClickListingType = onClickListingType,
+            follows = follows,
+        )
     }
 }
 
 @Composable
 fun DrawerItemsMain(
-    onClickSubscribed: () -> Unit = {},
-    onClickLocal: () -> Unit = {},
-    onClickAll: () -> Unit = {},
+    follows: List<CommunityFollowerView>? = null,
     onClickSaved: () -> Unit = {},
     onClickProfile: () -> Unit = {},
+    onClickListingType: (ListingType) -> Unit = {},
 ) {
-    LazyColumn {
+    val listState = rememberLazyListState()
+
+    LazyColumn(state = listState) {
         item {
             IconAndTextDrawerItem(
                 text = "Subscribed",
                 icon = Icons.Default.Bookmarks,
-                onClick = onClickSubscribed,
+                onClick = { onClickListingType(ListingType.Subscribed) },
             )
         }
         item {
             IconAndTextDrawerItem(
                 text = "Local",
                 icon = Icons.Default.LocationCity,
-                onClick = onClickLocal,
+                onClick = { onClickListingType(ListingType.Local) },
             )
         }
         item {
             IconAndTextDrawerItem(
                 text = "All",
                 icon = Icons.Default.Public,
-                onClick = onClickAll,
+                onClick = { onClickListingType(ListingType.All) },
             )
         }
         item {
@@ -134,6 +141,30 @@ fun DrawerItemsMain(
                 icon = Icons.Default.Person,
                 onClick = onClickProfile,
             )
+        }
+        item {
+            IconAndTextDrawerItem(
+                text = "Inbox",
+                icon = Icons.Default.Email,
+                onClick = onClickProfile,
+            )
+        }
+        item {
+            Divider()
+        }
+
+        follows?.also { follows ->
+            item {
+                Text(
+                    text = "Subscriptions",
+                    modifier = Modifier.padding(LARGE_PADDING),
+                    style = MaterialTheme.typography.subtitle1,
+                    color = Muted,
+                )
+            }
+            items(follows) { follow ->
+                CommunityLinkLarger(community = follow.community)
+            }
         }
     }
 }
@@ -258,7 +289,7 @@ fun IconAndTextDrawerItem(
 ) {
 
     val spacingMod = Modifier
-        .padding(12.dp)
+        .padding(LARGE_PADDING)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -283,7 +314,7 @@ fun IconAndTextDrawerItem(
                     imageVector = icon,
                     contentDescription = "TODO",
                     tint = MaterialTheme.colors.onSurface,
-                    modifier = spacingMod.size(24.dp)
+                    modifier = spacingMod.size(DRAWER_ITEM_SPACING)
 
                 )
             }
@@ -324,13 +355,17 @@ fun IconAndTextDrawerItemWithMorePreview() {
 }
 
 @Composable
-fun HomeHeaderTitle(
+fun HomeOrCommunityHeaderTitle(
     selectedSortType: SortType,
-    selectedListingType: ListingType
+    selectedListingType: ListingType,
+    communityName: String?
 ) {
+    val topOne = communityName.also { it } ?: run { selectedListingType.toString() }
+
     Column {
+
         Text(
-            text = selectedListingType.toString(),
+            text = topOne,
             style = MaterialTheme.typography.subtitle1
         )
         Text(
@@ -342,13 +377,15 @@ fun HomeHeaderTitle(
 }
 
 @Composable
-fun HomeHeader(
+fun HomeOrCommunityHeader(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
     onClickSortType: (SortType) -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
     selectedSortType: SortType,
     selectedListingType: ListingType,
+    communityName: String? = null,
+    navController: NavController = rememberNavController(),
 ) {
 
     var showSortOptions by remember { mutableStateOf(false) }
@@ -394,34 +431,46 @@ fun HomeHeader(
 
     TopAppBar(
         title = {
-            HomeHeaderTitle(
+            HomeOrCommunityHeaderTitle(
                 selectedSortType = selectedSortType,
-                selectedListingType = selectedListingType
+                selectedListingType = selectedListingType,
+                communityName = communityName,
             )
         },
         navigationIcon = {
-            IconButton(onClick = {
-                scope.launch {
-                    scaffoldState.drawerState.open()
+            communityName?.also {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
                 }
-            }) {
-                Icon(
-                    Icons.Filled.Menu,
-                    contentDescription = "Menu"
-                )
+            } ?: run {
+                IconButton(onClick = {
+                    scope.launch {
+                        scaffoldState.drawerState.open()
+                    }
+                }) {
+                    Icon(
+                        Icons.Filled.Menu,
+                        contentDescription = "Menu"
+                    )
+                }
             }
         },
 
         // No Idea why, but the tint for this is muted?
         actions = {
-            IconButton(onClick = {
-                showListingTypeOptions = !showListingTypeOptions
-            }) {
-                Icon(
-                    Icons.Default.FilterList,
-                    contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
-                )
+            if (communityName.isNullOrBlank()) {
+                IconButton(onClick = {
+                    showListingTypeOptions = !showListingTypeOptions
+                }) {
+                    Icon(
+                        Icons.Default.FilterList,
+                        contentDescription = "TODO",
+                        tint = MaterialTheme.colors.onSurface
+                    )
+                }
             }
             IconButton(onClick = {
                 showSortOptions = !showSortOptions
@@ -589,7 +638,7 @@ fun HomeHeaderPreview() {
     val scope = rememberCoroutineScope()
     val scaffoldState =
         rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    HomeHeader(
+    HomeOrCommunityHeader(
         scope,
         scaffoldState,
         selectedSortType = SortType.Hot,

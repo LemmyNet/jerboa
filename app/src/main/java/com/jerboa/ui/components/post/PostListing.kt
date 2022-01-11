@@ -2,7 +2,10 @@ package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
@@ -12,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -27,11 +29,17 @@ import com.jerboa.ui.theme.*
 import java.net.URL
 
 @Composable
-fun PostHeaderLine(postView: PostView) {
+fun PostHeaderLine(
+    postView: PostView,
+    onCommunityClick: (communityId: Int) -> Unit = {},
+) {
     FlowRow(
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
     ) {
-        CommunityLink(community = postView.community)
+        CommunityLink(
+            community = postView.community,
+            onClick = onCommunityClick,
+        )
         DotSpacer()
         PersonLink(person = postView.creator)
         DotSpacer()
@@ -327,6 +335,7 @@ fun PostListing(
     onPostClick: (postView: PostView) -> Unit = {},
     onPostLinkClick: (url: String) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
+    onCommunityClick: (communityId: Int) -> Unit = {},
     showReply: Boolean = false,
 ) {
     Card(
@@ -341,7 +350,10 @@ fun PostListing(
         ) {
 
             // Header
-            PostHeaderLine(postView = postView)
+            PostHeaderLine(
+                postView = postView,
+                onCommunityClick = onCommunityClick,
+            )
 
             //  Title + metadata
             PostBody(
@@ -363,30 +375,9 @@ fun PostListing(
     }
 }
 
-@Composable
-fun PostListingHeader(
-    navController: NavController,
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = "Post",
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-        },
-    )
-}
-
 @Preview
 @Composable
 fun PostListingHeaderPreview() {
     val navController = rememberNavController()
-    PostListingHeader(navController)
+    SimpleTopAppBar("Post", navController)
 }

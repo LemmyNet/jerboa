@@ -76,6 +76,13 @@ class LoginViewModel : ViewModel() {
                     jwt = jwt,
                 )
 
+                // TODO
+                // Refetch the front page
+//                postListingsViewModel.fetchPosts(
+//                    auth = jwt,
+//                    clear = true,
+//                )
+
                 // Remove the default account
                 accountViewModel.removeCurrent()
 
