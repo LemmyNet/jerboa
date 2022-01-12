@@ -18,6 +18,8 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
+import com.jerboa.ui.components.person.PersonProfileViewModel
+import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostListings
 import kotlinx.coroutines.CoroutineScope
 
@@ -26,9 +28,9 @@ fun HomeActivity(
     navController: NavController,
     homeViewModel: HomeViewModel,
     communityViewModel: CommunityViewModel,
+    personProfileViewModel: PersonProfileViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    isScrolledToEnd: () -> Unit,
 ) {
 
     Log.d("jerboa", "got to community activity")
@@ -59,25 +61,26 @@ fun HomeActivity(
             ),
             drawerContent = {
                 MainDrawer(
-                    siteViewModel,
-                    accounts,
-                    navController,
-                    accountViewModel,
-                    homeViewModel,
-                    scope,
-                    scaffoldState,
-                    account,
-                    ctx
+                    siteViewModel = siteViewModel,
+                    accounts = accounts,
+                    navController = navController,
+                    accountViewModel = accountViewModel,
+                    communityViewModel = communityViewModel,
+                    homeViewModel = homeViewModel,
+                    scope = scope,
+                    scaffoldState = scaffoldState,
+                    account = account,
+                    ctx = ctx
                 )
             },
             content = {
                 MainPostListingsContent(
                     homeViewModel,
                     communityViewModel,
+                    personProfileViewModel,
                     account,
                     ctx,
                     navController,
-                    isScrolledToEnd,
                 )
             }
         )
@@ -88,10 +91,10 @@ fun HomeActivity(
 fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
     communityViewModel: CommunityViewModel,
+    personProfileViewModel: PersonProfileViewModel,
     account: Account?,
     ctx: Context,
     navController: NavController,
-    isScrolledToEnd: () -> Unit,
 ) {
     PostListings(
         posts = homeViewModel.posts,
@@ -133,17 +136,32 @@ fun MainPostListingsContent(
         },
         onCommunityClick = { communityId ->
             communityClickWrapper(
-                communityViewModel,
-                communityId,
-                account,
-                navController,
+                communityViewModel = communityViewModel,
+                communityId = communityId,
+                account = account,
+                navController = navController,
+                ctx = ctx,
+            )
+        },
+        onPersonClick = { personId ->
+            personClickWrapper(
+                personProfileViewModel = personProfileViewModel,
+                personId = personId,
+                account = account,
+                navController = navController,
                 ctx = ctx,
             )
         },
         loading = homeViewModel.loading.value &&
             homeViewModel.page.value == 1 &&
             homeViewModel.posts.isNotEmpty(),
-        isScrolledToEnd = isScrolledToEnd,
+        isScrolledToEnd = {
+            homeViewModel.fetchPosts(
+                account = account,
+                nextPage = true,
+                ctx = ctx,
+            )
+        },
     )
 }
 
@@ -153,6 +171,7 @@ fun MainDrawer(
     accounts: List<Account>?,
     navController: NavController,
     accountViewModel: AccountViewModel,
+    communityViewModel: CommunityViewModel,
     homeViewModel: HomeViewModel,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
@@ -202,7 +221,17 @@ fun MainDrawer(
                 ctx = ctx,
             )
             closeDrawer(scope, scaffoldState)
-        }
+        },
+        onCommunityClick = { communityId ->
+            communityClickWrapper(
+                communityViewModel,
+                communityId,
+                account,
+                navController,
+                ctx = ctx,
+            )
+            closeDrawer(scope, scaffoldState)
+        },
     )
 }
 
@@ -216,7 +245,7 @@ fun MainTopBar(
     navController: NavController,
 ) {
     Column {
-        HomeOrCommunityHeader(
+        HomeOrCommunityOrPersonHeader(
             scope, scaffoldState,
             selectedSortType = homeViewModel.sortType.value,
             selectedListingType = homeViewModel.listingType.value,

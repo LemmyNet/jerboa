@@ -75,6 +75,12 @@ interface API {
     @GET("community")
     suspend fun getCommunity(@QueryMap form: Map<String, String>): GetCommunityResponse
 
+    /**
+     * Get the details for a person.
+     */
+    @GET("user")
+    suspend fun getPersonDetails(@QueryMap form: Map<String, String>): GetPersonDetailsResponse
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -560,14 +566,6 @@ suspend fun saveCommentWrapper(
 //  }
 //
 //
-//  /**
-//   * Get the details for a person.
-//   */
-//  async getPersonDetails(
-//  form: GetPersonDetails
-//  ): Promise<GetPersonDetailsResponse> {
-//    return this.wrapper(HttpType.Get, "/user", form);
-//  }
 //
 //  /**
 //   * Get mentions for your user.

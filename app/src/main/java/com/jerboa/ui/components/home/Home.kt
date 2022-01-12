@@ -42,6 +42,7 @@ fun Drawer(
     onSignOutClick: () -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
     myUserInfo: MyUserInfo?,
+    onCommunityClick: (communityId: Int) -> Unit = {},
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -60,6 +61,7 @@ fun Drawer(
         onSwitchAccountClick = onSwitchAccountClick,
         onSignOutClick = onSignOutClick,
         onClickListingType = onClickListingType,
+        onCommunityClick = onCommunityClick,
     )
 }
 
@@ -71,6 +73,7 @@ fun DrawerContent(
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit = {},
+    onCommunityClick: (communityId: Int) -> Unit = {},
     follows: List<CommunityFollowerView>?,
 ) {
     AnimatedVisibility(
@@ -89,6 +92,7 @@ fun DrawerContent(
     ) {
         DrawerItemsMain(
             onClickListingType = onClickListingType,
+            onCommunityClick = onCommunityClick,
             follows = follows,
         )
     }
@@ -100,10 +104,13 @@ fun DrawerItemsMain(
     onClickSaved: () -> Unit = {},
     onClickProfile: () -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
+    onCommunityClick: (communityId: Int) -> Unit = {},
 ) {
     val listState = rememberLazyListState()
 
-    LazyColumn(state = listState) {
+    LazyColumn(
+        state = listState,
+    ) {
         item {
             IconAndTextDrawerItem(
                 text = "Subscribed",
@@ -163,7 +170,10 @@ fun DrawerItemsMain(
                 )
             }
             items(follows) { follow ->
-                CommunityLinkLarger(community = follow.community)
+                CommunityLinkLarger(
+                    community = follow.community,
+                    onClick = onCommunityClick,
+                )
             }
         }
     }
@@ -355,12 +365,13 @@ fun IconAndTextDrawerItemWithMorePreview() {
 }
 
 @Composable
-fun HomeOrCommunityHeaderTitle(
+fun HomeOrCommunityorPersonHeaderTitle(
     selectedSortType: SortType,
-    selectedListingType: ListingType,
-    communityName: String?
+    selectedListingType: ListingType?,
+    communityName: String?,
+    personName: String?,
 ) {
-    val topOne = communityName.also { it } ?: run { selectedListingType.toString() }
+    val topOne = communityName ?: (personName ?: selectedListingType?.toString() ?: "")
 
     Column {
 
@@ -377,14 +388,15 @@ fun HomeOrCommunityHeaderTitle(
 }
 
 @Composable
-fun HomeOrCommunityHeader(
+fun HomeOrCommunityOrPersonHeader(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
     onClickSortType: (SortType) -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
     selectedSortType: SortType,
-    selectedListingType: ListingType,
+    selectedListingType: ListingType? = null,
     communityName: String? = null,
+    personName: String? = null,
     navController: NavController = rememberNavController(),
 ) {
 
@@ -420,7 +432,7 @@ fun HomeOrCommunityHeader(
 
     if (showListingTypeOptions) {
         ListingTypeOptionsDialog(
-            selectedListingType = selectedListingType,
+            selectedListingType = selectedListingType!!,
             onDismissRequest = { showListingTypeOptions = false },
             onClickListingType = {
                 showListingTypeOptions = false
@@ -431,21 +443,15 @@ fun HomeOrCommunityHeader(
 
     TopAppBar(
         title = {
-            HomeOrCommunityHeaderTitle(
+            HomeOrCommunityorPersonHeaderTitle(
                 selectedSortType = selectedSortType,
                 selectedListingType = selectedListingType,
                 communityName = communityName,
+                personName = personName,
             )
         },
         navigationIcon = {
-            communityName?.also {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        Icons.Filled.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
-            } ?: run {
+            if (communityName.isNullOrBlank() && personName.isNullOrBlank()) {
                 IconButton(onClick = {
                     scope.launch {
                         scaffoldState.drawerState.open()
@@ -456,12 +462,18 @@ fun HomeOrCommunityHeader(
                         contentDescription = "Menu"
                     )
                 }
+            } else {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
             }
         },
-
         // No Idea why, but the tint for this is muted?
         actions = {
-            if (communityName.isNullOrBlank()) {
+            if (communityName.isNullOrBlank() && personName.isNullOrBlank()) {
                 IconButton(onClick = {
                     showListingTypeOptions = !showListingTypeOptions
                 }) {
@@ -638,7 +650,7 @@ fun HomeHeaderPreview() {
     val scope = rememberCoroutineScope()
     val scaffoldState =
         rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    HomeOrCommunityHeader(
+    HomeOrCommunityOrPersonHeader(
         scope,
         scaffoldState,
         selectedSortType = SortType.Hot,

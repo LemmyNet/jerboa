@@ -11,12 +11,22 @@ import java.time.Instant
 import java.util.*
 
 @Composable
-fun TimeAgo(dateStr: String) {
+fun TimeAgo(dateStr: String, precedingString: String? = null, includeAgo: Boolean = false) {
     val then = Date.from(Instant.parse(dateStr + "Z"))
-    val ago = prettyTimeShortener(prettyTime.formatDuration(then))
+    val pt = prettyTime.formatDuration(then)
+
+    val pretty = if (includeAgo) {
+        pt
+    } else {
+        prettyTimeShortener(pt)
+    }
+
+    val afterPreceding = precedingString?.let {
+        "$it $pretty ago"
+    } ?: run { pretty }
 
     Text(
-        text = ago,
+        text = afterPreceding,
         color = Muted,
     )
 }

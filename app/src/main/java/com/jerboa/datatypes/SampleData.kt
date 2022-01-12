@@ -93,7 +93,9 @@ val samplePersonSafe = PersonSafe(
     published = "2021-08-08T01:47:44.437708",
     updated = "2021-10-11T07:14:53.548707",
     actor_id = "https://lemmy.ml/u/homeless",
-    bio = null,
+    bio = "This is my bio.\n\nI like trucks, trains, and geese. This is *one* longer line " +
+        "that I have in here. But I'm not sure blah blah blah\n\nI have " +
+        "**tres ojos**.",
     local = true,
     banner = null,
     deleted = false,
@@ -317,4 +319,18 @@ val sampleCommunityView = CommunityView(
     subscribed = false,
     blocked = false,
     counts = sampleCommunityAggregates,
+)
+
+val samplePersonAggregates = PersonAggregates(
+    id = 23,
+    person_id = 54,
+    post_count = 28,
+    post_score = 38,
+    comment_count = 98,
+    comment_score = 168,
+)
+
+val samplePersonView = PersonViewSafe(
+    person = samplePersonSafe,
+    counts = samplePersonAggregates
 )

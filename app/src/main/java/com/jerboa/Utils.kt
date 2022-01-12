@@ -35,7 +35,7 @@ import com.jerboa.datatypes.PersonSafe
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.TimeAgo
-import com.jerboa.ui.components.person.PersonLink
+import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.Muted
@@ -306,6 +306,7 @@ fun MyMarkdownText(
     markdown: String,
     modifier: Modifier = Modifier,
     preview: Boolean = false,
+    color: Color = MaterialTheme.typography.body1.color,
 ) {
 
 //    val fontSize = TextUnit(MaterialTheme.typography.body1.fontSize.value, type = TextUnitType.Sp)
@@ -340,7 +341,7 @@ fun CommentOrPostNodeHeader(
             .padding(vertical = SMALL_PADDING)
     ) {
         Row {
-            PersonLink(person = creator)
+            PersonProfileLink(person = creator)
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -466,4 +467,8 @@ fun SimpleTopAppBar(
             }
         },
     )
+}
+
+fun personNameShown(person: PersonSafe): String {
+    return person.display_name ?: person.name
 }

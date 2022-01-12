@@ -31,6 +31,8 @@ import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.login.LoginViewModel
+import com.jerboa.ui.components.person.PersonProfileActivity
+import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.theme.JerboaTheme
@@ -47,6 +49,7 @@ class MainActivity : ComponentActivity() {
     private val loginViewModel by viewModels<LoginViewModel>()
     private val siteViewModel by viewModels<SiteViewModel>()
     private val communityViewModel by viewModels<CommunityViewModel>()
+    private val personProfileViewModel by viewModels<PersonProfileViewModel>()
 
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).repository)
@@ -112,35 +115,29 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             homeViewModel = homeViewModel,
                             communityViewModel = communityViewModel,
+                            personProfileViewModel = personProfileViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            isScrolledToEnd = {
-                                homeViewModel.fetchPosts(
-                                    account = account,
-                                    nextPage = true,
-                                    ctx = ctx,
-                                )
-                            },
                         )
                     }
                     composable(route = "community") {
                         CommunityActivity(
                             navController = navController,
                             communityViewModel = communityViewModel,
+                            personProfileViewModel = personProfileViewModel,
                             accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            isScrolledToEnd = {
-                                communityViewModel.fetchPosts(
-                                    account = account,
-                                    nextPage = true,
-                                    ctx = ctx,
-                                )
-                            },
+                        )
+                    }
+                    composable(route = "profile") {
+                        PersonProfileActivity(
+                            navController = navController,
+                            personProfileViewModel = personProfileViewModel,
+                            communityViewModel = communityViewModel,
+                            accountViewModel = accountViewModel,
                         )
                     }
                     composable(
                         // TODO remove this fetch somehow, don't use navigate to fetch things
-                        //  WRONG, you should refactor to do it this way
                         route = "post/{postId}?fetch={fetch}",
                         arguments = listOf(
                             navArgument("postId") {
@@ -173,6 +170,8 @@ class MainActivity : ComponentActivity() {
                             postViewModel = postViewModel,
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
+                            communityViewModel = communityViewModel,
+                            personProfileViewModel = personProfileViewModel,
                             navController = navController,
                         )
                     }

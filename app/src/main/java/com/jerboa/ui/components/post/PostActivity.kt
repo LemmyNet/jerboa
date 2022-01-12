@@ -13,7 +13,6 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -24,13 +23,16 @@ import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.person.PersonProfileViewModel
+import com.jerboa.ui.components.person.personClickWrapper
 
 @Composable
 fun PostActivity(
-    postViewModel: PostViewModel = viewModel(),
-    homeViewModel: HomeViewModel = viewModel(),
-    communityViewModel: CommunityViewModel = viewModel(),
-    accountViewModel: AccountViewModel = viewModel(),
+    postViewModel: PostViewModel,
+    homeViewModel: HomeViewModel,
+    communityViewModel: CommunityViewModel,
+    personProfileViewModel: PersonProfileViewModel,
+    accountViewModel: AccountViewModel,
     navController: NavController,
 ) {
 
@@ -110,6 +112,15 @@ fun PostActivity(
                                         communityClickWrapper(
                                             communityViewModel,
                                             communityId,
+                                            account,
+                                            navController,
+                                            ctx
+                                        )
+                                    },
+                                    onPersonClick = { personId ->
+                                        personClickWrapper(
+                                            personProfileViewModel,
+                                            personId,
                                             account,
                                             navController,
                                             ctx

@@ -18,9 +18,6 @@ data class Register(
     val password: String?,
     val password_verify: String,
     val show_nsfw: Boolean,
-    /**  
-     * Captcha is only checked if these are enabled in the server.  
-     */  
     val captcha_uuid: String,
     val captcha_answer: String?,
     val honeypot: String?,
@@ -29,49 +26,19 @@ data class Register(
 // data class GetCaptcha ()
 
 data class GetCaptchaResponse(
-    /**  
-     * Will be undefined if captchas are disabled.  
-     */  
     val ok: CaptchaResponse?,
 )
 
 data class CaptchaResponse(
-    /**  
-     * A Base64 encoded png.  
-     */  
     val png: String,
-
-    /**  
-     * A Base64 encoded wav file.  
-     */  
     val wav: String?,
-
-    /**  
-     * A UUID to match the one given on request.  
-     */  
     val uuid: String,
 )
 
 data class SaveUserSettings(
     val show_nsfw: Boolean,
-
-    /**  
-     * Default for this is `browser`.  
-     */  
     val theme: String?,
-
-    /**  
-     * The [[SortType]].  
-     *  
-     * The Sort types from above, zero indexed as a Int  
-     */  
     val default_sort_type: Int?,
-
-    /**  
-     * The [[ListingType]].  
-     *  
-     * Post listing types are `All, Subscribed, Community`  
-     */  
     val default_listing_type: Int?,
     val lang: String?,
     val avatar: String?,
@@ -105,17 +72,14 @@ data class LoginResponse(
 )
 
 data class GetPersonDetails(
-    val person_id: Int,
-    /**  
-     * To get details for a federated user, use `person@instance.tld`.  
-     */  
-    val username: String,
-    val sort: String?,
-    val page: Int?,
-    val limit: Int?,
-    val community_id: Int?,
-    val saved_only: Boolean?,
-    val auth: String?,
+    val person_id: Int? = null,
+    val username: String? = null,
+    val sort: String? = null,
+    val page: Int? = null,
+    val limit: Int? = null,
+    val community_id: Int? = null,
+    val saved_only: Boolean? = null,
+    val auth: String? = null,
 )
 
 data class GetPersonDetailsResponse(
@@ -150,15 +114,8 @@ data class AddAdminResponse(
 data class BanPerson(
     val person_id: Int,
     val ban: Boolean,
-
-    /**  
-     * Removes/Restores their comments, posts, and communities  
-     */  
     val remove_data: Boolean,
     val reason: String?,
-    /**  
-     * The expire time in Unix seconds  
-     */  
     val expires: Int,
     val auth: String?,
 )
@@ -169,9 +126,6 @@ data class BanPersonResponse(
 )
 
 data class GetReplies(
-    /**  
-     * The [[SortType]].  
-     */  
     val sort: String,
     val page: Int?,
     val limit: Int?,
@@ -180,9 +134,6 @@ data class GetReplies(
 )
 
 data class GetPersonMentions(
-    /**  
-     * The [[SortType]].  
-     */  
     val sort: String,
     val page: Int?,
     val limit: Int?,
@@ -200,9 +151,6 @@ data class PersonMentionResponse(
     val person_mention_view: PersonMentionView,
 )
 
-/**
- * Permanently deletes your posts and comments
- */
 data class DeleteAccount(
     val password: String,
     val auth: String,
@@ -260,9 +208,6 @@ data class PrivateMessageResponse(
 )
 
 data class GetReportCount(
-    /**  
-     * If a community is supplied, returns the report count for only that community, otherwise returns the report count for all communities the user moderates.  
-     */  
     val community_id: Int,
     val auth: String?,
 )

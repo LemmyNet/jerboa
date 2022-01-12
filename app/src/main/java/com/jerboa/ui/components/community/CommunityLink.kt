@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -72,6 +73,7 @@ fun CommunityLink(
 @Composable
 fun CommunityLinkLarger(
     community: CommunitySafe,
+    onClick: (communityId: Int) -> Unit = {},
 ) {
     CommunityLink(
         community = community,
@@ -79,8 +81,9 @@ fun CommunityLinkLarger(
         size = LINK_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
         spacing = DRAWER_ITEM_SPACING,
-        modifier = Modifier.padding(LARGE_PADDING),
+        modifier = Modifier.padding(LARGE_PADDING).fillMaxWidth(),
         style = MaterialTheme.typography.subtitle1,
+        onClick = onClick,
     )
 }
 

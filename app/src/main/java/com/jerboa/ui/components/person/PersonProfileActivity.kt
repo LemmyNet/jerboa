@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.community
+package com.jerboa.ui.components.person
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
@@ -15,20 +15,20 @@ import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.openLink
+import com.jerboa.ui.components.community.CommunityViewModel
+import com.jerboa.ui.components.community.communityClickWrapper
 import com.jerboa.ui.components.home.HomeOrCommunityOrPersonHeader
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostListings
 
 @Composable
-fun CommunityActivity(
+fun PersonProfileActivity(
     navController: NavController,
-    communityViewModel: CommunityViewModel,
     personProfileViewModel: PersonProfileViewModel,
+    communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
 ) {
 
-    Log.d("jerboa", "got to community activity")
+    Log.d("jerboa", "got to person activity")
 
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -42,12 +42,13 @@ fun CommunityActivity(
             topBar = {
                 Column {
                     HomeOrCommunityOrPersonHeader(
-                        communityName = communityViewModel.res?.community_view?.community?.name,
+                        personName = personProfileViewModel.res?.person_view?.person?.name,
                         scope = scope,
                         scaffoldState = scaffoldState,
-                        selectedSortType = communityViewModel.sortType.value,
+                        selectedSortType = personProfileViewModel.sortType.value,
                         onClickSortType = { sortType ->
-                            communityViewModel.fetchPosts(
+                            personProfileViewModel.fetchPersonDetails(
+                                id = personProfileViewModel.personId.value!!,
                                 account = account,
                                 clear = true,
                                 changeSortType = sortType,
@@ -56,21 +57,21 @@ fun CommunityActivity(
                         },
                         navController = navController,
                     )
-                    if (communityViewModel.loading.value) {
+                    if (personProfileViewModel.loading.value) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 }
             },
             content = {
                 PostListings(
-                    posts = communityViewModel.posts,
+                    posts = personProfileViewModel.posts,
                     contentAboveListings = {
-                        communityViewModel.res?.community_view?.also {
-                            CommunityTopSection(communityView = it)
+                        personProfileViewModel.res?.person_view?.also {
+                            PersonProfileTopSection(personView = it)
                         }
                     },
                     onUpvoteClick = { postView ->
-                        communityViewModel.likePost(
+                        personProfileViewModel.likePost(
                             voteType = VoteType.Upvote,
                             postView = postView,
                             account = account,
@@ -78,7 +79,7 @@ fun CommunityActivity(
                         )
                     },
                     onDownvoteClick = { postView ->
-                        communityViewModel.likePost(
+                        personProfileViewModel.likePost(
                             voteType = VoteType.Downvote,
                             postView = postView,
                             account = account,
@@ -92,7 +93,7 @@ fun CommunityActivity(
                         openLink(url, ctx)
                     },
                     onSaveClick = { postView ->
-                        communityViewModel.savePost(
+                        personProfileViewModel.savePost(
                             postView = postView,
                             account = account,
                             ctx = ctx,
@@ -108,21 +109,27 @@ fun CommunityActivity(
                         )
                     },
                     onSwipeRefresh = {
-                        communityViewModel.fetchPosts(
-                            account = account,
-                            clear = true,
-                            ctx = ctx,
-                        )
+                        personProfileViewModel.personId.value?.also {
+                            personProfileViewModel.fetchPersonDetails(
+                                id = it,
+                                account = account,
+                                clear = true,
+                                ctx = ctx,
+                            )
+                        }
                     },
-                    loading = communityViewModel.loading.value &&
-                        communityViewModel.page.value == 1 &&
-                        communityViewModel.posts.isNotEmpty(),
+                    loading = personProfileViewModel.loading.value &&
+                        personProfileViewModel.page.value == 1 &&
+                        personProfileViewModel.posts.isNotEmpty(),
                     isScrolledToEnd = {
-                        communityViewModel.fetchPosts(
-                            account = account,
-                            nextPage = true,
-                            ctx = ctx,
-                        )
+                        personProfileViewModel.personId.value?.also {
+                            personProfileViewModel.fetchPersonDetails(
+                                id = it,
+                                account = account,
+                                nextPage = true,
+                                ctx = ctx,
+                            )
+                        }
                     },
                     onPersonClick = { personId ->
                         personClickWrapper(

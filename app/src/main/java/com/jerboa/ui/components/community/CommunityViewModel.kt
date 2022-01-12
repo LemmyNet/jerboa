@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
-import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.SortType
@@ -26,8 +25,6 @@ import kotlinx.coroutines.launch
 class CommunityViewModel : ViewModel() {
 
     var res by mutableStateOf<GetCommunityResponse?>(null)
-        private set
-    var communityView by mutableStateOf<CommunityView?>(null)
         private set
     var communityId = mutableStateOf<Int?>(null)
     var loading = mutableStateOf(false)
@@ -86,7 +83,6 @@ class CommunityViewModel : ViewModel() {
                 val form = GetCommunity(id = id, auth = auth)
                 val out = api.getCommunity(form = form.serializeToMap())
                 res = out
-                communityView = out.community_view
                 communityId.value = id
             } catch (e: Exception) {
                 Log.e(

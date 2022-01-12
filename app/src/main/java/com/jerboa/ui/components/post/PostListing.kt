@@ -24,7 +24,7 @@ import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
-import com.jerboa.ui.components.person.PersonLink
+import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import java.net.URL
 
@@ -32,6 +32,7 @@ import java.net.URL
 fun PostHeaderLine(
     postView: PostView,
     onCommunityClick: (communityId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit = {},
 ) {
     FlowRow(
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
@@ -41,7 +42,10 @@ fun PostHeaderLine(
             onClick = onCommunityClick,
         )
         DotSpacer()
-        PersonLink(person = postView.creator)
+        PersonProfileLink(
+            person = postView.creator,
+            onClick = onPersonClick,
+        )
         DotSpacer()
         postView.post.url?.also {
             // TODO hide also if its the same instance / domain
@@ -336,6 +340,7 @@ fun PostListing(
     onPostLinkClick: (url: String) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
     onCommunityClick: (communityId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit = {},
     showReply: Boolean = false,
 ) {
     Card(
@@ -353,6 +358,7 @@ fun PostListing(
             PostHeaderLine(
                 postView = postView,
                 onCommunityClick = onCommunityClick,
+                onPersonClick = onPersonClick,
             )
 
             //  Title + metadata
