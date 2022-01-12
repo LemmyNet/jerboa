@@ -27,7 +27,7 @@
 
 ## About Jerboa
 
- - | -
+_ | _
 ---|---
 ![img_1](https://i.imgur.com/W3lT4nO.jpg)|![img_2](https://i.imgur.com/MrAkd4d.jpg)
 
