@@ -72,10 +72,10 @@ fun PostListings(
     }
 }
 
- @Preview
- @Composable
- fun PreviewPostListings() {
+@Preview
+@Composable
+fun PreviewPostListings() {
     PostListings(
-      posts = listOf(samplePostView, samplePostView)
+        posts = listOf(samplePostView, samplePostView)
     )
- }
+}
