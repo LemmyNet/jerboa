@@ -22,14 +22,12 @@ import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.*
 import com.jerboa.datatypes.*
-import com.jerboa.datatypes.api.GetPost
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonProfileLink
-import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.theme.*
 import java.net.URL
 

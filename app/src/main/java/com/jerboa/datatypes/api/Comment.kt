@@ -9,9 +9,9 @@ data class CreateComment(
     val content: String,
     val parent_id: Int?,
     val post_id: Int,
-    /**  
-     * An optional front end ID, to tell which is comment is coming back.  
-     */  
+    /**
+     * An optional front end ID, to tell which is comment is coming back.
+     */
     val form_id: String? = null,
     val auth: String,
 )
@@ -19,9 +19,9 @@ data class CreateComment(
 data class EditComment(
     val content: String,
     val comment_id: Int,
-    /**  
-     * An optional front end ID, to tell which is comment is coming back.  
-     */  
+    /**
+     * An optional front end ID, to tell which is comment is coming back.
+     */
     val form_id: String?,
     val auth: String,
 )
@@ -63,9 +63,9 @@ data class SaveComment(
 data class CommentResponse(
     val comment_view: CommentView,
     val recipient_ids: List<Int>,
-    /**  
-     val * An optional front end ID, to tell which is comment is coming back.  
-     */  
+    /**
+     val * An optional front end ID, to tell which is comment is coming back.
+     */
     val form_id: String?,
 )
 
@@ -82,13 +82,13 @@ data class CreateCommentLike(
 val * To get posts for a federated community by name, use `name@instance.tld` .
  */
 data class GetComments(
-    /**  
-     * The [ListingType].  
-     */  
+    /**
+     * The [ListingType].
+     */
     val type_: String,
-    /**  
-     * The [SortType].  
-     */  
+    /**
+     * The [SortType].
+     */
     val sort: String,
     val page: Int?,
     val limit: Int?,
@@ -114,9 +114,9 @@ data class CommentReportResponse(
 
 data class ResolveCommentReport(
     val report_id: Int,
-    /**  
-     * Either resolve or unresolve a report.  
-     */  
+    /**
+     * Either resolve or unresolve a report.
+     */
     val resolved: Boolean,
     val auth: String,
 )
@@ -124,14 +124,14 @@ data class ResolveCommentReport(
 data class ListCommentReports(
     val page: Int,
     val limit: Int?,
-    /**  
-     * If no community is given, it returns reports for all communities moderated by the auth user.  
-     */  
+    /**
+     * If no community is given, it returns reports for all communities moderated by the auth user.
+     */
     val community_id: Int,
 
-    /**  
-     * Only shows the unresolved reports.  
-     */  
+    /**
+     * Only shows the unresolved reports.
+     */
     val unresolved_only: Boolean,
     val auth: String?,
 )

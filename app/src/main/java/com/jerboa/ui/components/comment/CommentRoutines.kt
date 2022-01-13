@@ -3,7 +3,6 @@ package com.jerboa.ui.components.comment
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.focus.FocusManager
 import androidx.navigation.NavController
 import com.jerboa.VoteType
@@ -12,11 +11,8 @@ import com.jerboa.api.createCommentWrapper
 import com.jerboa.api.likeCommentWrapper
 import com.jerboa.api.saveCommentWrapper
 import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.CreateComment
-import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.datatypes.api.GetReplies
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap

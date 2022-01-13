@@ -22,7 +22,6 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.jerboa.VoteType
 import com.jerboa.commentsToFlatNodes
-import com.jerboa.datatypes.api.GetPost
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount

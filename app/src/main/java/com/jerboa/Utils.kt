@@ -491,7 +491,6 @@ fun personNameShown(person: PersonSafe): String {
     return person.display_name ?: person.name
 }
 
-
 @Composable
 fun SortOptionsDialog(
     onDismissRequest: () -> Unit = {},

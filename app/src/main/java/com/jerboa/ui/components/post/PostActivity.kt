@@ -17,7 +17,6 @@ import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.*
-import com.jerboa.datatypes.api.GetPost
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.community.CommunityViewModel

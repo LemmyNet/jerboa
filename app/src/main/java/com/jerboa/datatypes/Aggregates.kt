@@ -22,21 +22,21 @@ data class SiteAggregates(
     val posts: Int,
     val comments: Int,
     val communities: Int,
-    /**  
-     * Active users per day.  
-     */  
+    /**
+     * Active users per day.
+     */
     val users_active_day: Int,
-    /**  
-     * Active users per week.  
-     */  
+    /**
+     * Active users per week.
+     */
     val users_active_week: Int,
-    /**  
-     * Active users per month.  
-     */  
+    /**
+     * Active users per month.
+     */
     val users_active_month: Int,
-    /**  
-     * Active users per year.  
-     */  
+    /**
+     * Active users per year.
+     */
     val users_active_half_year: Int,
 )
 
@@ -50,9 +50,9 @@ data class PostAggregates(
     val score: Int,
     val upvotes: Int,
     val downvotes: Int,
-    /**  
-     * Newest comment time, limited to 2 days, to prevent necrobumping.  
-     */  
+    /**
+     * Newest comment time, limited to 2 days, to prevent necrobumping.
+     */
     val newest_comment_time_necro: String,
     val newest_comment_time: String,
 )
@@ -66,21 +66,21 @@ data class CommunityAggregates(
     val subscribers: Int,
     val posts: Int,
     val comments: Int,
-    /**  
-     * Active users per day.  
-     */  
+    /**
+     * Active users per day.
+     */
     val users_active_day: Int,
-    /**  
-     * Active users per week.  
-     */  
+    /**
+     * Active users per week.
+     */
     val users_active_week: Int,
-    /**  
-     * Active users per month.  
-     */  
+    /**
+     * Active users per month.
+     */
     val users_active_month: Int,
-    /**  
-     * Active users per year.  
-     */  
+    /**
+     * Active users per year.
+     */
     val users_active_half_year: Int,
 )
 

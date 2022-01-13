@@ -30,7 +30,7 @@ class PostViewModel : ViewModel() {
     var res by mutableStateOf<GetPostResponse?>(null)
         private set
     var postId = mutableStateOf<Int?>(null)
-            var postView = mutableStateOf<PostView?>(null)
+    var postView = mutableStateOf<PostView?>(null)
         private set
     var comments = mutableStateListOf<CommentView>()
         private set
