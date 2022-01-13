@@ -194,7 +194,7 @@ fun MainDrawer(
 
             // Refetch the front page
             homeViewModel.fetchPosts(
-                account = account,
+                account = it,
                 clear = true,
                 ctx = ctx,
             )
