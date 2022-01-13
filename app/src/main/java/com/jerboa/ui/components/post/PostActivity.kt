@@ -65,10 +65,9 @@ fun PostActivity(
                     onRefresh = {
                         postViewModel.postView.value?.also { postView ->
                             postViewModel.fetchPost(
-                                GetPost(
-                                    id = postView.post.id,
-                                    auth = account?.jwt,
-                                )
+                                id = postView.post.id,
+                                account = account,
+                                ctx = ctx,
                             )
                         }
                     },

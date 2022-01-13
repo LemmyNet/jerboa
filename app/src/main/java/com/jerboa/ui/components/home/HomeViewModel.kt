@@ -34,7 +34,6 @@ class HomeViewModel : ViewModel() {
         changeListingType: ListingType? = null,
         changeSortType: SortType? = null,
         ctx: Context,
-
     ) {
         fetchPostsRoutine(
             posts = posts,

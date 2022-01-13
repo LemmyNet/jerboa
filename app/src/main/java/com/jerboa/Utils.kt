@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ThumbDownAlt
-import androidx.compose.material.icons.filled.ThumbUpAlt
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -22,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
@@ -31,10 +30,13 @@ import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PersonSafe
+import com.jerboa.datatypes.SortType
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.TimeAgo
+import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -280,7 +282,8 @@ fun <T> VoteGeneric(
     votes: Int,
     item: T,
     type: VoteType,
-    onVoteClick: (item: T) -> Unit = {}
+    onVoteClick: (item: T) -> Unit = {},
+    showNumber: Boolean = true,
 ) {
     val voteColor =
         when (type) {
@@ -292,10 +295,14 @@ fun <T> VoteGeneric(
         else -> Icons.Default.ThumbDownAlt
     }
 
-    val votesStr = if (type == VoteType.Downvote && votes == 0) {
-        null
+    val votesStr = if (showNumber) {
+        if (type == VoteType.Downvote && votes == 0) {
+            null
+        } else {
+            votes.toString()
+        }
     } else {
-        votes.toString()
+        null
     }
 
     ActionBarButton(
@@ -482,4 +489,144 @@ fun SimpleTopAppBar(
 
 fun personNameShown(person: PersonSafe): String {
     return person.display_name ?: person.name
+}
+
+
+@Composable
+fun SortOptionsDialog(
+    onDismissRequest: () -> Unit = {},
+    onClickSortType: (SortType) -> Unit = {},
+    onClickSortTopOptions: () -> Unit = {},
+    selectedSortType: SortType,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                IconAndTextDrawerItem(
+                    text = "Active",
+                    icon = Icons.Default.Moving,
+                    onClick = { onClickSortType(SortType.Active) },
+                    highlight = (selectedSortType == SortType.Active),
+                )
+                IconAndTextDrawerItem(
+                    text = "Hot",
+                    icon = Icons.Default.LocalFireDepartment,
+                    onClick = { onClickSortType(SortType.Hot) },
+                    highlight = (selectedSortType == SortType.Hot),
+                )
+                IconAndTextDrawerItem(
+                    text = "New",
+                    icon = Icons.Default.BrightnessLow,
+                    onClick = { onClickSortType(SortType.New) },
+                    highlight = (selectedSortType == SortType.New),
+                )
+                IconAndTextDrawerItem(
+                    text = "Top",
+                    icon = Icons.Default.BarChart,
+                    onClick = onClickSortTopOptions,
+                    more = true,
+                    highlight = (topSortTypes.contains(selectedSortType)),
+                )
+            }
+        },
+        buttons = {},
+    )
+}
+
+val topSortTypes = listOf(
+    SortType.TopDay,
+    SortType.TopWeek,
+    SortType.TopMonth,
+    SortType.TopYear,
+    SortType.TopAll,
+)
+
+@Composable
+fun SortTopOptionsDialog(
+    onDismissRequest: () -> Unit = {},
+    onClickSortType: (SortType) -> Unit = {},
+    selectedSortType: SortType,
+) {
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                IconAndTextDrawerItem(
+                    text = "Top Day",
+                    onClick = { onClickSortType(SortType.TopDay) },
+                    highlight = (selectedSortType == SortType.TopDay),
+                )
+                IconAndTextDrawerItem(
+                    text = "Top Week",
+                    onClick = { onClickSortType(SortType.TopWeek) },
+                    highlight = (selectedSortType == SortType.TopWeek),
+                )
+                IconAndTextDrawerItem(
+                    text = "Top Month",
+                    onClick = { onClickSortType(SortType.TopMonth) },
+                    highlight = (selectedSortType == SortType.TopMonth),
+                )
+                IconAndTextDrawerItem(
+                    text = "Top Year",
+                    onClick = { onClickSortType(SortType.TopYear) },
+                    highlight = (selectedSortType == SortType.TopYear),
+                )
+                IconAndTextDrawerItem(
+                    text = "Top All Time",
+                    onClick = { onClickSortType(SortType.TopAll) },
+                    highlight = (selectedSortType == SortType.TopAll),
+                )
+            }
+        },
+        buttons = {},
+    )
+}
+
+@Preview
+@Composable
+fun SortOptionsDialogPreview() {
+    SortOptionsDialog(selectedSortType = SortType.Hot)
+}
+
+@Composable
+fun ListingTypeOptionsDialog(
+    onDismissRequest: () -> Unit = {},
+    onClickListingType: (ListingType) -> Unit = {},
+    selectedListingType: ListingType,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                IconAndTextDrawerItem(
+                    text = "Subscribed",
+                    icon = Icons.Default.Bookmarks,
+                    onClick = { onClickListingType(ListingType.Subscribed) },
+                    highlight = (selectedListingType == ListingType.Subscribed),
+                )
+                // TODO hide local for non-federated instances
+                IconAndTextDrawerItem(
+                    text = "Local",
+                    icon = Icons.Default.LocationCity,
+                    onClick = { onClickListingType(ListingType.Local) },
+                    highlight = (selectedListingType == ListingType.Local),
+                )
+                IconAndTextDrawerItem(
+                    text = "All",
+                    icon = Icons.Default.Public,
+                    onClick = { onClickListingType(ListingType.All) },
+                    highlight = (selectedListingType == ListingType.All),
+                )
+            }
+        },
+        buttons = {},
+    )
+}
+
+@Preview
+@Composable
+fun ListingTypeOptionsDialogPreview() {
+    ListingTypeOptionsDialog(selectedListingType = ListingType.Local)
 }

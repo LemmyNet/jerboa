@@ -2,7 +2,6 @@ package com.jerboa
 
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -10,15 +9,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.jerboa.api.API
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.api.GetPost
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -29,16 +25,18 @@ import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.home.HomeActivity
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.login.LoginViewModel
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.ui.components.person.PersonProfileViewModel
+import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.theme.JerboaTheme
 
 class JerboaApplication : Application() {
-    val database by lazy { AppDB.getDatabase(this) }
+    private val database by lazy { AppDB.getDatabase(this) }
     val repository by lazy { AccountRepository(database.accountDao()) }
 }
 
@@ -50,6 +48,7 @@ class MainActivity : ComponentActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
     private val communityViewModel by viewModels<CommunityViewModel>()
     private val personProfileViewModel by viewModels<PersonProfileViewModel>()
+    private val inboxViewModel by viewModels<InboxViewModel>()
 
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).repository)
@@ -116,6 +115,8 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             communityViewModel = communityViewModel,
                             personProfileViewModel = personProfileViewModel,
+                            postViewModel = postViewModel,
+                            inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                         )
@@ -125,6 +126,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             communityViewModel = communityViewModel,
                             personProfileViewModel = personProfileViewModel,
+                            postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
                         )
                     }
@@ -137,36 +139,19 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                         )
                     }
-                    composable(
-                        // TODO remove this fetch somehow, don't use navigate to fetch things
-                        route = "post/{postId}?fetch={fetch}",
-                        arguments = listOf(
-                            navArgument("postId") {
-                                type = NavType.IntType
-                            },
-                            navArgument("fetch") {
-                                defaultValue = false
-                                type = NavType.BoolType
-                            }
+                    composable(route = "inbox") {
+                        InboxActivity(
+                            navController = navController,
+                            inboxViewModel = inboxViewModel,
+                            personProfileViewModel = personProfileViewModel,
+                            postViewModel = postViewModel,
+                            communityViewModel = communityViewModel,
+                            accountViewModel = accountViewModel,
                         )
+                    }
+                    composable(
+                        route = "post",
                     ) {
-                        val postId = it.arguments?.getInt("postId")!!
-
-                        LaunchedEffect(Unit, block = {
-                            val fetch = it.arguments?.getBoolean("fetch")!!
-                            Log.d("jerboa", "fetch = $fetch")
-
-                            if (fetch) {
-                                postViewModel.fetchPost(
-                                    GetPost(
-                                        id = postId,
-                                        auth = account?.jwt,
-                                    ),
-                                    clear = true,
-                                )
-                            }
-                        })
-
                         PostActivity(
                             postViewModel = postViewModel,
                             homeViewModel = homeViewModel,

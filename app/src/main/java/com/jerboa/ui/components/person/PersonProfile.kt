@@ -1,15 +1,22 @@
 package com.jerboa.ui.components.person
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Sort
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.jerboa.MyMarkdownText
+import com.jerboa.SortOptionsDialog
+import com.jerboa.SortTopOptionsDialog
 import com.jerboa.datatypes.PersonViewSafe
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.LargerCircularIcon
@@ -77,4 +84,96 @@ fun PersonProfileTopSection(
 @Composable
 fun PersonProfileTopSectionPreview() {
     PersonProfileTopSection(personView = samplePersonView)
+}
+
+@Composable
+fun PersonProfileHeader(
+    personName: String,
+    onClickSortType: (SortType) -> Unit = {},
+    selectedSortType: SortType,
+    navController: NavController = rememberNavController(),
+) {
+
+    var showSortOptions by remember { mutableStateOf(false) }
+    var showTopOptions by remember { mutableStateOf(false) }
+
+    if (showSortOptions) {
+        SortOptionsDialog(
+            selectedSortType = selectedSortType,
+            onDismissRequest = { showSortOptions = false },
+            onClickSortType = {
+                showSortOptions = false
+                onClickSortType(it)
+            },
+            onClickSortTopOptions = {
+                showSortOptions = false
+                showTopOptions = !showTopOptions
+            }
+        )
+    }
+
+    if (showTopOptions) {
+        SortTopOptionsDialog(
+            selectedSortType = selectedSortType,
+            onDismissRequest = { showTopOptions = false },
+            onClickSortType = {
+                showTopOptions = false
+                onClickSortType(it)
+            }
+        )
+    }
+
+    TopAppBar(
+        title = {
+            PersonProfileHeaderTitle(
+                personName = personName,
+                selectedSortType = selectedSortType,
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = {
+                showSortOptions = !showSortOptions
+            }) {
+                Icon(
+                    Icons.Default.Sort,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colors.onSurface
+                )
+            }
+            IconButton(onClick = {
+            }) {
+                Icon(
+                    Icons.Default.MoreVert,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colors.onSurface
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun PersonProfileHeaderTitle(
+    personName: String,
+    selectedSortType: SortType,
+) {
+    Column {
+        Text(
+            text = personName,
+            style = MaterialTheme.typography.subtitle1
+        )
+        Text(
+            text = selectedSortType.toString(),
+            style = MaterialTheme.typography.body1,
+            color = Muted,
+        )
+    }
 }

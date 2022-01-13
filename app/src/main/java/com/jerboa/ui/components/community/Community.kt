@@ -1,18 +1,23 @@
 package com.jerboa.ui.components.community
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Sort
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.jerboa.SortOptionsDialog
+import com.jerboa.SortTopOptionsDialog
 import com.jerboa.datatypes.CommunityView
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -86,4 +91,96 @@ fun CommunityTopSection(
 @Composable
 fun CommunityTopSectionPreview() {
     CommunityTopSection(communityView = sampleCommunityView)
+}
+
+@Composable
+fun CommunityHeader(
+    communityName: String,
+    onClickSortType: (SortType) -> Unit = {},
+    selectedSortType: SortType,
+    navController: NavController = rememberNavController(),
+) {
+
+    var showSortOptions by remember { mutableStateOf(false) }
+    var showTopOptions by remember { mutableStateOf(false) }
+
+    if (showSortOptions) {
+        SortOptionsDialog(
+            selectedSortType = selectedSortType,
+            onDismissRequest = { showSortOptions = false },
+            onClickSortType = {
+                showSortOptions = false
+                onClickSortType(it)
+            },
+            onClickSortTopOptions = {
+                showSortOptions = false
+                showTopOptions = !showTopOptions
+            }
+        )
+    }
+
+    if (showTopOptions) {
+        SortTopOptionsDialog(
+            selectedSortType = selectedSortType,
+            onDismissRequest = { showTopOptions = false },
+            onClickSortType = {
+                showTopOptions = false
+                onClickSortType(it)
+            }
+        )
+    }
+
+    TopAppBar(
+        title = {
+            CommunityHeaderTitle(
+                communityName = communityName,
+                selectedSortType = selectedSortType,
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = {
+                showSortOptions = !showSortOptions
+            }) {
+                Icon(
+                    Icons.Default.Sort,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colors.onSurface
+                )
+            }
+            IconButton(onClick = {
+            }) {
+                Icon(
+                    Icons.Default.MoreVert,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colors.onSurface
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun CommunityHeaderTitle(
+    communityName: String,
+    selectedSortType: SortType,
+) {
+    Column {
+        Text(
+            text = communityName,
+            style = MaterialTheme.typography.subtitle1
+        )
+        Text(
+            text = selectedSortType.toString(),
+            style = MaterialTheme.typography.body1,
+            color = Muted,
+        )
+    }
 }

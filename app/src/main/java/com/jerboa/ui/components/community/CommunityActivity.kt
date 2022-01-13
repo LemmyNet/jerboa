@@ -7,7 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
@@ -15,22 +14,23 @@ import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.openLink
-import com.jerboa.ui.components.home.HomeOrCommunityOrPersonHeader
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.ui.components.post.postClickWrapper
 
 @Composable
 fun CommunityActivity(
     navController: NavController,
     communityViewModel: CommunityViewModel,
     personProfileViewModel: PersonProfileViewModel,
+    postViewModel: PostViewModel,
     accountViewModel: AccountViewModel,
 ) {
 
     Log.d("jerboa", "got to community activity")
 
-    val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
     val accounts by accountViewModel.allAccounts.observeAsState()
@@ -41,21 +41,21 @@ fun CommunityActivity(
             scaffoldState = scaffoldState,
             topBar = {
                 Column {
-                    HomeOrCommunityOrPersonHeader(
-                        communityName = communityViewModel.res?.community_view?.community?.name,
-                        scope = scope,
-                        scaffoldState = scaffoldState,
-                        selectedSortType = communityViewModel.sortType.value,
-                        onClickSortType = { sortType ->
-                            communityViewModel.fetchPosts(
-                                account = account,
-                                clear = true,
-                                changeSortType = sortType,
-                                ctx = ctx,
-                            )
-                        },
-                        navController = navController,
-                    )
+                    communityViewModel.res?.community_view?.community?.name?.also {
+                        CommunityHeader(
+                            communityName = it,
+                            selectedSortType = communityViewModel.sortType.value,
+                            onClickSortType = { sortType ->
+                                communityViewModel.fetchPosts(
+                                    account = account,
+                                    clear = true,
+                                    changeSortType = sortType,
+                                    ctx = ctx,
+                                )
+                            },
+                            navController = navController,
+                        )
+                    }
                     if (communityViewModel.loading.value) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
@@ -86,7 +86,13 @@ fun CommunityActivity(
                         )
                     },
                     onPostClick = { postView ->
-                        navController.navigate("post/${postView.post.id}?fetch=true")
+                        postClickWrapper(
+                            postViewModel = postViewModel,
+                            postId = postView.post.id,
+                            account = account,
+                            navController = navController,
+                            ctx = ctx,
+                        )
                     },
                     onPostLinkClick = { url ->
                         openLink(url, ctx)

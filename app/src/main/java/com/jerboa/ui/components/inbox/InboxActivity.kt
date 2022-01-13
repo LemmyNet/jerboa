@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.person
+package com.jerboa.ui.components.inbox
 
 import android.content.Context
 import android.util.Log
@@ -26,26 +26,28 @@ import com.jerboa.datatypes.api.GetPost
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
-import com.jerboa.openLink
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
-import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.person.PersonProfileViewModel
+import com.jerboa.ui.components.person.personClickWrapper
+import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.postClickWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun PersonProfileActivity(
+fun InboxActivity(
     navController: NavController,
+    inboxViewModel: InboxViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
     communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
 ) {
 
-    Log.d("jerboa", "got to person activity")
+    Log.d("jerboa", "got to inbox activity")
 
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -58,32 +60,19 @@ fun PersonProfileActivity(
             scaffoldState = scaffoldState,
             topBar = {
                 Column {
-                    personProfileViewModel.res?.person_view?.person?.name?.also {
-                        PersonProfileHeader(
-                            personName = it,
-                            selectedSortType = personProfileViewModel.sortType.value,
-                            onClickSortType = { sortType ->
-                                personProfileViewModel.fetchPersonDetails(
-                                    id = personProfileViewModel.personId.value!!,
-                                    account = account,
-                                    clear = true,
-                                    changeSortType = sortType,
-                                    ctx = ctx,
-                                )
-                            },
-                            navController = navController,
-                        )
-                    }
-
-                    if (personProfileViewModel.loading.value) {
+                    InboxHeader(
+                        navController = navController,
+                    )
+                    if (inboxViewModel.loading.value) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 }
             },
             content = {
-                UserTabs(
+                InboxTabs(
                     navController = navController,
                     personProfileViewModel = personProfileViewModel,
+                    inboxViewModel = inboxViewModel,
                     postViewModel = postViewModel,
                     communityViewModel = communityViewModel,
                     ctx = ctx,
@@ -95,24 +84,26 @@ fun PersonProfileActivity(
     }
 }
 
-enum class UserTab {
-    About,
-    Posts,
-    Comments,
+enum class InboxTab {
+    Replies,
+    Mentions,
+    Messages,
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun UserTabs(
+fun InboxTabs(
     navController: NavController,
     personProfileViewModel: PersonProfileViewModel,
+    inboxViewModel: InboxViewModel,
     communityViewModel: CommunityViewModel,
     ctx: Context,
     account: Account?,
     scope: CoroutineScope,
     postViewModel: PostViewModel,
 ) {
-    val tabTitles = UserTab.values().map { it.toString() }
+    val tabTitles = InboxTab.values().map { it.toString() }
+
     val pagerState = rememberPagerState()
 
     Column {
@@ -146,102 +137,15 @@ fun UserTabs(
             modifier = Modifier.fillMaxSize()
         ) { tabIndex ->
             when (tabIndex) {
-                UserTab.About.ordinal -> {
-                    personProfileViewModel.res?.person_view?.also {
-                        PersonProfileTopSection(
-                            personView = it
-                        )
-                    }
-                }
-                UserTab.Posts.ordinal -> {
-                    PostListings(
-                        posts = personProfileViewModel.posts,
-                        onUpvoteClick = { postView ->
-                            personProfileViewModel.likePost(
-                                voteType = VoteType.Upvote,
-                                postView = postView,
-                                account = account,
-                                ctx = ctx,
-                            )
-                        },
-                        onDownvoteClick = { postView ->
-                            personProfileViewModel.likePost(
-                                voteType = VoteType.Downvote,
-                                postView = postView,
-                                account = account,
-                                ctx = ctx,
-                            )
-                        },
-                        onPostClick = { postView ->
-                            postClickWrapper(
-                                postViewModel = postViewModel,
-                                postId = postView.post.id,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx,
-                            )
-                        },
-                        onPostLinkClick = { url ->
-                            openLink(url, ctx)
-                        },
-                        onSaveClick = { postView ->
-                            personProfileViewModel.savePost(
-                                postView = postView,
-                                account = account,
-                                ctx = ctx,
-                            )
-                        },
-                        onCommunityClick = { communityId ->
-                            communityClickWrapper(
-                                communityViewModel,
-                                communityId,
-                                account,
-                                navController,
-                                ctx = ctx,
-                            )
-                        },
-                        onSwipeRefresh = {
-                            personProfileViewModel.personId.value?.also {
-                                personProfileViewModel.fetchPersonDetails(
-                                    id = it,
-                                    account = account,
-                                    clear = true,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
-                        loading = personProfileViewModel.loading.value &&
-                            personProfileViewModel.page.value == 1 &&
-                            personProfileViewModel.posts.isNotEmpty(),
-                        isScrolledToEnd = {
-                            personProfileViewModel.personId.value?.also {
-                                personProfileViewModel.fetchPersonDetails(
-                                    id = it,
-                                    account = account,
-                                    nextPage = true,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
-                        onPersonClick = { personId ->
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = personId,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx,
-                            )
-                        },
-                    )
-                }
-                UserTab.Comments.ordinal -> {
-                    val nodes = commentsToFlatNodes(personProfileViewModel.comments)
+                InboxTab.Replies.ordinal -> {
+
+                    val nodes = commentsToFlatNodes(inboxViewModel.replies)
                     LazyColumn {
                         items(nodes) { node ->
                             CommentNode(
                                 node = node,
                                 onUpvoteClick = { commentView ->
-                                    personProfileViewModel.likeComment(
+                                    inboxViewModel.likeComment(
                                         commentView = commentView,
                                         voteType = VoteType.Upvote,
                                         account = account,
@@ -249,7 +153,7 @@ fun UserTabs(
                                     )
                                 },
                                 onDownvoteClick = { commentView ->
-                                    personProfileViewModel.likeComment(
+                                    inboxViewModel.likeComment(
                                         commentView = commentView,
                                         voteType = VoteType.Downvote,
                                         account = account,
@@ -257,7 +161,7 @@ fun UserTabs(
                                     )
                                 },
                                 onReplyClick = { commentView ->
-                                    // To do replies from elsewhere than postView,
+                                    // TODO To do replies from elsewhere than postView,
                                     // you need to refetch that post view
                                     postViewModel.replyToCommentParent = commentView
                                     postViewModel.fetchPost(
@@ -268,7 +172,7 @@ fun UserTabs(
                                     navController.navigate("commentReply")
                                 },
                                 onSaveClick = { commentView ->
-                                    personProfileViewModel.saveComment(
+                                    inboxViewModel.saveComment(
                                         commentView = commentView,
                                         account = account,
                                         ctx = ctx,
@@ -292,10 +196,24 @@ fun UserTabs(
                                         ctx = ctx,
                                     )
                                 },
+                                onPostClick = { postId ->
+                                    postClickWrapper(
+                                        postViewModel = postViewModel,
+                                        postId = postId,
+                                        account = account,
+                                        navController = navController,
+                                        ctx = ctx,
+                                    )
+                                },
                                 showPostAndCommunityContext = true,
                             )
                         }
                     }
+                }
+
+                InboxTab.Mentions.ordinal -> {
+                }
+                InboxTab.Messages.ordinal -> {
                 }
             }
         }

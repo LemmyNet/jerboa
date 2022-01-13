@@ -16,16 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.colorShade
+import com.jerboa.*
 import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.MyUserInfo
 import com.jerboa.db.Account
-import com.jerboa.getCurrentAccount
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.community.CommunityLinkLarger
@@ -44,6 +42,7 @@ fun Drawer(
     myUserInfo: MyUserInfo?,
     onCommunityClick: (communityId: Int) -> Unit = {},
     onClickProfile: () -> Unit = {},
+    onClickInbox: () -> Unit = {},
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -64,6 +63,7 @@ fun Drawer(
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
         onClickProfile = onClickProfile,
+        onClickInbox = onClickInbox,
     )
 }
 
@@ -77,6 +77,7 @@ fun DrawerContent(
     onClickListingType: (ListingType) -> Unit = {},
     onCommunityClick: (communityId: Int) -> Unit = {},
     onClickProfile: () -> Unit = {},
+    onClickInbox: () -> Unit = {},
     follows: List<CommunityFollowerView>?,
 ) {
     AnimatedVisibility(
@@ -97,6 +98,7 @@ fun DrawerContent(
             onClickListingType = onClickListingType,
             onCommunityClick = onCommunityClick,
             onClickProfile = onClickProfile,
+            onClickInbox = onClickInbox,
             follows = follows,
         )
     }
@@ -107,6 +109,7 @@ fun DrawerItemsMain(
     follows: List<CommunityFollowerView>? = null,
     onClickSaved: () -> Unit = {},
     onClickProfile: () -> Unit = {},
+    onClickInbox: () -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
     onCommunityClick: (communityId: Int) -> Unit = {},
 ) {
@@ -157,7 +160,7 @@ fun DrawerItemsMain(
             IconAndTextDrawerItem(
                 text = "Inbox",
                 icon = Icons.Default.Email,
-                onClick = onClickProfile,
+                onClick = onClickInbox,
             )
         }
         item {
@@ -196,11 +199,9 @@ fun DrawerAddAccountMode(
     onSwitchAccountClick: (account: Account) -> Unit = {},
     onSignOutClick: () -> Unit = {},
 ) {
-    val ctx = LocalContext.current
-
     val accountsWithoutCurrent = accounts?.toMutableList()
-    accounts?.also { accounts ->
-        val currentAccount = getCurrentAccount(accounts)
+    accounts?.also { accts ->
+        val currentAccount = getCurrentAccount(accts)
         accountsWithoutCurrent?.remove(currentAccount)
     }
 
@@ -369,18 +370,13 @@ fun IconAndTextDrawerItemWithMorePreview() {
 }
 
 @Composable
-fun HomeOrCommunityorPersonHeaderTitle(
+fun HomeHeaderTitle(
     selectedSortType: SortType,
-    selectedListingType: ListingType?,
-    communityName: String?,
-    personName: String?,
+    selectedListingType: ListingType,
 ) {
-    val topOne = communityName ?: (personName ?: selectedListingType?.toString() ?: "")
-
     Column {
-
         Text(
-            text = topOne,
+            text = selectedListingType.toString(),
             style = MaterialTheme.typography.subtitle1
         )
         Text(
@@ -392,16 +388,13 @@ fun HomeOrCommunityorPersonHeaderTitle(
 }
 
 @Composable
-fun HomeOrCommunityOrPersonHeader(
+fun HomeHeader(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
     onClickSortType: (SortType) -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
     selectedSortType: SortType,
-    selectedListingType: ListingType? = null,
-    communityName: String? = null,
-    personName: String? = null,
-    navController: NavController = rememberNavController(),
+    selectedListingType: ListingType,
 ) {
 
     var showSortOptions by remember { mutableStateOf(false) }
@@ -436,7 +429,7 @@ fun HomeOrCommunityOrPersonHeader(
 
     if (showListingTypeOptions) {
         ListingTypeOptionsDialog(
-            selectedListingType = selectedListingType!!,
+            selectedListingType = selectedListingType,
             onDismissRequest = { showListingTypeOptions = false },
             onClickListingType = {
                 showListingTypeOptions = false
@@ -447,46 +440,33 @@ fun HomeOrCommunityOrPersonHeader(
 
     TopAppBar(
         title = {
-            HomeOrCommunityorPersonHeaderTitle(
+            HomeHeaderTitle(
                 selectedSortType = selectedSortType,
                 selectedListingType = selectedListingType,
-                communityName = communityName,
-                personName = personName,
             )
         },
         navigationIcon = {
-            if (communityName.isNullOrBlank() && personName.isNullOrBlank()) {
-                IconButton(onClick = {
-                    scope.launch {
-                        scaffoldState.drawerState.open()
-                    }
-                }) {
-                    Icon(
-                        Icons.Filled.Menu,
-                        contentDescription = "Menu"
-                    )
+            IconButton(onClick = {
+                scope.launch {
+                    scaffoldState.drawerState.open()
                 }
-            } else {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        Icons.Filled.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
+            }) {
+                Icon(
+                    Icons.Filled.Menu,
+                    contentDescription = "Menu"
+                )
             }
         },
         // No Idea why, but the tint for this is muted?
         actions = {
-            if (communityName.isNullOrBlank() && personName.isNullOrBlank()) {
-                IconButton(onClick = {
-                    showListingTypeOptions = !showListingTypeOptions
-                }) {
-                    Icon(
-                        Icons.Default.FilterList,
-                        contentDescription = "TODO",
-                        tint = MaterialTheme.colors.onSurface
-                    )
-                }
+            IconButton(onClick = {
+                showListingTypeOptions = !showListingTypeOptions
+            }) {
+                Icon(
+                    Icons.Default.FilterList,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colors.onSurface
+                )
             }
             IconButton(onClick = {
                 showSortOptions = !showSortOptions
@@ -509,152 +489,13 @@ fun HomeOrCommunityOrPersonHeader(
     )
 }
 
-@Composable
-fun SortOptionsDialog(
-    onDismissRequest: () -> Unit = {},
-    onClickSortType: (SortType) -> Unit = {},
-    onClickSortTopOptions: () -> Unit = {},
-    selectedSortType: SortType,
-) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = "Active",
-                    icon = Icons.Default.Moving,
-                    onClick = { onClickSortType(SortType.Active) },
-                    highlight = (selectedSortType == SortType.Active),
-                )
-                IconAndTextDrawerItem(
-                    text = "Hot",
-                    icon = Icons.Default.LocalFireDepartment,
-                    onClick = { onClickSortType(SortType.Hot) },
-                    highlight = (selectedSortType == SortType.Hot),
-                )
-                IconAndTextDrawerItem(
-                    text = "New",
-                    icon = Icons.Default.BrightnessLow,
-                    onClick = { onClickSortType(SortType.New) },
-                    highlight = (selectedSortType == SortType.New),
-                )
-                IconAndTextDrawerItem(
-                    text = "Top",
-                    icon = Icons.Default.BarChart,
-                    onClick = onClickSortTopOptions,
-                    more = true,
-                    highlight = (topSortTypes.contains(selectedSortType)),
-                )
-            }
-        },
-        buttons = {},
-    )
-}
-
-val topSortTypes = listOf(
-    SortType.TopDay,
-    SortType.TopWeek,
-    SortType.TopMonth,
-    SortType.TopYear,
-    SortType.TopAll,
-)
-
-@Composable
-fun SortTopOptionsDialog(
-    onDismissRequest: () -> Unit = {},
-    onClickSortType: (SortType) -> Unit = {},
-    selectedSortType: SortType,
-) {
-
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = "Top Day",
-                    onClick = { onClickSortType(SortType.TopDay) },
-                    highlight = (selectedSortType == SortType.TopDay),
-                )
-                IconAndTextDrawerItem(
-                    text = "Top Week",
-                    onClick = { onClickSortType(SortType.TopWeek) },
-                    highlight = (selectedSortType == SortType.TopWeek),
-                )
-                IconAndTextDrawerItem(
-                    text = "Top Month",
-                    onClick = { onClickSortType(SortType.TopMonth) },
-                    highlight = (selectedSortType == SortType.TopMonth),
-                )
-                IconAndTextDrawerItem(
-                    text = "Top Year",
-                    onClick = { onClickSortType(SortType.TopYear) },
-                    highlight = (selectedSortType == SortType.TopYear),
-                )
-                IconAndTextDrawerItem(
-                    text = "Top All Time",
-                    onClick = { onClickSortType(SortType.TopAll) },
-                    highlight = (selectedSortType == SortType.TopAll),
-                )
-            }
-        },
-        buttons = {},
-    )
-}
-
-@Preview
-@Composable
-fun SortOptionsDialogPreview() {
-    SortOptionsDialog(selectedSortType = SortType.Hot)
-}
-
-@Composable
-fun ListingTypeOptionsDialog(
-    onDismissRequest: () -> Unit = {},
-    onClickListingType: (ListingType) -> Unit = {},
-    selectedListingType: ListingType,
-) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = "Subscribed",
-                    icon = Icons.Default.Bookmarks,
-                    onClick = { onClickListingType(ListingType.Subscribed) },
-                    highlight = (selectedListingType == ListingType.Subscribed),
-                )
-                // TODO hide local for non-federated instances
-                IconAndTextDrawerItem(
-                    text = "Local",
-                    icon = Icons.Default.LocationCity,
-                    onClick = { onClickListingType(ListingType.Local) },
-                    highlight = (selectedListingType == ListingType.Local),
-                )
-                IconAndTextDrawerItem(
-                    text = "All",
-                    icon = Icons.Default.Public,
-                    onClick = { onClickListingType(ListingType.All) },
-                    highlight = (selectedListingType == ListingType.All),
-                )
-            }
-        },
-        buttons = {},
-    )
-}
-
-@Preview
-@Composable
-fun ListingTypeOptionsDialogPreview() {
-    ListingTypeOptionsDialog(selectedListingType = ListingType.Local)
-}
-
 @Preview
 @Composable
 fun HomeHeaderPreview() {
     val scope = rememberCoroutineScope()
     val scaffoldState =
         rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-    HomeOrCommunityOrPersonHeader(
+    HomeHeader(
         scope,
         scaffoldState,
         selectedSortType = SortType.Hot,

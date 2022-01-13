@@ -19,6 +19,7 @@ import com.jerboa.datatypes.api.GetPost
 import com.jerboa.datatypes.api.GetPostResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
+import com.jerboa.toastException
 import com.jerboa.ui.components.comment.createCommentRoutine
 import com.jerboa.ui.components.comment.likeCommentRoutine
 import com.jerboa.ui.components.comment.saveCommentRoutine
@@ -28,7 +29,8 @@ class PostViewModel : ViewModel() {
 
     var res by mutableStateOf<GetPostResponse?>(null)
         private set
-    var postView = mutableStateOf<PostView?>(null)
+    var postId = mutableStateOf<Int?>(null)
+            var postView = mutableStateOf<PostView?>(null)
         private set
     var comments = mutableStateListOf<CommentView>()
         private set
@@ -39,31 +41,36 @@ class PostViewModel : ViewModel() {
 
     var replyToCommentParent: CommentView? = null
 
-    fun fetchPost(form: GetPost, clear: Boolean = false) {
+    fun fetchPost(
+        id: Int,
+        clear: Boolean = false,
+        account: Account?,
+        ctx: Context,
+    ) {
         val api = API.getInstance()
 
         viewModelScope.launch {
             try {
                 Log.d(
                     "jerboa",
-                    "Fetching post: $form"
+                    "Fetching post: $id"
                 )
 
                 if (clear) {
                     postView.value = null
                 }
 
+                postId.value = id
+
                 loading = true
+                val form = GetPost(id = id, auth = account?.jwt)
                 val out = api.getPost(form = form.serializeToMap())
                 res = out
                 postView.value = out.post_view
                 comments.clear()
                 comments.addAll(out.comments)
             } catch (e: Exception) {
-                Log.e(
-                    "jerboa",
-                    e.toString(),
-                )
+                toastException(ctx, e)
             } finally {
                 loading = false
             }

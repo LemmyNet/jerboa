@@ -81,6 +81,12 @@ interface API {
     @GET("user")
     suspend fun getPersonDetails(@QueryMap form: Map<String, String>): GetPersonDetailsResponse
 
+    /**
+     * Get comment replies.
+     */
+    @GET("user/replies")
+    suspend fun getReplies(@QueryMap form: Map<String, String>): GetRepliesResponse
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -601,12 +607,6 @@ suspend fun createCommentWrapper(
 //    return this.wrapper(HttpType.Post, "/user/mention/mark_as_read", form);
 //  }
 //
-//  /**
-//   * Get comment replies.
-//   */
-//  async getReplies(form: GetReplies): Promise<GetRepliesResponse> {
-//    return this.wrapper(HttpType.Get, "/user/replies", form);
-//  }
 //
 //  /**
 //   * Ban a person from your site.

@@ -127,10 +127,10 @@ data class BanPersonResponse(
 
 data class GetReplies(
     val sort: String,
-    val page: Int?,
-    val limit: Int?,
-    val unread_only: Boolean?,
-    val auth: String?,
+    val page: Int? = null,
+    val limit: Int? = null,
+    val unread_only: Boolean? = null,
+    val auth: String,
 )
 
 data class GetPersonMentions(

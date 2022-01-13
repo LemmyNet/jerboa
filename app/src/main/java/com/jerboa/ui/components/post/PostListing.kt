@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -15,16 +16,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.*
 import com.jerboa.datatypes.*
+import com.jerboa.datatypes.api.GetPost
+import com.jerboa.db.Account
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonProfileLink
+import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.theme.*
 import java.net.URL
 
@@ -391,4 +396,20 @@ fun PostListing(
 fun PostListingHeaderPreview() {
     val navController = rememberNavController()
     SimpleTopAppBar("Post", navController)
+}
+
+fun postClickWrapper(
+    postViewModel: PostViewModel,
+    postId: Int,
+    account: Account?,
+    navController: NavController,
+    ctx: Context,
+) {
+    postViewModel.fetchPost(
+        id = postId,
+        account = account,
+        clear = true,
+        ctx = ctx,
+    )
+    navController.navigate(route = "post")
 }

@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.comment
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
@@ -63,6 +64,7 @@ fun CommentNode(
     onSaveClick: (commentView: CommentView) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     onCommunityClick: (communityId: Int) -> Unit = {},
+    onPostClick: (postId: Int) -> Unit = {},
     showPostAndCommunityContext: Boolean = false,
 ) {
     val offset = calculateCommentOffset(node.depth)
@@ -103,6 +105,7 @@ fun CommentNode(
                     PostAndCommunityContextHeader(
                         commentView = commentView,
                         onCommunityClick = onCommunityClick,
+                        onPostClick = onPostClick,
                     )
                 }
 
@@ -135,12 +138,14 @@ fun CommentNode(
 @Composable
 fun PostAndCommunityContextHeader(
     commentView: CommentView,
-    onCommunityClick: (communityId: Int) -> Unit = {}
+    onCommunityClick: (communityId: Int) -> Unit = {},
+    onPostClick: (postId: Int) -> Unit = {}
 ) {
     Column(modifier = Modifier.padding(bottom = MEDIUM_PADDING)) {
         Text(
             text = commentView.post.name,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.clickable { onPostClick(commentView.post.id) }
         )
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -182,6 +187,7 @@ fun CommentFooterLine(
                 votes = commentView.counts.upvotes, item = commentView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
+                showNumber = false,
             )
             VoteGeneric(
                 myVote = commentView.my_vote,

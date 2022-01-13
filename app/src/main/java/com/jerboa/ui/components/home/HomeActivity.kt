@@ -18,9 +18,13 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
+import com.jerboa.ui.components.inbox.inboxClickWrapper
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
+import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.ui.components.post.postClickWrapper
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -29,6 +33,8 @@ fun HomeActivity(
     homeViewModel: HomeViewModel,
     communityViewModel: CommunityViewModel,
     personProfileViewModel: PersonProfileViewModel,
+    postViewModel: PostViewModel,
+    inboxViewModel: InboxViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
 ) {
@@ -51,7 +57,6 @@ fun HomeActivity(
                     homeViewModel = homeViewModel,
                     account = account,
                     ctx = ctx,
-                    navController = navController
                 )
             },
             drawerShape = MaterialTheme.shapes.small,
@@ -68,6 +73,7 @@ fun HomeActivity(
                     communityViewModel = communityViewModel,
                     homeViewModel = homeViewModel,
                     personProfileViewModel = personProfileViewModel,
+                    inboxViewModel = inboxViewModel,
                     scope = scope,
                     scaffoldState = scaffoldState,
                     account = account,
@@ -76,12 +82,13 @@ fun HomeActivity(
             },
             content = {
                 MainPostListingsContent(
-                    homeViewModel,
-                    communityViewModel,
-                    personProfileViewModel,
-                    account,
-                    ctx,
-                    navController,
+                    homeViewModel = homeViewModel,
+                    communityViewModel = communityViewModel,
+                    personProfileViewModel = personProfileViewModel,
+                    postViewModel = postViewModel,
+                    account = account,
+                    ctx = ctx,
+                    navController = navController,
                 )
             }
         )
@@ -93,6 +100,7 @@ fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
     communityViewModel: CommunityViewModel,
     personProfileViewModel: PersonProfileViewModel,
+    postViewModel: PostViewModel,
     account: Account?,
     ctx: Context,
     navController: NavController,
@@ -123,7 +131,13 @@ fun MainPostListingsContent(
             )
         },
         onPostClick = { postView ->
-            navController.navigate("post/${postView.post.id}?fetch=true")
+            postClickWrapper(
+                postViewModel = postViewModel,
+                postId = postView.post.id,
+                account = account,
+                navController = navController,
+                ctx = ctx,
+            )
         },
         onPostLinkClick = { url ->
             openLink(url, ctx)
@@ -174,6 +188,7 @@ fun MainDrawer(
     accountViewModel: AccountViewModel,
     communityViewModel: CommunityViewModel,
     personProfileViewModel: PersonProfileViewModel,
+    inboxViewModel: InboxViewModel,
     homeViewModel: HomeViewModel,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
@@ -244,6 +259,17 @@ fun MainDrawer(
                 closeDrawer(scope, scaffoldState)
             }
         },
+        onClickInbox = {
+            account?.id?.also {
+                inboxClickWrapper(
+                    inboxViewModel = inboxViewModel,
+                    account = account,
+                    navController = navController,
+                    ctx = ctx,
+                )
+                closeDrawer(scope, scaffoldState)
+            }
+        },
     )
 }
 
@@ -254,10 +280,9 @@ fun MainTopBar(
     homeViewModel: HomeViewModel,
     account: Account?,
     ctx: Context,
-    navController: NavController,
 ) {
     Column {
-        HomeOrCommunityOrPersonHeader(
+        HomeHeader(
             scope, scaffoldState,
             selectedSortType = homeViewModel.sortType.value,
             selectedListingType = homeViewModel.listingType.value,
@@ -277,7 +302,6 @@ fun MainTopBar(
                     ctx = ctx,
                 )
             },
-            navController = navController,
         )
         if (homeViewModel.loading.value) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
