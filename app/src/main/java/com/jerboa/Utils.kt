@@ -36,7 +36,6 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.person.PersonProfileLink
-import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.Muted
@@ -131,6 +130,12 @@ data class CommentNodeData(
     val children: MutableList<CommentNodeData>?,
     var depth: Int?,
 )
+
+fun commentsToFlatNodes(
+    comments: List<CommentView>
+): List<CommentNodeData> {
+    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = null) }
+}
 
 fun buildCommentsTree(
     comments: List<CommentView>?,
@@ -318,6 +323,7 @@ fun MyMarkdownText(
         style = MaterialTheme.typography.body1,
         fontSize = 18.sp,
         modifier = modifier,
+        color = color,
 // TODO Markdown preview doesn't make too much sense
 //        maxLines = if (preview) {
 //            5

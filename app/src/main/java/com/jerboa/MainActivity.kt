@@ -132,6 +132,7 @@ class MainActivity : ComponentActivity() {
                         PersonProfileActivity(
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
+                            postViewModel = postViewModel,
                             communityViewModel = communityViewModel,
                             accountViewModel = accountViewModel,
                         )

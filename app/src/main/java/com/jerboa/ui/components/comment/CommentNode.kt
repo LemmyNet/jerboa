@@ -3,11 +3,14 @@ package com.jerboa.ui.components.comment
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Reply
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,10 +19,8 @@ import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleSecondCommentReplyView
-import com.jerboa.ui.theme.LARGE_PADDING
-import com.jerboa.ui.theme.Muted
-import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.XXL_PADDING
+import com.jerboa.ui.components.community.CommunityLink
+import com.jerboa.ui.theme.*
 
 @Composable
 fun CommentNodeHeader(
@@ -61,6 +62,8 @@ fun CommentNode(
     onReplyClick: (commentView: CommentView) -> Unit = {},
     onSaveClick: (commentView: CommentView) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
+    onCommunityClick: (communityId: Int) -> Unit = {},
+    showPostAndCommunityContext: Boolean = false,
 ) {
     val offset = calculateCommentOffset(node.depth)
     val borderColor = calculateBorderColor(node.depth)
@@ -96,6 +99,13 @@ fun CommentNode(
                     )
 //                    .verticalScroll(scrollState)
             ) {
+                if (showPostAndCommunityContext) {
+                    PostAndCommunityContextHeader(
+                        commentView = commentView,
+                        onCommunityClick = onCommunityClick,
+                    )
+                }
+
                 CommentNodeHeader(
                     commentView = commentView,
                     onPersonClick = onPersonClick,
@@ -120,6 +130,34 @@ fun CommentNode(
             )
         }
     }
+}
+
+@Composable
+fun PostAndCommunityContextHeader(
+    commentView: CommentView,
+    onCommunityClick: (communityId: Int) -> Unit = {}
+) {
+    Column(modifier = Modifier.padding(bottom = MEDIUM_PADDING)) {
+        Text(
+            text = commentView.post.name,
+            style = MaterialTheme.typography.subtitle1
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "in ", color = Muted)
+            CommunityLink(
+                community = commentView.community,
+                onClick = onCommunityClick,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PostAndCommunityContextHeaderPreview() {
+    PostAndCommunityContextHeader(commentView = sampleCommentView)
 }
 
 @Composable

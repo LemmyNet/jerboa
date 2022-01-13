@@ -67,7 +67,7 @@ fun PostHeaderLinePreview() {
 fun PostNodeHeader(
     postView: PostView,
     onPersonClick: (personId: Int) -> Unit = {},
-    ) {
+) {
     CommentOrPostNodeHeader(
         creator = postView.creator,
         score = postView.counts.score,

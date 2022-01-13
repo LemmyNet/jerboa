@@ -22,6 +22,8 @@ import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
 
+// TODO this should probably be refactored to not rely on postViewModel, since you should be able
+//  to create comments from many other screens.
 @Composable
 fun CommentReplyActivity(
     postViewModel: PostViewModel,
@@ -62,7 +64,7 @@ fun CommentReplyActivity(
                 )
             },
             content = {
-                if (postViewModel.replyLoading) {
+                if (postViewModel.replyLoading.value) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 } else {
 

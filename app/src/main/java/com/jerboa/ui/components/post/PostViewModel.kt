@@ -12,8 +12,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.api.API
-import com.jerboa.api.likeCommentWrapper
-import com.jerboa.api.saveCommentWrapper
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.CreateComment
@@ -21,7 +19,9 @@ import com.jerboa.datatypes.api.GetPost
 import com.jerboa.datatypes.api.GetPostResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
-import com.jerboa.toastException
+import com.jerboa.ui.components.comment.createCommentRoutine
+import com.jerboa.ui.components.comment.likeCommentRoutine
+import com.jerboa.ui.components.comment.saveCommentRoutine
 import kotlinx.coroutines.launch
 
 class PostViewModel : ViewModel() {
@@ -34,10 +34,10 @@ class PostViewModel : ViewModel() {
         private set
     var loading: Boolean by mutableStateOf(false)
         private set
-    var replyLoading: Boolean by mutableStateOf(false)
+    var replyLoading = mutableStateOf(false)
         private set
 
-    var replyToCommentParent: CommentView? = null // TODO does this need to be state?
+    var replyToCommentParent: CommentView? = null
 
     fun fetchPost(form: GetPost, clear: Boolean = false) {
         val api = API.getInstance()
@@ -76,15 +76,14 @@ class PostViewModel : ViewModel() {
         account: Account?,
         ctx: Context,
     ) {
-        viewModelScope.launch {
-            account?.also { account ->
-                val updatedCommentView = likeCommentWrapper(
-                    commentView, voteType, account,
-                    ctx,
-                ).comment_view
-                findAndUpdateComment(updatedCommentView)
-            }
-        }
+        likeCommentRoutine(
+            commentView = mutableStateOf(commentView),
+            voteType = voteType,
+            comments = comments,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
     }
 
     fun createComment(
@@ -93,44 +92,15 @@ class PostViewModel : ViewModel() {
         navController: NavController,
         focusManager: FocusManager,
     ) {
-        val api = API.getInstance()
-
-        viewModelScope.launch {
-            try {
-                Log.d(
-                    "jerboa",
-                    "Creating comment: $form"
-                )
-                replyLoading = true
-                val out = api.createComment(form)
-                comments.add(0, out.comment_view)
-            } catch (e: Exception) {
-                Log.e(
-                    "jerboa",
-                    e.toString(),
-                )
-                toastException(ctx = ctx, error = e)
-            } finally {
-                replyLoading = false
-                focusManager.clearFocus()
-
-                // Can't call popbackstack here, because it might fetch again
-//                navController.popBackStack()
-//                navController.popBackStack("post/${form.post_id}", false, true)
-//                navController.clearBackStack("commentReply")
-//                navController.popBackStack("post/${form.post_id}?fetch=true", false, true)
-//                navController.popBackStack("commentReply", true, true)
-                navController.navigateUp()
-
-//                                navController.clearBackStack("post/${form.post_id}?fetch=true")
-
-//                navController.graph.
-//                navController.popBackStack("post/${form.post_id}?fetch=true", true, true)
-//                navController.navigate("post/${form.post_id}")
-//                navController.clearBackStack("post/${form.post_id}")
-//                navController.nav
-            }
-        }
+        createCommentRoutine(
+            comments = comments,
+            loading = replyLoading,
+            form = form,
+            ctx = ctx,
+            scope = viewModelScope,
+            navController = navController,
+            focusManager = focusManager,
+        )
     }
 
     fun savePost(
@@ -140,31 +110,18 @@ class PostViewModel : ViewModel() {
         savePostRoutine(postView = postView, account = account, ctx = ctx, scope = viewModelScope)
     }
 
-    private fun findAndUpdateComment(updatedCommentView: CommentView) {
-        val foundIndex = comments.indexOfFirst {
-            it.comment.id == updatedCommentView
-                .comment.id
-        }
-        foundIndex.also { index ->
-            comments[index] = updatedCommentView
-        }
-    }
-
     fun saveComment(
         commentView: CommentView,
         account: Account?,
         ctx: Context,
     ) {
-        viewModelScope.launch {
-            account?.also { account ->
-                val updatedCommentView = saveCommentWrapper(
-                    commentView,
-                    account,
-                    ctx,
-                ).comment_view
-                findAndUpdateComment(updatedCommentView)
-            }
-        }
+        saveCommentRoutine(
+            commentView = mutableStateOf(commentView),
+            comments = comments,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
     }
 
     fun likePost(voteType: VoteType, account: Account?, ctx: Context) {

@@ -67,6 +67,7 @@ fun HomeActivity(
                     accountViewModel = accountViewModel,
                     communityViewModel = communityViewModel,
                     homeViewModel = homeViewModel,
+                    personProfileViewModel = personProfileViewModel,
                     scope = scope,
                     scaffoldState = scaffoldState,
                     account = account,
@@ -172,6 +173,7 @@ fun MainDrawer(
     navController: NavController,
     accountViewModel: AccountViewModel,
     communityViewModel: CommunityViewModel,
+    personProfileViewModel: PersonProfileViewModel,
     homeViewModel: HomeViewModel,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
@@ -196,8 +198,6 @@ fun MainDrawer(
                 clear = true,
                 ctx = ctx,
             )
-
-            // Close the drawer
             closeDrawer(scope, scaffoldState)
         },
         onSignOutClick = {
@@ -231,6 +231,18 @@ fun MainDrawer(
                 ctx = ctx,
             )
             closeDrawer(scope, scaffoldState)
+        },
+        onClickProfile = {
+            account?.id?.also {
+                personClickWrapper(
+                    personProfileViewModel = personProfileViewModel,
+                    personId = it,
+                    account = account,
+                    navController = navController,
+                    ctx = ctx,
+                )
+                closeDrawer(scope, scaffoldState)
+            }
         },
     )
 }

@@ -81,7 +81,9 @@ fun CommunityLinkLarger(
         size = LINK_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
         spacing = DRAWER_ITEM_SPACING,
-        modifier = Modifier.padding(LARGE_PADDING).fillMaxWidth(),
+        modifier = Modifier
+            .padding(LARGE_PADDING)
+            .fillMaxWidth(),
         style = MaterialTheme.typography.subtitle1,
         onClick = onClick,
     )

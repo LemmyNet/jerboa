@@ -211,6 +211,22 @@ suspend fun saveCommentWrapper(
     return updatedComment!!
 }
 
+suspend fun createCommentWrapper(
+    form: CreateComment,
+    ctx: Context,
+): CommentResponse {
+
+    var createdComment: CommentResponse? = null
+    val api = API.getInstance()
+
+    try {
+        createdComment = api.createComment(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return createdComment!!
+}
+
 //
 // /**
 // * Helps build lemmy HTTP requests.

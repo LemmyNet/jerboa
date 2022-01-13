@@ -43,6 +43,7 @@ fun Drawer(
     onClickListingType: (ListingType) -> Unit = {},
     myUserInfo: MyUserInfo?,
     onCommunityClick: (communityId: Int) -> Unit = {},
+    onClickProfile: () -> Unit = {},
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -62,6 +63,7 @@ fun Drawer(
         onSignOutClick = onSignOutClick,
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
+        onClickProfile = onClickProfile,
     )
 }
 
@@ -74,6 +76,7 @@ fun DrawerContent(
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit = {},
     onCommunityClick: (communityId: Int) -> Unit = {},
+    onClickProfile: () -> Unit = {},
     follows: List<CommunityFollowerView>?,
 ) {
     AnimatedVisibility(
@@ -93,6 +96,7 @@ fun DrawerContent(
         DrawerItemsMain(
             onClickListingType = onClickListingType,
             onCommunityClick = onCommunityClick,
+            onClickProfile = onClickProfile,
             follows = follows,
         )
     }

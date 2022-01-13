@@ -18,6 +18,8 @@ import com.jerboa.datatypes.api.GetPersonDetailsResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
+import com.jerboa.ui.components.comment.likeCommentRoutine
+import com.jerboa.ui.components.comment.saveCommentRoutine
 import com.jerboa.ui.components.post.likePostRoutine
 import com.jerboa.ui.components.post.savePostRoutine
 import kotlinx.coroutines.launch
@@ -46,7 +48,26 @@ class PersonProfileViewModel : ViewModel() {
         savePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
     }
 
-    // TODO comment routine actions
+    fun likeComment(commentView: CommentView, voteType: VoteType, account: Account?, ctx: Context) {
+        likeCommentRoutine(
+            commentView = mutableStateOf(commentView),
+            comments = comments, // TODO should this be here?
+            voteType = voteType,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
+    }
+
+    fun saveComment(commentView: CommentView, account: Account?, ctx: Context) {
+        saveCommentRoutine(
+            commentView = mutableStateOf(commentView),
+            comments = comments,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
+    }
 
     fun fetchPersonDetails(
         id: Int,

@@ -63,12 +63,12 @@ fun CommunityActivity(
             },
             content = {
                 PostListings(
-                    posts = communityViewModel.posts,
                     contentAboveListings = {
                         communityViewModel.res?.community_view?.also {
                             CommunityTopSection(communityView = it)
                         }
                     },
+                    posts = communityViewModel.posts,
                     onUpvoteClick = { postView ->
                         communityViewModel.likePost(
                             voteType = VoteType.Upvote,

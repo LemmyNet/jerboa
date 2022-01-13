@@ -30,7 +30,8 @@ fun CommunityTopSection(
     ) {
 
         Box(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             communityView.community.banner?.also {
