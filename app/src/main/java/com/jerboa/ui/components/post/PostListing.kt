@@ -233,7 +233,8 @@ fun PostFooterLine(
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(bottom = SMALL_PADDING)
     ) {
         Row {
             CommentCount(comments = postView.counts.comments)

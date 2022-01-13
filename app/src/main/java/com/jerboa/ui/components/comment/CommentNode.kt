@@ -172,7 +172,7 @@ fun CommentFooterLine(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = LARGE_PADDING)
+            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),

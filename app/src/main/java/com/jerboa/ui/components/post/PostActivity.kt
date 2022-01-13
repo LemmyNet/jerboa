@@ -53,7 +53,7 @@ fun PostActivity(
         Scaffold(
             topBar = {
                 Column {
-                    SimpleTopAppBar("Post", navController = navController)
+                    SimpleTopAppBar("Comments", navController = navController)
                     if (postViewModel.loading) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }

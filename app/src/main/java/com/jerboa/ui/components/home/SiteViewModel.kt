@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jerboa.api.API
 import com.jerboa.api.getSiteWrapper
 import com.jerboa.datatypes.api.GetSiteResponse
 import kotlinx.coroutines.launch
@@ -19,8 +18,6 @@ class SiteViewModel : ViewModel() {
     fun fetchSite(
         auth: String?,
     ) {
-        val api = API.getInstance()
-
         viewModelScope.launch {
             loading = true
             siteRes = getSiteWrapper(auth = auth)
