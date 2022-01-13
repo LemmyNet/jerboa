@@ -624,6 +624,48 @@ fun ListingTypeOptionsDialog(
     )
 }
 
+enum class UnreadOrAll {
+    All,
+    Unread,
+}
+
+fun unreadOrAllFromBool(b: Boolean): UnreadOrAll {
+    return if (b) {
+        UnreadOrAll.Unread
+    } else {
+        UnreadOrAll.All
+    }
+}
+
+@Composable
+fun UnreadOrAllOptionsDialog(
+    onDismissRequest: () -> Unit = {},
+    onClickUnreadOrAll: (UnreadOrAll) -> Unit = {},
+    selectedUnreadOrAll: UnreadOrAll,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                IconAndTextDrawerItem(
+                    text = "All",
+                    icon = Icons.Default.List,
+                    onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
+                    highlight = (selectedUnreadOrAll == UnreadOrAll.All),
+                )
+                // TODO hide local for non-federated instances
+                IconAndTextDrawerItem(
+                    text = "Unread",
+                    icon = Icons.Default.MarkunreadMailbox,
+                    onClick = { onClickUnreadOrAll(UnreadOrAll.Unread) },
+                    highlight = (selectedUnreadOrAll == UnreadOrAll.Unread),
+                )
+            }
+        },
+        buttons = {},
+    )
+}
+
 @Preview
 @Composable
 fun ListingTypeOptionsDialogPreview() {

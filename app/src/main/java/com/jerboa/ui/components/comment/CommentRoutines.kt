@@ -6,10 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.focus.FocusManager
 import androidx.navigation.NavController
 import com.jerboa.VoteType
-import com.jerboa.api.API
-import com.jerboa.api.createCommentWrapper
-import com.jerboa.api.likeCommentWrapper
-import com.jerboa.api.saveCommentWrapper
+import com.jerboa.api.*
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.CreateComment
@@ -55,6 +52,30 @@ fun saveCommentRoutine(
         account?.also { account ->
             commentView.value?.also { cv ->
                 val updatedCommentView = saveCommentWrapper(
+                    cv,
+                    account,
+                    ctx,
+                ).comment_view
+                commentView.value = updatedCommentView
+                comments?.also {
+                    findAndUpdateComment(comments, updatedCommentView)
+                }
+            }
+        }
+    }
+}
+
+fun markCommentAsReadRoutine(
+    commentView: MutableState<CommentView?>,
+    comments: MutableList<CommentView>? = null,
+    account: Account?,
+    ctx: Context,
+    scope: CoroutineScope,
+) {
+    scope.launch {
+        account?.also { account ->
+            commentView.value?.also { cv ->
+                val updatedCommentView = markCommentAsReadWrapper(
                     cv,
                     account,
                     ctx,

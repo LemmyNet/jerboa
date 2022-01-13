@@ -87,6 +87,12 @@ interface API {
     @GET("user/replies")
     suspend fun getReplies(@QueryMap form: Map<String, String>): GetRepliesResponse
 
+    /**
+     * Mark a comment as read.
+     */
+    @POST("comment/mark_as_read")
+    suspend fun markCommentAsRead(@Body form: MarkCommentAsRead): CommentResponse
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -211,6 +217,24 @@ suspend fun saveCommentWrapper(
             comment_id = cv.comment.id, save = !cv.saved, auth = account.jwt
         )
         updatedComment = api.saveComment(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return updatedComment!!
+}
+
+suspend fun markCommentAsReadWrapper(
+    cv: CommentView,
+    account: Account,
+    ctx: Context,
+): CommentResponse {
+    var updatedComment: CommentResponse? = null
+    val api = API.getInstance()
+    try {
+        val form = MarkCommentAsRead(
+            comment_id = cv.comment.id, read = !cv.comment.read, auth = account.jwt
+        )
+        updatedComment = api.markCommentAsRead(form)
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -492,12 +516,6 @@ suspend fun createCommentWrapper(
 //    return this.wrapper(HttpType.Post, "/comment/remove", form);
 //  }
 //
-//  /**
-//   * Mark a comment as read.
-//   */
-//  async markCommentAsRead(form: MarkCommentAsRead): Promise<CommentResponse> {
-//    return this.wrapper(HttpType.Post, "/comment/mark_as_read", form);
-//  }
 //
 //
 //

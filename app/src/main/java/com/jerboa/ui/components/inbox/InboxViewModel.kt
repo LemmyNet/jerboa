@@ -14,10 +14,7 @@ import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.db.Account
-import com.jerboa.ui.components.comment.createCommentRoutine
-import com.jerboa.ui.components.comment.fetchRepliesRoutine
-import com.jerboa.ui.components.comment.likeCommentRoutine
-import com.jerboa.ui.components.comment.saveCommentRoutine
+import com.jerboa.ui.components.comment.*
 
 class InboxViewModel : ViewModel() {
 
@@ -99,6 +96,20 @@ class InboxViewModel : ViewModel() {
         ctx: Context,
     ) {
         saveCommentRoutine(
+            commentView = mutableStateOf(commentView),
+            comments = replies,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
+    }
+
+    fun markAsRead(
+        commentView: CommentView,
+        account: Account?,
+        ctx: Context,
+    ) {
+        markCommentAsReadRoutine(
             commentView = mutableStateOf(commentView),
             comments = replies,
             account = account,

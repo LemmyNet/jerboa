@@ -7,6 +7,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Reply
 import androidx.compose.material.icons.filled.Star
@@ -62,6 +63,7 @@ fun CommentNode(
     onDownvoteClick: (commentView: CommentView) -> Unit = {},
     onReplyClick: (commentView: CommentView) -> Unit = {},
     onSaveClick: (commentView: CommentView) -> Unit = {},
+    onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     onCommunityClick: (communityId: Int) -> Unit = {},
     onPostClick: (postId: Int) -> Unit = {},
@@ -120,6 +122,7 @@ fun CommentNode(
                     onDownvoteClick = onDownvoteClick,
                     onReplyClick = onReplyClick,
                     onSaveClick = onSaveClick,
+                    onMarkAsReadClick = onMarkAsReadClick,
                 )
             }
         }
@@ -172,6 +175,7 @@ fun CommentFooterLine(
     onDownvoteClick: (commentView: CommentView) -> Unit = {},
     onReplyClick: (commentView: CommentView) -> Unit = {},
     onSaveClick: (commentView: CommentView) -> Unit = {},
+    onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
@@ -194,6 +198,15 @@ fun CommentFooterLine(
                 votes = commentView.counts.downvotes, item = commentView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
+            )
+            ActionBarButton(
+                icon = Icons.Filled.Check,
+                onClick = { onMarkAsReadClick(commentView) },
+                contentColor = if (commentView.comment.read) {
+                    Color.Green
+                } else {
+                    Muted
+                },
             )
             ActionBarButton(
                 icon = Icons.Filled.Star,
