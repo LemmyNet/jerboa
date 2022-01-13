@@ -14,17 +14,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
+import com.jerboa.ui.components.person.PersonProfileViewModel
+import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
 
 @Composable
 fun CommentReplyActivity(
-    postViewModel: PostViewModel = viewModel(),
-    accountViewModel: AccountViewModel = viewModel(),
+    postViewModel: PostViewModel,
+    accountViewModel: AccountViewModel,
+    personProfileViewModel: PersonProfileViewModel,
     navController: NavController,
 ) {
 
@@ -69,6 +71,15 @@ fun CommentReplyActivity(
                             commentView = commentView,
                             reply = reply,
                             onReplyChange = { reply = it },
+                            onPersonClick = { personId ->
+                                personClickWrapper(
+                                    personProfileViewModel,
+                                    personId,
+                                    account,
+                                    navController,
+                                    ctx
+                                )
+                            }
                         )
                     } ?: run {
                         postViewModel.postView.value?.also { postView ->
@@ -76,6 +87,15 @@ fun CommentReplyActivity(
                                 postView = postView,
                                 reply = reply,
                                 onReplyChange = { reply = it },
+                                onPersonClick = { personId ->
+                                    personClickWrapper(
+                                        personProfileViewModel,
+                                        personId,
+                                        account,
+                                        navController,
+                                        ctx
+                                    )
+                                }
                             )
                         }
                     }

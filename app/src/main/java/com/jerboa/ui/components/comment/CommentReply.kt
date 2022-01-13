@@ -64,9 +64,15 @@ fun CommentReplyHeader(
 }
 
 @Composable
-fun RepliedComment(commentView: CommentView) {
+fun RepliedComment(
+    commentView: CommentView,
+    onPersonClick: (personId: Int) -> Unit = {},
+) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
-        CommentNodeHeader(commentView = commentView)
+        CommentNodeHeader(
+            commentView = commentView,
+            onPersonClick = onPersonClick,
+        )
         SelectionContainer {
             Text(text = commentView.comment.content)
         }
@@ -80,9 +86,15 @@ fun RepliedCommentPreview() {
 }
 
 @Composable
-fun RepliedPost(postView: PostView) {
+fun RepliedPost(
+    postView: PostView,
+    onPersonClick: (personId: Int) -> Unit = {},
+) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
-        PostNodeHeader(postView = postView)
+        PostNodeHeader(
+            postView = postView,
+            onPersonClick = onPersonClick,
+        )
         val text = postView.post.body.also { it } ?: run { postView.post.name }
         SelectionContainer {
             Text(text = text)
@@ -126,11 +138,15 @@ fun CommentReplyTextField(
 fun CommentReply(
     commentView: CommentView,
     reply: String,
-    onReplyChange: (String) -> Unit
+    onReplyChange: (String) -> Unit,
+    onPersonClick: (personId: Int) -> Unit = {},
 ) {
     LazyColumn {
         item {
-            RepliedComment(commentView = commentView)
+            RepliedComment(
+                commentView = commentView,
+                onPersonClick = onPersonClick,
+            )
         }
         item {
             Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
@@ -145,11 +161,15 @@ fun CommentReply(
 fun PostReply(
     postView: PostView,
     reply: String,
-    onReplyChange: (String) -> Unit
+    onReplyChange: (String) -> Unit,
+    onPersonClick: (personId: Int) -> Unit = {},
 ) {
     LazyColumn {
         item {
-            RepliedPost(postView = postView)
+            RepliedPost(
+                postView = postView,
+                onPersonClick = onPersonClick,
+            )
         }
         item {
             Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))

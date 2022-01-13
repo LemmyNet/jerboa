@@ -161,6 +161,15 @@ fun PostActivity(
                                             ctx = ctx,
                                         )
                                     },
+                                    onPersonClick = { personId ->
+                                        personClickWrapper(
+                                            personProfileViewModel,
+                                            personId,
+                                            account,
+                                            navController,
+                                            ctx
+                                        )
+                                    }
                                 )
                             }
                         }

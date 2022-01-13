@@ -22,12 +22,16 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 
 @Composable
-fun CommentNodeHeader(commentView: CommentView) {
+fun CommentNodeHeader(
+    commentView: CommentView,
+    onPersonClick: (personId: Int) -> Unit = {},
+) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
         score = commentView.counts.score,
         myVote = commentView.my_vote,
         published = commentView.comment.published,
+        onPersonClick = onPersonClick,
     )
 }
 
@@ -56,6 +60,7 @@ fun CommentNode(
     onDownvoteClick: (commentView: CommentView) -> Unit = {},
     onReplyClick: (commentView: CommentView) -> Unit = {},
     onSaveClick: (commentView: CommentView) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit = {},
 ) {
     val offset = calculateCommentOffset(node.depth)
     val borderColor = calculateBorderColor(node.depth)
@@ -91,7 +96,10 @@ fun CommentNode(
                     )
 //                    .verticalScroll(scrollState)
             ) {
-                CommentNodeHeader(commentView = commentView)
+                CommentNodeHeader(
+                    commentView = commentView,
+                    onPersonClick = onPersonClick,
+                )
                 CommentBody(commentView = commentView)
                 CommentFooterLine(
                     commentView = commentView,

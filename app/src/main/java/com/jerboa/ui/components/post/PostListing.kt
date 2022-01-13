@@ -64,12 +64,16 @@ fun PostHeaderLinePreview() {
 }
 
 @Composable
-fun PostNodeHeader(postView: PostView) {
+fun PostNodeHeader(
+    postView: PostView,
+    onPersonClick: (personId: Int) -> Unit = {},
+    ) {
     CommentOrPostNodeHeader(
         creator = postView.creator,
         score = postView.counts.score,
         myVote = postView.my_vote,
-        published = postView.post.published
+        published = postView.post.published,
+        onPersonClick = onPersonClick,
     )
 }
 

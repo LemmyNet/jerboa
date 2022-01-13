@@ -181,6 +181,7 @@ class MainActivity : ComponentActivity() {
                         CommentReplyActivity(
                             postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
+                            personProfileViewModel = personProfileViewModel,
                             navController = navController,
                         )
                     }

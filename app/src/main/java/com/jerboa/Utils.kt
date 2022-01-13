@@ -36,6 +36,7 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.person.PersonProfileLink
+import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.Muted
@@ -332,6 +333,7 @@ fun CommentOrPostNodeHeader(
     score: Int,
     myVote: Int?,
     published: String,
+    onPersonClick: (personId: Int) -> Unit = {},
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -341,7 +343,10 @@ fun CommentOrPostNodeHeader(
             .padding(vertical = SMALL_PADDING)
     ) {
         Row {
-            PersonProfileLink(person = creator)
+            PersonProfileLink(
+                person = creator,
+                onClick = { onPersonClick(creator.id) },
+            )
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
