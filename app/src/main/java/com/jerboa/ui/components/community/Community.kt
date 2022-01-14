@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.community
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -29,6 +30,7 @@ import com.jerboa.ui.theme.Muted
 fun CommunityTopSection(
     communityView: CommunityView,
     modifier: Modifier = Modifier,
+    onClickFollowCommunity: (communityView: CommunityView) -> Unit = {},
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -68,6 +70,7 @@ fun CommunityTopSection(
                         Muted
                     },
                     modifier = Modifier.height(ACTION_BAR_ICON_SIZE)
+                        .clickable { onClickFollowCommunity(communityView) }
                 )
             }
             Row {

@@ -41,7 +41,7 @@ fun CommunityActivity(
             scaffoldState = scaffoldState,
             topBar = {
                 Column {
-                    communityViewModel.res?.community_view?.community?.name?.also {
+                    communityViewModel.communityView?.community?.name?.also {
                         CommunityHeader(
                             communityName = it,
                             selectedSortType = communityViewModel.sortType.value,
@@ -64,8 +64,16 @@ fun CommunityActivity(
             content = {
                 PostListings(
                     contentAboveListings = {
-                        communityViewModel.res?.community_view?.also {
-                            CommunityTopSection(communityView = it)
+                        communityViewModel.communityView?.also {
+                            CommunityTopSection(
+                                communityView = it,
+                                onClickFollowCommunity = { cv ->
+                                    communityViewModel.followCommunity(
+                                        cv = cv,
+                                        account = account
+                                    )
+                                }
+                            )
                         }
                     },
                     posts = communityViewModel.posts,

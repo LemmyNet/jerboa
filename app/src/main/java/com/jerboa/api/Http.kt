@@ -134,6 +134,12 @@ interface API {
     @GET("user/unread_count")
     suspend fun getUnreadCount(@QueryMap form: Map<String, String>): GetUnreadCountResponse
 
+    /**
+     * Follow / subscribe to a community.
+     */
+    @POST("community/follow")
+    suspend fun followCommunity(@Body form: FollowCommunity): CommunityResponse
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -164,6 +170,35 @@ interface API {
                 .create(API::class.java)
         }
     }
+}
+
+suspend fun followCommunityWrapper(
+    communityView: CommunityView,
+    auth: String,
+): CommunityResponse {
+    var communityRes: CommunityResponse? = null
+    val api = API.getInstance()
+
+    try {
+        // Fetch the site to get more info, such as your
+        // name and avatar
+        val form = FollowCommunity(
+            community_id = communityView.community.id,
+            follow = !communityView.subscribed,
+            auth = auth
+        )
+        Log.d(
+            "jerboa",
+            "Following community ..."
+        )
+        communityRes = api.followCommunity(form)
+    } catch (e: Exception) {
+        Log.e(
+            "jerboa",
+            e.toString()
+        )
+    }
+    return communityRes!!
 }
 
 suspend fun getSiteWrapper(auth: String?): GetSiteResponse {
@@ -489,12 +524,6 @@ suspend fun createPrivateMessageWrapper(
 //    return this.wrapper(HttpType.Get, "/community/list", form);
 //  }
 //
-//  /**
-//   * Follow / subscribe to a community.
-//   */
-//  async followCommunity(form: FollowCommunity): Promise<CommunityResponse> {
-//    return this.wrapper(HttpType.Post, "/community/follow", form);
-//  }
 //
 //  /**
 //   * Block a community.

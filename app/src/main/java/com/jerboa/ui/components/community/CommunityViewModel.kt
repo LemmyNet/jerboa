@@ -10,11 +10,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
+import com.jerboa.api.followCommunityWrapper
+import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetCommunity
-import com.jerboa.datatypes.api.GetCommunityResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import com.jerboa.ui.components.post.fetchPostsRoutine
@@ -24,8 +25,9 @@ import kotlinx.coroutines.launch
 
 class CommunityViewModel : ViewModel() {
 
-    var res by mutableStateOf<GetCommunityResponse?>(null)
+    var communityView by mutableStateOf<CommunityView?>(null)
         private set
+
     var communityId = mutableStateOf<Int?>(null)
     var loading = mutableStateOf(false)
         private set
@@ -69,6 +71,18 @@ class CommunityViewModel : ViewModel() {
         savePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
     }
 
+    fun followCommunity(
+        cv: CommunityView,
+        account: Account?,
+    ) {
+        viewModelScope.launch {
+            account?.also { acct ->
+                communityView =
+                    followCommunityWrapper(communityView = cv, auth = acct?.jwt).community_view
+            }
+        }
+    }
+
     fun fetchCommunity(id: Int, auth: String?) {
         val api = API.getInstance()
 
@@ -82,7 +96,7 @@ class CommunityViewModel : ViewModel() {
 
                 val form = GetCommunity(id = id, auth = auth)
                 val out = api.getCommunity(form = form.serializeToMap())
-                res = out
+                communityView = out.community_view
                 communityId.value = id
             } catch (e: Exception) {
                 Log.e(
