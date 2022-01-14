@@ -93,6 +93,12 @@ interface API {
     @POST("comment/mark_as_read")
     suspend fun markCommentAsRead(@Body form: MarkCommentAsRead): CommentResponse
 
+    /**
+     * Mark all replies as read.
+     */
+    @POST("user/mark_all_as_read")
+    suspend fun markAllAsRead(@Body form: MarkAllAsRead): GetRepliesResponse
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -668,12 +674,6 @@ suspend fun createCommentWrapper(
 //    return this.wrapper(HttpType.Post, "/user/password_change", form);
 //  }
 //
-//  /**
-//   * Mark all replies as read.
-//   */
-//  async markAllAsRead(form: MarkAllAsRead): Promise<GetRepliesResponse> {
-//    return this.wrapper(HttpType.Post, "/user/mark_all_as_read", form);
-//  }
 //
 //  /**
 //   * Save your user settings.

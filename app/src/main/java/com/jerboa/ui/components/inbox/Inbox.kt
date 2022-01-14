@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
@@ -34,6 +35,7 @@ fun InboxHeader(
     navController: NavController = rememberNavController(),
     selectedUnreadOrAll: UnreadOrAll,
     onClickUnreadOrAll: (UnreadOrAll) -> Unit = {},
+    onClickMarkAllAsRead: () -> Unit = {},
 ) {
     var showUnreadOrAllOptions by remember { mutableStateOf(false) }
 
@@ -63,12 +65,18 @@ fun InboxHeader(
             }
         },
         actions = {
-            // TODO add mark all as read
             IconButton(onClick = {
                 showUnreadOrAllOptions = !showUnreadOrAllOptions
             }) {
                 Icon(
                     Icons.Default.FilterList,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colors.onSurface
+                )
+            }
+            IconButton(onClick = onClickMarkAllAsRead) {
+                Icon(
+                    Icons.Default.DoneAll,
                     contentDescription = "TODO",
                     tint = MaterialTheme.colors.onSurface
                 )

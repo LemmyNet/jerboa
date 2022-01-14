@@ -68,6 +68,12 @@ fun InboxActivity(
                                 ctx = ctx,
                             )
                         },
+                        onClickMarkAllAsRead = {
+                            inboxViewModel.markAllAsRead(
+                                account = account,
+                                ctx = ctx,
+                            )
+                        }
                     )
                     if (inboxViewModel.loading.value) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())

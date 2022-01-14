@@ -8,13 +8,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.VoteType
+import com.jerboa.api.API
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.CreateComment
+import com.jerboa.datatypes.api.MarkAllAsRead
 import com.jerboa.db.Account
+import com.jerboa.toastException
 import com.jerboa.ui.components.comment.*
+import kotlinx.coroutines.launch
 
 class InboxViewModel : ViewModel() {
 
@@ -116,5 +120,32 @@ class InboxViewModel : ViewModel() {
             ctx = ctx,
             scope = viewModelScope,
         )
+    }
+
+    fun markAllAsRead(account: Account?, ctx: Context) {
+        viewModelScope.launch {
+            account?.also { account ->
+                val api = API.getInstance()
+                try {
+                    val form = MarkAllAsRead(
+                        auth = account.jwt
+                    )
+                    api.markAllAsRead(form)
+                } catch (e: Exception) {
+                    toastException(ctx = ctx, error = e)
+                }
+
+                if (unreadOnly.value) {
+                    replies.clear()
+                } else {
+                    for (i in replies.indices) {
+                        val commentView = replies[i]
+                        val updatedComment = commentView.comment.copy(read = true)
+                        val updatedCv = commentView.copy(comment = updatedComment)
+                        replies[i] = updatedCv
+                    }
+                }
+            }
+        }
     }
 }
