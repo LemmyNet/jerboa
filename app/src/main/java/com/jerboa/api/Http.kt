@@ -423,26 +423,6 @@ suspend fun createPrivateMessageWrapper(
 }
 
 //
-// /**
-// * Helps build lemmy HTTP requests.
-// */
-// export class LemmyHttp {
-//  private apiUrl: string;
-//  private headers: { [key: string]: string } = {};
-//
-//  /**
-//   * Generates a new instance of LemmyHttp.
-//   * @param baseUrl the base url, without the vX version: https://lemmy.ml -> goes to https://lemmy.ml/api/vX
-//   * @param headers optional headers. Should contain `x-real-ip` and `x-forwarded-for` .
-//   */
-//  constructor(baseUrl: string, headers?: { [key: string]: string }) {
-//    this.apiUrl = `${baseUrl}/api/${VERSION}`;
-//
-//    if (headers) {
-//      this.headers = headers;
-//    }
-//  }
-//
 //
 //  /**
 //   * Create your site.
@@ -741,10 +721,6 @@ suspend fun createPrivateMessageWrapper(
 //  }
 //
 //
-//
-//
-//
-//
 //  /**
 //   * Ban a person from your site.
 //   */
@@ -817,26 +793,3 @@ suspend fun createPrivateMessageWrapper(
 //    return this.wrapper(HttpType.Post, "/admin/add", form);
 //  }
 //
-//  private async wrapper<ResponseType, MessageType>(
-//  type_: HttpType,
-//  endpoint: string,
-//  form: MessageType
-//  ): Promise<ResponseType> {
-//    if (type_ == HttpType.Get) {
-//      let getUrl = `${this.buildFullUrl(endpoint)}?${encodeGetParams(form)}`;
-//      return fetch(getUrl, {
-//        method: "GET",
-//        headers: this.headers,
-//      }).then(d => d.json() as Promise<ResponseType>);
-//    } else {
-//      return fetch(this.buildFullUrl(endpoint), {
-//        method: type_,
-//        headers: {
-//        "Content-Type": "application/json",
-//        ...this.headers,
-//      },
-//        body: JSON.stringify(form),
-//      }).then(d => d.json() as Promise<ResponseType>);
-//    }
-//  }
-// }

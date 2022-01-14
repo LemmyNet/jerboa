@@ -187,6 +187,11 @@ fun PostBody(
     ) {
         PostTitleBlock(post = post, onPostLinkClick = onPostLinkClick)
 
+        // The metadata card
+        if (fullBody && post.embed_title !== null) {
+            MetadataCard(post = post)
+        }
+
         // The desc
         post.body?.also { text ->
             Card(
@@ -410,4 +415,31 @@ fun postClickWrapper(
         ctx = ctx,
     )
     navController.navigate(route = "post")
+}
+
+@Composable
+fun MetadataCard(post: Post) {
+    Card(
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier
+            .padding(vertical = MEDIUM_PADDING)
+            .fillMaxWidth(),
+        backgroundColor = colorShade(MaterialTheme.colors.surface, 2.5f),
+        content = {
+            Column(
+                modifier = Modifier
+                    .padding(MEDIUM_PADDING)
+            ) {
+                Text(
+                    text = post.embed_title!!,
+                    style = MaterialTheme.typography.subtitle1
+                )
+                post.embed_description?.also {
+                    Text(
+                        text = it,
+                    )
+                }
+            }
+        }
+    )
 }
