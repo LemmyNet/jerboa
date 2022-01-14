@@ -23,6 +23,9 @@ interface AccountDao {
     @Query("SELECT * FROM account")
     fun getAll(): LiveData<List<Account>>
 
+    @Query("SELECT * FROM account")
+    fun getAllSync(): List<Account>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Account::class)
     suspend fun insert(account: Account)
 
@@ -43,6 +46,10 @@ class AccountRepository(private val accountDao: AccountDao) {
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
     val allAccounts = accountDao.getAll()
+
+    fun getAllSync(): List<Account> {
+        return accountDao.getAllSync()
+    }
 
     // By default Room runs suspend queries off the main thread, therefore, we don't need to
     // implement anything else to ensure we're not doing long running database work
@@ -90,7 +97,9 @@ abstract class AppDB : RoomDatabase() {
                     context.applicationContext,
                     AppDB::class.java,
                     "jerboa"
-                ).build()
+                )
+                    .allowMainThreadQueries()
+                    .build()
                 INSTANCE = instance
                 // return instance
                 instance
@@ -102,6 +111,8 @@ abstract class AppDB : RoomDatabase() {
 class AccountViewModel(private val repository: AccountRepository) : ViewModel() {
 
     val allAccounts = repository.allAccounts
+
+    val allAccountSync = repository.getAllSync()
 
     fun insert(account: Account) = viewModelScope.launch {
         repository.insert(account)

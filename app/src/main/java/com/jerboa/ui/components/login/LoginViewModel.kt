@@ -10,10 +10,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.api.API
+import com.jerboa.api.fetchPostsWrapper
 import com.jerboa.api.getSiteWrapper
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -31,6 +35,7 @@ class LoginViewModel : ViewModel() {
         navController: NavController,
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
+        homeViewModel: HomeViewModel,
         ctx: Context,
     ) {
         val api = API.changeLemmyInstance(instance)
@@ -76,12 +81,22 @@ class LoginViewModel : ViewModel() {
                     jwt = jwt,
                 )
 
-                // TODO
                 // Refetch the front page
-//                postListingsViewModel.fetchPosts(
-//                    auth = jwt,
-//                    clear = true,
-//                )
+                val posts = fetchPostsWrapper(
+                    account = account,
+                    ctx = ctx,
+                    listingType = ListingType.values()[
+                        luv.local_user
+                            .default_listing_type
+                    ],
+                    sortType = SortType.values()[
+                        luv.local_user
+                            .default_sort_type
+                    ],
+                    page = 1
+                )
+                homeViewModel.posts.clear()
+                homeViewModel.posts.addAll(posts)
 
                 // Remove the default account
                 accountViewModel.removeCurrent()

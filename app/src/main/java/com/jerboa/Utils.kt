@@ -59,6 +59,8 @@ val prettyTime = PrettyTime(Locale.getDefault())
 
 val gson = Gson()
 
+const val LAUNCH_DELAY = 1500L
+
 // convert a data class to a map
 fun <T> T.serializeToMap(): Map<String, String> {
     return convert()
@@ -83,9 +85,11 @@ fun getCurrentAccount(accounts: List<Account>?): Account? {
     return accounts?.firstOrNull { it.current }
 }
 
-fun toastException(ctx: Context, error: Exception) {
+fun toastException(ctx: Context?, error: Exception) {
     Log.e("jerboa", error.toString())
-    Toast.makeText(ctx, error.toString(), Toast.LENGTH_SHORT).show()
+    if (ctx !== null) {
+        Toast.makeText(ctx, error.toString(), Toast.LENGTH_SHORT).show()
+    }
 }
 
 @Composable

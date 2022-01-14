@@ -3,10 +3,7 @@ package com.jerboa.api
 import android.content.Context
 import android.util.Log
 import com.jerboa.VoteType
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.PersonMentionView
-import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.PrivateMessageView
+import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.*
 import com.jerboa.db.Account
 import com.jerboa.newVote
@@ -183,6 +180,38 @@ suspend fun getSiteWrapper(auth: String?): GetSiteResponse {
         )
     }
     return siteRes!!
+}
+
+suspend fun fetchPostsWrapper(
+    account: Account,
+    ctx: Context?,
+    communityId: Int? = null,
+    sortType: SortType,
+    listingType: ListingType,
+    page: Int,
+
+): List<PostView> {
+    var posts = listOf<PostView>()
+    val api = API.getInstance()
+
+    try {
+        val form = GetPosts(
+            community_id = communityId,
+            sort = sortType.toString(),
+            type_ = listingType.toString(),
+            page = page,
+            auth = account.jwt,
+        )
+        Log.d(
+            "jerboa",
+            "Fetching posts: $form"
+        )
+        posts = api.getPosts(form = form.serializeToMap()).posts
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+
+    return posts
 }
 
 suspend fun likePostWrapper(

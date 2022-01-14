@@ -5,10 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,6 +22,7 @@ import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.home.HomeActivity
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.home.SplashScreenActivity
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.login.LoginViewModel
@@ -35,6 +33,7 @@ import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.private_message.PrivateMessageReplyActivity
 import com.jerboa.ui.theme.JerboaTheme
+import kotlinx.coroutines.launch
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -58,13 +57,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Read the accounts from the DB, sync for first load only
+        val accounts = accountViewModel.allAccountSync
+        val account = getCurrentAccount(accounts)
+
         setContent {
-
-            val ctx = LocalContext.current
-
-            // Read the accounts from the DB
-            val accounts by accountViewModel.allAccounts.observeAsState()
-            val account = getCurrentAccount(accounts)
+            val scope = rememberCoroutineScope()
 
             val startRoute = if (account != null) {
                 API.changeLemmyInstance(account.instance)
@@ -72,8 +70,7 @@ class MainActivity : ComponentActivity() {
 
                 // Use to get your users default sort and listing types
                 siteViewModel.siteRes?.my_user?.also { myUser ->
-                    LaunchedEffect(Unit, block = {
-
+                    scope.launch {
                         homeViewModel.fetchPosts(
                             account = account,
                             changeListingType = ListingType.values()[
@@ -84,23 +81,20 @@ class MainActivity : ComponentActivity() {
                                 myUser.local_user_view.local_user
                                     .default_sort_type
                             ],
-                            ctx = ctx,
                         )
-                    })
+                    }
                 }
                 "home"
             } else {
                 "login"
             }
 
-//            val startRoute = "home"
-
             val navController = rememberNavController()
 
             JerboaTheme {
                 NavHost(
                     navController = navController,
-                    startDestination = startRoute,
+                    startDestination = "splashScreen",
                 ) {
                     composable(route = "login") {
                         LoginActivity(
@@ -108,6 +102,13 @@ class MainActivity : ComponentActivity() {
                             loginViewModel = loginViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            homeViewModel = homeViewModel,
+                        )
+                    }
+                    composable(route = "splashScreen") {
+                        SplashScreenActivity(
+                            startRoute = startRoute,
+                            navController = navController,
                         )
                     }
                     composable(route = "home") {

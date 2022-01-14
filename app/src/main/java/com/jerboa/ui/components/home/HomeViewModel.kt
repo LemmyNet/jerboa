@@ -17,7 +17,6 @@ import com.jerboa.ui.components.post.savePostRoutine
 class HomeViewModel : ViewModel() {
 
     var posts = mutableStateListOf<PostView>()
-        private set
     var loading = mutableStateOf(false)
         private set
     var page = mutableStateOf(1)
@@ -33,7 +32,7 @@ class HomeViewModel : ViewModel() {
         clear: Boolean = false,
         changeListingType: ListingType? = null,
         changeSortType: SortType? = null,
-        ctx: Context,
+        ctx: Context? = null,
     ) {
         fetchPostsRoutine(
             posts = posts,
