@@ -125,6 +125,12 @@ interface API {
     @GET("private_message/list")
     suspend fun getPrivateMessages(@QueryMap form: Map<String, String>): PrivateMessagesResponse
 
+    /**
+     * Create a private message.
+     */
+    @POST("private_message")
+    suspend fun createPrivateMessage(@Body form: CreatePrivateMessage): PrivateMessageResponse
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -282,7 +288,8 @@ suspend fun markPersonMentionAsReadWrapper(
     val api = API.getInstance()
     try {
         val form = MarkPersonMentionAsRead(
-            person_mention_id = personMentionView.person_mention.id, read = !personMentionView.person_mention.read,
+            person_mention_id = personMentionView.person_mention.id,
+            read = !personMentionView.person_mention.read,
             auth = account
                 .jwt
         )
@@ -327,6 +334,22 @@ suspend fun createCommentWrapper(
         toastException(ctx = ctx, error = e)
     }
     return createdComment!!
+}
+
+suspend fun createPrivateMessageWrapper(
+    form: CreatePrivateMessage,
+    ctx: Context,
+): PrivateMessageResponse {
+
+    var createdPrivateMessage: PrivateMessageResponse? = null
+    val api = API.getInstance()
+
+    try {
+        createdPrivateMessage = api.createPrivateMessage(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return createdPrivateMessage!!
 }
 
 //
@@ -626,14 +649,6 @@ suspend fun createCommentWrapper(
 //  }
 //
 //
-//  /**
-//   * Create a private message.
-//   */
-//  async createPrivateMessage(
-//  form: CreatePrivateMessage
-//  ): Promise<PrivateMessageResponse> {
-//    return this.wrapper(HttpType.Post, "/private_message", form);
-//  }
 //
 //  /**
 //   * Edit a private message.

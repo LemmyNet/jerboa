@@ -254,8 +254,9 @@ fun InboxTabs(
                                 PrivateMessage(
                                     myPersonId = acct.id,
                                     privateMessageView = message,
-                                    onReplyClick = {
-                                        // TODO
+                                    onReplyClick = { privateMessageView ->
+                                        inboxViewModel.replyToPrivateMessageView = privateMessageView
+                                        navController.navigate("privateMessageReply")
                                     },
                                     onMarkAsReadClick = { privateMessageView ->
                                         inboxViewModel.markPrivateMessageAsRead(

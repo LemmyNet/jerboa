@@ -11,10 +11,7 @@ import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.api.CreateComment
-import com.jerboa.datatypes.api.GetPersonMentions
-import com.jerboa.datatypes.api.GetPrivateMessages
-import com.jerboa.datatypes.api.GetReplies
+import com.jerboa.datatypes.api.*
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
@@ -154,6 +151,25 @@ fun createCommentRoutine(
         loading.value = true
         val commentView = createCommentWrapper(form, ctx).comment_view
         comments?.add(0, commentView)
+        loading.value = false
+        focusManager.clearFocus()
+        navController.navigateUp()
+    }
+}
+
+fun createPrivateMessageRoutine(
+    messages: MutableList<PrivateMessageView>? = null,
+    loading: MutableState<Boolean>,
+    form: CreatePrivateMessage,
+    ctx: Context,
+    scope: CoroutineScope,
+    navController: NavController,
+    focusManager: FocusManager,
+) {
+    scope.launch {
+        loading.value = true
+        val pmView = createPrivateMessageWrapper(form, ctx).private_message_view
+        messages?.add(0, pmView)
         loading.value = false
         focusManager.clearFocus()
         navController.navigateUp()

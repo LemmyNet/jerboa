@@ -33,6 +33,7 @@ import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.ui.components.private_message.PrivateMessageReplyActivity
 import com.jerboa.ui.theme.JerboaTheme
 
 class JerboaApplication : Application() {
@@ -166,6 +167,16 @@ class MainActivity : ComponentActivity() {
                     ) {
                         CommentReplyActivity(
                             postViewModel = postViewModel,
+                            accountViewModel = accountViewModel,
+                            personProfileViewModel = personProfileViewModel,
+                            navController = navController,
+                        )
+                    }
+                    composable(
+                        route = "privateMessageReply",
+                    ) {
+                        PrivateMessageReplyActivity(
+                            inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
                             navController = navController,

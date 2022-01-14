@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.ActionBarButton
 import com.jerboa.MyMarkdownText
+import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.ui.components.common.TimeAgo
@@ -28,11 +29,15 @@ fun PrivateMessageHeader(
     onPersonClick: (personId: Int) -> Unit = {},
     myPersonId: Int,
 ) {
+    var otherPerson: PersonSafe
+    var fromOrTo: String
 
-    val fromOrTo = if (isCreator(myPersonId, privateMessageView)) {
-        "to "
+    if (isCreator(myPersonId, privateMessageView)) {
+        otherPerson = privateMessageView.recipient
+        fromOrTo = "to "
     } else {
-        "from "
+        otherPerson = privateMessageView.creator
+        fromOrTo = "from "
     }
 
     Row(
@@ -47,8 +52,8 @@ fun PrivateMessageHeader(
         ) {
             Text(text = fromOrTo, color = Muted)
             PersonProfileLink(
-                person = privateMessageView.creator,
-                onClick = { onPersonClick(privateMessageView.creator.id) },
+                person = otherPerson,
+                onClick = { onPersonClick(otherPerson.id) },
             )
         }
 
