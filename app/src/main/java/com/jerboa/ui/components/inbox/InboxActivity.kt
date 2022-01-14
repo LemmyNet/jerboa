@@ -26,6 +26,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
+import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.InboxViewModel
@@ -39,6 +40,7 @@ import kotlinx.coroutines.launch
 fun InboxActivity(
     navController: NavController,
     inboxViewModel: InboxViewModel,
+    homeViewModel: HomeViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
     communityViewModel: CommunityViewModel,
@@ -52,6 +54,7 @@ fun InboxActivity(
     val ctx = LocalContext.current
     val accounts by accountViewModel.allAccounts.observeAsState()
     val account = getCurrentAccount(accounts = accounts)
+    val unreadCount = homeViewModel.unreadCountResponse?.let { unreadCountTotal(it) }
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
@@ -59,6 +62,7 @@ fun InboxActivity(
             topBar = {
                 Column {
                     InboxHeader(
+                        unreadCount = unreadCount,
                         navController = navController,
                         selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly.value),
                         onClickUnreadOrAll = { unreadOrAll ->
@@ -86,6 +90,7 @@ fun InboxActivity(
                                 account = account,
                                 ctx = ctx,
                             )
+                            homeViewModel.markAllAsRead()
                         }
                     )
                     if (inboxViewModel.loading.value) {
@@ -100,6 +105,7 @@ fun InboxActivity(
                     inboxViewModel = inboxViewModel,
                     postViewModel = postViewModel,
                     communityViewModel = communityViewModel,
+                    homeViewModel = homeViewModel,
                     ctx = ctx,
                     account = account,
                     scope = scope,
@@ -122,6 +128,7 @@ fun InboxTabs(
     personProfileViewModel: PersonProfileViewModel,
     inboxViewModel: InboxViewModel,
     communityViewModel: CommunityViewModel,
+    homeViewModel: HomeViewModel,
     ctx: Context,
     account: Account?,
     scope: CoroutineScope,
@@ -209,6 +216,7 @@ fun InboxTabs(
                                         account = account,
                                         ctx = ctx,
                                     )
+                                    homeViewModel.updateUnreads(commentView)
                                 },
                                 onPersonClick = { personId ->
                                     personClickWrapper(
@@ -264,6 +272,7 @@ fun InboxTabs(
                                             account = account,
                                             ctx = ctx,
                                         )
+                                        homeViewModel.updateUnreads(privateMessageView)
                                     },
                                     onPersonClick = { personId ->
                                         personClickWrapper(

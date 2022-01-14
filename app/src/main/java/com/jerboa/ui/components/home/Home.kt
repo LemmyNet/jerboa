@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.*
 import com.jerboa.datatypes.*
+import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.api.MyUserInfo
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.LargerCircularIcon
@@ -43,6 +44,7 @@ fun Drawer(
     onCommunityClick: (communityId: Int) -> Unit = {},
     onClickProfile: () -> Unit = {},
     onClickInbox: () -> Unit = {},
+    unreadCounts: GetUnreadCountResponse?,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -55,6 +57,7 @@ fun Drawer(
     // Drawer items
     DrawerContent(
         accounts = accounts,
+        unreadCounts = unreadCounts,
         follows = myUserInfo?.follows,
         showAccountAddMode = showAccountAddMode,
         navController = navController,
@@ -79,6 +82,7 @@ fun DrawerContent(
     onClickProfile: () -> Unit = {},
     onClickInbox: () -> Unit = {},
     follows: List<CommunityFollowerView>?,
+    unreadCounts: GetUnreadCountResponse?,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
@@ -100,6 +104,7 @@ fun DrawerContent(
             onClickProfile = onClickProfile,
             onClickInbox = onClickInbox,
             follows = follows,
+            unreadCounts = unreadCounts,
         )
     }
 }
@@ -112,8 +117,11 @@ fun DrawerItemsMain(
     onClickInbox: () -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
     onCommunityClick: (communityId: Int) -> Unit = {},
+    unreadCounts: GetUnreadCountResponse? = null,
 ) {
     val listState = rememberLazyListState()
+
+    val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
     LazyColumn(
         state = listState,
@@ -161,6 +169,7 @@ fun DrawerItemsMain(
                 text = "Inbox",
                 icon = Icons.Default.Email,
                 onClick = onClickInbox,
+                iconBadgeCount = totalUnreads,
             )
         }
         item {
@@ -298,6 +307,7 @@ fun DrawerHeaderPreview() {
 fun IconAndTextDrawerItem(
     text: String,
     icon: ImageVector? = null,
+    iconBadgeCount: Int? = null,
     onClick: () -> Unit,
     more: Boolean = false,
     highlight: Boolean = false,
@@ -324,14 +334,35 @@ fun IconAndTextDrawerItem(
             )
     ) {
         Row {
-            icon?.also {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface,
-                    modifier = spacingMod.size(DRAWER_ITEM_SPACING)
-
-                )
+            icon?.also { ico ->
+                if (iconBadgeCount !== null && iconBadgeCount > 0) {
+                    BadgedBox(
+                        modifier = spacingMod.size(DRAWER_ITEM_SPACING),
+                        badge = {
+                            Badge(
+                                content = {
+                                    Text(
+                                        text = iconBadgeCount.toString(),
+                                    )
+                                },
+                            )
+                        },
+                        content = {
+                            Icon(
+                                imageVector = ico,
+                                contentDescription = "TODO",
+                                tint = MaterialTheme.colors.onSurface,
+                            )
+                        },
+                    )
+                } else {
+                    Icon(
+                        imageVector = ico,
+                        contentDescription = "TODO",
+                        tint = MaterialTheme.colors.onSurface,
+                        modifier = spacingMod.size(DRAWER_ITEM_SPACING)
+                    )
+                }
             }
             Text(
                 text = text,

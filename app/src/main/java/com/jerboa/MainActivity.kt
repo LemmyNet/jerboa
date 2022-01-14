@@ -82,6 +82,7 @@ class MainActivity : ComponentActivity() {
                                     .default_sort_type
                             ],
                         )
+                        homeViewModel.fetchUnreadCounts(account = account)
                     }
                 }
                 "home"
@@ -149,6 +150,7 @@ class MainActivity : ComponentActivity() {
                             postViewModel = postViewModel,
                             communityViewModel = communityViewModel,
                             accountViewModel = accountViewModel,
+                            homeViewModel = homeViewModel,
                         )
                     }
                     composable(

@@ -128,6 +128,12 @@ interface API {
     @POST("private_message")
     suspend fun createPrivateMessage(@Body form: CreatePrivateMessage): PrivateMessageResponse
 
+    /**
+     * Get your unread counts
+     */
+    @GET("user/unread_count")
+    suspend fun getUnreadCount(@QueryMap form: Map<String, String>): GetUnreadCountResponse
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -774,12 +780,6 @@ suspend fun createPrivateMessageWrapper(
 //    return this.wrapper(HttpType.Get, "/user/report_count", form);
 //  }
 //
-//  /**
-//   * Get your unread counts
-//   */
-//  async getUnreadCount(form: GetUnreadCount): Promise<GetUnreadCountResponse> {
-//    return this.wrapper(HttpType.Get, "/user/unread_count", form);
-//  }
 //
 //  /**
 //   * Add an admin to your site.

@@ -40,6 +40,7 @@ import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.TimeAgo
@@ -713,4 +714,8 @@ fun ReplyTextField(
         focusRequester.requestFocus()
         onDispose { }
     }
+}
+
+fun unreadCountTotal(unreads: GetUnreadCountResponse): Int {
+    return unreads.mentions + unreads.private_messages + unreads.replies
 }

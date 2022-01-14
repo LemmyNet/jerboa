@@ -46,6 +46,7 @@ fun InboxHeader(
     selectedUnreadOrAll: UnreadOrAll,
     onClickUnreadOrAll: (UnreadOrAll) -> Unit = {},
     onClickMarkAllAsRead: () -> Unit = {},
+    unreadCount: Int? = null,
 ) {
     var showUnreadOrAllOptions by remember { mutableStateOf(false) }
 
@@ -63,6 +64,7 @@ fun InboxHeader(
     TopAppBar(
         title = {
             InboxHeaderTitle(
+                unreadCount = unreadCount,
                 selectedUnreadOrAll = selectedUnreadOrAll,
             )
         },
@@ -96,10 +98,14 @@ fun InboxHeader(
 }
 
 @Composable
-fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll) {
+fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null) {
+    var title = "Inbox"
+    if (unreadCount != null && unreadCount > 0) {
+        title = "$title ($unreadCount)"
+    }
     Column {
         Text(
-            text = "Inbox",
+            text = title,
             style = MaterialTheme.typography.subtitle1
         )
         Text(

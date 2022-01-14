@@ -197,6 +197,7 @@ fun MainDrawer(
 ) {
     Drawer(
         myUserInfo = siteViewModel.siteRes?.my_user,
+        unreadCounts = homeViewModel.unreadCountResponse,
         accounts = accounts,
         navController = navController,
         onSwitchAccountClick = {
@@ -213,6 +214,11 @@ fun MainDrawer(
                 clear = true,
                 ctx = ctx,
             )
+            homeViewModel.fetchUnreadCounts(
+                account = account,
+                ctx = ctx,
+            )
+
             closeDrawer(scope, scaffoldState)
         },
         onSignOutClick = {
