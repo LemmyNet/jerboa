@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.Log
 import com.jerboa.VoteType
 import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.api.*
 import com.jerboa.db.Account
 import com.jerboa.newVote
@@ -94,10 +96,34 @@ interface API {
     suspend fun markCommentAsRead(@Body form: MarkCommentAsRead): CommentResponse
 
     /**
+     * Mark a person mention as read.
+     */
+    @POST("user/mention/mark_as_read")
+    suspend fun markPersonMentionAsRead(@Body form: MarkPersonMentionAsRead): PersonMentionResponse
+
+    /**
+     * Mark a private message as read.
+     */
+    @POST("private_message/mark_as_read")
+    suspend fun markPrivateMessageAsRead(@Body form: MarkPrivateMessageAsRead): PrivateMessageResponse
+
+    /**
      * Mark all replies as read.
      */
     @POST("user/mark_all_as_read")
     suspend fun markAllAsRead(@Body form: MarkAllAsRead): GetRepliesResponse
+
+    /**
+     * Get mentions for your user.
+     */
+    @GET("user/mention")
+    suspend fun getPersonMentions(@QueryMap form: Map<String, String>): GetPersonMentionsResponse
+
+    /**
+     * Get / fetch private messages.
+     */
+    @GET("private_message/list")
+    suspend fun getPrivateMessages(@QueryMap form: Map<String, String>): PrivateMessagesResponse
 
     companion object {
         private var api: API? = null
@@ -245,6 +271,46 @@ suspend fun markCommentAsReadWrapper(
         toastException(ctx = ctx, error = e)
     }
     return updatedComment!!
+}
+
+suspend fun markPersonMentionAsReadWrapper(
+    personMentionView: PersonMentionView,
+    account: Account,
+    ctx: Context,
+): PersonMentionResponse {
+    var updatedPm: PersonMentionResponse? = null
+    val api = API.getInstance()
+    try {
+        val form = MarkPersonMentionAsRead(
+            person_mention_id = personMentionView.person_mention.id, read = !personMentionView.person_mention.read,
+            auth = account
+                .jwt
+        )
+        updatedPm = api.markPersonMentionAsRead(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return updatedPm!!
+}
+
+suspend fun markPrivateMessageAsReadWrapper(
+    pm: PrivateMessageView,
+    account: Account,
+    ctx: Context,
+): PrivateMessageResponse {
+    var updatedPm: PrivateMessageResponse? = null
+    val api = API.getInstance()
+    try {
+        val form = MarkPrivateMessageAsRead(
+            private_message_id = pm.private_message.id, read = !pm.private_message.read,
+            auth = account
+                .jwt
+        )
+        updatedPm = api.markPrivateMessageAsRead(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return updatedPm!!
 }
 
 suspend fun createCommentWrapper(
@@ -559,14 +625,6 @@ suspend fun createCommentWrapper(
 //    return this.wrapper(HttpType.Get, "/comment/report/list", form);
 //  }
 //
-//  /**
-//   * Get / fetch private messages.
-//   */
-//  async getPrivateMessages(
-//  form: GetPrivateMessages
-//  ): Promise<PrivateMessagesResponse> {
-//    return this.wrapper(HttpType.Get, "/private_message/list", form);
-//  }
 //
 //  /**
 //   * Create a private message.
@@ -595,14 +653,6 @@ suspend fun createCommentWrapper(
 //    return this.wrapper(HttpType.Post, "/private_message/delete", form);
 //  }
 //
-//  /**
-//   * Mark a private message as read.
-//   */
-//  async markPrivateMessageAsRead(
-//  form: MarkPrivateMessageAsRead
-//  ): Promise<PrivateMessageResponse> {
-//    return this.wrapper(HttpType.Post, "/private_message/mark_as_read", form);
-//  }
 //
 //  /**
 //   * Register a new user.
@@ -613,23 +663,7 @@ suspend fun createCommentWrapper(
 //
 //
 //
-//  /**
-//   * Get mentions for your user.
-//   */
-//  async getPersonMentions(
-//  form: GetPersonMentions
-//  ): Promise<GetPersonMentionsResponse> {
-//    return this.wrapper(HttpType.Get, "/user/mention", form);
-//  }
 //
-//  /**
-//   * Mark a person mention as read.
-//   */
-//  async markPersonMentionAsRead(
-//  form: MarkPersonMentionAsRead
-//  ): Promise<PersonMentionResponse> {
-//    return this.wrapper(HttpType.Post, "/user/mention/mark_as_read", form);
-//  }
 //
 //
 //  /**

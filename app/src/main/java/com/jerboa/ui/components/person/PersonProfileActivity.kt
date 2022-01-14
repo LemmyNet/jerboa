@@ -291,6 +291,15 @@ fun UserTabs(
                                         ctx = ctx,
                                     )
                                 },
+                                onPostClick = { postId ->
+                                    postClickWrapper(
+                                        postViewModel = postViewModel,
+                                        postId = postId,
+                                        account = account,
+                                        navController = navController,
+                                        ctx = ctx,
+                                    )
+                                },
                                 showPostAndCommunityContext = true,
                             )
                         }

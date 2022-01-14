@@ -134,11 +134,11 @@ data class GetReplies(
 )
 
 data class GetPersonMentions(
-    val sort: String,
-    val page: Int?,
-    val limit: Int?,
-    val unread_only: Boolean?,
-    val auth: String?,
+    val sort: String? = null,
+    val page: Int? = null,
+    val limit: Int? = null,
+    val unread_only: Boolean? = null,
+    val auth: String,
 )
 
 data class MarkPersonMentionAsRead(
@@ -193,10 +193,10 @@ data class MarkPrivateMessageAsRead(
 )
 
 data class GetPrivateMessages(
-    val unread_only: Boolean,
-    val page: Int?,
-    val limit: Int?,
-    val auth: String?,
+    val unread_only: Boolean? = null,
+    val page: Int? = null,
+    val limit: Int? = null,
+    val auth: String,
 )
 
 data class PrivateMessagesResponse(

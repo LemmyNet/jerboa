@@ -27,6 +27,16 @@ fun inboxClickWrapper(
         clear = true,
         ctx = ctx,
     )
+    inboxViewModel.fetchPersonMentions(
+        account = account,
+        clear = true,
+        ctx = ctx,
+    )
+    inboxViewModel.fetchPrivateMessages(
+        account = account,
+        clear = true,
+        ctx = ctx,
+    )
     navController.navigate(route = "inbox")
 }
 

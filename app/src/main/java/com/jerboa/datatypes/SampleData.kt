@@ -1,5 +1,7 @@
 package com.jerboa.datatypes
 
+import com.jerboa.ui.components.private_message.PrivateMessage
+
 val samplePost = Post(
     id = 135129,
     name = "In a socialist world, would jobs still have probation periods ?",
@@ -333,4 +335,23 @@ val samplePersonAggregates = PersonAggregates(
 val samplePersonView = PersonViewSafe(
     person = samplePersonSafe,
     counts = samplePersonAggregates
+)
+
+val samplePrivateMessage = PrivateMessage(
+    id = 32,
+    creator_id = 83,
+    recipient_id = 35,
+    content = "A message from *me* to **you**",
+    deleted = false,
+    read = false,
+    published = "2022-01-07T04:12:26.398434",
+    updated = "2022-01-07T03:15:37.360888",
+    ap_id = "https://midwest.social/comment/24622",
+    local = false
+)
+
+val samplePrivateMessageView = PrivateMessageView(
+    private_message = samplePrivateMessage,
+    creator = samplePersonSafe,
+    recipient = samplePersonSafe2,
 )

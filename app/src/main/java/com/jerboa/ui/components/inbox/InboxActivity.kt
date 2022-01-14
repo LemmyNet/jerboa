@@ -31,6 +31,7 @@ import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.postClickWrapper
+import com.jerboa.ui.components.private_message.PrivateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -67,6 +68,18 @@ fun InboxActivity(
                                 changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
                                 ctx = ctx,
                             )
+                            inboxViewModel.fetchPersonMentions(
+                                account = account,
+                                clear = true,
+                                changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
+                                ctx = ctx,
+                            )
+                            inboxViewModel.fetchPrivateMessages(
+                                account = account,
+                                clear = true,
+                                changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
+                                ctx = ctx,
+                            )
                         },
                         onClickMarkAllAsRead = {
                             inboxViewModel.markAllAsRead(
@@ -98,7 +111,7 @@ fun InboxActivity(
 
 enum class InboxTab {
     Replies,
-    Mentions,
+//    Mentions,
     Messages,
 }
 
@@ -191,7 +204,7 @@ fun InboxTabs(
                                     )
                                 },
                                 onMarkAsReadClick = { commentView ->
-                                    inboxViewModel.markAsRead(
+                                    inboxViewModel.markReplyAsRead(
                                         commentView = commentView,
                                         account = account,
                                         ctx = ctx,
@@ -225,14 +238,45 @@ fun InboxTabs(
                                     )
                                 },
                                 showPostAndCommunityContext = true,
+                                showRead = true,
                             )
                         }
                     }
                 }
 
-                InboxTab.Mentions.ordinal -> {
-                }
+//                InboxTab.Mentions.ordinal -> {
+//                    // TODO Need to do a whole type of its own here
+//                }
                 InboxTab.Messages.ordinal -> {
+                    account?.let { acct ->
+                        LazyColumn {
+                            items(inboxViewModel.messages) { message ->
+                                PrivateMessage(
+                                    myPersonId = acct.id,
+                                    privateMessageView = message,
+                                    onReplyClick = {
+                                        // TODO
+                                    },
+                                    onMarkAsReadClick = { privateMessageView ->
+                                        inboxViewModel.markPrivateMessageAsRead(
+                                            privateMessageView = privateMessageView,
+                                            account = account,
+                                            ctx = ctx,
+                                        )
+                                    },
+                                    onPersonClick = { personId ->
+                                        personClickWrapper(
+                                            personProfileViewModel,
+                                            personId,
+                                            account,
+                                            navController,
+                                            ctx
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -68,6 +68,7 @@ fun CommentNode(
     onCommunityClick: (communityId: Int) -> Unit = {},
     onPostClick: (postId: Int) -> Unit = {},
     showPostAndCommunityContext: Boolean = false,
+    showRead: Boolean = false,
 ) {
     val offset = calculateCommentOffset(node.depth)
     val borderColor = calculateBorderColor(node.depth)
@@ -123,6 +124,7 @@ fun CommentNode(
                     onReplyClick = onReplyClick,
                     onSaveClick = onSaveClick,
                     onMarkAsReadClick = onMarkAsReadClick,
+                    showRead = showRead,
                 )
             }
         }
@@ -176,6 +178,7 @@ fun CommentFooterLine(
     onReplyClick: (commentView: CommentView) -> Unit = {},
     onSaveClick: (commentView: CommentView) -> Unit = {},
     onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
+    showRead: Boolean = false,
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
@@ -199,15 +202,17 @@ fun CommentFooterLine(
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
             )
-            ActionBarButton(
-                icon = Icons.Filled.Check,
-                onClick = { onMarkAsReadClick(commentView) },
-                contentColor = if (commentView.comment.read) {
-                    Color.Green
-                } else {
-                    Muted
-                },
-            )
+            if (showRead) {
+                ActionBarButton(
+                    icon = Icons.Filled.Check,
+                    onClick = { onMarkAsReadClick(commentView) },
+                    contentColor = if (commentView.comment.read) {
+                        Color.Green
+                    } else {
+                        Muted
+                    },
+                )
+            }
             ActionBarButton(
                 icon = Icons.Filled.Star,
                 onClick = { onSaveClick(commentView) },
