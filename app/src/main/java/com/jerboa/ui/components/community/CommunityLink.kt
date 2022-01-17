@@ -13,6 +13,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
+import com.jerboa.communityNameShown
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.sampleCommunitySafe
@@ -27,10 +28,9 @@ fun CommunityName(
     color: Color = MaterialTheme.colors.primary,
     style: TextStyle = MaterialTheme.typography.body1,
 ) {
-    val displayName = community.title
 
     Text(
-        text = displayName,
+        text = communityNameShown(community),
         color = color,
         style = style,
     )

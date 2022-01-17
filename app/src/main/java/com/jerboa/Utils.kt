@@ -37,6 +37,7 @@ import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.SortType
@@ -54,6 +55,7 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
+import java.net.URL
 import java.util.*
 
 val prettyTime = PrettyTime(Locale.getDefault())
@@ -501,7 +503,24 @@ fun SimpleTopAppBar(
 }
 
 fun personNameShown(person: PersonSafe): String {
-    return person.display_name ?: person.name
+    val name = person.display_name ?: person.name
+    return if (person.local) {
+        "$name"
+    } else {
+        "$name@${hostName(person.actor_id)}"
+    }
+}
+
+fun communityNameShown(community: CommunitySafe): String {
+    return if (community.local) {
+        "${community.title}"
+    } else {
+        "${community.title}@${hostName(community.actor_id)}"
+    }
+}
+
+fun hostName(url: String): String {
+    return URL(url).host
 }
 
 @Composable

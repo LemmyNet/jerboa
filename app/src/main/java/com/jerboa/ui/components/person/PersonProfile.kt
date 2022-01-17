@@ -12,13 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.MyMarkdownText
-import com.jerboa.SortOptionsDialog
-import com.jerboa.SortTopOptionsDialog
+import com.jerboa.*
 import com.jerboa.datatypes.PersonViewSafe
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.samplePersonView
-import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.TimeAgo
@@ -65,10 +62,11 @@ fun PersonProfileTopSection(
                 )
 
                 TimeAgo(
-                    precedingString = "Created",
+                    precedingString = "Joined",
                     includeAgo = true,
                     dateStr = personView.person.published
                 )
+                CommentsAndPosts(personView)
                 personView.person.bio?.also {
                     MyMarkdownText(
                         markdown = it,
@@ -78,6 +76,27 @@ fun PersonProfileTopSection(
             }
         }
     }
+}
+
+@Composable
+fun CommentsAndPosts(personView: PersonViewSafe) {
+    Row {
+        Text(
+            text = "${personView.counts.post_count} posts",
+            color = Muted,
+        )
+        DotSpacer()
+        Text(
+            text = "${personView.counts.comment_count} comments",
+            color = Muted,
+        )
+    }
+}
+
+@Preview
+@Composable
+fun CommentsAndPostsPreview() {
+    CommentsAndPosts(personView = samplePersonView)
 }
 
 @Preview

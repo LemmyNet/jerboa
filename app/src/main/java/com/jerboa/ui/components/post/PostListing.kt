@@ -28,7 +28,6 @@ import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
-import java.net.URL
 
 @Composable
 fun PostHeaderLine(
@@ -51,7 +50,7 @@ fun PostHeaderLine(
         DotSpacer()
         postView.post.url?.also {
             // TODO hide also if its the same instance / domain
-            Text(text = URL(it).host, color = Muted)
+            Text(text = hostName(it), color = Muted)
             DotSpacer()
         }
         TimeAgo(dateStr = postView.post.published)
