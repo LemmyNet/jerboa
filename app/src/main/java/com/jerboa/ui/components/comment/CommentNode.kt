@@ -11,6 +11,8 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Reply
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,11 +26,13 @@ import com.jerboa.ui.theme.*
 fun CommentNodeHeader(
     commentView: CommentView,
     onPersonClick: (personId: Int) -> Unit = {},
+    score: Int,
+    myVote: Int?,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
-        score = commentView.counts.score,
-        myVote = commentView.my_vote,
+        score = score,
+        myVote = myVote,
         published = commentView.comment.published,
         onPersonClick = onPersonClick,
     )
@@ -37,7 +41,7 @@ fun CommentNodeHeader(
 @Preview
 @Composable
 fun CommentNodeHeaderPreview() {
-    CommentNodeHeader(commentView = sampleCommentView)
+    CommentNodeHeader(commentView = sampleCommentView, score = 23, myVote = 26)
 }
 
 @Composable
@@ -69,6 +73,12 @@ fun CommentNode(
     val offset = calculateCommentOffset(node.depth)
     val borderColor = calculateBorderColor(node.depth)
     val commentView = node.commentView
+
+    // These are necessary for instant comment voting
+    val score = remember { mutableStateOf(node.commentView.counts.score) }
+    val myVote = remember { mutableStateOf(node.commentView.my_vote) }
+    val upvotes = remember { mutableStateOf(node.commentView.counts.upvotes) }
+    val downvotes = remember { mutableStateOf(node.commentView.counts.downvotes) }
 
     Column(
         modifier = Modifier.padding(
@@ -109,28 +119,39 @@ fun CommentNode(
                 CommentNodeHeader(
                     commentView = commentView,
                     onPersonClick = onPersonClick,
+                    score = score.value,
+                    myVote = myVote.value,
                 )
                 CommentBody(commentView = commentView)
                 CommentFooterLine(
                     commentView = commentView,
-                    onUpvoteClick = onUpvoteClick,
-                    onDownvoteClick = onDownvoteClick,
+                    onUpvoteClick = {
+                        handleInstantUpvote(myVote, score, upvotes, downvotes)
+                        onUpvoteClick(it)
+                    },
+                    onDownvoteClick = {
+                        handleInstantDownvote(myVote, score, upvotes, downvotes)
+                        onDownvoteClick(it)
+                    },
                     onReplyClick = onReplyClick,
                     onSaveClick = onSaveClick,
                     onMarkAsReadClick = onMarkAsReadClick,
                     showRead = showRead,
+                    myVote = myVote.value,
+                    upvotes = upvotes.value,
+                    downvotes = downvotes.value,
                 )
             }
         }
-        Divider()
-        node.children?.also { nodes ->
-            CommentNodes(
-                nodes = nodes,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                onReplyClick = onReplyClick,
-            )
-        }
+    }
+    Divider()
+    node.children?.also { nodes ->
+        CommentNodes(
+            nodes = nodes,
+            onUpvoteClick = onUpvoteClick,
+            onDownvoteClick = onDownvoteClick,
+            onReplyClick = onReplyClick,
+        )
     }
 }
 
@@ -173,6 +194,9 @@ fun CommentFooterLine(
     onSaveClick: (commentView: CommentView) -> Unit = {},
     onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
     showRead: Boolean = false,
+    myVote: Int?,
+    upvotes: Int,
+    downvotes: Int,
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
@@ -184,15 +208,17 @@ fun CommentFooterLine(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
         ) {
             VoteGeneric(
-                myVote = commentView.my_vote,
-                votes = commentView.counts.upvotes, item = commentView,
+                myVote = myVote,
+                votes = upvotes,
+                item = commentView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 showNumber = false,
             )
             VoteGeneric(
-                myVote = commentView.my_vote,
-                votes = commentView.counts.downvotes, item = commentView,
+                myVote = myVote,
+                votes = downvotes,
+                item = commentView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
             )

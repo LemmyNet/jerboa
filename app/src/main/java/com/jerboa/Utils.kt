@@ -12,11 +12,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -738,4 +735,66 @@ fun ReplyTextField(
 
 fun unreadCountTotal(unreads: GetUnreadCountResponse): Int {
     return unreads.mentions + unreads.private_messages + unreads.replies
+}
+
+fun handleInstantUpvote(
+    myVote: MutableState<Int?>,
+    score: MutableState<Int>,
+    upvotes: MutableState<Int>,
+    downvotes: MutableState<Int>
+) {
+    val newVote = if (myVote.value == 1) {
+        0
+    } else {
+        1
+    }
+
+    when (myVote.value) {
+        1 -> {
+            score.value--
+            upvotes.value--
+        }
+        -1 -> {
+            downvotes.value--
+            upvotes.value++
+            score.value += 2
+        }
+        else -> {
+            upvotes.value++
+            score.value++
+        }
+    }
+
+    myVote.value = newVote
+}
+
+fun handleInstantDownvote(
+    myVote: MutableState<Int?>,
+    score: MutableState<Int>,
+    upvotes: MutableState<Int>,
+    downvotes: MutableState<Int>
+) {
+    val newVote = if (myVote.value == -1) {
+        0
+    } else {
+        -1
+    }
+
+    when (myVote.value) {
+        1 -> {
+            score.value -= 2
+            upvotes.value--
+            downvotes.value++
+        }
+        -1 -> {
+            downvotes.value--
+            score.value++
+        }
+        else -> {
+            downvotes.value++
+            score.value--
+        }
+    }
+
+    myVote.value = newVote
 }

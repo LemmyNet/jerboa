@@ -10,6 +10,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -235,6 +237,9 @@ fun PostFooterLine(
     onReplyClick: (postView: PostView) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
     showReply: Boolean = false,
+    myVote: Int?,
+    upvotes: Int,
+    downvotes: Int,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -250,14 +255,14 @@ fun PostFooterLine(
 
         ) {
             VoteGeneric(
-                myVote = postView.my_vote,
-                votes = postView.counts.upvotes, item = postView,
+                myVote = myVote,
+                votes = upvotes, item = postView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
             )
             VoteGeneric(
-                myVote = postView.my_vote,
-                votes = postView.counts.downvotes, item = postView,
+                myVote = myVote,
+                votes = downvotes, item = postView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
             )
@@ -301,7 +306,12 @@ fun CommentCountPreview() {
 @Preview
 @Composable
 fun PostFooterLinePreview() {
-    PostFooterLine(postView = samplePostView)
+    PostFooterLine(
+        postView = samplePostView,
+        myVote = -1,
+        upvotes = 2,
+        downvotes = 23
+    )
 }
 
 @Preview
@@ -354,6 +364,13 @@ fun PostListing(
     onPersonClick: (personId: Int) -> Unit = {},
     showReply: Boolean = false,
 ) {
+
+    // These are necessary for instant post voting
+    val score = remember { mutableStateOf(postView.counts.score) }
+    val myVote = remember { mutableStateOf(postView.my_vote) }
+    val upvotes = remember { mutableStateOf(postView.counts.upvotes) }
+    val downvotes = remember { mutableStateOf(postView.counts.downvotes) }
+
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
@@ -382,11 +399,20 @@ fun PostListing(
             // Footer bar
             PostFooterLine(
                 postView = postView,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
+                onUpvoteClick = {
+                    handleInstantUpvote(myVote, score, upvotes, downvotes)
+                    onUpvoteClick(it)
+                },
+                onDownvoteClick = {
+                    handleInstantDownvote(myVote, score, upvotes, downvotes)
+                    onDownvoteClick(it)
+                },
                 onSaveClick = onSaveClick,
                 onReplyClick = onReplyClick,
                 showReply = showReply,
+                myVote = myVote.value,
+                upvotes = upvotes.value,
+                downvotes = downvotes.value,
             )
         }
     }

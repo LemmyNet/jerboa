@@ -64,6 +64,8 @@ fun RepliedComment(
         CommentNodeHeader(
             commentView = commentView,
             onPersonClick = onPersonClick,
+            score = commentView.counts.score,
+            myVote = commentView.my_vote,
         )
         SelectionContainer {
             Text(text = commentView.comment.content)

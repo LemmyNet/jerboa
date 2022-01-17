@@ -176,7 +176,10 @@ fun createPrivateMessageRoutine(
     }
 }
 
-fun findAndUpdateComment(comments: MutableList<CommentView>, updatedCommentView: CommentView?) {
+fun findAndUpdateComment(
+    comments: MutableList<CommentView>,
+    updatedCommentView: CommentView?
+) {
     updatedCommentView?.also { ucv ->
         val foundIndex = comments.indexOfFirst {
             it.comment.id == ucv.comment.id
