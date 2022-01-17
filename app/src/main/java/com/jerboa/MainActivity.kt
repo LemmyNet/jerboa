@@ -5,13 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.api.API
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.SortType
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -19,6 +15,8 @@ import com.jerboa.db.AppDB
 import com.jerboa.ui.components.comment.CommentReplyActivity
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.CommunityViewModel
+import com.jerboa.ui.components.community.list.CommunityListActivity
+import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.HomeActivity
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
@@ -31,9 +29,10 @@ import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.ui.components.post.create.CreatePostActivity
+import com.jerboa.ui.components.post.create.CreatePostViewModel
 import com.jerboa.ui.components.private_message.PrivateMessageReplyActivity
 import com.jerboa.ui.theme.JerboaTheme
-import kotlinx.coroutines.launch
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -49,6 +48,8 @@ class MainActivity : ComponentActivity() {
     private val communityViewModel by viewModels<CommunityViewModel>()
     private val personProfileViewModel by viewModels<PersonProfileViewModel>()
     private val inboxViewModel by viewModels<InboxViewModel>()
+    private val communityListViewModel by viewModels<CommunityListViewModel>()
+    private val createPostViewModel by viewModels<CreatePostViewModel>()
 
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).repository)
@@ -57,42 +58,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Read the accounts from the DB, sync for first load only
-        val accounts = accountViewModel.allAccountSync
-        val account = getCurrentAccount(accounts)
-
         setContent {
-            val scope = rememberCoroutineScope()
-
-            val startRoute = if (account != null) {
-                API.changeLemmyInstance(account.instance)
-                siteViewModel.fetchSite(auth = account.jwt)
-
-                // Use to get your users default sort and listing types
-                siteViewModel.siteRes?.my_user?.also { myUser ->
-                    scope.launch {
-                        homeViewModel.fetchPosts(
-                            account = account,
-                            changeListingType = ListingType.values()[
-                                myUser.local_user_view.local_user
-                                    .default_listing_type
-                            ],
-                            changeSortType = SortType.values()[
-                                myUser.local_user_view.local_user
-                                    .default_sort_type
-                            ],
-                        )
-                        homeViewModel.fetchUnreadCounts(account = account)
-                    }
-                }
-                "home"
-            } else {
-                "login"
-            }
-
-            val navController = rememberNavController()
-
             JerboaTheme {
+
+                val navController = rememberNavController()
+
                 NavHost(
                     navController = navController,
                     startDestination = "splashScreen",
@@ -108,8 +78,10 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(route = "splashScreen") {
                         SplashScreenActivity(
-                            startRoute = startRoute,
                             navController = navController,
+                            homeViewModel = homeViewModel,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel
                         )
                     }
                     composable(route = "home") {
@@ -142,6 +114,26 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                         )
                     }
+                    composable(route = "communityList") {
+                        // Whenever navigating here, reset the list with your followed communities
+                        communityListViewModel.setCommunityListFromFollowed(siteViewModel)
+
+                        CommunityListActivity(
+                            navController = navController,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            communityListViewModel = communityListViewModel,
+                        )
+                    }
+                    composable(route = "createPost") {
+                        CreatePostActivity(
+                            navController = navController,
+                            accountViewModel = accountViewModel,
+                            createPostViewModel = createPostViewModel,
+                            communityListViewModel = communityListViewModel,
+                            postViewModel = postViewModel,
+                        )
+                    }
                     composable(route = "inbox") {
                         InboxActivity(
                             navController = navController,
@@ -158,7 +150,6 @@ class MainActivity : ComponentActivity() {
                     ) {
                         PostActivity(
                             postViewModel = postViewModel,
-                            homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             communityViewModel = communityViewModel,
                             personProfileViewModel = personProfileViewModel,

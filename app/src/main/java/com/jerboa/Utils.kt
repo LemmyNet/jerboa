@@ -61,6 +61,7 @@ val prettyTime = PrettyTime(Locale.getDefault())
 val gson = Gson()
 
 const val LAUNCH_DELAY = 1500L
+const val MAX_POST_TITLE_LENGTH = 200
 
 // convert a data class to a map
 fun <T> T.serializeToMap(): Map<String, String> {

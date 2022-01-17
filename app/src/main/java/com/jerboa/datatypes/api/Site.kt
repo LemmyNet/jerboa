@@ -7,15 +7,15 @@ import com.jerboa.datatypes.*
  */
 data class Search(
     val q: String,
-    val type_: String,
-    val community_id: Int?,
-    val community_name: String?,
-    val creator_id: Int?,
-    val sort: String,
-    val listing_type: String,
-    val page: Int?,
-    val limit: Int?,
-    val auth: String?,
+    val type_: String? = null,
+    val community_id: Int? = null,
+    val community_name: String? = null,
+    val creator_id: Int? = null,
+    val sort: String? = null,
+    val listing_type: String? = null,
+    val page: Int? = null,
+    val limit: Int? = null,
+    val auth: String? = null,
 )
 
 data class SearchResponse(

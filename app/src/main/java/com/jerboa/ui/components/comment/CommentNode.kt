@@ -2,7 +2,6 @@ package com.jerboa.ui.components.comment
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -17,10 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.*
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.sampleCommentReplyView
-import com.jerboa.datatypes.sampleCommentView
-import com.jerboa.datatypes.sampleSecondCommentReplyView
+import com.jerboa.datatypes.*
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.theme.*
 
@@ -65,7 +61,7 @@ fun CommentNode(
     onSaveClick: (commentView: CommentView) -> Unit = {},
     onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
-    onCommunityClick: (communityId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPostClick: (postId: Int) -> Unit = {},
     showPostAndCommunityContext: Boolean = false,
     showRead: Boolean = false,
@@ -73,8 +69,6 @@ fun CommentNode(
     val offset = calculateCommentOffset(node.depth)
     val borderColor = calculateBorderColor(node.depth)
     val commentView = node.commentView
-
-    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier.padding(
@@ -143,7 +137,7 @@ fun CommentNode(
 @Composable
 fun PostAndCommunityContextHeader(
     commentView: CommentView,
-    onCommunityClick: (communityId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPostClick: (postId: Int) -> Unit = {}
 ) {
     Column(modifier = Modifier.padding(bottom = MEDIUM_PADDING)) {

@@ -227,10 +227,10 @@ fun InboxTabs(
                                         ctx
                                     )
                                 },
-                                onCommunityClick = { communityId ->
+                                onCommunityClick = { community ->
                                     communityClickWrapper(
                                         communityViewModel = communityViewModel,
-                                        communityId = communityId,
+                                        communityId = community.id,
                                         account = account,
                                         navController = navController,
                                         ctx = ctx,

@@ -190,10 +190,10 @@ fun UserTabs(
                                 ctx = ctx,
                             )
                         },
-                        onCommunityClick = { communityId ->
+                        onCommunityClick = { community ->
                             communityClickWrapper(
                                 communityViewModel,
-                                communityId,
+                                community.id,
                                 account,
                                 navController,
                                 ctx = ctx,
@@ -282,10 +282,10 @@ fun UserTabs(
                                         ctx
                                     )
                                 },
-                                onCommunityClick = { communityId ->
+                                onCommunityClick = { community ->
                                     communityClickWrapper(
                                         communityViewModel = communityViewModel,
-                                        communityId = communityId,
+                                        communityId = community.id,
                                         account = account,
                                         navController = navController,
                                         ctx = ctx,

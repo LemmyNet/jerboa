@@ -4,12 +4,12 @@ import com.jerboa.datatypes.*
 
 data class CreatePost(
     val name: String,
-    val url: String,
-    val body: String?,
-    val nsfw: Boolean?,
-    val community_id: Int?,
+    val url: String? = null,
+    val body: String? = null,
+    val nsfw: Boolean? = null,
+    val community_id: Int,
     val auth: String,
-    val honeypot: String?,
+    val honeypot: String? = null,
 )
 
 data class PostResponse(

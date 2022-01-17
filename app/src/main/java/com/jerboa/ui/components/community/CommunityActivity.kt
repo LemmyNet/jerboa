@@ -112,10 +112,10 @@ fun CommunityActivity(
                             ctx = ctx,
                         )
                     },
-                    onCommunityClick = { communityId ->
+                    onCommunityClick = { community ->
                         communityClickWrapper(
                             communityViewModel,
-                            communityId,
+                            community.id,
                             account,
                             navController,
                             ctx = ctx,

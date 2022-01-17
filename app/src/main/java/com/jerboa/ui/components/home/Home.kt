@@ -41,7 +41,7 @@ fun Drawer(
     onSignOutClick: () -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
     myUserInfo: MyUserInfo?,
-    onCommunityClick: (communityId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onClickProfile: () -> Unit = {},
     onClickInbox: () -> Unit = {},
     unreadCounts: GetUnreadCountResponse?,
@@ -78,7 +78,7 @@ fun DrawerContent(
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit = {},
-    onCommunityClick: (communityId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onClickProfile: () -> Unit = {},
     onClickInbox: () -> Unit = {},
     follows: List<CommunityFollowerView>?,
@@ -116,7 +116,7 @@ fun DrawerItemsMain(
     onClickProfile: () -> Unit = {},
     onClickInbox: () -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
-    onCommunityClick: (communityId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
     unreadCounts: GetUnreadCountResponse? = null,
 ) {
     val listState = rememberLazyListState()
@@ -209,10 +209,8 @@ fun DrawerAddAccountMode(
     onSignOutClick: () -> Unit = {},
 ) {
     val accountsWithoutCurrent = accounts?.toMutableList()
-    accounts?.also { accts ->
-        val currentAccount = getCurrentAccount(accts)
-        accountsWithoutCurrent?.remove(currentAccount)
-    }
+    val currentAccount = getCurrentAccount(accounts)
+    accountsWithoutCurrent?.remove(currentAccount)
 
     Column {
         IconAndTextDrawerItem(

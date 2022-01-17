@@ -140,6 +140,24 @@ interface API {
     @POST("community/follow")
     suspend fun followCommunity(@Body form: FollowCommunity): CommunityResponse
 
+    /**
+     * Create a post.
+     */
+    @POST("post")
+    suspend fun createPost(@Body form: CreatePost): PostResponse
+
+    /**
+     * Search lemmy.
+     */
+    @GET("search")
+    suspend fun search(@QueryMap form: Map<String, String>): SearchResponse
+
+    /**
+     * Fetch metadata for any given site.
+     */
+    @GET("post/site_metadata")
+    suspend fun getSiteMetadata(@QueryMap form: Map<String, String>): GetSiteMetadataResponse
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -223,6 +241,28 @@ suspend fun getSiteWrapper(auth: String?): GetSiteResponse {
     return siteRes!!
 }
 
+suspend fun getSiteMetadataWrapper(url: String): SiteMetadata {
+    var res: SiteMetadata? = null
+    val api = API.getInstance()
+
+    try {
+        // Fetch the site to get more info, such as your
+        // name and avatar
+        val form = GetSiteMetadata(url = url)
+        Log.d(
+            "jerboa",
+            "Fetching site metadata..."
+        )
+        res = api.getSiteMetadata(form = form.serializeToMap()).metadata
+    } catch (e: Exception) {
+        Log.e(
+            "jerboa",
+            e.toString()
+        )
+    }
+    return res!!
+}
+
 suspend fun fetchPostsWrapper(
     account: Account,
     ctx: Context?,
@@ -253,6 +293,73 @@ suspend fun fetchPostsWrapper(
     }
 
     return posts
+}
+
+suspend fun searchWrapper(
+    account: Account?,
+    ctx: Context?,
+    communityId: Int? = null,
+    sortType: SortType,
+    listingType: ListingType,
+    searchType: SearchType,
+    page: Int? = null,
+    query: String,
+    creatorId: Int? = null,
+): SearchResponse {
+    var res: SearchResponse? = null
+    val api = API.getInstance()
+
+    try {
+        val form = Search(
+            q = query,
+            type_ = searchType.toString(),
+            creator_id = creatorId,
+            community_id = communityId,
+            sort = sortType.toString(),
+            listing_type = listingType.toString(),
+            page = page,
+            auth = account?.jwt,
+        )
+        Log.d(
+            "jerboa",
+            "Searching: $form"
+        )
+        res = api.search(form = form.serializeToMap())
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+
+    return res!!
+}
+
+suspend fun createPostWrapper(
+    account: Account,
+    ctx: Context?,
+    communityId: Int,
+    body: String?,
+    url: String?,
+    name: String,
+): PostView {
+    var createdPostView: PostView? = null
+    val api = API.getInstance()
+
+    try {
+        val form = CreatePost(
+            name = name,
+            community_id = communityId,
+            body = body,
+            url = url,
+            auth = account.jwt,
+        )
+        Log.d(
+            "jerboa",
+            "Creating post: $form"
+        )
+        createdPostView = api.createPost(form).post_view
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return createdPostView!!
 }
 
 suspend fun likePostWrapper(
@@ -466,12 +573,6 @@ suspend fun createPrivateMessageWrapper(
 //    return this.wrapper(HttpType.Get, "/modlog", form);
 //  }
 //
-//  /**
-//   * Search lemmy.
-//   */
-//  async search(form: Search): Promise<SearchResponse> {
-//    return this.wrapper(HttpType.Get, "/search", form);
-//  }
 //
 //  /**
 //   * Fetch a non-local / federated object.
@@ -553,12 +654,6 @@ suspend fun createPrivateMessageWrapper(
 //    return this.wrapper(HttpType.Post, "/community/mod", form);
 //  }
 //
-//  /**
-//   * Create a post.
-//   */
-//  async createPost(form: CreatePost): Promise<PostResponse> {
-//    return this.wrapper(HttpType.Post, "/post", form);
-//  }
 //
 //
 //  /**
@@ -624,14 +719,6 @@ suspend fun createPrivateMessageWrapper(
 //    return this.wrapper(HttpType.Get, "/post/report/list", form);
 //  }
 //
-//  /**
-//   * Fetch metadata for any given site.
-//   */
-//  async getSiteMetadata(
-//  form: GetSiteMetadata
-//  ): Promise<GetSiteMetadataResponse> {
-//    return this.wrapper(HttpType.Get, "/post/site_metadata", form);
-//  }
 //
 //
 //  /**

@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -39,7 +41,7 @@ fun HomeActivity(
     siteViewModel: SiteViewModel,
 ) {
 
-    Log.d("jerboa", "got to community activity")
+    Log.d("jerboa", "got to home activity")
 
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -90,7 +92,17 @@ fun HomeActivity(
                     ctx = ctx,
                     navController = navController,
                 )
-            }
+            },
+            floatingActionButtonPosition = FabPosition.End,
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate("createPost")
+                    }
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "TODO")
+                }
+            },
         )
     }
 }
@@ -149,10 +161,10 @@ fun MainPostListingsContent(
                 ctx = ctx,
             )
         },
-        onCommunityClick = { communityId ->
+        onCommunityClick = { community ->
             communityClickWrapper(
                 communityViewModel = communityViewModel,
-                communityId = communityId,
+                communityId = community.id,
                 account = account,
                 navController = navController,
                 ctx = ctx,
@@ -200,17 +212,20 @@ fun MainDrawer(
         unreadCounts = homeViewModel.unreadCountResponse,
         accounts = accounts,
         navController = navController,
-        onSwitchAccountClick = {
+        onSwitchAccountClick = { account ->
             accountViewModel.removeCurrent()
-            accountViewModel.setCurrent(it.id)
-            API.changeLemmyInstance(it.instance)
+            accountViewModel.setCurrent(account.id)
+            API.changeLemmyInstance(account.instance)
+
+            Log.d("jerboa", "instance is ${account.instance}")
+            Log.d("jerboa", "accounts $accounts")
 
             // Refetch the site
-            siteViewModel.fetchSite(it.jwt)
+            siteViewModel.fetchSite(account.jwt)
 
             // Refetch the front page
             homeViewModel.fetchPosts(
-                account = it,
+                account = account,
                 clear = true,
                 ctx = ctx,
             )
@@ -243,10 +258,10 @@ fun MainDrawer(
             )
             closeDrawer(scope, scaffoldState)
         },
-        onCommunityClick = { communityId ->
+        onCommunityClick = { community ->
             communityClickWrapper(
                 communityViewModel,
-                communityId,
+                community.id,
                 account,
                 navController,
                 ctx = ctx,

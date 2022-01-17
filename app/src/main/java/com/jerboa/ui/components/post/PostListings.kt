@@ -1,13 +1,13 @@
 package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.isScrolledToEnd
@@ -21,7 +21,7 @@ fun PostListings(
     onPostClick: (postView: PostView) -> Unit = {},
     onPostLinkClick: (url: String) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
-    onCommunityClick: (communityId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     onSwipeRefresh: () -> Unit = {},
     loading: Boolean = false,
@@ -41,7 +41,7 @@ fun PostListings(
             }
 
             // List of items
-            itemsIndexed(posts) { index, postView ->
+            items(posts) { postView ->
                 PostListing(
                     postView = postView,
                     onUpvoteClick = onUpvoteClick,
@@ -64,7 +64,6 @@ fun PostListings(
     }
 
     // act when end of list reached
-    val ctx = LocalContext.current
     if (endOfListReached) {
         LaunchedEffect(endOfListReached) {
             isScrolledToEnd()

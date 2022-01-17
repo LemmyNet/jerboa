@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -34,7 +33,7 @@ import java.net.URL
 @Composable
 fun PostHeaderLine(
     postView: PostView,
-    onCommunityClick: (communityId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
 ) {
     FlowRow(
@@ -85,8 +84,6 @@ fun PostTitleBlock(
     post: Post,
     onPostLinkClick: (url: String) -> Unit = {},
 ) {
-    val ctx = LocalContext.current
-
     val imagePost = post.url?.let { isImage(it) } ?: run { false }
 
     if (imagePost) {
@@ -181,7 +178,6 @@ fun PostBody(
     fullBody: Boolean = false,
     onPostLinkClick: (url: String) -> Unit = {},
 ) {
-    val ctx = LocalContext.current
     Column(
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
@@ -352,7 +348,7 @@ fun PostListing(
     onPostClick: (postView: PostView) -> Unit = {},
     onPostLinkClick: (url: String) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
-    onCommunityClick: (communityId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     showReply: Boolean = false,
 ) {

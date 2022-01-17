@@ -29,7 +29,6 @@ class PostViewModel : ViewModel() {
 
     var res by mutableStateOf<GetPostResponse?>(null)
         private set
-    var postId = mutableStateOf<Int?>(null)
     var postView = mutableStateOf<PostView?>(null)
         private set
     var comments = mutableStateListOf<CommentView>()
@@ -59,8 +58,6 @@ class PostViewModel : ViewModel() {
                 if (clear) {
                     postView.value = null
                 }
-
-                postId.value = id
 
                 loading = true
                 val form = GetPost(id = id, auth = account?.jwt)
