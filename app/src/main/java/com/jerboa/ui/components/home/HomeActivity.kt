@@ -103,6 +103,26 @@ fun HomeActivity(
                     Icon(imageVector = Icons.Default.Add, contentDescription = "TODO")
                 }
             },
+            bottomBar = {
+                BottomAppBarAll(
+                    unreadCounts = homeViewModel.unreadCountResponse,
+                    onClickProfile = {
+                        account?.id?.also {
+                            personClickWrapper(
+                                personProfileViewModel = personProfileViewModel,
+                                personId = it,
+                                account = account,
+                                navController = navController,
+                                ctx = ctx,
+                            )
+                        }
+                    },
+                    onClickInbox = {
+                        inboxClickWrapper(inboxViewModel, account, navController, ctx)
+                    },
+                    navController = navController,
+                )
+            }
         )
     }
 }
@@ -281,15 +301,13 @@ fun MainDrawer(
             }
         },
         onClickInbox = {
-            account?.id?.also {
-                inboxClickWrapper(
-                    inboxViewModel = inboxViewModel,
-                    account = account,
-                    navController = navController,
-                    ctx = ctx,
-                )
-                closeDrawer(scope, scaffoldState)
-            }
+            inboxClickWrapper(
+                inboxViewModel = inboxViewModel,
+                account = account,
+                navController = navController,
+                ctx = ctx,
+            )
+            closeDrawer(scope, scaffoldState)
         },
     )
 }

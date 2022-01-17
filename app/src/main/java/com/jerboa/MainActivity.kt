@@ -5,9 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -114,15 +116,24 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                         )
                     }
-                    composable(route = "communityList") {
+                    composable(
+                        route = "communityList?select={select}",
+                        arguments = listOf(
+                            navArgument("select") {
+                                defaultValue = false
+                                type = NavType.BoolType
+                            }
+                        )
+                    ) {
                         // Whenever navigating here, reset the list with your followed communities
                         communityListViewModel.setCommunityListFromFollowed(siteViewModel)
 
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
+                            communityViewModel = communityViewModel,
                             communityListViewModel = communityListViewModel,
+                            selectMode = it.arguments?.getBoolean("select")!!
                         )
                     }
                     composable(route = "createPost") {

@@ -167,7 +167,7 @@ fun CreatePostBody(
                     .height(60.dp)
                     .fillMaxWidth()
                     .clickable {
-                        navController.navigate("communityList")
+                        navController.navigate("communityList?select=true")
                     }
             )
         }

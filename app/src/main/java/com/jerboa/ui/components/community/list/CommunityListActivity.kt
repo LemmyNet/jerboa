@@ -16,14 +16,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
-import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.community.CommunityViewModel
+import com.jerboa.ui.components.community.communityClickWrapper
 
 @Composable
 fun CommunityListActivity(
     navController: NavController,
-    siteViewModel: SiteViewModel,
     communityListViewModel: CommunityListViewModel,
+    communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
+    selectMode: Boolean = false,
 ) {
 
     Log.d("jerboa", "got to community list activity")
@@ -58,8 +60,18 @@ fun CommunityListActivity(
                     CommunityListings(
                         communities = communityListViewModel.communityList,
                         onClickCommunity = {
-                            communityListViewModel.selectCommunity(it)
-                            navController.navigateUp()
+                            if (selectMode) {
+                                communityListViewModel.selectCommunity(it)
+                                navController.navigateUp()
+                            } else {
+                                communityClickWrapper(
+                                    communityViewModel = communityViewModel,
+                                    communityId = it.id,
+                                    account = account,
+                                    navController = navController,
+                                    ctx = ctx,
+                                )
+                            }
                         }
                     )
                 }

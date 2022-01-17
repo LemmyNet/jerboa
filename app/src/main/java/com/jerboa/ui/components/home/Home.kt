@@ -333,34 +333,12 @@ fun IconAndTextDrawerItem(
     ) {
         Row {
             icon?.also { ico ->
-                if (iconBadgeCount !== null && iconBadgeCount > 0) {
-                    BadgedBox(
-                        modifier = spacingMod.size(DRAWER_ITEM_SPACING),
-                        badge = {
-                            Badge(
-                                content = {
-                                    Text(
-                                        text = iconBadgeCount.toString(),
-                                    )
-                                },
-                            )
-                        },
-                        content = {
-                            Icon(
-                                imageVector = ico,
-                                contentDescription = "TODO",
-                                tint = MaterialTheme.colors.onSurface,
-                            )
-                        },
-                    )
-                } else {
-                    Icon(
-                        imageVector = ico,
-                        contentDescription = "TODO",
-                        tint = MaterialTheme.colors.onSurface,
-                        modifier = spacingMod.size(DRAWER_ITEM_SPACING)
-                    )
-                }
+                InboxIconAndBadge(
+                    iconBadgeCount = iconBadgeCount,
+                    modifier = spacingMod.size(DRAWER_ITEM_SPACING),
+                    icon = ico,
+                    tint = MaterialTheme.colors.onSurface
+                )
             }
             Text(
                 text = text,
@@ -376,6 +354,43 @@ fun IconAndTextDrawerItem(
                 modifier = Modifier.size(24.dp)
             )
         }
+    }
+}
+
+@Composable
+private fun InboxIconAndBadge(
+    iconBadgeCount: Int?,
+    icon: ImageVector,
+    tint: Color,
+    modifier: Modifier = Modifier,
+) {
+    if (iconBadgeCount !== null && iconBadgeCount > 0) {
+        BadgedBox(
+            modifier = modifier,
+            badge = {
+                Badge(
+                    content = {
+                        Text(
+                            text = iconBadgeCount.toString(),
+                        )
+                    },
+                )
+            },
+            content = {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "TODO",
+                    tint = tint,
+                )
+            },
+        )
+    } else {
+        Icon(
+            imageVector = icon,
+            contentDescription = "TODO",
+            tint = tint,
+            modifier = modifier
+        )
     }
 }
 
@@ -530,4 +545,93 @@ fun HomeHeaderPreview() {
         selectedSortType = SortType.Hot,
         selectedListingType = ListingType.All
     )
+}
+
+@Composable
+fun BottomAppBarAll(
+    navController: NavController = rememberNavController(),
+    unreadCounts: GetUnreadCountResponse? = null,
+    onClickProfile: () -> Unit = {},
+    onClickInbox: () -> Unit = {},
+) {
+    var selectedState by remember { mutableStateOf("home") }
+    val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
+
+    BottomAppBar(
+        elevation = 10.dp,
+        backgroundColor = MaterialTheme.colors.background
+    ) {
+        BottomNavigationItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "TODO",
+                )
+            },
+            selectedContentColor = MaterialTheme.colors.primary,
+            unselectedContentColor = Muted,
+            onClick = {
+                selectedState = "home"
+                navController.navigate("home")
+            },
+            selected = selectedState == "home"
+        )
+
+        BottomNavigationItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.List,
+                    contentDescription = "TODO",
+                )
+            },
+            selectedContentColor = MaterialTheme.colors.primary,
+            unselectedContentColor = Muted,
+            onClick = {
+                selectedState = "communityList"
+                navController.navigate("communityList")
+            },
+            selected = selectedState == "communityList"
+        )
+        BottomNavigationItem(
+            icon = {
+                InboxIconAndBadge(
+                    iconBadgeCount = totalUnreads,
+                    icon = Icons.Default.Email,
+                    tint = if (selectedState == "inbox") {
+                        MaterialTheme.colors.primary
+                    } else {
+                        Muted
+                    },
+                )
+            },
+            selectedContentColor = MaterialTheme.colors.primary,
+            unselectedContentColor = Muted,
+            onClick = {
+                selectedState = "inbox"
+                onClickInbox()
+            },
+            selected = selectedState == "inbox"
+        )
+        BottomNavigationItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "TODO",
+                )
+            },
+            selectedContentColor = MaterialTheme.colors.primary,
+            unselectedContentColor = Muted,
+            onClick = {
+                selectedState = "personProfile"
+                onClickProfile()
+            },
+            selected = selectedState == "personProfile"
+        )
+    }
+}
+
+@Preview
+@Composable
+fun BottomAppBarAllPreview() {
+    BottomAppBarAll()
 }
