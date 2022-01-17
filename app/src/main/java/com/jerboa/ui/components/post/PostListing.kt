@@ -188,8 +188,11 @@ fun PostBody(
             MetadataCard(post = post)
         }
 
+        // Check to make sure body isn't empty string
+        val body = post.body?.trim()?.ifEmpty { null }
+
         // The desc
-        post.body?.also { text ->
+        body?.also { text ->
             Card(
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
