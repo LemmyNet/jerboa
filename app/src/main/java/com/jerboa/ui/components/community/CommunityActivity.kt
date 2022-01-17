@@ -14,8 +14,12 @@ import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.openLink
+import com.jerboa.ui.components.home.BottomAppBarAll
+import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.inbox.inboxClickWrapper
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
+import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.postClickWrapper
@@ -27,6 +31,8 @@ fun CommunityActivity(
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
     accountViewModel: AccountViewModel,
+    homeViewModel: HomeViewModel,
+    inboxViewModel: InboxViewModel,
 ) {
 
     Log.d("jerboa", "got to community activity")
@@ -149,6 +155,26 @@ fun CommunityActivity(
                     },
                 )
             },
+            bottomBar = {
+                BottomAppBarAll(
+                    unreadCounts = homeViewModel.unreadCountResponse,
+                    onClickProfile = {
+                        account?.id?.also {
+                            personClickWrapper(
+                                personProfileViewModel = personProfileViewModel,
+                                personId = it,
+                                account = account,
+                                navController = navController,
+                                ctx = ctx,
+                            )
+                        }
+                    },
+                    onClickInbox = {
+                        inboxClickWrapper(inboxViewModel, account, navController, ctx)
+                    },
+                    navController = navController,
+                )
+            }
         )
     }
 }

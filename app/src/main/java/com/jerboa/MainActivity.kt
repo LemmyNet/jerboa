@@ -105,6 +105,8 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel = personProfileViewModel,
                             postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
+                            homeViewModel = homeViewModel,
+                            inboxViewModel = inboxViewModel
                         )
                     }
                     composable(route = "profile") {
@@ -114,6 +116,8 @@ class MainActivity : ComponentActivity() {
                             postViewModel = postViewModel,
                             communityViewModel = communityViewModel,
                             accountViewModel = accountViewModel,
+                            homeViewModel = homeViewModel,
+                            inboxViewModel = inboxViewModel
                         )
                     }
                     composable(

@@ -29,6 +29,10 @@ import com.jerboa.openLink
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
+import com.jerboa.ui.components.home.BottomAppBarAll
+import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.inbox.inboxClickWrapper
+import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.postClickWrapper
@@ -42,6 +46,8 @@ fun PersonProfileActivity(
     postViewModel: PostViewModel,
     communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
+    homeViewModel: HomeViewModel,
+    inboxViewModel: InboxViewModel,
 ) {
 
     Log.d("jerboa", "got to person activity")
@@ -90,6 +96,26 @@ fun PersonProfileActivity(
                     scope = scope,
                 )
             },
+            bottomBar = {
+                BottomAppBarAll(
+                    unreadCounts = homeViewModel.unreadCountResponse,
+                    onClickProfile = {
+                        account?.id?.also {
+                            personClickWrapper(
+                                personProfileViewModel = personProfileViewModel,
+                                personId = it,
+                                account = account,
+                                navController = navController,
+                                ctx = ctx,
+                            )
+                        }
+                    },
+                    onClickInbox = {
+                        inboxClickWrapper(inboxViewModel, account, navController, ctx)
+                    },
+                    navController = navController,
+                )
+            }
         )
     }
 }
