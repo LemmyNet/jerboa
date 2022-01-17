@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post.create
 
+import android.net.Uri
 import android.webkit.URLUtil
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,12 +12,14 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.MAX_POST_TITLE_LENGTH
+import com.jerboa.PickImage
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.sampleCommunitySafe
 import com.jerboa.ui.components.common.CircularIcon
@@ -72,11 +75,13 @@ fun CreatePostBody(
     onBodyChange: (body: String) -> Unit = {},
     url: String,
     onUrlChange: (url: String) -> Unit = {},
+    onPickedImage: (image: Uri) -> Unit = {},
     community: CommunitySafe? = null,
     navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit = {},
 ) {
 
+    val ctx = LocalContext.current
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
 
@@ -112,6 +117,9 @@ fun CreatePostBody(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier
                 .fillMaxWidth(),
+        )
+        PickImage(
+            onPickedImage = onPickedImage,
         )
         OutlinedTextField(
             label = {

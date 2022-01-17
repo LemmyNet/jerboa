@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jerboa.*
 import com.jerboa.datatypes.*
 import com.jerboa.ui.components.community.CommunityLink
@@ -70,7 +71,12 @@ fun CommentNode(
     showPostAndCommunityContext: Boolean = false,
     showRead: Boolean = false,
 ) {
-    val offset = calculateCommentOffset(node.depth)
+    val offset = calculateCommentOffset(node.depth, 4)
+    val offset2 = if (node.depth == null) {
+        0.dp
+    } else {
+        LARGE_PADDING
+    }
     val borderColor = calculateBorderColor(node.depth)
     val commentView = node.commentView
 
@@ -85,28 +91,15 @@ fun CommentNode(
             start = offset
         )
     ) {
-
-        // TODO major glitch, when using this set height,
-        //  it fucks up the markdown field
-        Row(
+        val border = Border(SMALL_PADDING, borderColor)
+        Column(
             modifier = Modifier
-                .height(IntrinsicSize.Max)
-                .fillMaxWidth()
+                .padding(
+                    horizontal = LARGE_PADDING,
+                ).border(start = border)
         ) {
-            Divider(
-                color = borderColor,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(SMALL_PADDING)
-            )
-
             Column(
-                modifier = Modifier
-                    .padding(
-                        horizontal = LARGE_PADDING,
-                        vertical = SMALL_PADDING,
-                    )
-//                    .verticalScroll(scrollState)
+                modifier = Modifier.padding(start = offset2)
             ) {
                 if (showPostAndCommunityContext) {
                     PostAndCommunityContextHeader(
@@ -115,7 +108,6 @@ fun CommentNode(
                         onPostClick = onPostClick,
                     )
                 }
-
                 CommentNodeHeader(
                     commentView = commentView,
                     onPersonClick = onPersonClick,
@@ -142,9 +134,9 @@ fun CommentNode(
                     downvotes = downvotes.value,
                 )
             }
+            Divider()
         }
     }
-    Divider()
     node.children?.also { nodes ->
         CommentNodes(
             nodes = nodes,

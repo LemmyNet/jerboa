@@ -2,9 +2,16 @@ package com.jerboa
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -16,11 +23,16 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -225,11 +237,11 @@ fun hsl(num: Float): Color {
     return Color(ColorUtils.HSLToColor(floatArrayOf(num, .35f, .5f)))
 }
 
-fun calculateCommentOffset(depth: Int?): Dp {
+fun calculateCommentOffset(depth: Int?, multiplier: Int): Dp {
     return if (depth == null) {
         0.dp
     } else {
-        ((depth + 1) * 2).dp
+        ((depth + 1) * multiplier).dp
     }
 }
 
@@ -797,4 +809,178 @@ fun handleInstantDownvote(
     }
 
     myVote.value = newVote
+}
+
+@Composable
+fun PickImage(
+    modifier: Modifier = Modifier,
+    onPickedImage: (image: Uri) -> Unit = {},
+    showImage: Boolean = true,
+) {
+    val ctx = LocalContext.current
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val bitmap = remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        imageUri = uri
+        Log.d("jerboa", imageUri.toString())
+        onPickedImage(uri!!)
+    }
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.End
+    ) {
+        OutlinedButton(onClick = {
+            launcher.launch("image/*")
+        }) {
+            Text(
+                text = "Upload Image",
+                color = Muted,
+            )
+        }
+
+        if (showImage) {
+
+            Spacer(modifier = Modifier.height(SMALL_PADDING))
+
+            imageUri?.let {
+                if (Build.VERSION.SDK_INT < 28) {
+                    bitmap.value = MediaStore.Images
+                        .Media.getBitmap(ctx.contentResolver, it)
+                } else {
+                    val source = ImageDecoder
+                        .createSource(ctx.contentResolver, it)
+                    bitmap.value = ImageDecoder.decodeBitmap(source)
+                }
+
+                bitmap.value?.let { btm ->
+                    Image(
+                        bitmap = btm.asImageBitmap(),
+                        contentDescription = null,
+                    )
+                }
+            }
+        }
+    }
+}
+
+fun appendMarkdownImage(text: String, url: String): String {
+    return "$text\n\n![]($url)"
+}
+
+/**
+ * Border definition can be extended to provide border style or [androidx.compose.ui.graphics.Brush]
+ * One more way is make it sealed class and provide different implementations:
+ * SolidBorder, DashedBorder etc
+ */
+data class Border(val strokeWidth: Dp, val color: Color)
+
+@Stable
+fun Modifier.border(
+    start: Border? = null,
+    top: Border? = null,
+    end: Border? = null,
+    bottom: Border? = null,
+) =
+    drawBehind {
+        start?.let {
+            drawStartBorder(it, shareTop = top != null, shareBottom = bottom != null)
+        }
+        top?.let {
+            drawTopBorder(it, shareStart = start != null, shareEnd = end != null)
+        }
+        end?.let {
+            drawEndBorder(it, shareTop = top != null, shareBottom = bottom != null)
+        }
+        bottom?.let {
+            drawBottomBorder(border = it, shareStart = start != null, shareEnd = end != null)
+        }
+    }
+
+private fun DrawScope.drawTopBorder(
+    border: Border,
+    shareStart: Boolean = true,
+    shareEnd: Boolean = true
+) {
+    val strokeWidthPx = border.strokeWidth.toPx()
+    if (strokeWidthPx == 0f) return
+    drawPath(
+        Path().apply {
+            moveTo(0f, 0f)
+            lineTo(if (shareStart) strokeWidthPx else 0f, strokeWidthPx)
+            val width = size.width
+            lineTo(if (shareEnd) width - strokeWidthPx else width, strokeWidthPx)
+            lineTo(width, 0f)
+            close()
+        },
+        color = border.color
+    )
+}
+
+private fun DrawScope.drawBottomBorder(
+    border: Border,
+    shareStart: Boolean,
+    shareEnd: Boolean
+) {
+    val strokeWidthPx = border.strokeWidth.toPx()
+    if (strokeWidthPx == 0f) return
+    drawPath(
+        Path().apply {
+            val width = size.width
+            val height = size.height
+            moveTo(0f, height)
+            lineTo(if (shareStart) strokeWidthPx else 0f, height - strokeWidthPx)
+            lineTo(if (shareEnd) width - strokeWidthPx else width, height - strokeWidthPx)
+            lineTo(width, height)
+            close()
+        },
+        color = border.color
+    )
+}
+
+private fun DrawScope.drawStartBorder(
+    border: Border,
+    shareTop: Boolean = true,
+    shareBottom: Boolean = true
+) {
+    val strokeWidthPx = border.strokeWidth.toPx()
+    if (strokeWidthPx == 0f) return
+    drawPath(
+        Path().apply {
+            moveTo(0f, 0f)
+            lineTo(strokeWidthPx, if (shareTop) strokeWidthPx else 0f)
+            val height = size.height
+            lineTo(strokeWidthPx, if (shareBottom) height - strokeWidthPx else height)
+            lineTo(0f, height)
+            close()
+        },
+        color = border.color
+    )
+}
+
+private fun DrawScope.drawEndBorder(
+    border: Border,
+    shareTop: Boolean = true,
+    shareBottom: Boolean = true
+) {
+    val strokeWidthPx = border.strokeWidth.toPx()
+    if (strokeWidthPx == 0f) return
+    drawPath(
+        Path().apply {
+            val width = size.width
+            val height = size.height
+            moveTo(width, 0f)
+            lineTo(width - strokeWidthPx, if (shareTop) strokeWidthPx else 0f)
+            lineTo(width - strokeWidthPx, if (shareBottom) height - strokeWidthPx else height)
+            lineTo(width, height)
+            close()
+        },
+        color = border.color
+    )
 }

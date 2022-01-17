@@ -50,6 +50,8 @@ dependencies {
     def room_version = "2.4.1"
     def accompanist_version = "0.22.0-rc"
 
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
+
     // Accompanist
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
     implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_version"

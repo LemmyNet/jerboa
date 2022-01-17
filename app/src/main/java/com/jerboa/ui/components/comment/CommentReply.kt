@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.comment
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.PickImage
 import com.jerboa.ReplyTextField
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
@@ -102,6 +104,7 @@ fun CommentReply(
     reply: String,
     onReplyChange: (String) -> Unit,
     onPersonClick: (personId: Int) -> Unit = {},
+    onPickedImage: (image: Uri) -> Unit = {}
 ) {
     LazyColumn {
         item {
@@ -116,6 +119,12 @@ fun CommentReply(
         item {
             ReplyTextField(reply = reply, onReplyChange = onReplyChange)
         }
+        item {
+            PickImage(
+                onPickedImage = onPickedImage,
+                modifier = Modifier.padding(MEDIUM_PADDING)
+            )
+        }
     }
 }
 
@@ -125,6 +134,7 @@ fun PostReply(
     reply: String,
     onReplyChange: (String) -> Unit,
     onPersonClick: (personId: Int) -> Unit = {},
+    onPickedImage: (image: Uri) -> Unit = {}
 ) {
     LazyColumn {
         item {
@@ -138,6 +148,12 @@ fun PostReply(
         }
         item {
             ReplyTextField(reply = reply, onReplyChange = onReplyChange)
+        }
+        item {
+            PickImage(
+                onPickedImage = onPickedImage,
+                modifier = Modifier.padding(MEDIUM_PADDING)
+            )
         }
     }
 }

@@ -6,21 +6,21 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavController
+import com.jerboa.api.uploadPictrsImage
+import com.jerboa.appendMarkdownImage
 import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
+import kotlinx.coroutines.launch
 
 // TODO this should probably be refactored to not rely on postViewModel, since you should be able
 //  to create comments from many other screens.
@@ -36,7 +36,7 @@ fun CommentReplyActivity(
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
-
+    val scope = rememberCoroutineScope()
     var reply by rememberSaveable { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
@@ -81,6 +81,14 @@ fun CommentReplyActivity(
                                     navController,
                                     ctx
                                 )
+                            },
+                            onPickedImage = { uri ->
+                                scope.launch {
+                                    account?.also { acct ->
+                                        val url = uploadPictrsImage(acct, uri, ctx)
+                                        reply = appendMarkdownImage(reply, url)
+                                    }
+                                }
                             }
                         )
                     } ?: run {
@@ -97,6 +105,14 @@ fun CommentReplyActivity(
                                         navController,
                                         ctx
                                     )
+                                },
+                                onPickedImage = { uri ->
+                                    scope.launch {
+                                        account?.also { acct ->
+                                            val url = uploadPictrsImage(acct, uri, ctx)
+                                            reply = appendMarkdownImage(reply, url)
+                                        }
+                                    }
                                 }
                             )
                         }

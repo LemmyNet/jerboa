@@ -334,3 +334,13 @@ enum class SearchType {
     Users,
     Url,
 }
+
+data class PictrsImage(
+    val file: String,
+    val delete_token: String,
+)
+
+data class PictrsImages(
+    val msg: String,
+    val files: List<PictrsImage>?,
+)

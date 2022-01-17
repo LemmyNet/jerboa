@@ -1,6 +1,7 @@
 package com.jerboa.api
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.jerboa.VoteType
 import com.jerboa.datatypes.*
@@ -9,6 +10,10 @@ import com.jerboa.db.Account
 import com.jerboa.newVote
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -158,6 +163,17 @@ interface API {
     @GET("post/site_metadata")
     suspend fun getSiteMetadata(@QueryMap form: Map<String, String>): GetSiteMetadataResponse
 
+    /**
+     * Upload an image.
+     */
+    @Multipart
+    @POST
+    suspend fun uploadImage(
+        @Url url: String,
+        @Header("Cookie") token: String,
+        @Part filePart: MultipartBody.Part
+    ): PictrsImages
+
     companion object {
         private var api: API? = null
         var currentInstance: String = DEFAULT_INSTANCE
@@ -181,9 +197,14 @@ interface API {
         }
 
         private fun buildApi(): API? {
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
+            val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
             return Retrofit.Builder()
                 .baseUrl(buildUrl())
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
                 .build()
                 .create(API::class.java)
         }
@@ -527,6 +548,28 @@ suspend fun createPrivateMessageWrapper(
         toastException(ctx = ctx, error = e)
     }
     return createdPrivateMessage!!
+}
+
+suspend fun uploadPictrsImage(account: Account, mediaUri: Uri, ctx: Context): String {
+    var imageUrl: String? = null
+    val api = API.getInstance()
+    try {
+        Log.d("jerboa", "Uploading image....")
+        val imageIs = ctx.contentResolver.openInputStream(mediaUri)!!
+        val part = MultipartBody.Part.createFormData(
+            "images[]",
+            "myPic",
+            imageIs.readBytes().toRequestBody()
+        )
+        val url = "https://${API.currentInstance}/pictrs/image"
+        val cookie = "jwt=${account.jwt}"
+        val images = api.uploadImage(url, cookie, part)
+        Log.d("jerboa", "Uploading done.")
+        imageUrl = "$url/${images.files!![0].file}"
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return imageUrl!!
 }
 
 //

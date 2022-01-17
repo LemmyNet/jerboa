@@ -7,18 +7,17 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.jerboa.api.uploadPictrsImage
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.post.PostViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun CreatePostActivity(
@@ -33,6 +32,7 @@ fun CreatePostActivity(
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
+    val scope = rememberCoroutineScope()
 
     var name by rememberSaveable { mutableStateOf("") }
     var url by rememberSaveable { mutableStateOf("") }
@@ -80,7 +80,14 @@ fun CreatePostActivity(
                     onUrlChange = { url = it },
                     navController = navController,
                     community = communityListViewModel.selectedCommunity,
-                    formValid = { formValid = it }
+                    formValid = { formValid = it },
+                    onPickedImage = { uri ->
+                        scope.launch {
+                            account?.also { acct ->
+                                url = uploadPictrsImage(acct, uri, ctx)
+                            }
+                        }
+                    }
                 )
             }
         )
