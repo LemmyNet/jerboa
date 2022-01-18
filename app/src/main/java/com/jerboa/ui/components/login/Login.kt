@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
 
@@ -72,6 +74,7 @@ fun PasswordField(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginForm(
     loading: Boolean = false,
@@ -80,6 +83,8 @@ fun LoginForm(
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    val instanceOptions = DEFAULT_LEMMY_INSTANCES
+    var expanded by remember { mutableStateOf(false) }
 
     val isValid =
         instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()
@@ -95,12 +100,41 @@ fun LoginForm(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        MyTextField(
-            label = "Instance",
-            placeholder = "ex: lemmy.ml",
-            text = instance,
-            onValueChange = { instance = it }
-        )
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                expanded = !expanded
+            }
+        ) {
+            OutlinedTextField(
+                label = { Text("Instance") },
+                placeholder = { Text("ex: lemmy.ml") },
+                value = instance,
+                onValueChange = { instance = it },
+                trailingIcon = {
+                    TrailingIcon(
+                        expanded = expanded
+                    )
+                },
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                }
+            ) {
+                instanceOptions.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        onClick = {
+                            instance = selectionOption
+                            expanded = false
+                        }
+                    ) {
+                        Text(text = selectionOption)
+                    }
+                }
+            }
+        }
         MyTextField(
             label = "Email or Username",
             text = username,
