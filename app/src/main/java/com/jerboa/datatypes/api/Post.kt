@@ -55,8 +55,8 @@ data class EditPost(
     val name: String,
     val url: String?,
     val body: String?,
-    val nsfw: Boolean?,
-    val auth: String?,
+    val nsfw: Boolean? = null,
+    val auth: String,
 )
 
 data class DeletePost(

@@ -158,6 +158,12 @@ interface API {
     suspend fun createPost(@Body form: CreatePost): PostResponse
 
     /**
+     * Edit a post.
+     */
+    @PUT("post")
+    suspend fun editPost(@Body form: EditPost): PostResponse
+
+    /**
      * Search lemmy.
      */
     @GET("search")
@@ -387,6 +393,36 @@ suspend fun createPostWrapper(
         toastException(ctx = ctx, error = e)
     }
     return createdPostView!!
+}
+
+suspend fun editPostWrapper(
+    postView: PostView,
+    account: Account,
+    ctx: Context?,
+    body: String?,
+    url: String?,
+    name: String,
+): PostView {
+    var editedPostView: PostView? = null
+    val api = API.getInstance()
+
+    try {
+        val form = EditPost(
+            post_id = postView.post.id,
+            name = name,
+            body = body,
+            url = url,
+            auth = account.jwt,
+        )
+        Log.d(
+            "jerboa",
+            "Editing post: $form"
+        )
+        editedPostView = api.editPost(form).post_view
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return editedPostView!!
 }
 
 suspend fun likePostWrapper(
@@ -721,12 +757,6 @@ suspend fun uploadPictrsImage(account: Account, mediaUri: Uri, ctx: Context): St
 //
 //
 //
-//  /**
-//   * Edit a post.
-//   */
-//  async editPost(form: EditPost): Promise<PostResponse> {
-//    return this.wrapper(HttpType.Put, "/post", form);
-//  }
 //
 //  /**
 //   * Delete a post.

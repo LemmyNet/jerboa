@@ -1,20 +1,19 @@
 package com.jerboa.ui.components.post
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -28,6 +27,8 @@ import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.community.CommunityLink
+import com.jerboa.ui.components.community.CommunityLinkLarger
+import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 
@@ -246,12 +247,33 @@ fun PostFooterLine(
     onDownvoteClick: (postView: PostView) -> Unit = {},
     onReplyClick: (postView: PostView) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
+    onEditPostClick: (postView: PostView) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
     showReply: Boolean = false,
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
     account: Account?,
 ) {
+
+    var showMoreOptions by remember { mutableStateOf(false) }
+
+    if (showMoreOptions) {
+        PostOptionsDialog(
+            postView = postView,
+            onDismissRequest = { showMoreOptions = false },
+            onEditPostClick = {
+                showMoreOptions = false
+                onEditPostClick(postView)
+            },
+            onCommunityClick = {
+                showMoreOptions = false
+                onCommunityClick(postView.community)
+            },
+            isCreator = account?.id == postView.creator.id,
+        )
+    }
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -302,6 +324,7 @@ fun PostFooterLine(
             ActionBarButton(
                 icon = Icons.Default.MoreVert,
                 account = account,
+                onClick = { showMoreOptions = !showMoreOptions }
             )
         }
     }
@@ -393,6 +416,7 @@ fun PostListing(
     onPostLinkClick: (url: String) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
+    onEditPostClick: (postView: PostView) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     showReply: Boolean = false,
     isModerator: Boolean,
@@ -444,6 +468,8 @@ fun PostListing(
                 },
                 onSaveClick = onSaveClick,
                 onReplyClick = onReplyClick,
+                onCommunityClick = onCommunityClick,
+                onEditPostClick = onEditPostClick,
                 showReply = showReply,
                 myVote = myVote.value,
                 upvotes = upvotes.value,
@@ -502,4 +528,53 @@ fun MetadataCard(post: Post) {
             }
         }
     )
+}
+
+@Composable
+fun PostOptionsDialog(
+    postView: PostView,
+    onDismissRequest: () -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit = {},
+    onEditPostClick: () -> Unit = {},
+    isCreator: Boolean,
+) {
+    val localClipboardManager = LocalClipboardManager.current
+    val ctx = LocalContext.current
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                // TODO maybe add Go To?
+                CommunityLinkLarger(
+                    community = postView.community,
+                    onClick = onCommunityClick,
+                )
+                IconAndTextDrawerItem(
+                    text = "Copy Permalink",
+                    icon = Icons.Default.Link,
+                    onClick = {
+                        val permalink = postView.post.ap_id
+                        localClipboardManager.setText(AnnotatedString(permalink))
+                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        onDismissRequest()
+                    }
+                )
+                if (isCreator) {
+                    IconAndTextDrawerItem(
+                        text = "Edit",
+                        icon = Icons.Default.Edit,
+                        onClick = onEditPostClick,
+                    )
+                }
+            }
+        },
+        buttons = {},
+    )
+}
+
+@Preview
+@Composable
+fun PostOptionsDialogPreview() {
+    PostOptionsDialog(postView = samplePostView, isCreator = true)
 }

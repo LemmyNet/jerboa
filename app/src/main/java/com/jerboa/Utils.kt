@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -45,7 +46,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.jerboa.datatypes.*
+import com.jerboa.datatypes.* // ktlint-disable no-unused-imports
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
@@ -344,7 +345,6 @@ fun <T> VoteGeneric(
 fun MyMarkdownText(
     markdown: String,
     modifier: Modifier = Modifier,
-    preview: Boolean = false,
     color: Color = MaterialTheme.typography.body1.color,
 ) {
 
@@ -357,12 +357,6 @@ fun MyMarkdownText(
         fontSize = 18.sp,
         modifier = modifier,
         color = color,
-// TODO Markdown preview doesn't make too much sense
-//        maxLines = if (preview) {
-//            5
-//        } else {
-//            Int.MAX_VALUE
-//        }
     )
 }
 
@@ -523,7 +517,7 @@ fun SimpleTopAppBar(
 fun personNameShown(person: PersonSafe): String {
     val name = person.display_name ?: person.name
     return if (person.local) {
-        "$name"
+        name
     } else {
         "$name@${hostName(person.actor_id)}"
     }
@@ -531,7 +525,7 @@ fun personNameShown(person: PersonSafe): String {
 
 fun communityNameShown(community: CommunitySafe): String {
     return if (community.local) {
-        "${community.title}"
+        community.title
     } else {
         "${community.title}@${hostName(community.actor_id)}"
     }
@@ -1008,4 +1002,51 @@ fun isPostCreator(commentView: CommentView): Boolean {
 
 fun isModerator(person: PersonSafe, moderators: List<CommunityModeratorView>): Boolean {
     return moderators.map { it.moderator.id }.contains(person.id)
+}
+
+data class InputField(
+    val label: String,
+    val hasError: Boolean,
+)
+
+fun validatePostName(
+    name: String,
+): InputField {
+    return if (name.isEmpty()) {
+        InputField(
+            label = "Title required",
+            hasError = true
+        )
+    } else if (name.length < 3) {
+        InputField(
+            label = "Title must be > 3 chars",
+            hasError = true
+        )
+    } else if (name.length >= MAX_POST_TITLE_LENGTH) {
+        InputField(
+            label = "Title cannot be > 200 chars",
+            hasError = true
+        )
+    } else {
+        InputField(
+            label = "Title",
+            hasError = false
+        )
+    }
+}
+
+fun validateUrl(
+    url: String,
+): InputField {
+    return if (url.isNotEmpty() && !URLUtil.isValidUrl(url)) {
+        InputField(
+            label = "Invalid Url",
+            hasError = true,
+        )
+    } else {
+        InputField(
+            label = "Url",
+            hasError = false,
+        )
+    }
 }

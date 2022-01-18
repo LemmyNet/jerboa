@@ -35,6 +35,8 @@ import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.create.CreatePostActivity
 import com.jerboa.ui.components.post.create.CreatePostViewModel
+import com.jerboa.ui.components.post.edit.PostEditActivity
+import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.private_message.PrivateMessageReplyActivity
 import com.jerboa.ui.theme.JerboaTheme
 
@@ -55,6 +57,7 @@ class MainActivity : ComponentActivity() {
     private val communityListViewModel by viewModels<CommunityListViewModel>()
     private val createPostViewModel by viewModels<CreatePostViewModel>()
     private val commentEditViewModel by viewModels<CommentEditViewModel>()
+    private val postEditViewModel by viewModels<PostEditViewModel>()
 
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).repository)
@@ -99,6 +102,7 @@ class MainActivity : ComponentActivity() {
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            postEditViewModel = postEditViewModel,
                         )
                     }
                     composable(route = "community") {
@@ -109,7 +113,8 @@ class MainActivity : ComponentActivity() {
                             postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
-                            inboxViewModel = inboxViewModel
+                            inboxViewModel = inboxViewModel,
+                            postEditViewModel = postEditViewModel,
                         )
                     }
                     composable(route = "profile") {
@@ -122,6 +127,7 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             inboxViewModel = inboxViewModel,
                             commentEditViewModel = commentEditViewModel,
+                            postEditViewModel = postEditViewModel,
                         )
                     }
                     composable(
@@ -174,6 +180,7 @@ class MainActivity : ComponentActivity() {
                             communityViewModel = communityViewModel,
                             personProfileViewModel = personProfileViewModel,
                             commentEditViewModel = commentEditViewModel,
+                            postEditViewModel = postEditViewModel,
                             navController = navController,
                         )
                     }
@@ -197,6 +204,19 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel = personProfileViewModel,
                             postViewModel = postViewModel,
                             inboxViewModel = inboxViewModel,
+                        )
+                    }
+                    composable(
+                        route = "postEdit",
+                    ) {
+                        PostEditActivity(
+                            postEditViewModel = postEditViewModel,
+                            communityViewModel = communityViewModel,
+                            accountViewModel = accountViewModel,
+                            navController = navController,
+                            personProfileViewModel = personProfileViewModel,
+                            postViewModel = postViewModel,
+                            homeViewModel = homeViewModel,
                         )
                     }
                     composable(

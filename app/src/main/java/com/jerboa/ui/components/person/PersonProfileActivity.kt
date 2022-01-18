@@ -34,6 +34,8 @@ import com.jerboa.ui.components.inbox.inboxClickWrapper
 import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.ui.components.post.edit.postEditClickWrapper
 import com.jerboa.ui.components.post.postClickWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -48,6 +50,7 @@ fun PersonProfileActivity(
     homeViewModel: HomeViewModel,
     inboxViewModel: InboxViewModel,
     commentEditViewModel: CommentEditViewModel,
+    postEditViewModel: PostEditViewModel,
 ) {
 
     Log.d("jerboa", "got to person activity")
@@ -95,6 +98,7 @@ fun PersonProfileActivity(
                     account = account,
                     scope = scope,
                     commentEditViewModel = commentEditViewModel,
+                    postEditViewModel = postEditViewModel,
                 )
             },
             bottomBar = {
@@ -138,6 +142,7 @@ fun UserTabs(
     scope: CoroutineScope,
     postViewModel: PostViewModel,
     commentEditViewModel: CommentEditViewModel,
+    postEditViewModel: PostEditViewModel,
 ) {
     val tabTitles = UserTab.values().map { it.toString() }
     val pagerState = rememberPagerState()
@@ -216,6 +221,13 @@ fun UserTabs(
                                 postView = postView,
                                 account = account,
                                 ctx = ctx,
+                            )
+                        },
+                        onEditPostClick = { postView ->
+                            postEditClickWrapper(
+                                postEditViewModel,
+                                postView,
+                                navController,
                             )
                         },
                         onCommunityClick = { community ->

@@ -22,6 +22,8 @@ import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.ui.components.post.edit.postEditClickWrapper
 import com.jerboa.ui.components.post.postClickWrapper
 
 @Composable
@@ -33,6 +35,7 @@ fun CommunityActivity(
     accountViewModel: AccountViewModel,
     homeViewModel: HomeViewModel,
     inboxViewModel: InboxViewModel,
+    postEditViewModel: PostEditViewModel,
 ) {
 
     Log.d("jerboa", "got to community activity")
@@ -125,6 +128,13 @@ fun CommunityActivity(
                             account,
                             navController,
                             ctx = ctx,
+                        )
+                    },
+                    onEditPostClick = { postView ->
+                        postEditClickWrapper(
+                            postEditViewModel,
+                            postView,
+                            navController,
                         )
                     },
                     onSwipeRefresh = {

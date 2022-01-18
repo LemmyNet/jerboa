@@ -22,6 +22,7 @@ fun PostListings(
     onPostClick: (postView: PostView) -> Unit = {},
     onPostLinkClick: (url: String) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
+    onEditPostClick: (postView: PostView) -> Unit = {},
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     onSwipeRefresh: () -> Unit = {},
@@ -53,6 +54,7 @@ fun PostListings(
                     onSaveClick = onSaveClick,
                     onCommunityClick = onCommunityClick,
                     onPersonClick = onPersonClick,
+                    onEditPostClick = onEditPostClick,
                     account = account,
                     isModerator = false // TODO can't know with many posts
                 )

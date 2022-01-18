@@ -23,6 +23,8 @@ import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.ui.components.post.edit.postEditClickWrapper
 import com.jerboa.ui.components.post.postClickWrapper
 import kotlinx.coroutines.CoroutineScope
 
@@ -36,6 +38,7 @@ fun HomeActivity(
     inboxViewModel: InboxViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    postEditViewModel: PostEditViewModel,
 ) {
 
     Log.d("jerboa", "got to home activity")
@@ -85,6 +88,7 @@ fun HomeActivity(
                     communityViewModel = communityViewModel,
                     personProfileViewModel = personProfileViewModel,
                     postViewModel = postViewModel,
+                    postEditViewModel = postEditViewModel,
                     account = account,
                     ctx = ctx,
                     navController = navController,
@@ -132,6 +136,7 @@ fun MainPostListingsContent(
     communityViewModel: CommunityViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
+    postEditViewModel: PostEditViewModel,
     account: Account?,
     ctx: Context,
     navController: NavController,
@@ -159,6 +164,13 @@ fun MainPostListingsContent(
                 postView = postView,
                 account = account,
                 ctx = ctx,
+            )
+        },
+        onEditPostClick = { postView ->
+            postEditClickWrapper(
+                postEditViewModel,
+                postView,
+                navController,
             )
         },
         onPostClick = { postView ->
@@ -232,25 +244,25 @@ fun MainDrawer(
         unreadCounts = homeViewModel.unreadCountResponse,
         accounts = accounts,
         navController = navController,
-        onSwitchAccountClick = { account ->
+        onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
-            accountViewModel.setCurrent(account.id)
-            API.changeLemmyInstance(account.instance)
+            accountViewModel.setCurrent(acct.id)
+            API.changeLemmyInstance(acct.instance)
 
-            Log.d("jerboa", "instance is ${account.instance}")
+            Log.d("jerboa", "instance is ${acct.instance}")
             Log.d("jerboa", "accounts $accounts")
 
             // Refetch the site
-            siteViewModel.fetchSite(account.jwt)
+            siteViewModel.fetchSite(acct.jwt)
 
             // Refetch the front page
             homeViewModel.fetchPosts(
-                account = account,
+                account = acct,
                 clear = true,
                 ctx = ctx,
             )
             homeViewModel.fetchUnreadCounts(
-                account = account,
+                account = acct,
                 ctx = ctx,
             )
 

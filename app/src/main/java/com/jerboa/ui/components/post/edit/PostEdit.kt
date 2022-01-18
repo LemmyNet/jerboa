@@ -1,52 +1,47 @@
-package com.jerboa.ui.components.post.create
+package com.jerboa.ui.components.post.edit
 
 import android.net.Uri
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.PickImage
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.sampleCommunitySafe
-import com.jerboa.ui.components.common.CircularIcon
-import com.jerboa.ui.theme.ICON_SIZE
+import com.jerboa.datatypes.PostView
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 
 @Composable
-fun CreatePostHeader(
+fun EditPostHeader(
     navController: NavController = rememberNavController(),
-    onCreatePostClick: () -> Unit = {},
+    onEditPostClick: () -> Unit = {},
     formValid: Boolean,
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Create post",
+                text = "Edit Post",
             )
         },
         actions = {
             IconButton(
                 enabled = formValid,
-                onClick = onCreatePostClick,
+                onClick = onEditPostClick,
             ) {
                 // Todo add are you sure cancel dialog
                 Icon(
-                    Icons.Filled.Add,
+                    Icons.Filled.Save,
                     contentDescription = "TODO"
                 )
             }
@@ -68,7 +63,7 @@ fun CreatePostHeader(
 }
 
 @Composable
-fun CreatePostBody(
+fun EditPostBody(
     name: String,
     onNameChange: (name: String) -> Unit = {},
     body: String,
@@ -76,19 +71,15 @@ fun CreatePostBody(
     url: String,
     onUrlChange: (url: String) -> Unit = {},
     onPickedImage: (image: Uri) -> Unit = {},
-    community: CommunitySafe? = null,
-    navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit = {},
 ) {
 
-    val ctx = LocalContext.current
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
 
     formValid(
         !nameField.hasError &&
-            !urlField.hasError &&
-            (community !== null)
+            !urlField.hasError
     )
 
     Column(
@@ -130,66 +121,20 @@ fun CreatePostBody(
             modifier = Modifier
                 .fillMaxWidth(),
         )
-        Box {
-            community?.also {
-
-                OutlinedTextField(
-                    value = community.name,
-                    readOnly = true,
-                    onValueChange = {},
-                    label = {
-                        Text("Community")
-                    },
-                    leadingIcon = {
-                        community.icon?.let {
-                            CircularIcon(
-                                icon = it,
-                                size = ICON_SIZE,
-                                thumbnailSize = THUMBNAIL_SIZE
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = "TODO"
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            } ?: run {
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    label = {
-                        Text("Community")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-            // A box to draw over the textview and override clicks
-            Box(
-                modifier = Modifier
-                    .height(60.dp)
-                    .fillMaxWidth()
-                    .clickable {
-                        navController.navigate("communityList?select=true")
-                    }
-            )
-        }
     }
 }
 
 @Preview
 @Composable
-fun CreatePostBodyPreview() {
-    CreatePostBody(name = "", body = "", url = "", community = sampleCommunitySafe)
+fun EditPostBodyPreview() {
+    EditPostBody(name = "", body = "", url = "")
 }
 
-@Preview
-@Composable
-fun CreatePostBodyPreviewNoCommunity() {
-    CreatePostBody(name = "", body = "", url = "")
+fun postEditClickWrapper(
+    postEditViewModel: PostEditViewModel,
+    postView: PostView,
+    navController: NavController,
+) {
+    postEditViewModel.setPostView(postView)
+    navController.navigate("postEdit")
 }

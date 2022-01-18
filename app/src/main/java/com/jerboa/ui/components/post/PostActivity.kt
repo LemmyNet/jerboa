@@ -25,6 +25,8 @@ import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
+import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.ui.components.post.edit.postEditClickWrapper
 
 @Composable
 fun PostActivity(
@@ -33,6 +35,7 @@ fun PostActivity(
     personProfileViewModel: PersonProfileViewModel,
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
+    postEditViewModel: PostEditViewModel,
     navController: NavController,
 ) {
 
@@ -123,6 +126,13 @@ fun PostActivity(
                                             account,
                                             navController,
                                             ctx
+                                        )
+                                    },
+                                    onEditPostClick = { postView ->
+                                        postEditClickWrapper(
+                                            postEditViewModel,
+                                            postView,
+                                            navController,
                                         )
                                     },
                                     showReply = true,
