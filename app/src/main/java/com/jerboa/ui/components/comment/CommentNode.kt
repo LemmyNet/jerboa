@@ -47,8 +47,14 @@ fun CommentNodeHeaderPreview() {
 
 @Composable
 fun CommentBody(commentView: CommentView) {
-    MyMarkdownText(markdown = commentView.comment.content)
-//  Text(text = commentView.comment.content)
+    val content = if (commentView.comment.removed) {
+        "*Removed*"
+    } else if (commentView.comment.deleted) {
+        "*Deleted*"
+    } else {
+        commentView.comment.content
+    }
+    MyMarkdownText(markdown = content)
 }
 
 @Preview

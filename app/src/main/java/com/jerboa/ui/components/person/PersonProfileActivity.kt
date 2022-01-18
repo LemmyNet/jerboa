@@ -20,12 +20,9 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
-import com.jerboa.VoteType
-import com.jerboa.commentsToFlatNodes
+import com.jerboa.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
-import com.jerboa.getCurrentAccount
-import com.jerboa.openLink
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
@@ -260,7 +257,7 @@ fun UserTabs(
                     )
                 }
                 UserTab.Comments.ordinal -> {
-                    val nodes = commentsToFlatNodes(personProfileViewModel.comments)
+                    val nodes = sortNodes(commentsToFlatNodes(personProfileViewModel.comments))
                     LazyColumn {
                         items(nodes) { node ->
                             CommentNode(

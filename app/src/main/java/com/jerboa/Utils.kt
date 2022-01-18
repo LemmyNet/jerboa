@@ -197,9 +197,7 @@ fun buildCommentsTree(
         }
     }
 
-//    commentSort(tree, commentSortType);
-
-    return tree
+    return sortNodes(tree)
 }
 
 fun setDepth(node: CommentNodeData, i: Int = 0) {
@@ -983,4 +981,8 @@ private fun DrawScope.drawEndBorder(
         },
         color = border.color
     )
+}
+
+fun sortNodes(nodes: List<CommentNodeData>): List<CommentNodeData> {
+    return nodes.sortedBy { it.commentView.comment.deleted || it.commentView.comment.removed }
 }

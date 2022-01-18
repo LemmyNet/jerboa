@@ -33,7 +33,7 @@ class InboxViewModel : ViewModel() {
         private set
     var sortType = mutableStateOf(SortType.Active)
         private set
-    var unreadOnly = mutableStateOf(false)
+    var unreadOnly = mutableStateOf(true)
         private set
     var loading = mutableStateOf(false)
         private set

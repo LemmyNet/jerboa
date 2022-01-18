@@ -192,7 +192,7 @@ fun InboxTabs(
             when (tabIndex) {
                 InboxTab.Replies.ordinal -> {
 
-                    val nodes = commentsToFlatNodes(inboxViewModel.replies)
+                    val nodes = sortNodes(commentsToFlatNodes(inboxViewModel.replies))
                     LazyColumn {
                         items(nodes) { node ->
                             CommentNode(
