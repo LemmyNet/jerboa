@@ -7,11 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,6 +19,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
@@ -65,27 +66,21 @@ fun PersonProfileActivity(
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
-                Column {
-                    personProfileViewModel.res?.person_view?.person?.name?.also {
-                        PersonProfileHeader(
-                            personName = it,
-                            selectedSortType = personProfileViewModel.sortType.value,
-                            onClickSortType = { sortType ->
-                                personProfileViewModel.fetchPersonDetails(
-                                    id = personProfileViewModel.personId.value!!,
-                                    account = account,
-                                    clear = true,
-                                    changeSortType = sortType,
-                                    ctx = ctx,
-                                )
-                            },
-                            navController = navController,
-                        )
-                    }
-
-                    if (personProfileViewModel.loading.value) {
-                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                    }
+                personProfileViewModel.res?.person_view?.person?.name?.also {
+                    PersonProfileHeader(
+                        personName = it,
+                        selectedSortType = personProfileViewModel.sortType.value,
+                        onClickSortType = { sortType ->
+                            personProfileViewModel.fetchPersonDetails(
+                                id = personProfileViewModel.personId.value!!,
+                                account = account,
+                                clear = true,
+                                changeSortType = sortType,
+                                ctx = ctx,
+                            )
+                        },
+                        navController = navController,
+                    )
                 }
             },
             content = {
@@ -150,7 +145,7 @@ fun UserTabs(
     Column {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions -> // 3.
+            indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     Modifier.pagerTabIndicatorOffset(
                         pagerState,
@@ -170,6 +165,9 @@ fun UserTabs(
                     text = { Text(text = title) }
                 )
             }
+        }
+        if (personProfileViewModel.loading.value) {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
         HorizontalPager(
             count = tabTitles.size,
@@ -276,88 +274,129 @@ fun UserTabs(
                 }
                 UserTab.Comments.ordinal -> {
                     val nodes = sortNodes(commentsToFlatNodes(personProfileViewModel.comments))
-                    LazyColumn {
-                        items(nodes) { node ->
-                            CommentNode(
-                                node = node,
-                                onUpvoteClick = { commentView ->
-                                    account?.also { acct ->
-                                        personProfileViewModel.likeComment(
-                                            commentView = commentView,
-                                            voteType = VoteType.Upvote,
-                                            account = acct,
+
+                    val listState = rememberLazyListState()
+                    val loading = personProfileViewModel.loading.value &&
+                        personProfileViewModel.page.value == 1 &&
+                        personProfileViewModel.comments.isNotEmpty()
+
+                    // observer when reached end of list
+                    val endOfListReached by remember {
+                        derivedStateOf {
+                            listState.isScrolledToEnd()
+                        }
+                    }
+
+                    // act when end of list reached
+                    if (endOfListReached) {
+                        LaunchedEffect(endOfListReached) {
+                            personProfileViewModel.personId.value?.also {
+                                personProfileViewModel.fetchPersonDetails(
+                                    id = it,
+                                    account = account,
+                                    nextPage = true,
+                                    ctx = ctx,
+                                )
+                            }
+                        }
+                    }
+
+                    SwipeRefresh(
+                        state = rememberSwipeRefreshState(loading),
+                        onRefresh = {
+                            personProfileViewModel.personId.value?.also {
+                                personProfileViewModel.fetchPersonDetails(
+                                    id = it,
+                                    account = account,
+                                    clear = true,
+                                    ctx = ctx,
+                                )
+                            }
+                        },
+                    ) {
+                        LazyColumn(state = listState) {
+                            items(nodes) { node ->
+                                CommentNode(
+                                    node = node,
+                                    onUpvoteClick = { commentView ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.likeComment(
+                                                commentView = commentView,
+                                                voteType = VoteType.Upvote,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    onDownvoteClick = { commentView ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.likeComment(
+                                                commentView = commentView,
+                                                voteType = VoteType.Downvote,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    onReplyClick = { commentView ->
+                                        // To do replies from elsewhere than postView,
+                                        // you need to refetch that post view
+                                        postViewModel.replyToCommentParent = commentView
+                                        postViewModel.fetchPost(
+                                            id = commentView.post.id,
+                                            account = account,
                                             ctx = ctx,
                                         )
-                                    }
-                                },
-                                onDownvoteClick = { commentView ->
-                                    account?.also { acct ->
-                                        personProfileViewModel.likeComment(
-                                            commentView = commentView,
-                                            voteType = VoteType.Downvote,
-                                            account = acct,
+                                        navController.navigate("commentReply")
+                                    },
+                                    onSaveClick = { commentView ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.saveComment(
+                                                commentView = commentView,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    onPersonClick = { personId ->
+                                        personClickWrapper(
+                                            personProfileViewModel,
+                                            personId,
+                                            account,
+                                            navController,
+                                            ctx
+                                        )
+                                    },
+                                    onCommunityClick = { community ->
+                                        communityClickWrapper(
+                                            communityViewModel = communityViewModel,
+                                            communityId = community.id,
+                                            account = account,
+                                            navController = navController,
                                             ctx = ctx,
                                         )
-                                    }
-                                },
-                                onReplyClick = { commentView ->
-                                    // To do replies from elsewhere than postView,
-                                    // you need to refetch that post view
-                                    postViewModel.replyToCommentParent = commentView
-                                    postViewModel.fetchPost(
-                                        id = commentView.post.id,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
-                                    navController.navigate("commentReply")
-                                },
-                                onSaveClick = { commentView ->
-                                    account?.also { acct ->
-                                        personProfileViewModel.saveComment(
-                                            commentView = commentView,
-                                            account = acct,
+                                    },
+                                    onPostClick = { postId ->
+                                        postClickWrapper(
+                                            postViewModel = postViewModel,
+                                            postId = postId,
+                                            account = account,
+                                            navController = navController,
                                             ctx = ctx,
                                         )
-                                    }
-                                },
-                                onPersonClick = { personId ->
-                                    personClickWrapper(
-                                        personProfileViewModel,
-                                        personId,
-                                        account,
-                                        navController,
-                                        ctx
-                                    )
-                                },
-                                onCommunityClick = { community ->
-                                    communityClickWrapper(
-                                        communityViewModel = communityViewModel,
-                                        communityId = community.id,
-                                        account = account,
-                                        navController = navController,
-                                        ctx = ctx,
-                                    )
-                                },
-                                onPostClick = { postId ->
-                                    postClickWrapper(
-                                        postViewModel = postViewModel,
-                                        postId = postId,
-                                        account = account,
-                                        navController = navController,
-                                        ctx = ctx,
-                                    )
-                                },
-                                onEditCommentClick = { commentView ->
-                                    commentEditClickWrapper(
-                                        commentEditViewModel,
-                                        commentView,
-                                        navController,
-                                    )
-                                },
-                                showPostAndCommunityContext = true,
-                                account = account,
-                                moderators = listOf()
-                            )
+                                    },
+                                    onEditCommentClick = { commentView ->
+                                        commentEditClickWrapper(
+                                            commentEditViewModel,
+                                            commentView,
+                                            navController,
+                                        )
+                                    },
+                                    showPostAndCommunityContext = true,
+                                    account = account,
+                                    moderators = listOf()
+                                )
+                            }
                         }
                     }
                 }

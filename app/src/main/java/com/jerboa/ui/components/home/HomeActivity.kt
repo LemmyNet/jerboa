@@ -59,6 +59,7 @@ fun HomeActivity(
                     homeViewModel = homeViewModel,
                     account = account,
                     ctx = ctx,
+                    navController = navController,
                 )
             },
             drawerShape = MaterialTheme.shapes.small,
@@ -331,10 +332,13 @@ fun MainTopBar(
     homeViewModel: HomeViewModel,
     account: Account?,
     ctx: Context,
+    navController: NavController,
 ) {
     Column {
         HomeHeader(
-            scope, scaffoldState,
+            scope = scope,
+            scaffoldState = scaffoldState,
+            navController = navController,
             selectedSortType = homeViewModel.sortType.value,
             selectedListingType = homeViewModel.listingType.value,
             onClickSortType = { sortType ->

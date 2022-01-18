@@ -21,10 +21,7 @@ import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.list.CommunityListViewModel
-import com.jerboa.ui.components.home.HomeActivity
-import com.jerboa.ui.components.home.HomeViewModel
-import com.jerboa.ui.components.home.SiteViewModel
-import com.jerboa.ui.components.home.SplashScreenActivity
+import com.jerboa.ui.components.home.*
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.login.LoginViewModel
@@ -191,6 +188,14 @@ class MainActivity : ComponentActivity() {
                             postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
+                            navController = navController,
+                        )
+                    }
+                    composable(
+                        route = "sidebar",
+                    ) {
+                        SidebarActivity(
+                            siteViewModel = siteViewModel,
                             navController = navController,
                         )
                     }

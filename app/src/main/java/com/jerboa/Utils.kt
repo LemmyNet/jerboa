@@ -62,6 +62,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
 import java.net.URL
+import java.text.DecimalFormat
 import java.util.*
 
 val prettyTime = PrettyTime(Locale.getDefault())
@@ -1049,4 +1050,15 @@ fun validateUrl(
             hasError = false,
         )
     }
+}
+
+private val suffix = arrayOf("", "K", "M", "B", "T")
+
+fun siFormat(number: Int): String {
+    var r: String = DecimalFormat("##0E0").format(number)
+    r = r.replace("E[0-9]".toRegex(), suffix[Character.getNumericValue(r[r.length - 1]) / 3])
+    while (r.length > 4 || r.matches(Regex("[0-9]+\\.[a-z]"))) {
+        r = r.substring(0, r.length - 2) + r.substring(r.length - 1)
+    }
+    return r
 }

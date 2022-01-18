@@ -217,7 +217,6 @@ fun PostBody(
                             markdown = text,
                             modifier = Modifier
                                 .padding(MEDIUM_PADDING),
-                            preview = !fullBody,
                         )
                     } else {
                         PreviewLines(

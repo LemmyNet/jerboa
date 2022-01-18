@@ -355,3 +355,38 @@ val samplePrivateMessageView = PrivateMessageView(
     creator = samplePersonSafe,
     recipient = samplePersonSafe2,
 )
+
+val sampleSite = Site(
+    id = 23,
+    name = "Lemmy.ml",
+    sidebar = "# Hello!\n\n**This is** lemmy's sidebar",
+    description = "A general purpose instance for lemmy",
+    creator_id = 82,
+    published = "2022-01-07T04:12:26.398434",
+    updated = "2022-01-07T03:15:37.360888",
+    enable_downvotes = true,
+    open_registration = true,
+    enable_nsfw = true,
+    community_creation_admin_only = true,
+    icon = "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
+    banner = "https://lemmy.ml/pictrs/image/386rk5OYWS.jpg"
+)
+
+val sampleSiteAggregates = SiteAggregates(
+    id = 23,
+    site_id = 84,
+    users = 8092,
+    posts = 888929,
+    comments = 9882,
+    communities = 89,
+    users_active_day = 21,
+    users_active_week = 82,
+    users_active_month = 208,
+    users_active_half_year = 689,
+)
+
+val sampleSiteView = SiteView(
+    site = sampleSite,
+    creator = samplePersonSafe,
+    counts = sampleSiteAggregates,
+)

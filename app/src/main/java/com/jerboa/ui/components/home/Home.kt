@@ -147,13 +147,14 @@ fun DrawerItemsMain(
                 onClick = { onClickListingType(ListingType.All) },
             )
         }
-        item {
-            IconAndTextDrawerItem(
-                text = "Saved",
-                icon = Icons.Default.Star,
-                onClick = onClickSaved,
-            )
-        }
+        // TODO add saved
+//        item {
+//            IconAndTextDrawerItem(
+//                text = "Saved",
+//                icon = Icons.Default.Star,
+//                onClick = onClickSaved,
+//            )
+//        }
         item {
             Divider()
         }
@@ -440,11 +441,13 @@ fun HomeHeader(
     onClickListingType: (ListingType) -> Unit = {},
     selectedSortType: SortType,
     selectedListingType: ListingType,
+    navController: NavController,
 ) {
 
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
+    var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showSortOptions) {
         SortOptionsDialog(
@@ -480,6 +483,13 @@ fun HomeHeader(
                 showListingTypeOptions = false
                 onClickListingType(it)
             }
+        )
+    }
+
+    if (showMoreOptions) {
+        HomeMoreDialog(
+            onDismissRequest = { showMoreOptions = false },
+            navController = navController,
         )
     }
 
@@ -523,6 +533,7 @@ fun HomeHeader(
                 )
             }
             IconButton(onClick = {
+                showMoreOptions = !showMoreOptions
             }) {
                 Icon(
                     Icons.Default.MoreVert,
@@ -544,7 +555,8 @@ fun HomeHeaderPreview() {
         scope,
         scaffoldState,
         selectedSortType = SortType.Hot,
-        selectedListingType = ListingType.All
+        selectedListingType = ListingType.All,
+        navController = rememberNavController(),
     )
 }
 
@@ -635,4 +647,27 @@ fun BottomAppBarAll(
 @Composable
 fun BottomAppBarAllPreview() {
     BottomAppBarAll()
+}
+
+@Composable
+fun HomeMoreDialog(
+    onDismissRequest: () -> Unit = {},
+    navController: NavController,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                IconAndTextDrawerItem(
+                    text = "View Sidebar",
+                    icon = Icons.Default.Info,
+                    onClick = {
+                        navController.navigate("sidebar")
+                        onDismissRequest()
+                    },
+                )
+            }
+        },
+        buttons = {},
+    )
 }

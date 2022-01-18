@@ -36,7 +36,9 @@ fun PostListings(
         state = rememberSwipeRefreshState(loading),
         onRefresh = onSwipeRefresh,
     ) {
-        LazyColumn(state = listState) {
+        LazyColumn(
+            state = listState,
+        ) {
 
             // TODO this should be a .also?
             item {
