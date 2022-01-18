@@ -259,6 +259,7 @@ fun ActionBarButton(
     text: String? = null,
     contentColor: Color = Muted,
     noClick: Boolean = false,
+    account: Account?
 ) {
 //    Button(
 //        onClick = onClick,
@@ -276,7 +277,7 @@ fun ActionBarButton(
     val barMod = if (noClick) {
         Modifier
     } else {
-        Modifier.clickable(onClick = onClick)
+        Modifier.clickable(onClick = onClick, enabled = (account !== null))
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -306,6 +307,7 @@ fun <T> VoteGeneric(
     type: VoteType,
     onVoteClick: (item: T) -> Unit = {},
     showNumber: Boolean = true,
+    account: Account?,
 ) {
     val voteColor =
         when (type) {
@@ -332,6 +334,7 @@ fun <T> VoteGeneric(
         contentColor = voteColor,
         icon = voteIcon,
         text = votesStr,
+        account = account,
     )
 }
 

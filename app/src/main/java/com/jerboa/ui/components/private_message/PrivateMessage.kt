@@ -16,6 +16,7 @@ import com.jerboa.MyMarkdownText
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
+import com.jerboa.db.Account
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.LARGE_PADDING
@@ -83,6 +84,7 @@ fun PrivateMessage(
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     myPersonId: Int, // Required so we know the from / to
+    account: Account?,
 ) {
     Column(
         modifier = Modifier
@@ -103,6 +105,7 @@ fun PrivateMessage(
             onReplyClick = onReplyClick,
             onMarkAsReadClick = onMarkAsReadClick,
             myPersonId = myPersonId,
+            account = account,
         )
     }
 }
@@ -113,6 +116,7 @@ fun PrivateMessageFooterLine(
     onReplyClick: (privateMessageView: PrivateMessageView) -> Unit = {},
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit = {},
     myPersonId: Int,
+    account: Account?,
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
@@ -132,13 +136,18 @@ fun PrivateMessageFooterLine(
                     } else {
                         Muted
                     },
+                    account = account,
                 )
                 ActionBarButton(
                     icon = Icons.Filled.Reply,
                     onClick = { onReplyClick(privateMessageView) },
+                    account = account,
                 )
             }
-            ActionBarButton(icon = Icons.Filled.MoreVert)
+            ActionBarButton(
+                icon = Icons.Filled.MoreVert,
+                account = account,
+            )
         }
     }
 }
@@ -146,5 +155,5 @@ fun PrivateMessageFooterLine(
 @Preview
 @Composable
 fun PrivateMessagePreview() {
-    PrivateMessage(privateMessageView = samplePrivateMessageView, myPersonId = 23)
+    PrivateMessage(privateMessageView = samplePrivateMessageView, myPersonId = 23, account = null)
 }

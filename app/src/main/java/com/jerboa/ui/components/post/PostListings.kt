@@ -10,6 +10,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePostView
+import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
 
 @Composable
@@ -26,6 +27,7 @@ fun PostListings(
     onSwipeRefresh: () -> Unit = {},
     loading: Boolean = false,
     isScrolledToEnd: () -> Unit = {},
+    account: Account?,
 ) {
     val listState = rememberLazyListState()
 
@@ -51,6 +53,7 @@ fun PostListings(
                     onSaveClick = onSaveClick,
                     onCommunityClick = onCommunityClick,
                     onPersonClick = onPersonClick,
+                    account = account,
                 )
             }
         }
@@ -75,6 +78,7 @@ fun PostListings(
 @Composable
 fun PreviewPostListings() {
     PostListings(
-        posts = listOf(samplePostView, samplePostView)
+        posts = listOf(samplePostView, samplePostView),
+        account = null,
     )
 }

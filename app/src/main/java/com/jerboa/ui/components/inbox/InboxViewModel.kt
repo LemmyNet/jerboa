@@ -42,7 +42,7 @@ class InboxViewModel : ViewModel() {
         private set
 
     fun fetchReplies(
-        account: Account?,
+        account: Account,
         nextPage: Boolean = false,
         clear: Boolean = false,
         changeSortType: SortType? = null,
@@ -66,7 +66,7 @@ class InboxViewModel : ViewModel() {
     }
 
     fun fetchPersonMentions(
-        account: Account?,
+        account: Account,
         nextPage: Boolean = false,
         clear: Boolean = false,
         changeSortType: SortType? = null,
@@ -90,7 +90,7 @@ class InboxViewModel : ViewModel() {
     }
 
     fun fetchPrivateMessages(
-        account: Account?,
+        account: Account,
         nextPage: Boolean = false,
         clear: Boolean = false,
         changeUnreadOnly: Boolean? = null,
@@ -113,7 +113,7 @@ class InboxViewModel : ViewModel() {
     fun likeComment(
         commentView: CommentView,
         voteType: VoteType,
-        account: Account?,
+        account: Account,
         ctx: Context,
     ) {
         likeCommentRoutine(
@@ -146,7 +146,7 @@ class InboxViewModel : ViewModel() {
 
     fun saveComment(
         commentView: CommentView,
-        account: Account?,
+        account: Account,
         ctx: Context,
     ) {
         saveCommentRoutine(
@@ -160,7 +160,7 @@ class InboxViewModel : ViewModel() {
 
     fun markReplyAsRead(
         commentView: CommentView,
-        account: Account?,
+        account: Account,
         ctx: Context,
     ) {
         markCommentAsReadRoutine(
@@ -174,7 +174,7 @@ class InboxViewModel : ViewModel() {
 
     fun markPersonMentionAsRead(
         personMentionView: PersonMentionView,
-        account: Account?,
+        account: Account,
         ctx: Context,
     ) {
         markPersonMentionAsReadRoutine(
@@ -188,7 +188,7 @@ class InboxViewModel : ViewModel() {
 
     fun markPrivateMessageAsRead(
         privateMessageView: PrivateMessageView,
-        account: Account?,
+        account: Account,
         ctx: Context,
     ) {
         markPrivateMessageAsReadRoutine(
@@ -217,42 +217,40 @@ class InboxViewModel : ViewModel() {
         )
     }
 
-    fun markAllAsRead(account: Account?, ctx: Context) {
+    fun markAllAsRead(account: Account, ctx: Context) {
         viewModelScope.launch {
-            account?.also { account ->
-                val api = API.getInstance()
-                try {
-                    val form = MarkAllAsRead(
-                        auth = account.jwt
-                    )
-                    api.markAllAsRead(form)
-                } catch (e: Exception) {
-                    toastException(ctx = ctx, error = e)
-                }
+            val api = API.getInstance()
+            try {
+                val form = MarkAllAsRead(
+                    auth = account.jwt
+                )
+                api.markAllAsRead(form)
+            } catch (e: Exception) {
+                toastException(ctx = ctx, error = e)
+            }
 
-                if (unreadOnly.value) {
-                    replies.clear()
-                    messages.clear()
-                    mentions.clear()
-                } else {
-                    for (i in replies.indices) {
-                        val commentView = replies[i]
-                        val updatedComment = commentView.comment.copy(read = true)
-                        val updatedCv = commentView.copy(comment = updatedComment)
-                        replies[i] = updatedCv
-                    }
-                    for (i in mentions.indices) {
-                        val pmv = mentions[i]
-                        val updatedComment = pmv.comment.copy(read = true)
-                        val updatedPmv = pmv.copy(comment = updatedComment)
-                        mentions[i] = updatedPmv
-                    }
-                    for (i in messages.indices) {
-                        val pmv = messages[i]
-                        val updatedPm = pmv.private_message.copy(read = true)
-                        val updatedPmv = pmv.copy(private_message = updatedPm)
-                        messages[i] = updatedPmv
-                    }
+            if (unreadOnly.value) {
+                replies.clear()
+                messages.clear()
+                mentions.clear()
+            } else {
+                for (i in replies.indices) {
+                    val commentView = replies[i]
+                    val updatedComment = commentView.comment.copy(read = true)
+                    val updatedCv = commentView.copy(comment = updatedComment)
+                    replies[i] = updatedCv
+                }
+                for (i in mentions.indices) {
+                    val pmv = mentions[i]
+                    val updatedComment = pmv.comment.copy(read = true)
+                    val updatedPmv = pmv.copy(comment = updatedComment)
+                    mentions[i] = updatedPmv
+                }
+                for (i in messages.indices) {
+                    val pmv = messages[i]
+                    val updatedPm = pmv.private_message.copy(read = true)
+                    val updatedPmv = pmv.copy(private_message = updatedPm)
+                    messages[i] = updatedPmv
                 }
             }
         }

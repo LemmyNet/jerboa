@@ -153,6 +153,7 @@ fun CommunityActivity(
                             ctx = ctx,
                         )
                     },
+                    account = account,
                 )
             },
             bottomBar = {

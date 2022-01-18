@@ -285,7 +285,7 @@ suspend fun getSiteMetadataWrapper(url: String): SiteMetadata {
 }
 
 suspend fun fetchPostsWrapper(
-    account: Account,
+    account: Account?,
     ctx: Context?,
     communityId: Int? = null,
     sortType: SortType,
@@ -302,7 +302,7 @@ suspend fun fetchPostsWrapper(
             sort = sortType.toString(),
             type_ = listingType.toString(),
             page = page,
-            auth = account.jwt,
+            auth = account?.jwt,
         )
         Log.d(
             "jerboa",

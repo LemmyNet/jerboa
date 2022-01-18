@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.*
 import com.jerboa.datatypes.*
+import com.jerboa.db.Account
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.theme.*
 
@@ -76,6 +77,7 @@ fun CommentNode(
     onPostClick: (postId: Int) -> Unit = {},
     showPostAndCommunityContext: Boolean = false,
     showRead: Boolean = false,
+    account: Account?,
 ) {
     val offset = calculateCommentOffset(node.depth, 4)
     val offset2 = if (node.depth == null) {
@@ -138,6 +140,7 @@ fun CommentNode(
                     myVote = myVote.value,
                     upvotes = upvotes.value,
                     downvotes = downvotes.value,
+                    account = account,
                 )
             }
             Divider()
@@ -149,6 +152,7 @@ fun CommentNode(
             onUpvoteClick = onUpvoteClick,
             onDownvoteClick = onDownvoteClick,
             onReplyClick = onReplyClick,
+            account = account,
         )
     }
 }
@@ -195,6 +199,7 @@ fun CommentFooterLine(
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
+    account: Account?,
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
@@ -212,6 +217,7 @@ fun CommentFooterLine(
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 showNumber = false,
+                account = account,
             )
             VoteGeneric(
                 myVote = myVote,
@@ -219,6 +225,7 @@ fun CommentFooterLine(
                 item = commentView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
+                account = account,
             )
             if (showRead) {
                 ActionBarButton(
@@ -229,6 +236,7 @@ fun CommentFooterLine(
                     } else {
                         Muted
                     },
+                    account = account,
                 )
             }
             ActionBarButton(
@@ -239,12 +247,14 @@ fun CommentFooterLine(
                 } else {
                     Muted
                 },
+                account = account
             )
             ActionBarButton(
                 icon = Icons.Filled.Reply,
                 onClick = { onReplyClick(commentView) },
+                account = account,
             )
-            ActionBarButton(icon = Icons.Filled.MoreVert)
+            ActionBarButton(icon = Icons.Filled.MoreVert, account = account)
         }
     }
 }

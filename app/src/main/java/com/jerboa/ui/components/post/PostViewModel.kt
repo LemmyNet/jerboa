@@ -77,7 +77,7 @@ class PostViewModel : ViewModel() {
     fun likeComment(
         commentView: CommentView,
         voteType: VoteType,
-        account: Account?,
+        account: Account,
         ctx: Context,
     ) {
         likeCommentRoutine(
@@ -116,7 +116,7 @@ class PostViewModel : ViewModel() {
 
     fun saveComment(
         commentView: CommentView,
-        account: Account?,
+        account: Account,
         ctx: Context,
     ) {
         saveCommentRoutine(

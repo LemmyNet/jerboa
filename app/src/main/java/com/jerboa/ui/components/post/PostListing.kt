@@ -240,6 +240,7 @@ fun PostFooterLine(
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
+    account: Account?,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -248,7 +249,10 @@ fun PostFooterLine(
             .padding(bottom = SMALL_PADDING)
     ) {
         Row {
-            CommentCount(comments = postView.counts.comments)
+            CommentCount(
+                comments = postView.counts.comments,
+                account = account
+            )
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
@@ -259,12 +263,14 @@ fun PostFooterLine(
                 votes = upvotes, item = postView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
+                account = account,
             )
             VoteGeneric(
                 myVote = myVote,
                 votes = downvotes, item = postView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
+                account = account,
             )
             ActionBarButton(
                 icon = Icons.Default.Star,
@@ -274,33 +280,40 @@ fun PostFooterLine(
                 } else {
                     Muted
                 },
+                account = account,
             )
             if (showReply) {
                 ActionBarButton(
                     icon = Icons.Default.Reply,
                     onClick = { onReplyClick(postView) },
+                    account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Default.MoreVert,
+                account = account,
             )
         }
     }
 }
 
 @Composable
-fun CommentCount(comments: Int) {
+fun CommentCount(
+    comments: Int,
+    account: Account?,
+) {
     ActionBarButton(
         icon = Icons.Default.ChatBubble,
         text = "$comments comments",
         noClick = true,
+        account = account,
     )
 }
 
 @Preview
 @Composable
 fun CommentCountPreview() {
-    CommentCount(42)
+    CommentCount(42, account = null)
 }
 
 @Preview
@@ -310,7 +323,8 @@ fun PostFooterLinePreview() {
         postView = samplePostView,
         myVote = -1,
         upvotes = 2,
-        downvotes = 23
+        downvotes = 23,
+        account = null,
     )
 }
 
@@ -320,6 +334,7 @@ fun PreviewPostListing() {
     PostListing(
         postView = samplePostView,
         fullBody = true,
+        account = null,
     )
 }
 
@@ -329,6 +344,7 @@ fun PreviewLinkPostListing() {
     PostListing(
         postView = sampleLinkPostView,
         fullBody = true,
+        account = null,
     )
 }
 
@@ -338,6 +354,7 @@ fun PreviewImagePostListing() {
     PostListing(
         postView = sampleImagePostView,
         fullBody = true,
+        account = null,
     )
 }
 
@@ -347,6 +364,7 @@ fun PreviewLinkNoThumbnailPostListing() {
     PostListing(
         postView = sampleLinkNoThumbnailPostView,
         fullBody = true,
+        account = null,
     )
 }
 
@@ -363,6 +381,7 @@ fun PostListing(
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     showReply: Boolean = false,
+    account: Account?,
 ) {
 
     // These are necessary for instant post voting
@@ -413,6 +432,7 @@ fun PostListing(
                 myVote = myVote.value,
                 upvotes = upvotes.value,
                 downvotes = downvotes.value,
+                account = account,
             )
         }
     }

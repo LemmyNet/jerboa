@@ -267,9 +267,7 @@ fun DrawerHeader(
             modifier = sizeMod
                 .padding(XL_PADDING)
         ) {
-            myPerson?.also {
-                AvatarAndAccountName(myPerson)
-            }
+            AvatarAndAccountName(myPerson)
             Icon(
                 imageVector = if (showAccountAddMode) {
                     Icons.Default.ExpandLess
@@ -283,12 +281,12 @@ fun DrawerHeader(
 }
 
 @Composable
-fun AvatarAndAccountName(myPerson: PersonSafe) {
+fun AvatarAndAccountName(myPerson: PersonSafe?) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)
     ) {
-        myPerson.avatar?.also {
+        myPerson?.avatar?.also {
             LargerCircularIcon(icon = it)
         }
         PersonName(person = myPerson, color = MaterialTheme.colors.onSurface)

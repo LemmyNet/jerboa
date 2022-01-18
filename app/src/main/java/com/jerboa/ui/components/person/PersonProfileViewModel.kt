@@ -48,7 +48,7 @@ class PersonProfileViewModel : ViewModel() {
         savePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
     }
 
-    fun likeComment(commentView: CommentView, voteType: VoteType, account: Account?, ctx: Context) {
+    fun likeComment(commentView: CommentView, voteType: VoteType, account: Account, ctx: Context) {
         likeCommentRoutine(
             commentView = mutableStateOf(commentView),
             comments = comments, // TODO should this be here?
@@ -59,7 +59,7 @@ class PersonProfileViewModel : ViewModel() {
         )
     }
 
-    fun saveComment(commentView: CommentView, account: Account?, ctx: Context) {
+    fun saveComment(commentView: CommentView, account: Account, ctx: Context) {
         saveCommentRoutine(
             commentView = mutableStateOf(commentView),
             comments = comments,

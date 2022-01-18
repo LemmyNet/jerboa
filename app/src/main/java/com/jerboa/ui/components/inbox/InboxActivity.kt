@@ -67,31 +67,35 @@ fun InboxActivity(
                         navController = navController,
                         selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly.value),
                         onClickUnreadOrAll = { unreadOrAll ->
-                            inboxViewModel.fetchReplies(
-                                account = account,
-                                clear = true,
-                                changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                                ctx = ctx,
-                            )
-                            inboxViewModel.fetchPersonMentions(
-                                account = account,
-                                clear = true,
-                                changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                                ctx = ctx,
-                            )
-                            inboxViewModel.fetchPrivateMessages(
-                                account = account,
-                                clear = true,
-                                changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                                ctx = ctx,
-                            )
+                            account?.also {
+                                inboxViewModel.fetchReplies(
+                                    account = account,
+                                    clear = true,
+                                    changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
+                                    ctx = ctx,
+                                )
+                                inboxViewModel.fetchPersonMentions(
+                                    account = account,
+                                    clear = true,
+                                    changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
+                                    ctx = ctx,
+                                )
+                                inboxViewModel.fetchPrivateMessages(
+                                    account = account,
+                                    clear = true,
+                                    changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
+                                    ctx = ctx,
+                                )
+                            }
                         },
                         onClickMarkAllAsRead = {
-                            inboxViewModel.markAllAsRead(
-                                account = account,
-                                ctx = ctx,
-                            )
-                            homeViewModel.markAllAsRead()
+                            account?.also { acct ->
+                                inboxViewModel.markAllAsRead(
+                                    account = acct,
+                                    ctx = ctx,
+                                )
+                                homeViewModel.markAllAsRead()
+                            }
                         }
                     )
                     if (inboxViewModel.loading.value) {
@@ -198,20 +202,24 @@ fun InboxTabs(
                             CommentNode(
                                 node = node,
                                 onUpvoteClick = { commentView ->
-                                    inboxViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Upvote,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
+                                    account?.also { acct ->
+                                        inboxViewModel.likeComment(
+                                            commentView = commentView,
+                                            voteType = VoteType.Upvote,
+                                            account = acct,
+                                            ctx = ctx,
+                                        )
+                                    }
                                 },
                                 onDownvoteClick = { commentView ->
-                                    inboxViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Downvote,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
+                                    account?.also { acct ->
+                                        inboxViewModel.likeComment(
+                                            commentView = commentView,
+                                            voteType = VoteType.Downvote,
+                                            account = acct,
+                                            ctx = ctx,
+                                        )
+                                    }
                                 },
                                 onReplyClick = { commentView ->
                                     // TODO To do replies from elsewhere than postView,
@@ -225,19 +233,23 @@ fun InboxTabs(
                                     navController.navigate("commentReply")
                                 },
                                 onSaveClick = { commentView ->
-                                    inboxViewModel.saveComment(
-                                        commentView = commentView,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
+                                    account?.also { acct ->
+                                        inboxViewModel.saveComment(
+                                            commentView = commentView,
+                                            account = acct,
+                                            ctx = ctx,
+                                        )
+                                    }
                                 },
                                 onMarkAsReadClick = { commentView ->
-                                    inboxViewModel.markReplyAsRead(
-                                        commentView = commentView,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
-                                    homeViewModel.updateUnreads(commentView)
+                                    account?.also { acct ->
+                                        inboxViewModel.markReplyAsRead(
+                                            commentView = commentView,
+                                            account = acct,
+                                            ctx = ctx,
+                                        )
+                                        homeViewModel.updateUnreads(commentView)
+                                    }
                                 },
                                 onPersonClick = { personId ->
                                     personClickWrapper(
@@ -268,6 +280,7 @@ fun InboxTabs(
                                 },
                                 showPostAndCommunityContext = true,
                                 showRead = true,
+                                account = account,
                             )
                         }
                     }
@@ -303,7 +316,8 @@ fun InboxTabs(
                                             navController,
                                             ctx
                                         )
-                                    }
+                                    },
+                                    account = account,
                                 )
                             }
                         }

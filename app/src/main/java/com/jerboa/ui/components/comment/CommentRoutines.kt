@@ -22,21 +22,19 @@ fun likeCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
     voteType: VoteType,
-    account: Account?,
+    account: Account,
     ctx: Context,
     scope: CoroutineScope,
 ) {
     scope.launch {
-        account?.also { account ->
-            commentView.value?.also { cv ->
-                val updatedCommentView = likeCommentWrapper(
-                    cv, voteType, account,
-                    ctx
-                ).comment_view
-                commentView.value = updatedCommentView
-                comments?.also {
-                    findAndUpdateComment(comments, updatedCommentView)
-                }
+        commentView.value?.also { cv ->
+            val updatedCommentView = likeCommentWrapper(
+                cv, voteType, account,
+                ctx
+            ).comment_view
+            commentView.value = updatedCommentView
+            comments?.also {
+                findAndUpdateComment(comments, updatedCommentView)
             }
         }
     }
@@ -45,22 +43,20 @@ fun likeCommentRoutine(
 fun saveCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
-    account: Account?,
+    account: Account,
     ctx: Context,
     scope: CoroutineScope,
 ) {
     scope.launch {
-        account?.also { account ->
-            commentView.value?.also { cv ->
-                val updatedCommentView = saveCommentWrapper(
-                    cv,
-                    account,
-                    ctx,
-                ).comment_view
-                commentView.value = updatedCommentView
-                comments?.also {
-                    findAndUpdateComment(comments, updatedCommentView)
-                }
+        commentView.value?.also { cv ->
+            val updatedCommentView = saveCommentWrapper(
+                cv,
+                account,
+                ctx,
+            ).comment_view
+            commentView.value = updatedCommentView
+            comments?.also {
+                findAndUpdateComment(comments, updatedCommentView)
             }
         }
     }
@@ -69,22 +65,20 @@ fun saveCommentRoutine(
 fun markCommentAsReadRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
-    account: Account?,
+    account: Account,
     ctx: Context,
     scope: CoroutineScope,
 ) {
     scope.launch {
-        account?.also { account ->
-            commentView.value?.also { cv ->
-                val updatedCommentView = markCommentAsReadWrapper(
-                    cv,
-                    account,
-                    ctx,
-                ).comment_view
-                commentView.value = updatedCommentView
-                comments?.also {
-                    findAndUpdateComment(comments, updatedCommentView)
-                }
+        commentView.value?.also { cv ->
+            val updatedCommentView = markCommentAsReadWrapper(
+                cv,
+                account,
+                ctx,
+            ).comment_view
+            commentView.value = updatedCommentView
+            comments?.also {
+                findAndUpdateComment(comments, updatedCommentView)
             }
         }
     }
@@ -93,22 +87,20 @@ fun markCommentAsReadRoutine(
 fun markPersonMentionAsReadRoutine(
     personMentionView: MutableState<PersonMentionView?>,
     mentions: MutableList<PersonMentionView>? = null,
-    account: Account?,
+    account: Account,
     ctx: Context,
     scope: CoroutineScope,
 ) {
     scope.launch {
-        account?.also { account ->
-            personMentionView.value?.also { pmv ->
-                val updatedPmv = markPersonMentionAsReadWrapper(
-                    pmv,
-                    account,
-                    ctx,
-                ).person_mention_view
-                personMentionView.value = updatedPmv
-                mentions?.also {
-                    findAndUpdateMention(mentions, updatedPmv)
-                }
+        personMentionView.value?.also { pmv ->
+            val updatedPmv = markPersonMentionAsReadWrapper(
+                pmv,
+                account,
+                ctx,
+            ).person_mention_view
+            personMentionView.value = updatedPmv
+            mentions?.also {
+                findAndUpdateMention(mentions, updatedPmv)
             }
         }
     }
@@ -117,22 +109,20 @@ fun markPersonMentionAsReadRoutine(
 fun markPrivateMessageAsReadRoutine(
     privateMessageView: MutableState<PrivateMessageView?>,
     messages: MutableList<PrivateMessageView>? = null,
-    account: Account?,
+    account: Account,
     ctx: Context,
     scope: CoroutineScope,
 ) {
     scope.launch {
-        account?.also { account ->
-            privateMessageView.value?.also { pmv ->
-                val updatedPmv = markPrivateMessageAsReadWrapper(
-                    pmv,
-                    account,
-                    ctx,
-                ).private_message_view
-                privateMessageView.value = updatedPmv
-                messages?.also {
-                    findAndUpdatePrivateMessage(messages, updatedPmv)
-                }
+        privateMessageView.value?.also { pmv ->
+            val updatedPmv = markPrivateMessageAsReadWrapper(
+                pmv,
+                account,
+                ctx,
+            ).private_message_view
+            privateMessageView.value = updatedPmv
+            messages?.also {
+                findAndUpdatePrivateMessage(messages, updatedPmv)
             }
         }
     }
@@ -206,8 +196,7 @@ fun findAndUpdateMention(
 
 fun findAndUpdatePrivateMessage(
     messages: MutableList<PrivateMessageView>,
-    updatedMessageView:
-        PrivateMessageView?
+    updatedMessageView: PrivateMessageView?
 ) {
     updatedMessageView?.also { ucv ->
         val foundIndex = messages.indexOfFirst {
@@ -229,53 +218,51 @@ fun fetchRepliesRoutine(
     clear: Boolean = false,
     changeUnreadOnly: Boolean? = null,
     changeSortType: SortType? = null,
-    account: Account?,
+    account: Account,
     ctx: Context,
     scope: CoroutineScope,
 ) {
     scope.launch {
-        account?.also { account ->
-            val api = API.getInstance()
-            try {
-                loading.value = true
+        val api = API.getInstance()
+        try {
+            loading.value = true
 
-                if (nextPage) {
-                    page.value++
-                }
-
-                if (clear) {
-                    page.value = 1
-                }
-
-                changeUnreadOnly?.also {
-                    unreadOnly.value = it
-                }
-
-                changeSortType?.also {
-                    sortType.value = it
-                }
-
-                val form = GetReplies(
-                    sort = sortType.value.toString(),
-                    page = page.value,
-                    unread_only = unreadOnly.value,
-                    auth = account.jwt,
-                )
-                Log.d(
-                    "jerboa",
-                    "Fetching unread replies: $form"
-                )
-                val newReplies = api.getReplies(form = form.serializeToMap()).replies
-
-                if (clear) {
-                    replies.clear()
-                }
-                replies.addAll(newReplies)
-            } catch (e: Exception) {
-                toastException(ctx = ctx, error = e)
-            } finally {
-                loading.value = false
+            if (nextPage) {
+                page.value++
             }
+
+            if (clear) {
+                page.value = 1
+            }
+
+            changeUnreadOnly?.also {
+                unreadOnly.value = it
+            }
+
+            changeSortType?.also {
+                sortType.value = it
+            }
+
+            val form = GetReplies(
+                sort = sortType.value.toString(),
+                page = page.value,
+                unread_only = unreadOnly.value,
+                auth = account.jwt,
+            )
+            Log.d(
+                "jerboa",
+                "Fetching unread replies: $form"
+            )
+            val newReplies = api.getReplies(form = form.serializeToMap()).replies
+
+            if (clear) {
+                replies.clear()
+            }
+            replies.addAll(newReplies)
+        } catch (e: Exception) {
+            toastException(ctx = ctx, error = e)
+        } finally {
+            loading.value = false
         }
     }
 }
@@ -290,53 +277,51 @@ fun fetchPersonMentionsRoutine(
     clear: Boolean = false,
     changeUnreadOnly: Boolean? = null,
     changeSortType: SortType? = null,
-    account: Account?,
+    account: Account,
     ctx: Context,
     scope: CoroutineScope,
 ) {
     scope.launch {
-        account?.also { account ->
-            val api = API.getInstance()
-            try {
-                loading.value = true
+        val api = API.getInstance()
+        try {
+            loading.value = true
 
-                if (nextPage) {
-                    page.value++
-                }
-
-                if (clear) {
-                    page.value = 1
-                }
-
-                changeUnreadOnly?.also {
-                    unreadOnly.value = it
-                }
-
-                changeSortType?.also {
-                    sortType.value = it
-                }
-
-                val form = GetPersonMentions(
-                    sort = sortType.value.toString(),
-                    page = page.value,
-                    unread_only = unreadOnly.value,
-                    auth = account.jwt,
-                )
-                Log.d(
-                    "jerboa",
-                    "Fetching unread replies: $form"
-                )
-                val newMentions = api.getPersonMentions(form = form.serializeToMap()).mentions
-
-                if (clear) {
-                    mentions.clear()
-                }
-                mentions.addAll(newMentions)
-            } catch (e: Exception) {
-                toastException(ctx = ctx, error = e)
-            } finally {
-                loading.value = false
+            if (nextPage) {
+                page.value++
             }
+
+            if (clear) {
+                page.value = 1
+            }
+
+            changeUnreadOnly?.also {
+                unreadOnly.value = it
+            }
+
+            changeSortType?.also {
+                sortType.value = it
+            }
+
+            val form = GetPersonMentions(
+                sort = sortType.value.toString(),
+                page = page.value,
+                unread_only = unreadOnly.value,
+                auth = account.jwt,
+            )
+            Log.d(
+                "jerboa",
+                "Fetching unread replies: $form"
+            )
+            val newMentions = api.getPersonMentions(form = form.serializeToMap()).mentions
+
+            if (clear) {
+                mentions.clear()
+            }
+            mentions.addAll(newMentions)
+        } catch (e: Exception) {
+            toastException(ctx = ctx, error = e)
+        } finally {
+            loading.value = false
         }
     }
 }
@@ -349,48 +334,46 @@ fun fetchPrivateMessagesRoutine(
     nextPage: Boolean = false,
     clear: Boolean = false,
     changeUnreadOnly: Boolean? = null,
-    account: Account?,
+    account: Account,
     ctx: Context,
     scope: CoroutineScope,
 ) {
     scope.launch {
-        account?.also { account ->
-            val api = API.getInstance()
-            try {
-                loading.value = true
+        val api = API.getInstance()
+        try {
+            loading.value = true
 
-                if (nextPage) {
-                    page.value++
-                }
-
-                if (clear) {
-                    page.value = 1
-                }
-
-                changeUnreadOnly?.also {
-                    unreadOnly.value = it
-                }
-
-                val form = GetPrivateMessages(
-                    page = page.value,
-                    unread_only = unreadOnly.value,
-                    auth = account.jwt,
-                )
-                Log.d(
-                    "jerboa",
-                    "Fetching unread replies: $form"
-                )
-                val newMessages = api.getPrivateMessages(form = form.serializeToMap()).private_messages
-
-                if (clear) {
-                    messages.clear()
-                }
-                messages.addAll(newMessages)
-            } catch (e: Exception) {
-                toastException(ctx = ctx, error = e)
-            } finally {
-                loading.value = false
+            if (nextPage) {
+                page.value++
             }
+
+            if (clear) {
+                page.value = 1
+            }
+
+            changeUnreadOnly?.also {
+                unreadOnly.value = it
+            }
+
+            val form = GetPrivateMessages(
+                page = page.value,
+                unread_only = unreadOnly.value,
+                auth = account.jwt,
+            )
+            Log.d(
+                "jerboa",
+                "Fetching unread replies: $form"
+            )
+            val newMessages = api.getPrivateMessages(form = form.serializeToMap()).private_messages
+
+            if (clear) {
+                messages.clear()
+            }
+            messages.addAll(newMessages)
+        } catch (e: Exception) {
+            toastException(ctx = ctx, error = e)
+        } finally {
+            loading.value = false
         }
     }
 }

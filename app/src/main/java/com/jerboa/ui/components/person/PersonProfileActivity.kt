@@ -254,6 +254,7 @@ fun UserTabs(
                                 ctx = ctx,
                             )
                         },
+                        account = account,
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -263,20 +264,24 @@ fun UserTabs(
                             CommentNode(
                                 node = node,
                                 onUpvoteClick = { commentView ->
-                                    personProfileViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Upvote,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
+                                    account?.also { acct ->
+                                        personProfileViewModel.likeComment(
+                                            commentView = commentView,
+                                            voteType = VoteType.Upvote,
+                                            account = acct,
+                                            ctx = ctx,
+                                        )
+                                    }
                                 },
                                 onDownvoteClick = { commentView ->
-                                    personProfileViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Downvote,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
+                                    account?.also { acct ->
+                                        personProfileViewModel.likeComment(
+                                            commentView = commentView,
+                                            voteType = VoteType.Downvote,
+                                            account = acct,
+                                            ctx = ctx,
+                                        )
+                                    }
                                 },
                                 onReplyClick = { commentView ->
                                     // To do replies from elsewhere than postView,
@@ -290,11 +295,13 @@ fun UserTabs(
                                     navController.navigate("commentReply")
                                 },
                                 onSaveClick = { commentView ->
-                                    personProfileViewModel.saveComment(
-                                        commentView = commentView,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
+                                    account?.also { acct ->
+                                        personProfileViewModel.saveComment(
+                                            commentView = commentView,
+                                            account = acct,
+                                            ctx = ctx,
+                                        )
+                                    }
                                 },
                                 onPersonClick = { personId ->
                                     personClickWrapper(
@@ -324,6 +331,7 @@ fun UserTabs(
                                     )
                                 },
                                 showPostAndCommunityContext = true,
+                                account = account,
                             )
                         }
                     }

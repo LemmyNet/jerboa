@@ -31,44 +31,42 @@ fun fetchPostsRoutine(
     scope: CoroutineScope,
 ) {
     scope.launch {
-        account?.also { account ->
-            loading.value = true
+        loading.value = true
 
-            if (nextPage) {
-                page.value++
-            }
-
-            if (clear) {
-                page.value = 1
-            }
-
-            changeListingType?.also {
-                listingType.value = it
-            }
-
-            changeSortType?.also {
-                sortType.value = it
-            }
-
-            changeCommunityId?.also {
-                communityId.value = it
-            }
-
-            val newPosts = fetchPostsWrapper(
-                account = account,
-                ctx = ctx,
-                communityId = communityId.value,
-                sortType = sortType.value,
-                listingType = listingType.value,
-                page = page.value
-            )
-
-            if (clear) {
-                posts.clear()
-            }
-            posts.addAll(newPosts)
-            loading.value = false
+        if (nextPage) {
+            page.value++
         }
+
+        if (clear) {
+            page.value = 1
+        }
+
+        changeListingType?.also {
+            listingType.value = it
+        }
+
+        changeSortType?.also {
+            sortType.value = it
+        }
+
+        changeCommunityId?.also {
+            communityId.value = it
+        }
+
+        val newPosts = fetchPostsWrapper(
+            account = account,
+            ctx = ctx,
+            communityId = communityId.value,
+            sortType = sortType.value,
+            listingType = listingType.value,
+            page = page.value
+        )
+
+        if (clear) {
+            posts.clear()
+        }
+        posts.addAll(newPosts)
+        loading.value = false
     }
 }
 

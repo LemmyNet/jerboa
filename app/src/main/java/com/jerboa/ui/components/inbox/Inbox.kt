@@ -22,22 +22,24 @@ fun inboxClickWrapper(
     navController: NavController,
     ctx: Context,
 ) {
-    inboxViewModel.fetchReplies(
-        account = account,
-        clear = true,
-        ctx = ctx,
-    )
-    inboxViewModel.fetchPersonMentions(
-        account = account,
-        clear = true,
-        ctx = ctx,
-    )
-    inboxViewModel.fetchPrivateMessages(
-        account = account,
-        clear = true,
-        ctx = ctx,
-    )
-    navController.navigate(route = "inbox")
+    account?.also {
+        inboxViewModel.fetchReplies(
+            account = account,
+            clear = true,
+            ctx = ctx,
+        )
+        inboxViewModel.fetchPersonMentions(
+            account = account,
+            clear = true,
+            ctx = ctx,
+        )
+        inboxViewModel.fetchPrivateMessages(
+            account = account,
+            clear = true,
+            ctx = ctx,
+        )
+        navController.navigate(route = "inbox")
+    }
 }
 
 @Composable

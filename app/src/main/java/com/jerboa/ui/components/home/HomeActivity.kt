@@ -94,7 +94,9 @@ fun HomeActivity(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        navController.navigate("createPost")
+                        account?.also {
+                            navController.navigate("createPost")
+                        }
                     }
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "TODO")
@@ -206,6 +208,7 @@ fun MainPostListingsContent(
                 ctx = ctx,
             )
         },
+        account = account,
     )
 }
 

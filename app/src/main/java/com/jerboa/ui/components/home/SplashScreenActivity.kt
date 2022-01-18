@@ -94,5 +94,11 @@ private fun fetchInitialData(
             )
             homeViewModel.fetchUnreadCounts(account = account)
         }
+    } else {
+        // An anonymous user
+        siteViewModel.fetchSite(auth = null)
+        homeViewModel.fetchPosts(
+            account = null,
+        )
     }
 }

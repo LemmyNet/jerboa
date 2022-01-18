@@ -123,6 +123,7 @@ fun PostActivity(
                                         )
                                     },
                                     showReply = true,
+                                    account = account,
                                 )
                             }
                             // Don't use CommentNodes here, otherwise lazy scrolling wont work
@@ -131,31 +132,37 @@ fun PostActivity(
                                 CommentNode(
                                     node = node,
                                     onUpvoteClick = { commentView ->
-                                        postViewModel.likeComment(
-                                            commentView = commentView,
-                                            voteType = VoteType.Upvote,
-                                            account = account,
-                                            ctx = ctx,
-                                        )
+                                        account?.also { acct ->
+                                            postViewModel.likeComment(
+                                                commentView = commentView,
+                                                voteType = VoteType.Upvote,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
                                     },
                                     onDownvoteClick = { commentView ->
-                                        postViewModel.likeComment(
-                                            commentView = commentView,
-                                            voteType = VoteType.Downvote,
-                                            account = account,
-                                            ctx = ctx,
-                                        )
+                                        account?.also { acct ->
+                                            postViewModel.likeComment(
+                                                commentView = commentView,
+                                                voteType = VoteType.Downvote,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
                                     },
                                     onReplyClick = { commentView ->
                                         postViewModel.replyToCommentParent = commentView
                                         navController.navigate("commentReply")
                                     },
                                     onSaveClick = { commentView ->
-                                        postViewModel.saveComment(
-                                            commentView = commentView,
-                                            account = account,
-                                            ctx = ctx,
-                                        )
+                                        account?.also { acct ->
+                                            postViewModel.saveComment(
+                                                commentView = commentView,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
                                     },
                                     onPersonClick = { personId ->
                                         personClickWrapper(
@@ -165,7 +172,8 @@ fun PostActivity(
                                             navController,
                                             ctx
                                         )
-                                    }
+                                    },
+                                    account = account,
                                 )
                             }
                         }

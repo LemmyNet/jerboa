@@ -21,11 +21,12 @@ import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
 fun PersonName(
-    person: PersonSafe,
+    person: PersonSafe?,
     color: Color = MaterialTheme.colors.secondary,
 ) {
+    val name = person?.let { personNameShown(it) } ?: run { "Anonymous" }
     Text(
-        text = personNameShown(person),
+        text = name,
         color = color,
     )
 }
