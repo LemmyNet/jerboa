@@ -289,7 +289,10 @@ fun AvatarAndAccountName(myPerson: PersonSafe?) {
         myPerson?.avatar?.also {
             LargerCircularIcon(icon = it)
         }
-        PersonName(person = myPerson, color = MaterialTheme.colors.onSurface)
+        PersonName(
+            person = myPerson,
+            color = MaterialTheme.colors.onSurface,
+        )
     }
 }
 

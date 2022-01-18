@@ -332,6 +332,7 @@ fun UserTabs(
                                 },
                                 showPostAndCommunityContext = true,
                                 account = account,
+                                moderators = listOf()
                             )
                         }
                     }

@@ -17,6 +17,7 @@ import com.jerboa.appendMarkdownImage
 import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
+import com.jerboa.isModerator
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
@@ -89,7 +90,8 @@ fun CommentReplyActivity(
                                         reply = appendMarkdownImage(reply, url)
                                     }
                                 }
-                            }
+                            },
+                            isModerator(commentView.creator, postViewModel.moderators)
                         )
                     } ?: run {
                         postViewModel.postView.value?.also { postView ->
@@ -113,7 +115,8 @@ fun CommentReplyActivity(
                                             reply = appendMarkdownImage(reply, url)
                                         }
                                     }
-                                }
+                                },
+                                isModerator = isModerator(postView.creator, postViewModel.moderators)
                             )
                         }
                     }

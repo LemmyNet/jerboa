@@ -45,11 +45,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
@@ -74,8 +70,10 @@ val gson = Gson()
 const val LAUNCH_DELAY = 1500L
 const val MAX_POST_TITLE_LENGTH = 200
 
-val DEFAULT_LEMMY_INSTANCES = listOf("lemmy.ml", "szmer.info", "lemmygrad.ml", "lemmy.eus",
-    "lemmy.pt")
+val DEFAULT_LEMMY_INSTANCES = listOf(
+    "lemmy.ml", "szmer.info", "lemmygrad.ml", "lemmy.eus",
+    "lemmy.pt"
+)
 
 // convert a data class to a map
 fun <T> T.serializeToMap(): Map<String, String> {
@@ -375,6 +373,9 @@ fun CommentOrPostNodeHeader(
     myVote: Int?,
     published: String,
     onPersonClick: (personId: Int) -> Unit = {},
+    isPostCreator: Boolean,
+    isModerator: Boolean,
+    isCommunityBanned: Boolean,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -387,6 +388,10 @@ fun CommentOrPostNodeHeader(
             PersonProfileLink(
                 person = creator,
                 onClick = { onPersonClick(creator.id) },
+                showTags = true,
+                isPostCreator = isPostCreator,
+                isModerator = isModerator,
+                isCommunityBanned = isCommunityBanned,
             )
         }
         Row(
@@ -991,4 +996,16 @@ private fun DrawScope.drawEndBorder(
 
 fun sortNodes(nodes: List<CommentNodeData>): List<CommentNodeData> {
     return nodes.sortedBy { it.commentView.comment.deleted || it.commentView.comment.removed }
+}
+
+fun isPostCreator(person: PersonSafe, postView: PostView): Boolean {
+    return postView.post.creator_id == person.id
+}
+
+fun isPostCreator(commentView: CommentView): Boolean {
+    return commentView.creator.id == commentView.post.creator_id
+}
+
+fun isModerator(person: PersonSafe, moderators: List<CommunityModeratorView>): Boolean {
+    return moderators.map { it.moderator.id }.contains(person.id)
 }

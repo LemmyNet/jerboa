@@ -281,6 +281,7 @@ fun InboxTabs(
                                 showPostAndCommunityContext = true,
                                 showRead = true,
                                 account = account,
+                                moderators = listOf()
                             )
                         }
                     }

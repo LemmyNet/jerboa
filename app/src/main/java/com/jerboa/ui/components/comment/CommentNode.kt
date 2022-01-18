@@ -30,6 +30,7 @@ fun CommentNodeHeader(
     onPersonClick: (personId: Int) -> Unit = {},
     score: Int,
     myVote: Int?,
+    isModerator: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -37,13 +38,21 @@ fun CommentNodeHeader(
         myVote = myVote,
         published = commentView.comment.published,
         onPersonClick = onPersonClick,
+        isPostCreator = isPostCreator(commentView),
+        isModerator = isModerator,
+        isCommunityBanned = commentView.creator_banned_from_community,
     )
 }
 
 @Preview
 @Composable
 fun CommentNodeHeaderPreview() {
-    CommentNodeHeader(commentView = sampleCommentView, score = 23, myVote = 26)
+    CommentNodeHeader(
+        commentView = sampleCommentView,
+        score = 23,
+        myVote = 26,
+        isModerator = false,
+    )
 }
 
 @Composable
@@ -67,6 +76,7 @@ fun CommentBodyPreview() {
 @Composable
 fun CommentNode(
     node: CommentNodeData,
+    moderators: List<CommunityModeratorView>,
     onUpvoteClick: (commentView: CommentView) -> Unit = {},
     onDownvoteClick: (commentView: CommentView) -> Unit = {},
     onReplyClick: (commentView: CommentView) -> Unit = {},
@@ -121,6 +131,7 @@ fun CommentNode(
                     onPersonClick = onPersonClick,
                     score = score.value,
                     myVote = myVote.value,
+                    isModerator = isModerator(commentView.creator, moderators),
                 )
                 CommentBody(commentView = commentView)
                 CommentFooterLine(
@@ -153,6 +164,7 @@ fun CommentNode(
             onDownvoteClick = onDownvoteClick,
             onReplyClick = onReplyClick,
             account = account,
+            moderators = moderators,
         )
     }
 }
@@ -266,5 +278,5 @@ fun CommentNodesPreview() {
         sampleSecondCommentReplyView, sampleCommentReplyView, sampleCommentView
     )
     val tree = buildCommentsTree(comments)
-    CommentNodes(nodes = tree)
+    CommentNodes(nodes = tree, moderators = listOf())
 }

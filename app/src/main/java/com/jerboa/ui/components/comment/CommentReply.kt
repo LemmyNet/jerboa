@@ -19,6 +19,7 @@ import com.jerboa.ReplyTextField
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.sampleCommentView
+import com.jerboa.isModerator
 import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -61,6 +62,7 @@ fun CommentReplyHeader(
 fun RepliedComment(
     commentView: CommentView,
     onPersonClick: (personId: Int) -> Unit = {},
+    isModerator: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentNodeHeader(
@@ -68,6 +70,7 @@ fun RepliedComment(
             onPersonClick = onPersonClick,
             score = commentView.counts.score,
             myVote = commentView.my_vote,
+            isModerator = isModerator,
         )
         SelectionContainer {
             Text(text = commentView.comment.content)
@@ -78,18 +81,20 @@ fun RepliedComment(
 @Preview
 @Composable
 fun RepliedCommentPreview() {
-    RepliedComment(commentView = sampleCommentView)
+    RepliedComment(commentView = sampleCommentView, isModerator = false)
 }
 
 @Composable
 fun RepliedPost(
     postView: PostView,
     onPersonClick: (personId: Int) -> Unit = {},
+    isModerator: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PostNodeHeader(
             postView = postView,
             onPersonClick = onPersonClick,
+            isModerator = isModerator,
         )
         val text = postView.post.body.also { it } ?: run { postView.post.name }
         SelectionContainer {
@@ -104,13 +109,15 @@ fun CommentReply(
     reply: String,
     onReplyChange: (String) -> Unit,
     onPersonClick: (personId: Int) -> Unit = {},
-    onPickedImage: (image: Uri) -> Unit = {}
+    onPickedImage: (image: Uri) -> Unit = {},
+    isModerator: Boolean,
 ) {
     LazyColumn {
         item {
             RepliedComment(
                 commentView = commentView,
                 onPersonClick = onPersonClick,
+                isModerator = isModerator,
             )
         }
         item {
@@ -134,13 +141,15 @@ fun PostReply(
     reply: String,
     onReplyChange: (String) -> Unit,
     onPersonClick: (personId: Int) -> Unit = {},
-    onPickedImage: (image: Uri) -> Unit = {}
+    onPickedImage: (image: Uri) -> Unit = {},
+    isModerator: Boolean,
 ) {
     LazyColumn {
         item {
             RepliedPost(
                 postView = postView,
                 onPersonClick = onPersonClick,
+                isModerator = isModerator,
             )
         }
         item {

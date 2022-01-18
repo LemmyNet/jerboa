@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.datatypes.api.GetPost
@@ -32,6 +33,8 @@ class PostViewModel : ViewModel() {
     var postView = mutableStateOf<PostView?>(null)
         private set
     var comments = mutableStateListOf<CommentView>()
+        private set
+    var moderators = mutableStateListOf<CommunityModeratorView>()
         private set
     var loading: Boolean by mutableStateOf(false)
         private set
@@ -66,6 +69,8 @@ class PostViewModel : ViewModel() {
                 postView.value = out.post_view
                 comments.clear()
                 comments.addAll(out.comments)
+                moderators.clear()
+                moderators.addAll(out.moderators)
             } catch (e: Exception) {
                 toastException(ctx, e)
             } finally {

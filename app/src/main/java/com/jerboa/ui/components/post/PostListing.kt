@@ -36,6 +36,7 @@ fun PostHeaderLine(
     postView: PostView,
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
+    isModerator: Boolean,
 ) {
     FlowRow(
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
@@ -48,6 +49,11 @@ fun PostHeaderLine(
         PersonProfileLink(
             person = postView.creator,
             onClick = onPersonClick,
+            showTags = true,
+            isPostCreator = false, // Set this to false, we already know this
+            isModerator = isModerator,
+            isCommunityBanned = postView.creator_banned_from_community,
+
         )
         DotSpacer()
         postView.post.url?.also {
@@ -63,13 +69,14 @@ fun PostHeaderLine(
 @Composable
 fun PostHeaderLinePreview() {
     val postView = samplePostView
-    PostHeaderLine(postView = postView)
+    PostHeaderLine(postView = postView, isModerator = false)
 }
 
 @Composable
 fun PostNodeHeader(
     postView: PostView,
     onPersonClick: (personId: Int) -> Unit = {},
+    isModerator: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = postView.creator,
@@ -77,6 +84,9 @@ fun PostNodeHeader(
         myVote = postView.my_vote,
         published = postView.post.published,
         onPersonClick = onPersonClick,
+        isPostCreator = true,
+        isModerator = isModerator,
+        isCommunityBanned = postView.creator_banned_from_community,
     )
 }
 
@@ -335,6 +345,7 @@ fun PreviewPostListing() {
         postView = samplePostView,
         fullBody = true,
         account = null,
+        isModerator = true
     )
 }
 
@@ -345,6 +356,7 @@ fun PreviewLinkPostListing() {
         postView = sampleLinkPostView,
         fullBody = true,
         account = null,
+        isModerator = false,
     )
 }
 
@@ -355,6 +367,7 @@ fun PreviewImagePostListing() {
         postView = sampleImagePostView,
         fullBody = true,
         account = null,
+        isModerator = false,
     )
 }
 
@@ -365,6 +378,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         postView = sampleLinkNoThumbnailPostView,
         fullBody = true,
         account = null,
+        isModerator = true,
     )
 }
 
@@ -381,6 +395,7 @@ fun PostListing(
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     showReply: Boolean = false,
+    isModerator: Boolean,
     account: Account?,
 ) {
 
@@ -406,6 +421,7 @@ fun PostListing(
                 postView = postView,
                 onCommunityClick = onCommunityClick,
                 onPersonClick = onPersonClick,
+                isModerator = isModerator,
             )
 
             //  Title + metadata

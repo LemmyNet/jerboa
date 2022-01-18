@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import com.jerboa.CommentNodeData
 import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.db.Account
 import com.jerboa.sortNodes
 
@@ -15,6 +16,7 @@ fun CommentNodes(
     onReplyClick: (commentView: CommentView) -> Unit = {},
     onSaveClick: (commentView: CommentView) -> Unit = {},
     account: Account? = null,
+    moderators: List<CommunityModeratorView>,
 ) {
     Column {
         sortNodes(nodes)?.forEach { node ->
@@ -25,6 +27,7 @@ fun CommentNodes(
                 onReplyClick = onReplyClick,
                 onSaveClick = onSaveClick,
                 account = account,
+                moderators = moderators,
             )
         }
     }

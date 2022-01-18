@@ -124,6 +124,7 @@ fun PostActivity(
                                     },
                                     showReply = true,
                                     account = account,
+                                    isModerator = isModerator(postView.creator, postViewModel.moderators)
                                 )
                             }
                             // Don't use CommentNodes here, otherwise lazy scrolling wont work
@@ -174,6 +175,7 @@ fun PostActivity(
                                         )
                                     },
                                     account = account,
+                                    moderators = postViewModel.moderators,
                                 )
                             }
                         }

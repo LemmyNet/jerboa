@@ -54,6 +54,7 @@ fun PostListings(
                     onCommunityClick = onCommunityClick,
                     onPersonClick = onPersonClick,
                     account = account,
+                    isModerator = false // TODO can't know with many posts
                 )
             }
         }
