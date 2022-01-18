@@ -91,6 +91,7 @@ private fun FetchInitialData(
                     myUser.local_user_view.local_user
                         .default_sort_type
                 ],
+                clear = true,
             )
             homeViewModel.fetchUnreadCounts(account = account)
         }
@@ -99,6 +100,7 @@ private fun FetchInitialData(
         siteViewModel.fetchSite(auth = null)
         homeViewModel.fetchPosts(
             account = null,
+            clear = true,
         )
     }
 }
