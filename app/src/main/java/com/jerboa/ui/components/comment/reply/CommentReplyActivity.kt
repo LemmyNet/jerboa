@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.comment
+package com.jerboa.ui.components.comment.reply
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +18,9 @@ import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCurrentAccount
 import com.jerboa.isModerator
+import com.jerboa.ui.components.comment.CommentReply
+import com.jerboa.ui.components.comment.CommentReplyHeader
+import com.jerboa.ui.components.comment.PostReply
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
@@ -25,6 +28,7 @@ import kotlinx.coroutines.launch
 
 // TODO this should probably be refactored to not rely on postViewModel, since you should be able
 //  to create comments from many other screens.
+//  It should have its own viewmodel
 @Composable
 fun CommentReplyActivity(
     postViewModel: PostViewModel,

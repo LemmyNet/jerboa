@@ -62,6 +62,12 @@ interface API {
     suspend fun createComment(@Body form: CreateComment): CommentResponse
 
     /**
+     * Edit a comment.
+     */
+    @PUT("comment")
+    suspend fun editComment(@Body form: EditComment): CommentResponse
+
+    /**
      * Save a post.
      */
     @PUT("post/save")
@@ -534,6 +540,22 @@ suspend fun createCommentWrapper(
     return createdComment!!
 }
 
+suspend fun editCommentWrapper(
+    form: EditComment,
+    ctx: Context,
+): CommentResponse {
+
+    var editedComment: CommentResponse? = null
+    val api = API.getInstance()
+
+    try {
+        editedComment = api.editComment(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return editedComment!!
+}
+
 suspend fun createPrivateMessageWrapper(
     form: CreatePrivateMessage,
     ctx: Context,
@@ -764,12 +786,6 @@ suspend fun uploadPictrsImage(account: Account, mediaUri: Uri, ctx: Context): St
 //
 //
 //
-//  /**
-//   * Edit a comment.
-//   */
-//  async editComment(form: EditComment): Promise<CommentResponse> {
-//    return this.wrapper(HttpType.Put, "/comment", form);
-//  }
 //
 //  /**
 //   * Delete a comment.

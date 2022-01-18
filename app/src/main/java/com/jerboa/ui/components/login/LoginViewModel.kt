@@ -55,6 +55,7 @@ class LoginViewModel : ViewModel() {
                         Toast.LENGTH_SHORT
                     ).show()
                     this.cancel()
+                    return@launch
                 }
             } catch (e: Exception) {
                 loading = false
@@ -66,48 +67,48 @@ class LoginViewModel : ViewModel() {
                     Toast.LENGTH_SHORT
                 ).show()
                 this.cancel()
-            } finally {
-
-                // Refetch the site to get your name and id
-                // Can't do a co-routine within a co-routine
-                siteViewModel.siteRes = getSiteWrapper(auth = jwt)
-
-                val luv = siteViewModel.siteRes?.my_user!!.local_user_view
-                val account = Account(
-                    id = luv.person.id,
-                    name = luv.person.name,
-                    current = true,
-                    instance = instance,
-                    jwt = jwt,
-                )
-
-                // Refetch the front page
-                val posts = fetchPostsWrapper(
-                    account = account,
-                    ctx = ctx,
-                    listingType = ListingType.values()[
-                        luv.local_user
-                            .default_listing_type
-                    ],
-                    sortType = SortType.values()[
-                        luv.local_user
-                            .default_sort_type
-                    ],
-                    page = 1
-                )
-                homeViewModel.posts.clear()
-                homeViewModel.posts.addAll(posts)
-
-                // Remove the default account
-                accountViewModel.removeCurrent()
-
-                // Save that info in the DB
-                accountViewModel.insert(account)
-
-                loading = false
-
-                navController.navigate(route = "home")
+                return@launch
             }
+
+            // Refetch the site to get your name and id
+            // Can't do a co-routine within a co-routine
+            siteViewModel.siteRes = getSiteWrapper(auth = jwt)
+
+            val luv = siteViewModel.siteRes?.my_user!!.local_user_view
+            val account = Account(
+                id = luv.person.id,
+                name = luv.person.name,
+                current = true,
+                instance = instance,
+                jwt = jwt,
+            )
+
+            // Refetch the front page
+            val posts = fetchPostsWrapper(
+                account = account,
+                ctx = ctx,
+                listingType = ListingType.values()[
+                    luv.local_user
+                        .default_listing_type
+                ],
+                sortType = SortType.values()[
+                    luv.local_user
+                        .default_sort_type
+                ],
+                page = 1
+            )
+            homeViewModel.posts.clear()
+            homeViewModel.posts.addAll(posts)
+
+            // Remove the default account
+            accountViewModel.removeCurrent()
+
+            // Save that info in the DB
+            accountViewModel.insert(account)
+
+            loading = false
+
+            navController.navigate(route = "home")
         }
     }
 }

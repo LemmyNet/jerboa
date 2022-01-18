@@ -13,7 +13,6 @@ import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.datatypes.api.CreatePrivateMessage
 import com.jerboa.datatypes.api.MarkAllAsRead
 import com.jerboa.db.Account
@@ -124,23 +123,6 @@ class InboxViewModel : ViewModel() {
             account = account,
             ctx = ctx,
             scope = viewModelScope,
-        )
-    }
-
-    fun createComment(
-        form: CreateComment,
-        ctx: Context,
-        navController: NavController,
-        focusManager: FocusManager,
-    ) {
-        createCommentRoutine(
-            comments = replies,
-            loading = loading,
-            form = form,
-            ctx = ctx,
-            scope = viewModelScope,
-            navController = navController,
-            focusManager = focusManager,
         )
     }
 

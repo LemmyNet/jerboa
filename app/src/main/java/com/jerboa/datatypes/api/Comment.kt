@@ -22,7 +22,7 @@ data class EditComment(
     /**
      * An optional front end ID, to tell which is comment is coming back.
      */
-    val form_id: String?,
+    val form_id: String? = null,
     val auth: String,
 )
 

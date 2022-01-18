@@ -19,7 +19,7 @@ class CreatePostViewModel : ViewModel() {
         private set
 
     fun createPost(
-        account: Account?,
+        account: Account,
         ctx: Context,
         body: String?,
         url: String?,
@@ -29,22 +29,20 @@ class CreatePostViewModel : ViewModel() {
         postViewModel: PostViewModel,
     ) {
         viewModelScope.launch {
-            account?.also { acct ->
-                val postOut = createPostWrapper(
-                    account = acct,
-                    communityId = communityId,
-                    body = body,
-                    url = url,
-                    name = name,
-                    ctx = ctx,
-                )
-                postViewModel.fetchPost(
-                    id = postOut.post.id, clear = true, account = account,
-                    ctx = ctx
-                )
-                navController.popBackStack()
-                navController.navigate("post")
-            }
+            val postOut = createPostWrapper(
+                account = account,
+                communityId = communityId,
+                body = body,
+                url = url,
+                name = name,
+                ctx = ctx,
+            )
+            postViewModel.fetchPost(
+                id = postOut.post.id, clear = true, account = account,
+                ctx = ctx
+            )
+            navController.popBackStack()
+            navController.navigate("post")
         }
     }
 

@@ -15,6 +15,9 @@ import com.jerboa.datatypes.api.*
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
+import com.jerboa.ui.components.person.PersonProfileViewModel
+import com.jerboa.ui.components.post.InboxViewModel
+import com.jerboa.ui.components.post.PostViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -144,6 +147,41 @@ fun createCommentRoutine(
         loading.value = false
         focusManager.clearFocus()
         navController.navigateUp()
+    }
+}
+
+fun editCommentRoutine(
+    commentView: MutableState<CommentView?>,
+    loading: MutableState<Boolean>,
+    content: String,
+    ctx: Context,
+    scope: CoroutineScope,
+    navController: NavController,
+    focusManager: FocusManager,
+    account: Account,
+    personProfileViewModel: PersonProfileViewModel,
+    postViewModel: PostViewModel,
+    inboxViewModel: InboxViewModel,
+) {
+    scope.launch {
+        commentView.value?.also { cv ->
+            loading.value = true
+            val form = EditComment(
+                content = content,
+                comment_id = cv.comment.id,
+                auth = account.jwt
+            )
+            commentView.value = editCommentWrapper(form, ctx).comment_view
+            loading.value = false
+            focusManager.clearFocus()
+
+            // Update all the views which might have your comment
+            findAndUpdateComment(personProfileViewModel.comments, commentView.value)
+            findAndUpdateComment(postViewModel.comments, commentView.value)
+            findAndUpdateComment(inboxViewModel.replies, commentView.value)
+
+            navController.navigateUp()
+        }
     }
 }
 

@@ -24,6 +24,8 @@ import com.jerboa.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNode
+import com.jerboa.ui.components.comment.edit.CommentEditViewModel
+import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
 import com.jerboa.ui.components.home.BottomAppBarAll
@@ -45,6 +47,7 @@ fun PersonProfileActivity(
     accountViewModel: AccountViewModel,
     homeViewModel: HomeViewModel,
     inboxViewModel: InboxViewModel,
+    commentEditViewModel: CommentEditViewModel,
 ) {
 
     Log.d("jerboa", "got to person activity")
@@ -91,6 +94,7 @@ fun PersonProfileActivity(
                     ctx = ctx,
                     account = account,
                     scope = scope,
+                    commentEditViewModel = commentEditViewModel,
                 )
             },
             bottomBar = {
@@ -133,6 +137,7 @@ fun UserTabs(
     account: Account?,
     scope: CoroutineScope,
     postViewModel: PostViewModel,
+    commentEditViewModel: CommentEditViewModel,
 ) {
     val tabTitles = UserTab.values().map { it.toString() }
     val pagerState = rememberPagerState()
@@ -328,6 +333,13 @@ fun UserTabs(
                                         account = account,
                                         navController = navController,
                                         ctx = ctx,
+                                    )
+                                },
+                                onEditCommentClick = { commentView ->
+                                    commentEditClickWrapper(
+                                        commentEditViewModel,
+                                        commentView,
+                                        navController,
                                     )
                                 },
                                 showPostAndCommunityContext = true,

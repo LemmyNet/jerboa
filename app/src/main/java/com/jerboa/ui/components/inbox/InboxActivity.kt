@@ -24,6 +24,8 @@ import com.jerboa.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNode
+import com.jerboa.ui.components.comment.edit.CommentEditViewModel
+import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
 import com.jerboa.ui.components.home.BottomAppBarAll
@@ -46,6 +48,7 @@ fun InboxActivity(
     postViewModel: PostViewModel,
     communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
+    commentEditViewModel: CommentEditViewModel,
 ) {
 
     Log.d("jerboa", "got to inbox activity")
@@ -107,6 +110,7 @@ fun InboxActivity(
                 InboxTabs(
                     navController = navController,
                     personProfileViewModel = personProfileViewModel,
+                    commentEditViewModel = commentEditViewModel,
                     inboxViewModel = inboxViewModel,
                     postViewModel = postViewModel,
                     communityViewModel = communityViewModel,
@@ -142,7 +146,7 @@ fun InboxActivity(
 
 enum class InboxTab {
     Replies,
-//    Mentions,
+    //    Mentions,
     Messages,
 }
 
@@ -158,6 +162,7 @@ fun InboxTabs(
     account: Account?,
     scope: CoroutineScope,
     postViewModel: PostViewModel,
+    commentEditViewModel: CommentEditViewModel,
 ) {
     val tabTitles = InboxTab.values().map { it.toString() }
 
@@ -231,6 +236,13 @@ fun InboxTabs(
                                         ctx = ctx,
                                     )
                                     navController.navigate("commentReply")
+                                },
+                                onEditCommentClick = { commentView ->
+                                    commentEditClickWrapper(
+                                        commentEditViewModel,
+                                        commentView,
+                                        navController,
+                                    )
                                 },
                                 onSaveClick = { commentView ->
                                     account?.also { acct ->

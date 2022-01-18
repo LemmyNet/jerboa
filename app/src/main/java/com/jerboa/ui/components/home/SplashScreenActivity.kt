@@ -31,7 +31,7 @@ fun SplashScreenActivity(
 ) {
 
     val startRoute = "home"
-    fetchInitialData(accountViewModel, siteViewModel, homeViewModel)
+    FetchInitialData(accountViewModel, siteViewModel, homeViewModel)
 
     val scale = remember {
         androidx.compose.animation.core.Animatable(0f)
@@ -68,7 +68,7 @@ fun SplashScreenActivity(
 }
 
 @Composable
-private fun fetchInitialData(
+private fun FetchInitialData(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     homeViewModel: HomeViewModel

@@ -19,6 +19,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.*
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNode
+import com.jerboa.ui.components.comment.edit.CommentEditViewModel
+import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
 import com.jerboa.ui.components.person.PersonProfileViewModel
@@ -30,6 +32,7 @@ fun PostActivity(
     communityViewModel: CommunityViewModel,
     personProfileViewModel: PersonProfileViewModel,
     accountViewModel: AccountViewModel,
+    commentEditViewModel: CommentEditViewModel,
     navController: NavController,
 ) {
 
@@ -172,6 +175,13 @@ fun PostActivity(
                                             account,
                                             navController,
                                             ctx
+                                        )
+                                    },
+                                    onEditCommentClick = { commentView ->
+                                        commentEditClickWrapper(
+                                            commentEditViewModel,
+                                            commentView,
+                                            navController,
                                         )
                                     },
                                     account = account,

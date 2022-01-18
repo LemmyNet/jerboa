@@ -47,21 +47,23 @@ fun CreatePostActivity(
                         navController = navController,
                         formValid = formValid,
                         onCreatePostClick = {
-                            communityListViewModel.selectedCommunity?.id?.also {
-                                // Clean up that data
-                                val nameOut = name.trim()
-                                val bodyOut = body.trim().ifEmpty { null }
-                                val urlOut = url.trim().ifEmpty { null }
-                                createPostViewModel.createPost(
-                                    account = account,
-                                    ctx = ctx,
-                                    body = bodyOut,
-                                    url = urlOut,
-                                    name = nameOut,
-                                    communityId = it,
-                                    navController = navController,
-                                    postViewModel = postViewModel,
-                                )
+                            account?.also { acct ->
+                                communityListViewModel.selectedCommunity?.id?.also {
+                                    // Clean up that data
+                                    val nameOut = name.trim()
+                                    val bodyOut = body.trim().ifEmpty { null }
+                                    val urlOut = url.trim().ifEmpty { null }
+                                    createPostViewModel.createPost(
+                                        account = acct,
+                                        ctx = ctx,
+                                        body = bodyOut,
+                                        url = urlOut,
+                                        name = nameOut,
+                                        communityId = it,
+                                        navController = navController,
+                                        postViewModel = postViewModel,
+                                    )
+                                }
                             }
                         }
                     )
