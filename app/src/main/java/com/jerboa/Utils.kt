@@ -64,6 +64,7 @@ import org.ocpsoft.prettytime.PrettyTime
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.math.pow
 
 val prettyTime = PrettyTime(Locale.getDefault())
 
@@ -1052,13 +1053,16 @@ fun validateUrl(
     }
 }
 
-private val suffix = arrayOf("", "K", "M", "B", "T")
-
-fun siFormat(number: Int): String {
-    var r: String = DecimalFormat("##0E0").format(number)
-    r = r.replace("E[0-9]".toRegex(), suffix[Character.getNumericValue(r[r.length - 1]) / 3])
-    while (r.length > 4 || r.matches(Regex("[0-9]+\\.[a-z]"))) {
-        r = r.substring(0, r.length - 2) + r.substring(r.length - 1)
-    }
-    return r
+fun siFormat(num: Int): String {
+    var value = num.toDouble()
+    val suffix = " KMBT"
+    val formatter = DecimalFormat("#,###.#")
+    val power = StrictMath.log10(value).toInt()
+    value /= 10.0.pow((power / 3 * 3).toDouble())
+    var formattedNumber = formatter.format(value)
+    formattedNumber += suffix[power / 3]
+    return if (formattedNumber.length > 4) formattedNumber.replace(
+        "\\.[0-9]+".toRegex(),
+        ""
+    ) else formattedNumber
 }
