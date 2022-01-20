@@ -46,7 +46,7 @@ fun Sidebar(siteView: SiteView) {
         TimeAgo(
             precedingString = "Created",
             includeAgo = true,
-            dateStr = site.published
+            published = site.published
         )
         CommentsAndPosts(siteView = siteView)
         site.sidebar?.also {

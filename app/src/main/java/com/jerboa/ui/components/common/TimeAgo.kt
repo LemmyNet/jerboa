@@ -1,7 +1,9 @@
 package com.jerboa.ui.components.common
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.prettyTime
@@ -11,28 +13,50 @@ import java.time.Instant
 import java.util.*
 
 @Composable
-fun TimeAgo(dateStr: String, precedingString: String? = null, includeAgo: Boolean = false) {
-    val then = Date.from(Instant.parse(dateStr + "Z"))
-    val pt = prettyTime.formatDuration(then)
-
-    val pretty = if (includeAgo) {
-        pt
-    } else {
-        prettyTimeShortener(pt)
-    }
+fun TimeAgo(
+    published: String,
+    updated: String? = null,
+    precedingString: String? = null,
+    includeAgo: Boolean = false
+) {
+    val publishedPretty = dateStringToPretty(published, includeAgo)
 
     val afterPreceding = precedingString?.let {
-        "$it $pretty ago"
-    } ?: run { pretty }
+        "$it $publishedPretty ago"
+    } ?: run { publishedPretty }
 
-    Text(
-        text = afterPreceding,
-        color = Muted,
-    )
+    Row {
+        Text(
+            text = afterPreceding,
+            color = Muted,
+        )
+
+        updated?.also {
+            val updatedPretty = dateStringToPretty(it, includeAgo)
+
+            DotSpacer()
+            Text(
+                text = "($updatedPretty)",
+                color = Muted,
+                fontStyle = FontStyle.Italic,
+            )
+        }
+    }
+}
+
+fun dateStringToPretty(dateStr: String, includeAgo: Boolean = false): String {
+    val publishedDate = Date.from(Instant.parse(dateStr + "Z"))
+    val prettyPublished = prettyTime.formatDuration(publishedDate)
+
+    return if (includeAgo) {
+        prettyPublished
+    } else {
+        prettyTimeShortener(prettyPublished)
+    }
 }
 
 @Preview
 @Composable
 fun TimeAgoPreview() {
-    TimeAgo(samplePersonSafe.published)
+    TimeAgo(samplePersonSafe.published, samplePersonSafe.updated)
 }

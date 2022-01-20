@@ -140,6 +140,7 @@ fun CommentOrPostNodeHeader(
     score: Int,
     myVote: Int?,
     published: String,
+    updated: String?,
     onPersonClick: (personId: Int) -> Unit = {},
     isPostCreator: Boolean,
     isModerator: Boolean,
@@ -171,7 +172,7 @@ fun CommentOrPostNodeHeader(
                 color = scoreColor(myVote = myVote)
             )
             DotSpacer(0.dp)
-            TimeAgo(dateStr = published)
+            TimeAgo(published = published, updated = updated)
         }
     }
 }

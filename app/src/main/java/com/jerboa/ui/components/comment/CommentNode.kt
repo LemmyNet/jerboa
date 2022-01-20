@@ -43,6 +43,7 @@ fun CommentNodeHeader(
         score = score,
         myVote = myVote,
         published = commentView.comment.published,
+        updated = commentView.comment.updated,
         onPersonClick = onPersonClick,
         isPostCreator = isPostCreator(commentView),
         isModerator = isModerator,

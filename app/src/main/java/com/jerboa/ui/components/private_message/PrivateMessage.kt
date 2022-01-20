@@ -58,7 +58,10 @@ fun PrivateMessageHeader(
             )
         }
 
-        TimeAgo(dateStr = privateMessageView.private_message.published)
+        TimeAgo(
+            published = privateMessageView.private_message.published,
+            updated = privateMessageView.private_message.updated,
+        )
     }
 }
 

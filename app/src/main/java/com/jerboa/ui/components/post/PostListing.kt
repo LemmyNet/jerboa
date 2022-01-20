@@ -63,7 +63,10 @@ fun PostHeaderLine(
             }
         }
 
-        TimeAgo(dateStr = postView.post.published)
+        TimeAgo(
+            published = postView.post.published,
+            updated = postView.post.updated,
+        )
     }
 }
 
@@ -85,6 +88,7 @@ fun PostNodeHeader(
         score = postView.counts.score,
         myVote = postView.my_vote,
         published = postView.post.published,
+        updated = postView.post.updated,
         onPersonClick = onPersonClick,
         isPostCreator = true,
         isModerator = isModerator,

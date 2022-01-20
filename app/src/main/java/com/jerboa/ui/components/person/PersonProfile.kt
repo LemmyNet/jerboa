@@ -59,7 +59,7 @@ fun PersonProfileTopSection(
                 TimeAgo(
                     precedingString = "Joined",
                     includeAgo = true,
-                    dateStr = personView.person.published
+                    published = personView.person.published
                 )
                 CommentsAndPosts(personView)
                 personView.person.bio?.also {
