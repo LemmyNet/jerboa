@@ -2,9 +2,7 @@ package com.jerboa.ui.components.inbox
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -104,6 +102,7 @@ fun InboxActivity(
             },
             content = {
                 InboxTabs(
+                    padding = it,
                     navController = navController,
                     personProfileViewModel = personProfileViewModel,
                     commentEditViewModel = commentEditViewModel,
@@ -160,12 +159,15 @@ fun InboxTabs(
     scope: CoroutineScope,
     postViewModel: PostViewModel,
     commentEditViewModel: CommentEditViewModel,
+    padding: PaddingValues,
 ) {
     val tabTitles = InboxTab.values().map { it.toString() }
 
     val pagerState = rememberPagerState()
 
-    Column {
+    Column(
+        modifier = Modifier.padding(padding)
+    ) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             indicator = { tabPositions ->
@@ -242,7 +244,10 @@ fun InboxTabs(
                             }
                         },
                     ) {
-                        LazyColumn(state = listState) {
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
                             items(nodes) { node ->
                                 CommentNode(
                                     node = node,
@@ -384,7 +389,10 @@ fun InboxTabs(
                             }
                         },
                     ) {
-                        LazyColumn(state = listState) {
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
                             items(inboxViewModel.messages) { message ->
                                 account?.also { acct ->
                                     PrivateMessage(

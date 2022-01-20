@@ -2,10 +2,7 @@ package com.jerboa.ui.components.person
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -89,6 +86,7 @@ fun PersonProfileActivity(
             },
             content = {
                 UserTabs(
+                    padding = it,
                     navController = navController,
                     personProfileViewModel = personProfileViewModel,
                     postViewModel = postViewModel,
@@ -142,11 +140,14 @@ fun UserTabs(
     postViewModel: PostViewModel,
     commentEditViewModel: CommentEditViewModel,
     postEditViewModel: PostEditViewModel,
+    padding: PaddingValues,
 ) {
     val tabTitles = UserTab.values().map { it.toString() }
     val pagerState = rememberPagerState()
 
-    Column {
+    Column(
+        modifier = Modifier.padding(padding)
+    ) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             indicator = { tabPositions ->
@@ -181,7 +182,10 @@ fun UserTabs(
         ) { tabIndex ->
             when (tabIndex) {
                 UserTab.About.ordinal -> {
-                    LazyColumn {
+                    LazyColumn(
+                        state = rememberLazyListState(),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
                         item {
                             personProfileViewModel.res?.person_view?.also {
                                 PersonProfileTopSection(
@@ -271,6 +275,15 @@ fun UserTabs(
                                 ctx = ctx,
                             )
                         },
+                        onPersonClick = { personId ->
+                            personClickWrapper(
+                                personProfileViewModel = personProfileViewModel,
+                                personId = personId,
+                                account = account,
+                                navController = navController,
+                                ctx = ctx,
+                            )
+                        },
                         onSwipeRefresh = {
                             personProfileViewModel.personId.value?.also {
                                 personProfileViewModel.fetchPersonDetails(
@@ -295,15 +308,6 @@ fun UserTabs(
                                     )
                                 }
                             }
-                        },
-                        onPersonClick = { personId ->
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = personId,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx,
-                            )
                         },
                         account = account,
                     )
@@ -352,7 +356,10 @@ fun UserTabs(
                             }
                         },
                     ) {
-                        LazyColumn(state = listState) {
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
                             items(nodes) { node ->
                                 CommentNode(
                                     node = node,

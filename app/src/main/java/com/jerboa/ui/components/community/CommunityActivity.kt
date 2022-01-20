@@ -72,6 +72,7 @@ fun CommunityActivity(
             },
             content = {
                 PostListings(
+                    padding = it,
                     contentAboveListings = {
                         communityViewModel.communityView?.also {
                             CommunityTopSection(

@@ -1,10 +1,14 @@
 package com.jerboa.ui.components.post
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.datatypes.CommunitySafe
@@ -29,6 +33,7 @@ fun PostListings(
     loading: Boolean = false,
     isScrolledToEnd: () -> Unit = {},
     account: Account?,
+    padding: PaddingValues = PaddingValues(0.dp),
 ) {
     val listState = rememberLazyListState()
 
@@ -38,6 +43,7 @@ fun PostListings(
     ) {
         LazyColumn(
             state = listState,
+            modifier = Modifier.padding(padding)
         ) {
 
             // TODO this should be a .also?

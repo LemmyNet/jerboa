@@ -57,7 +57,7 @@ fun BottomAppBarAll(
 
     BottomAppBar(
         elevation = APP_BAR_ELEVATION,
-        backgroundColor = MaterialTheme.colors.background
+        backgroundColor = MaterialTheme.colors.background,
     ) {
         BottomNavigationItem(
             icon = {

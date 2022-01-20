@@ -3,6 +3,7 @@ package com.jerboa.ui.components.home
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -90,6 +91,7 @@ fun HomeActivity(
             },
             content = {
                 MainPostListingsContent(
+                    padding = it,
                     homeViewModel = homeViewModel,
                     communityViewModel = communityViewModel,
                     personProfileViewModel = personProfileViewModel,
@@ -146,8 +148,10 @@ fun MainPostListingsContent(
     account: Account?,
     ctx: Context,
     navController: NavController,
+    padding: PaddingValues,
 ) {
     PostListings(
+        padding = padding,
         posts = homeViewModel.posts,
         onUpvoteClick = { postView ->
             homeViewModel.likePost(
@@ -165,20 +169,6 @@ fun MainPostListingsContent(
                 ctx = ctx,
             )
         },
-        onSaveClick = { postView ->
-            homeViewModel.savePost(
-                postView = postView,
-                account = account,
-                ctx = ctx,
-            )
-        },
-        onEditPostClick = { postView ->
-            postEditClickWrapper(
-                postEditViewModel,
-                postView,
-                navController,
-            )
-        },
         onPostClick = { postView ->
             postClickWrapper(
                 postViewModel = postViewModel,
@@ -191,11 +181,18 @@ fun MainPostListingsContent(
         onPostLinkClick = { url ->
             openLink(url, ctx)
         },
-        onSwipeRefresh = {
-            homeViewModel.fetchPosts(
+        onSaveClick = { postView ->
+            homeViewModel.savePost(
+                postView = postView,
                 account = account,
-                clear = true,
                 ctx = ctx,
+            )
+        },
+        onEditPostClick = { postView ->
+            postEditClickWrapper(
+                postEditViewModel,
+                postView,
+                navController,
             )
         },
         onCommunityClick = { community ->
@@ -213,6 +210,13 @@ fun MainPostListingsContent(
                 personId = personId,
                 account = account,
                 navController = navController,
+                ctx = ctx,
+            )
+        },
+        onSwipeRefresh = {
+            homeViewModel.fetchPosts(
+                account = account,
+                clear = true,
                 ctx = ctx,
             )
         },
