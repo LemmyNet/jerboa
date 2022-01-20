@@ -25,6 +25,8 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
+import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.comment.reply.commentReplyClickWrapper
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
@@ -48,6 +50,7 @@ fun InboxActivity(
     communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
+    commentReplyViewModel: CommentReplyViewModel,
 ) {
 
     Log.d("jerboa", "got to inbox activity")
@@ -106,6 +109,7 @@ fun InboxActivity(
                     navController = navController,
                     personProfileViewModel = personProfileViewModel,
                     commentEditViewModel = commentEditViewModel,
+                    commentReplyViewModel = commentReplyViewModel,
                     inboxViewModel = inboxViewModel,
                     postViewModel = postViewModel,
                     communityViewModel = communityViewModel,
@@ -159,6 +163,7 @@ fun InboxTabs(
     scope: CoroutineScope,
     postViewModel: PostViewModel,
     commentEditViewModel: CommentEditViewModel,
+    commentReplyViewModel: CommentReplyViewModel,
     padding: PaddingValues,
 ) {
     val tabTitles = InboxTab.values().map { it.toString() }
@@ -272,15 +277,12 @@ fun InboxTabs(
                                         }
                                     },
                                     onReplyClick = { commentView ->
-                                        // TODO To do replies from elsewhere than postView,
-                                        // you need to refetch that post view
-                                        postViewModel.replyToCommentParent = commentView
-                                        postViewModel.fetchPost(
-                                            id = commentView.post.id,
-                                            account = account,
-                                            ctx = ctx,
+                                        commentReplyClickWrapper(
+                                            commentReplyViewModel = commentReplyViewModel,
+                                            parentCommentView = commentView,
+                                            postId = commentView.post.id,
+                                            navController = navController,
                                         )
-                                        navController.navigate("commentReply")
                                     },
                                     onEditCommentClick = { commentView ->
                                         commentEditClickWrapper(

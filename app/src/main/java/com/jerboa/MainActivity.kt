@@ -17,6 +17,7 @@ import com.jerboa.db.AppDB
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
+import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.CommunityViewModel
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
     private val inboxViewModel by viewModels<InboxViewModel>()
     private val communityListViewModel by viewModels<CommunityListViewModel>()
     private val createPostViewModel by viewModels<CreatePostViewModel>()
+    private val commentReplyViewModel by viewModels<CommentReplyViewModel>()
     private val commentEditViewModel by viewModels<CommentEditViewModel>()
     private val postEditViewModel by viewModels<PostEditViewModel>()
 
@@ -128,6 +130,7 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             inboxViewModel = inboxViewModel,
                             commentEditViewModel = commentEditViewModel,
+                            commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                         )
                     }
@@ -170,6 +173,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
                             commentEditViewModel = commentEditViewModel,
+                            commentReplyViewModel = commentReplyViewModel,
                         )
                     }
                     composable(
@@ -181,6 +185,7 @@ class MainActivity : ComponentActivity() {
                             communityViewModel = communityViewModel,
                             personProfileViewModel = personProfileViewModel,
                             commentEditViewModel = commentEditViewModel,
+                            commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
                         )
@@ -189,9 +194,11 @@ class MainActivity : ComponentActivity() {
                         route = "commentReply",
                     ) {
                         CommentReplyActivity(
+                            commentReplyViewModel = commentReplyViewModel,
                             postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
+                            inboxViewModel = inboxViewModel,
                             navController = navController,
                         )
                     }

@@ -166,3 +166,17 @@ fun PostReply(
         }
     }
 }
+
+fun commentReplyClickWrapper(
+    commentReplyViewModel: CommentReplyViewModel,
+    postId: Int,
+    parentCommentView: CommentView? = null,
+    postView: PostView? = null,
+    navController: NavController,
+) {
+    // Post id is mandatory, but the other two only one must be set
+    commentReplyViewModel.setPostId(postId)
+    commentReplyViewModel.setCommentParentView(parentCommentView)
+    commentReplyViewModel.setPostView(postView)
+    navController.navigate("commentReply")
+}

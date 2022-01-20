@@ -25,6 +25,8 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
+import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.comment.reply.commentReplyClickWrapper
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityLink
@@ -52,6 +54,7 @@ fun PersonProfileActivity(
     homeViewModel: HomeViewModel,
     inboxViewModel: InboxViewModel,
     commentEditViewModel: CommentEditViewModel,
+    commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
 ) {
 
@@ -95,6 +98,7 @@ fun PersonProfileActivity(
                     account = account,
                     scope = scope,
                     commentEditViewModel = commentEditViewModel,
+                    commentReplyViewModel = commentReplyViewModel,
                     postEditViewModel = postEditViewModel,
                 )
             },
@@ -139,6 +143,7 @@ fun UserTabs(
     scope: CoroutineScope,
     postViewModel: PostViewModel,
     commentEditViewModel: CommentEditViewModel,
+    commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     padding: PaddingValues,
 ) {
@@ -384,15 +389,12 @@ fun UserTabs(
                                         }
                                     },
                                     onReplyClick = { commentView ->
-                                        // To do replies from elsewhere than postView,
-                                        // you need to refetch that post view
-                                        postViewModel.replyToCommentParent = commentView
-                                        postViewModel.fetchPost(
-                                            id = commentView.post.id,
-                                            account = account,
-                                            ctx = ctx,
+                                        commentReplyClickWrapper(
+                                            commentReplyViewModel = commentReplyViewModel,
+                                            parentCommentView = commentView,
+                                            postId = commentView.post.id,
+                                            navController = navController,
                                         )
-                                        navController.navigate("commentReply")
                                     },
                                     onSaveClick = { commentView ->
                                         account?.also { acct ->

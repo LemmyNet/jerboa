@@ -132,20 +132,48 @@ fun markPrivateMessageAsReadRoutine(
 }
 
 fun createCommentRoutine(
-    comments: MutableList<CommentView>? = null,
     loading: MutableState<Boolean>,
-    form: CreateComment,
+    content: String,
+    parentCommentView: CommentView?,
+    postId: Int,
     ctx: Context,
     scope: CoroutineScope,
     navController: NavController,
     focusManager: FocusManager,
+    account: Account,
+    postViewModel: PostViewModel,
+    personProfileViewModel: PersonProfileViewModel,
+    inboxViewModel: InboxViewModel,
 ) {
     scope.launch {
         loading.value = true
+        val form = CreateComment(
+            content = content,
+            parent_id = parentCommentView?.comment?.id,
+            post_id = postId,
+            auth = account.jwt
+        )
         val commentView = createCommentWrapper(form, ctx).comment_view
-        comments?.add(0, commentView)
+
         loading.value = false
         focusManager.clearFocus()
+
+        // Add to all the views which might have your comment
+        addCommentToMutableList(postViewModel.comments, commentView)
+
+        // Maybe a back button would view this page.
+        if (account.id == personProfileViewModel.personId.value) {
+            addCommentToMutableList(personProfileViewModel.comments, commentView)
+        }
+
+        // Mark as read if you replied to it, and the grandparent is you
+        parentCommentView?.also { pcv ->
+            if (listOf(pcv.comment.parent_id, pcv.post.creator_id).contains(account.id)) {
+                val readCommentView = pcv.copy(comment = pcv.comment.copy(read = true))
+                findAndUpdateComment(inboxViewModel.replies, readCommentView)
+            }
+        }
+
         navController.navigateUp()
     }
 }
@@ -216,6 +244,13 @@ fun findAndUpdateComment(
             comments[foundIndex] = ucv
         }
     }
+}
+
+fun addCommentToMutableList(
+    comments: MutableList<CommentView>,
+    newCommentView: CommentView
+) {
+    comments.add(0, newCommentView)
 }
 
 fun findAndUpdateMention(

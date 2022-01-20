@@ -14,24 +14,23 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavController
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
-import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.isModerator
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
 import kotlinx.coroutines.launch
 
-// TODO this should probably be refactored to not rely on postViewModel, since you should be able
-//  to create comments from many other screens.
-//  It should have its own viewmodel
 @Composable
 fun CommentReplyActivity(
-    postViewModel: PostViewModel,
+    commentReplyViewModel: CommentReplyViewModel,
     accountViewModel: AccountViewModel,
     personProfileViewModel: PersonProfileViewModel,
+    postViewModel: PostViewModel,
+    inboxViewModel: InboxViewModel,
     navController: NavController,
 ) {
 
@@ -50,28 +49,27 @@ fun CommentReplyActivity(
                 CommentReplyHeader(
                     navController = navController,
                     onSendClick = {
-                        postViewModel.postView.value?.also { postView ->
-                            account?.also { account ->
-                                val parentId = postViewModel.replyToCommentParent?.comment?.id
-                                val form =
-                                    CreateComment(
-                                        content = reply,
-                                        parent_id = parentId,
-                                        post_id = postView.post.id,
-                                        auth = account.jwt
-                                    )
-                                postViewModel.createComment(form, ctx, navController, focusManager)
-                            }
+                        account?.also { acct ->
+                            commentReplyViewModel.createComment(
+                                content = reply,
+                                account = acct,
+                                ctx = ctx,
+                                navController = navController,
+                                focusManager = focusManager,
+                                personProfileViewModel = personProfileViewModel,
+                                postViewModel = postViewModel,
+                                inboxViewModel = inboxViewModel,
+                            )
                         }
                     }
                 )
             },
             content = {
-                if (postViewModel.replyLoading.value) {
+                if (commentReplyViewModel.loading.value) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 } else {
 
-                    postViewModel.replyToCommentParent?.also { commentView ->
+                    commentReplyViewModel.commentParentView.value?.also { commentView ->
                         CommentReply(
                             commentView = commentView,
                             reply = reply,
@@ -97,7 +95,7 @@ fun CommentReplyActivity(
                             isModerator(commentView.creator, postViewModel.moderators)
                         )
                     } ?: run {
-                        postViewModel.postView.value?.also { postView ->
+                        commentReplyViewModel.postView.value?.also { postView ->
                             PostReply(
                                 postView = postView,
                                 reply = reply,

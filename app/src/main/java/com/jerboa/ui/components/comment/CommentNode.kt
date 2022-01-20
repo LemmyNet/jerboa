@@ -312,11 +312,14 @@ fun CommentFooterLine(
                 },
                 account = account
             )
-            ActionBarButton(
-                icon = Icons.Filled.Reply,
-                onClick = { onReplyClick(commentView) },
-                account = account,
-            )
+            // Don't let you respond to your own comment.
+            if (commentView.creator.id != account?.id) {
+                ActionBarButton(
+                    icon = Icons.Filled.Reply,
+                    onClick = { onReplyClick(commentView) },
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = Icons.Filled.MoreVert,
                 account = account,

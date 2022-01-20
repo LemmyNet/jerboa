@@ -24,6 +24,8 @@ import com.jerboa.openLink
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
+import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.comment.reply.commentReplyClickWrapper
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
@@ -40,6 +42,7 @@ fun PostActivity(
     personProfileViewModel: PersonProfileViewModel,
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
+    commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     navController: NavController,
 ) {
@@ -108,9 +111,13 @@ fun PostActivity(
                                             ctx = ctx
                                         )
                                     },
-                                    onReplyClick = {
-                                        postViewModel.replyToCommentParent = null
-                                        navController.navigate("commentReply")
+                                    onReplyClick = { postView ->
+                                        commentReplyClickWrapper(
+                                            commentReplyViewModel = commentReplyViewModel,
+                                            postId = postView.post.id,
+                                            postView = postView,
+                                            navController = navController,
+                                        )
                                     },
                                     onPostLinkClick = { url ->
                                         openLink(url, ctx)
@@ -171,8 +178,12 @@ fun PostActivity(
                                         }
                                     },
                                     onReplyClick = { commentView ->
-                                        postViewModel.replyToCommentParent = commentView
-                                        navController.navigate("commentReply")
+                                        commentReplyClickWrapper(
+                                            commentReplyViewModel = commentReplyViewModel,
+                                            parentCommentView = commentView,
+                                            postId = commentView.post.id,
+                                            navController = navController,
+                                        )
                                     },
                                     onSaveClick = { commentView ->
                                         account?.also { acct ->
