@@ -538,7 +538,7 @@ fun HomeMoreDialog(
                     text = "View Sidebar",
                     icon = Icons.Default.Info,
                     onClick = {
-                        navController.navigate("sidebar")
+                        navController.navigate("siteSidebar")
                         onDismissRequest()
                     },
                 )

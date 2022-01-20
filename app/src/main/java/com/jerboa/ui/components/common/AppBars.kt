@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
+import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import com.jerboa.unreadCountTotal
@@ -274,6 +275,85 @@ fun InboxIconAndBadge(
             contentDescription = "TODO",
             tint = tint,
             modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun Sidebar(
+    title: String?,
+    banner: String?,
+    icon: String?,
+    content: String?,
+    published: String,
+    usersActiveMonth: Int,
+    postCount: Int,
+    commentCount: Int,
+) {
+    Column(
+        modifier = Modifier.padding(MEDIUM_PADDING),
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.BottomStart
+        ) {
+            banner?.also {
+                PictrsBannerImage(
+                    url = it, modifier = Modifier.height(PROFILE_BANNER_SIZE)
+                )
+            }
+            Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
+                icon?.also {
+                    LargerCircularIcon(icon = it)
+                }
+            }
+        }
+        title?.also {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.subtitle1
+            )
+        }
+        TimeAgo(
+            precedingString = "Created",
+            includeAgo = true,
+            published = published
+        )
+        CommentsAndPosts(
+            usersActiveMonth = usersActiveMonth,
+            postCount = postCount,
+            commentCount = commentCount,
+        )
+        content?.also {
+            MyMarkdownText(
+                markdown = it,
+                color = Muted,
+            )
+        }
+    }
+}
+
+@Composable
+fun CommentsAndPosts(
+    usersActiveMonth: Int,
+    postCount: Int,
+    commentCount: Int,
+) {
+    Row {
+        Text(
+            text = "${siFormat(usersActiveMonth)} users / month",
+            color = Muted,
+        )
+        DotSpacer()
+        Text(
+            text = "${siFormat(postCount)} posts",
+            color = Muted,
+        )
+        DotSpacer()
+        Text(
+            text = "${siFormat(commentCount)} comments",
+            color = Muted,
         )
     }
 }

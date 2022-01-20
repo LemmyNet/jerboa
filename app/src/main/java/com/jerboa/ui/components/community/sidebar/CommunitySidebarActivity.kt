@@ -1,26 +1,23 @@
-package com.jerboa.ui.components.home
+package com.jerboa.ui.components.community.sidebar
 
 import android.util.Log
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.ui.components.community.CommunityViewModel
 
 @Composable
-fun SidebarActivity(
-    siteViewModel: SiteViewModel,
+fun CommunitySidebarActivity(
+    communityViewModel: CommunityViewModel,
     navController: NavController,
 ) {
 
-    Log.d("jerboa", "got to sidebar activity")
+    Log.d("jerboa", "got to community sidebar activity")
 
-    val ctx = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val title = "${siteViewModel.siteRes?.site_view?.site?.name} Sidebar"
+    val title = "${communityViewModel.communityView?.community?.name} Sidebar"
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
@@ -31,8 +28,8 @@ fun SidebarActivity(
                 )
             },
             content = {
-                siteViewModel.siteRes?.site_view?.also {
-                    Sidebar(it)
+                communityViewModel.communityView?.also {
+                    CommunitySidebar(it)
                 }
             }
         )

@@ -4,10 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +19,7 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
@@ -108,6 +106,7 @@ fun CommunityHeader(
 
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
+    var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showSortOptions) {
         SortOptionsDialog(
@@ -132,6 +131,13 @@ fun CommunityHeader(
                 showTopOptions = false
                 onClickSortType(it)
             }
+        )
+    }
+
+    if (showMoreOptions) {
+        CommunityMoreDialog(
+            onDismissRequest = { showMoreOptions = false },
+            navController = navController,
         )
     }
 
@@ -162,6 +168,7 @@ fun CommunityHeader(
                 )
             }
             IconButton(onClick = {
+                showMoreOptions = !showMoreOptions
             }) {
                 Icon(
                     Icons.Default.MoreVert,
@@ -189,4 +196,27 @@ fun CommunityHeaderTitle(
             color = Muted,
         )
     }
+}
+
+@Composable
+fun CommunityMoreDialog(
+    onDismissRequest: () -> Unit = {},
+    navController: NavController,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                IconAndTextDrawerItem(
+                    text = "View Sidebar",
+                    icon = Icons.Default.Info,
+                    onClick = {
+                        navController.navigate("communitySidebar")
+                        onDismissRequest()
+                    },
+                )
+            }
+        },
+        buttons = {},
+    )
 }

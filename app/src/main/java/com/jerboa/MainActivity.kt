@@ -23,6 +23,7 @@ import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.list.CommunityListViewModel
+import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.*
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.inbox.InboxViewModel
@@ -203,10 +204,18 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = "sidebar",
+                        route = "siteSidebar",
                     ) {
-                        SidebarActivity(
+                        SiteSidebarActivity(
                             siteViewModel = siteViewModel,
+                            navController = navController,
+                        )
+                    }
+                    composable(
+                        route = "communitySidebar",
+                    ) {
+                        CommunitySidebarActivity(
+                            communityViewModel = communityViewModel,
                             navController = navController,
                         )
                     }
