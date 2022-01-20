@@ -1,7 +1,5 @@
 package com.jerboa.datatypes
 
-import com.jerboa.ui.components.private_message.PrivateMessage
-
 val samplePost = Post(
     id = 135129,
     name = "In a socialist world, would jobs still have probation periods ?",

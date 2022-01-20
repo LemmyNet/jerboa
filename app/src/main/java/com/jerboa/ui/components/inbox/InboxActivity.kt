@@ -27,13 +27,13 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
+import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
-import com.jerboa.ui.components.home.BottomAppBarAll
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
-import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.postClickWrapper
 import com.jerboa.ui.components.private_message.PrivateMessage
@@ -219,11 +219,13 @@ fun InboxTabs(
                     if (endOfListReached) {
                         LaunchedEffect(endOfListReached) {
                             account?.also { acct ->
-                                inboxViewModel.fetchReplies(
-                                    account = acct,
-                                    nextPage = true,
-                                    ctx = ctx,
-                                )
+                                if (inboxViewModel.replies.size > 0) {
+                                    inboxViewModel.fetchReplies(
+                                        account = acct,
+                                        nextPage = true,
+                                        ctx = ctx,
+                                    )
+                                }
                             }
                         }
                     }
@@ -359,11 +361,13 @@ fun InboxTabs(
                     if (endOfListReached) {
                         LaunchedEffect(endOfListReached) {
                             account?.also { acct ->
-                                inboxViewModel.fetchPrivateMessages(
-                                    account = acct,
-                                    nextPage = true,
-                                    ctx = ctx,
-                                )
+                                if (inboxViewModel.messages.size > 0) {
+                                    inboxViewModel.fetchPrivateMessages(
+                                        account = acct,
+                                        nextPage = true,
+                                        ctx = ctx,
+                                    )
+                                }
                             }
                         }
                     }

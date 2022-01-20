@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,17 +28,20 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
+import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
-import com.jerboa.ui.components.home.BottomAppBarAll
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.inbox.inboxClickWrapper
-import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.post.edit.postEditClickWrapper
 import com.jerboa.ui.components.post.postClickWrapper
+import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -177,10 +181,40 @@ fun UserTabs(
         ) { tabIndex ->
             when (tabIndex) {
                 UserTab.About.ordinal -> {
-                    personProfileViewModel.res?.person_view?.also {
-                        PersonProfileTopSection(
-                            personView = it
-                        )
+                    LazyColumn {
+                        item {
+                            personProfileViewModel.res?.person_view?.also {
+                                PersonProfileTopSection(
+                                    personView = it
+                                )
+                            }
+                        }
+                        personProfileViewModel.res?.moderates?.also { moderates ->
+                            if (moderates.isNotEmpty()) {
+                                item {
+                                    Text(
+                                        text = "Moderates",
+                                        style = MaterialTheme.typography.subtitle1,
+                                        modifier = Modifier.padding(MEDIUM_PADDING),
+                                    )
+                                }
+                            }
+                            items(moderates) { cmv ->
+                                CommunityLink(
+                                    community = cmv.community,
+                                    modifier = Modifier.padding(MEDIUM_PADDING),
+                                    onClick = { community ->
+                                        communityClickWrapper(
+                                            communityViewModel,
+                                            community.id,
+                                            account,
+                                            navController,
+                                            ctx = ctx,
+                                        )
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
                 UserTab.Posts.ordinal -> {
@@ -251,13 +285,15 @@ fun UserTabs(
                             personProfileViewModel.page.value == 1 &&
                             personProfileViewModel.posts.isNotEmpty(),
                         isScrolledToEnd = {
-                            personProfileViewModel.personId.value?.also {
-                                personProfileViewModel.fetchPersonDetails(
-                                    id = it,
-                                    account = account,
-                                    nextPage = true,
-                                    ctx = ctx,
-                                )
+                            if (personProfileViewModel.posts.size > 0) {
+                                personProfileViewModel.personId.value?.also {
+                                    personProfileViewModel.fetchPersonDetails(
+                                        id = it,
+                                        account = account,
+                                        nextPage = true,
+                                        ctx = ctx,
+                                    )
+                                }
                             }
                         },
                         onPersonClick = { personId ->
@@ -290,13 +326,15 @@ fun UserTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(endOfListReached) {
-                            personProfileViewModel.personId.value?.also {
-                                personProfileViewModel.fetchPersonDetails(
-                                    id = it,
-                                    account = account,
-                                    nextPage = true,
-                                    ctx = ctx,
-                                )
+                            if (personProfileViewModel.comments.size > 0) {
+                                personProfileViewModel.personId.value?.also {
+                                    personProfileViewModel.fetchPersonDetails(
+                                        id = it,
+                                        account = account,
+                                        nextPage = true,
+                                        ctx = ctx,
+                                    )
+                                }
                             }
                         }
                     }

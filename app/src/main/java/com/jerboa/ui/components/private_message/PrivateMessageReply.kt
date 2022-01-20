@@ -22,9 +22,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.ReplyTextField
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
+import com.jerboa.ui.components.common.ReplyTextField
+import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 
@@ -39,6 +40,7 @@ fun PrivateMessageReplyHeader(
                 text = "Reply",
             )
         },
+        elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(onClick = onSendClick) {
                 Icon(
@@ -85,6 +87,7 @@ fun RepliedPrivateMessagePreview() {
     RepliedPrivateMessage(privateMessageView = samplePrivateMessageView)
 }
 
+// TODO what is this doing here
 @Composable
 fun PrivateMessageReplyTextField(
     reply: String,

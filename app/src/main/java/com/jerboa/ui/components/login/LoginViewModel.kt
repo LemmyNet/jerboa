@@ -81,6 +81,8 @@ class LoginViewModel : ViewModel() {
                 current = true,
                 instance = instance,
                 jwt = jwt,
+                defaultListingType = luv.local_user.default_listing_type,
+                defaultSortType = luv.local_user.default_sort_type,
             )
 
             // Refetch the front page

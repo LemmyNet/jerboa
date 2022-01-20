@@ -22,6 +22,10 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.*
 import com.jerboa.datatypes.*
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.ActionBarButton
+import com.jerboa.ui.components.common.CommentOrPostNodeHeader
+import com.jerboa.ui.components.common.MyMarkdownText
+import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.theme.*
@@ -131,7 +135,8 @@ fun CommentNode(
             modifier = Modifier
                 .padding(
                     horizontal = LARGE_PADDING,
-                ).border(start = border)
+                )
+                .border(start = border)
         ) {
             Column(
                 modifier = Modifier.padding(start = offset2)
@@ -377,4 +382,13 @@ fun CommentOptionsDialog(
 @Composable
 fun CommentOptionsDialogPreview() {
     CommentOptionsDialog(isCreator = true, commentView = sampleCommentView)
+}
+
+@Composable
+fun calculateBorderColor(depth: Int?): Color {
+    return if (depth == null) {
+        MaterialTheme.colors.background
+    } else {
+        colorList[depth.mod(colorList.size)]
+    }
 }

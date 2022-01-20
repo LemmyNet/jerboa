@@ -15,14 +15,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.SortOptionsDialog
-import com.jerboa.SortTopOptionsDialog
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.common.SortOptionsDialog
+import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
+import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.Muted
 
@@ -69,7 +70,8 @@ fun CommunityTopSection(
                     } else {
                         Muted
                     },
-                    modifier = Modifier.height(ACTION_BAR_ICON_SIZE)
+                    modifier = Modifier
+                        .height(ACTION_BAR_ICON_SIZE)
                         .clickable { onClickFollowCommunity(communityView) }
                 )
             }
@@ -140,6 +142,7 @@ fun CommunityHeader(
                 selectedSortType = selectedSortType,
             )
         },
+        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(

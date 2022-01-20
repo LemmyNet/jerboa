@@ -2,25 +2,33 @@ package com.jerboa.ui.components.home
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.jerboa.*
-import com.jerboa.api.API
+import com.jerboa.VoteType
+import com.jerboa.closeDrawer
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.fetchInitialData
+import com.jerboa.openLink
+import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
+import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.inbox.inboxClickWrapper
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
-import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
@@ -63,10 +71,7 @@ fun HomeActivity(
                 )
             },
             drawerShape = MaterialTheme.shapes.small,
-            drawerBackgroundColor = colorShade(
-                color = MaterialTheme.colors.background,
-                factor = 1.2f
-            ),
+            drawerElevation = 2.dp,
             drawerContent = {
                 MainDrawer(
                     siteViewModel = siteViewModel,
@@ -215,11 +220,13 @@ fun MainPostListingsContent(
             homeViewModel.page.value == 1 &&
             homeViewModel.posts.isNotEmpty(),
         isScrolledToEnd = {
-            homeViewModel.fetchPosts(
-                account = account,
-                nextPage = true,
-                ctx = ctx,
-            )
+            if (homeViewModel.posts.size > 0) {
+                homeViewModel.fetchPosts(
+                    account = account,
+                    nextPage = true,
+                    ctx = ctx,
+                )
+            }
         },
         account = account,
     )
@@ -248,23 +255,11 @@ fun MainDrawer(
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
             accountViewModel.setCurrent(acct.id)
-            API.changeLemmyInstance(acct.instance)
 
-            Log.d("jerboa", "instance is ${acct.instance}")
-            Log.d("jerboa", "accounts $accounts")
-
-            // Refetch the site
-            siteViewModel.fetchSite(acct.jwt)
-
-            // Refetch the front page
-            homeViewModel.fetchPosts(
+            fetchInitialData(
                 account = acct,
-                clear = true,
-                ctx = ctx,
-            )
-            homeViewModel.fetchUnreadCounts(
-                account = acct,
-                ctx = ctx,
+                siteViewModel = siteViewModel,
+                homeViewModel = homeViewModel,
             )
 
             closeDrawer(scope, scaffoldState)

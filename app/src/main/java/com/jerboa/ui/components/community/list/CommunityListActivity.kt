@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
-import com.jerboa.getCurrentAccount
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
 

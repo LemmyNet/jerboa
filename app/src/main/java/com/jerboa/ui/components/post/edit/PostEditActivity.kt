@@ -14,7 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.db.AccountViewModel
-import com.jerboa.getCurrentAccount
+import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
@@ -88,9 +89,10 @@ fun PostEditActivity(
                     onUrlChange = { url = it },
                     formValid = { formValid = it },
                     onPickedImage = { uri ->
+                        val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             account?.also { acct ->
-                                url = uploadPictrsImage(acct, uri, ctx)
+                                url = uploadPictrsImage(acct, imageIs, ctx)
                             }
                         }
                     }

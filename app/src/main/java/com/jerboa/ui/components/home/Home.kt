@@ -20,16 +20,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.*
+import com.jerboa.colorShade
 import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.api.MyUserInfo
 import com.jerboa.db.Account
-import com.jerboa.ui.components.common.LargerCircularIcon
-import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.person.PersonName
 import com.jerboa.ui.theme.*
+import com.jerboa.unreadCountTotal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -112,7 +112,7 @@ fun DrawerContent(
 @Composable
 fun DrawerItemsMain(
     follows: List<CommunityFollowerView>? = null,
-    onClickSaved: () -> Unit = {},
+    onClickSaved: () -> Unit = {}, // TODO
     onClickProfile: () -> Unit = {},
     onClickInbox: () -> Unit = {},
     onClickListingType: (ListingType) -> Unit = {},
@@ -126,12 +126,14 @@ fun DrawerItemsMain(
     LazyColumn(
         state = listState,
     ) {
-        item {
-            IconAndTextDrawerItem(
-                text = "Subscribed",
-                icon = Icons.Default.Bookmarks,
-                onClick = { onClickListingType(ListingType.Subscribed) },
-            )
+        if (!follows.isNullOrEmpty()) {
+            item {
+                IconAndTextDrawerItem(
+                    text = "Subscribed",
+                    icon = Icons.Default.Bookmarks,
+                    onClick = { onClickListingType(ListingType.Subscribed) },
+                )
+            }
         }
         item {
             IconAndTextDrawerItem(
@@ -328,8 +330,7 @@ fun IconAndTextDrawerItem(
                         MaterialTheme.colors.background, 2f
                     )
                 } else {
-                    Color
-                        .Transparent
+                    Color.Transparent
                 }
             )
     ) {
@@ -356,43 +357,6 @@ fun IconAndTextDrawerItem(
                 modifier = Modifier.size(24.dp)
             )
         }
-    }
-}
-
-@Composable
-private fun InboxIconAndBadge(
-    iconBadgeCount: Int?,
-    icon: ImageVector,
-    tint: Color,
-    modifier: Modifier = Modifier,
-) {
-    if (iconBadgeCount !== null && iconBadgeCount > 0) {
-        BadgedBox(
-            modifier = modifier,
-            badge = {
-                Badge(
-                    content = {
-                        Text(
-                            text = iconBadgeCount.toString(),
-                        )
-                    },
-                )
-            },
-            content = {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "TODO",
-                    tint = tint,
-                )
-            },
-        )
-    } else {
-        Icon(
-            imageVector = icon,
-            contentDescription = "TODO",
-            tint = tint,
-            modifier = modifier
-        )
     }
 }
 
@@ -500,6 +464,7 @@ fun HomeHeader(
                 selectedListingType = selectedListingType,
             )
         },
+        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = {
                 scope.launch {
@@ -558,95 +523,6 @@ fun HomeHeaderPreview() {
         selectedListingType = ListingType.All,
         navController = rememberNavController(),
     )
-}
-
-@Composable
-fun BottomAppBarAll(
-    navController: NavController = rememberNavController(),
-    unreadCounts: GetUnreadCountResponse? = null,
-    onClickProfile: () -> Unit = {},
-    onClickInbox: () -> Unit = {},
-) {
-    var selectedState by remember { mutableStateOf("home") }
-    val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
-
-    BottomAppBar(
-        elevation = 10.dp,
-        backgroundColor = MaterialTheme.colors.background
-    ) {
-        BottomNavigationItem(
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = "TODO",
-                )
-            },
-            selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = Muted,
-            onClick = {
-                selectedState = "home"
-                navController.navigate("home")
-            },
-            selected = selectedState == "home"
-        )
-
-        BottomNavigationItem(
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.List,
-                    contentDescription = "TODO",
-                )
-            },
-            selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = Muted,
-            onClick = {
-                selectedState = "communityList"
-                navController.navigate("communityList")
-            },
-            selected = selectedState == "communityList"
-        )
-        BottomNavigationItem(
-            icon = {
-                InboxIconAndBadge(
-                    iconBadgeCount = totalUnreads,
-                    icon = Icons.Default.Email,
-                    tint = if (selectedState == "inbox") {
-                        MaterialTheme.colors.primary
-                    } else {
-                        Muted
-                    },
-                )
-            },
-            selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = Muted,
-            onClick = {
-                selectedState = "inbox"
-                onClickInbox()
-            },
-            selected = selectedState == "inbox"
-        )
-        BottomNavigationItem(
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "TODO",
-                )
-            },
-            selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = Muted,
-            onClick = {
-                selectedState = "personProfile"
-                onClickProfile()
-            },
-            selected = selectedState == "personProfile"
-        )
-    }
-}
-
-@Preview
-@Composable
-fun BottomAppBarAllPreview() {
-    BottomAppBarAll()
 }
 
 @Composable

@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
+import com.jerboa.ui.theme.APP_BAR_ELEVATION
 
 @Composable
 fun MyTextField(
@@ -177,6 +178,7 @@ fun LoginHeader(
                 text = "Login",
             )
         },
+        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(
                 enabled = !accounts.isNullOrEmpty(),

@@ -22,6 +22,7 @@ import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
+import com.jerboa.ui.theme.APP_BAR_ELEVATION
 
 @Composable
 fun CommunityListHeader(
@@ -36,6 +37,7 @@ fun CommunityListHeader(
                 onSearchChange = onSearchChange,
             )
         },
+        elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(
                 onClick = { // TODO

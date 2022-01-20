@@ -12,17 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.*
 import com.jerboa.datatypes.PersonViewSafe
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.samplePersonView
-import com.jerboa.ui.components.common.LargerCircularIcon
-import com.jerboa.ui.components.common.PictrsBannerImage
-import com.jerboa.ui.components.common.TimeAgo
-import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.Muted
-import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
-import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.personNameShown
+import com.jerboa.ui.components.common.*
+import com.jerboa.ui.theme.*
 
 @Composable
 fun PersonProfileTopSection(
@@ -149,6 +144,7 @@ fun PersonProfileHeader(
                 selectedSortType = selectedSortType,
             )
         },
+        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(

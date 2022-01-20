@@ -94,9 +94,6 @@ class PersonProfileViewModel : ViewModel() {
 
                 if (clear) {
                     page.value = 1
-                    posts.clear()
-                    comments.clear()
-                    res = null
                 }
 
                 changeSortType?.also {
@@ -113,6 +110,10 @@ class PersonProfileViewModel : ViewModel() {
                 )
                 val out = api.getPersonDetails(form = form.serializeToMap())
 
+                if (clear) {
+                    posts.clear()
+                    comments.clear()
+                }
                 res = out
                 posts.addAll(out.posts)
                 comments.addAll(out.comments)

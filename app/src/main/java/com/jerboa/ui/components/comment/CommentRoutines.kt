@@ -15,8 +15,8 @@ import com.jerboa.datatypes.api.*
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
+import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

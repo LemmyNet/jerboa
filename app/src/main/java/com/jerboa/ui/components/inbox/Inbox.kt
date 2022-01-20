@@ -11,9 +11,9 @@ import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.UnreadOrAll
-import com.jerboa.UnreadOrAllOptionsDialog
 import com.jerboa.db.Account
-import com.jerboa.ui.components.post.InboxViewModel
+import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
+import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.Muted
 
 fun inboxClickWrapper(
@@ -70,6 +70,7 @@ fun InboxHeader(
                 selectedUnreadOrAll = selectedUnreadOrAll,
             )
         },
+        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(

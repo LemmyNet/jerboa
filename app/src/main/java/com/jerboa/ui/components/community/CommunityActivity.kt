@@ -12,14 +12,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
-import com.jerboa.getCurrentAccount
 import com.jerboa.openLink
-import com.jerboa.ui.components.home.BottomAppBarAll
+import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.inbox.inboxClickWrapper
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
-import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
@@ -148,11 +148,13 @@ fun CommunityActivity(
                         communityViewModel.page.value == 1 &&
                         communityViewModel.posts.isNotEmpty(),
                     isScrolledToEnd = {
-                        communityViewModel.fetchPosts(
-                            account = account,
-                            nextPage = true,
-                            ctx = ctx,
-                        )
+                        if (communityViewModel.posts.size > 0) {
+                            communityViewModel.fetchPosts(
+                                account = account,
+                                nextPage = true,
+                                ctx = ctx,
+                            )
+                        }
                     },
                     onPersonClick = { personId ->
                         personClickWrapper(

@@ -30,7 +30,7 @@ class HomeViewModel : ViewModel() {
         private set
     var sortType = mutableStateOf(SortType.Active)
         private set
-    var listingType = mutableStateOf(ListingType.All)
+    var listingType = mutableStateOf(ListingType.Local)
         private set
     var unreadCountResponse by mutableStateOf<GetUnreadCountResponse?>(null)
         private set
@@ -68,24 +68,22 @@ class HomeViewModel : ViewModel() {
     }
 
     fun fetchUnreadCounts(
-        account: Account?,
+        account: Account,
         ctx: Context? = null,
     ) {
         viewModelScope.launch {
-            account?.also { account ->
-                try {
-                    val api = API.getInstance()
-                    val form = GetUnreadCount(
-                        auth = account.jwt,
-                    )
-                    Log.d(
-                        "jerboa",
-                        "Fetching unread counts: $form"
-                    )
-                    unreadCountResponse = api.getUnreadCount(form = form.serializeToMap())
-                } catch (e: Exception) {
-                    toastException(ctx = ctx, error = e)
-                }
+            try {
+                val api = API.getInstance()
+                val form = GetUnreadCount(
+                    auth = account.jwt,
+                )
+                Log.d(
+                    "jerboa",
+                    "Fetching unread counts: $form"
+                )
+                unreadCountResponse = api.getUnreadCount(form = form.serializeToMap())
+            } catch (e: Exception) {
+                toastException(ctx = ctx, error = e)
             }
         }
     }

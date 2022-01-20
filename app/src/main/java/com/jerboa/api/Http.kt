@@ -1,7 +1,6 @@
 package com.jerboa.api
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import com.jerboa.VoteType
 import com.jerboa.datatypes.*
@@ -17,6 +16,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import java.io.InputStream
 
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
@@ -262,7 +262,7 @@ suspend fun getSiteWrapper(auth: String?): GetSiteResponse {
         val form = GetSite(auth = auth)
         Log.d(
             "jerboa",
-            "Fetching site..."
+            "Fetching site: $form ..."
         )
         siteRes = api.getSite(form = form.serializeToMap())
     } catch (e: Exception) {
@@ -608,12 +608,11 @@ suspend fun createPrivateMessageWrapper(
     return createdPrivateMessage!!
 }
 
-suspend fun uploadPictrsImage(account: Account, mediaUri: Uri, ctx: Context): String {
+suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Context): String {
     var imageUrl: String? = null
     val api = API.getInstance()
     try {
         Log.d("jerboa", "Uploading image....")
-        val imageIs = ctx.contentResolver.openInputStream(mediaUri)!!
         val part = MultipartBody.Part.createFormData(
             "images[]",
             "myPic",

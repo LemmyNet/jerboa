@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.jerboa.SimpleTopAppBar
+import com.jerboa.ui.components.common.SimpleTopAppBar
 
 @Composable
 fun SidebarActivity(

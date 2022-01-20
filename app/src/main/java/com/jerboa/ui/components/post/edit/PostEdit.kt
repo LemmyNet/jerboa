@@ -16,8 +16,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.PickImage
 import com.jerboa.datatypes.PostView
+import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
@@ -34,6 +35,7 @@ fun EditPostHeader(
                 text = "Edit Post",
             )
         },
+        elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(
                 enabled = formValid,

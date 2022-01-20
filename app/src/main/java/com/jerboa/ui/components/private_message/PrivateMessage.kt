@@ -11,12 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.ActionBarButton
-import com.jerboa.MyMarkdownText
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.ActionBarButton
+import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.LARGE_PADDING
@@ -30,8 +30,8 @@ fun PrivateMessageHeader(
     onPersonClick: (personId: Int) -> Unit = {},
     myPersonId: Int,
 ) {
-    var otherPerson: PersonSafe
-    var fromOrTo: String
+    val otherPerson: PersonSafe
+    val fromOrTo: String
 
     if (isCreator(myPersonId, privateMessageView)) {
         otherPerson = privateMessageView.recipient

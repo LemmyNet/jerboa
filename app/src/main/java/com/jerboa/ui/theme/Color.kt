@@ -9,6 +9,7 @@ val Blue700 = Color(0xFF1A4A69)
 val Green200 = Color(0xFF00bc8c)
 val Green500 = Color(0xFF018564)
 val Green700 = Color(0xFF004634)
+val Yellow40 = Color(0xff7d5700)
 
 val DarkSurfaceBlue = Color(0xFF0e1d29)
 val DarkBackgroundBlue = colorShade(DarkSurfaceBlue, 1f)

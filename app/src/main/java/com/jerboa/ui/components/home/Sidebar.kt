@@ -7,14 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.DotSpacer
-import com.jerboa.MyMarkdownText
 import com.jerboa.datatypes.SiteView
 import com.jerboa.datatypes.sampleSiteView
 import com.jerboa.siFormat
-import com.jerboa.ui.components.common.LargerCircularIcon
-import com.jerboa.ui.components.common.PictrsBannerImage
-import com.jerboa.ui.components.common.TimeAgo
+import com.jerboa.ui.components.common.*
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.Muted
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE

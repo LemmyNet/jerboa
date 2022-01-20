@@ -17,17 +17,18 @@ import com.jerboa.db.AppDB
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.*
 import com.jerboa.ui.components.inbox.InboxActivity
+import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.login.LoginViewModel
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.InboxViewModel
 import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.create.CreatePostActivity
@@ -62,6 +63,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val account = getCurrentAccount(accountViewModel.allAccountSync)
+        fetchInitialData(account, siteViewModel, homeViewModel)
 
         setContent {
             JerboaTheme {

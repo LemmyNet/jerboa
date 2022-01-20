@@ -14,9 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.PickImage
-import com.jerboa.ReplyTextField
 import com.jerboa.datatypes.CommentView
+import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.common.ReplyTextField
+import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.MEDIUM_PADDING
 
 @Composable
@@ -30,6 +31,7 @@ fun CommentEditHeader(
                 text = "Edit",
             )
         },
+        elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(onClick = onSaveClick) {
                 Icon(

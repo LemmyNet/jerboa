@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.post
+package com.jerboa.ui.components.inbox
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
@@ -154,6 +154,7 @@ class InboxViewModel : ViewModel() {
         )
     }
 
+    // TODO add this
     fun markPersonMentionAsRead(
         personMentionView: PersonMentionView,
         account: Account,

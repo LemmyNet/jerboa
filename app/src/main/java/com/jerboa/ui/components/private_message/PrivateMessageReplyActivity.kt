@@ -17,10 +17,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavController
 import com.jerboa.datatypes.api.CreatePrivateMessage
 import com.jerboa.db.AccountViewModel
-import com.jerboa.getCurrentAccount
+import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
-import com.jerboa.ui.components.post.InboxViewModel
 
 @Composable
 fun PrivateMessageReplyActivity(

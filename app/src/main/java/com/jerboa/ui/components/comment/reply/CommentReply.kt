@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.comment
+package com.jerboa.ui.components.comment.reply
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
@@ -14,12 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.PickImage
-import com.jerboa.ReplyTextField
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.sampleCommentView
-import com.jerboa.isModerator
+import com.jerboa.ui.components.comment.CommentNodeHeader
+import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.common.ReplyTextField
 import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING

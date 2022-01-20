@@ -46,6 +46,7 @@ class CreatePostViewModel : ViewModel() {
         }
     }
 
+    // TODO add this
     fun fetchSuggestedTitle(url: String) {
         viewModelScope.launch {
             suggestedTitle = getSiteMetadataWrapper(url).title

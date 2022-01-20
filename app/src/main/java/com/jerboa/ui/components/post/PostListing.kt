@@ -23,9 +23,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.*
 import com.jerboa.datatypes.*
 import com.jerboa.db.Account
-import com.jerboa.ui.components.common.PictrsThumbnailImage
-import com.jerboa.ui.components.common.PictrsUrlImage
-import com.jerboa.ui.components.common.TimeAgo
+import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.home.IconAndTextDrawerItem
@@ -38,6 +36,7 @@ fun PostHeaderLine(
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     isModerator: Boolean,
+    isSameInstance: Boolean = false,
 ) {
     FlowRow(
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
@@ -57,11 +56,13 @@ fun PostHeaderLine(
 
         )
         DotSpacer()
-        postView.post.url?.also {
-            // TODO hide also if its the same instance / domain
-            Text(text = hostName(it), color = Muted)
-            DotSpacer()
+        if (!isSameInstance) {
+            postView.post.url?.also {
+                Text(text = hostName(it), color = Muted)
+                DotSpacer()
+            }
         }
+
         TimeAgo(dateStr = postView.post.published)
     }
 }
@@ -210,7 +211,7 @@ fun PostBody(
                 modifier = Modifier
                     .padding(vertical = MEDIUM_PADDING)
                     .fillMaxWidth(),
-                backgroundColor = colorShade(MaterialTheme.colors.surface, 2.5f),
+                elevation = BODY_ELEVATION,
                 content = {
                     if (fullBody) {
                         MyMarkdownText(
@@ -249,11 +250,14 @@ fun PostFooterLine(
     onEditPostClick: (postView: PostView) -> Unit = {},
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     showReply: Boolean = false,
-    myVote: Int?,
-    upvotes: Int,
-    downvotes: Int,
     account: Account?,
 ) {
+
+    // These are necessary for instant post voting
+    val score = remember { mutableStateOf(postView.counts.score) }
+    val myVote = remember { mutableStateOf(postView.my_vote) }
+    val upvotes = remember { mutableStateOf(postView.counts.upvotes) }
+    val downvotes = remember { mutableStateOf(postView.counts.downvotes) }
 
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -287,20 +291,27 @@ fun PostFooterLine(
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
-
         ) {
             VoteGeneric(
-                myVote = myVote,
-                votes = upvotes, item = postView,
+                myVote = myVote.value,
+                votes = upvotes.value,
+                item = postView,
                 type = VoteType.Upvote,
-                onVoteClick = onUpvoteClick,
+                onVoteClick = {
+                    handleInstantUpvote(myVote, score, upvotes, downvotes)
+                    onUpvoteClick(it)
+                },
                 account = account,
             )
             VoteGeneric(
-                myVote = myVote,
-                votes = downvotes, item = postView,
+                myVote = myVote.value,
+                votes = downvotes.value,
+                item = postView,
                 type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
+                onVoteClick = {
+                    handleInstantDownvote(myVote, score, upvotes, downvotes)
+                    onDownvoteClick(it)
+                },
                 account = account,
             )
             ActionBarButton(
@@ -353,9 +364,6 @@ fun CommentCountPreview() {
 fun PostFooterLinePreview() {
     PostFooterLine(
         postView = samplePostView,
-        myVote = -1,
-        upvotes = 2,
-        downvotes = 23,
         account = null,
     )
 }
@@ -422,12 +430,6 @@ fun PostListing(
     account: Account?,
 ) {
 
-    // These are necessary for instant post voting
-    val score = remember { mutableStateOf(postView.counts.score) }
-    val myVote = remember { mutableStateOf(postView.my_vote) }
-    val upvotes = remember { mutableStateOf(postView.counts.upvotes) }
-    val downvotes = remember { mutableStateOf(postView.counts.downvotes) }
-
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
@@ -445,6 +447,7 @@ fun PostListing(
                 onCommunityClick = onCommunityClick,
                 onPersonClick = onPersonClick,
                 isModerator = isModerator,
+                isSameInstance = postView.post.url?.let { hostName(it) } == account?.instance
             )
 
             //  Title + metadata
@@ -457,22 +460,13 @@ fun PostListing(
             // Footer bar
             PostFooterLine(
                 postView = postView,
-                onUpvoteClick = {
-                    handleInstantUpvote(myVote, score, upvotes, downvotes)
-                    onUpvoteClick(it)
-                },
-                onDownvoteClick = {
-                    handleInstantDownvote(myVote, score, upvotes, downvotes)
-                    onDownvoteClick(it)
-                },
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
                 onSaveClick = onSaveClick,
                 onReplyClick = onReplyClick,
                 onCommunityClick = onCommunityClick,
                 onEditPostClick = onEditPostClick,
                 showReply = showReply,
-                myVote = myVote.value,
-                upvotes = upvotes.value,
-                downvotes = downvotes.value,
                 account = account,
             )
         }
@@ -509,7 +503,7 @@ fun MetadataCard(post: Post) {
         modifier = Modifier
             .padding(vertical = MEDIUM_PADDING)
             .fillMaxWidth(),
-        backgroundColor = colorShade(MaterialTheme.colors.surface, 2.5f),
+        elevation = BODY_ELEVATION,
         content = {
             Column(
                 modifier = Modifier

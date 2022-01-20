@@ -1,12 +1,15 @@
 package com.jerboa.db
 
 import android.content.Context
+import androidx.annotation.NonNull
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.launch
 
 @Entity
@@ -16,6 +19,14 @@ data class Account(
     @ColumnInfo(name = "instance") val instance: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "jwt") val jwt: String,
+    @ColumnInfo(
+        name = "default_listing_type",
+        defaultValue = "0"
+    ) @NonNull val defaultListingType: Int,
+    @ColumnInfo(
+        name = "default_sort_type",
+        defaultValue = "0"
+    ) @NonNull val defaultSortType: Int,
 )
 
 @Dao
@@ -75,8 +86,21 @@ class AccountRepository(private val accountDao: AccountDao) {
     }
 }
 
+val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "alter table account add column default_listing_type INTEGER NOT " +
+                "NULL default 0"
+        )
+        database.execSQL(
+            "alter table account add column default_sort_type INTEGER NOT " +
+                "NULL default 0"
+        )
+    }
+}
+
 @Database(
-    version = 1,
+    version = 2,
     entities = [Account::class],
     exportSchema = true,
 )
@@ -99,6 +123,7 @@ abstract class AppDB : RoomDatabase() {
                     "jerboa"
                 )
                     .allowMainThreadQueries()
+                    .addMigrations(MIGRATION_1_2)
                     .build()
                 INSTANCE = instance
                 // return instance

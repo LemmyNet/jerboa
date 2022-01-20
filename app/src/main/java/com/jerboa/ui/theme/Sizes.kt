@@ -20,6 +20,9 @@ val POST_LINK_PIC_SIZE = 104.dp
 
 val DRAWER_ITEM_SPACING = 24.dp
 
+val APP_BAR_ELEVATION = 2.dp
+val BODY_ELEVATION = 6.dp
+
 // TODO remove all DPs from code, put here.
 
 const val ICON_THUMBNAIL_SIZE = 96

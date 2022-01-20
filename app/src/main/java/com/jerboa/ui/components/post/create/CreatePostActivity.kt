@@ -14,7 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.db.AccountViewModel
-import com.jerboa.getCurrentAccount
+import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.post.PostViewModel
 import kotlinx.coroutines.launch
@@ -84,9 +85,10 @@ fun CreatePostActivity(
                     community = communityListViewModel.selectedCommunity,
                     formValid = { formValid = it },
                     onPickedImage = { uri ->
+                        val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             account?.also { acct ->
-                                url = uploadPictrsImage(acct, uri, ctx)
+                                url = uploadPictrsImage(acct, imageIs, ctx)
                             }
                         }
                     }
