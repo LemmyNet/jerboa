@@ -21,10 +21,7 @@ import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.sampleCommunitySafe
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.PickImage
-import com.jerboa.ui.theme.APP_BAR_ELEVATION
-import com.jerboa.ui.theme.ICON_SIZE
-import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.THUMBNAIL_SIZE
+import com.jerboa.ui.theme.*
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 
@@ -81,6 +78,7 @@ fun CreatePostBody(
     community: CommunitySafe? = null,
     navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit = {},
+    suggestedTitle: String? = null,
 ) {
 
     val nameField = validatePostName(name)
@@ -122,6 +120,16 @@ fun CreatePostBody(
                 modifier = Modifier
                     .fillMaxWidth(),
             )
+        }
+        item {
+            suggestedTitle?.also {
+                Text(
+                    text = "copy suggested title: $it",
+                    style = MaterialTheme.typography.subtitle2,
+                    color = Muted,
+                    modifier = Modifier.clickable { onNameChange(it) }
+                )
+            }
         }
         item {
             PickImage(
@@ -196,11 +204,21 @@ fun CreatePostBody(
 @Preview
 @Composable
 fun CreatePostBodyPreview() {
-    CreatePostBody(name = "", body = "", url = "", community = sampleCommunitySafe)
+    CreatePostBody(
+        name = "",
+        body = "",
+        url = "",
+        community = sampleCommunitySafe,
+    )
 }
 
 @Preview
 @Composable
 fun CreatePostBodyPreviewNoCommunity() {
-    CreatePostBody(name = "", body = "", url = "")
+    CreatePostBody(
+        name = "",
+        body = "",
+        url = "",
+        suggestedTitle = "a title here...."
+    )
 }

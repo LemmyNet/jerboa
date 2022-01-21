@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.post.create
 
 import android.util.Log
+import android.util.Patterns
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.LinearProgressIndicator
@@ -80,10 +81,16 @@ fun CreatePostActivity(
                     body = body,
                     onBodyChange = { body = it },
                     url = url,
-                    onUrlChange = { url = it },
+                    onUrlChange = { cUrl ->
+                        url = cUrl
+                        if (Patterns.WEB_URL.matcher(cUrl).matches()) {
+                            createPostViewModel.fetchSuggestedTitle(cUrl)
+                        }
+                    },
                     navController = navController,
                     community = communityListViewModel.selectedCommunity,
                     formValid = { formValid = it },
+                    suggestedTitle = createPostViewModel.suggestedTitle,
                     onPickedImage = { uri ->
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {

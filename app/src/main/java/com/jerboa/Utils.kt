@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.webkit.URLUtil
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ScaffoldState
@@ -512,7 +512,7 @@ fun validatePostName(
 fun validateUrl(
     url: String,
 ): InputField {
-    return if (url.isNotEmpty() && !URLUtil.isValidUrl(url)) {
+    return if (url.isNotEmpty() && !Patterns.WEB_URL.matcher(url).matches()) {
         InputField(
             label = "Invalid Url",
             hasError = true,

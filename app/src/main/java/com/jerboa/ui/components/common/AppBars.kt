@@ -2,6 +2,8 @@ package com.jerboa.ui.components.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -290,46 +292,65 @@ fun Sidebar(
     postCount: Int,
     commentCount: Int,
 ) {
-    Column(
+    LazyColumn(
+        state = rememberLazyListState(),
         modifier = Modifier.padding(MEDIUM_PADDING),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.BottomStart
-        ) {
-            banner?.also {
-                PictrsBannerImage(
-                    url = it, modifier = Modifier.height(PROFILE_BANNER_SIZE)
-                )
-            }
-            Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
-                icon?.also {
-                    LargerCircularIcon(icon = it)
+        item {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.BottomStart
+            ) {
+                banner?.also {
+                    PictrsBannerImage(
+                        url = it, modifier = Modifier.height(PROFILE_BANNER_SIZE)
+                    )
+                }
+                Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
+                    icon?.also {
+                        LargerCircularIcon(icon = it)
+                    }
                 }
             }
         }
-        title?.also {
-            Text(
-                text = it,
-                style = MaterialTheme.typography.subtitle1
-            )
+        item {
+            Card(
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .padding(vertical = SMALL_PADDING)
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(MEDIUM_PADDING),
+                    verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+                ) {
+                    title?.also {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.subtitle1
+                        )
+                    }
+                    TimeAgo(
+                        precedingString = "Created",
+                        includeAgo = true,
+                        published = published
+                    )
+                    CommentsAndPosts(
+                        usersActiveMonth = usersActiveMonth,
+                        postCount = postCount,
+                        commentCount = commentCount,
+                    )
+                }
+            }
         }
-        TimeAgo(
-            precedingString = "Created",
-            includeAgo = true,
-            published = published
-        )
-        CommentsAndPosts(
-            usersActiveMonth = usersActiveMonth,
-            postCount = postCount,
-            commentCount = commentCount,
-        )
-        content?.also {
-            MyMarkdownText(
-                markdown = it,
-                color = Muted,
-            )
+        item {
+            content?.also {
+                MyMarkdownText(
+                    markdown = it,
+                    color = Muted,
+                )
+            }
         }
     }
 }

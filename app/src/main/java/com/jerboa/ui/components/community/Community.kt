@@ -20,10 +20,7 @@ import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.components.home.IconAndTextDrawerItem
-import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
-import com.jerboa.ui.theme.APP_BAR_ELEVATION
-import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
-import com.jerboa.ui.theme.Muted
+import com.jerboa.ui.theme.*
 
 @Composable
 fun CommunityTopSection(
@@ -50,6 +47,8 @@ fun CommunityTopSection(
             }
         }
         Column(
+            modifier = Modifier.padding(MEDIUM_PADDING),
+            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
