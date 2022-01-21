@@ -1,0 +1,1 @@
+client for Lemmy, a federated reddit alternative
