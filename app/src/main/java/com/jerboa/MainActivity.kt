@@ -91,9 +91,6 @@ class MainActivity : ComponentActivity() {
                     composable(route = "splashScreen") {
                         SplashScreenActivity(
                             navController = navController,
-                            homeViewModel = homeViewModel,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel
                         )
                     }
                     composable(route = "home") {
