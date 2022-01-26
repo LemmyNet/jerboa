@@ -1,7 +1,9 @@
 package com.jerboa.ui.components.post.edit
 
 import android.content.Context
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -19,7 +21,7 @@ class PostEditViewModel : ViewModel() {
 
     var postView = mutableStateOf<PostView?>(null)
         private set
-    var loading = mutableStateOf(false)
+    var loading by mutableStateOf(false)
         private set
 
     fun setPostView(
@@ -42,6 +44,7 @@ class PostEditViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             postView.value?.also { pv ->
+                loading = true
                 postView.value = editPostWrapper(
                     postView = pv,
                     account = account,
@@ -55,6 +58,7 @@ class PostEditViewModel : ViewModel() {
                 findAndUpdatePost(communityViewModel.posts, postView.value)
                 findAndUpdatePost(homeViewModel.posts, postView.value)
 
+                loading = false
                 navController.popBackStack()
             }
         }

@@ -28,6 +28,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 fun CommentReplyHeader(
     navController: NavController = rememberNavController(),
     onSendClick: () -> Unit = {},
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
@@ -36,11 +37,20 @@ fun CommentReplyHeader(
             )
         },
         actions = {
-            IconButton(onClick = onSendClick) {
-                Icon(
-                    imageVector = Icons.Default.Send,
-                    contentDescription = "TODO"
-                )
+            IconButton(
+                onClick = onSendClick,
+                enabled = !loading
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colors.onSurface
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Send,
+                        contentDescription = "TODO"
+                    )
+                }
             }
         },
         navigationIcon = {
@@ -96,7 +106,7 @@ fun RepliedPost(
             onPersonClick = onPersonClick,
             isModerator = isModerator,
         )
-        val text = postView.post.body.also { it } ?: run { postView.post.name }
+        val text = postView.post.body ?: run { postView.post.name }
         SelectionContainer {
             Text(text = text)
         }

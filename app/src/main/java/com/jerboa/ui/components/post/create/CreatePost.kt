@@ -30,6 +30,7 @@ fun CreatePostHeader(
     navController: NavController = rememberNavController(),
     onCreatePostClick: () -> Unit = {},
     formValid: Boolean,
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
@@ -40,14 +41,20 @@ fun CreatePostHeader(
         elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(
-                enabled = formValid,
+                enabled = formValid && !loading,
                 onClick = onCreatePostClick,
             ) {
-                // Todo add are you sure cancel dialog
-                Icon(
-                    Icons.Filled.Add,
-                    contentDescription = "TODO"
-                )
+                if (loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colors.onSurface
+                    )
+                } else {
+                    // Todo add are you sure cancel dialog
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = "TODO"
+                    )
+                }
             }
         },
         navigationIcon = {

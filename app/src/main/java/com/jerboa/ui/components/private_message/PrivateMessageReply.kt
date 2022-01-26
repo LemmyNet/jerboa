@@ -24,6 +24,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 fun PrivateMessageReplyHeader(
     navController: NavController = rememberNavController(),
     onSendClick: () -> Unit = {},
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
@@ -33,11 +34,20 @@ fun PrivateMessageReplyHeader(
         },
         elevation = APP_BAR_ELEVATION,
         actions = {
-            IconButton(onClick = onSendClick) {
-                Icon(
-                    imageVector = Icons.Default.Send,
-                    contentDescription = "TODO"
-                )
+            IconButton(
+                onClick = onSendClick,
+                enabled = !loading,
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colors.onSurface
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Send,
+                        contentDescription = "TODO"
+                    )
+                }
             }
         },
         navigationIcon = {

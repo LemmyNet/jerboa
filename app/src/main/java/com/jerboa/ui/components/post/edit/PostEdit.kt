@@ -28,6 +28,7 @@ fun EditPostHeader(
     navController: NavController = rememberNavController(),
     onEditPostClick: () -> Unit = {},
     formValid: Boolean,
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
@@ -38,14 +39,20 @@ fun EditPostHeader(
         elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(
-                enabled = formValid,
+                enabled = formValid && !loading,
                 onClick = onEditPostClick,
             ) {
-                // Todo add are you sure cancel dialog
-                Icon(
-                    Icons.Filled.Save,
-                    contentDescription = "TODO"
-                )
+                if (loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colors.onSurface
+                    )
+                } else {
+                    // Todo add are you sure cancel dialog
+                    Icon(
+                        Icons.Filled.Save,
+                        contentDescription = "TODO"
+                    )
+                }
             }
         },
         navigationIcon = {

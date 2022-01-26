@@ -48,6 +48,7 @@ fun CommentReplyActivity(
             topBar = {
                 CommentReplyHeader(
                     navController = navController,
+                    loading = commentReplyViewModel.loading.value,
                     onSendClick = {
                         account?.also { acct ->
                             commentReplyViewModel.createComment(

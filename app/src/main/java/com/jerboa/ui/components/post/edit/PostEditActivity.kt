@@ -52,6 +52,7 @@ fun PostEditActivity(
                     EditPostHeader(
                         navController = navController,
                         formValid = formValid,
+                        loading = postEditViewModel.loading,
                         onEditPostClick = {
                             account?.also { acct ->
                                 // Clean up that data
@@ -74,7 +75,7 @@ fun PostEditActivity(
                             }
                         }
                     )
-                    if (postEditViewModel.loading.value) {
+                    if (postEditViewModel.loading) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 }

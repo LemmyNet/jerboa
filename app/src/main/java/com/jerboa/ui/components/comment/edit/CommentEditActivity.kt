@@ -43,6 +43,7 @@ fun CommentEditActivity(
             topBar = {
                 CommentEditHeader(
                     navController = navController,
+                    loading = commentEditViewModel.loading.value,
                     onSaveClick = {
                         account?.also { acct ->
                             commentEditViewModel.editComment(

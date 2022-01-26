@@ -146,7 +146,7 @@ fun LoginForm(
             onValueChange = { password = it },
         )
         Button(
-            enabled = isValid,
+            enabled = isValid && !loading,
             onClick = { onClickLogin(form, instance) },
         ) {
             if (loading) {

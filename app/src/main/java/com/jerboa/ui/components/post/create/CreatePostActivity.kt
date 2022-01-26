@@ -48,6 +48,7 @@ fun CreatePostActivity(
                     CreatePostHeader(
                         navController = navController,
                         formValid = formValid,
+                        loading = createPostViewModel.loading,
                         onCreatePostClick = {
                             account?.also { acct ->
                                 communityListViewModel.selectedCommunity?.id?.also {
@@ -69,7 +70,7 @@ fun CreatePostActivity(
                             }
                         }
                     )
-                    if (createPostViewModel.loading.value) {
+                    if (createPostViewModel.loading) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 }

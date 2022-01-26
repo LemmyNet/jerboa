@@ -3,10 +3,7 @@ package com.jerboa.ui.components.comment.edit
 import android.net.Uri
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Save
@@ -24,6 +21,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 fun CommentEditHeader(
     navController: NavController = rememberNavController(),
     onSaveClick: () -> Unit = {},
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
@@ -33,11 +31,20 @@ fun CommentEditHeader(
         },
         elevation = APP_BAR_ELEVATION,
         actions = {
-            IconButton(onClick = onSaveClick) {
-                Icon(
-                    imageVector = Icons.Default.Save,
-                    contentDescription = "TODO"
-                )
+            IconButton(
+                onClick = onSaveClick,
+                enabled = !loading,
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colors.onSurface
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Save,
+                        contentDescription = "TODO"
+                    )
+                }
             }
         },
         navigationIcon = {

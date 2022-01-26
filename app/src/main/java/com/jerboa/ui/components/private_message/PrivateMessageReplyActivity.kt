@@ -44,6 +44,7 @@ fun PrivateMessageReplyActivity(
             topBar = {
                 PrivateMessageReplyHeader(
                     navController = navController,
+                    loading = inboxViewModel.privateMessageReplyLoading.value,
                     onSendClick = {
                         account?.also { account ->
                             inboxViewModel.replyToPrivateMessageView?.also { privateMessageView ->

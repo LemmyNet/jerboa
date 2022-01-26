@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class CreatePostViewModel : ViewModel() {
     var suggestedTitle by mutableStateOf<String?>(null)
-    var loading = mutableStateOf(false)
+    var loading by mutableStateOf(false)
         private set
 
     fun createPost(
@@ -29,6 +29,7 @@ class CreatePostViewModel : ViewModel() {
         postViewModel: PostViewModel,
     ) {
         viewModelScope.launch {
+            loading = true
             val postOut = createPostWrapper(
                 account = account,
                 communityId = communityId,
@@ -41,6 +42,7 @@ class CreatePostViewModel : ViewModel() {
                 id = postOut.post.id, clear = true, account = account,
                 ctx = ctx
             )
+            loading = false
             navController.popBackStack()
             navController.navigate("post")
         }
