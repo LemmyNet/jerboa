@@ -154,7 +154,7 @@ fun CommentOrPostNodeHeader(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = SMALL_PADDING)
+            .padding(vertical = LARGE_PADDING)
     ) {
         Row {
             PersonProfileLink(

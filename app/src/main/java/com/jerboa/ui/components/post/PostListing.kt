@@ -196,7 +196,7 @@ fun PostBody(
     onPostLinkClick: (url: String) -> Unit = {},
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         PostTitleBlock(post = post, onPostLinkClick = onPostLinkClick)
 
@@ -437,12 +437,12 @@ fun PostListing(
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
-            .padding(vertical = SMALL_PADDING)
+            .padding(vertical = MEDIUM_PADDING)
             .clickable { onPostClick(postView) }
     ) {
         Column(
-            modifier = Modifier.padding(MEDIUM_PADDING),
-            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+            modifier = Modifier.padding(vertical = SMALL_PADDING, horizontal = LARGE_PADDING),
+            verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
         ) {
 
             // Header

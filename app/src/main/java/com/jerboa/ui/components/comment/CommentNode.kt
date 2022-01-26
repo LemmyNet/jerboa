@@ -126,12 +126,14 @@ fun CommentNode(
 
     var viewSource by remember { mutableStateOf(false) }
 
+    val border = Border(SMALL_PADDING, borderColor)
+
     Column(
         modifier = Modifier.padding(
             start = offset
         )
     ) {
-        val border = Border(SMALL_PADDING, borderColor)
+        Divider(startIndent = offset2)
         Column(
             modifier = Modifier
                 .padding(
@@ -184,7 +186,6 @@ fun CommentNode(
                     account = account,
                 )
             }
-            Divider()
         }
     }
     node.children?.also { nodes ->
@@ -205,7 +206,7 @@ fun PostAndCommunityContextHeader(
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPostClick: (postId: Int) -> Unit = {}
 ) {
-    Column(modifier = Modifier.padding(bottom = MEDIUM_PADDING)) {
+    Column(modifier = Modifier.padding(top = LARGE_PADDING)) {
         Text(
             text = commentView.post.name,
             style = MaterialTheme.typography.subtitle1,
