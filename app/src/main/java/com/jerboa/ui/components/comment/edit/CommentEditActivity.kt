@@ -69,7 +69,9 @@ fun CommentEditActivity(
                         scope.launch {
                             account?.also { acct ->
                                 val url = uploadPictrsImage(acct, imageIs, ctx)
-                                content = appendMarkdownImage(content, url)
+                                url?.also {
+                                    content = appendMarkdownImage(content, it)
+                                }
                             }
                         }
                     },

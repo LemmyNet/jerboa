@@ -40,7 +40,7 @@ val prettyTime = PrettyTime(Locale.getDefault())
 
 val gson = Gson()
 
-const val LAUNCH_DELAY = 1500L
+const val LAUNCH_DELAY = 300L
 const val MAX_POST_TITLE_LENGTH = 200
 
 val DEFAULT_LEMMY_INSTANCES = listOf(

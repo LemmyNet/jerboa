@@ -89,7 +89,9 @@ fun CommentReplyActivity(
                                 scope.launch {
                                     account?.also { acct ->
                                         val url = uploadPictrsImage(acct, imageIs, ctx)
-                                        reply = appendMarkdownImage(reply, url)
+                                        url?.also {
+                                            reply = appendMarkdownImage(reply, it)
+                                        }
                                     }
                                 }
                             },
@@ -115,7 +117,9 @@ fun CommentReplyActivity(
                                     scope.launch {
                                         account?.also { acct ->
                                             val url = uploadPictrsImage(acct, imageIs, ctx)
-                                            reply = appendMarkdownImage(reply, url)
+                                            url?.also {
+                                                reply = appendMarkdownImage(reply, it)
+                                            }
                                         }
                                     }
                                 },

@@ -208,7 +208,7 @@ interface API {
             return api!!
         }
 
-        private fun buildApi(): API? {
+        private fun buildApi(): API {
             val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
             val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
@@ -226,7 +226,7 @@ interface API {
 suspend fun followCommunityWrapper(
     communityView: CommunityView,
     auth: String,
-): CommunityResponse {
+): CommunityResponse? {
     var communityRes: CommunityResponse? = null
     val api = API.getInstance()
 
@@ -249,10 +249,10 @@ suspend fun followCommunityWrapper(
             e.toString()
         )
     }
-    return communityRes!!
+    return communityRes
 }
 
-suspend fun getSiteWrapper(auth: String?): GetSiteResponse {
+suspend fun getSiteWrapper(auth: String?): GetSiteResponse? {
     var siteRes: GetSiteResponse? = null
     val api = API.getInstance()
 
@@ -271,10 +271,10 @@ suspend fun getSiteWrapper(auth: String?): GetSiteResponse {
             e.toString()
         )
     }
-    return siteRes!!
+    return siteRes
 }
 
-suspend fun getSiteMetadataWrapper(url: String): SiteMetadata {
+suspend fun getSiteMetadataWrapper(url: String): SiteMetadata? {
     var res: SiteMetadata? = null
     val api = API.getInstance()
 
@@ -293,7 +293,7 @@ suspend fun getSiteMetadataWrapper(url: String): SiteMetadata {
             e.toString()
         )
     }
-    return res!!
+    return res
 }
 
 suspend fun fetchPostsWrapper(
@@ -338,7 +338,7 @@ suspend fun searchWrapper(
     page: Int? = null,
     query: String,
     creatorId: Int? = null,
-): SearchResponse {
+): SearchResponse? {
     var res: SearchResponse? = null
     val api = API.getInstance()
 
@@ -362,7 +362,7 @@ suspend fun searchWrapper(
         toastException(ctx = ctx, error = e)
     }
 
-    return res!!
+    return res
 }
 
 suspend fun createPostWrapper(
@@ -372,7 +372,7 @@ suspend fun createPostWrapper(
     body: String?,
     url: String?,
     name: String,
-): PostView {
+): PostView? {
     var createdPostView: PostView? = null
     val api = API.getInstance()
 
@@ -392,7 +392,7 @@ suspend fun createPostWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return createdPostView!!
+    return createdPostView
 }
 
 suspend fun editPostWrapper(
@@ -402,7 +402,7 @@ suspend fun editPostWrapper(
     body: String?,
     url: String?,
     name: String,
-): PostView {
+): PostView? {
     var editedPostView: PostView? = null
     val api = API.getInstance()
 
@@ -422,7 +422,7 @@ suspend fun editPostWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return editedPostView!!
+    return editedPostView
 }
 
 suspend fun likePostWrapper(
@@ -430,7 +430,7 @@ suspend fun likePostWrapper(
     voteType: VoteType,
     account: Account,
     ctx: Context,
-): PostResponse {
+): PostResponse? {
     var updatedPost: PostResponse? = null
     val api = API.getInstance()
     try {
@@ -442,7 +442,7 @@ suspend fun likePostWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return updatedPost!!
+    return updatedPost
 }
 
 suspend fun likeCommentWrapper(
@@ -450,7 +450,7 @@ suspend fun likeCommentWrapper(
     voteType: VoteType,
     account: Account,
     ctx: Context,
-): CommentResponse {
+): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
     try {
@@ -462,14 +462,14 @@ suspend fun likeCommentWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return updatedComment!!
+    return updatedComment
 }
 
 suspend fun savePostWrapper(
     pv: PostView,
     account: Account,
     ctx: Context,
-): PostResponse {
+): PostResponse? {
     var updatedPost: PostResponse? = null
     val api = API.getInstance()
     try {
@@ -480,14 +480,14 @@ suspend fun savePostWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return updatedPost!!
+    return updatedPost
 }
 
 suspend fun saveCommentWrapper(
     cv: CommentView,
     account: Account,
     ctx: Context,
-): CommentResponse {
+): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
     try {
@@ -498,14 +498,14 @@ suspend fun saveCommentWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return updatedComment!!
+    return updatedComment
 }
 
 suspend fun markCommentAsReadWrapper(
     cv: CommentView,
     account: Account,
     ctx: Context,
-): CommentResponse {
+): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
     try {
@@ -516,14 +516,14 @@ suspend fun markCommentAsReadWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return updatedComment!!
+    return updatedComment
 }
 
 suspend fun markPersonMentionAsReadWrapper(
     personMentionView: PersonMentionView,
     account: Account,
     ctx: Context,
-): PersonMentionResponse {
+): PersonMentionResponse? {
     var updatedPm: PersonMentionResponse? = null
     val api = API.getInstance()
     try {
@@ -537,14 +537,14 @@ suspend fun markPersonMentionAsReadWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return updatedPm!!
+    return updatedPm
 }
 
 suspend fun markPrivateMessageAsReadWrapper(
     pm: PrivateMessageView,
     account: Account,
     ctx: Context,
-): PrivateMessageResponse {
+): PrivateMessageResponse? {
     var updatedPm: PrivateMessageResponse? = null
     val api = API.getInstance()
     try {
@@ -557,13 +557,13 @@ suspend fun markPrivateMessageAsReadWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return updatedPm!!
+    return updatedPm
 }
 
 suspend fun createCommentWrapper(
     form: CreateComment,
     ctx: Context,
-): CommentResponse {
+): CommentResponse? {
 
     var createdComment: CommentResponse? = null
     val api = API.getInstance()
@@ -573,13 +573,13 @@ suspend fun createCommentWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return createdComment!!
+    return createdComment
 }
 
 suspend fun editCommentWrapper(
     form: EditComment,
     ctx: Context,
-): CommentResponse {
+): CommentResponse? {
 
     var editedComment: CommentResponse? = null
     val api = API.getInstance()
@@ -589,13 +589,13 @@ suspend fun editCommentWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return editedComment!!
+    return editedComment
 }
 
 suspend fun createPrivateMessageWrapper(
     form: CreatePrivateMessage,
     ctx: Context,
-): PrivateMessageResponse {
+): PrivateMessageResponse? {
 
     var createdPrivateMessage: PrivateMessageResponse? = null
     val api = API.getInstance()
@@ -605,10 +605,10 @@ suspend fun createPrivateMessageWrapper(
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return createdPrivateMessage!!
+    return createdPrivateMessage
 }
 
-suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Context): String {
+suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Context): String? {
     var imageUrl: String? = null
     val api = API.getInstance()
     try {
@@ -622,11 +622,11 @@ suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Conte
         val cookie = "jwt=${account.jwt}"
         val images = api.uploadImage(url, cookie, part)
         Log.d("jerboa", "Uploading done.")
-        imageUrl = "$url/${images.files!![0].file}"
+        imageUrl = "$url/${images.files?.get(0)?.file}"
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
-    return imageUrl!!
+    return imageUrl
 }
 
 //

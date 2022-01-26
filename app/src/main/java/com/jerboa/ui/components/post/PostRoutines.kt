@@ -84,7 +84,7 @@ fun likePostRoutine(
                 val updatedPostView = likePostWrapper(
                     pv, voteType, account,
                     ctx
-                ).post_view
+                )?.post_view
                 postView.value = updatedPostView
                 posts?.also {
                     findAndUpdatePost(posts, updatedPostView)
@@ -108,7 +108,7 @@ fun savePostRoutine(
                     pv,
                     account,
                     ctx,
-                ).post_view
+                )?.post_view
                 postView.value = updatedPostView
                 posts?.also {
                     findAndUpdatePost(posts, updatedPostView)

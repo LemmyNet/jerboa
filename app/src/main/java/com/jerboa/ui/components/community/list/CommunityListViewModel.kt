@@ -34,9 +34,9 @@ class CommunityListViewModel : ViewModel() {
                 listingType = ListingType.All,
                 query = query,
                 searchType = SearchType.Communities,
-            ).communities
+            )?.communities
             communityList.clear()
-            communityList.addAll(communities)
+            communityList.addAll(communities.orEmpty())
         }
     }
 

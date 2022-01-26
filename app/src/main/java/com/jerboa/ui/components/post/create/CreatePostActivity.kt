@@ -96,7 +96,7 @@ fun CreatePostActivity(
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
                             account?.also { acct ->
-                                url = uploadPictrsImage(acct, imageIs, ctx)
+                                url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                             }
                         }
                     }

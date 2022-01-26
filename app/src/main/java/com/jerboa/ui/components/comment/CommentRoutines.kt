@@ -34,7 +34,7 @@ fun likeCommentRoutine(
             val updatedCommentView = likeCommentWrapper(
                 cv, voteType, account,
                 ctx
-            ).comment_view
+            )?.comment_view
             commentView.value = updatedCommentView
             comments?.also {
                 findAndUpdateComment(comments, updatedCommentView)
@@ -56,7 +56,7 @@ fun saveCommentRoutine(
                 cv,
                 account,
                 ctx,
-            ).comment_view
+            )?.comment_view
             commentView.value = updatedCommentView
             comments?.also {
                 findAndUpdateComment(comments, updatedCommentView)
@@ -78,7 +78,7 @@ fun markCommentAsReadRoutine(
                 cv,
                 account,
                 ctx,
-            ).comment_view
+            )?.comment_view
             commentView.value = updatedCommentView
             comments?.also {
                 findAndUpdateComment(comments, updatedCommentView)
@@ -100,7 +100,7 @@ fun markPersonMentionAsReadRoutine(
                 pmv,
                 account,
                 ctx,
-            ).person_mention_view
+            )?.person_mention_view
             personMentionView.value = updatedPmv
             mentions?.also {
                 findAndUpdateMention(mentions, updatedPmv)
@@ -122,7 +122,7 @@ fun markPrivateMessageAsReadRoutine(
                 pmv,
                 account,
                 ctx,
-            ).private_message_view
+            )?.private_message_view
             privateMessageView.value = updatedPmv
             messages?.also {
                 findAndUpdatePrivateMessage(messages, updatedPmv)
@@ -153,17 +153,19 @@ fun createCommentRoutine(
             post_id = postId,
             auth = account.jwt
         )
-        val commentView = createCommentWrapper(form, ctx).comment_view
+        val commentView = createCommentWrapper(form, ctx)?.comment_view
 
         loading.value = false
         focusManager.clearFocus()
 
         // Add to all the views which might have your comment
-        addCommentToMutableList(postViewModel.comments, commentView)
+        if (commentView != null) {
+            addCommentToMutableList(postViewModel.comments, commentView)
 
-        // Maybe a back button would view this page.
-        if (account.id == personProfileViewModel.personId.value) {
-            addCommentToMutableList(personProfileViewModel.comments, commentView)
+            // Maybe a back button would view this page.
+            if (account.id == personProfileViewModel.personId.value) {
+                addCommentToMutableList(personProfileViewModel.comments, commentView)
+            }
         }
 
         // Mark as read if you replied to it, and the grandparent is you
@@ -199,7 +201,7 @@ fun editCommentRoutine(
                 comment_id = cv.comment.id,
                 auth = account.jwt
             )
-            commentView.value = editCommentWrapper(form, ctx).comment_view
+            commentView.value = editCommentWrapper(form, ctx)?.comment_view
             loading.value = false
             focusManager.clearFocus()
 
@@ -224,8 +226,8 @@ fun createPrivateMessageRoutine(
 ) {
     scope.launch {
         loading.value = true
-        val pmView = createPrivateMessageWrapper(form, ctx).private_message_view
-        messages?.add(0, pmView)
+        val pmView = createPrivateMessageWrapper(form, ctx)?.private_message_view
+        pmView?.let { messages?.add(0, it) }
         loading.value = false
         focusManager.clearFocus()
         navController.navigateUp()

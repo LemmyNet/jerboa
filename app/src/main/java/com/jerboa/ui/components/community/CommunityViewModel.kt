@@ -77,7 +77,7 @@ class CommunityViewModel : ViewModel() {
         viewModelScope.launch {
             account?.also { acct ->
                 communityView =
-                    followCommunityWrapper(communityView = cv, auth = acct.jwt).community_view
+                    followCommunityWrapper(communityView = cv, auth = acct.jwt)?.community_view
             }
         }
     }

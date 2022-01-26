@@ -38,8 +38,9 @@ class CreatePostViewModel : ViewModel() {
                 name = name,
                 ctx = ctx,
             )
+            // TODO not sure here
             postViewModel.fetchPost(
-                id = postOut.post.id, clear = true, account = account,
+                id = postOut!!.post.id, clear = true, account = account,
                 ctx = ctx
             )
             loading = false
@@ -50,7 +51,7 @@ class CreatePostViewModel : ViewModel() {
 
     fun fetchSuggestedTitle(url: String) {
         viewModelScope.launch {
-            suggestedTitle = getSiteMetadataWrapper(url).title
+            suggestedTitle = getSiteMetadataWrapper(url)?.title
         }
     }
 }
