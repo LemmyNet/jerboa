@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.comment
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -28,7 +29,10 @@ import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.home.IconAndTextDrawerItem
-import com.jerboa.ui.theme.*
+import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.ui.theme.Muted
+import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.XXL_PADDING
 
 @Composable
 fun CommentNodeHeader(
@@ -37,6 +41,7 @@ fun CommentNodeHeader(
     score: Int,
     myVote: Int?,
     isModerator: Boolean,
+    onLongClick: () -> Unit = {},
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -48,6 +53,7 @@ fun CommentNodeHeader(
         isPostCreator = isPostCreator(commentView),
         isModerator = isModerator,
         isCommunityBanned = commentView.creator_banned_from_community,
+        onLongClick = onLongClick,
     )
 }
 
@@ -124,14 +130,17 @@ fun CommentNode(
     val upvotes = remember { mutableStateOf(node.commentView.counts.upvotes) }
     val downvotes = remember { mutableStateOf(node.commentView.counts.downvotes) }
 
+    var expanded by remember { mutableStateOf(true) }
+
     var viewSource by remember { mutableStateOf(false) }
 
     val border = Border(SMALL_PADDING, borderColor)
 
     Column(
-        modifier = Modifier.padding(
-            start = offset
-        )
+        modifier = Modifier
+            .padding(
+                start = offset
+            )
     ) {
         Divider(startIndent = offset2)
         Column(
@@ -157,54 +166,67 @@ fun CommentNode(
                     score = score.value,
                     myVote = myVote.value,
                     isModerator = isModerator(commentView.creator, moderators),
+                    onLongClick = {
+                        expanded = !expanded
+                    }
                 )
-                CommentBody(
-                    commentView = commentView,
-                    viewSource = viewSource,
-                )
-                CommentFooterLine(
-                    commentView = commentView,
-                    onUpvoteClick = {
-                        handleInstantUpvote(myVote, score, upvotes, downvotes)
-                        onUpvoteClick(it)
-                    },
-                    onDownvoteClick = {
-                        handleInstantDownvote(myVote, score, upvotes, downvotes)
-                        onDownvoteClick(it)
-                    },
-                    onViewSourceClick = {
-                        viewSource = !viewSource
-                    },
-                    onEditCommentClick = onEditCommentClick,
-                    onReplyClick = onReplyClick,
-                    onSaveClick = onSaveClick,
-                    onMarkAsReadClick = onMarkAsReadClick,
-                    showRead = showRead,
-                    myVote = myVote.value,
-                    upvotes = upvotes.value,
-                    downvotes = downvotes.value,
-                    account = account,
-                )
+                AnimatedVisibility(
+                    visible = expanded,
+                ) {
+                    Column {
+                        CommentBody(
+                            commentView = commentView,
+                            viewSource = viewSource,
+                        )
+                        CommentFooterLine(
+                            commentView = commentView,
+                            onUpvoteClick = {
+                                handleInstantUpvote(myVote, score, upvotes, downvotes)
+                                onUpvoteClick(it)
+                            },
+                            onDownvoteClick = {
+                                handleInstantDownvote(myVote, score, upvotes, downvotes)
+                                onDownvoteClick(it)
+                            },
+                            onViewSourceClick = {
+                                viewSource = !viewSource
+                            },
+                            onEditCommentClick = onEditCommentClick,
+                            onReplyClick = onReplyClick,
+                            onSaveClick = onSaveClick,
+                            onMarkAsReadClick = onMarkAsReadClick,
+                            showRead = showRead,
+                            myVote = myVote.value,
+                            upvotes = upvotes.value,
+                            downvotes = downvotes.value,
+                            account = account,
+                        )
+                    }
+                }
             }
         }
     }
-    node.children?.also { nodes ->
-        CommentNodes(
-            nodes = nodes,
-            onUpvoteClick = onUpvoteClick,
-            onDownvoteClick = onDownvoteClick,
-            onSaveClick = onSaveClick,
-            onMarkAsReadClick = onMarkAsReadClick,
-            onEditCommentClick = onEditCommentClick,
-            onPersonClick = onPersonClick,
-            onCommunityClick = onCommunityClick,
-            onPostClick = onPostClick,
-            showPostAndCommunityContext = showPostAndCommunityContext,
-            showRead = showRead,
-            onReplyClick = onReplyClick,
-            account = account,
-            moderators = moderators,
-        )
+    AnimatedVisibility(
+        visible = expanded,
+    ) {
+        node.children?.also { nodes ->
+            CommentNodes(
+                nodes = nodes,
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
+                onSaveClick = onSaveClick,
+                onMarkAsReadClick = onMarkAsReadClick,
+                onEditCommentClick = onEditCommentClick,
+                onPersonClick = onPersonClick,
+                onCommunityClick = onCommunityClick,
+                onPostClick = onPostClick,
+                showPostAndCommunityContext = showPostAndCommunityContext,
+                showRead = showRead,
+                onReplyClick = onReplyClick,
+                account = account,
+                moderators = moderators,
+            )
+        }
     }
 }
 
@@ -212,9 +234,11 @@ fun CommentNode(
 fun PostAndCommunityContextHeader(
     commentView: CommentView,
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
-    onPostClick: (postId: Int) -> Unit = {}
+    onPostClick: (postId: Int) -> Unit = {},
 ) {
-    Column(modifier = Modifier.padding(top = LARGE_PADDING)) {
+    Column(
+        modifier = Modifier.padding(top = LARGE_PADDING)
+    ) {
         Text(
             text = commentView.post.name,
             style = MaterialTheme.typography.subtitle1,

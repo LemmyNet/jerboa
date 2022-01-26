@@ -1,6 +1,8 @@
 package com.jerboa.ui.components.common
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -137,6 +139,7 @@ fun BottomAppBarAllPreview() {
     BottomAppBarAll()
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentOrPostNodeHeader(
     creator: PersonSafe,
@@ -148,6 +151,7 @@ fun CommentOrPostNodeHeader(
     isPostCreator: Boolean,
     isModerator: Boolean,
     isCommunityBanned: Boolean,
+    onLongClick: () -> Unit = {},
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -155,6 +159,10 @@ fun CommentOrPostNodeHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = LARGE_PADDING)
+            .combinedClickable(
+                onLongClick = onLongClick,
+                onClick = {},
+            )
     ) {
         Row {
             PersonProfileLink(
