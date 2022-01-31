@@ -909,6 +909,63 @@ suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Conte
 //  async blockPerson(form: BlockPerson): Promise<BlockPersonResponse> {
 //    return this.wrapper(HttpType.Post, "/user/block", form);
 //  }
+
+// /**
+// * Verify your email
+// */
+// async verifyEmail(form: VerifyEmail): Promise<VerifyEmailResponse> {
+//    return this.wrapper(HttpType.Post, "/user/verify_email", form);
+// }
+// }
+/**
+ * Get a list of banned users
+ */
+// async getBannedPersons(
+// form: GetBannedPersons
+// ): Promise<BannedPersonsResponse> {
+//    return this.wrapper(HttpType.Get, "/user/banned", form);
+// }
+// }
+
+// /**
+// * Get the unread registration applications count.
+// */
+// async getUnreadRegistrationApplicationCount(
+// form: GetUnreadRegistrationApplicationCount
+// ): Promise<GetUnreadRegistrationApplicationCountResponse> {
+//    return this.wrapper(
+//        HttpType.Get,
+//        "/admin/registration_application/count",
+//        form
+//    );
+// }
+//
+// /**
+// * List the unread registration applications.
+// */
+// async listRegistrationApplications(
+// form: ListRegistrationApplications
+// ): Promise<ListRegistrationApplicationsResponse> {
+//    return this.wrapper(
+//        HttpType.Get,
+//        "/admin/registration_application/list",
+//        form
+//    );
+// }
+//
+// /**
+// * Approve a registration application
+// */
+// async approveRegistrationApplication(
+// form: ApproveRegistrationApplication
+// ): Promise<RegistrationApplicationResponse> {
+//    return this.wrapper(
+//        HttpType.Put,
+//        "/admin/registration_application/approve",
+//        form
+//    );
+// }
+// }
 //
 //  /**
 //   * Fetch a Captcha.

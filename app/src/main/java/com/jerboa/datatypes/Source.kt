@@ -15,6 +15,8 @@ data class LocalUserSettings(
     val show_scores: Boolean,
     val show_read_posts: Boolean,
     val show_new_post_notifs: Boolean,
+    val email_verified: Boolean,
+    val accepted_application: Boolean,
 )
 
 data class PersonSafe(
@@ -52,6 +54,10 @@ data class Site(
     val community_creation_admin_only: Boolean,
     val icon: String?,
     val banner: String?,
+    val require_email_verification: Boolean,
+    val require_application: Boolean,
+    val application_question: String?,
+    val private_instance: Boolean,
 )
 
 data class PrivateMessage(
@@ -344,3 +350,12 @@ data class PictrsImages(
     val msg: String,
     val files: List<PictrsImage>?,
 )
+
+// export interface RegistrationApplication {
+//    id: number;
+//    local_user_id: number;
+//    answer: string;
+//    admin_id?: number;
+//    deny_reason?: string;
+//    published: string;
+// }

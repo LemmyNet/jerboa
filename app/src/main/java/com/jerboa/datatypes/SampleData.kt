@@ -367,7 +367,11 @@ val sampleSite = Site(
     enable_nsfw = true,
     community_creation_admin_only = true,
     icon = "https://lemmy.ml/pictrs/image/LqURxPzFNW.jpg",
-    banner = "https://lemmy.ml/pictrs/image/386rk5OYWS.jpg"
+    banner = "https://lemmy.ml/pictrs/image/386rk5OYWS.jpg",
+    require_email_verification = false,
+    require_application = false,
+    application_question = null,
+    private_instance = false,
 )
 
 val sampleSiteAggregates = SiteAggregates(

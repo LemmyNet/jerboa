@@ -33,7 +33,10 @@ import org.ocpsoft.prettytime.PrettyTime
 import java.io.InputStream
 import java.net.URL
 import java.text.DecimalFormat
+import java.time.Instant
 import java.util.*
+import kotlin.math.log10
+import kotlin.math.max
 import kotlin.math.pow
 
 val prettyTime = PrettyTime(Locale.getDefault())
@@ -136,7 +139,7 @@ fun buildCommentsTree(
         }
     }
 
-    return sortNodes(tree)
+    return tree
 }
 
 fun setDepth(node: CommentNodeData, i: Int = 0) {
@@ -466,8 +469,27 @@ private fun DrawScope.drawEndBorder(
     )
 }
 
-fun sortNodes(nodes: List<CommentNodeData>): List<CommentNodeData> {
-    return nodes.sortedBy { it.commentView.comment.deleted || it.commentView.comment.removed }
+fun sortNodes(nodes: List<CommentNodeData>, sortType: SortType = SortType.New): List<CommentNodeData> {
+    val afterRank = when (sortType) {
+        SortType.Hot -> nodes.sortedByDescending {
+            hotRank(
+                it.commentView.counts.score,
+                it.commentView.comment.published
+            )
+        }
+        else -> nodes
+    }
+    return afterRank.sortedBy { it.commentView.comment.deleted || it.commentView.comment.removed }
+}
+
+fun hotRank(score: Int, dateStr: String): Double {
+    // Rank = ScaleFactor * sign(Score) * log(1 + abs(Score)) / (Time + 2)^Gravity
+    val date = Date.from(Instant.parse(dateStr + "Z"))
+    val now = Date()
+
+    val hoursElapsed = (now.time - date.time) / 36e5
+
+    return (10000 * log10(max(1.0, 3 + score.toDouble()))) / (hoursElapsed + 2).pow(1.8)
 }
 
 fun isPostCreator(commentView: CommentView): Boolean {

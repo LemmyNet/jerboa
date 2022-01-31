@@ -208,7 +208,7 @@ fun InboxTabs(
             when (tabIndex) {
                 InboxTab.Replies.ordinal -> {
 
-                    val nodes = sortNodes(commentsToFlatNodes(inboxViewModel.replies))
+                    val nodes = commentsToFlatNodes(inboxViewModel.replies)
 
                     val listState = rememberLazyListState()
                     val loading = inboxViewModel.loading.value &&

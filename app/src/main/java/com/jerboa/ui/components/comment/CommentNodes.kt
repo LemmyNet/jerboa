@@ -6,6 +6,7 @@ import com.jerboa.CommentNodeData
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.CommunitySafe
+import com.jerboa.datatypes.SortType
 import com.jerboa.db.Account
 import com.jerboa.sortNodes
 
@@ -27,7 +28,7 @@ fun CommentNodes(
     showRead: Boolean = false,
 ) {
     Column {
-        sortNodes(nodes).forEach { node ->
+        sortNodes(nodes, SortType.Hot).forEach { node ->
             CommentNode(
                 node = node,
                 onUpvoteClick = onUpvoteClick,

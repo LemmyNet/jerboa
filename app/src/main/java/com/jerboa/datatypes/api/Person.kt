@@ -14,13 +14,14 @@ data class Login(
  */
 data class Register(
     val username: String,
-    val email: String,
+    val email: String?,
     val password: String?,
     val password_verify: String,
     val show_nsfw: Boolean,
-    val captcha_uuid: String,
+    val captcha_uuid: String?,
     val captcha_answer: String?,
     val honeypot: String?,
+    val answer: String?,
 )
 
 // data class GetCaptcha ()
@@ -68,7 +69,9 @@ data class ChangePassword(
  * The `jwt` String should be stored and used anywhere `auth` is called for.
  */
 data class LoginResponse(
-    val jwt: String,
+    val jwt: String?,
+    val verify_email_sent: Boolean,
+    val registration_created: Boolean,
 )
 
 data class GetPersonDetails(
@@ -158,6 +161,18 @@ data class DeleteAccount(
 
 data class PasswordReset(
     val email: String,
+)
+
+data class VerifyEmail(
+    val token: String,
+)
+
+data class GetBannedPersons(
+    val auth: String,
+)
+
+data class BannedPersonsResponse(
+    val banned: List<PersonViewSafe>,
 )
 
 // data class PasswordResetResponse ()

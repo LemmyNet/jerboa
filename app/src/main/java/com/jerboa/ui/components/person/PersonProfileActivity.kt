@@ -318,7 +318,7 @@ fun UserTabs(
                     )
                 }
                 UserTab.Comments.ordinal -> {
-                    val nodes = sortNodes(commentsToFlatNodes(personProfileViewModel.comments))
+                    val nodes = commentsToFlatNodes(personProfileViewModel.comments)
 
                     val listState = rememberLazyListState()
                     val loading = personProfileViewModel.loading.value &&

@@ -31,6 +31,7 @@ data class GetModlog(
     val community_id: Int?,
     val page: Int?,
     val limit: Int?,
+    val auth: String?,
 )
 
 data class GetModlogResponse(
@@ -56,6 +57,10 @@ data class CreateSite(
     val open_registration: Boolean?,
     val enable_nsfw: Boolean?,
     val community_creation_admin_only: Boolean?,
+    val require_email_verification: Boolean?,
+    val require_application: Boolean?,
+    val application_question: String?,
+    val private_instance: Boolean?,
     val auth: String?,
 )
 
@@ -69,6 +74,10 @@ data class EditSite(
     val open_registration: Boolean?,
     val enable_nsfw: Boolean?,
     val community_creation_admin_only: Boolean?,
+    val require_email_verification: Boolean?,
+    val require_application: Boolean?,
+    val application_question: String?,
+    val private_instance: Boolean?,
     val auth: String?,
 )
 
@@ -135,3 +144,36 @@ data class ResolveObjectResponse(
     val community: CommunityView?,
     val person: PersonViewSafe?,
 )
+
+// export interface ListRegistrationApplications {
+//    /**
+//     * Only shows the unread applications (IE those without an admin actor)
+//     */
+//    unread_only?: boolean;
+//    page?: number;
+//    limit?: number;
+//    auth: string;
+// }
+//
+// export interface ListRegistrationApplicationsResponse {
+//    registration_applications: RegistrationApplicationView[];
+// }
+//
+// export interface ApproveRegistrationApplication {
+//    id: number;
+//    approve: boolean;
+//    deny_reason?: string;
+//    auth: string;
+// }
+//
+// export interface RegistrationApplicationResponse {
+//    registration_application: RegistrationApplicationView;
+// }
+//
+// export interface GetUnreadRegistrationApplicationCount {
+//    auth: string;
+// }
+//
+// export interface GetUnreadRegistrationApplicationCountResponse {
+//    registration_applications: number;
+// }

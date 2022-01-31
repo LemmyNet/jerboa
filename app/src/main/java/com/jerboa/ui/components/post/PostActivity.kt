@@ -16,11 +16,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.jerboa.VoteType
-import com.jerboa.buildCommentsTree
+import com.jerboa.*
+import com.jerboa.datatypes.SortType
 import com.jerboa.db.AccountViewModel
-import com.jerboa.isModerator
-import com.jerboa.openLink
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
@@ -53,7 +51,7 @@ fun PostActivity(
     val listState = rememberLazyListState()
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
-    val commentNodes = buildCommentsTree(postViewModel.comments)
+    val commentNodes = sortNodes(buildCommentsTree(postViewModel.comments), SortType.Hot)
 
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = postViewModel.loading && postViewModel

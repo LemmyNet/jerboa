@@ -44,7 +44,7 @@ class LoginViewModel : ViewModel() {
             try {
                 loading = true
                 try {
-                    jwt = api.login(form = form).jwt
+                    jwt = api.login(form = form).jwt!! // TODO this needs to be checked,
                 } catch (e: java.net.UnknownHostException) {
                     loading = false
                     val msg = "$instance is not a Lemmy Instance"
