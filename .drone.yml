@@ -1,0 +1,19 @@
+---
+kind: pipeline
+name: amd64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+
+  - name: check formatting
+    image: gradle
+    commands:
+      - ./gradlew ktlintCheck
+
+  - name: build the project
+    image: gradle
+    commands: 
+      - ./gradlew assembleDebug
