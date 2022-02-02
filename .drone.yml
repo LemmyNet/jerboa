@@ -9,11 +9,13 @@ platform:
 steps:
 
   - name: check formatting
+    user: root
     image: circleci/android:api-30-node
     commands:
       - ./gradlew ktlintCheck
 
   - name: build the project
+    user: root
     image: circleci/android:api-30-node
     commands: 
       - ./gradlew assembleDebug
