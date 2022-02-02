@@ -23,7 +23,13 @@
     ·
     <a href="https://github.com/dessalines/jerboa/blob/main/RELEASES.md">Releases</a>
   </p>
+  <p align="center">
+    <a href="https://f-droid.org/packages/com.jerboa"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"></a>
+    <a href="https://play.google.com/store/apps/details?id=com.jerboa"><img src="https://cdn.rawgit.com/steverichey/google-play-badge-svg/master/img/en_get.svg" height="80"></a>
+    <a href="https://github.com/dessalines/jerboa/releases/latest"><img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="80"></a>
+  </p>
 </p>
+
 
 ## About Jerboa
 
@@ -69,7 +75,8 @@ Jerboa is made by Lemmy's developers, and is free, open-source software, meaning
 ## Contact
 
 - [Mastodon](https://mastodon.social/@LemmyDev)
-- [Matrix](https://matrix.to/#/#lemmy:matrix.org)
+- [Jerboa dev chat](https://matrix.to/#/#jerboa-dev:matrix.org)
+- [Lemmy chat](https://matrix.to/#/#lemmy:matrix.org)
 
 ## Credits
 
