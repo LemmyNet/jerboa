@@ -35,7 +35,7 @@ fun TimeAgo(
         updated?.also {
             val updatedPretty = dateStringToPretty(it, includeAgo)
 
-                DotSpacer(SMALL_PADDING)
+            DotSpacer(SMALL_PADDING)
             Text(
                 text = "($updatedPretty)",
                 color = Muted,
