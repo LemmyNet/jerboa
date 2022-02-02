@@ -9,6 +9,7 @@ import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.prettyTime
 import com.jerboa.prettyTimeShortener
 import com.jerboa.ui.theme.Muted
+import com.jerboa.ui.theme.SMALL_PADDING
 import java.time.Instant
 import java.util.*
 
@@ -34,7 +35,7 @@ fun TimeAgo(
         updated?.also {
             val updatedPretty = dateStringToPretty(it, includeAgo)
 
-            DotSpacer()
+                DotSpacer(SMALL_PADDING)
             Text(
                 text = "($updatedPretty)",
                 color = Muted,
