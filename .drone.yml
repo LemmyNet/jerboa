@@ -9,11 +9,11 @@ platform:
 steps:
 
   - name: check formatting
-    image: gradle
+    image: circleci/android
     commands:
       - ./gradlew ktlintCheck
 
   - name: build the project
-    image: gradle
+    image: circleci/android
     commands: 
       - ./gradlew assembleDebug
