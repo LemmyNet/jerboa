@@ -54,6 +54,7 @@ fun SimpleTopAppBar(
 fun BottomAppBarAll(
     navController: NavController = rememberNavController(),
     unreadCounts: GetUnreadCountResponse? = null,
+    onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
 ) {
@@ -118,6 +119,21 @@ fun BottomAppBarAll(
         BottomNavigationItem(
             icon = {
                 Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "TODO",
+                )
+            },
+            selectedContentColor = MaterialTheme.colors.primary,
+            unselectedContentColor = Muted,
+            onClick = {
+                selectedState = "saved"
+                onClickSaved()
+            },
+            selected = selectedState == "saved"
+        )
+        BottomNavigationItem(
+            icon = {
+                Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = "TODO",
                 )
@@ -139,6 +155,7 @@ fun BottomAppBarAllPreview() {
     BottomAppBarAll(
         onClickInbox = {},
         onClickProfile = {},
+        onClickSaved = {},
     )
 }
 
