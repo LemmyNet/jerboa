@@ -25,6 +25,8 @@ import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.post.edit.postEditClickWrapper
 import com.jerboa.ui.components.post.postClickWrapper
+import com.jerboa.ui.components.report.CreateReportViewModel
+import com.jerboa.ui.components.report.postReportClickWrapper
 
 @Composable
 fun CommunityActivity(
@@ -36,6 +38,7 @@ fun CommunityActivity(
     homeViewModel: HomeViewModel,
     inboxViewModel: InboxViewModel,
     postEditViewModel: PostEditViewModel,
+    createReportViewModel: CreateReportViewModel,
 ) {
 
     Log.d("jerboa", "got to community activity")
@@ -135,6 +138,13 @@ fun CommunityActivity(
                         postEditClickWrapper(
                             postEditViewModel,
                             postView,
+                            navController,
+                        )
+                    },
+                    onReportClick = { postView ->
+                        postReportClickWrapper(
+                            createReportViewModel,
+                            postView.post.id,
                             navController,
                         )
                     },

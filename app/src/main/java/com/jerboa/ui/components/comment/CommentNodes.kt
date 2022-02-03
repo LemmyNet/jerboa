@@ -19,6 +19,7 @@ fun CommentNodes(
     onSaveClick: (commentView: CommentView) -> Unit = {},
     onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
     onEditCommentClick: (commentView: CommentView) -> Unit = {},
+    onReportClick: (commentView: CommentView) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPostClick: (postId: Int) -> Unit = {},
@@ -42,6 +43,7 @@ fun CommentNodes(
                 onCommunityClick = onCommunityClick,
                 onPostClick = onPostClick,
                 onEditCommentClick = onEditCommentClick,
+                onReportClick = onReportClick,
                 showPostAndCommunityContext = showPostAndCommunityContext,
                 showRead = showRead,
             )

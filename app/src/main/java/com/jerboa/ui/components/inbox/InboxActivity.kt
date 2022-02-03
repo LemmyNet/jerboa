@@ -37,6 +37,8 @@ import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.postClickWrapper
 import com.jerboa.ui.components.private_message.PrivateMessage
+import com.jerboa.ui.components.report.CreateReportViewModel
+import com.jerboa.ui.components.report.commentReportClickWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -51,6 +53,7 @@ fun InboxActivity(
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
+    createReportViewModel: CreateReportViewModel,
 ) {
 
     Log.d("jerboa", "got to inbox activity")
@@ -114,6 +117,7 @@ fun InboxActivity(
                     postViewModel = postViewModel,
                     communityViewModel = communityViewModel,
                     homeViewModel = homeViewModel,
+                    createReportViewModel = createReportViewModel,
                     ctx = ctx,
                     account = account,
                     scope = scope,
@@ -164,6 +168,7 @@ fun InboxTabs(
     postViewModel: PostViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
+    createReportViewModel: CreateReportViewModel,
     padding: PaddingValues,
 ) {
     val tabTitles = InboxTab.values().map { it.toString() }
@@ -288,6 +293,13 @@ fun InboxTabs(
                                         commentEditClickWrapper(
                                             commentEditViewModel,
                                             commentView,
+                                            navController,
+                                        )
+                                    },
+                                    onReportClick = { commentView ->
+                                        commentReportClickWrapper(
+                                            createReportViewModel,
+                                            commentView.comment.id,
                                             navController,
                                         )
                                     },

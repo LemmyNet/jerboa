@@ -35,6 +35,8 @@ import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.post.edit.postEditClickWrapper
 import com.jerboa.ui.components.post.postClickWrapper
+import com.jerboa.ui.components.report.CreateReportViewModel
+import com.jerboa.ui.components.report.postReportClickWrapper
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -48,6 +50,7 @@ fun HomeActivity(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     postEditViewModel: PostEditViewModel,
+    createReportViewModel: CreateReportViewModel,
 ) {
 
     Log.d("jerboa", "got to home activity")
@@ -97,6 +100,7 @@ fun HomeActivity(
                     personProfileViewModel = personProfileViewModel,
                     postViewModel = postViewModel,
                     postEditViewModel = postEditViewModel,
+                    createReportViewModel = createReportViewModel,
                     account = account,
                     ctx = ctx,
                     navController = navController,
@@ -145,6 +149,7 @@ fun MainPostListingsContent(
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
     postEditViewModel: PostEditViewModel,
+    createReportViewModel: CreateReportViewModel,
     account: Account?,
     ctx: Context,
     navController: NavController,
@@ -192,6 +197,13 @@ fun MainPostListingsContent(
             postEditClickWrapper(
                 postEditViewModel,
                 postView,
+                navController,
+            )
+        },
+        onReportClick = { postView ->
+            postReportClickWrapper(
+                createReportViewModel,
+                postView.post.id,
                 navController,
             )
         },

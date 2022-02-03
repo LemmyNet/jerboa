@@ -252,6 +252,7 @@ fun PostFooterLine(
     onReplyClick: (postView: PostView) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
     onEditPostClick: (postView: PostView) -> Unit = {},
+    onReportClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     showReply: Boolean = false,
     account: Account?,
@@ -276,6 +277,10 @@ fun PostFooterLine(
             onCommunityClick = {
                 showMoreOptions = false
                 onCommunityClick(postView.community)
+            },
+            onReportClick = {
+                showMoreOptions = false
+                onReportClick(postView)
             },
             isCreator = account?.id == postView.creator.id,
         )
@@ -369,6 +374,7 @@ fun PostFooterLinePreview() {
     PostFooterLine(
         postView = samplePostView,
         account = null,
+        onReportClick = {},
     )
 }
 
@@ -379,7 +385,8 @@ fun PreviewPostListing() {
         postView = samplePostView,
         fullBody = true,
         account = null,
-        isModerator = true
+        isModerator = true,
+        onReportClick = {},
     )
 }
 
@@ -391,6 +398,7 @@ fun PreviewLinkPostListing() {
         fullBody = true,
         account = null,
         isModerator = false,
+        onReportClick = {},
     )
 }
 
@@ -402,6 +410,7 @@ fun PreviewImagePostListing() {
         fullBody = true,
         account = null,
         isModerator = false,
+        onReportClick = {},
     )
 }
 
@@ -413,6 +422,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         fullBody = true,
         account = null,
         isModerator = true,
+        onReportClick = {},
     )
 }
 
@@ -428,6 +438,7 @@ fun PostListing(
     onSaveClick: (postView: PostView) -> Unit = {},
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onEditPostClick: (postView: PostView) -> Unit = {},
+    onReportClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit = {},
     showReply: Boolean = false,
     isModerator: Boolean,
@@ -470,6 +481,7 @@ fun PostListing(
                 onReplyClick = onReplyClick,
                 onCommunityClick = onCommunityClick,
                 onEditPostClick = onEditPostClick,
+                onReportClick = onReportClick,
                 showReply = showReply,
                 account = account,
             )
@@ -533,6 +545,7 @@ fun PostOptionsDialog(
     onDismissRequest: () -> Unit = {},
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onEditPostClick: () -> Unit = {},
+    onReportClick: () -> Unit,
     isCreator: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
@@ -557,6 +570,13 @@ fun PostOptionsDialog(
                         onDismissRequest()
                     }
                 )
+                if (!isCreator) {
+                    IconAndTextDrawerItem(
+                        text = "Report Post",
+                        icon = Icons.Default.Flag,
+                        onClick = onReportClick,
+                    )
+                }
                 if (isCreator) {
                     IconAndTextDrawerItem(
                         text = "Edit",
@@ -573,5 +593,7 @@ fun PostOptionsDialog(
 @Preview
 @Composable
 fun PostOptionsDialogPreview() {
-    PostOptionsDialog(postView = samplePostView, isCreator = true)
+    PostOptionsDialog(
+        postView = samplePostView, isCreator = true, onReportClick = {},
+    )
 }

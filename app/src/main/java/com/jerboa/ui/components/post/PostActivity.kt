@@ -32,6 +32,9 @@ import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.post.edit.postEditClickWrapper
+import com.jerboa.ui.components.report.CreateReportViewModel
+import com.jerboa.ui.components.report.commentReportClickWrapper
+import com.jerboa.ui.components.report.postReportClickWrapper
 
 @Composable
 fun PostActivity(
@@ -42,6 +45,7 @@ fun PostActivity(
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
+    createReportViewModel: CreateReportViewModel,
     navController: NavController,
 ) {
 
@@ -145,6 +149,13 @@ fun PostActivity(
                                             navController,
                                         )
                                     },
+                                    onReportClick = { postView ->
+                                        postReportClickWrapper(
+                                            createReportViewModel,
+                                            postView.post.id,
+                                            navController,
+                                        )
+                                    },
                                     showReply = true,
                                     account = account,
                                     isModerator = isModerator(postView.creator, postViewModel.moderators)
@@ -205,6 +216,13 @@ fun PostActivity(
                                         commentEditClickWrapper(
                                             commentEditViewModel,
                                             commentView,
+                                            navController,
+                                        )
+                                    },
+                                    onReportClick = { commentView ->
+                                        commentReportClickWrapper(
+                                            createReportViewModel,
+                                            commentView.comment.id,
                                             navController,
                                         )
                                     },

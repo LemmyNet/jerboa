@@ -176,6 +176,18 @@ interface API {
     suspend fun getSiteMetadata(@QueryMap form: Map<String, String>): GetSiteMetadataResponse
 
     /**
+     * Report a comment.
+     */
+    @POST("comment/report")
+    suspend fun createCommentReport(@Body form: CreateCommentReport): CommentReportResponse
+
+    /**
+     * Report a post.
+     */
+    @POST("post/report")
+    suspend fun createPostReport(@Body form: CreatePostReport): PostReportResponse
+
+    /**
      * Upload an image.
      */
     @Multipart
@@ -608,6 +620,38 @@ suspend fun createPrivateMessageWrapper(
     return createdPrivateMessage
 }
 
+suspend fun createCommentReportWrapper(
+    form: CreateCommentReport,
+    ctx: Context,
+): CommentReportResponse? {
+
+    var createdReport: CommentReportResponse? = null
+    val api = API.getInstance()
+
+    try {
+        createdReport = api.createCommentReport(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return createdReport
+}
+
+suspend fun createPostReportWrapper(
+    form: CreatePostReport,
+    ctx: Context,
+): PostReportResponse? {
+
+    var createdReport: PostReportResponse? = null
+    val api = API.getInstance()
+
+    try {
+        createdReport = api.createPostReport(form)
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return createdReport
+}
+
 suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Context): String? {
     var imageUrl: String? = null
     val api = API.getInstance()
@@ -788,12 +832,6 @@ suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Conte
 //
 //
 //
-//  /**
-//   * Report a post.
-//   */
-//  async createPostReport(form: CreatePostReport): Promise<PostReportResponse> {
-//    return this.wrapper(HttpType.Post, "/post/report", form);
-//  }
 //
 //  /**
 //   * Resolve a post report. Only a mod can do this.
@@ -840,14 +878,6 @@ suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Conte
 //    return this.wrapper(HttpType.Get, "/comment/list", form);
 //  }
 //
-//  /**
-//   * Report a comment.
-//   */
-//  async createCommentReport(
-//  form: CreateCommentReport
-//  ): Promise<CommentReportResponse> {
-//    return this.wrapper(HttpType.Post, "/comment/report", form);
-//  }
 //
 //  /**
 //   * Resolve a comment report. Only a mod can do this.

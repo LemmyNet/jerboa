@@ -111,6 +111,7 @@ fun CommentNode(
     onPersonClick: (personId: Int) -> Unit = {},
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPostClick: (postId: Int) -> Unit = {},
+    onReportClick: (commentView: CommentView) -> Unit,
     showPostAndCommunityContext: Boolean = false,
     showRead: Boolean = false,
     account: Account?,
@@ -195,6 +196,7 @@ fun CommentNode(
                             onReplyClick = onReplyClick,
                             onSaveClick = onSaveClick,
                             onMarkAsReadClick = onMarkAsReadClick,
+                            onReportClick = onReportClick,
                             showRead = showRead,
                             myVote = myVote.value,
                             upvotes = upvotes.value,
@@ -272,6 +274,7 @@ fun CommentFooterLine(
     onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
     onViewSourceClick: () -> Unit = {},
     onEditCommentClick: (commentView: CommentView) -> Unit = {},
+    onReportClick: (commentView: CommentView) -> Unit,
     showRead: Boolean = false,
     myVote: Int?,
     upvotes: Int,
@@ -292,6 +295,10 @@ fun CommentFooterLine(
             onEditCommentClick = {
                 showMoreOptions = false
                 onEditCommentClick(commentView)
+            },
+            onReportClick = {
+                showMoreOptions = false
+                onReportClick(commentView)
             },
             isCreator = account?.id == commentView.creator.id,
         )
@@ -377,6 +384,7 @@ fun CommentOptionsDialog(
     onDismissRequest: () -> Unit = {},
     onViewSourceClick: () -> Unit = {},
     onEditCommentClick: () -> Unit = {},
+    onReportClick: () -> Unit = {},
     isCreator: Boolean,
     commentView: CommentView,
 ) {
@@ -402,6 +410,13 @@ fun CommentOptionsDialog(
                         onDismissRequest()
                     }
                 )
+                if (!isCreator) {
+                    IconAndTextDrawerItem(
+                        text = "Report Comment",
+                        icon = Icons.Default.Flag,
+                        onClick = onReportClick,
+                    )
+                }
                 if (isCreator) {
                     IconAndTextDrawerItem(
                         text = "Edit",
