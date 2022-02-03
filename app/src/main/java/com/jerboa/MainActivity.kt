@@ -38,6 +38,9 @@ import com.jerboa.ui.components.post.create.CreatePostViewModel
 import com.jerboa.ui.components.post.edit.PostEditActivity
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.private_message.PrivateMessageReplyActivity
+import com.jerboa.ui.components.report.CreateReportViewModel
+import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
+import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.theme.JerboaTheme
 
 class JerboaApplication : Application() {
@@ -59,6 +62,7 @@ class MainActivity : ComponentActivity() {
     private val commentReplyViewModel by viewModels<CommentReplyViewModel>()
     private val commentEditViewModel by viewModels<CommentEditViewModel>()
     private val postEditViewModel by viewModels<PostEditViewModel>()
+    private val createReportViewModel by viewModels<CreateReportViewModel>()
 
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).repository)
@@ -104,6 +108,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
+                            createReportViewModel = createReportViewModel,
                         )
                     }
                     composable(route = "community") {
@@ -116,6 +121,7 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             inboxViewModel = inboxViewModel,
                             postEditViewModel = postEditViewModel,
+                            createReportViewModel = createReportViewModel,
                         )
                     }
                     composable(route = "profile") {
@@ -130,6 +136,7 @@ class MainActivity : ComponentActivity() {
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
+                            createReportViewModel = createReportViewModel,
                         )
                     }
                     composable(
@@ -172,6 +179,7 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
+                            createReportViewModel = createReportViewModel,
                         )
                     }
                     composable(
@@ -185,6 +193,7 @@ class MainActivity : ComponentActivity() {
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
+                            createReportViewModel = createReportViewModel,
                             navController = navController,
                         )
                     }
@@ -248,6 +257,24 @@ class MainActivity : ComponentActivity() {
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
+                            navController = navController,
+                        )
+                    }
+                    composable(
+                        route = "commentReport",
+                    ) {
+                        CreateCommentReportActivity(
+                            createReportViewModel = createReportViewModel,
+                            accountViewModel = accountViewModel,
+                            navController = navController,
+                        )
+                    }
+                    composable(
+                        route = "postReport",
+                    ) {
+                        CreatePostReportActivity(
+                            createReportViewModel = createReportViewModel,
+                            accountViewModel = accountViewModel,
                             navController = navController,
                         )
                     }

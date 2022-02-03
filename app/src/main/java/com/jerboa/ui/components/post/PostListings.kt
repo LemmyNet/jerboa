@@ -27,6 +27,7 @@ fun PostListings(
     onPostLinkClick: (url: String) -> Unit = {},
     onSaveClick: (postView: PostView) -> Unit = {},
     onEditPostClick: (postView: PostView) -> Unit = {},
+    onReportClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit = {},
     onPersonClick: (personId: Int) -> Unit = {},
     onSwipeRefresh: () -> Unit = {},
@@ -63,6 +64,7 @@ fun PostListings(
                     onCommunityClick = onCommunityClick,
                     onPersonClick = onPersonClick,
                     onEditPostClick = onEditPostClick,
+                    onReportClick = onReportClick,
                     account = account,
                     isModerator = false // TODO can't know with many posts
                 )
@@ -91,5 +93,6 @@ fun PreviewPostListings() {
     PostListings(
         posts = listOf(samplePostView, samplePostView),
         account = null,
+        onReportClick = {},
     )
 }

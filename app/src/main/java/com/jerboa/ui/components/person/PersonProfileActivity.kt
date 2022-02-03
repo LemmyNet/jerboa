@@ -40,6 +40,9 @@ import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.post.edit.postEditClickWrapper
 import com.jerboa.ui.components.post.postClickWrapper
+import com.jerboa.ui.components.report.CreateReportViewModel
+import com.jerboa.ui.components.report.commentReportClickWrapper
+import com.jerboa.ui.components.report.postReportClickWrapper
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -56,6 +59,7 @@ fun PersonProfileActivity(
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
+    createReportViewModel: CreateReportViewModel,
 ) {
 
     Log.d("jerboa", "got to person activity")
@@ -100,6 +104,7 @@ fun PersonProfileActivity(
                     commentEditViewModel = commentEditViewModel,
                     commentReplyViewModel = commentReplyViewModel,
                     postEditViewModel = postEditViewModel,
+                    createReportViewModel = createReportViewModel,
                 )
             },
             bottomBar = {
@@ -145,6 +150,7 @@ fun UserTabs(
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
+    createReportViewModel: CreateReportViewModel,
     padding: PaddingValues,
 ) {
     val tabTitles = UserTab.values().map { it.toString() }
@@ -268,6 +274,13 @@ fun UserTabs(
                             postEditClickWrapper(
                                 postEditViewModel,
                                 postView,
+                                navController,
+                            )
+                        },
+                        onReportClick = { postView ->
+                            postReportClickWrapper(
+                                createReportViewModel,
+                                postView.post.id,
                                 navController,
                             )
                         },
@@ -436,6 +449,13 @@ fun UserTabs(
                                         commentEditClickWrapper(
                                             commentEditViewModel,
                                             commentView,
+                                            navController,
+                                        )
+                                    },
+                                    onReportClick = { commentView ->
+                                        commentReportClickWrapper(
+                                            createReportViewModel,
+                                            commentView.comment.id,
                                             navController,
                                         )
                                     },
