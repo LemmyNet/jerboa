@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import com.jerboa.CommentNodeData
 import com.jerboa.datatypes.*
 import com.jerboa.db.Account
-import com.jerboa.sortNodes
 
 @Composable
 fun CommentNodes(
@@ -27,7 +26,7 @@ fun CommentNodes(
     showRead: Boolean = false,
 ) {
     Column {
-        sortNodes(nodes, SortType.Hot).forEach { node ->
+        nodes.forEach { node ->
             CommentNode(
                 node = node,
                 onUpvoteClick = onUpvoteClick,

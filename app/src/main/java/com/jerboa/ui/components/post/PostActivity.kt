@@ -55,7 +55,7 @@ fun PostActivity(
     val listState = rememberLazyListState()
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
-    val commentNodes = sortNodes(buildCommentsTree(postViewModel.comments), SortType.Hot)
+    val commentNodes = buildCommentsTree(postViewModel.comments, SortType.Hot)
 
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = postViewModel.loading && postViewModel

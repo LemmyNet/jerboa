@@ -107,7 +107,7 @@ fun commentsToFlatNodes(
 
 fun buildCommentsTree(
     comments: List<CommentView>?,
-//    commentSortType: CommentSortType,
+    sortType: SortType,
 ): List<CommentNodeData> {
 
     val map = LinkedHashMap<Number, CommentNodeData>()
@@ -138,6 +138,8 @@ fun buildCommentsTree(
             setDepth(cChild)
         }
     }
+
+    sortNodes(tree, sortType)
 
     return tree
 }
@@ -469,17 +471,25 @@ private fun DrawScope.drawEndBorder(
     )
 }
 
-fun sortNodes(nodes: List<CommentNodeData>, sortType: SortType = SortType.New): List<CommentNodeData> {
-    val afterRank = when (sortType) {
-        SortType.Hot -> nodes.sortedByDescending {
+fun sortNodes(nodes: MutableList<CommentNodeData>, sortType: SortType) {
+    when (sortType) {
+        SortType.Hot -> nodes.sortByDescending {
             hotRank(
                 it.commentView.counts.score,
                 it.commentView.comment.published
             )
         }
-        else -> nodes
+        else -> {}
     }
-    return afterRank.sortedBy { it.commentView.comment.deleted || it.commentView.comment.removed }
+
+    nodes.sortBy { it.commentView.comment.deleted || it.commentView.comment.removed }
+
+    // Go through the children recursively
+    nodes.forEach { node ->
+        node.children?.also {
+            sortNodes(it, sortType)
+        }
+    }
 }
 
 fun hotRank(score: Int, dateStr: String): Double {
