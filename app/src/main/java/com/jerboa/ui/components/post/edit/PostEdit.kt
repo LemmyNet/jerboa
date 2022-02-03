@@ -26,7 +26,7 @@ import com.jerboa.validateUrl
 @Composable
 fun EditPostHeader(
     navController: NavController = rememberNavController(),
-    onEditPostClick: () -> Unit = {},
+    onEditPostClick: () -> Unit,
     formValid: Boolean,
     loading: Boolean,
 ) {
@@ -74,13 +74,13 @@ fun EditPostHeader(
 @Composable
 fun EditPostBody(
     name: String,
-    onNameChange: (name: String) -> Unit = {},
+    onNameChange: (name: String) -> Unit,
     body: String,
-    onBodyChange: (body: String) -> Unit = {},
+    onBodyChange: (body: String) -> Unit,
     url: String,
-    onUrlChange: (url: String) -> Unit = {},
-    onPickedImage: (image: Uri) -> Unit = {},
-    formValid: (valid: Boolean) -> Unit = {},
+    onUrlChange: (url: String) -> Unit,
+    onPickedImage: (image: Uri) -> Unit,
+    formValid: (valid: Boolean) -> Unit,
 ) {
 
     val nameField = validatePostName(name)
@@ -136,7 +136,16 @@ fun EditPostBody(
 @Preview
 @Composable
 fun EditPostBodyPreview() {
-    EditPostBody(name = "", body = "", url = "")
+    EditPostBody(
+        name = "",
+        body = "",
+        url = "",
+        formValid = {},
+        onBodyChange = {},
+        onNameChange = {},
+        onPickedImage = {},
+        onUrlChange = {},
+    )
 }
 
 fun postEditClickWrapper(

@@ -23,7 +23,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 @Composable
 fun PrivateMessageReplyHeader(
     navController: NavController = rememberNavController(),
-    onSendClick: () -> Unit = {},
+    onSendClick: () -> Unit,
     loading: Boolean,
 ) {
     TopAppBar(
@@ -68,7 +68,7 @@ fun PrivateMessageReplyHeader(
 @Composable
 fun RepliedPrivateMessage(
     privateMessageView: PrivateMessageView,
-    onPersonClick: (personId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PrivateMessageHeader(
@@ -85,7 +85,10 @@ fun RepliedPrivateMessage(
 @Preview
 @Composable
 fun RepliedPrivateMessagePreview() {
-    RepliedPrivateMessage(privateMessageView = samplePrivateMessageView)
+    RepliedPrivateMessage(
+        privateMessageView = samplePrivateMessageView,
+        onPersonClick = {},
+    )
 }
 
 @Composable
@@ -93,7 +96,7 @@ fun PrivateMessageReply(
     privateMessageView: PrivateMessageView,
     reply: String,
     onReplyChange: (String) -> Unit,
-    onPersonClick: (personId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
 ) {
     LazyColumn {
         item {

@@ -28,7 +28,7 @@ import com.jerboa.ui.theme.APP_BAR_ELEVATION
 fun CommunityListHeader(
     navController: NavController = rememberNavController(),
     search: String,
-    onSearchChange: (search: String) -> Unit = {},
+    onSearchChange: (search: String) -> Unit,
 ) {
     TopAppBar(
         title = {
@@ -67,7 +67,7 @@ fun CommunityListHeader(
 @Composable
 fun CommunityListings(
     communities: List<Any>,
-    onClickCommunity: (community: CommunitySafe) -> Unit = {}
+    onClickCommunity: (community: CommunitySafe) -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -94,13 +94,16 @@ fun CommunityListings(
 @Composable
 fun CommunityListingsPreview() {
     val communities = listOf(sampleCommunityView, sampleCommunityView)
-    CommunityListings(communities = communities)
+    CommunityListings(
+        communities = communities,
+        onClickCommunity = {},
+    )
 }
 
 @Composable
 fun CommunityTopBarSearchView(
     search: String,
-    onSearchChange: (search: String) -> Unit = {},
+    onSearchChange: (search: String) -> Unit,
 ) {
     TextField(
         value = search,
@@ -137,5 +140,8 @@ fun CommunityTopBarSearchView(
 @Preview(showBackground = true)
 @Composable
 fun SearchViewPreview() {
-    CommunityTopBarSearchView(search = "")
+    CommunityTopBarSearchView(
+        search = "",
+        onSearchChange = {},
+    )
 }

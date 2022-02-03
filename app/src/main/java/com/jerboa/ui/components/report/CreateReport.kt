@@ -14,7 +14,7 @@ import com.jerboa.ui.theme.APP_BAR_ELEVATION
 @Composable
 fun CreateReportHeader(
     navController: NavController = rememberNavController(),
-    onCreateClick: () -> Unit = {},
+    onCreateClick: () -> Unit,
     loading: Boolean,
 ) {
     TopAppBar(

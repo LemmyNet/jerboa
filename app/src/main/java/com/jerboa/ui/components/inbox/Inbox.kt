@@ -46,8 +46,8 @@ fun inboxClickWrapper(
 fun InboxHeader(
     navController: NavController = rememberNavController(),
     selectedUnreadOrAll: UnreadOrAll,
-    onClickUnreadOrAll: (UnreadOrAll) -> Unit = {},
-    onClickMarkAllAsRead: () -> Unit = {},
+    onClickUnreadOrAll: (UnreadOrAll) -> Unit,
+    onClickMarkAllAsRead: () -> Unit,
     unreadCount: Int? = null,
 ) {
     var showUnreadOrAllOptions by remember { mutableStateOf(false) }

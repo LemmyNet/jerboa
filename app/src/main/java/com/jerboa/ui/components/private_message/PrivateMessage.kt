@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Reply
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,7 +26,7 @@ import com.jerboa.ui.theme.XXL_PADDING
 @Composable
 fun PrivateMessageHeader(
     privateMessageView: PrivateMessageView,
-    onPersonClick: (personId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
     myPersonId: Int,
 ) {
     val otherPerson: PersonSafe
@@ -72,7 +71,11 @@ fun isCreator(myPersonId: Int, privateMessageView: PrivateMessageView): Boolean 
 @Preview
 @Composable
 fun PrivateMessageViewPreview() {
-    PrivateMessageHeader(privateMessageView = samplePrivateMessageView, myPersonId = 23)
+    PrivateMessageHeader(
+        privateMessageView = samplePrivateMessageView,
+        myPersonId = 23,
+        onPersonClick = {},
+    )
 }
 
 @Composable
@@ -83,9 +86,9 @@ fun PrivateMessageBody(privateMessageView: PrivateMessageView) {
 @Composable
 fun PrivateMessage(
     privateMessageView: PrivateMessageView,
-    onReplyClick: (privateMessageView: PrivateMessageView) -> Unit = {},
-    onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit = {},
-    onPersonClick: (personId: Int) -> Unit = {},
+    onReplyClick: (privateMessageView: PrivateMessageView) -> Unit,
+    onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
     myPersonId: Int, // Required so we know the from / to
     account: Account?,
 ) {
@@ -116,8 +119,8 @@ fun PrivateMessage(
 @Composable
 fun PrivateMessageFooterLine(
     privateMessageView: PrivateMessageView,
-    onReplyClick: (privateMessageView: PrivateMessageView) -> Unit = {},
-    onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit = {},
+    onReplyClick: (privateMessageView: PrivateMessageView) -> Unit,
+    onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
     myPersonId: Int,
     account: Account?,
 ) {
@@ -147,10 +150,11 @@ fun PrivateMessageFooterLine(
                     account = account,
                 )
             }
-            ActionBarButton(
-                icon = Icons.Filled.MoreVert,
-                account = account,
-            )
+            // TODO
+//            ActionBarButton(
+//                icon = Icons.Filled.MoreVert,
+//                account = account,
+//            )
         }
     }
 }
@@ -158,5 +162,12 @@ fun PrivateMessageFooterLine(
 @Preview
 @Composable
 fun PrivateMessagePreview() {
-    PrivateMessage(privateMessageView = samplePrivateMessageView, myPersonId = 23, account = null)
+    PrivateMessage(
+        privateMessageView = samplePrivateMessageView,
+        myPersonId = 23,
+        account = null,
+        onPersonClick = {},
+        onReplyClick = {},
+        onMarkAsReadClick = {},
+    )
 }

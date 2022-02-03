@@ -28,7 +28,7 @@ import com.jerboa.validateUrl
 @Composable
 fun CreatePostHeader(
     navController: NavController = rememberNavController(),
-    onCreatePostClick: () -> Unit = {},
+    onCreatePostClick: () -> Unit,
     formValid: Boolean,
     loading: Boolean,
 ) {
@@ -76,15 +76,15 @@ fun CreatePostHeader(
 @Composable
 fun CreatePostBody(
     name: String,
-    onNameChange: (name: String) -> Unit = {},
+    onNameChange: (name: String) -> Unit,
     body: String,
-    onBodyChange: (body: String) -> Unit = {},
+    onBodyChange: (body: String) -> Unit,
     url: String,
-    onUrlChange: (url: String) -> Unit = {},
-    onPickedImage: (image: Uri) -> Unit = {},
+    onUrlChange: (url: String) -> Unit,
+    onPickedImage: (image: Uri) -> Unit,
     community: CommunitySafe? = null,
     navController: NavController = rememberNavController(),
-    formValid: (valid: Boolean) -> Unit = {},
+    formValid: (valid: Boolean) -> Unit,
     suggestedTitle: String? = null,
 ) {
 
@@ -161,7 +161,7 @@ fun CreatePostBody(
                     OutlinedTextField(
                         value = community.name,
                         readOnly = true,
-                        onValueChange = {},
+                        onValueChange = {}, // TODO what?
                         label = {
                             Text("Community")
                         },
@@ -186,7 +186,7 @@ fun CreatePostBody(
                 } ?: run {
                     OutlinedTextField(
                         value = "",
-                        onValueChange = {},
+                        onValueChange = {}, // TODO what?
                         label = {
                             Text("Community")
                         },
@@ -216,6 +216,11 @@ fun CreatePostBodyPreview() {
         body = "",
         url = "",
         community = sampleCommunitySafe,
+        formValid = {},
+        onPickedImage = {},
+        onUrlChange = {},
+        onBodyChange = {},
+        onNameChange = {},
     )
 }
 
@@ -226,6 +231,11 @@ fun CreatePostBodyPreviewNoCommunity() {
         name = "",
         body = "",
         url = "",
-        suggestedTitle = "a title here...."
+        suggestedTitle = "a title here....",
+        formValid = {},
+        onNameChange = {},
+        onBodyChange = {},
+        onUrlChange = {},
+        onPickedImage = {},
     )
 }

@@ -58,7 +58,7 @@ fun PersonNamePreview() {
 @Composable
 fun PersonProfileLink(
     person: PersonSafe,
-    onClick: (personId: Int) -> Unit = {},
+    onClick: (personId: Int) -> Unit,
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
     isModerator: Boolean = false,
@@ -105,7 +105,10 @@ fun PersonProfileLink(
 @Preview
 @Composable
 fun PersonProfileLinkPreview() {
-    PersonProfileLink(person = samplePersonSafe)
+    PersonProfileLink(
+        person = samplePersonSafe,
+        onClick = {},
+    )
 }
 
 @Preview
@@ -117,6 +120,7 @@ fun PersonProfileLinkPreviewTags() {
         isCommunityBanned = true,
         isModerator = true,
         showTags = true,
+        onClick = {},
     )
 }
 
