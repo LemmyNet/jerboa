@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.followCommunityWrapper
+import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.GetCommunity
 import com.jerboa.db.Account
@@ -73,11 +74,12 @@ class CommunityViewModel : ViewModel() {
     fun followCommunity(
         cv: CommunityView,
         account: Account?,
+        ctx: Context,
     ) {
         viewModelScope.launch {
             account?.also { acct ->
                 communityView =
-                    followCommunityWrapper(communityView = cv, auth = acct.jwt)?.community_view
+                    followCommunityWrapper(communityView = cv, auth = acct.jwt, ctx = ctx)?.community_view
             }
         }
     }
@@ -94,7 +96,7 @@ class CommunityViewModel : ViewModel() {
                 loading.value = true
 
                 val form = GetCommunity(id = id, auth = auth)
-                val out = api.getCommunity(form = form.serializeToMap())
+                val out = retrofitErrorHandler(api.getCommunity(form = form.serializeToMap()))
                 communityView = out.community_view
                 communityId.value = id
                 moderators.clear()

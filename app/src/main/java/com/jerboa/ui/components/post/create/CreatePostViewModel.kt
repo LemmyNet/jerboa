@@ -49,9 +49,9 @@ class CreatePostViewModel : ViewModel() {
         }
     }
 
-    fun fetchSuggestedTitle(url: String) {
+    fun fetchSuggestedTitle(url: String, ctx: Context) {
         viewModelScope.launch {
-            suggestedTitle = getSiteMetadataWrapper(url)?.title
+            suggestedTitle = getSiteMetadataWrapper(url, ctx)?.title
         }
     }
 }

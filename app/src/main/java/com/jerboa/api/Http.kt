@@ -13,6 +13,8 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONObject
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -23,169 +25,178 @@ const val DEFAULT_INSTANCE = "lemmy.ml"
 
 interface API {
     @GET("site")
-    suspend fun getSite(@QueryMap form: Map<String, String>): GetSiteResponse
+    suspend fun getSite(@QueryMap form: Map<String, String>): Response<GetSiteResponse>
 
     /**
      * Get / fetch posts, with various filters.
      */
     @GET("post/list")
-    suspend fun getPosts(@QueryMap form: Map<String, String>): GetPostsResponse
+    suspend fun getPosts(@QueryMap form: Map<String, String>): Response<GetPostsResponse>
 
     /**
      * Get / fetch a post.
      */
     @GET("post")
-    suspend fun getPost(@QueryMap form: Map<String, String>): GetPostResponse
+    suspend fun getPost(@QueryMap form: Map<String, String>): Response<GetPostResponse>
 
     /**
      * Log into lemmy.
      */
     @POST("user/login")
-    suspend fun login(@Body form: Login): LoginResponse
+    suspend fun login(@Body form: Login): Response<LoginResponse>
 
     /**
      * Like / vote on a post.
      */
     @POST("post/like")
-    suspend fun likePost(@Body form: CreatePostLike): PostResponse
+    suspend fun likePost(@Body form: CreatePostLike): Response<PostResponse>
 
     /**
      * Like / vote on a comment.
      */
     @POST("comment/like")
-    suspend fun likeComment(@Body form: CreateCommentLike): CommentResponse
+    suspend fun likeComment(@Body form: CreateCommentLike): Response<CommentResponse>
 
     /**
      * Create a comment.
      */
     @POST("comment")
-    suspend fun createComment(@Body form: CreateComment): CommentResponse
+    suspend fun createComment(@Body form: CreateComment): Response<CommentResponse>
 
     /**
      * Edit a comment.
      */
     @PUT("comment")
-    suspend fun editComment(@Body form: EditComment): CommentResponse
+    suspend fun editComment(@Body form: EditComment): Response<CommentResponse>
 
     /**
      * Save a post.
      */
     @PUT("post/save")
-    suspend fun savePost(@Body form: SavePost): PostResponse
+    suspend fun savePost(@Body form: SavePost): Response<PostResponse>
 
     /**
      * Save a comment.
      */
     @PUT("comment/save")
-    suspend fun saveComment(@Body form: SaveComment): CommentResponse
+    suspend fun saveComment(@Body form: SaveComment): Response<CommentResponse>
 
     /**
      * Get / fetch a community.
      */
     @GET("community")
-    suspend fun getCommunity(@QueryMap form: Map<String, String>): GetCommunityResponse
+    suspend fun getCommunity(@QueryMap form: Map<String, String>): Response<GetCommunityResponse>
 
     /**
      * Get the details for a person.
      */
     @GET("user")
-    suspend fun getPersonDetails(@QueryMap form: Map<String, String>): GetPersonDetailsResponse
+    suspend fun getPersonDetails(@QueryMap form: Map<String, String>):
+        Response<GetPersonDetailsResponse>
 
     /**
      * Get comment replies.
      */
     @GET("user/replies")
-    suspend fun getReplies(@QueryMap form: Map<String, String>): GetRepliesResponse
+    suspend fun getReplies(@QueryMap form: Map<String, String>): Response<GetRepliesResponse>
 
     /**
      * Mark a comment as read.
      */
     @POST("comment/mark_as_read")
-    suspend fun markCommentAsRead(@Body form: MarkCommentAsRead): CommentResponse
+    suspend fun markCommentAsRead(@Body form: MarkCommentAsRead): Response<CommentResponse>
 
     /**
      * Mark a person mention as read.
      */
     @POST("user/mention/mark_as_read")
-    suspend fun markPersonMentionAsRead(@Body form: MarkPersonMentionAsRead): PersonMentionResponse
+    suspend fun markPersonMentionAsRead(@Body form: MarkPersonMentionAsRead):
+        Response<PersonMentionResponse>
 
     /**
      * Mark a private message as read.
      */
     @POST("private_message/mark_as_read")
-    suspend fun markPrivateMessageAsRead(@Body form: MarkPrivateMessageAsRead): PrivateMessageResponse
+    suspend fun markPrivateMessageAsRead(@Body form: MarkPrivateMessageAsRead):
+        Response<PrivateMessageResponse>
 
     /**
      * Mark all replies as read.
      */
     @POST("user/mark_all_as_read")
-    suspend fun markAllAsRead(@Body form: MarkAllAsRead): GetRepliesResponse
+    suspend fun markAllAsRead(@Body form: MarkAllAsRead): Response<GetRepliesResponse>
 
     /**
      * Get mentions for your user.
      */
     @GET("user/mention")
-    suspend fun getPersonMentions(@QueryMap form: Map<String, String>): GetPersonMentionsResponse
+    suspend fun getPersonMentions(@QueryMap form: Map<String, String>):
+        Response<GetPersonMentionsResponse>
 
     /**
      * Get / fetch private messages.
      */
     @GET("private_message/list")
-    suspend fun getPrivateMessages(@QueryMap form: Map<String, String>): PrivateMessagesResponse
+    suspend fun getPrivateMessages(@QueryMap form: Map<String, String>):
+        Response<PrivateMessagesResponse>
 
     /**
      * Create a private message.
      */
     @POST("private_message")
-    suspend fun createPrivateMessage(@Body form: CreatePrivateMessage): PrivateMessageResponse
+    suspend fun createPrivateMessage(@Body form: CreatePrivateMessage):
+        Response<PrivateMessageResponse>
 
     /**
      * Get your unread counts
      */
     @GET("user/unread_count")
-    suspend fun getUnreadCount(@QueryMap form: Map<String, String>): GetUnreadCountResponse
+    suspend fun getUnreadCount(@QueryMap form: Map<String, String>):
+        Response<GetUnreadCountResponse>
 
     /**
      * Follow / subscribe to a community.
      */
     @POST("community/follow")
-    suspend fun followCommunity(@Body form: FollowCommunity): CommunityResponse
+    suspend fun followCommunity(@Body form: FollowCommunity): Response<CommunityResponse>
 
     /**
      * Create a post.
      */
     @POST("post")
-    suspend fun createPost(@Body form: CreatePost): PostResponse
+    suspend fun createPost(@Body form: CreatePost): Response<PostResponse>
 
     /**
      * Edit a post.
      */
     @PUT("post")
-    suspend fun editPost(@Body form: EditPost): PostResponse
+    suspend fun editPost(@Body form: EditPost): Response<PostResponse>
 
     /**
      * Search lemmy.
      */
     @GET("search")
-    suspend fun search(@QueryMap form: Map<String, String>): SearchResponse
+    suspend fun search(@QueryMap form: Map<String, String>): Response<SearchResponse>
 
     /**
      * Fetch metadata for any given site.
      */
     @GET("post/site_metadata")
-    suspend fun getSiteMetadata(@QueryMap form: Map<String, String>): GetSiteMetadataResponse
+    suspend fun getSiteMetadata(@QueryMap form: Map<String, String>):
+        Response<GetSiteMetadataResponse>
 
     /**
      * Report a comment.
      */
     @POST("comment/report")
-    suspend fun createCommentReport(@Body form: CreateCommentReport): CommentReportResponse
+    suspend fun createCommentReport(@Body form: CreateCommentReport):
+        Response<CommentReportResponse>
 
     /**
      * Report a post.
      */
     @POST("post/report")
-    suspend fun createPostReport(@Body form: CreatePostReport): PostReportResponse
+    suspend fun createPostReport(@Body form: CreatePostReport): Response<PostReportResponse>
 
     /**
      * Upload an image.
@@ -196,7 +207,7 @@ interface API {
         @Url url: String,
         @Header("Cookie") token: String,
         @Part filePart: MultipartBody.Part
-    ): PictrsImages
+    ): Response<PictrsImages>
 
     companion object {
         private var api: API? = null
@@ -238,6 +249,7 @@ interface API {
 suspend fun followCommunityWrapper(
     communityView: CommunityView,
     auth: String,
+    ctx: Context?,
 ): CommunityResponse? {
     var communityRes: CommunityResponse? = null
     val api = API.getInstance()
@@ -250,21 +262,17 @@ suspend fun followCommunityWrapper(
             follow = !communityView.subscribed,
             auth = auth
         )
-        Log.d(
-            "jerboa",
-            "Following community ..."
-        )
-        communityRes = api.followCommunity(form)
+        communityRes = retrofitErrorHandler(api.followCommunity(form))
     } catch (e: Exception) {
-        Log.e(
-            "jerboa",
-            e.toString()
-        )
+        toastException(ctx = ctx, error = e)
     }
     return communityRes
 }
 
-suspend fun getSiteWrapper(auth: String?): GetSiteResponse? {
+suspend fun getSiteWrapper(
+    auth: String?,
+    ctx: Context?,
+): GetSiteResponse? {
     var siteRes: GetSiteResponse? = null
     val api = API.getInstance()
 
@@ -272,21 +280,17 @@ suspend fun getSiteWrapper(auth: String?): GetSiteResponse? {
         // Fetch the site to get more info, such as your
         // name and avatar
         val form = GetSite(auth = auth)
-        Log.d(
-            "jerboa",
-            "Fetching site: $form ..."
-        )
-        siteRes = api.getSite(form = form.serializeToMap())
+        siteRes = retrofitErrorHandler(api.getSite(form = form.serializeToMap()))
     } catch (e: Exception) {
-        Log.e(
-            "jerboa",
-            e.toString()
-        )
+        toastException(ctx = ctx, error = e)
     }
     return siteRes
 }
 
-suspend fun getSiteMetadataWrapper(url: String): SiteMetadata? {
+suspend fun getSiteMetadataWrapper(
+    url: String,
+    ctx: Context?,
+): SiteMetadata? {
     var res: SiteMetadata? = null
     val api = API.getInstance()
 
@@ -294,16 +298,9 @@ suspend fun getSiteMetadataWrapper(url: String): SiteMetadata? {
         // Fetch the site to get more info, such as your
         // name and avatar
         val form = GetSiteMetadata(url = url)
-        Log.d(
-            "jerboa",
-            "Fetching site metadata..."
-        )
-        res = api.getSiteMetadata(form = form.serializeToMap()).metadata
+        res = retrofitErrorHandler(api.getSiteMetadata(form = form.serializeToMap())).metadata
     } catch (e: Exception) {
-        Log.e(
-            "jerboa",
-            e.toString()
-        )
+        toastException(ctx = ctx, error = e)
     }
     return res
 }
@@ -328,11 +325,7 @@ suspend fun fetchPostsWrapper(
             page = page,
             auth = account?.jwt,
         )
-        Log.d(
-            "jerboa",
-            "Fetching posts: $form"
-        )
-        posts = api.getPosts(form = form.serializeToMap()).posts
+        posts = retrofitErrorHandler(api.getPosts(form = form.serializeToMap())).posts
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -365,11 +358,7 @@ suspend fun searchWrapper(
             page = page,
             auth = account?.jwt,
         )
-        Log.d(
-            "jerboa",
-            "Searching: $form"
-        )
-        res = api.search(form = form.serializeToMap())
+        res = retrofitErrorHandler(api.search(form = form.serializeToMap()))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -400,7 +389,7 @@ suspend fun createPostWrapper(
             "jerboa",
             "Creating post: $form"
         )
-        createdPostView = api.createPost(form).post_view
+        createdPostView = retrofitErrorHandler(api.createPost(form)).post_view
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -426,11 +415,7 @@ suspend fun editPostWrapper(
             url = url,
             auth = account.jwt,
         )
-        Log.d(
-            "jerboa",
-            "Editing post: $form"
-        )
-        editedPostView = api.editPost(form).post_view
+        editedPostView = retrofitErrorHandler(api.editPost(form)).post_view
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -450,7 +435,7 @@ suspend fun likePostWrapper(
         val form = CreatePostLike(
             post_id = pv.post.id, score = newVote, auth = account.jwt
         )
-        updatedPost = api.likePost(form)
+        updatedPost = retrofitErrorHandler(api.likePost(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -470,7 +455,7 @@ suspend fun likeCommentWrapper(
         val form = CreateCommentLike(
             comment_id = cv.comment.id, score = newVote, auth = account.jwt
         )
-        updatedComment = api.likeComment(form)
+        updatedComment = retrofitErrorHandler(api.likeComment(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -488,7 +473,7 @@ suspend fun savePostWrapper(
         val form = SavePost(
             post_id = pv.post.id, save = !pv.saved, auth = account.jwt
         )
-        updatedPost = api.savePost(form)
+        updatedPost = retrofitErrorHandler(api.savePost(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -506,7 +491,7 @@ suspend fun saveCommentWrapper(
         val form = SaveComment(
             comment_id = cv.comment.id, save = !cv.saved, auth = account.jwt
         )
-        updatedComment = api.saveComment(form)
+        updatedComment = retrofitErrorHandler(api.saveComment(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -524,7 +509,7 @@ suspend fun markCommentAsReadWrapper(
         val form = MarkCommentAsRead(
             comment_id = cv.comment.id, read = !cv.comment.read, auth = account.jwt
         )
-        updatedComment = api.markCommentAsRead(form)
+        updatedComment = retrofitErrorHandler(api.markCommentAsRead(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -545,7 +530,7 @@ suspend fun markPersonMentionAsReadWrapper(
             auth = account
                 .jwt
         )
-        updatedPm = api.markPersonMentionAsRead(form)
+        updatedPm = retrofitErrorHandler(api.markPersonMentionAsRead(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -565,7 +550,7 @@ suspend fun markPrivateMessageAsReadWrapper(
             auth = account
                 .jwt
         )
-        updatedPm = api.markPrivateMessageAsRead(form)
+        updatedPm = retrofitErrorHandler(api.markPrivateMessageAsRead(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -581,7 +566,7 @@ suspend fun createCommentWrapper(
     val api = API.getInstance()
 
     try {
-        createdComment = api.createComment(form)
+        createdComment = retrofitErrorHandler(api.createComment(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -597,7 +582,7 @@ suspend fun editCommentWrapper(
     val api = API.getInstance()
 
     try {
-        editedComment = api.editComment(form)
+        editedComment = retrofitErrorHandler(api.editComment(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -613,7 +598,7 @@ suspend fun createPrivateMessageWrapper(
     val api = API.getInstance()
 
     try {
-        createdPrivateMessage = api.createPrivateMessage(form)
+        createdPrivateMessage = retrofitErrorHandler(api.createPrivateMessage(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -629,7 +614,7 @@ suspend fun createCommentReportWrapper(
     val api = API.getInstance()
 
     try {
-        createdReport = api.createCommentReport(form)
+        createdReport = retrofitErrorHandler(api.createCommentReport(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -645,7 +630,7 @@ suspend fun createPostReportWrapper(
     val api = API.getInstance()
 
     try {
-        createdReport = api.createPostReport(form)
+        createdReport = retrofitErrorHandler(api.createPostReport(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -664,13 +649,28 @@ suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Conte
         )
         val url = "https://${API.currentInstance}/pictrs/image"
         val cookie = "jwt=${account.jwt}"
-        val images = api.uploadImage(url, cookie, part)
+        val images = retrofitErrorHandler(api.uploadImage(url, cookie, part))
         Log.d("jerboa", "Uploading done.")
         imageUrl = "$url/${images.files?.get(0)?.file}"
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
     return imageUrl
+}
+
+fun <T> retrofitErrorHandler(res: Response<T>): T {
+    if (res.isSuccessful) {
+        return res.body()!!
+    } else {
+
+        val errMsg = res.errorBody()?.string()?.let {
+            JSONObject(it).getString("error")
+        } ?: run {
+            res.code().toString()
+        }
+
+        throw Exception(errMsg)
+    }
 }
 
 //
