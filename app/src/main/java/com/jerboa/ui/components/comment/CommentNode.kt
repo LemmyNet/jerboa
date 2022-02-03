@@ -389,7 +389,7 @@ fun CommentNodesPreview() {
     val comments = listOf(
         sampleSecondCommentReplyView, sampleCommentReplyView, sampleCommentView
     )
-    val tree = buildCommentsTree(comments)
+    val tree = buildCommentsTree(comments, SortType.Hot)
     CommentNodes(
         nodes = tree,
         moderators = listOf(),
