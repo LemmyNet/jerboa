@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.datatypes.CommunitySafe
+import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
@@ -30,6 +31,8 @@ fun PostListings(
     onReportClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onBlockCommunityClick: (community: CommunitySafe) -> Unit,
+    onBlockCreatorClick: (person: PersonSafe) -> Unit,
     onSwipeRefresh: () -> Unit,
     loading: Boolean = false,
     isScrolledToEnd: () -> Unit,
@@ -65,6 +68,8 @@ fun PostListings(
                     onPersonClick = onPersonClick,
                     onEditPostClick = onEditPostClick,
                     onReportClick = onReportClick,
+                    onBlockCommunityClick = onBlockCommunityClick,
+                    onBlockCreatorClick = onBlockCreatorClick,
                     account = account,
                     isModerator = false // TODO can't know with many posts
                 )
@@ -104,5 +109,7 @@ fun PreviewPostListings() {
         onPostLinkClick = {},
         onPostClick = {},
         onSwipeRefresh = {},
+        onBlockCreatorClick = {},
+        onBlockCommunityClick = {}
     )
 }

@@ -78,12 +78,12 @@ fun PersonProfileActivity(
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = {
-                personProfileViewModel.res?.person_view?.person?.name?.also {
+                personProfileViewModel.res?.person_view?.person?.also { person ->
                     PersonProfileHeader(
                         personName = if (savedMode) {
                             "Saved"
                         } else {
-                            it
+                            person.name
                         },
                         selectedSortType = personProfileViewModel.sortType.value,
                         onClickSortType = { sortType ->
@@ -95,6 +95,15 @@ fun PersonProfileActivity(
                                 ctx = ctx,
                                 changeSavedOnly = savedMode,
                             )
+                        },
+                        onBlockPersonClick = {
+                            account?.also { acct ->
+                                personProfileViewModel.blockPerson(
+                                    person = person,
+                                    account = acct,
+                                    ctx = ctx,
+                                )
+                            }
                         },
                         navController = navController,
                     )
@@ -283,6 +292,24 @@ fun UserTabs(
                                 account = account,
                                 ctx = ctx,
                             )
+                        },
+                        onBlockCommunityClick = {
+                            account?.also { acct ->
+                                personProfileViewModel.blockCommunity(
+                                    community = it,
+                                    account = acct,
+                                    ctx = ctx,
+                                )
+                            }
+                        },
+                        onBlockCreatorClick = {
+                            account?.also { acct ->
+                                personProfileViewModel.blockPerson(
+                                    person = it,
+                                    account = acct,
+                                    ctx = ctx,
+                                )
+                            }
                         },
                         onPostClick = { postView ->
                             postClickWrapper(
@@ -495,6 +522,15 @@ fun UserTabs(
                                             commentView.comment.id,
                                             navController,
                                         )
+                                    },
+                                    onBlockCreatorClick = {
+                                        account?.also { acct ->
+                                            personProfileViewModel.blockPerson(
+                                                person = it,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
                                     },
                                     showPostAndCommunityContext = true,
                                     account = account,

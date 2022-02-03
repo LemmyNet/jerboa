@@ -102,6 +102,7 @@ fun CommunityTopSectionPreview() {
 fun CommunityHeader(
     communityName: String,
     onClickSortType: (SortType) -> Unit,
+    onBlockCommunityClick: () -> Unit,
     selectedSortType: SortType,
     navController: NavController = rememberNavController(),
 ) {
@@ -139,6 +140,10 @@ fun CommunityHeader(
     if (showMoreOptions) {
         CommunityMoreDialog(
             onDismissRequest = { showMoreOptions = false },
+            onBlockCommunityClick = {
+                showMoreOptions = false
+                onBlockCommunityClick()
+            },
             navController = navController,
         )
     }
@@ -203,6 +208,7 @@ fun CommunityHeaderTitle(
 @Composable
 fun CommunityMoreDialog(
     onDismissRequest: () -> Unit,
+    onBlockCommunityClick: () -> Unit,
     navController: NavController,
 ) {
     AlertDialog(
@@ -216,6 +222,11 @@ fun CommunityMoreDialog(
                         navController.navigate("communitySidebar")
                         onDismissRequest()
                     },
+                )
+                IconAndTextDrawerItem(
+                    text = "Block Community",
+                    icon = Icons.Default.Block,
+                    onClick = onBlockCommunityClick,
                 )
             }
         },

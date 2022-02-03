@@ -11,9 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.GetPersonDetails
 import com.jerboa.datatypes.api.GetPersonDetailsResponse
 import com.jerboa.db.Account
@@ -21,6 +19,7 @@ import com.jerboa.serializeToMap
 import com.jerboa.toastException
 import com.jerboa.ui.components.comment.likeCommentRoutine
 import com.jerboa.ui.components.comment.saveCommentRoutine
+import com.jerboa.ui.components.community.blockCommunityRoutine
 import com.jerboa.ui.components.post.likePostRoutine
 import com.jerboa.ui.components.post.savePostRoutine
 import kotlinx.coroutines.launch
@@ -78,7 +77,7 @@ class PersonProfileViewModel : ViewModel() {
         clear: Boolean = false,
         nextPage: Boolean = false,
         changeSortType: SortType? = null,
-        changeSavedOnly: Boolean,
+        changeSavedOnly: Boolean? = null,
         ctx: Context,
     ) {
         val api = API.getInstance()
@@ -132,5 +131,33 @@ class PersonProfileViewModel : ViewModel() {
                 loading.value = false
             }
         }
+    }
+
+    fun blockCommunity(
+        community: CommunitySafe,
+        account: Account,
+        ctx: Context,
+    ) {
+        blockCommunityRoutine(
+            community = community,
+            block = true,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope
+        )
+    }
+
+    fun blockPerson(
+        person: PersonSafe,
+        account: Account,
+        ctx: Context,
+    ) {
+        blockPersonRoutine(
+            person = person,
+            block = true,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope
+        )
     }
 }

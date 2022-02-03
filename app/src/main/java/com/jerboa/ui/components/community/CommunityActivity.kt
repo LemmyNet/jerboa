@@ -53,9 +53,9 @@ fun CommunityActivity(
             scaffoldState = scaffoldState,
             topBar = {
                 Column {
-                    communityViewModel.communityView?.community?.name?.also {
+                    communityViewModel.communityView?.community?.also { com ->
                         CommunityHeader(
-                            communityName = it,
+                            communityName = com.name,
                             selectedSortType = communityViewModel.sortType.value,
                             onClickSortType = { sortType ->
                                 communityViewModel.fetchPosts(
@@ -64,6 +64,14 @@ fun CommunityActivity(
                                     changeSortType = sortType,
                                     ctx = ctx,
                                 )
+                            },
+                            onBlockCommunityClick = {
+                                account?.also { acct ->
+                                    communityViewModel.blockCommunity(
+                                        account = acct,
+                                        ctx = ctx,
+                                    )
+                                }
                             },
                             navController = navController,
                         )
@@ -125,6 +133,23 @@ fun CommunityActivity(
                             account = account,
                             ctx = ctx,
                         )
+                    },
+                    onBlockCommunityClick = {
+                        account?.also { acct ->
+                            communityViewModel.blockCommunity(
+                                account = acct,
+                                ctx = ctx,
+                            )
+                        }
+                    },
+                    onBlockCreatorClick = {
+                        account?.also { acct ->
+                            communityViewModel.blockCreator(
+                                creator = it,
+                                account = acct,
+                                ctx = ctx,
+                            )
+                        }
                     },
                     onCommunityClick = { community ->
                         communityClickWrapper(

@@ -3,9 +3,7 @@ package com.jerboa.ui.components.person
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +15,7 @@ import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.*
+import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.theme.*
 
 @Composable
@@ -104,12 +103,14 @@ fun PersonProfileTopSectionPreview() {
 fun PersonProfileHeader(
     personName: String,
     onClickSortType: (SortType) -> Unit,
+    onBlockPersonClick: () -> Unit,
     selectedSortType: SortType,
     navController: NavController = rememberNavController(),
 ) {
 
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
+    var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showSortOptions) {
         SortOptionsDialog(
@@ -134,6 +135,16 @@ fun PersonProfileHeader(
                 showTopOptions = false
                 onClickSortType(it)
             }
+        )
+    }
+
+    if (showMoreOptions) {
+        PersonProfileMoreDialog(
+            onDismissRequest = { showMoreOptions = false },
+            onBlockPersonClick = {
+                showMoreOptions = false
+                onBlockPersonClick()
+            },
         )
     }
 
@@ -164,6 +175,7 @@ fun PersonProfileHeader(
                 )
             }
             IconButton(onClick = {
+                showMoreOptions = !showMoreOptions
             }) {
                 Icon(
                     Icons.Default.MoreVert,
@@ -191,4 +203,24 @@ fun PersonProfileHeaderTitle(
             color = Muted,
         )
     }
+}
+
+@Composable
+fun PersonProfileMoreDialog(
+    onDismissRequest: () -> Unit,
+    onBlockPersonClick: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                IconAndTextDrawerItem(
+                    text = "Block Person",
+                    icon = Icons.Default.Block,
+                    onClick = onBlockPersonClick,
+                )
+            }
+        },
+        buttons = {},
+    )
 }

@@ -113,6 +113,7 @@ fun CommentNode(
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
+    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     showPostAndCommunityContext: Boolean = false,
     showRead: Boolean = false,
     account: Account?,
@@ -198,6 +199,7 @@ fun CommentNode(
                             onSaveClick = onSaveClick,
                             onMarkAsReadClick = onMarkAsReadClick,
                             onReportClick = onReportClick,
+                            onBlockCreatorClick = onBlockCreatorClick,
                             showRead = showRead,
                             myVote = myVote.value,
                             upvotes = upvotes.value,
@@ -227,6 +229,7 @@ fun CommentNode(
                 onReportClick = onReportClick,
                 showRead = showRead,
                 onReplyClick = onReplyClick,
+                onBlockCreatorClick = onBlockCreatorClick,
                 account = account,
                 moderators = moderators,
             )
@@ -281,6 +284,7 @@ fun CommentFooterLine(
     onViewSourceClick: () -> Unit,
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
+    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     showRead: Boolean = false,
     myVote: Int?,
     upvotes: Int,
@@ -305,6 +309,10 @@ fun CommentFooterLine(
             onReportClick = {
                 showMoreOptions = false
                 onReportClick(commentView)
+            },
+            onBlockCreatorClick = {
+                showMoreOptions = false
+                onBlockCreatorClick(commentView.creator)
             },
             isCreator = account?.id == commentView.creator.id,
         )
@@ -395,6 +403,7 @@ fun CommentNodesPreview() {
         onReplyClick = {},
         onSaveClick = {},
         onUpvoteClick = {},
+        onBlockCreatorClick = {},
     )
 }
 
@@ -404,6 +413,7 @@ fun CommentOptionsDialog(
     onViewSourceClick: () -> Unit,
     onEditCommentClick: () -> Unit,
     onReportClick: () -> Unit,
+    onBlockCreatorClick: () -> Unit,
     isCreator: Boolean,
     commentView: CommentView,
 ) {
@@ -435,6 +445,11 @@ fun CommentOptionsDialog(
                         icon = Icons.Default.Flag,
                         onClick = onReportClick,
                     )
+                    IconAndTextDrawerItem(
+                        text = "Block ${commentView.creator.name}",
+                        icon = Icons.Default.Block,
+                        onClick = onBlockCreatorClick,
+                    )
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(
@@ -458,7 +473,8 @@ fun CommentOptionsDialogPreview() {
         onDismissRequest = {},
         onEditCommentClick = {},
         onReportClick = {},
-        onViewSourceClick = {}
+        onViewSourceClick = {},
+        onBlockCreatorClick = {},
     )
 }
 

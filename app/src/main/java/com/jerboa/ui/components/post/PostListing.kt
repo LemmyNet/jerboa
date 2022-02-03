@@ -260,6 +260,8 @@ fun PostFooterLine(
     onEditPostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
+    onBlockCreatorClick: (person: PersonSafe) -> Unit,
+    onBlockCommunityClick: (community: CommunitySafe) -> Unit,
     showReply: Boolean = false,
     account: Account?,
 ) {
@@ -287,6 +289,14 @@ fun PostFooterLine(
             onReportClick = {
                 showMoreOptions = false
                 onReportClick(postView)
+            },
+            onBlockCommunityClick = {
+                showMoreOptions = false
+                onBlockCommunityClick(postView.community)
+            },
+            onBlockCreatorClick = {
+                showMoreOptions = false
+                onBlockCreatorClick(postView.creator)
             },
             isCreator = account?.id == postView.creator.id,
         )
@@ -388,6 +398,8 @@ fun PostFooterLinePreview() {
         onReplyClick = {},
         onDownvoteClick = {},
         onEditPostClick = {},
+        onBlockCreatorClick = {},
+        onBlockCommunityClick = {},
     )
 }
 
@@ -409,6 +421,8 @@ fun PreviewPostListing() {
         onPostLinkClick = {},
         onPersonClick = {},
         onPostClick = {},
+        onBlockCommunityClick = {},
+        onBlockCreatorClick = {},
     )
 }
 
@@ -430,6 +444,8 @@ fun PreviewLinkPostListing() {
         onSaveClick = {},
         onReplyClick = {},
         onEditPostClick = {},
+        onBlockCommunityClick = {},
+        onBlockCreatorClick = {},
     )
 }
 
@@ -451,6 +467,8 @@ fun PreviewImagePostListing() {
         onSaveClick = {},
         onReplyClick = {},
         onEditPostClick = {},
+        onBlockCommunityClick = {},
+        onBlockCreatorClick = {},
     )
 }
 
@@ -472,6 +490,8 @@ fun PreviewLinkNoThumbnailPostListing() {
         onSaveClick = {},
         onReplyClick = {},
         onEditPostClick = {},
+        onBlockCommunityClick = {},
+        onBlockCreatorClick = {},
     )
 }
 
@@ -489,6 +509,8 @@ fun PostListing(
     onEditPostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onBlockCommunityClick: (community: CommunitySafe) -> Unit,
+    onBlockCreatorClick: (person: PersonSafe) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
     account: Account?,
@@ -531,6 +553,8 @@ fun PostListing(
                 onCommunityClick = onCommunityClick,
                 onEditPostClick = onEditPostClick,
                 onReportClick = onReportClick,
+                onBlockCommunityClick = onBlockCommunityClick,
+                onBlockCreatorClick = onBlockCreatorClick,
                 showReply = showReply,
                 account = account,
             )
@@ -592,9 +616,11 @@ fun MetadataCard(post: Post) {
 fun PostOptionsDialog(
     postView: PostView,
     onDismissRequest: () -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: () -> Unit,
     onEditPostClick: () -> Unit,
     onReportClick: () -> Unit,
+    onBlockCreatorClick: () -> Unit,
+    onBlockCommunityClick: () -> Unit,
     isCreator: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
@@ -607,7 +633,7 @@ fun PostOptionsDialog(
                 // TODO maybe add Go To?
                 CommunityLinkLarger(
                     community = postView.community,
-                    onClick = onCommunityClick,
+                    onClick = { onCommunityClick() },
                 )
                 IconAndTextDrawerItem(
                     text = "Copy Permalink",
@@ -624,6 +650,16 @@ fun PostOptionsDialog(
                         text = "Report Post",
                         icon = Icons.Default.Flag,
                         onClick = onReportClick,
+                    )
+                    IconAndTextDrawerItem(
+                        text = "Block ${postView.creator.name}",
+                        icon = Icons.Default.Block,
+                        onClick = onBlockCreatorClick,
+                    )
+                    IconAndTextDrawerItem(
+                        text = "Block ${postView.community.name}",
+                        icon = Icons.Default.Block,
+                        onClick = onBlockCommunityClick,
                     )
                 }
                 if (isCreator) {
@@ -649,5 +685,7 @@ fun PostOptionsDialogPreview() {
         onCommunityClick = {},
         onDismissRequest = {},
         onEditPostClick = {},
+        onBlockCommunityClick = {},
+        onBlockCreatorClick = {},
     )
 }
