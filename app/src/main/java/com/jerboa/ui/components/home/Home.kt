@@ -37,13 +37,13 @@ import kotlinx.coroutines.launch
 fun Drawer(
     navController: NavController = rememberNavController(),
     accounts: List<Account>? = null,
-    onSwitchAccountClick: (account: Account) -> Unit = {},
-    onSignOutClick: () -> Unit = {},
-    onClickListingType: (ListingType) -> Unit = {},
+    onSwitchAccountClick: (account: Account) -> Unit,
+    onSignOutClick: () -> Unit,
+    onClickListingType: (ListingType) -> Unit,
     myUserInfo: MyUserInfo?,
-    onCommunityClick: (community: CommunitySafe) -> Unit = {},
-    onClickProfile: () -> Unit = {},
-    onClickInbox: () -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onClickProfile: () -> Unit,
+    onClickInbox: () -> Unit,
     unreadCounts: GetUnreadCountResponse?,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
@@ -51,7 +51,7 @@ fun Drawer(
     DrawerHeader(
         myPerson = myUserInfo?.local_user_view?.person,
         showAccountAddMode = showAccountAddMode,
-        clickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode }
+        onClickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode }
     )
     Divider()
     // Drawer items
@@ -77,10 +77,10 @@ fun DrawerContent(
     accounts: List<Account>?,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
-    onClickListingType: (ListingType) -> Unit = {},
-    onCommunityClick: (community: CommunitySafe) -> Unit = {},
-    onClickProfile: () -> Unit = {},
-    onClickInbox: () -> Unit = {},
+    onClickListingType: (ListingType) -> Unit,
+    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onClickProfile: () -> Unit,
+    onClickInbox: () -> Unit,
     follows: List<CommunityFollowerView>?,
     unreadCounts: GetUnreadCountResponse?,
 ) {
@@ -113,10 +113,10 @@ fun DrawerContent(
 fun DrawerItemsMain(
     follows: List<CommunityFollowerView>? = null,
     onClickSaved: () -> Unit = {}, // TODO
-    onClickProfile: () -> Unit = {},
-    onClickInbox: () -> Unit = {},
-    onClickListingType: (ListingType) -> Unit = {},
-    onCommunityClick: (community: CommunitySafe) -> Unit = {},
+    onClickProfile: () -> Unit,
+    onClickInbox: () -> Unit,
+    onClickListingType: (ListingType) -> Unit,
+    onCommunityClick: (community: CommunitySafe) -> Unit,
     unreadCounts: GetUnreadCountResponse? = null,
 ) {
     val listState = rememberLazyListState()
@@ -201,15 +201,21 @@ fun DrawerItemsMain(
 @Preview
 @Composable
 fun DrawerItemsMainPreview() {
-    DrawerItemsMain()
+    DrawerItemsMain(
+        onClickListingType = {},
+        onClickProfile = {},
+        onClickInbox = {},
+        onCommunityClick = {},
+        onClickSaved = {},
+    )
 }
 
 @Composable
 fun DrawerAddAccountMode(
     navController: NavController = rememberNavController(),
     accounts: List<Account>? = null,
-    onSwitchAccountClick: (account: Account) -> Unit = {},
-    onSignOutClick: () -> Unit = {},
+    onSwitchAccountClick: (account: Account) -> Unit,
+    onSignOutClick: () -> Unit,
 ) {
     val accountsWithoutCurrent = accounts?.toMutableList()
     val currentAccount = getCurrentAccount(accounts)
@@ -241,13 +247,16 @@ fun DrawerAddAccountMode(
 @Preview
 @Composable
 fun DrawerAddAccountModePreview() {
-    DrawerAddAccountMode()
+    DrawerAddAccountMode(
+        onSignOutClick = {},
+        onSwitchAccountClick = {},
+    )
 }
 
 @Composable
 fun DrawerHeader(
     myPerson: PersonSafe?,
-    clickShowAccountAddMode: () -> Unit = {},
+    onClickShowAccountAddMode: () -> Unit,
     showAccountAddMode: Boolean = false,
 ) {
     val sizeMod = Modifier
@@ -256,7 +265,7 @@ fun DrawerHeader(
 
     Box(
         modifier = sizeMod
-            .clickable(onClick = clickShowAccountAddMode),
+            .clickable(onClick = onClickShowAccountAddMode),
     ) {
         myPerson?.banner?.also {
             PictrsBannerImage(
@@ -302,7 +311,10 @@ fun AvatarAndAccountName(myPerson: PersonSafe?) {
 @Preview
 @Composable
 fun DrawerHeaderPreview() {
-    DrawerHeader(myPerson = samplePersonSafe)
+    DrawerHeader(
+        myPerson = samplePersonSafe,
+        onClickShowAccountAddMode = {}
+    )
 }
 
 @Composable
@@ -401,8 +413,8 @@ fun HomeHeaderTitle(
 fun HomeHeader(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
-    onClickSortType: (SortType) -> Unit = {},
-    onClickListingType: (ListingType) -> Unit = {},
+    onClickSortType: (SortType) -> Unit,
+    onClickListingType: (ListingType) -> Unit,
     selectedSortType: SortType,
     selectedListingType: ListingType,
     navController: NavController,
@@ -522,12 +534,14 @@ fun HomeHeaderPreview() {
         selectedSortType = SortType.Hot,
         selectedListingType = ListingType.All,
         navController = rememberNavController(),
+        onClickListingType = {},
+        onClickSortType = {},
     )
 }
 
 @Composable
 fun HomeMoreDialog(
-    onDismissRequest: () -> Unit = {},
+    onDismissRequest: () -> Unit,
     navController: NavController,
 ) {
     AlertDialog(

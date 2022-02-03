@@ -52,7 +52,7 @@ fun CommunityLink(
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.body1,
-    onClick: (community: CommunitySafe) -> Unit = {},
+    onClick: (community: CommunitySafe) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -81,7 +81,7 @@ fun CommunityLink(
 @Composable
 fun CommunityLinkLarger(
     community: CommunitySafe,
-    onClick: (community: CommunitySafe) -> Unit = {},
+    onClick: (community: CommunitySafe) -> Unit,
 ) {
     CommunityLink(
         community = community,
@@ -100,7 +100,7 @@ fun CommunityLinkLarger(
 @Composable
 fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
-    onClick: (community: CommunitySafe) -> Unit = {},
+    onClick: (community: CommunitySafe) -> Unit,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -120,13 +120,19 @@ fun CommunityLinkLargerWithUserCount(
 @Preview
 @Composable
 fun CommunityLinkPreview() {
-    CommunityLink(community = sampleCommunitySafe)
+    CommunityLink(
+        community = sampleCommunitySafe,
+        onClick = {},
+    )
 }
 
 @Preview
 @Composable
 fun CommunityLinkWithUsersPreview() {
-    CommunityLinkLargerWithUserCount(communityView = sampleCommunityView)
+    CommunityLinkLargerWithUserCount(
+        communityView = sampleCommunityView,
+        onClick = {},
+    )
 }
 
 fun communityClickWrapper(

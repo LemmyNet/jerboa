@@ -156,6 +156,7 @@ fun PostActivity(
                                             navController,
                                         )
                                     },
+                                    onPostClick = {}, // Do nothing
                                     showReply = true,
                                     account = account,
                                     isModerator = isModerator(postView.creator, postViewModel.moderators)
@@ -226,6 +227,16 @@ fun PostActivity(
                                             navController,
                                         )
                                     },
+                                    onCommunityClick = { community ->
+                                        communityClickWrapper(
+                                            communityViewModel,
+                                            community.id,
+                                            account,
+                                            navController,
+                                            ctx
+                                        )
+                                    },
+                                    onPostClick = {}, // Do nothing
                                     account = account,
                                     moderators = postViewModel.moderators,
                                 )

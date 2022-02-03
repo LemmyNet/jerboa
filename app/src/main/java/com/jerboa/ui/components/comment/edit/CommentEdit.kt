@@ -20,7 +20,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 @Composable
 fun CommentEditHeader(
     navController: NavController = rememberNavController(),
-    onSaveClick: () -> Unit = {},
+    onSaveClick: () -> Unit,
     loading: Boolean,
 ) {
     TopAppBar(
@@ -66,7 +66,7 @@ fun CommentEditHeader(
 fun CommentEdit(
     content: String,
     onContentChange: (String) -> Unit,
-    onPickedImage: (image: Uri) -> Unit = {},
+    onPickedImage: (image: Uri) -> Unit,
 ) {
     LazyColumn {
         item {

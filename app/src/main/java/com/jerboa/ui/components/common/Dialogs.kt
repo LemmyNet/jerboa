@@ -21,8 +21,8 @@ val topSortTypes = listOf(
 
 @Composable
 fun SortTopOptionsDialog(
-    onDismissRequest: () -> Unit = {},
-    onClickSortType: (SortType) -> Unit = {},
+    onDismissRequest: () -> Unit,
+    onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
 ) {
 
@@ -64,13 +64,18 @@ fun SortTopOptionsDialog(
 @Preview
 @Composable
 fun SortOptionsDialogPreview() {
-    SortOptionsDialog(selectedSortType = SortType.Hot)
+    SortOptionsDialog(
+        selectedSortType = SortType.Hot,
+        onDismissRequest = {},
+        onClickSortTopOptions = {},
+        onClickSortType = {},
+    )
 }
 
 @Composable
 fun ListingTypeOptionsDialog(
-    onDismissRequest: () -> Unit = {},
-    onClickListingType: (ListingType) -> Unit = {},
+    onDismissRequest: () -> Unit,
+    onClickListingType: (ListingType) -> Unit,
     selectedListingType: ListingType,
 ) {
     AlertDialog(
@@ -104,9 +109,9 @@ fun ListingTypeOptionsDialog(
 
 @Composable
 fun SortOptionsDialog(
-    onDismissRequest: () -> Unit = {},
-    onClickSortType: (SortType) -> Unit = {},
-    onClickSortTopOptions: () -> Unit = {},
+    onDismissRequest: () -> Unit,
+    onClickSortType: (SortType) -> Unit,
+    onClickSortTopOptions: () -> Unit,
     selectedSortType: SortType,
 ) {
     AlertDialog(
@@ -146,8 +151,8 @@ fun SortOptionsDialog(
 
 @Composable
 fun UnreadOrAllOptionsDialog(
-    onDismissRequest: () -> Unit = {},
-    onClickUnreadOrAll: (UnreadOrAll) -> Unit = {},
+    onDismissRequest: () -> Unit,
+    onClickUnreadOrAll: (UnreadOrAll) -> Unit,
     selectedUnreadOrAll: UnreadOrAll,
 ) {
     AlertDialog(
@@ -176,5 +181,9 @@ fun UnreadOrAllOptionsDialog(
 @Preview
 @Composable
 fun ListingTypeOptionsDialogPreview() {
-    ListingTypeOptionsDialog(selectedListingType = ListingType.Local)
+    ListingTypeOptionsDialog(
+        selectedListingType = ListingType.Local,
+        onClickListingType = {},
+        onDismissRequest = {},
+    )
 }

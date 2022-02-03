@@ -26,7 +26,7 @@ import com.jerboa.ui.theme.*
 fun CommunityTopSection(
     communityView: CommunityView,
     modifier: Modifier = Modifier,
-    onClickFollowCommunity: (communityView: CommunityView) -> Unit = {},
+    onClickFollowCommunity: (communityView: CommunityView) -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,13 +92,16 @@ fun CommunityTopSection(
 @Preview
 @Composable
 fun CommunityTopSectionPreview() {
-    CommunityTopSection(communityView = sampleCommunityView)
+    CommunityTopSection(
+        communityView = sampleCommunityView,
+        onClickFollowCommunity = {},
+    )
 }
 
 @Composable
 fun CommunityHeader(
     communityName: String,
-    onClickSortType: (SortType) -> Unit = {},
+    onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
     navController: NavController = rememberNavController(),
 ) {
@@ -199,7 +202,7 @@ fun CommunityHeaderTitle(
 
 @Composable
 fun CommunityMoreDialog(
-    onDismissRequest: () -> Unit = {},
+    onDismissRequest: () -> Unit,
     navController: NavController,
 ) {
     AlertDialog(

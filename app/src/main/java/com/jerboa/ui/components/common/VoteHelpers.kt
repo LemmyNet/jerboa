@@ -16,7 +16,7 @@ fun <T> VoteGeneric(
     votes: Int,
     item: T,
     type: VoteType,
-    onVoteClick: (item: T) -> Unit = {},
+    onVoteClick: (item: T) -> Unit,
     showNumber: Boolean = true,
     account: Account?,
 ) {
