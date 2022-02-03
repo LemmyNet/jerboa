@@ -68,7 +68,7 @@ inline fun <I, reified O> I.convert(): O {
 fun toastException(ctx: Context?, error: Exception) {
     Log.e("jerboa", error.toString())
     if (ctx !== null) {
-        Toast.makeText(ctx, error.toString(), Toast.LENGTH_SHORT).show()
+        Toast.makeText(ctx, error.message, Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -586,6 +586,7 @@ fun fetchInitialData(
 
     siteViewModel.fetchSite(
         auth = account?.jwt,
+        ctx = null,
     )
 }
 

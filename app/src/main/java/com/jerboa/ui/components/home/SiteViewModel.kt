@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.home
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,10 +18,14 @@ class SiteViewModel : ViewModel() {
 
     fun fetchSite(
         auth: String?,
+        ctx: Context?,
     ) {
         viewModelScope.launch {
             loading = true
-            siteRes = getSiteWrapper(auth = auth)
+            siteRes = getSiteWrapper(
+                auth = auth,
+                ctx = ctx,
+            )
             loading = false
         }
     }
