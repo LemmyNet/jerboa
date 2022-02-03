@@ -130,12 +130,14 @@ fun personClickWrapper(
     account: Account?,
     navController: NavController,
     ctx: Context,
+    saved: Boolean = false,
 ) {
     personProfileViewModel.fetchPersonDetails(
         id = personId,
         account = account,
         clear = true,
         ctx = ctx,
+        changeSavedOnly = saved,
     )
-    navController.navigate(route = "profile")
+    navController.navigate(route = "profile?saved=$saved")
 }

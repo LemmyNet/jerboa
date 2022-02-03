@@ -124,8 +124,17 @@ class MainActivity : ComponentActivity() {
                             createReportViewModel = createReportViewModel,
                         )
                     }
-                    composable(route = "profile") {
+                    composable(
+                        route = "profile?saved={saved}",
+                        arguments = listOf(
+                            navArgument("saved") {
+                                defaultValue = false
+                                type = NavType.BoolType
+                            }
+                        )
+                    ) {
                         PersonProfileActivity(
+                            savedMode = it.arguments?.getBoolean("saved")!!,
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
                             postViewModel = postViewModel,

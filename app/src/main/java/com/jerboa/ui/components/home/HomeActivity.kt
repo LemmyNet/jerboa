@@ -320,6 +320,20 @@ fun MainDrawer(
                     account = account,
                     navController = navController,
                     ctx = ctx,
+                    saved = false,
+                )
+                closeDrawer(scope, scaffoldState)
+            }
+        },
+        onClickSaved = {
+            account?.id?.also {
+                personClickWrapper(
+                    personProfileViewModel = personProfileViewModel,
+                    personId = it,
+                    account = account,
+                    navController = navController,
+                    ctx = ctx,
+                    saved = true,
                 )
                 closeDrawer(scope, scaffoldState)
             }

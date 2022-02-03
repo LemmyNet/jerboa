@@ -44,6 +44,7 @@ fun Drawer(
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
+    onClickSaved: () -> Unit,
     unreadCounts: GetUnreadCountResponse?,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
@@ -67,6 +68,7 @@ fun Drawer(
         onCommunityClick = onCommunityClick,
         onClickProfile = onClickProfile,
         onClickInbox = onClickInbox,
+        onClickSaved = onClickSaved,
     )
 }
 
@@ -81,6 +83,7 @@ fun DrawerContent(
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
+    onClickSaved: () -> Unit,
     follows: List<CommunityFollowerView>?,
     unreadCounts: GetUnreadCountResponse?,
 ) {
@@ -103,6 +106,7 @@ fun DrawerContent(
             onCommunityClick = onCommunityClick,
             onClickProfile = onClickProfile,
             onClickInbox = onClickInbox,
+            onClickSaved = onClickSaved,
             follows = follows,
             unreadCounts = unreadCounts,
         )
@@ -112,7 +116,7 @@ fun DrawerContent(
 @Composable
 fun DrawerItemsMain(
     follows: List<CommunityFollowerView>? = null,
-    onClickSaved: () -> Unit = {}, // TODO
+    onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
@@ -149,14 +153,13 @@ fun DrawerItemsMain(
                 onClick = { onClickListingType(ListingType.All) },
             )
         }
-        // TODO add saved
-//        item {
-//            IconAndTextDrawerItem(
-//                text = "Saved",
-//                icon = Icons.Default.Star,
-//                onClick = onClickSaved,
-//            )
-//        }
+        item {
+            IconAndTextDrawerItem(
+                text = "Saved",
+                icon = Icons.Default.Star,
+                onClick = onClickSaved,
+            )
+        }
         item {
             Divider()
         }
