@@ -1,3 +1,15 @@
+# Jerboa v0.0.6-alpha Release (2022-02-03)
+
+- Dont resort comments ([#77](https://github.com/dessalines/jerboa/issues/77))
+- Adding user and community blocking. Fixes [#71](https://github.com/dessalines/jerboa/issues/71) Fixes [#58](https://github.com/dessalines/jerboa/issues/58) ([#75](https://github.com/dessalines/jerboa/issues/75))
+- Saved page fix ([#74](https://github.com/dessalines/jerboa/issues/74))
+- Adding saved page. Fixes [#20](https://github.com/dessalines/jerboa/issues/20) ([#73](https://github.com/dessalines/jerboa/issues/73))
+- Forwarding error messages from lemmy. Fixes [#66](https://github.com/dessalines/jerboa/issues/66)
+- Removing unit defaults. Fixes [#67](https://github.com/dessalines/jerboa/issues/67) ([#69](https://github.com/dessalines/jerboa/issues/69))
+- Addin comment and post reporting. Fixes [#59](https://github.com/dessalines/jerboa/issues/59) ([#68](https://github.com/dessalines/jerboa/issues/68))
+- Adding black background. Fixes [#56](https://github.com/dessalines/jerboa/issues/56)
+- Adding comment hot sorting, and a few API stubs. Fixes [#62](https://github.com/dessalines/jerboa/issues/62)
+
 # Jerboa v0.0.5-alpha Release (2022-01-26)
 
 - Fix null checks and crash. Fixes [#60](https://github.com/dessalines/jerboa/issues/60) . Fixes [#37](https://github.com/dessalines/jerboa/issues/37)
