@@ -205,6 +205,24 @@ fun MainPostListingsContent(
                 ctx = ctx,
             )
         },
+        onBlockCommunityClick = {
+            account?.also { acct ->
+                homeViewModel.blockCommunity(
+                    community = it,
+                    account = acct,
+                    ctx = ctx,
+                )
+            }
+        },
+        onBlockCreatorClick = {
+            account?.also { acct ->
+                homeViewModel.blockCreator(
+                    creator = it,
+                    account = acct,
+                    ctx = ctx,
+                )
+            }
+        },
         onEditPostClick = { postView ->
             postEditClickWrapper(
                 postEditViewModel,

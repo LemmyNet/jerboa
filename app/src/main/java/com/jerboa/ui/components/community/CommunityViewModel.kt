@@ -16,6 +16,7 @@ import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.GetCommunity
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
+import com.jerboa.ui.components.person.blockPersonRoutine
 import com.jerboa.ui.components.post.fetchPostsRoutine
 import com.jerboa.ui.components.post.likePostRoutine
 import com.jerboa.ui.components.post.savePostRoutine
@@ -110,5 +111,34 @@ class CommunityViewModel : ViewModel() {
                 loading.value = false
             }
         }
+    }
+
+    fun blockCommunity(
+        account: Account,
+        ctx: Context,
+    ) {
+        communityView?.community?.also {
+            blockCommunityRoutine(
+                community = it,
+                block = true,
+                account = account,
+                ctx = ctx,
+                scope = viewModelScope
+            )
+        }
+    }
+
+    fun blockCreator(
+        creator: PersonSafe,
+        account: Account,
+        ctx: Context,
+    ) {
+        blockPersonRoutine(
+            person = creator,
+            block = true,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope
+        )
     }
 }

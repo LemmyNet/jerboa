@@ -13,6 +13,7 @@ import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
+import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.GetPost
 import com.jerboa.datatypes.api.GetPostResponse
@@ -21,6 +22,8 @@ import com.jerboa.serializeToMap
 import com.jerboa.toastException
 import com.jerboa.ui.components.comment.likeCommentRoutine
 import com.jerboa.ui.components.comment.saveCommentRoutine
+import com.jerboa.ui.components.community.blockCommunityRoutine
+import com.jerboa.ui.components.person.blockPersonRoutine
 import kotlinx.coroutines.launch
 
 class PostViewModel : ViewModel() {
@@ -106,6 +109,35 @@ class PostViewModel : ViewModel() {
             account = account,
             ctx = ctx,
             scope = viewModelScope,
+        )
+    }
+
+    fun blockCommunity(
+        account: Account,
+        ctx: Context,
+    ) {
+        postView.value?.community?.also {
+            blockCommunityRoutine(
+                community = it,
+                block = true,
+                account = account,
+                ctx = ctx,
+                scope = viewModelScope
+            )
+        }
+    }
+
+    fun blockCreator(
+        creator: PersonSafe,
+        account: Account,
+        ctx: Context,
+    ) {
+        blockPersonRoutine(
+            person = creator,
+            block = true,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope
         )
     }
 

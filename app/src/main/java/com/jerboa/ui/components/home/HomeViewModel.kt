@@ -17,6 +17,8 @@ import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
+import com.jerboa.ui.components.community.blockCommunityRoutine
+import com.jerboa.ui.components.person.blockPersonRoutine
 import com.jerboa.ui.components.post.fetchPostsRoutine
 import com.jerboa.ui.components.post.likePostRoutine
 import com.jerboa.ui.components.post.savePostRoutine
@@ -110,6 +112,34 @@ class HomeViewModel : ViewModel() {
         unreadCountResponse = unreadCountResponse?.copy(
             replies = 0, private_messages = 0,
             mentions = 0
+        )
+    }
+
+    fun blockCommunity(
+        community: CommunitySafe,
+        account: Account,
+        ctx: Context,
+    ) {
+        blockCommunityRoutine(
+            community = community,
+            block = true,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope
+        )
+    }
+
+    fun blockCreator(
+        creator: PersonSafe,
+        account: Account,
+        ctx: Context,
+    ) {
+        blockPersonRoutine(
+            person = creator,
+            block = true,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
         )
     }
 }

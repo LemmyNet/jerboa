@@ -3,10 +3,7 @@ package com.jerboa.ui.components.comment
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import com.jerboa.CommentNodeData
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.CommunityModeratorView
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.*
 import com.jerboa.db.Account
 import com.jerboa.sortNodes
 
@@ -22,6 +19,7 @@ fun CommentNodes(
     onReportClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
+    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
@@ -44,6 +42,7 @@ fun CommentNodes(
                 onPostClick = onPostClick,
                 onEditCommentClick = onEditCommentClick,
                 onReportClick = onReportClick,
+                onBlockCreatorClick = onBlockCreatorClick,
                 showPostAndCommunityContext = showPostAndCommunityContext,
                 showRead = showRead,
             )

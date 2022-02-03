@@ -199,6 +199,18 @@ interface API {
     suspend fun createPostReport(@Body form: CreatePostReport): Response<PostReportResponse>
 
     /**
+     * Block a person.
+     */
+    @POST("user/block")
+    suspend fun blockPerson(@Body form: BlockPerson): Response<BlockPersonResponse>
+
+    /**
+     * Block a community.
+     */
+    @POST("community/block")
+    suspend fun blockCommunity(@Body form: BlockCommunity): Response<BlockCommunityResponse>
+
+    /**
      * Upload an image.
      */
     @Multipart
@@ -637,6 +649,38 @@ suspend fun createPostReportWrapper(
     return createdReport
 }
 
+suspend fun blockPersonWrapper(
+    form: BlockPerson,
+    ctx: Context,
+): BlockPersonResponse? {
+
+    var blockPersonRes: BlockPersonResponse? = null
+    val api = API.getInstance()
+
+    try {
+        blockPersonRes = retrofitErrorHandler(api.blockPerson(form))
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return blockPersonRes
+}
+
+suspend fun blockCommunityWrapper(
+    form: BlockCommunity,
+    ctx: Context,
+): BlockCommunityResponse? {
+
+    var blockCommunityRes: BlockCommunityResponse? = null
+    val api = API.getInstance()
+
+    try {
+        blockCommunityRes = retrofitErrorHandler(api.blockCommunity(form))
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return blockCommunityRes
+}
+
 suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Context): String? {
     var imageUrl: String? = null
     val api = API.getInstance()
@@ -750,12 +794,6 @@ fun <T> retrofitErrorHandler(res: Response<T>): T {
 //  }
 //
 //
-//  /**
-//   * Block a community.
-//   */
-//  async blockCommunity(form: BlockCommunity): Promise<BlockCommunityResponse> {
-//    return this.wrapper(HttpType.Post, "/community/block", form);
-//  }
 //
 //  /**
 //   * Delete a community.
@@ -933,13 +971,6 @@ fun <T> retrofitErrorHandler(res: Response<T>): T {
 //    return this.wrapper(HttpType.Post, "/user/ban", form);
 //  }
 //
-//  /**
-//   * Block a person.
-//   */
-//  async blockPerson(form: BlockPerson): Promise<BlockPersonResponse> {
-//    return this.wrapper(HttpType.Post, "/user/block", form);
-//  }
-
 // /**
 // * Verify your email
 // */

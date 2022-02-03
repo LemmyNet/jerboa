@@ -9,15 +9,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.api.API
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.PersonMentionView
-import com.jerboa.datatypes.PrivateMessageView
-import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.CreatePrivateMessage
 import com.jerboa.datatypes.api.MarkAllAsRead
 import com.jerboa.db.Account
 import com.jerboa.toastException
 import com.jerboa.ui.components.comment.*
+import com.jerboa.ui.components.community.blockCommunityRoutine
+import com.jerboa.ui.components.person.blockPersonRoutine
+import com.jerboa.ui.components.person.fetchPrivateMessagesRoutine
+import com.jerboa.ui.components.person.markPrivateMessageAsReadRoutine
 import kotlinx.coroutines.launch
 
 class InboxViewModel : ViewModel() {
@@ -197,6 +198,34 @@ class InboxViewModel : ViewModel() {
             scope = viewModelScope,
             navController = navController,
             focusManager = focusManager,
+        )
+    }
+
+    fun blockCommunity(
+        community: CommunitySafe,
+        account: Account,
+        ctx: Context,
+    ) {
+        blockCommunityRoutine(
+            community = community,
+            block = true,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope
+        )
+    }
+
+    fun blockCreator(
+        creator: PersonSafe,
+        account: Account,
+        ctx: Context,
+    ) {
+        blockPersonRoutine(
+            person = creator,
+            block = true,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope
         )
     }
 

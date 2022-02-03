@@ -113,6 +113,23 @@ fun PostActivity(
                                             ctx = ctx
                                         )
                                     },
+                                    onBlockCommunityClick = {
+                                        account?.also { acct ->
+                                            postViewModel.blockCommunity(
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    onBlockCreatorClick = {
+                                        account?.also { acct ->
+                                            postViewModel.blockCreator(
+                                                creator = it,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
                                     onReplyClick = { postView ->
                                         commentReplyClickWrapper(
                                             commentReplyViewModel = commentReplyViewModel,
@@ -226,6 +243,15 @@ fun PostActivity(
                                             commentView.comment.id,
                                             navController,
                                         )
+                                    },
+                                    onBlockCreatorClick = {
+                                        account?.also { acct ->
+                                            postViewModel.blockCreator(
+                                                creator = it,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
                                     },
                                     onCommunityClick = { community ->
                                         communityClickWrapper(

@@ -324,6 +324,15 @@ fun InboxTabs(
                                             )
                                         }
                                     },
+                                    onBlockCreatorClick = {
+                                        account?.also { acct ->
+                                            inboxViewModel.blockCreator(
+                                                creator = it,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
                                     onMarkAsReadClick = { commentView ->
                                         account?.also { acct ->
                                             inboxViewModel.markReplyAsRead(
