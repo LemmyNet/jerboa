@@ -140,6 +140,18 @@ fun InboxActivity(
                     onClickInbox = {
                         inboxClickWrapper(inboxViewModel, account, navController, ctx)
                     },
+                    onClickSaved = {
+                        account?.id?.also {
+                            personClickWrapper(
+                                personProfileViewModel = personProfileViewModel,
+                                personId = it,
+                                account = account,
+                                navController = navController,
+                                ctx = ctx,
+                                saved = true,
+                            )
+                        }
+                    },
                     navController = navController,
                 )
             }
