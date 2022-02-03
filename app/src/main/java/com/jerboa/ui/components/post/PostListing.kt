@@ -33,8 +33,8 @@ import com.jerboa.ui.theme.*
 @Composable
 fun PostHeaderLine(
     postView: PostView,
-    onCommunityClick: (community: CommunitySafe) -> Unit = {},
-    onPersonClick: (personId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     isSameInstance: Boolean = false,
 ) {
@@ -74,13 +74,18 @@ fun PostHeaderLine(
 @Composable
 fun PostHeaderLinePreview() {
     val postView = samplePostView
-    PostHeaderLine(postView = postView, isModerator = false)
+    PostHeaderLine(
+        postView = postView,
+        isModerator = false,
+        onCommunityClick = {},
+        onPersonClick = {},
+    )
 }
 
 @Composable
 fun PostNodeHeader(
     postView: PostView,
-    onPersonClick: (personId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
 ) {
     CommentOrPostNodeHeader(
@@ -99,7 +104,7 @@ fun PostNodeHeader(
 @Composable
 fun PostTitleBlock(
     post: Post,
-    onPostLinkClick: (url: String) -> Unit = {},
+    onPostLinkClick: (url: String) -> Unit,
 ) {
     val imagePost = post.url?.let { isImage(it) } ?: run { false }
 
@@ -119,7 +124,7 @@ fun PostTitleBlock(
 @Composable
 fun PostTitleAndImageLink(
     post: Post,
-    onPostLinkClick: (url: String) -> Unit = {},
+    onPostLinkClick: (url: String) -> Unit,
 ) {
     // This was tested, we know it exists
     val url = post.url!!
@@ -145,7 +150,7 @@ fun PostTitleAndImageLink(
 @Composable
 fun PostTitleAndThumbnail(
     post: Post,
-    onPostLinkClick: (url: String) -> Unit = {},
+    onPostLinkClick: (url: String) -> Unit,
 ) {
     Row {
         // Title of the post
@@ -193,7 +198,7 @@ fun PostTitleAndThumbnail(
 fun PostBody(
     post: Post,
     fullBody: Boolean = false,
-    onPostLinkClick: (url: String) -> Unit = {},
+    onPostLinkClick: (url: String) -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
@@ -240,20 +245,21 @@ fun PostBody(
 @Composable
 fun PreviewStoryTitleAndMetadata() {
     PostBody(
-        post = samplePost
+        post = samplePost,
+        onPostLinkClick = {},
     )
 }
 
 @Composable
 fun PostFooterLine(
     postView: PostView,
-    onUpvoteClick: (postView: PostView) -> Unit = {},
-    onDownvoteClick: (postView: PostView) -> Unit = {},
-    onReplyClick: (postView: PostView) -> Unit = {},
-    onSaveClick: (postView: PostView) -> Unit = {},
-    onEditPostClick: (postView: PostView) -> Unit = {},
+    onUpvoteClick: (postView: PostView) -> Unit,
+    onDownvoteClick: (postView: PostView) -> Unit,
+    onReplyClick: (postView: PostView) -> Unit,
+    onSaveClick: (postView: PostView) -> Unit,
+    onEditPostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit,
     showReply: Boolean = false,
     account: Account?,
 ) {
@@ -359,6 +365,7 @@ fun CommentCount(
         text = "$comments comments",
         noClick = true,
         account = account,
+        onClick = {},
     )
 }
 
@@ -375,6 +382,12 @@ fun PostFooterLinePreview() {
         postView = samplePostView,
         account = null,
         onReportClick = {},
+        onCommunityClick = {},
+        onUpvoteClick = {},
+        onSaveClick = {},
+        onReplyClick = {},
+        onDownvoteClick = {},
+        onEditPostClick = {},
     )
 }
 
@@ -387,6 +400,15 @@ fun PreviewPostListing() {
         account = null,
         isModerator = true,
         onReportClick = {},
+        onCommunityClick = {},
+        onEditPostClick = {},
+        onDownvoteClick = {},
+        onReplyClick = {},
+        onSaveClick = {},
+        onUpvoteClick = {},
+        onPostLinkClick = {},
+        onPersonClick = {},
+        onPostClick = {},
     )
 }
 
@@ -399,6 +421,15 @@ fun PreviewLinkPostListing() {
         account = null,
         isModerator = false,
         onReportClick = {},
+        onPersonClick = {},
+        onCommunityClick = {},
+        onPostClick = {},
+        onPostLinkClick = {},
+        onUpvoteClick = {},
+        onDownvoteClick = {},
+        onSaveClick = {},
+        onReplyClick = {},
+        onEditPostClick = {},
     )
 }
 
@@ -411,6 +442,15 @@ fun PreviewImagePostListing() {
         account = null,
         isModerator = false,
         onReportClick = {},
+        onPersonClick = {},
+        onCommunityClick = {},
+        onPostClick = {},
+        onPostLinkClick = {},
+        onUpvoteClick = {},
+        onDownvoteClick = {},
+        onSaveClick = {},
+        onReplyClick = {},
+        onEditPostClick = {},
     )
 }
 
@@ -423,6 +463,15 @@ fun PreviewLinkNoThumbnailPostListing() {
         account = null,
         isModerator = true,
         onReportClick = {},
+        onPersonClick = {},
+        onCommunityClick = {},
+        onPostClick = {},
+        onPostLinkClick = {},
+        onUpvoteClick = {},
+        onDownvoteClick = {},
+        onSaveClick = {},
+        onReplyClick = {},
+        onEditPostClick = {},
     )
 }
 
@@ -430,16 +479,16 @@ fun PreviewLinkNoThumbnailPostListing() {
 fun PostListing(
     postView: PostView,
     fullBody: Boolean = false,
-    onUpvoteClick: (postView: PostView) -> Unit = {},
-    onDownvoteClick: (postView: PostView) -> Unit = {},
+    onUpvoteClick: (postView: PostView) -> Unit,
+    onDownvoteClick: (postView: PostView) -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
-    onPostClick: (postView: PostView) -> Unit = {},
-    onPostLinkClick: (url: String) -> Unit = {},
-    onSaveClick: (postView: PostView) -> Unit = {},
-    onCommunityClick: (community: CommunitySafe) -> Unit = {},
-    onEditPostClick: (postView: PostView) -> Unit = {},
+    onPostClick: (postView: PostView) -> Unit,
+    onPostLinkClick: (url: String) -> Unit,
+    onSaveClick: (postView: PostView) -> Unit,
+    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onEditPostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
-    onPersonClick: (personId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
     account: Account?,
@@ -542,9 +591,9 @@ fun MetadataCard(post: Post) {
 @Composable
 fun PostOptionsDialog(
     postView: PostView,
-    onDismissRequest: () -> Unit = {},
-    onCommunityClick: (community: CommunitySafe) -> Unit = {},
-    onEditPostClick: () -> Unit = {},
+    onDismissRequest: () -> Unit,
+    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onEditPostClick: () -> Unit,
     onReportClick: () -> Unit,
     isCreator: Boolean,
 ) {
@@ -594,6 +643,11 @@ fun PostOptionsDialog(
 @Composable
 fun PostOptionsDialogPreview() {
     PostOptionsDialog(
-        postView = samplePostView, isCreator = true, onReportClick = {},
+        postView = samplePostView,
+        isCreator = true,
+        onReportClick = {},
+        onCommunityClick = {},
+        onDismissRequest = {},
+        onEditPostClick = {},
     )
 }

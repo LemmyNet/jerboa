@@ -54,8 +54,8 @@ fun SimpleTopAppBar(
 fun BottomAppBarAll(
     navController: NavController = rememberNavController(),
     unreadCounts: GetUnreadCountResponse? = null,
-    onClickProfile: () -> Unit = {},
-    onClickInbox: () -> Unit = {},
+    onClickProfile: () -> Unit,
+    onClickInbox: () -> Unit,
 ) {
     var selectedState by remember { mutableStateOf("home") }
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
@@ -136,7 +136,10 @@ fun BottomAppBarAll(
 @Preview
 @Composable
 fun BottomAppBarAllPreview() {
-    BottomAppBarAll()
+    BottomAppBarAll(
+        onClickInbox = {},
+        onClickProfile = {},
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -147,7 +150,7 @@ fun CommentOrPostNodeHeader(
     myVote: Int?,
     published: String,
     updated: String?,
-    onPersonClick: (personId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
     isPostCreator: Boolean,
     isModerator: Boolean,
     isCommunityBanned: Boolean,
@@ -190,7 +193,7 @@ fun CommentOrPostNodeHeader(
 
 @Composable
 fun ActionBarButton(
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
     icon: ImageVector,
     text: String? = null,
     contentColor: Color = Muted,

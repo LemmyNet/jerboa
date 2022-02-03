@@ -27,7 +27,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 @Composable
 fun CommentReplyHeader(
     navController: NavController = rememberNavController(),
-    onSendClick: () -> Unit = {},
+    onSendClick: () -> Unit,
     loading: Boolean,
 ) {
     TopAppBar(
@@ -71,7 +71,7 @@ fun CommentReplyHeader(
 @Composable
 fun RepliedComment(
     commentView: CommentView,
-    onPersonClick: (personId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -91,13 +91,17 @@ fun RepliedComment(
 @Preview
 @Composable
 fun RepliedCommentPreview() {
-    RepliedComment(commentView = sampleCommentView, isModerator = false)
+    RepliedComment(
+        commentView = sampleCommentView,
+        isModerator = false,
+        onPersonClick = {},
+    )
 }
 
 @Composable
 fun RepliedPost(
     postView: PostView,
-    onPersonClick: (personId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -118,8 +122,8 @@ fun CommentReply(
     commentView: CommentView,
     reply: String,
     onReplyChange: (String) -> Unit,
-    onPersonClick: (personId: Int) -> Unit = {},
-    onPickedImage: (image: Uri) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
+    onPickedImage: (image: Uri) -> Unit,
     isModerator: Boolean,
 ) {
     LazyColumn {
@@ -150,8 +154,8 @@ fun PostReply(
     postView: PostView,
     reply: String,
     onReplyChange: (String) -> Unit,
-    onPersonClick: (personId: Int) -> Unit = {},
-    onPickedImage: (image: Uri) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
+    onPickedImage: (image: Uri) -> Unit,
     isModerator: Boolean,
 ) {
     LazyColumn {

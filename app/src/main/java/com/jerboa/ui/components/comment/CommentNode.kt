@@ -37,7 +37,7 @@ import com.jerboa.ui.theme.XXL_PADDING
 @Composable
 fun CommentNodeHeader(
     commentView: CommentView,
-    onPersonClick: (personId: Int) -> Unit = {},
+    onPersonClick: (personId: Int) -> Unit,
     score: Int,
     myVote: Int?,
     isModerator: Boolean,
@@ -65,6 +65,7 @@ fun CommentNodeHeaderPreview() {
         score = 23,
         myVote = 26,
         isModerator = false,
+        onPersonClick = {},
     )
 }
 
@@ -102,15 +103,15 @@ fun CommentBodyPreview() {
 fun CommentNode(
     node: CommentNodeData,
     moderators: List<CommunityModeratorView>,
-    onUpvoteClick: (commentView: CommentView) -> Unit = {},
-    onDownvoteClick: (commentView: CommentView) -> Unit = {},
-    onReplyClick: (commentView: CommentView) -> Unit = {},
-    onSaveClick: (commentView: CommentView) -> Unit = {},
+    onUpvoteClick: (commentView: CommentView) -> Unit,
+    onDownvoteClick: (commentView: CommentView) -> Unit,
+    onReplyClick: (commentView: CommentView) -> Unit,
+    onSaveClick: (commentView: CommentView) -> Unit,
     onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
-    onEditCommentClick: (commentView: CommentView) -> Unit = {},
-    onPersonClick: (personId: Int) -> Unit = {},
-    onCommunityClick: (community: CommunitySafe) -> Unit = {},
-    onPostClick: (postId: Int) -> Unit = {},
+    onEditCommentClick: (commentView: CommentView) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
+    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     showPostAndCommunityContext: Boolean = false,
     showRead: Boolean = false,
@@ -223,6 +224,7 @@ fun CommentNode(
                 onCommunityClick = onCommunityClick,
                 onPostClick = onPostClick,
                 showPostAndCommunityContext = showPostAndCommunityContext,
+                onReportClick = onReportClick,
                 showRead = showRead,
                 onReplyClick = onReplyClick,
                 account = account,
@@ -235,8 +237,8 @@ fun CommentNode(
 @Composable
 fun PostAndCommunityContextHeader(
     commentView: CommentView,
-    onCommunityClick: (community: CommunitySafe) -> Unit = {},
-    onPostClick: (postId: Int) -> Unit = {},
+    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onPostClick: (postId: Int) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(top = LARGE_PADDING)
@@ -261,19 +263,23 @@ fun PostAndCommunityContextHeader(
 @Preview
 @Composable
 fun PostAndCommunityContextHeaderPreview() {
-    PostAndCommunityContextHeader(commentView = sampleCommentView)
+    PostAndCommunityContextHeader(
+        commentView = sampleCommentView,
+        onCommunityClick = {},
+        onPostClick = {},
+    )
 }
 
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
-    onUpvoteClick: (commentView: CommentView) -> Unit = {},
-    onDownvoteClick: (commentView: CommentView) -> Unit = {},
-    onReplyClick: (commentView: CommentView) -> Unit = {},
-    onSaveClick: (commentView: CommentView) -> Unit = {},
-    onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
-    onViewSourceClick: () -> Unit = {},
-    onEditCommentClick: (commentView: CommentView) -> Unit = {},
+    onUpvoteClick: (commentView: CommentView) -> Unit,
+    onDownvoteClick: (commentView: CommentView) -> Unit,
+    onReplyClick: (commentView: CommentView) -> Unit,
+    onSaveClick: (commentView: CommentView) -> Unit,
+    onMarkAsReadClick: (commentView: CommentView) -> Unit,
+    onViewSourceClick: () -> Unit,
+    onEditCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     showRead: Boolean = false,
     myVote: Int?,
@@ -376,15 +382,28 @@ fun CommentNodesPreview() {
         sampleSecondCommentReplyView, sampleCommentReplyView, sampleCommentView
     )
     val tree = buildCommentsTree(comments)
-    CommentNodes(nodes = tree, moderators = listOf())
+    CommentNodes(
+        nodes = tree,
+        moderators = listOf(),
+        onCommunityClick = {},
+        onDownvoteClick = {},
+        onEditCommentClick = {},
+        onMarkAsReadClick = {},
+        onPersonClick = {},
+        onPostClick = {},
+        onReportClick = {},
+        onReplyClick = {},
+        onSaveClick = {},
+        onUpvoteClick = {},
+    )
 }
 
 @Composable
 fun CommentOptionsDialog(
-    onDismissRequest: () -> Unit = {},
-    onViewSourceClick: () -> Unit = {},
-    onEditCommentClick: () -> Unit = {},
-    onReportClick: () -> Unit = {},
+    onDismissRequest: () -> Unit,
+    onViewSourceClick: () -> Unit,
+    onEditCommentClick: () -> Unit,
+    onReportClick: () -> Unit,
     isCreator: Boolean,
     commentView: CommentView,
 ) {
@@ -433,7 +452,14 @@ fun CommentOptionsDialog(
 @Preview
 @Composable
 fun CommentOptionsDialogPreview() {
-    CommentOptionsDialog(isCreator = true, commentView = sampleCommentView)
+    CommentOptionsDialog(
+        isCreator = true,
+        commentView = sampleCommentView,
+        onDismissRequest = {},
+        onEditCommentClick = {},
+        onReportClick = {},
+        onViewSourceClick = {}
+    )
 }
 
 @Composable

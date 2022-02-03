@@ -133,7 +133,7 @@ fun PictrsBannerImage(
 @Composable
 fun PickImage(
     modifier: Modifier = Modifier,
-    onPickedImage: (image: Uri) -> Unit = {},
+    onPickedImage: (image: Uri) -> Unit,
     showImage: Boolean = true,
 ) {
     val ctx = LocalContext.current

@@ -103,7 +103,7 @@ fun PersonProfileTopSectionPreview() {
 @Composable
 fun PersonProfileHeader(
     personName: String,
-    onClickSortType: (SortType) -> Unit = {},
+    onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
     navController: NavController = rememberNavController(),
 ) {
