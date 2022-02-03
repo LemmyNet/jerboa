@@ -83,7 +83,8 @@ fun CommunityActivity(
                                 onClickFollowCommunity = { cv ->
                                     communityViewModel.followCommunity(
                                         cv = cv,
-                                        account = account
+                                        account = account,
+                                        ctx = ctx,
                                     )
                                 }
                             )

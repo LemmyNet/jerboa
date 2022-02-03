@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
+import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.SortType
@@ -116,7 +117,7 @@ class PersonProfileViewModel : ViewModel() {
                     page = page.value,
                     saved_only = savedOnly.value,
                 )
-                val out = api.getPersonDetails(form = form.serializeToMap())
+                val out = retrofitErrorHandler(api.getPersonDetails(form = form.serializeToMap()))
 
                 if (clear) {
                     posts.clear()
