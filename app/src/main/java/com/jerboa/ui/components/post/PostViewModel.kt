@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
+import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.PostView
@@ -56,7 +57,7 @@ class PostViewModel : ViewModel() {
 
                 loading = true
                 val form = GetPost(id = id, auth = account?.jwt)
-                val out = api.getPost(form = form.serializeToMap())
+                val out = retrofitErrorHandler(api.getPost(form = form.serializeToMap()))
                 res = out
                 postView.value = out.post_view
                 comments.clear()

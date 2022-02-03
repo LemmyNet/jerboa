@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import com.jerboa.api.API
 import com.jerboa.api.fetchPostsWrapper
 import com.jerboa.api.getSiteWrapper
+import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.Login
@@ -44,7 +45,8 @@ class LoginViewModel : ViewModel() {
             try {
                 loading = true
                 try {
-                    jwt = api.login(form = form).jwt!! // TODO this needs to be checked,
+                    jwt = retrofitErrorHandler(api.login(form = form)).jwt!! // TODO this needs
+                    // to be checked,
                 } catch (e: java.net.UnknownHostException) {
                     loading = false
                     val msg = "$instance is not a Lemmy Instance"
@@ -72,7 +74,7 @@ class LoginViewModel : ViewModel() {
 
             // Refetch the site to get your name and id
             // Can't do a co-routine within a co-routine
-            siteViewModel.siteRes = getSiteWrapper(auth = jwt)
+            siteViewModel.siteRes = getSiteWrapper(auth = jwt, ctx = ctx)
 
             val luv = siteViewModel.siteRes?.my_user!!.local_user_view
             val account = Account(

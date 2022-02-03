@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
+import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.GetUnreadCount
 import com.jerboa.datatypes.api.GetUnreadCountResponse
@@ -81,7 +82,12 @@ class HomeViewModel : ViewModel() {
                     "jerboa",
                     "Fetching unread counts: $form"
                 )
-                unreadCountResponse = api.getUnreadCount(form = form.serializeToMap())
+                unreadCountResponse = retrofitErrorHandler(
+                    api.getUnreadCount(
+                        form = form
+                            .serializeToMap()
+                    )
+                )
             } catch (e: Exception) {
                 toastException(ctx = ctx, error = e)
             }

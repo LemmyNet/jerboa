@@ -85,7 +85,7 @@ fun CreatePostActivity(
                     onUrlChange = { cUrl ->
                         url = cUrl
                         if (Patterns.WEB_URL.matcher(cUrl).matches()) {
-                            createPostViewModel.fetchSuggestedTitle(cUrl)
+                            createPostViewModel.fetchSuggestedTitle(cUrl, ctx)
                         }
                     },
                     navController = navController,

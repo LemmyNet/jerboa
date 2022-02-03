@@ -328,7 +328,8 @@ fun fetchRepliesRoutine(
                 "jerboa",
                 "Fetching unread replies: $form"
             )
-            val newReplies = api.getReplies(form = form.serializeToMap()).replies
+            val newReplies = retrofitErrorHandler(api.getReplies(form = form.serializeToMap()))
+                .replies
 
             if (clear) {
                 replies.clear()
@@ -387,7 +388,12 @@ fun fetchPersonMentionsRoutine(
                 "jerboa",
                 "Fetching unread replies: $form"
             )
-            val newMentions = api.getPersonMentions(form = form.serializeToMap()).mentions
+            val newMentions = retrofitErrorHandler(
+                api.getPersonMentions(
+                    form = form
+                        .serializeToMap()
+                )
+            ).mentions
 
             if (clear) {
                 mentions.clear()
@@ -439,7 +445,12 @@ fun fetchPrivateMessagesRoutine(
                 "jerboa",
                 "Fetching unread replies: $form"
             )
-            val newMessages = api.getPrivateMessages(form = form.serializeToMap()).private_messages
+            val newMessages = retrofitErrorHandler(
+                api.getPrivateMessages(
+                    form = form
+                        .serializeToMap()
+                )
+            ).private_messages
 
             if (clear) {
                 messages.clear()
