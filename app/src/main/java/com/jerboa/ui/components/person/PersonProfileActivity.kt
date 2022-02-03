@@ -19,9 +19,12 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.jerboa.*
+import com.jerboa.VoteType
+import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.isScrolledToEnd
+import com.jerboa.openLink
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
@@ -49,6 +52,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PersonProfileActivity(
+    savedMode: Boolean,
     navController: NavController,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
@@ -76,7 +80,11 @@ fun PersonProfileActivity(
             topBar = {
                 personProfileViewModel.res?.person_view?.person?.name?.also {
                     PersonProfileHeader(
-                        personName = it,
+                        personName = if (savedMode) {
+                            "Saved"
+                        } else {
+                            it
+                        },
                         selectedSortType = personProfileViewModel.sortType.value,
                         onClickSortType = { sortType ->
                             personProfileViewModel.fetchPersonDetails(
@@ -85,6 +93,7 @@ fun PersonProfileActivity(
                                 clear = true,
                                 changeSortType = sortType,
                                 ctx = ctx,
+                                changeSavedOnly = savedMode,
                             )
                         },
                         navController = navController,
@@ -93,6 +102,7 @@ fun PersonProfileActivity(
             },
             content = {
                 UserTabs(
+                    savedMode = savedMode,
                     padding = it,
                     navController = navController,
                     personProfileViewModel = personProfileViewModel,
@@ -140,6 +150,7 @@ enum class UserTab {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun UserTabs(
+    savedMode: Boolean,
     navController: NavController,
     personProfileViewModel: PersonProfileViewModel,
     communityViewModel: CommunityViewModel,
@@ -153,7 +164,11 @@ fun UserTabs(
     createReportViewModel: CreateReportViewModel,
     padding: PaddingValues,
 ) {
-    val tabTitles = UserTab.values().map { it.toString() }
+    val tabTitles = if (savedMode) {
+        listOf(UserTab.Posts.name, UserTab.Comments.name)
+    } else {
+        UserTab.values().map { it.toString() }
+    }
     val pagerState = rememberPagerState()
 
     Column(
@@ -191,7 +206,13 @@ fun UserTabs(
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize()
         ) { tabIndex ->
-            when (tabIndex) {
+            // Need an offset for the saved mode, which doesn't show about
+            val tabI = if (!savedMode) {
+                tabIndex
+            } else {
+                tabIndex + 1
+            }
+            when (tabI) {
                 UserTab.About.ordinal -> {
                     LazyColumn(
                         state = rememberLazyListState(),
@@ -309,6 +330,7 @@ fun UserTabs(
                                     account = account,
                                     clear = true,
                                     ctx = ctx,
+                                    changeSavedOnly = savedMode,
                                 )
                             }
                         },
@@ -323,6 +345,7 @@ fun UserTabs(
                                         account = account,
                                         nextPage = true,
                                         ctx = ctx,
+                                        changeSavedOnly = savedMode,
                                     )
                                 }
                             }
@@ -355,6 +378,7 @@ fun UserTabs(
                                         account = account,
                                         nextPage = true,
                                         ctx = ctx,
+                                        changeSavedOnly = savedMode,
                                     )
                                 }
                             }
@@ -370,6 +394,7 @@ fun UserTabs(
                                     account = account,
                                     clear = true,
                                     ctx = ctx,
+                                    changeSavedOnly = savedMode,
                                 )
                             }
                         },

@@ -40,6 +40,8 @@ class PersonProfileViewModel : ViewModel() {
         private set
     var sortType = mutableStateOf(SortType.New)
         private set
+    var savedOnly = mutableStateOf(false)
+        private set
 
     fun likePost(voteType: VoteType, postView: PostView, account: Account?, ctx: Context) {
         likePostRoutine(mutableStateOf(postView), posts, voteType, account, ctx, viewModelScope)
@@ -76,6 +78,7 @@ class PersonProfileViewModel : ViewModel() {
         clear: Boolean = false,
         nextPage: Boolean = false,
         changeSortType: SortType? = null,
+        changeSavedOnly: Boolean,
         ctx: Context,
     ) {
         val api = API.getInstance()
@@ -101,6 +104,10 @@ class PersonProfileViewModel : ViewModel() {
                     sortType.value = it
                 }
 
+                changeSavedOnly?.also {
+                    savedOnly.value = it
+                }
+
                 personId.value = id
 
                 val form = GetPersonDetails(
@@ -108,6 +115,7 @@ class PersonProfileViewModel : ViewModel() {
                     auth = account?.jwt,
                     sort = sortType.value.toString(),
                     page = page.value,
+                    saved_only = savedOnly.value,
                 )
                 val out = retrofitErrorHandler(api.getPersonDetails(form = form.serializeToMap()))
 
