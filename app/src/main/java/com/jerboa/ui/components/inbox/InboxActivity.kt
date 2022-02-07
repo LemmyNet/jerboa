@@ -125,6 +125,7 @@ fun InboxActivity(
             },
             bottomBar = {
                 BottomAppBarAll(
+                    screen = "inbox",
                     unreadCounts = homeViewModel.unreadCountResponse,
                     onClickProfile = {
                         account?.id?.also {

@@ -128,6 +128,7 @@ fun PersonProfileActivity(
             },
             bottomBar = {
                 BottomAppBarAll(
+                    screen = if (savedMode) { "saved" } else { "profile" },
                     unreadCounts = homeViewModel.unreadCountResponse,
                     onClickProfile = {
                         account?.id?.also {
