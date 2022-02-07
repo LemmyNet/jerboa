@@ -1,14 +1,17 @@
 package com.jerboa.ui.components.report
 
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.ui.components.common.ReplyTextField
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 
 @Composable
@@ -61,7 +64,12 @@ fun CreateReportBody(
     reason: String,
     onReasonChange: (String) -> Unit,
 ) {
-    LazyColumn {
+    val listState = rememberLazyListState()
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.simpleVerticalScrollbar(listState)
+    ) {
         item {
             ReplyTextField(reply = reason, onReplyChange = onReasonChange)
         }

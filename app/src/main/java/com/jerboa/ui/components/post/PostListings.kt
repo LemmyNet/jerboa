@@ -17,6 +17,7 @@ import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 
 @Composable
 fun PostListings(
@@ -47,7 +48,9 @@ fun PostListings(
     ) {
         LazyColumn(
             state = listState,
-            modifier = Modifier.padding(padding)
+            modifier = Modifier
+                .padding(padding)
+                .simpleVerticalScrollbar(listState)
         ) {
 
             // TODO this should be a .also?

@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -21,6 +22,7 @@ import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.sampleCommunitySafe
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.*
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
@@ -97,10 +99,14 @@ fun CreatePostBody(
             (community !== null)
     )
 
+    val listState = rememberLazyListState()
+
     LazyColumn(
+        state = listState,
         modifier = Modifier
             .padding(MEDIUM_PADDING)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .simpleVerticalScrollbar(listState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         item {

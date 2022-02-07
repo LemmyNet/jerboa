@@ -3,6 +3,7 @@ package com.jerboa.ui.components.private_message
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.ui.components.common.ReplyTextField
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -98,7 +100,12 @@ fun PrivateMessageReply(
     onReplyChange: (String) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
 ) {
-    LazyColumn {
+    val listState = rememberLazyListState()
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.simpleVerticalScrollbar(listState)
+    ) {
         item {
             RepliedPrivateMessage(
                 privateMessageView = privateMessageView,
