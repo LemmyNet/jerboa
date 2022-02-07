@@ -3,6 +3,7 @@ package com.jerboa.ui.components.comment.edit
 import android.net.Uri
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -14,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.CommentView
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.ReplyTextField
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.MEDIUM_PADDING
 
@@ -68,7 +70,12 @@ fun CommentEdit(
     onContentChange: (String) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
 ) {
-    LazyColumn {
+    val listState = rememberLazyListState()
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.simpleVerticalScrollbar(listState)
+    ) {
         item {
             ReplyTextField(reply = content, onReplyChange = onContentChange)
         }

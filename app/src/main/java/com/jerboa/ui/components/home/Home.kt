@@ -129,6 +129,7 @@ fun DrawerItemsMain(
 
     LazyColumn(
         state = listState,
+        modifier = Modifier.simpleVerticalScrollbar(listState),
     ) {
         if (!follows.isNullOrEmpty()) {
             item {

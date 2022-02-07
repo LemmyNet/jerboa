@@ -20,6 +20,7 @@ import com.jerboa.datatypes.CommunityFollowerView
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.sampleCommunityView
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
@@ -73,6 +74,7 @@ fun CommunityListings(
 
     LazyColumn(
         state = listState,
+        modifier = Modifier.simpleVerticalScrollbar(listState),
     ) {
         items(communities) { item ->
             if (item is CommunityFollowerView) {

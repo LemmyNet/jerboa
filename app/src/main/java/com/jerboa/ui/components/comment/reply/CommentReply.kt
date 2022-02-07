@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,7 @@ import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.ReplyTextField
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -126,7 +128,12 @@ fun CommentReply(
     onPickedImage: (image: Uri) -> Unit,
     isModerator: Boolean,
 ) {
-    LazyColumn {
+    val listState = rememberLazyListState()
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.simpleVerticalScrollbar(listState)
+    ) {
         item {
             RepliedComment(
                 commentView = commentView,
@@ -158,7 +165,12 @@ fun PostReply(
     onPickedImage: (image: Uri) -> Unit,
     isModerator: Boolean,
 ) {
-    LazyColumn {
+    val listState = rememberLazyListState()
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.simpleVerticalScrollbar(listState)
+    ) {
         item {
             RepliedPost(
                 postView = postView,

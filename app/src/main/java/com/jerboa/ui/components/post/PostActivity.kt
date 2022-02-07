@@ -26,6 +26,7 @@ import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.commentReplyClickWrapper
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
 import com.jerboa.ui.components.person.PersonProfileViewModel
@@ -86,7 +87,11 @@ fun PostActivity(
                     },
                 ) {
                     postViewModel.postView.value?.also { postView ->
-                        LazyColumn(state = listState) {
+                        LazyColumn(
+                            state = listState,
+                            // TODO scroll bar was laggy here for some reason
+                            modifier = Modifier.simpleVerticalScrollbar(listState)
+                        ) {
                             item {
                                 PostListing(
                                     postView = postView,
