@@ -1,3 +1,9 @@
+# Jerboa v0.0.7-alpha Release (2022-02-06)
+
+- Merge pull request [#86](https://github.com/dessalines/jerboa/issues/86) from dessalines/bottom_bar_highlight
+- Darkblue statusbar color. Fixes [#79](https://github.com/dessalines/jerboa/issues/79) ([#84](https://github.com/dessalines/jerboa/issues/84))
+- Downgrade compose to fix liststate bug. Fixes [#81](https://github.com/dessalines/jerboa/issues/81)
+
 # Jerboa v0.0.6-alpha Release (2022-02-03)
 
 - Dont resort comments ([#77](https://github.com/dessalines/jerboa/issues/77))
