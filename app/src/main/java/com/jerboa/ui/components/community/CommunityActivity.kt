@@ -207,6 +207,7 @@ fun CommunityActivity(
             },
             bottomBar = {
                 BottomAppBarAll(
+                    screen = "communityList",
                     unreadCounts = homeViewModel.unreadCountResponse,
                     onClickProfile = {
                         account?.id?.also {

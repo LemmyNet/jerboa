@@ -53,12 +53,12 @@ fun SimpleTopAppBar(
 @Composable
 fun BottomAppBarAll(
     navController: NavController = rememberNavController(),
+    screen: String,
     unreadCounts: GetUnreadCountResponse? = null,
     onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
 ) {
-    var selectedState by remember { mutableStateOf("home") }
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
     BottomAppBar(
@@ -75,10 +75,9 @@ fun BottomAppBarAll(
             selectedContentColor = MaterialTheme.colors.primary,
             unselectedContentColor = Muted,
             onClick = {
-                selectedState = "home"
                 navController.navigate("home")
             },
-            selected = selectedState == "home"
+            selected = screen == "home"
         )
 
         BottomNavigationItem(
@@ -91,17 +90,16 @@ fun BottomAppBarAll(
             selectedContentColor = MaterialTheme.colors.primary,
             unselectedContentColor = Muted,
             onClick = {
-                selectedState = "communityList"
                 navController.navigate("communityList")
             },
-            selected = selectedState == "communityList"
+            selected = screen == "communityList"
         )
         BottomNavigationItem(
             icon = {
                 InboxIconAndBadge(
                     iconBadgeCount = totalUnreads,
                     icon = Icons.Default.Email,
-                    tint = if (selectedState == "inbox") {
+                    tint = if (screen == "inbox") {
                         MaterialTheme.colors.primary
                     } else {
                         Muted
@@ -111,10 +109,9 @@ fun BottomAppBarAll(
             selectedContentColor = MaterialTheme.colors.primary,
             unselectedContentColor = Muted,
             onClick = {
-                selectedState = "inbox"
                 onClickInbox()
             },
-            selected = selectedState == "inbox"
+            selected = screen == "inbox"
         )
         BottomNavigationItem(
             icon = {
@@ -126,10 +123,9 @@ fun BottomAppBarAll(
             selectedContentColor = MaterialTheme.colors.primary,
             unselectedContentColor = Muted,
             onClick = {
-                selectedState = "saved"
                 onClickSaved()
             },
-            selected = selectedState == "saved"
+            selected = screen == "saved"
         )
         BottomNavigationItem(
             icon = {
@@ -140,11 +136,8 @@ fun BottomAppBarAll(
             },
             selectedContentColor = MaterialTheme.colors.primary,
             unselectedContentColor = Muted,
-            onClick = {
-                selectedState = "personProfile"
-                onClickProfile()
-            },
-            selected = selectedState == "personProfile"
+            onClick = onClickProfile,
+            selected = screen == "profile"
         )
     }
 }
@@ -156,6 +149,7 @@ fun BottomAppBarAllPreview() {
         onClickInbox = {},
         onClickProfile = {},
         onClickSaved = {},
+        screen = "home",
     )
 }
 

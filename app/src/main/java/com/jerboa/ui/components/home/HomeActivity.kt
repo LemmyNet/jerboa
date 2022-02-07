@@ -120,6 +120,7 @@ fun HomeActivity(
             },
             bottomBar = {
                 BottomAppBarAll(
+                    screen = "home",
                     unreadCounts = homeViewModel.unreadCountResponse,
                     onClickProfile = {
                         account?.id?.also {
