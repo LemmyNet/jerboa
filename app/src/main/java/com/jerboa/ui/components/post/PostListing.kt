@@ -37,15 +37,34 @@ fun PostHeaderLine(
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     isSameInstance: Boolean = false,
+    showCommunityName: Boolean = true,
 ) {
     FlowRow(
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
     ) {
-        CommunityLink(
-            community = postView.community,
-            onClick = onCommunityClick,
-        )
-        DotSpacer()
+        if (postView.post.stickied) {
+            Icon(
+                imageVector = Icons.Default.PushPin,
+                contentDescription = "TODO",
+                tint = Muted,
+            )
+            DotSpacer()
+        }
+        if (postView.post.locked) {
+            Icon(
+                imageVector = Icons.Default.Lock,
+                contentDescription = "TODO",
+                tint = MaterialTheme.colors.error,
+            )
+            DotSpacer()
+        }
+        if (showCommunityName) {
+            CommunityLink(
+                community = postView.community,
+                onClick = onCommunityClick,
+            )
+            DotSpacer()
+        }
         PersonProfileLink(
             person = postView.creator,
             onClick = onPersonClick,
@@ -513,6 +532,7 @@ fun PostListing(
     onBlockCreatorClick: (person: PersonSafe) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
+    showCommunityName: Boolean = true,
     account: Account?,
 ) {
 
@@ -538,7 +558,8 @@ fun PostListing(
                 onCommunityClick = onCommunityClick,
                 onPersonClick = onPersonClick,
                 isModerator = isModerator,
-                isSameInstance = postView.post.url?.let { hostName(it) } == account?.instance
+                isSameInstance = postView.post.url?.let { hostName(it) } == account?.instance,
+                showCommunityName = showCommunityName,
             )
 
             //  Title + metadata

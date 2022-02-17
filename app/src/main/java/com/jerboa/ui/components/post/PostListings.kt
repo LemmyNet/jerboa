@@ -38,6 +38,7 @@ fun PostListings(
     loading: Boolean = false,
     isScrolledToEnd: () -> Unit,
     account: Account?,
+    showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
 ) {
     val listState = rememberLazyListState()
@@ -74,6 +75,7 @@ fun PostListings(
                     onBlockCommunityClick = onBlockCommunityClick,
                     onBlockCreatorClick = onBlockCreatorClick,
                     account = account,
+                    showCommunityName = showCommunityName,
                     isModerator = false // TODO can't know with many posts
                 )
             }

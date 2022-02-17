@@ -83,6 +83,7 @@ fun CommunityActivity(
             },
             content = {
                 PostListings(
+                    showCommunityName = false,
                     padding = it,
                     contentAboveListings = {
                         communityViewModel.communityView?.also {
