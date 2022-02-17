@@ -518,12 +518,17 @@ fun PostListing(
 
     Card(
         shape = MaterialTheme.shapes.small,
+        elevation = if (fullBody) {
+            0.dp
+        } else {
+            1.dp
+        },
         modifier = Modifier
             .padding(vertical = MEDIUM_PADDING)
             .clickable { onPostClick(postView) }
     ) {
         Column(
-            modifier = Modifier.padding(vertical = SMALL_PADDING, horizontal = LARGE_PADDING),
+            modifier = Modifier.padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING),
             verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
         ) {
 
