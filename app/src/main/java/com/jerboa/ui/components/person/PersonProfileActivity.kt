@@ -86,6 +86,7 @@ fun PersonProfileActivity(
                         } else {
                             person.name
                         },
+                        myProfile = account?.id == person.id,
                         selectedSortType = personProfileViewModel.sortType.value,
                         onClickSortType = { sortType ->
                             personProfileViewModel.fetchPersonDetails(

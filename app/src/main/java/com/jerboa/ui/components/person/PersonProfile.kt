@@ -102,6 +102,7 @@ fun PersonProfileTopSectionPreview() {
 @Composable
 fun PersonProfileHeader(
     personName: String,
+    myProfile: Boolean,
     onClickSortType: (SortType) -> Unit,
     onBlockPersonClick: () -> Unit,
     selectedSortType: SortType,
@@ -174,14 +175,16 @@ fun PersonProfileHeader(
                     tint = MaterialTheme.colors.onSurface
                 )
             }
-            IconButton(onClick = {
-                showMoreOptions = !showMoreOptions
-            }) {
-                Icon(
-                    Icons.Default.MoreVert,
-                    contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
-                )
+            if (!myProfile) {
+                IconButton(onClick = {
+                    showMoreOptions = !showMoreOptions
+                }) {
+                    Icon(
+                        Icons.Default.MoreVert,
+                        contentDescription = "TODO",
+                        tint = MaterialTheme.colors.onSurface
+                    )
+                }
             }
         }
     )
