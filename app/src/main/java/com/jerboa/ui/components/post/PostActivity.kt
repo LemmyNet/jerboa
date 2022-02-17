@@ -96,6 +96,7 @@ fun PostActivity(
                                 PostListing(
                                     postView = postView,
                                     fullBody = true,
+                                    showCommunityName = true,
                                     onUpvoteClick = {
                                         postViewModel.likePost(
                                             voteType = VoteType.Upvote,
