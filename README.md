@@ -54,7 +54,7 @@ Jerboa is a native-android client for Lemmy, built using the native Android Tool
 ## Installation / Releases
 
 - [Releases](https://github.com/dessalines/jerboa/releases)
-- FDroid TBD...
+- [F-Droid](https://f-droid.org/en/packages/com.jerboa/)
 
 ## Support / Donate
 
