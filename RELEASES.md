@@ -1,3 +1,10 @@
+# Jerboa v0.0.8-alpha Release (2022-02-17)
+
+- Showing stickied / locked. Fixes [#61](https://github.com/dessalines/jerboa/issues/61) ([#95](https://github.com/dessalines/jerboa/issues/95))
+- Add no-background post listing. Fixes [#91](https://github.com/dessalines/jerboa/issues/91) ([#94](https://github.com/dessalines/jerboa/issues/94))
+- Don't show block person on your own profile. Fixes [#93](https://github.com/dessalines/jerboa/issues/93)
+- Adding scrollbars to lazycolumns. Fixes [#87](https://github.com/dessalines/jerboa/issues/87) ([#90](https://github.com/dessalines/jerboa/issues/90))
+
 # Jerboa v0.0.7-alpha Release (2022-02-06)
 
 - Merge pull request [#86](https://github.com/dessalines/jerboa/issues/86) from dessalines/bottom_bar_highlight
