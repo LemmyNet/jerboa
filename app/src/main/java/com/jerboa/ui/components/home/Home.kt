@@ -403,7 +403,8 @@ fun HomeHeaderTitle(
     Column {
         Text(
             text = selectedListingType.toString(),
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            color = MaterialTheme.colors.onSurface,
         )
         Text(
             text = selectedSortType.toString(),

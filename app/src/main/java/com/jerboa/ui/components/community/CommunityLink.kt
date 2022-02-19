@@ -31,8 +31,8 @@ fun CommunityName(
 
     Text(
         text = communityNameShown(community),
-        color = color,
         style = style,
+        color = color,
     )
 }
 
@@ -71,7 +71,7 @@ fun CommunityLink(
             usersPerMonth?.also {
                 Text(
                     text = "$usersPerMonth users / month",
-                    color = Muted
+                    color = MaterialTheme.colors.onSurface,
                 )
             }
         }
@@ -85,7 +85,7 @@ fun CommunityLinkLarger(
 ) {
     CommunityLink(
         community = community,
-        color = Color.Unspecified,
+        color = MaterialTheme.colors.onSurface,
         size = LINK_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
         spacing = DRAWER_ITEM_SPACING,
@@ -105,7 +105,7 @@ fun CommunityLinkLargerWithUserCount(
     CommunityLink(
         community = communityView.community,
         usersPerMonth = communityView.counts.users_active_month,
-        color = Color.Unspecified,
+        color = MaterialTheme.colors.onSurface,
         size = LINK_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
         spacing = DRAWER_ITEM_SPACING,
