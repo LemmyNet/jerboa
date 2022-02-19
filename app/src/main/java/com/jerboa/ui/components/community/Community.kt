@@ -56,7 +56,8 @@ fun CommunityTopSection(
             ) {
                 Text(
                     text = communityView.community.title,
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.h6,
+                    color = MaterialTheme.colors.onSurface,
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Icon(
@@ -195,7 +196,8 @@ fun CommunityHeaderTitle(
     Column {
         Text(
             text = communityName,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            color = MaterialTheme.colors.onSurface,
         )
         Text(
             text = selectedSortType.toString(),

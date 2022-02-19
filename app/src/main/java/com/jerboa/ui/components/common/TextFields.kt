@@ -71,7 +71,7 @@ fun PreviewLines(
 fun MyMarkdownText(
     markdown: String,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.typography.body1.color,
+    color: Color = MaterialTheme.colors.onSurface,
 ) {
 
 //    val fontSize = TextUnit(MaterialTheme.typography.body1.fontSize.value, type = TextUnitType.Sp)

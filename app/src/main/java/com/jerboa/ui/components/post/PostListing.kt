@@ -122,19 +122,19 @@ fun PostNodeHeader(
 
 @Composable
 fun PostTitleBlock(
-    post: Post,
+    postView: PostView,
     onPostLinkClick: (url: String) -> Unit,
 ) {
-    val imagePost = post.url?.let { isImage(it) } ?: run { false }
+    val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
     if (imagePost) {
         PostTitleAndImageLink(
-            post = post,
+            postView = postView,
             onPostLinkClick = onPostLinkClick
         )
     } else {
         PostTitleAndThumbnail(
-            post = post,
+            postView = postView,
             onPostLinkClick = onPostLinkClick
         )
     }
@@ -142,17 +142,18 @@ fun PostTitleBlock(
 
 @Composable
 fun PostTitleAndImageLink(
-    post: Post,
+    postView: PostView,
     onPostLinkClick: (url: String) -> Unit,
 ) {
     // This was tested, we know it exists
-    val url = post.url!!
+    val url = postView.post.url!!
 
     Column {
         // Title of the post
         Text(
-            text = post.name,
+            text = postView.post.name,
             style = MaterialTheme.typography.subtitle1,
+            color = if (postView.read) { Muted } else { MaterialTheme.colors.onSurface },
             modifier = Modifier.padding(bottom = MEDIUM_PADDING)
         )
 
@@ -168,14 +169,17 @@ fun PostTitleAndImageLink(
 
 @Composable
 fun PostTitleAndThumbnail(
-    post: Post,
+    postView: PostView,
     onPostLinkClick: (url: String) -> Unit,
 ) {
+    val post = postView.post
+
     Row {
         // Title of the post
         Text(
             text = post.name,
             style = MaterialTheme.typography.subtitle1,
+            color = if (postView.read) { Muted } else { MaterialTheme.colors.onSurface },
             modifier = Modifier.weight(1f)
         )
 
@@ -215,14 +219,15 @@ fun PostTitleAndThumbnail(
 
 @Composable
 fun PostBody(
-    post: Post,
+    postView: PostView,
     fullBody: Boolean = false,
     onPostLinkClick: (url: String) -> Unit,
 ) {
+    val post = postView.post
     Column(
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
-        PostTitleBlock(post = post, onPostLinkClick = onPostLinkClick)
+        PostTitleBlock(postView = postView, onPostLinkClick = onPostLinkClick)
 
         // The metadata card
         if (fullBody && post.embed_title !== null) {
@@ -264,7 +269,7 @@ fun PostBody(
 @Composable
 fun PreviewStoryTitleAndMetadata() {
     PostBody(
-        post = samplePost,
+        postView = samplePostView,
         onPostLinkClick = {},
     )
 }
@@ -564,7 +569,7 @@ fun PostListing(
 
             //  Title + metadata
             PostBody(
-                post = postView.post,
+                postView = postView,
                 fullBody,
                 onPostLinkClick = onPostLinkClick,
             )

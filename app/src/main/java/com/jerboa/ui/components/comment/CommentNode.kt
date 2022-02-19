@@ -333,7 +333,7 @@ fun CommentFooterLine(
                 item = commentView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = false,
+                showNumber = (downvotes != 0),
                 account = account,
             )
             VoteGeneric(

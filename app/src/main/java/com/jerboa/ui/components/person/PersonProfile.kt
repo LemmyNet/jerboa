@@ -198,7 +198,8 @@ fun PersonProfileHeaderTitle(
     Column {
         Text(
             text = personName,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            color = MaterialTheme.colors.onSurface,
         )
         Text(
             text = selectedSortType.toString(),
