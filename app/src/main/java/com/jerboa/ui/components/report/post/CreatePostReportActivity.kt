@@ -4,13 +4,10 @@ import android.util.Log
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -29,7 +26,7 @@ fun CreatePostReportActivity(
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
-    var reason by rememberSaveable { mutableStateOf("") }
+    var reason by remember { mutableStateOf(TextFieldValue("")) }
 
     val focusManager = LocalFocusManager.current
 
@@ -42,7 +39,7 @@ fun CreatePostReportActivity(
                     onCreateClick = {
                         account?.also { acct ->
                             createReportViewModel.createPostReport(
-                                reason = reason,
+                                reason = reason.text,
                                 ctx = ctx,
                                 navController = navController,
                                 focusManager = focusManager,
@@ -56,6 +53,7 @@ fun CreatePostReportActivity(
                 CreateReportBody(
                     reason = reason,
                     onReasonChange = { reason = it },
+                    account = account,
                 )
             }
         )

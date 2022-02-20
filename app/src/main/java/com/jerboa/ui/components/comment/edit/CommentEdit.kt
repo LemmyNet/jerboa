@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.comment.edit
 
 import android.net.Uri
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
@@ -10,14 +9,14 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.CommentView
-import com.jerboa.ui.components.common.PickImage
-import com.jerboa.ui.components.common.ReplyTextField
+import com.jerboa.db.Account
+import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
-import com.jerboa.ui.theme.MEDIUM_PADDING
 
 @Composable
 fun CommentEditHeader(
@@ -66,9 +65,10 @@ fun CommentEditHeader(
 
 @Composable
 fun CommentEdit(
-    content: String,
-    onContentChange: (String) -> Unit,
+    content: TextFieldValue,
+    onContentChange: (TextFieldValue) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
+    account: Account?,
 ) {
     val listState = rememberLazyListState()
 
@@ -77,13 +77,7 @@ fun CommentEdit(
         modifier = Modifier.simpleVerticalScrollbar(listState)
     ) {
         item {
-            ReplyTextField(reply = content, onReplyChange = onContentChange)
-        }
-        item {
-            PickImage(
-                onPickedImage = onPickedImage,
-                modifier = Modifier.padding(MEDIUM_PADDING)
-            )
+            MarkdownTextField(reply = content, onReplyChange = onContentChange, account = account)
         }
     }
 }

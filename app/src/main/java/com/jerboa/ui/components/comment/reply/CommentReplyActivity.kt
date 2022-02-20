@@ -7,10 +7,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
@@ -39,7 +39,7 @@ fun CommentReplyActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
-    var reply by rememberSaveable { mutableStateOf("") }
+    var reply by remember { mutableStateOf(TextFieldValue("")) }
 
     val focusManager = LocalFocusManager.current
 
@@ -52,7 +52,7 @@ fun CommentReplyActivity(
                     onSendClick = {
                         account?.also { acct ->
                             commentReplyViewModel.createComment(
-                                content = reply,
+                                content = reply.text,
                                 account = acct,
                                 ctx = ctx,
                                 navController = navController,
@@ -73,6 +73,7 @@ fun CommentReplyActivity(
                     commentReplyViewModel.commentParentView.value?.also { commentView ->
                         CommentReply(
                             commentView = commentView,
+                            account = account,
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = { personId ->
@@ -90,17 +91,27 @@ fun CommentReplyActivity(
                                     account?.also { acct ->
                                         val url = uploadPictrsImage(acct, imageIs, ctx)
                                         url?.also {
-                                            reply = appendMarkdownImage(reply, it)
+                                            reply = TextFieldValue(
+                                                appendMarkdownImage(
+                                                    reply.text,
+                                                    it
+                                                )
+                                            )
                                         }
                                     }
                                 }
                             },
-                            isModerator(commentView.creator, postViewModel.moderators)
+                            isModerator = isModerator(
+                                commentView.creator,
+                                postViewModel
+                                    .moderators
+                            ),
                         )
                     } ?: run {
                         commentReplyViewModel.postView.value?.also { postView ->
                             PostReply(
                                 postView = postView,
+                                account = account,
                                 reply = reply,
                                 onReplyChange = { reply = it },
                                 onPersonClick = { personId ->
@@ -111,17 +122,6 @@ fun CommentReplyActivity(
                                         navController,
                                         ctx
                                     )
-                                },
-                                onPickedImage = { uri ->
-                                    val imageIs = imageInputStreamFromUri(ctx, uri)
-                                    scope.launch {
-                                        account?.also { acct ->
-                                            val url = uploadPictrsImage(acct, imageIs, ctx)
-                                            url?.also {
-                                                reply = appendMarkdownImage(reply, it)
-                                            }
-                                        }
-                                    }
                                 },
                                 isModerator = isModerator(postView.creator, postViewModel.moderators)
                             )

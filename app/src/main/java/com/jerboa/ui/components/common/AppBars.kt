@@ -258,7 +258,7 @@ fun ActionBarButton(
 }
 
 @Composable
-fun DotSpacer(padding: Dp = MEDIUM_PADDING) {
+fun DotSpacer(padding: Dp = SMALL_PADDING) {
     Text(
         text = "·",
         modifier = Modifier.padding(horizontal = padding)
