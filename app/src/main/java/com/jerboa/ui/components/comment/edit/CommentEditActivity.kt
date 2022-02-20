@@ -5,9 +5,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
@@ -34,7 +34,8 @@ fun CommentEditActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
-    var content by rememberSaveable { mutableStateOf(commentEditViewModel.commentView.value?.comment?.content.orEmpty()) }
+
+    var content by remember { mutableStateOf(TextFieldValue(commentEditViewModel.commentView.value?.comment?.content.orEmpty())) }
 
     val focusManager = LocalFocusManager.current
 
@@ -47,7 +48,7 @@ fun CommentEditActivity(
                     onSaveClick = {
                         account?.also { acct ->
                             commentEditViewModel.editComment(
-                                content = content,
+                                content = content.text,
                                 ctx = ctx,
                                 navController = navController,
                                 focusManager = focusManager,
@@ -63,6 +64,7 @@ fun CommentEditActivity(
             content = {
                 CommentEdit(
                     content = content,
+                    account = account,
                     onContentChange = { content = it },
                     onPickedImage = { uri ->
                         val imageIs = imageInputStreamFromUri(ctx, uri)
@@ -70,7 +72,7 @@ fun CommentEditActivity(
                             account?.also { acct ->
                                 val url = uploadPictrsImage(acct, imageIs, ctx)
                                 url?.also {
-                                    content = appendMarkdownImage(content, it)
+                                    content = TextFieldValue(appendMarkdownImage(content.text, it))
                                 }
                             }
                         }

@@ -12,15 +12,16 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.sampleCommentView
+import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.CommentNodeHeader
-import com.jerboa.ui.components.common.PickImage
-import com.jerboa.ui.components.common.ReplyTextField
+import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
@@ -122,11 +123,12 @@ fun RepliedPost(
 @Composable
 fun CommentReply(
     commentView: CommentView,
-    reply: String,
-    onReplyChange: (String) -> Unit,
+    reply: TextFieldValue,
+    onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
     isModerator: Boolean,
+    account: Account?,
 ) {
     val listState = rememberLazyListState()
 
@@ -145,13 +147,7 @@ fun CommentReply(
             Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         }
         item {
-            ReplyTextField(reply = reply, onReplyChange = onReplyChange)
-        }
-        item {
-            PickImage(
-                onPickedImage = onPickedImage,
-                modifier = Modifier.padding(MEDIUM_PADDING)
-            )
+            MarkdownTextField(reply = reply, onReplyChange = onReplyChange, account = account)
         }
     }
 }
@@ -159,11 +155,11 @@ fun CommentReply(
 @Composable
 fun PostReply(
     postView: PostView,
-    reply: String,
-    onReplyChange: (String) -> Unit,
+    reply: TextFieldValue,
+    onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onPickedImage: (image: Uri) -> Unit,
     isModerator: Boolean,
+    account: Account?,
 ) {
     val listState = rememberLazyListState()
 
@@ -182,13 +178,7 @@ fun PostReply(
             Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         }
         item {
-            ReplyTextField(reply = reply, onReplyChange = onReplyChange)
-        }
-        item {
-            PickImage(
-                onPickedImage = onPickedImage,
-                modifier = Modifier.padding(MEDIUM_PADDING)
-            )
+            MarkdownTextField(reply = reply, onReplyChange = onReplyChange, account = account)
         }
     }
 }

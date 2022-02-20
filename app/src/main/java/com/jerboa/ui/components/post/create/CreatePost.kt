@@ -149,6 +149,7 @@ fun CreatePostBody(
                 onPickedImage = onPickedImage,
             )
         }
+        // TODO change this to reply text field at some point
         item {
             OutlinedTextField(
                 label = {

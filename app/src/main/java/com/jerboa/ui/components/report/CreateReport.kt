@@ -8,9 +8,11 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.ui.components.common.ReplyTextField
+import com.jerboa.db.Account
+import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 
@@ -61,8 +63,9 @@ fun CreateReportHeader(
 
 @Composable
 fun CreateReportBody(
-    reason: String,
-    onReasonChange: (String) -> Unit,
+    reason: TextFieldValue,
+    onReasonChange: (TextFieldValue) -> Unit,
+    account: Account?,
 ) {
     val listState = rememberLazyListState()
 
@@ -71,7 +74,7 @@ fun CreateReportBody(
         modifier = Modifier.simpleVerticalScrollbar(listState)
     ) {
         item {
-            ReplyTextField(reply = reason, onReplyChange = onReasonChange)
+            MarkdownTextField(reply = reason, onReplyChange = onReasonChange, account = account)
         }
     }
 }

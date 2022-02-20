@@ -6,14 +6,11 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.datatypes.api.CreatePrivateMessage
 import com.jerboa.db.AccountViewModel
@@ -35,7 +32,7 @@ fun PrivateMessageReplyActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    var reply by rememberSaveable { mutableStateOf("") }
+    var reply by remember { mutableStateOf(TextFieldValue("")) }
 
     val focusManager = LocalFocusManager.current
 
@@ -51,7 +48,7 @@ fun PrivateMessageReplyActivity(
                                 val recipientId = privateMessageView.creator.id
                                 val form =
                                     CreatePrivateMessage(
-                                        content = reply,
+                                        content = reply.text,
                                         recipient_id = recipientId,
                                         auth = account.jwt
                                     )
@@ -72,6 +69,7 @@ fun PrivateMessageReplyActivity(
                     inboxViewModel.replyToPrivateMessageView?.also { privateMessageView ->
                         PrivateMessageReply(
                             privateMessageView = privateMessageView,
+                            account = account,
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = { personId ->
