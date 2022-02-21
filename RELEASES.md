@@ -1,3 +1,12 @@
+# Jerboa v0.0.9-alpha Release (2022-02-20)
+
+- Adding a markdown helper. Fixes [#38](https://github.com/dessalines/jerboa/issues/38)
+- Show comment upvote count when there are downvotes. Fixes [#97](https://github.com/dessalines/jerboa/issues/97)
+- Fix muted colors for titles, top app bars. Fixes [#98](https://github.com/dessalines/jerboa/issues/98)
+- Smoother comment scrolling. Fixes [#99](https://github.com/dessalines/jerboa/issues/99)
+- Mute post title color on read. Fixes [#100](https://github.com/dessalines/jerboa/issues/100)
+- Add link to Jerboa on F-Droid ([#96](https://github.com/dessalines/jerboa/issues/96))
+
 # Jerboa v0.0.8-alpha Release (2022-02-17)
 
 - Showing stickied / locked. Fixes [#61](https://github.com/dessalines/jerboa/issues/61) ([#95](https://github.com/dessalines/jerboa/issues/95))
