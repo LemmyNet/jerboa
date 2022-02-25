@@ -7,22 +7,19 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
-import com.jerboa.api.uploadPictrsImage
-import com.jerboa.appendMarkdownImage
 import com.jerboa.db.AccountViewModel
-import com.jerboa.imageInputStreamFromUri
 import com.jerboa.isModerator
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun CommentReplyActivity(
@@ -39,7 +36,12 @@ fun CommentReplyActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
-    var reply by remember { mutableStateOf(TextFieldValue("")) }
+    var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(
+            TextFieldValue
+            ("")
+        )
+    }
 
     val focusManager = LocalFocusManager.current
 
@@ -84,22 +86,6 @@ fun CommentReplyActivity(
                                     navController,
                                     ctx
                                 )
-                            },
-                            onPickedImage = { uri ->
-                                val imageIs = imageInputStreamFromUri(ctx, uri)
-                                scope.launch {
-                                    account?.also { acct ->
-                                        val url = uploadPictrsImage(acct, imageIs, ctx)
-                                        url?.also {
-                                            reply = TextFieldValue(
-                                                appendMarkdownImage(
-                                                    reply.text,
-                                                    it
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
                             },
                             isModerator = isModerator(
                                 commentView.creator,

@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.comment.reply
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -126,7 +125,6 @@ fun CommentReply(
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onPickedImage: (image: Uri) -> Unit,
     isModerator: Boolean,
     account: Account?,
 ) {
