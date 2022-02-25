@@ -24,6 +24,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
@@ -53,12 +54,11 @@ fun MarkdownTextField(
 
     if (showCreateLink) {
         CreateLinkDialog(
+            value = reply,
             onDismissRequest = { showCreateLink = false },
             onClickOk = {
                 showCreateLink = false
-                val out = reply.text.insert(reply.selection.start, it)
-                val cursor = TextRange(reply.selection.start + it.length)
-                onReplyChange(TextFieldValue(out, cursor))
+                onReplyChange(it)
             },
         )
     }
@@ -178,11 +178,13 @@ fun MarkdownTextField(
 
 @Composable
 fun CreateLinkDialog(
-    onClickOk: (String) -> Unit,
+    value: TextFieldValue,
+    onClickOk: (TextFieldValue) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
+    val initialText = value.getSelectedText().text
 
-    var text by rememberSaveable { mutableStateOf("") }
+    var text by rememberSaveable { mutableStateOf(initialText) }
     var link by rememberSaveable { mutableStateOf("") }
 
     AlertDialog(
@@ -232,7 +234,15 @@ fun CreateLinkDialog(
                 }
                 TextButton(
                     onClick = {
-                        onClickOk("[$text]($link)")
+                        val replacement = "[$text]($link)"
+                        val out = value.text.replaceRange(
+                            value.selection.start,
+                            value.selection.end,
+                            replacement
+                        )
+                        val end = value.selection.start + replacement.length
+                        val cursor = TextRange(end, end)
+                        onClickOk(TextFieldValue(out, cursor))
                     },
                 ) {
                     Text(
@@ -281,7 +291,7 @@ fun ShowPreviewDialog(
 @Preview
 @Composable
 fun CreateLinkDialogPreview() {
-    CreateLinkDialog(onClickOk = {}, onDismissRequest = {})
+    CreateLinkDialog(onClickOk = {}, onDismissRequest = {}, value = TextFieldValue(""))
 }
 
 @Composable
@@ -350,8 +360,7 @@ fun simpleMarkdownSurround(
         val end = if (surround) {
             value.selection.end + markdownChar.length
         } else {
-            value
-                .selection.end
+            value.selection.end
         }
         val cursor = if (value.selection.end == value.text.length) {
             TextRange(start)
