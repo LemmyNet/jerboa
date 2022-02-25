@@ -1,3 +1,8 @@
+# Jerboa v0.0.10-alpha Release (2022-02-25)
+
+- Adding link from text selection. Fixes [#105](https://github.com/dessalines/jerboa/issues/105) ([#107](https://github.com/dessalines/jerboa/issues/107))
+- Remember saved text for markdown areas. Fixes [#104](https://github.com/dessalines/jerboa/issues/104)
+
 # Jerboa v0.0.9-alpha Release (2022-02-20)
 
 - Adding a markdown helper. Fixes [#38](https://github.com/dessalines/jerboa/issues/38)
