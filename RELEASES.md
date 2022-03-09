@@ -1,3 +1,10 @@
+# Jerboa v0.0.11-alpha Release (2022-03-09)
+
+- Adding deploy to device script.
+- Adding signing config to release.
+- Upgrading some deps. ([#120](https://github.com/dessalines/jerboa/issues/120))
+- Various Light theme fixes. ([#118](https://github.com/dessalines/jerboa/issues/118))
+
 # Jerboa v0.0.10-alpha Release (2022-02-25)
 
 - Adding link from text selection. Fixes [#105](https://github.com/dessalines/jerboa/issues/105) ([#107](https://github.com/dessalines/jerboa/issues/107))
