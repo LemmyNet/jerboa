@@ -35,7 +35,6 @@ fun CommentReplyActivity(
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
-    val scope = rememberCoroutineScope()
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue

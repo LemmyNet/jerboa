@@ -10,15 +10,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
-import com.jerboa.api.uploadPictrsImage
-import com.jerboa.appendMarkdownImage
 import com.jerboa.db.AccountViewModel
-import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun CommentEditActivity(
@@ -34,7 +30,6 @@ fun CommentEditActivity(
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
-    val scope = rememberCoroutineScope()
 
     var content by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(commentEditViewModel.commentView.value?.comment?.content.orEmpty())) }
 
@@ -67,17 +62,6 @@ fun CommentEditActivity(
                     content = content,
                     account = account,
                     onContentChange = { content = it },
-                    onPickedImage = { uri ->
-                        val imageIs = imageInputStreamFromUri(ctx, uri)
-                        scope.launch {
-                            account?.also { acct ->
-                                val url = uploadPictrsImage(acct, imageIs, ctx)
-                                url?.also {
-                                    content = TextFieldValue(appendMarkdownImage(content.text, it))
-                                }
-                            }
-                        }
-                    },
                 )
             }
         )

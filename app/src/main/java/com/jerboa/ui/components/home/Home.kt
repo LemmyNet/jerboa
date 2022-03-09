@@ -189,7 +189,7 @@ fun DrawerItemsMain(
                     text = "Subscriptions",
                     modifier = Modifier.padding(LARGE_PADDING),
                     style = MaterialTheme.typography.subtitle1,
-                    color = Muted,
+                    color = MaterialTheme.colors.onBackground.muted,
                 )
             }
             items(follows) { follow ->
@@ -307,7 +307,7 @@ fun AvatarAndAccountName(myPerson: PersonSafe?) {
         }
         PersonName(
             person = myPerson,
-            color = MaterialTheme.colors.onSurface,
+            color = Color.White
         )
     }
 }
@@ -404,12 +404,11 @@ fun HomeHeaderTitle(
         Text(
             text = selectedListingType.toString(),
             style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.onSurface,
         )
         Text(
             text = selectedSortType.toString(),
             style = MaterialTheme.typography.body1,
-            color = Muted,
+            color = contentColorFor(MaterialTheme.colors.primarySurface).muted
         )
     }
 }
@@ -474,6 +473,9 @@ fun HomeHeader(
         )
     }
 
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TopAppBar(
         title = {
             HomeHeaderTitle(
@@ -481,6 +483,8 @@ fun HomeHeader(
                 selectedListingType = selectedListingType,
             )
         },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = {
@@ -502,7 +506,7 @@ fun HomeHeader(
                 Icon(
                     Icons.Default.FilterList,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
+                    tint = contentColor,
                 )
             }
             IconButton(onClick = {
@@ -511,7 +515,7 @@ fun HomeHeader(
                 Icon(
                     Icons.Default.Sort,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
+                    tint = contentColor,
                 )
             }
             IconButton(onClick = {
@@ -520,7 +524,7 @@ fun HomeHeader(
                 Icon(
                     Icons.Default.MoreVert,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
+                    tint = contentColor,
                 )
             }
         }

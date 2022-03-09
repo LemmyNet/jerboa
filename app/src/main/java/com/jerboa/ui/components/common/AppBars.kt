@@ -40,6 +40,9 @@ fun SimpleTopAppBar(
     text: String,
     navController: NavController,
 ) {
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TopAppBar(
         title = {
             Text(
@@ -47,6 +50,8 @@ fun SimpleTopAppBar(
             )
         },
         elevation = APP_BAR_ELEVATION,
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
@@ -81,7 +86,7 @@ fun BottomAppBarAll(
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = Muted,
+            unselectedContentColor = MaterialTheme.colors.onBackground.muted,
             onClick = {
                 navController.navigate("home")
             },
@@ -96,7 +101,7 @@ fun BottomAppBarAll(
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = Muted,
+            unselectedContentColor = MaterialTheme.colors.onBackground.muted,
             onClick = {
                 navController.navigate("communityList")
             },
@@ -110,12 +115,12 @@ fun BottomAppBarAll(
                     tint = if (screen == "inbox") {
                         MaterialTheme.colors.primary
                     } else {
-                        Muted
+                        MaterialTheme.colors.onBackground.muted
                     },
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = Muted,
+            unselectedContentColor = MaterialTheme.colors.onBackground.muted,
             onClick = {
                 onClickInbox()
             },
@@ -129,7 +134,7 @@ fun BottomAppBarAll(
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = Muted,
+            unselectedContentColor = MaterialTheme.colors.onBackground.muted,
             onClick = {
                 onClickSaved()
             },
@@ -143,7 +148,7 @@ fun BottomAppBarAll(
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
-            unselectedContentColor = Muted,
+            unselectedContentColor = MaterialTheme.colors.onBackground.muted,
             onClick = onClickProfile,
             selected = screen == "profile"
         )
@@ -215,7 +220,7 @@ fun ActionBarButton(
     onClick: () -> Unit,
     icon: ImageVector,
     text: String? = null,
-    contentColor: Color = Muted,
+    contentColor: Color = MaterialTheme.colors.onBackground.muted,
     noClick: Boolean = false,
     account: Account?
 ) {
@@ -270,7 +275,7 @@ fun scoreColor(myVote: Int?): Color {
     return when (myVote) {
         1 -> MaterialTheme.colors.secondary
         -1 -> MaterialTheme.colors.error
-        else -> Muted
+        else -> MaterialTheme.colors.onBackground.muted
     }
 }
 
@@ -381,7 +386,7 @@ fun Sidebar(
             content?.also {
                 MyMarkdownText(
                     markdown = it,
-                    color = Muted,
+                    color = MaterialTheme.colors.onBackground.muted,
                 )
             }
         }
@@ -397,17 +402,17 @@ fun CommentsAndPosts(
     Row {
         Text(
             text = "${siFormat(usersActiveMonth)} users / month",
-            color = Muted,
+            color = MaterialTheme.colors.onBackground.muted,
         )
         DotSpacer()
         Text(
             text = "${siFormat(postCount)} posts",
-            color = Muted,
+            color = MaterialTheme.colors.onBackground.muted,
         )
         DotSpacer()
         Text(
             text = "${siFormat(commentCount)} comments",
-            color = Muted,
+            color = MaterialTheme.colors.onBackground.muted,
         )
     }
 }

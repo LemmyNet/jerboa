@@ -32,12 +32,17 @@ fun CommentReplyHeader(
     onSendClick: () -> Unit,
     loading: Boolean,
 ) {
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TopAppBar(
         title = {
             Text(
                 text = "Reply",
             )
         },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         actions = {
             IconButton(
                 onClick = onSendClick,

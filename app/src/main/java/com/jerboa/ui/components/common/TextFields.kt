@@ -21,6 +21,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -28,14 +29,15 @@ import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.Muted
 import com.jerboa.ui.theme.XXL_PADDING
+import com.jerboa.ui.theme.muted
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 
@@ -229,7 +231,7 @@ fun CreateLinkDialog(
                 ) {
                     Text(
                         text = "Cancel",
-                        color = Muted,
+                        color = MaterialTheme.colors.onBackground.muted,
                     )
                 }
                 TextButton(
@@ -280,7 +282,7 @@ fun ShowPreviewDialog(
                 ) {
                     Text(
                         text = "OK",
-                        color = Muted,
+                        color = MaterialTheme.colors.onBackground.muted,
                     )
                 }
             }
@@ -402,7 +404,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.Preview,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -411,7 +413,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.Link,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -426,7 +428,7 @@ fun MarkdownHelperBar(
                 Icon(
                     imageVector = Icons.Default.Image,
                     contentDescription = "TODO",
-                    tint = Muted,
+                    tint = MaterialTheme.colors.onBackground.muted,
                 )
             }
         }
@@ -436,7 +438,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.FormatBold,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -445,7 +447,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.FormatItalic,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -454,7 +456,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.FormatQuote,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -463,7 +465,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.FormatListBulleted,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -472,7 +474,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.Title,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -481,7 +483,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.Code,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -490,7 +492,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.FormatStrikethrough,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -499,7 +501,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.Subscript,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
         IconButton(
@@ -508,7 +510,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Default.Superscript,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
         }
     }
@@ -556,15 +558,18 @@ fun MyMarkdownText(
     color: Color = MaterialTheme.colors.onSurface,
 ) {
 
-//    val fontSize = TextUnit(MaterialTheme.typography.body1.fontSize.value, type = TextUnitType.Sp)
+    // TODO the line height is being ignored
+    val textStyle = TextStyle(
+        lineHeight = 1.3.em,
+        fontSize = 18.sp,
+        color = color,
+    )
 
     // Note, this actually scales down the font size quite a lot, so you need to use a bigger one
     MarkdownText(
         markdown = markdown,
-        style = MaterialTheme.typography.body1,
-        fontSize = 18.sp,
+        style = textStyle,
         modifier = modifier,
-        color = color,
     )
 }
 

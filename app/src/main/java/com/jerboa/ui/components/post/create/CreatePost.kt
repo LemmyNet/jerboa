@@ -34,12 +34,16 @@ fun CreatePostHeader(
     formValid: Boolean,
     loading: Boolean,
 ) {
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
     TopAppBar(
         title = {
             Text(
                 text = "Create post",
             )
         },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(
@@ -139,7 +143,7 @@ fun CreatePostBody(
                 Text(
                     text = "copy suggested title: $it",
                     style = MaterialTheme.typography.subtitle2,
-                    color = Muted,
+                    color = MaterialTheme.colors.onBackground.muted,
                     modifier = Modifier.clickable { onNameChange(it) }
                 )
             }

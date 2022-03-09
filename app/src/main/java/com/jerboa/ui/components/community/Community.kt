@@ -66,7 +66,7 @@ fun CommunityTopSection(
                     tint = if (communityView.subscribed) {
                         Color.Green
                     } else {
-                        Muted
+                        MaterialTheme.colors.onBackground.muted
                     },
                     modifier = Modifier
                         .height(ACTION_BAR_ICON_SIZE)
@@ -77,7 +77,7 @@ fun CommunityTopSection(
                 Text(
                     text = "${communityView.counts.users_active_month} users / month",
                     style = MaterialTheme.typography.body1,
-                    color = Muted,
+                    color = MaterialTheme.colors.onBackground.muted,
                 )
             }
         }
@@ -149,6 +149,9 @@ fun CommunityHeader(
         )
     }
 
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TopAppBar(
         title = {
             CommunityHeaderTitle(
@@ -156,12 +159,15 @@ fun CommunityHeader(
                 selectedSortType = selectedSortType,
             )
         },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Filled.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
+                    tint = contentColor,
                 )
             }
         },
@@ -172,7 +178,7 @@ fun CommunityHeader(
                 Icon(
                     Icons.Default.Sort,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
+                    tint = contentColor,
                 )
             }
             IconButton(onClick = {
@@ -181,7 +187,7 @@ fun CommunityHeader(
                 Icon(
                     Icons.Default.MoreVert,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
+                    tint = contentColor,
                 )
             }
         }
@@ -197,12 +203,11 @@ fun CommunityHeaderTitle(
         Text(
             text = communityName,
             style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.onSurface,
         )
         Text(
             text = selectedSortType.toString(),
             style = MaterialTheme.typography.body1,
-            color = Muted,
+            color = contentColorFor(MaterialTheme.colors.primarySurface).muted
         )
     }
 }

@@ -30,12 +30,17 @@ fun EditPostHeader(
     formValid: Boolean,
     loading: Boolean,
 ) {
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TopAppBar(
         title = {
             Text(
                 text = "Edit Post",
             )
         },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(

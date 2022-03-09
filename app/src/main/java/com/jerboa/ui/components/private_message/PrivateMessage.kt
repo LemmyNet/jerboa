@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.private_message
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -19,9 +20,9 @@ import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.LARGE_PADDING
-import com.jerboa.ui.theme.Muted
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
+import com.jerboa.ui.theme.muted
 
 @Composable
 fun PrivateMessageHeader(
@@ -50,7 +51,7 @@ fun PrivateMessageHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = fromOrTo, color = Muted)
+            Text(text = fromOrTo, color = MaterialTheme.colors.onBackground.muted)
             PersonProfileLink(
                 person = otherPerson,
                 onClick = { onPersonClick(otherPerson.id) },
@@ -140,7 +141,7 @@ fun PrivateMessageFooterLine(
                     contentColor = if (privateMessageView.private_message.read) {
                         Color.Green
                     } else {
-                        Muted
+                        MaterialTheme.colors.onBackground.muted
                     },
                     account = account,
                 )

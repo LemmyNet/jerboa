@@ -14,7 +14,7 @@ import com.jerboa.UnreadOrAll
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
-import com.jerboa.ui.theme.Muted
+import com.jerboa.ui.theme.muted
 
 fun inboxClickWrapper(
     inboxViewModel: InboxViewModel,
@@ -63,6 +63,9 @@ fun InboxHeader(
         )
     }
 
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TopAppBar(
         title = {
             InboxHeaderTitle(
@@ -70,6 +73,8 @@ fun InboxHeader(
                 selectedUnreadOrAll = selectedUnreadOrAll,
             )
         },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
@@ -86,14 +91,14 @@ fun InboxHeader(
                 Icon(
                     Icons.Default.FilterList,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
+                    tint = contentColor
                 )
             }
             IconButton(onClick = onClickMarkAllAsRead) {
                 Icon(
                     Icons.Default.DoneAll,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
+                    tint = contentColor
                 )
             }
         }
@@ -110,12 +115,11 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
         Text(
             text = title,
             style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.onSurface,
         )
         Text(
             text = selectedUnreadOrAll.toString(),
             style = MaterialTheme.typography.body1,
-            color = Muted,
+            color = contentColorFor(MaterialTheme.colors.primarySurface).muted
         )
     }
 }
