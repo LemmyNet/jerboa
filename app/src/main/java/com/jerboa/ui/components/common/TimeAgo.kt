@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.common
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontStyle
@@ -8,8 +9,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.prettyTime
 import com.jerboa.prettyTimeShortener
-import com.jerboa.ui.theme.Muted
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.muted
 import java.time.Instant
 import java.util.*
 
@@ -29,7 +30,7 @@ fun TimeAgo(
     Row {
         Text(
             text = afterPreceding,
-            color = Muted,
+            color = MaterialTheme.colors.onBackground.muted,
         )
 
         updated?.also {
@@ -38,7 +39,7 @@ fun TimeAgo(
             DotSpacer(SMALL_PADDING)
             Text(
                 text = "($updatedPretty)",
-                color = Muted,
+                color = MaterialTheme.colors.onBackground.muted,
                 fontStyle = FontStyle.Italic,
             )
         }

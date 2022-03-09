@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.comment.edit
 
-import android.net.Uri
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
@@ -24,12 +23,17 @@ fun CommentEditHeader(
     onSaveClick: () -> Unit,
     loading: Boolean,
 ) {
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TopAppBar(
         title = {
             Text(
                 text = "Edit",
             )
         },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(
@@ -67,7 +71,6 @@ fun CommentEditHeader(
 fun CommentEdit(
     content: TextFieldValue,
     onContentChange: (TextFieldValue) -> Unit,
-    onPickedImage: (image: Uri) -> Unit,
     account: Account?,
 ) {
     val listState = rememberLazyListState()

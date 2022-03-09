@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -160,7 +161,7 @@ fun PickImage(
         }) {
             Text(
                 text = "Upload Image",
-                color = Muted,
+                color = MaterialTheme.colors.onBackground.muted,
             )
         }
 

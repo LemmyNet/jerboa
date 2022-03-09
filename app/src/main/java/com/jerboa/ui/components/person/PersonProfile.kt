@@ -64,7 +64,7 @@ fun PersonProfileTopSection(
                 personView.person.bio?.also {
                     MyMarkdownText(
                         markdown = it,
-                        color = Muted,
+                        color = MaterialTheme.colors.onBackground.muted,
                     )
                 }
             }
@@ -77,12 +77,12 @@ fun CommentsAndPosts(personView: PersonViewSafe) {
     Row {
         Text(
             text = "${personView.counts.post_count} posts",
-            color = Muted,
+            color = MaterialTheme.colors.onBackground.muted,
         )
         DotSpacer()
         Text(
             text = "${personView.counts.comment_count} comments",
-            color = Muted,
+            color = MaterialTheme.colors.onBackground.muted,
         )
     }
 }
@@ -149,6 +149,9 @@ fun PersonProfileHeader(
         )
     }
 
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TopAppBar(
         title = {
             PersonProfileHeaderTitle(
@@ -156,6 +159,8 @@ fun PersonProfileHeader(
                 selectedSortType = selectedSortType,
             )
         },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
@@ -172,7 +177,7 @@ fun PersonProfileHeader(
                 Icon(
                     Icons.Default.Sort,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onSurface
+                    tint = contentColor
                 )
             }
             if (!myProfile) {
@@ -182,7 +187,7 @@ fun PersonProfileHeader(
                     Icon(
                         Icons.Default.MoreVert,
                         contentDescription = "TODO",
-                        tint = MaterialTheme.colors.onSurface
+                        tint = contentColor
                     )
                 }
             }
@@ -199,12 +204,11 @@ fun PersonProfileHeaderTitle(
         Text(
             text = personName,
             style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.onSurface,
         )
         Text(
             text = selectedSortType.toString(),
             style = MaterialTheme.typography.body1,
-            color = Muted,
+            color = contentColorFor(MaterialTheme.colors.primarySurface).muted
         )
     }
 }

@@ -46,7 +46,7 @@ fun PostHeaderLine(
             Icon(
                 imageVector = Icons.Default.PushPin,
                 contentDescription = "TODO",
-                tint = Muted,
+                tint = MaterialTheme.colors.onBackground.muted,
             )
             DotSpacer()
         }
@@ -77,7 +77,7 @@ fun PostHeaderLine(
         DotSpacer()
         if (!isSameInstance) {
             postView.post.url?.also {
-                Text(text = hostName(it), color = Muted)
+                Text(text = hostName(it), color = MaterialTheme.colors.onBackground.muted)
                 DotSpacer()
             }
         }
@@ -153,7 +153,7 @@ fun PostTitleAndImageLink(
         Text(
             text = postView.post.name,
             style = MaterialTheme.typography.subtitle1,
-            color = if (postView.read) { Muted } else { MaterialTheme.colors.onSurface },
+            color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
             modifier = Modifier.padding(bottom = MEDIUM_PADDING)
         )
 
@@ -179,7 +179,7 @@ fun PostTitleAndThumbnail(
         Text(
             text = post.name,
             style = MaterialTheme.typography.subtitle1,
-            color = if (postView.read) { Muted } else { MaterialTheme.colors.onSurface },
+            color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
             modifier = Modifier.weight(1f)
         )
 
@@ -364,12 +364,12 @@ fun PostFooterLine(
                 account = account,
             )
             ActionBarButton(
-                icon = Icons.Default.Star,
+                icon = Icons.Default.StarOutline,
                 onClick = { onSaveClick(postView) },
                 contentColor = if (postView.saved) {
                     Color.Yellow
                 } else {
-                    Muted
+                    MaterialTheme.colors.onBackground.muted
                 },
                 account = account,
             )
@@ -395,7 +395,7 @@ fun CommentCount(
     account: Account?,
 ) {
     ActionBarButton(
-        icon = Icons.Default.ChatBubble,
+        icon = Icons.Default.ChatBubbleOutline,
         text = "$comments comments",
         noClick = true,
         account = account,

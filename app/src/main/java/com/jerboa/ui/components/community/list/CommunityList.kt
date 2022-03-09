@@ -31,6 +31,9 @@ fun CommunityListHeader(
     search: String,
     onSearchChange: (search: String) -> Unit,
 ) {
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TopAppBar(
         title = {
             CommunityTopBarSearchView(
@@ -38,6 +41,8 @@ fun CommunityListHeader(
                 onSearchChange = onSearchChange,
             )
         },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(
@@ -46,7 +51,8 @@ fun CommunityListHeader(
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
+                    tint = contentColor,
                 )
             }
         },
@@ -107,12 +113,16 @@ fun CommunityTopBarSearchView(
     search: String,
     onSearchChange: (search: String) -> Unit,
 ) {
+
+    val backgroundColor = MaterialTheme.colors.primarySurface
+    val contentColor = contentColorFor(backgroundColor)
+
     TextField(
         value = search,
         onValueChange = onSearchChange,
         textStyle = MaterialTheme.typography.body1,
         placeholder = {
-            Text("Search...")
+            Text("Search...", color = contentColor)
         },
         modifier = Modifier
             .fillMaxWidth(),
@@ -124,6 +134,7 @@ fun CommunityTopBarSearchView(
                     Icon(
                         Icons.Default.Close,
                         contentDescription = "",
+                        tint = contentColor,
                     )
                 }
             }

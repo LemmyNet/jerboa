@@ -65,7 +65,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist_version"
     implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
 
-    implementation 'com.github.jeziellago:compose-markdown:0.2.6'
+    implementation 'com.github.jeziellago:compose-markdown:0.2.7'
 
     // LiveData
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"

@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.jerboa.VoteType
 import com.jerboa.db.Account
-import com.jerboa.ui.theme.Muted
+import com.jerboa.ui.theme.muted
 
 @Composable
 fun <T> VoteGeneric(
@@ -53,7 +53,7 @@ fun <T> VoteGeneric(
 fun upvoteColor(myVote: Int?): Color {
     return when (myVote) {
         1 -> MaterialTheme.colors.secondary
-        else -> Muted
+        else -> MaterialTheme.colors.onBackground.muted
     }
 }
 
@@ -61,6 +61,6 @@ fun upvoteColor(myVote: Int?): Color {
 fun downvoteColor(myVote: Int?): Color {
     return when (myVote) {
         -1 -> MaterialTheme.colors.error
-        else -> Muted
+        else -> MaterialTheme.colors.onBackground.muted
     }
 }

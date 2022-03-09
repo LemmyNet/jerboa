@@ -30,9 +30,9 @@ import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.theme.LARGE_PADDING
-import com.jerboa.ui.theme.Muted
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
+import com.jerboa.ui.theme.muted
 
 @Composable
 fun CommentNodeHeader(
@@ -254,7 +254,7 @@ fun PostAndCommunityContextHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "in ", color = Muted)
+            Text(text = "in ", color = MaterialTheme.colors.onBackground.muted)
             CommunityLink(
                 community = commentView.community,
                 onClick = onCommunityClick,
@@ -351,7 +351,7 @@ fun CommentFooterLine(
                     contentColor = if (commentView.comment.read) {
                         Color.Green
                     } else {
-                        Muted
+                        MaterialTheme.colors.onBackground.muted
                     },
                     account = account,
                 )
@@ -362,7 +362,7 @@ fun CommentFooterLine(
                 contentColor = if (commentView.saved) {
                     Color.Yellow
                 } else {
-                    Muted
+                    MaterialTheme.colors.onBackground.muted
                 },
                 account = account
             )
