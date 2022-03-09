@@ -346,7 +346,7 @@ fun CommentFooterLine(
             )
             if (showRead) {
                 ActionBarButton(
-                    icon = Icons.Filled.Check,
+                    icon = Icons.Default.Check,
                     onClick = { onMarkAsReadClick(commentView) },
                     contentColor = if (commentView.comment.read) {
                         Color.Green
@@ -357,7 +357,7 @@ fun CommentFooterLine(
                 )
             }
             ActionBarButton(
-                icon = Icons.Filled.Star,
+                icon = Icons.Default.StarOutline,
                 onClick = { onSaveClick(commentView) },
                 contentColor = if (commentView.saved) {
                     Color.Yellow
@@ -369,13 +369,13 @@ fun CommentFooterLine(
             // Don't let you respond to your own comment.
             if (commentView.creator.id != account?.id) {
                 ActionBarButton(
-                    icon = Icons.Filled.Reply,
+                    icon = Icons.Default.Reply,
                     onClick = { onReplyClick(commentView) },
                     account = account,
                 )
             }
             ActionBarButton(
-                icon = Icons.Filled.MoreVert,
+                icon = Icons.Default.MoreVert,
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions }
             )
