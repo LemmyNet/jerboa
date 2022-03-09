@@ -11,3 +11,6 @@
 .cxx
 local.properties
 app/release
+.project
+.settings
+.classpath
