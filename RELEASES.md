@@ -1,3 +1,10 @@
+# Jerboa v0.0.12-alpha Release (2022-03-13)
+
+- Fixing slow create post. Fixes [#117](https://github.com/dessalines/jerboa/issues/117) ([#126](https://github.com/dessalines/jerboa/issues/126))
+- Fix image height in landscape mode. Fixes [#122](https://github.com/dessalines/jerboa/issues/122) ([#125](https://github.com/dessalines/jerboa/issues/125))
+- Remove instant voting. Fixes [#123](https://github.com/dessalines/jerboa/issues/123) ([#124](https://github.com/dessalines/jerboa/issues/124))
+- Trying to fix builds 1 ([#121](https://github.com/dessalines/jerboa/issues/121))
+
 # Jerboa v0.0.11-alpha Release (2022-03-09)
 
 - Adding deploy to device script.
