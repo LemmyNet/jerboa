@@ -156,6 +156,17 @@ fun PickImage(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
+
+        // Set the bitmap
+        if (Build.VERSION.SDK_INT < 28) {
+            bitmap.value = MediaStore.Images
+                .Media.getBitmap(ctx.contentResolver, imageUri!!)
+        } else {
+            val source = ImageDecoder
+                .createSource(ctx.contentResolver, imageUri!!)
+            bitmap.value = ImageDecoder.decodeBitmap(source)
+        }
+
         Log.d("jerboa", imageUri.toString())
         onPickedImage(uri!!)
     }
@@ -177,15 +188,6 @@ fun PickImage(
             Spacer(modifier = Modifier.height(SMALL_PADDING))
 
             imageUri?.let {
-                if (Build.VERSION.SDK_INT < 28) {
-                    bitmap.value = MediaStore.Images
-                        .Media.getBitmap(ctx.contentResolver, it)
-                } else {
-                    val source = ImageDecoder
-                        .createSource(ctx.contentResolver, it)
-                    bitmap.value = ImageDecoder.decodeBitmap(source)
-                }
-
                 bitmap.value?.let { btm ->
                     Image(
                         bitmap = btm.asImageBitmap(),
