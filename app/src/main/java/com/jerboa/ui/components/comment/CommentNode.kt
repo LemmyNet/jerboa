@@ -128,10 +128,10 @@ fun CommentNode(
     val commentView = node.commentView
 
     // These are necessary for instant comment voting
-    val score = remember { mutableStateOf(node.commentView.counts.score) }
-    val myVote = remember { mutableStateOf(node.commentView.my_vote) }
-    val upvotes = remember { mutableStateOf(node.commentView.counts.upvotes) }
-    val downvotes = remember { mutableStateOf(node.commentView.counts.downvotes) }
+    val score = node.commentView.counts.score
+    val myVote = node.commentView.my_vote
+    val upvotes = node.commentView.counts.upvotes
+    val downvotes = node.commentView.counts.downvotes
 
     var expanded by remember { mutableStateOf(true) }
 
@@ -166,8 +166,8 @@ fun CommentNode(
                 CommentNodeHeader(
                     commentView = commentView,
                     onPersonClick = onPersonClick,
-                    score = score.value,
-                    myVote = myVote.value,
+                    score = score,
+                    myVote = myVote,
                     isModerator = isModerator(commentView.creator, moderators),
                     onLongClick = {
                         expanded = !expanded
@@ -184,11 +184,9 @@ fun CommentNode(
                         CommentFooterLine(
                             commentView = commentView,
                             onUpvoteClick = {
-                                handleInstantUpvote(myVote, score, upvotes, downvotes)
                                 onUpvoteClick(it)
                             },
                             onDownvoteClick = {
-                                handleInstantDownvote(myVote, score, upvotes, downvotes)
                                 onDownvoteClick(it)
                             },
                             onViewSourceClick = {
@@ -201,9 +199,9 @@ fun CommentNode(
                             onReportClick = onReportClick,
                             onBlockCreatorClick = onBlockCreatorClick,
                             showRead = showRead,
-                            myVote = myVote.value,
-                            upvotes = upvotes.value,
-                            downvotes = downvotes.value,
+                            myVote = myVote,
+                            upvotes = upvotes,
+                            downvotes = downvotes,
                             account = account,
                         )
                     }
@@ -346,7 +344,7 @@ fun CommentFooterLine(
             )
             if (showRead) {
                 ActionBarButton(
-                    icon = Icons.Default.Check,
+                    icon = Icons.Filled.Check,
                     onClick = { onMarkAsReadClick(commentView) },
                     contentColor = if (commentView.comment.read) {
                         Color.Green
@@ -357,7 +355,7 @@ fun CommentFooterLine(
                 )
             }
             ActionBarButton(
-                icon = Icons.Default.StarOutline,
+                icon = Icons.Filled.Star,
                 onClick = { onSaveClick(commentView) },
                 contentColor = if (commentView.saved) {
                     Color.Yellow
@@ -369,13 +367,13 @@ fun CommentFooterLine(
             // Don't let you respond to your own comment.
             if (commentView.creator.id != account?.id) {
                 ActionBarButton(
-                    icon = Icons.Default.Reply,
+                    icon = Icons.Filled.Reply,
                     onClick = { onReplyClick(commentView) },
                     account = account,
                 )
             }
             ActionBarButton(
-                icon = Icons.Default.MoreVert,
+                icon = Icons.Filled.MoreVert,
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions }
             )
