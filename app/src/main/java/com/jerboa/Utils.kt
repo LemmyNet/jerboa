@@ -8,7 +8,6 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ScaffoldState
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -292,68 +291,6 @@ fun unreadOrAllFromBool(b: Boolean): UnreadOrAll {
 
 fun unreadCountTotal(unreads: GetUnreadCountResponse): Int {
     return unreads.mentions + unreads.private_messages + unreads.replies
-}
-
-fun handleInstantUpvote(
-    myVote: MutableState<Int?>,
-    score: MutableState<Int>,
-    upvotes: MutableState<Int>,
-    downvotes: MutableState<Int>
-) {
-    val newVote = if (myVote.value == 1) {
-        0
-    } else {
-        1
-    }
-
-    when (myVote.value) {
-        1 -> {
-            score.value--
-            upvotes.value--
-        }
-        -1 -> {
-            downvotes.value--
-            upvotes.value++
-            score.value += 2
-        }
-        else -> {
-            upvotes.value++
-            score.value++
-        }
-    }
-
-    myVote.value = newVote
-}
-
-fun handleInstantDownvote(
-    myVote: MutableState<Int?>,
-    score: MutableState<Int>,
-    upvotes: MutableState<Int>,
-    downvotes: MutableState<Int>
-) {
-    val newVote = if (myVote.value == -1) {
-        0
-    } else {
-        -1
-    }
-
-    when (myVote.value) {
-        1 -> {
-            score.value -= 2
-            upvotes.value--
-            downvotes.value++
-        }
-        -1 -> {
-            downvotes.value--
-            score.value++
-        }
-        else -> {
-            downvotes.value++
-            score.value--
-        }
-    }
-
-    myVote.value = newVote
 }
 
 fun appendMarkdownImage(text: String, url: String): String {

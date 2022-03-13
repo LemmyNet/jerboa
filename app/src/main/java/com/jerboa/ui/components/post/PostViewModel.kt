@@ -84,7 +84,7 @@ class PostViewModel : ViewModel() {
         likeCommentRoutine(
             commentView = mutableStateOf(commentView),
             voteType = voteType,
-            // An edge case, but don't pass in comments, otherwise a resort will occur
+            comments = comments,
             account = account,
             ctx = ctx,
             scope = viewModelScope,

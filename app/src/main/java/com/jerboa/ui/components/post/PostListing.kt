@@ -290,11 +290,10 @@ fun PostFooterLine(
     account: Account?,
 ) {
 
-    // These are necessary for instant post voting
-    val score = remember { mutableStateOf(postView.counts.score) }
-    val myVote = remember { mutableStateOf(postView.my_vote) }
-    val upvotes = remember { mutableStateOf(postView.counts.upvotes) }
-    val downvotes = remember { mutableStateOf(postView.counts.downvotes) }
+    val score = postView.counts.score
+    val myVote = postView.my_vote
+    val upvotes = postView.counts.upvotes
+    val downvotes = postView.counts.downvotes
 
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -342,23 +341,21 @@ fun PostFooterLine(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
         ) {
             VoteGeneric(
-                myVote = myVote.value,
-                votes = upvotes.value,
+                myVote = myVote,
+                votes = upvotes,
                 item = postView,
                 type = VoteType.Upvote,
                 onVoteClick = {
-                    handleInstantUpvote(myVote, score, upvotes, downvotes)
                     onUpvoteClick(it)
                 },
                 account = account,
             )
             VoteGeneric(
-                myVote = myVote.value,
-                votes = downvotes.value,
+                myVote = myVote,
+                votes = downvotes,
                 item = postView,
                 type = VoteType.Downvote,
                 onVoteClick = {
-                    handleInstantDownvote(myVote, score, upvotes, downvotes)
                     onDownvoteClick(it)
                 },
                 account = account,
