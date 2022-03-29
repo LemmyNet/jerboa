@@ -273,7 +273,7 @@ fun communityNameShown(community: CommunitySafe): String {
 }
 
 fun hostName(url: String): String {
-    return URL(url).host
+    return try { URL(url).host } catch (e: java.net.MalformedURLException) { "bad_url" }
 }
 
 enum class UnreadOrAll {
