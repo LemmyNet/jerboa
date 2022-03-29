@@ -2,6 +2,8 @@ package com.jerboa.ui.components.comment
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -175,6 +177,8 @@ fun CommentNode(
                 )
                 AnimatedVisibility(
                     visible = expanded,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
                 ) {
                     Column {
                         CommentBody(
@@ -211,6 +215,8 @@ fun CommentNode(
     }
     AnimatedVisibility(
         visible = expanded,
+        enter = expandVertically(),
+        exit = shrinkVertically(),
     ) {
         node.children?.also { nodes ->
             CommentNodes(
