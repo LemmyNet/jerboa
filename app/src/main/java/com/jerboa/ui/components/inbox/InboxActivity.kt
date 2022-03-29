@@ -29,7 +29,6 @@ import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.commentReplyClickWrapper
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
 import com.jerboa.ui.components.home.HomeViewModel
@@ -272,7 +271,7 @@ fun InboxTabs(
                             state = listState,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .simpleVerticalScrollbar(listState)
+                            // .simpleVerticalScrollbar(listState)
                         ) {
                             items(nodes) { node ->
                                 CommentNode(
@@ -431,7 +430,7 @@ fun InboxTabs(
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.fillMaxSize()
-                                .simpleVerticalScrollbar(listState)
+                            // .simpleVerticalScrollbar(listState)
                         ) {
                             items(inboxViewModel.messages) { message ->
                                 account?.also { acct ->

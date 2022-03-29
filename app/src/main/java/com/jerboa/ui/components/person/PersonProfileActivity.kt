@@ -32,7 +32,6 @@ import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.commentReplyClickWrapper
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
@@ -243,7 +242,7 @@ fun UserTabs(
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.fillMaxSize()
-                            .simpleVerticalScrollbar(listState),
+                        // .simpleVerticalScrollbar(listState),
                     ) {
                         item {
                             personProfileViewModel.res?.person_view?.also {
@@ -447,7 +446,7 @@ fun UserTabs(
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.fillMaxSize()
-                                .simpleVerticalScrollbar(listState)
+                            // .simpleVerticalScrollbar(listState)
                         ) {
                             items(nodes) { node ->
                                 CommentNode(

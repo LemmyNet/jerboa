@@ -137,6 +137,18 @@ fun SortOptionsDialog(
                     highlight = (selectedSortType == SortType.New),
                 )
                 IconAndTextDrawerItem(
+                    text = "Most Comments",
+                    icon = Icons.Default.FormatListNumbered,
+                    onClick = { onClickSortType(SortType.MostComments) },
+                    highlight = (selectedSortType == SortType.MostComments),
+                )
+                IconAndTextDrawerItem(
+                    text = "New Comments",
+                    icon = Icons.Default.NewReleases,
+                    onClick = { onClickSortType(SortType.NewComments) },
+                    highlight = (selectedSortType == SortType.NewComments),
+                )
+                IconAndTextDrawerItem(
                     text = "Top",
                     icon = Icons.Default.BarChart,
                     onClick = onClickSortTopOptions,
