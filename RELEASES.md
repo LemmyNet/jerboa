@@ -1,3 +1,11 @@
+# Jerboa v0.0.13-alpha Release (2022-03-29)
+
+- Fix animation direction. Fixes [#114](https://github.com/dessalines/jerboa/issues/114) ([#140](https://github.com/dessalines/jerboa/issues/140))
+- Adding refresh button, and scroll to top on sort change. ([#139](https://github.com/dessalines/jerboa/issues/139))
+- Adding new sorts ([#138](https://github.com/dessalines/jerboa/issues/138))
+- Catch malformed URL exception. ([#135](https://github.com/dessalines/jerboa/issues/135))
+- Upgrade deps ([#134](https://github.com/dessalines/jerboa/issues/134))
+
 # Jerboa v0.0.12-alpha Release (2022-03-13)
 
 - Fixing slow create post. Fixes [#117](https://github.com/dessalines/jerboa/issues/117) ([#126](https://github.com/dessalines/jerboa/issues/126))
