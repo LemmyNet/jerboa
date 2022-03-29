@@ -104,6 +104,7 @@ fun CommunityHeader(
     communityName: String,
     onClickSortType: (SortType) -> Unit,
     onBlockCommunityClick: () -> Unit,
+    onClickRefresh: () -> Unit,
     selectedSortType: SortType,
     navController: NavController = rememberNavController(),
 ) {
@@ -141,6 +142,7 @@ fun CommunityHeader(
     if (showMoreOptions) {
         CommunityMoreDialog(
             onDismissRequest = { showMoreOptions = false },
+            onClickRefresh = onClickRefresh,
             onBlockCommunityClick = {
                 showMoreOptions = false
                 onBlockCommunityClick()
@@ -216,12 +218,21 @@ fun CommunityHeaderTitle(
 fun CommunityMoreDialog(
     onDismissRequest: () -> Unit,
     onBlockCommunityClick: () -> Unit,
+    onClickRefresh: () -> Unit,
     navController: NavController,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
+                IconAndTextDrawerItem(
+                    text = "Refresh",
+                    icon = Icons.Default.Refresh,
+                    onClick = {
+                        onDismissRequest()
+                        onClickRefresh()
+                    }
+                )
                 IconAndTextDrawerItem(
                     text = "View Sidebar",
                     icon = Icons.Default.Info,

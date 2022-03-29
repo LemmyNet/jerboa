@@ -540,3 +540,12 @@ fun fetchInitialData(
 fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
     return ctx.contentResolver.openInputStream(uri)!!
 }
+
+fun scrollToTop(
+    scope: CoroutineScope,
+    listState: LazyListState,
+) {
+    scope.launch {
+        listState.animateScrollToItem(index = 0)
+    }
+}

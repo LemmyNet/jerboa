@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -22,6 +24,7 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.fetchInitialData
 import com.jerboa.openLink
+import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
@@ -56,6 +59,7 @@ fun HomeActivity(
     Log.d("jerboa", "got to home activity")
 
     val scope = rememberCoroutineScope()
+    val postListState = rememberLazyListState()
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
     val accounts by accountViewModel.allAccounts.observeAsState()
@@ -67,6 +71,7 @@ fun HomeActivity(
             topBar = {
                 MainTopBar(
                     scope = scope,
+                    postListState = postListState,
                     scaffoldState = scaffoldState,
                     homeViewModel = homeViewModel,
                     account = account,
@@ -104,6 +109,7 @@ fun HomeActivity(
                     account = account,
                     ctx = ctx,
                     navController = navController,
+                    postListState = postListState,
                 )
             },
             floatingActionButtonPosition = FabPosition.End,
@@ -167,8 +173,10 @@ fun MainPostListingsContent(
     ctx: Context,
     navController: NavController,
     padding: PaddingValues,
+    postListState: LazyListState,
 ) {
     PostListings(
+        listState = postListState,
         padding = padding,
         posts = homeViewModel.posts,
         onUpvoteClick = { postView ->
@@ -384,12 +392,14 @@ fun MainDrawer(
 @Composable
 fun MainTopBar(
     scope: CoroutineScope,
+    postListState: LazyListState,
     scaffoldState: ScaffoldState,
     homeViewModel: HomeViewModel,
     account: Account?,
     ctx: Context,
     navController: NavController,
 ) {
+
     Column {
         HomeHeader(
             scope = scope,
@@ -398,6 +408,7 @@ fun MainTopBar(
             selectedSortType = homeViewModel.sortType.value,
             selectedListingType = homeViewModel.listingType.value,
             onClickSortType = { sortType ->
+                scrollToTop(scope, postListState)
                 homeViewModel.fetchPosts(
                     account = account,
                     clear = true,
@@ -406,6 +417,7 @@ fun MainTopBar(
                 )
             },
             onClickListingType = { listingType ->
+                scrollToTop(scope, postListState)
                 homeViewModel.fetchPosts(
                     account = account,
                     clear = true,
@@ -413,6 +425,14 @@ fun MainTopBar(
                     ctx = ctx,
                 )
             },
+            onClickRefresh = {
+                scrollToTop(scope, postListState)
+                homeViewModel.fetchPosts(
+                    account = account,
+                    clear = true,
+                    ctx = ctx,
+                )
+            }
         )
         if (homeViewModel.loading.value) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())

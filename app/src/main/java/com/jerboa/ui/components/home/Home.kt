@@ -419,6 +419,7 @@ fun HomeHeader(
     scaffoldState: ScaffoldState,
     onClickSortType: (SortType) -> Unit,
     onClickListingType: (ListingType) -> Unit,
+    onClickRefresh: () -> Unit,
     selectedSortType: SortType,
     selectedListingType: ListingType,
     navController: NavController,
@@ -469,6 +470,7 @@ fun HomeHeader(
     if (showMoreOptions) {
         HomeMoreDialog(
             onDismissRequest = { showMoreOptions = false },
+            onClickRefresh = onClickRefresh,
             navController = navController,
         )
     }
@@ -545,6 +547,7 @@ fun HomeHeaderPreview() {
         navController = rememberNavController(),
         onClickListingType = {},
         onClickSortType = {},
+        onClickRefresh = {},
     )
 }
 
@@ -552,11 +555,20 @@ fun HomeHeaderPreview() {
 fun HomeMoreDialog(
     onDismissRequest: () -> Unit,
     navController: NavController,
+    onClickRefresh: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
+                IconAndTextDrawerItem(
+                    text = "Refresh",
+                    icon = Icons.Default.Refresh,
+                    onClick = {
+                        onDismissRequest()
+                        onClickRefresh()
+                    },
+                )
                 IconAndTextDrawerItem(
                     text = "View Sidebar",
                     icon = Icons.Default.Info,
