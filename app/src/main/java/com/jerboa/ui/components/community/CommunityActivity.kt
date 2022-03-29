@@ -3,16 +3,19 @@ package com.jerboa.ui.components.community
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.openLink
+import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.HomeViewModel
@@ -43,6 +46,8 @@ fun CommunityActivity(
 
     Log.d("jerboa", "got to community activity")
 
+    val scope = rememberCoroutineScope()
+    val postListState = rememberLazyListState()
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
     val accounts by accountViewModel.allAccounts.observeAsState()
@@ -57,7 +62,16 @@ fun CommunityActivity(
                         CommunityHeader(
                             communityName = com.name,
                             selectedSortType = communityViewModel.sortType.value,
+                            onClickRefresh = {
+                                scrollToTop(scope, postListState)
+                                communityViewModel.fetchPosts(
+                                    account = account,
+                                    clear = true,
+                                    ctx = ctx,
+                                )
+                            },
                             onClickSortType = { sortType ->
+                                scrollToTop(scope, postListState)
                                 communityViewModel.fetchPosts(
                                     account = account,
                                     clear = true,
@@ -84,6 +98,7 @@ fun CommunityActivity(
             content = {
                 PostListings(
                     showCommunityName = false,
+                    listState = postListState,
                     padding = it,
                     contentAboveListings = {
                         communityViewModel.communityView?.also {

@@ -3,6 +3,7 @@ package com.jerboa.ui.components.post
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
@@ -39,9 +40,8 @@ fun PostListings(
     account: Account?,
     showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
+    listState: LazyListState,
 ) {
-    val listState = rememberLazyListState()
-
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
         onRefresh = onSwipeRefresh,
@@ -113,6 +113,7 @@ fun PreviewPostListings() {
         onPostClick = {},
         onSwipeRefresh = {},
         onBlockCreatorClick = {},
-        onBlockCommunityClick = {}
+        onBlockCommunityClick = {},
+        listState = rememberLazyListState(),
     )
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
@@ -25,6 +26,7 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.isScrolledToEnd
 import com.jerboa.openLink
+import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNode
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
@@ -69,6 +71,7 @@ fun PersonProfileActivity(
     Log.d("jerboa", "got to person activity")
 
     val scope = rememberCoroutineScope()
+    val postListState = rememberLazyListState()
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
     val accounts by accountViewModel.allAccounts.observeAsState()
@@ -88,6 +91,7 @@ fun PersonProfileActivity(
                         myProfile = account?.id == person.id,
                         selectedSortType = personProfileViewModel.sortType.value,
                         onClickSortType = { sortType ->
+                            scrollToTop(scope, postListState)
                             personProfileViewModel.fetchPersonDetails(
                                 id = personProfileViewModel.personId.value!!,
                                 account = account,
@@ -121,6 +125,7 @@ fun PersonProfileActivity(
                     ctx = ctx,
                     account = account,
                     scope = scope,
+                    postListState = postListState,
                     commentEditViewModel = commentEditViewModel,
                     commentReplyViewModel = commentReplyViewModel,
                     postEditViewModel = postEditViewModel,
@@ -180,6 +185,7 @@ fun UserTabs(
     ctx: Context,
     account: Account?,
     scope: CoroutineScope,
+    postListState: LazyListState,
     postViewModel: PostViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
@@ -282,6 +288,7 @@ fun UserTabs(
                 UserTab.Posts.ordinal -> {
                     PostListings(
                         posts = personProfileViewModel.posts,
+                        listState = postListState,
                         onUpvoteClick = { postView ->
                             personProfileViewModel.likePost(
                                 voteType = VoteType.Upvote,
