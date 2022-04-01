@@ -29,6 +29,7 @@ import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
+import de.charlex.compose.HtmlText
 
 @Composable
 fun PostHeaderLine(
@@ -631,9 +632,7 @@ fun MetadataCard(post: Post) {
                     style = MaterialTheme.typography.subtitle1
                 )
                 post.embed_description?.also {
-                    Text(
-                        text = it,
-                    )
+                    HtmlText(text = it)
                 }
             }
         }
