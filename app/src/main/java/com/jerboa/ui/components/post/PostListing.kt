@@ -29,7 +29,6 @@ import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
-import de.charlex.compose.HtmlText
 
 @Composable
 fun PostHeaderLine(
@@ -248,11 +247,14 @@ fun PostBody(
                 elevation = BODY_ELEVATION,
                 content = {
                     if (fullBody) {
-                        MyMarkdownText(
-                            markdown = text,
+                        Column(
                             modifier = Modifier
                                 .padding(MEDIUM_PADDING),
-                        )
+                        ) {
+                            MyMarkdownText(
+                                markdown = text,
+                            )
+                        }
                     } else {
                         PreviewLines(
                             text = text,
@@ -632,7 +634,7 @@ fun MetadataCard(post: Post) {
                     style = MaterialTheme.typography.subtitle1
                 )
                 post.embed_description?.also {
-                    HtmlText(text = it)
+                    Html(text = it)
                 }
             }
         }

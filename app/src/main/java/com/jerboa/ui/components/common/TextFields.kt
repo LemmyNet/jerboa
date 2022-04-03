@@ -1,7 +1,9 @@
 package com.jerboa.ui.components.common
 
 import android.net.Uri
+import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.widget.TextView
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,7 +23,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -29,8 +30,10 @@ import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
+import com.commit451.coilimagegetter.CoilImageGetter
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
@@ -38,8 +41,10 @@ import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
+import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
+import org.intellij.markdown.html.HtmlGenerator
+import org.intellij.markdown.parser.MarkdownParser
 
 @Composable
 fun MarkdownTextField(
@@ -554,25 +559,49 @@ fun PreviewLines(
 @Composable
 fun MyMarkdownText(
     markdown: String,
-    modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.onSurface,
 ) {
 
-    // TODO the line height is being ignored
-    val textStyle = TextStyle(
-        lineHeight = 1.3.em,
-        fontSize = 18.sp,
-        color = color,
-    )
+    val flavour = CommonMarkFlavourDescriptor()
+    val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(markdown)
+    val html = HtmlGenerator(markdown, parsedTree, flavour).generateHtml()
 
-    // Note, this actually scales down the font size quite a lot, so you need to use a bigger one
-    MarkdownText(
-        markdown = markdown,
-        style = textStyle,
-        modifier = modifier,
-    )
+    Html(text = html, color = color)
 }
 
 fun String.insert(index: Int, string: String): String {
     return this.substring(0, index) + string + this.substring(index, this.length)
+}
+
+@Composable
+fun Html(
+    text: String,
+    color: Color = MaterialTheme.colors.onSurface,
+) {
+    val parsedColor = android.graphics.Color.argb(color.alpha, color.red, color.green, color.blue)
+
+    AndroidView(factory = { context ->
+        TextView(context).apply {
+            val imageGetter = CoilImageGetter(this)
+            val span = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null)
+
+            // Incredibly annoying android bug that always adds extra spacing to the last <p>
+            val out = if (span.endsWith("\n")) {
+                span.dropLast(2)
+            } else {
+                span
+            }
+
+            setText(out)
+
+            // Fix gray color issue
+            this.setTextColor(parsedColor)
+
+            // Make sure link clicks work
+            this.setMovementMethod(LinkMovementMethod.getInstance())
+
+            // Increase line height a bit
+            this.setLineHeight(70)
+        }
+    })
 }
