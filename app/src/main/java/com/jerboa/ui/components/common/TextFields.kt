@@ -42,7 +42,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
 import kotlinx.coroutines.launch
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
+import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
 
@@ -88,7 +88,7 @@ fun MarkdownTextField(
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.Sentences,
                 keyboardType = KeyboardType.Text,
-                autoCorrect = true,
+                // autoCorrect = true,
             ),
             colors = TextFieldDefaults.textFieldColors(
                 textColor = MaterialTheme.colors.onSurface,
@@ -562,7 +562,7 @@ fun MyMarkdownText(
     color: Color = MaterialTheme.colors.onSurface,
 ) {
 
-    val flavour = CommonMarkFlavourDescriptor()
+    val flavour = GFMFlavourDescriptor()
     val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(markdown)
     val html = HtmlGenerator(markdown, parsedTree, flavour).generateHtml()
 
@@ -580,28 +580,31 @@ fun Html(
 ) {
     val parsedColor = android.graphics.Color.argb(color.alpha, color.red, color.green, color.blue)
 
-    AndroidView(factory = { context ->
-        TextView(context).apply {
-            val imageGetter = CoilImageGetter(this)
-            val span = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null)
+    AndroidView(
+        factory = { context ->
+            TextView(context).apply {
 
+                // Fix gray color issue
+                setTextColor(parsedColor)
+
+                // Make sure link clicks work
+                setMovementMethod(LinkMovementMethod.getInstance())
+
+                // Increase line height a bit
+                setLineHeight(65)
+            }
+        },
+        update = {
+            val imageGetter = CoilImageGetter(it)
+            val span = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null)
             // Incredibly annoying android bug that always adds extra spacing to the last <p>
-            val out = if (span.endsWith("\n")) {
+            val html = if (span.endsWith("\n")) {
                 span.dropLast(2)
             } else {
                 span
             }
 
-            setText(out)
-
-            // Fix gray color issue
-            this.setTextColor(parsedColor)
-
-            // Make sure link clicks work
-            this.setMovementMethod(LinkMovementMethod.getInstance())
-
-            // Increase line height a bit
-            this.setLineHeight(70)
+            it.text = html
         }
-    })
+    )
 }
