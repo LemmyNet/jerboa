@@ -1,9 +1,7 @@
 package com.jerboa.ui.components.common
 
 import android.net.Uri
-import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.widget.TextView
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,9 +29,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.text.HtmlCompat
-import com.commit451.coilimagegetter.CoilImageGetter
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
@@ -41,10 +36,8 @@ import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
-import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
 
 @Composable
 fun MarkdownTextField(
@@ -561,50 +554,15 @@ fun MyMarkdownText(
     markdown: String,
     color: Color = MaterialTheme.colors.onSurface,
 ) {
-
-    val flavour = GFMFlavourDescriptor()
-    val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(markdown)
-    val html = HtmlGenerator(markdown, parsedTree, flavour).generateHtml()
-
-    Html(text = html, color = color)
+    MarkdownText(
+        markdown = markdown,
+        modifier = Modifier.fillMaxSize(),
+        color = color,
+        style = MaterialTheme.typography.body1,
+        fontSize = 18.sp,
+    )
 }
 
 fun String.insert(index: Int, string: String): String {
     return this.substring(0, index) + string + this.substring(index, this.length)
-}
-
-@Composable
-fun Html(
-    text: String,
-    color: Color = MaterialTheme.colors.onSurface,
-) {
-    val parsedColor = android.graphics.Color.argb(color.alpha, color.red, color.green, color.blue)
-
-    AndroidView(
-        factory = { context ->
-            TextView(context).apply {
-
-                // Fix gray color issue
-                setTextColor(parsedColor)
-
-                // Make sure link clicks work
-                setMovementMethod(LinkMovementMethod.getInstance())
-
-                // Increase line height a bit
-                setLineHeight(65)
-            }
-        },
-        update = {
-            val imageGetter = CoilImageGetter(it)
-            val span = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY, imageGetter, null)
-            // Incredibly annoying android bug that always adds extra spacing to the last <p>
-            val html = if (span.endsWith("\n")) {
-                span.dropLast(2)
-            } else {
-                span
-            }
-
-            it.text = html
-        }
-    )
 }
