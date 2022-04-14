@@ -13,13 +13,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.post.PostViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+private var fetchSuggestedTitleJob: Job? = null
 
 @Composable
 fun CreatePostActivity(
@@ -84,8 +89,12 @@ fun CreatePostActivity(
                     url = url,
                     onUrlChange = { cUrl ->
                         url = cUrl
-                        if (Patterns.WEB_URL.matcher(cUrl).matches()) {
-                            createPostViewModel.fetchSuggestedTitle(cUrl, ctx)
+                        fetchSuggestedTitleJob?.cancel()
+                        fetchSuggestedTitleJob = scope.launch {
+                            delay(DEBOUNCE_DELAY)
+                            if (Patterns.WEB_URL.matcher(cUrl).matches()) {
+                                createPostViewModel.fetchSuggestedTitle(cUrl, ctx)
+                            }
                         }
                     },
                     navController = navController,

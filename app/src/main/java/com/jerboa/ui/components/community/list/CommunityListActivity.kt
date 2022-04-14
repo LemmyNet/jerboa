@@ -6,6 +6,7 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,10 +15,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.communityClickWrapper
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+private var fetchCommunitiesJob: Job? = null
 
 @Composable
 fun CommunityListActivity(
@@ -35,6 +42,7 @@ fun CommunityListActivity(
     var search by rememberSaveable { mutableStateOf("") }
 
     val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
@@ -42,14 +50,17 @@ fun CommunityListActivity(
                 CommunityListHeader(
                     navController = navController,
                     search = search,
-                    // TODO figure out how to debounce this
                     onSearchChange = {
                         search = it
-                        communityListViewModel.searchCommunities(
-                            query = search,
-                            account = account,
-                            ctx = ctx,
-                        )
+                        fetchCommunitiesJob?.cancel()
+                        fetchCommunitiesJob = scope.launch {
+                            delay(DEBOUNCE_DELAY)
+                            communityListViewModel.searchCommunities(
+                                query = search,
+                                account = account,
+                                ctx = ctx,
+                            )
+                        }
                     },
                 )
             },
