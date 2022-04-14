@@ -77,8 +77,7 @@ dependencies {
     def accompanist_version = "0.22.0-rc"
     def lifecycle_version = "2.4.1"
 
-    implementation "org.jetbrains:markdown:0.3.1"
-    implementation "com.github.Commit451:CoilImageGetter:2.0.0"
+    implementation 'com.github.jeziellago:compose-markdown:0.2.9'
 
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
 
