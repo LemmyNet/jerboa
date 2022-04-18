@@ -118,10 +118,12 @@ fun PostActivity(
                                         )
                                     },
                                     onSaveClick = {
-                                        postViewModel.savePost(
-                                            account = account,
-                                            ctx = ctx
-                                        )
+                                        account?.also { acct ->
+                                            postViewModel.savePost(
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                        }
                                     },
                                     onBlockCommunityClick = {
                                         account?.also { acct ->
@@ -175,6 +177,14 @@ fun PostActivity(
                                             postView,
                                             navController,
                                         )
+                                    },
+                                    onDeletePostClick = {
+                                        account?.also { acct ->
+                                            postViewModel.deletePost(
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
                                     },
                                     onReportClick = { postView ->
                                         postReportClickWrapper(
@@ -245,6 +255,15 @@ fun PostActivity(
                                             commentView,
                                             navController,
                                         )
+                                    },
+                                    onDeleteCommentClick = { commentView ->
+                                        account?.also { acct ->
+                                            postViewModel.deleteComment(
+                                                commentView = commentView,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
                                     },
                                     onReportClick = { commentView ->
                                         commentReportClickWrapper(

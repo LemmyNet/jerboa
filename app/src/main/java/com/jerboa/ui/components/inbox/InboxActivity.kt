@@ -311,6 +311,15 @@ fun InboxTabs(
                                             navController,
                                         )
                                     },
+                                    onDeleteCommentClick = { commentView ->
+                                        account?.also { acct ->
+                                            inboxViewModel.deleteComment(
+                                                commentView = commentView,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
                                     onReportClick = { commentView ->
                                         commentReportClickWrapper(
                                             createReportViewModel,

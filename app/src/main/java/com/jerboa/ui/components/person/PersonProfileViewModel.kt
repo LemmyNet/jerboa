@@ -17,9 +17,11 @@ import com.jerboa.datatypes.api.GetPersonDetailsResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
+import com.jerboa.ui.components.comment.deleteCommentRoutine
 import com.jerboa.ui.components.comment.likeCommentRoutine
 import com.jerboa.ui.components.comment.saveCommentRoutine
 import com.jerboa.ui.components.community.blockCommunityRoutine
+import com.jerboa.ui.components.post.deletePostRoutine
 import com.jerboa.ui.components.post.likePostRoutine
 import com.jerboa.ui.components.post.savePostRoutine
 import kotlinx.coroutines.launch
@@ -46,8 +48,12 @@ class PersonProfileViewModel : ViewModel() {
         likePostRoutine(mutableStateOf(postView), posts, voteType, account, ctx, viewModelScope)
     }
 
-    fun savePost(postView: PostView, account: Account?, ctx: Context) {
+    fun savePost(postView: PostView, account: Account, ctx: Context) {
         savePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
+    }
+
+    fun deletePost(postView: PostView, account: Account, ctx: Context) {
+        deletePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
     }
 
     fun likeComment(commentView: CommentView, voteType: VoteType, account: Account, ctx: Context) {
@@ -55,6 +61,16 @@ class PersonProfileViewModel : ViewModel() {
             commentView = mutableStateOf(commentView),
             comments = comments, // TODO should this be here?
             voteType = voteType,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
+    }
+
+    fun deleteComment(commentView: CommentView, account: Account, ctx: Context) {
+        deleteCommentRoutine(
+            commentView = mutableStateOf(commentView),
+            comments = comments, // TODO should this be here?
             account = account,
             ctx = ctx,
             scope = viewModelScope,

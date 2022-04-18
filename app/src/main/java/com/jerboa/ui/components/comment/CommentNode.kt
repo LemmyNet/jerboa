@@ -51,6 +51,7 @@ fun CommentNodeHeader(
         myVote = myVote,
         published = commentView.comment.published,
         updated = commentView.comment.updated,
+        deleted = commentView.comment.deleted,
         onPersonClick = onPersonClick,
         isPostCreator = isPostCreator(commentView),
         isModerator = isModerator,
@@ -111,6 +112,7 @@ fun CommentNode(
     onSaveClick: (commentView: CommentView) -> Unit,
     onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
     onEditCommentClick: (commentView: CommentView) -> Unit,
+    onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPostClick: (postId: Int) -> Unit,
@@ -197,6 +199,7 @@ fun CommentNode(
                                 viewSource = !viewSource
                             },
                             onEditCommentClick = onEditCommentClick,
+                            onDeleteCommentClick = onDeleteCommentClick,
                             onReplyClick = onReplyClick,
                             onSaveClick = onSaveClick,
                             onMarkAsReadClick = onMarkAsReadClick,
@@ -226,6 +229,7 @@ fun CommentNode(
                 onSaveClick = onSaveClick,
                 onMarkAsReadClick = onMarkAsReadClick,
                 onEditCommentClick = onEditCommentClick,
+                onDeleteCommentClick = onDeleteCommentClick,
                 onPersonClick = onPersonClick,
                 onCommunityClick = onCommunityClick,
                 onPostClick = onPostClick,
@@ -287,6 +291,7 @@ fun CommentFooterLine(
     onMarkAsReadClick: (commentView: CommentView) -> Unit,
     onViewSourceClick: () -> Unit,
     onEditCommentClick: (commentView: CommentView) -> Unit,
+    onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     showRead: Boolean = false,
@@ -309,6 +314,10 @@ fun CommentFooterLine(
             onEditCommentClick = {
                 showMoreOptions = false
                 onEditCommentClick(commentView)
+            },
+            onDeleteCommentClick = {
+                showMoreOptions = false
+                onDeleteCommentClick(commentView)
             },
             onReportClick = {
                 showMoreOptions = false
@@ -400,6 +409,7 @@ fun CommentNodesPreview() {
         onCommunityClick = {},
         onDownvoteClick = {},
         onEditCommentClick = {},
+        onDeleteCommentClick = {},
         onMarkAsReadClick = {},
         onPersonClick = {},
         onPostClick = {},
@@ -416,6 +426,7 @@ fun CommentOptionsDialog(
     onDismissRequest: () -> Unit,
     onViewSourceClick: () -> Unit,
     onEditCommentClick: () -> Unit,
+    onDeleteCommentClick: () -> Unit,
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
     isCreator: Boolean,
@@ -461,6 +472,20 @@ fun CommentOptionsDialog(
                         icon = Icons.Default.Edit,
                         onClick = onEditCommentClick,
                     )
+                    val deleted = commentView.comment.deleted
+                    if (deleted) {
+                        IconAndTextDrawerItem(
+                            text = "Restore",
+                            icon = Icons.Default.Restore,
+                            onClick = onDeleteCommentClick,
+                        )
+                    } else {
+                        IconAndTextDrawerItem(
+                            text = "Delete",
+                            icon = Icons.Default.Delete,
+                            onClick = onDeleteCommentClick,
+                        )
+                    }
                 }
             }
         },
@@ -476,6 +501,7 @@ fun CommentOptionsDialogPreview() {
         commentView = sampleCommentView,
         onDismissRequest = {},
         onEditCommentClick = {},
+        onDeleteCommentClick = {},
         onReportClick = {},
         onViewSourceClick = {},
         onBlockCreatorClick = {},
