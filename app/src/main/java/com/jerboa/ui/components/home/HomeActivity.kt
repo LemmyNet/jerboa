@@ -208,11 +208,13 @@ fun MainPostListingsContent(
             openLink(url, ctx)
         },
         onSaveClick = { postView ->
-            homeViewModel.savePost(
-                postView = postView,
-                account = account,
-                ctx = ctx,
-            )
+            account?.also { acct ->
+                homeViewModel.savePost(
+                    postView = postView,
+                    account = acct,
+                    ctx = ctx,
+                )
+            }
         },
         onBlockCommunityClick = {
             account?.also { acct ->
@@ -238,6 +240,15 @@ fun MainPostListingsContent(
                 postView,
                 navController,
             )
+        },
+        onDeletePostClick = { postView ->
+            account?.also { acct ->
+                homeViewModel.deletePost(
+                    postView = postView,
+                    account = acct,
+                    ctx = ctx,
+                )
+            }
         },
         onReportClick = { postView ->
             postReportClickWrapper(

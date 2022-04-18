@@ -70,6 +70,12 @@ interface API {
     suspend fun editComment(@Body form: EditComment): Response<CommentResponse>
 
     /**
+     * Delete a comment.
+     */
+    @POST("comment/delete")
+    suspend fun deleteComment(@Body form: DeleteComment): Response<CommentResponse>
+
+    /**
      * Save a post.
      */
     @PUT("post/save")
@@ -171,6 +177,12 @@ interface API {
      */
     @PUT("post")
     suspend fun editPost(@Body form: EditPost): Response<PostResponse>
+
+    /**
+     * Delete a post.
+     */
+    @POST("post/delete")
+    suspend fun deletePost(@Body form: DeletePost): Response<PostResponse>
 
     /**
      * Search lemmy.
@@ -434,6 +446,22 @@ suspend fun editPostWrapper(
     return editedPostView
 }
 
+suspend fun deletePostWrapper(
+    form: DeletePost,
+    ctx: Context,
+): PostResponse? {
+
+    var deletedPost: PostResponse? = null
+    val api = API.getInstance()
+
+    try {
+        deletedPost = retrofitErrorHandler(api.deletePost(form))
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return deletedPost
+}
+
 suspend fun likePostWrapper(
     pv: PostView,
     voteType: VoteType,
@@ -599,6 +627,22 @@ suspend fun editCommentWrapper(
         toastException(ctx = ctx, error = e)
     }
     return editedComment
+}
+
+suspend fun deleteCommentWrapper(
+    form: DeleteComment,
+    ctx: Context,
+): CommentResponse? {
+
+    var deletedComment: CommentResponse? = null
+    val api = API.getInstance()
+
+    try {
+        deletedComment = retrofitErrorHandler(api.deleteComment(form))
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return deletedComment
 }
 
 suspend fun createPrivateMessageWrapper(
@@ -839,12 +883,6 @@ fun <T> retrofitErrorHandler(res: Response<T>): T {
 //
 //
 //
-//  /**
-//   * Delete a post.
-//   */
-//  async deletePost(form: DeletePost): Promise<PostResponse> {
-//    return this.wrapper(HttpType.Post, "/post/delete", form);
-//  }
 //
 //  /**
 //   * A moderator remove for a post.
@@ -891,13 +929,6 @@ fun <T> retrofitErrorHandler(res: Response<T>): T {
 //
 //
 //
-//
-//  /**
-//   * Delete a comment.
-//   */
-//  async deleteComment(form: DeleteComment): Promise<CommentResponse> {
-//    return this.wrapper(HttpType.Post, "/comment/delete", form);
-//  }
 //
 //  /**
 //   * A moderator remove for a comment.

@@ -19,6 +19,7 @@ import com.jerboa.serializeToMap
 import com.jerboa.toastException
 import com.jerboa.ui.components.community.blockCommunityRoutine
 import com.jerboa.ui.components.person.blockPersonRoutine
+import com.jerboa.ui.components.post.deletePostRoutine
 import com.jerboa.ui.components.post.fetchPostsRoutine
 import com.jerboa.ui.components.post.likePostRoutine
 import com.jerboa.ui.components.post.savePostRoutine
@@ -66,8 +67,12 @@ class HomeViewModel : ViewModel() {
         likePostRoutine(mutableStateOf(postView), posts, voteType, account, ctx, viewModelScope)
     }
 
-    fun savePost(postView: PostView, account: Account?, ctx: Context) {
+    fun savePost(postView: PostView, account: Account, ctx: Context) {
         savePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
+    }
+
+    fun deletePost(postView: PostView, account: Account, ctx: Context) {
+        deletePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
     }
 
     fun fetchUnreadCounts(

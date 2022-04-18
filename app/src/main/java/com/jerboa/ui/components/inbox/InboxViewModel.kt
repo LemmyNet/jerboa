@@ -127,6 +127,20 @@ class InboxViewModel : ViewModel() {
         )
     }
 
+    fun deleteComment(
+        commentView: CommentView,
+        account: Account,
+        ctx: Context,
+    ) {
+        deleteCommentRoutine(
+            commentView = mutableStateOf(commentView),
+            comments = replies,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
+    }
+
     fun saveComment(
         commentView: CommentView,
         account: Account,

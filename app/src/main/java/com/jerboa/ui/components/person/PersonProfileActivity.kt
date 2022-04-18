@@ -336,11 +336,13 @@ fun UserTabs(
                             openLink(url, ctx)
                         },
                         onSaveClick = { postView ->
-                            personProfileViewModel.savePost(
-                                postView = postView,
-                                account = account,
-                                ctx = ctx,
-                            )
+                            account?.also { acct ->
+                                personProfileViewModel.savePost(
+                                    postView = postView,
+                                    account = acct,
+                                    ctx = ctx,
+                                )
+                            }
                         },
                         onEditPostClick = { postView ->
                             postEditClickWrapper(
@@ -348,6 +350,15 @@ fun UserTabs(
                                 postView,
                                 navController,
                             )
+                        },
+                        onDeletePostClick = { postView ->
+                            account?.also { acct ->
+                                personProfileViewModel.deletePost(
+                                    postView = postView,
+                                    account = acct,
+                                    ctx = ctx,
+                                )
+                            }
                         },
                         onReportClick = { postView ->
                             postReportClickWrapper(
@@ -528,6 +539,15 @@ fun UserTabs(
                                             commentView,
                                             navController,
                                         )
+                                    },
+                                    onDeleteCommentClick = { commentView ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.deleteComment(
+                                                commentView = commentView,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
                                     },
                                     onReportClick = { commentView ->
                                         commentReportClickWrapper(

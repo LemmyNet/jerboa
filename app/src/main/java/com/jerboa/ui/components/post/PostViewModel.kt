@@ -20,6 +20,7 @@ import com.jerboa.datatypes.api.GetPostResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
+import com.jerboa.ui.components.comment.deleteCommentRoutine
 import com.jerboa.ui.components.comment.likeCommentRoutine
 import com.jerboa.ui.components.comment.saveCommentRoutine
 import com.jerboa.ui.components.community.blockCommunityRoutine
@@ -91,11 +92,30 @@ class PostViewModel : ViewModel() {
         )
     }
 
+    fun deleteComment(commentView: CommentView, account: Account, ctx: Context) {
+        deleteCommentRoutine(
+            commentView = mutableStateOf(commentView),
+            comments = comments, // TODO should this be here?
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
+    }
+
     fun savePost(
-        account: Account?,
+        account: Account,
         ctx: Context,
     ) {
         savePostRoutine(postView = postView, account = account, ctx = ctx, scope = viewModelScope)
+    }
+
+    fun deletePost(account: Account, ctx: Context) {
+        deletePostRoutine(
+            postView = postView,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope,
+        )
     }
 
     fun saveComment(

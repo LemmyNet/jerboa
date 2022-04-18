@@ -144,11 +144,13 @@ fun CommunityActivity(
                         openLink(url, ctx)
                     },
                     onSaveClick = { postView ->
-                        communityViewModel.savePost(
-                            postView = postView,
-                            account = account,
-                            ctx = ctx,
-                        )
+                        account?.also { acct ->
+                            communityViewModel.savePost(
+                                postView = postView,
+                                account = acct,
+                                ctx = ctx,
+                            )
+                        }
                     },
                     onBlockCommunityClick = {
                         account?.also { acct ->
@@ -182,6 +184,15 @@ fun CommunityActivity(
                             postView,
                             navController,
                         )
+                    },
+                    onDeletePostClick = { postView ->
+                        account?.also { acct ->
+                            communityViewModel.deletePost(
+                                postView = postView,
+                                account = acct,
+                                ctx = ctx,
+                            )
+                        }
                     },
                     onReportClick = { postView ->
                         postReportClickWrapper(

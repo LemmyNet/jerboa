@@ -193,6 +193,29 @@ fun editCommentRoutine(
     }
 }
 
+fun deleteCommentRoutine(
+    commentView: MutableState<CommentView?>,
+    comments: MutableList<CommentView>? = null,
+    account: Account,
+    ctx: Context,
+    scope: CoroutineScope,
+) {
+    scope.launch {
+        commentView.value?.also { cv ->
+            val form = DeleteComment(
+                comment_id = cv.comment.id,
+                deleted = !cv.comment.deleted,
+                auth = account.jwt
+            )
+            val deletedCommentView = deleteCommentWrapper(form, ctx)?.comment_view
+            commentView.value = deletedCommentView
+            comments?.also {
+                findAndUpdateComment(comments, deletedCommentView)
+            }
+        }
+    }
+}
+
 fun createPrivateMessageRoutine(
     messages: MutableList<PrivateMessageView>? = null,
     loading: MutableState<Boolean>,

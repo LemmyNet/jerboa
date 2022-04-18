@@ -58,6 +58,14 @@ fun PostHeaderLine(
             )
             DotSpacer()
         }
+        if (postView.post.deleted) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "TODO",
+                tint = MaterialTheme.colors.error,
+            )
+            DotSpacer()
+        }
         if (showCommunityName) {
             CommunityLink(
                 community = postView.community,
@@ -113,6 +121,7 @@ fun PostNodeHeader(
         myVote = postView.my_vote,
         published = postView.post.published,
         updated = postView.post.updated,
+        deleted = postView.post.deleted,
         onPersonClick = onPersonClick,
         isPostCreator = true,
         isModerator = isModerator,
@@ -285,6 +294,7 @@ fun PostFooterLine(
     onReplyClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
+    onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onBlockCreatorClick: (person: PersonSafe) -> Unit,
@@ -307,6 +317,10 @@ fun PostFooterLine(
             onEditPostClick = {
                 showMoreOptions = false
                 onEditPostClick(postView)
+            },
+            onDeletePostClick = {
+                showMoreOptions = false
+                onDeletePostClick(postView)
             },
             onCommunityClick = {
                 showMoreOptions = false
@@ -422,6 +436,7 @@ fun PostFooterLinePreview() {
         onReplyClick = {},
         onDownvoteClick = {},
         onEditPostClick = {},
+        onDeletePostClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
     )
@@ -438,6 +453,7 @@ fun PreviewPostListing() {
         onReportClick = {},
         onCommunityClick = {},
         onEditPostClick = {},
+        onDeletePostClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
         onSaveClick = {},
@@ -468,6 +484,7 @@ fun PreviewLinkPostListing() {
         onSaveClick = {},
         onReplyClick = {},
         onEditPostClick = {},
+        onDeletePostClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
     )
@@ -491,6 +508,7 @@ fun PreviewImagePostListing() {
         onSaveClick = {},
         onReplyClick = {},
         onEditPostClick = {},
+        onDeletePostClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
     )
@@ -514,6 +532,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onSaveClick = {},
         onReplyClick = {},
         onEditPostClick = {},
+        onDeletePostClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
     )
@@ -531,6 +550,7 @@ fun PostListing(
     onSaveClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
+    onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: CommunitySafe) -> Unit,
@@ -583,6 +603,7 @@ fun PostListing(
                 onReplyClick = onReplyClick,
                 onCommunityClick = onCommunityClick,
                 onEditPostClick = onEditPostClick,
+                onDeletePostClick = onDeletePostClick,
                 onReportClick = onReportClick,
                 onBlockCommunityClick = onBlockCommunityClick,
                 onBlockCreatorClick = onBlockCreatorClick,
@@ -648,6 +669,7 @@ fun PostOptionsDialog(
     onDismissRequest: () -> Unit,
     onCommunityClick: () -> Unit,
     onEditPostClick: () -> Unit,
+    onDeletePostClick: () -> Unit,
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
     onBlockCommunityClick: () -> Unit,
@@ -698,6 +720,20 @@ fun PostOptionsDialog(
                         icon = Icons.Default.Edit,
                         onClick = onEditPostClick,
                     )
+                    val deleted = postView.post.deleted
+                    if (deleted) {
+                        IconAndTextDrawerItem(
+                            text = "Restore",
+                            icon = Icons.Default.Restore,
+                            onClick = onDeletePostClick,
+                        )
+                    } else {
+                        IconAndTextDrawerItem(
+                            text = "Delete",
+                            icon = Icons.Default.Delete,
+                            onClick = onDeletePostClick,
+                        )
+                    }
                 }
             }
         },
@@ -715,6 +751,7 @@ fun PostOptionsDialogPreview() {
         onCommunityClick = {},
         onDismissRequest = {},
         onEditPostClick = {},
+        onDeletePostClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
     )

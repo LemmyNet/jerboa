@@ -174,6 +174,7 @@ fun CommentOrPostNodeHeader(
     myVote: Int?,
     published: String,
     updated: String?,
+    deleted: Boolean,
     onPersonClick: (personId: Int) -> Unit,
     isPostCreator: Boolean,
     isModerator: Boolean,
@@ -192,6 +193,15 @@ fun CommentOrPostNodeHeader(
             )
     ) {
         Row {
+            if (deleted) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colors.error,
+                )
+                DotSpacer()
+            }
+
             PersonProfileLink(
                 person = creator,
                 onClick = { onPersonClick(creator.id) },
