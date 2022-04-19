@@ -8,13 +8,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jerboa.CommentNodeData
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
+import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetPost
 import com.jerboa.datatypes.api.GetPostResponse
 import com.jerboa.db.Account
@@ -33,7 +36,7 @@ class PostViewModel : ViewModel() {
         private set
     var postView = mutableStateOf<PostView?>(null)
         private set
-    var comments = mutableStateListOf<CommentView>()
+    var commentTree = mutableStateListOf<CommentNodeData>()
         private set
     var moderators = mutableStateListOf<CommunityModeratorView>()
         private set
@@ -64,8 +67,8 @@ class PostViewModel : ViewModel() {
                 val out = retrofitErrorHandler(api.getPost(form = form.serializeToMap()))
                 res = out
                 postView.value = out.post_view
-                comments.clear()
-                comments.addAll(out.comments)
+                commentTree.clear()
+                commentTree.addAll(buildCommentsTree(out.comments, SortType.Hot))
                 moderators.clear()
                 moderators.addAll(out.moderators)
             } catch (e: Exception) {
@@ -85,7 +88,7 @@ class PostViewModel : ViewModel() {
         likeCommentRoutine(
             commentView = mutableStateOf(commentView),
             voteType = voteType,
-            comments = comments,
+            commentTree = commentTree,
             account = account,
             ctx = ctx,
             scope = viewModelScope,
@@ -95,7 +98,7 @@ class PostViewModel : ViewModel() {
     fun deleteComment(commentView: CommentView, account: Account, ctx: Context) {
         deleteCommentRoutine(
             commentView = mutableStateOf(commentView),
-            comments = comments, // TODO should this be here?
+            commentTree = commentTree,
             account = account,
             ctx = ctx,
             scope = viewModelScope,
@@ -125,7 +128,7 @@ class PostViewModel : ViewModel() {
     ) {
         saveCommentRoutine(
             commentView = mutableStateOf(commentView),
-            comments = comments,
+            commentTree = commentTree,
             account = account,
             ctx = ctx,
             scope = viewModelScope,

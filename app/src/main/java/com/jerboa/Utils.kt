@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
@@ -95,7 +97,8 @@ fun newVote(currentVote: Int?, voteType: VoteType): Int {
 
 data class CommentNodeData(
     val commentView: CommentView,
-    val children: MutableList<CommentNodeData>?,
+    // Must use a SnapshotStateList and not a MutableList here, otherwise changes in the tree children won't trigger a UI update
+    val children: SnapshotStateList<CommentNodeData>?,
     var depth: Int?,
 )
 
@@ -114,7 +117,7 @@ fun buildCommentsTree(
     comments?.forEach { cv ->
         val node = CommentNodeData(
             commentView = cv,
-            children = mutableListOf(),
+            children = mutableStateListOf(),
             depth = null,
         )
         map[cv.comment.id] = node
