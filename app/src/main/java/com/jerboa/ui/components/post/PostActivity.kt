@@ -10,6 +10,7 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,8 +18,6 @@ import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.VoteType
-import com.jerboa.buildCommentsTree
-import com.jerboa.datatypes.SortType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.isModerator
 import com.jerboa.openLink
@@ -57,7 +56,6 @@ fun PostActivity(
     val ctx = LocalContext.current
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
-    val commentNodes = buildCommentsTree(postViewModel.comments, SortType.Hot)
 
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = postViewModel.loading && postViewModel
@@ -200,7 +198,7 @@ fun PostActivity(
                                 )
                             }
                             // Can't really do scrolling well here either because of tree
-                            items(commentNodes) { node ->
+                            items(postViewModel.commentTree) { node ->
                                 CommentNode(
                                     node = node,
                                     onUpvoteClick = { commentView ->

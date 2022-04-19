@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.focus.FocusManager
 import androidx.navigation.NavController
+import com.jerboa.CommentNodeData
 import com.jerboa.VoteType
 import com.jerboa.api.*
 import com.jerboa.datatypes.CommentView
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 fun likeCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
+    commentTree: MutableList<CommentNodeData>? = null,
     voteType: VoteType,
     account: Account,
     ctx: Context,
@@ -39,6 +41,9 @@ fun likeCommentRoutine(
             comments?.also {
                 findAndUpdateComment(comments, updatedCommentView)
             }
+            commentTree?.also {
+                findAndUpdateCommentInTree(commentTree, updatedCommentView)
+            }
         }
     }
 }
@@ -46,6 +51,7 @@ fun likeCommentRoutine(
 fun saveCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
+    commentTree: MutableList<CommentNodeData>? = null,
     account: Account,
     ctx: Context,
     scope: CoroutineScope,
@@ -60,6 +66,9 @@ fun saveCommentRoutine(
             commentView.value = updatedCommentView
             comments?.also {
                 findAndUpdateComment(comments, updatedCommentView)
+            }
+            commentTree?.also {
+                findAndUpdateCommentInTree(commentTree, updatedCommentView)
             }
         }
     }
@@ -138,7 +147,7 @@ fun createCommentRoutine(
 
         // Add to all the views which might have your comment
         if (commentView != null) {
-            addCommentToMutableList(postViewModel.comments, commentView)
+            insertCommentIntoTree(postViewModel.commentTree, commentView)
 
             // Maybe a back button would view this page.
             if (account.id == personProfileViewModel.personId.value) {
@@ -185,7 +194,7 @@ fun editCommentRoutine(
 
             // Update all the views which might have your comment
             findAndUpdateComment(personProfileViewModel.comments, commentView.value)
-            findAndUpdateComment(postViewModel.comments, commentView.value)
+            findAndUpdateCommentInTree(postViewModel.commentTree, commentView.value)
             findAndUpdateComment(inboxViewModel.replies, commentView.value)
 
             navController.navigateUp()
@@ -196,6 +205,7 @@ fun editCommentRoutine(
 fun deleteCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
+    commentTree: MutableList<CommentNodeData>? = null,
     account: Account,
     ctx: Context,
     scope: CoroutineScope,
@@ -211,6 +221,9 @@ fun deleteCommentRoutine(
             commentView.value = deletedCommentView
             comments?.also {
                 findAndUpdateComment(comments, deletedCommentView)
+            }
+            commentTree?.also {
+                findAndUpdateCommentInTree(commentTree, deletedCommentView)
             }
         }
     }
@@ -245,6 +258,73 @@ fun findAndUpdateComment(
         }
         if (foundIndex != -1) {
             comments[foundIndex] = ucv
+        }
+    }
+}
+
+fun insertCommentIntoTree(
+    commentTree: MutableList<CommentNodeData>,
+    cv: CommentView
+) {
+    var nodeData = CommentNodeData(
+        commentView = cv,
+        children = null,
+        depth = null,
+    )
+    cv.comment.parent_id?.also { parentId ->
+        val foundIndex = commentTree.indexOfFirst {
+            it.commentView.comment.id == parentId
+        }
+
+        if (foundIndex != -1) {
+            val parent = commentTree[foundIndex]
+            val depth = parent.depth ?: 0
+            nodeData.depth = depth
+
+            commentTree[foundIndex].children?.also { children ->
+                children.add(0, nodeData)
+            } ?: run {
+                commentTree[foundIndex] = commentTree[foundIndex].copy(children = mutableListOf(nodeData))
+            }
+        } else {
+            commentTree.forEach { node ->
+                node.children?.also { children ->
+                    insertCommentIntoTree(children, nodeData.commentView)
+                }
+            }
+        }
+    } ?: run {
+        commentTree.add(0, nodeData)
+    }
+}
+
+fun findAndUpdateCommentInTree(
+    commentTree: MutableList<CommentNodeData>,
+    cv: CommentView?
+) {
+    cv?.also {
+        val foundIndex = commentTree.indexOfFirst {
+            it.commentView.comment.id == cv.comment.id
+        }
+
+        if (foundIndex != -1) {
+            val updatedComment = commentTree[foundIndex].copy(commentView = cv)
+            commentTree[foundIndex] = updatedComment
+
+            Log.d(
+                "jerboa",
+                "Updated: ${commentTree[foundIndex].commentView.counts.score}"
+            )
+        } else {
+            Log.d(
+                "jerboa",
+                "not found index: $foundIndex"
+            )
+            commentTree.forEach { node ->
+                node.children?.also { children ->
+                    findAndUpdateCommentInTree(children, cv)
+                }
+            }
         }
     }
 }
