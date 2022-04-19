@@ -3,6 +3,8 @@ package com.jerboa.ui.components.comment
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.focus.FocusManager
 import androidx.navigation.NavController
 import com.jerboa.CommentNodeData
@@ -25,7 +27,7 @@ import kotlinx.coroutines.launch
 fun likeCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
-    commentTree: MutableList<CommentNodeData>? = null,
+    commentTree: SnapshotStateList<CommentNodeData>? = null,
     voteType: VoteType,
     account: Account,
     ctx: Context,
@@ -51,7 +53,7 @@ fun likeCommentRoutine(
 fun saveCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
-    commentTree: MutableList<CommentNodeData>? = null,
+    commentTree: SnapshotStateList<CommentNodeData>? = null,
     account: Account,
     ctx: Context,
     scope: CoroutineScope,
@@ -205,7 +207,7 @@ fun editCommentRoutine(
 fun deleteCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
-    commentTree: MutableList<CommentNodeData>? = null,
+    commentTree: SnapshotStateList<CommentNodeData>? = null,
     account: Account,
     ctx: Context,
     scope: CoroutineScope,
@@ -278,18 +280,17 @@ fun insertCommentIntoTree(
 
         if (foundIndex != -1) {
             val parent = commentTree[foundIndex]
-            val depth = parent.depth ?: 0
-            nodeData.depth = depth
+            nodeData.depth = parent.depth?.plus(1) ?: 0
 
-            commentTree[foundIndex].children?.also { children ->
+            parent.children?.also { children ->
                 children.add(0, nodeData)
             } ?: run {
-                commentTree[foundIndex] = commentTree[foundIndex].copy(children = mutableListOf(nodeData))
+                commentTree[foundIndex] = parent.copy(children = mutableStateListOf(nodeData))
             }
         } else {
             commentTree.forEach { node ->
                 node.children?.also { children ->
-                    insertCommentIntoTree(children, nodeData.commentView)
+                    insertCommentIntoTree(children, cv)
                 }
             }
         }
@@ -299,7 +300,7 @@ fun insertCommentIntoTree(
 }
 
 fun findAndUpdateCommentInTree(
-    commentTree: MutableList<CommentNodeData>,
+    commentTree: SnapshotStateList<CommentNodeData>,
     cv: CommentView?
 ) {
     cv?.also {
@@ -310,16 +311,7 @@ fun findAndUpdateCommentInTree(
         if (foundIndex != -1) {
             val updatedComment = commentTree[foundIndex].copy(commentView = cv)
             commentTree[foundIndex] = updatedComment
-
-            Log.d(
-                "jerboa",
-                "Updated: ${commentTree[foundIndex].commentView.counts.score}"
-            )
         } else {
-            Log.d(
-                "jerboa",
-                "not found index: $foundIndex"
-            )
             commentTree.forEach { node ->
                 node.children?.also { children ->
                     findAndUpdateCommentInTree(children, cv)
