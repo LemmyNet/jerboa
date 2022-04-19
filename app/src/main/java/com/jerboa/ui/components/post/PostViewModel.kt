@@ -8,13 +8,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jerboa.CommentNodeData
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
+import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetPost
 import com.jerboa.datatypes.api.GetPostResponse
 import com.jerboa.db.Account
@@ -35,6 +38,7 @@ class PostViewModel : ViewModel() {
         private set
     var comments = mutableStateListOf<CommentView>()
         private set
+    var commentTree = mutableStateListOf<CommentNodeData>()
     var moderators = mutableStateListOf<CommunityModeratorView>()
         private set
     var loading: Boolean by mutableStateOf(false)
@@ -66,6 +70,7 @@ class PostViewModel : ViewModel() {
                 postView.value = out.post_view
                 comments.clear()
                 comments.addAll(out.comments)
+                rebuildTree()
                 moderators.clear()
                 moderators.addAll(out.moderators)
             } catch (e: Exception) {
@@ -86,6 +91,7 @@ class PostViewModel : ViewModel() {
             commentView = mutableStateOf(commentView),
             voteType = voteType,
             comments = comments,
+            commentTree = commentTree,
             account = account,
             ctx = ctx,
             scope = viewModelScope,
@@ -169,5 +175,10 @@ class PostViewModel : ViewModel() {
             ctx = ctx,
             scope = viewModelScope,
         )
+    }
+
+    fun rebuildTree() {
+        commentTree.clear()
+        commentTree.addAll(buildCommentsTree(comments, SortType.Hot))
     }
 }

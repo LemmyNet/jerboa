@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.focus.FocusManager
 import androidx.navigation.NavController
+import com.jerboa.CommentNodeData
 import com.jerboa.VoteType
 import com.jerboa.api.*
+import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PrivateMessageView
@@ -24,6 +26,7 @@ import kotlinx.coroutines.launch
 fun likeCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
+    commentTree: MutableList<CommentNodeData>? = null,
     voteType: VoteType,
     account: Account,
     ctx: Context,
@@ -38,6 +41,10 @@ fun likeCommentRoutine(
             commentView.value = updatedCommentView
             comments?.also {
                 findAndUpdateComment(comments, updatedCommentView)
+            }
+            commentTree?.also {
+                commentTree.clear()
+                commentTree.addAll(buildCommentsTree(comments, SortType.Hot))
             }
         }
     }
@@ -139,6 +146,7 @@ fun createCommentRoutine(
         // Add to all the views which might have your comment
         if (commentView != null) {
             addCommentToMutableList(postViewModel.comments, commentView)
+            postViewModel.rebuildTree()
 
             // Maybe a back button would view this page.
             if (account.id == personProfileViewModel.personId.value) {
@@ -186,6 +194,7 @@ fun editCommentRoutine(
             // Update all the views which might have your comment
             findAndUpdateComment(personProfileViewModel.comments, commentView.value)
             findAndUpdateComment(postViewModel.comments, commentView.value)
+            postViewModel.rebuildTree()
             findAndUpdateComment(inboxViewModel.replies, commentView.value)
 
             navController.navigateUp()
