@@ -1,3 +1,10 @@
+# Jerboa v0.0.15-alpha Release (2022-04-19)
+
+- Reverting back to old markdown renderer. Was much better overall. by @dessalines in https://github.com/dessalines/jerboa/pull/156
+- Debounce search box input. Fixes #154 by @dessalines in https://github.com/dessalines/jerboa/pull/157
+- Ability to delete posts and comments. Fixes #152 by @dessalines in https://github.com/dessalines/jerboa/pull/161
+- Comment tree rework 1 by @dessalines in https://github.com/dessalines/jerboa/pull/162
+
 # Jerboa v0.0.13-alpha Release (2022-03-29)
 
 - Fix animation direction. Fixes [#114](https://github.com/dessalines/jerboa/issues/114) ([#140](https://github.com/dessalines/jerboa/issues/140))
