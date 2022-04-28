@@ -27,7 +27,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.sp
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
@@ -548,7 +547,6 @@ fun PreviewLines(
     )
 }
 
-@OptIn(ExperimentalUnitApi::class)
 @Composable
 fun MyMarkdownText(
     markdown: String,
