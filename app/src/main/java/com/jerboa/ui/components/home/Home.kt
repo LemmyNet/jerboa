@@ -235,7 +235,7 @@ fun DrawerAddAccountMode(
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
-                text = "Switch to ${it.name}",
+                text = "Switch to ${it.instance}/${it.name}",
                 icon = Icons.Default.Login,
                 onClick = { onSwitchAccountClick(it) },
             )
