@@ -28,7 +28,6 @@ data class LocalUserSettingsView(
 
 data class SiteView(
     val site: Site,
-    val creator: PersonSafe,
     val counts: SiteAggregates,
 )
 

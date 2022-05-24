@@ -389,6 +389,5 @@ val sampleSiteAggregates = SiteAggregates(
 
 val sampleSiteView = SiteView(
     site = sampleSite,
-    creator = samplePersonSafe,
     counts = sampleSiteAggregates,
 )
