@@ -280,7 +280,11 @@ fun communityNameShown(community: CommunitySafe): String {
 }
 
 fun hostName(url: String): String {
-    return try { URL(url).host } catch (e: java.net.MalformedURLException) { "bad_url" }
+    return try {
+        URL(url).host
+    } catch (e: java.net.MalformedURLException) {
+        "bad_url"
+    }
 }
 
 enum class UnreadOrAll {
@@ -557,6 +561,7 @@ fun scrollToTop(
         listState.animateScrollToItem(index = 0)
     }
 }
+
 // https://stackoverflow.com/questions/69234880/how-to-get-intent-data-in-a-composable
 fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
