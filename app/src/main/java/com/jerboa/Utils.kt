@@ -1,6 +1,8 @@
 package com.jerboa
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -554,4 +556,10 @@ fun scrollToTop(
     scope.launch {
         listState.animateScrollToItem(index = 0)
     }
+}
+// https://stackoverflow.com/questions/69234880/how-to-get-intent-data-in-a-composable
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

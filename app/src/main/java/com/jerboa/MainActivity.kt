@@ -1,15 +1,18 @@
 package com.jerboa
 
 import android.app.Application
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -168,13 +171,33 @@ class MainActivity : ComponentActivity() {
                             selectMode = it.arguments?.getBoolean("select")!!
                         )
                     }
-                    composable(route = "createPost") {
+                    composable(
+                        route = "createPost",
+                        // TODO:  Handle Image mimetype too
+                        deepLinks = listOf(navDeepLink { mimeType = "text/plain" })
+                    ) {
+
+                        val context = LocalContext.current
+                        val activity = context.findActivity()
+                        val text = activity?.intent?.getStringExtra(Intent.EXTRA_TEXT) ?: ""
+                        // url and body will be empty everytime except when there is EXTRA TEXT in the intent
+                        var url = ""
+                        var body = ""
+                        // this check can be improved, but this should be enough for most real-world cases
+                        if (text.startsWith("https://") || text.startsWith("http://")) {
+                            url = text
+                        } else {
+                            body = text
+                        }
+
                         CreatePostActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
                             createPostViewModel = createPostViewModel,
                             communityListViewModel = communityListViewModel,
                             postViewModel = postViewModel,
+                            _url = url,
+                            _body = body,
                         )
                     }
                     composable(route = "inbox") {
