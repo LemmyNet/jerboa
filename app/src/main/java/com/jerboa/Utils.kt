@@ -23,6 +23,7 @@ import androidx.core.graphics.ColorUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
+import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.* // ktlint-disable no-unused-imports
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
@@ -529,6 +530,7 @@ fun fetchInitialData(
         homeViewModel.fetchUnreadCounts(account = account)
     } else {
         Log.d("jerboa", "Fetching posts for anonymous user")
+        API.changeLemmyInstance(DEFAULT_INSTANCE)
         homeViewModel.fetchPosts(
             account = account,
             clear = true,

@@ -283,8 +283,8 @@ fun MainPostListingsContent(
             )
         },
         loading = homeViewModel.loading.value &&
-            homeViewModel.page.value == 1 &&
-            homeViewModel.posts.isNotEmpty(),
+                homeViewModel.page.value == 1 &&
+                homeViewModel.posts.isNotEmpty(),
         isScrolledToEnd = {
             if (homeViewModel.posts.size > 0) {
                 homeViewModel.fetchPosts(
@@ -340,6 +340,13 @@ fun MainDrawer(
                     if (updatedList.isNotEmpty()) {
                         accountViewModel.setCurrent(updatedList[0].id)
                     }
+                    fetchInitialData(
+                        account = updatedList.getOrNull(0),
+                        siteViewModel = siteViewModel,
+                        homeViewModel = homeViewModel,
+                    )
+
+                    closeDrawer(scope, scaffoldState)
                 }
             }
         },
