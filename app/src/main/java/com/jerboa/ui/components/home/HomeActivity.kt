@@ -283,8 +283,8 @@ fun MainPostListingsContent(
             )
         },
         loading = homeViewModel.loading.value &&
-              homeViewModel.page.value == 1 &&
-              homeViewModel.posts.isNotEmpty(),
+            homeViewModel.page.value == 1 &&
+            homeViewModel.posts.isNotEmpty(),
         isScrolledToEnd = {
             if (homeViewModel.posts.size > 0) {
                 homeViewModel.fetchPosts(
