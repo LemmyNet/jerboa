@@ -43,8 +43,8 @@ class HomeViewModel : ViewModel() {
         account: Account?,
         nextPage: Boolean = false,
         clear: Boolean = false,
-        changeListingType: ListingType? = null,
-        changeSortType: SortType? = null,
+        changeListingType: ListingType? = ListingType.Local,
+        changeSortType: SortType? = SortType.Active,
         ctx: Context? = null,
     ) {
         fetchPostsRoutine(

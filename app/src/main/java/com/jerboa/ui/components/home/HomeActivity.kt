@@ -340,6 +340,13 @@ fun MainDrawer(
                     if (updatedList.isNotEmpty()) {
                         accountViewModel.setCurrent(updatedList[0].id)
                     }
+                    fetchInitialData(
+                        account = updatedList.getOrNull(0),
+                        siteViewModel = siteViewModel,
+                        homeViewModel = homeViewModel,
+                    )
+
+                    closeDrawer(scope, scaffoldState)
                 }
             }
         },
