@@ -97,6 +97,9 @@ fun CreatePostBody(
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
 
+    // To fetch suggested title when opened from deeplink
+    onUrlChange(url)
+
     formValid(
         !nameField.hasError &&
             !urlField.hasError &&

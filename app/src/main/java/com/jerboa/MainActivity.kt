@@ -3,6 +3,7 @@ package com.jerboa
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -183,8 +184,7 @@ class MainActivity : ComponentActivity() {
                         // url and body will be empty everytime except when there is EXTRA TEXT in the intent
                         var url = ""
                         var body = ""
-                        // this check can be improved, but this should be enough for most real-world cases
-                        if (text.startsWith("https://") || text.startsWith("http://")) {
+                        if (Patterns.WEB_URL.matcher(text).matches()) {
                             url = text
                         } else {
                             body = text
