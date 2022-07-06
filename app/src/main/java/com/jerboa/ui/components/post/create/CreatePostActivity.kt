@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post.create
 
+import android.net.Uri
 import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ fun CreatePostActivity(
     postViewModel: PostViewModel,
     _url: String,
     _body: String,
+    _image: Uri?,
 ) {
 
     Log.d("jerboa", "got to create post activity")
@@ -103,6 +105,7 @@ fun CreatePostActivity(
                     community = communityListViewModel.selectedCommunity,
                     formValid = { formValid = it },
                     suggestedTitle = createPostViewModel.suggestedTitle,
+                    image = _image,
                     onPickedImage = { uri ->
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {

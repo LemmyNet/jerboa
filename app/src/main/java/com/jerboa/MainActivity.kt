@@ -2,7 +2,9 @@ package com.jerboa
 
 import android.app.Application
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -175,12 +177,17 @@ class MainActivity : ComponentActivity() {
                     composable(
                         route = "createPost",
                         // TODO:  Handle Image mimetype too
-                        deepLinks = listOf(navDeepLink { mimeType = "text/plain" })
+                        deepLinks = listOf(
+                            navDeepLink { mimeType = "text/plain" },
+                            navDeepLink { mimeType = "image/*" },
+                        )
                     ) {
 
                         val context = LocalContext.current
                         val activity = context.findActivity()
                         val text = activity?.intent?.getStringExtra(Intent.EXTRA_TEXT) ?: ""
+                        val image =
+                            activity?.intent?.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri
                         // url and body will be empty everytime except when there is EXTRA TEXT in the intent
                         var url = ""
                         var body = ""
@@ -198,7 +205,9 @@ class MainActivity : ComponentActivity() {
                             postViewModel = postViewModel,
                             _url = url,
                             _body = body,
+                            _image = image
                         )
+                        activity?.intent?.replaceExtras(Bundle())
                     }
                     composable(route = "inbox") {
                         InboxActivity(

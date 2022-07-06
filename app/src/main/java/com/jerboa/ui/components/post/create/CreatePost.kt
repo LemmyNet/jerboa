@@ -88,6 +88,7 @@ fun CreatePostBody(
     url: String,
     onUrlChange: (url: String) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
+    image: Uri? = null,
     community: CommunitySafe? = null,
     navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit,
@@ -96,9 +97,6 @@ fun CreatePostBody(
 
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
-
-    // To fetch suggested title when opened from deeplink
-    onUrlChange(url)
 
     formValid(
         !nameField.hasError &&
@@ -154,6 +152,7 @@ fun CreatePostBody(
         item {
             PickImage(
                 onPickedImage = onPickedImage,
+                image = image
             )
         }
         // TODO change this to reply text field at some point

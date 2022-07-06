@@ -142,6 +142,7 @@ fun PictrsBannerImage(
 fun PickImage(
     modifier: Modifier = Modifier,
     onPickedImage: (image: Uri) -> Unit,
+    image: Uri? = null,
     showImage: Boolean = true,
 ) {
     val ctx = LocalContext.current
@@ -150,6 +151,24 @@ fun PickImage(
     }
     val bitmap = remember {
         mutableStateOf<Bitmap?>(null)
+    }
+
+    if (image != null) {
+        LaunchedEffect(image) {
+            imageUri = image
+            // Set the bitmap
+            if (Build.VERSION.SDK_INT < 28) {
+                bitmap.value = MediaStore.Images
+                    .Media.getBitmap(ctx.contentResolver, imageUri!!)
+            } else {
+                val source = ImageDecoder
+                    .createSource(ctx.contentResolver, imageUri!!)
+                bitmap.value = ImageDecoder.decodeBitmap(source)
+            }
+
+            Log.d("jerboa", imageUri.toString())
+            onPickedImage(image)
+        }
     }
 
     val launcher = rememberLauncherForActivityResult(
