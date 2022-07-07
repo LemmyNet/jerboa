@@ -50,6 +50,17 @@ fun CreatePostActivity(
     var body by rememberSaveable { mutableStateOf(_body) }
     var formValid by rememberSaveable { mutableStateOf(false) }
 
+    LaunchedEffect(_url) {
+        if (_url.isNotEmpty()) {
+            fetchSuggestedTitleJob?.cancel()
+            fetchSuggestedTitleJob = scope.launch {
+                delay(DEBOUNCE_DELAY)
+                if (Patterns.WEB_URL.matcher(_url).matches()) {
+                    createPostViewModel.fetchSuggestedTitle(_url, ctx)
+                }
+            }
+        }
+    }
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
             topBar = {

@@ -176,7 +176,6 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(
                         route = "createPost",
-                        // TODO:  Handle Image mimetype too
                         deepLinks = listOf(
                             navDeepLink { mimeType = "text/plain" },
                             navDeepLink { mimeType = "image/*" },
