@@ -1,15 +1,21 @@
 package com.jerboa
 
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -168,14 +174,39 @@ class MainActivity : ComponentActivity() {
                             selectMode = it.arguments?.getBoolean("select")!!
                         )
                     }
-                    composable(route = "createPost") {
+                    composable(
+                        route = "createPost",
+                        deepLinks = listOf(
+                            navDeepLink { mimeType = "text/plain" },
+                            navDeepLink { mimeType = "image/*" },
+                        )
+                    ) {
+
+                        val context = LocalContext.current
+                        val activity = context.findActivity()
+                        val text = activity?.intent?.getStringExtra(Intent.EXTRA_TEXT) ?: ""
+                        val image =
+                            activity?.intent?.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri
+                        // url and body will be empty everytime except when there is EXTRA TEXT in the intent
+                        var url = ""
+                        var body = ""
+                        if (Patterns.WEB_URL.matcher(text).matches()) {
+                            url = text
+                        } else {
+                            body = text
+                        }
+
                         CreatePostActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
                             createPostViewModel = createPostViewModel,
                             communityListViewModel = communityListViewModel,
                             postViewModel = postViewModel,
+                            _url = url,
+                            _body = body,
+                            _image = image
                         )
+                        activity?.intent?.replaceExtras(Bundle())
                     }
                     composable(route = "inbox") {
                         InboxActivity(

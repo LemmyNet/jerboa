@@ -1,10 +1,6 @@
 package com.jerboa.ui.components.common
-
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,6 +26,7 @@ import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.decodeUriToBitmap
 import com.jerboa.pictrsImageThumbnail
 import com.jerboa.ui.theme.*
 
@@ -142,6 +139,7 @@ fun PictrsBannerImage(
 fun PickImage(
     modifier: Modifier = Modifier,
     onPickedImage: (image: Uri) -> Unit,
+    image: Uri? = null,
     showImage: Boolean = true,
 ) {
     val ctx = LocalContext.current
@@ -152,21 +150,20 @@ fun PickImage(
         mutableStateOf<Bitmap?>(null)
     }
 
+    if (image != null) {
+        LaunchedEffect(image) {
+            imageUri = image
+            bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
+            Log.d("jerboa", imageUri.toString())
+            onPickedImage(image)
+        }
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
-
-        // Set the bitmap
-        if (Build.VERSION.SDK_INT < 28) {
-            bitmap.value = MediaStore.Images
-                .Media.getBitmap(ctx.contentResolver, imageUri!!)
-        } else {
-            val source = ImageDecoder
-                .createSource(ctx.contentResolver, imageUri!!)
-            bitmap.value = ImageDecoder.decodeBitmap(source)
-        }
-
+        bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
         Log.d("jerboa", imageUri.toString())
         onPickedImage(uri!!)
     }

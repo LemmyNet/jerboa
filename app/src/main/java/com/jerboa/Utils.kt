@@ -1,8 +1,14 @@
 package com.jerboa
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
@@ -278,7 +284,11 @@ fun communityNameShown(community: CommunitySafe): String {
 }
 
 fun hostName(url: String): String {
-    return try { URL(url).host } catch (e: java.net.MalformedURLException) { "bad_url" }
+    return try {
+        URL(url).host
+    } catch (e: java.net.MalformedURLException) {
+        "bad_url"
+    }
 }
 
 enum class UnreadOrAll {
@@ -547,6 +557,15 @@ fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
     return ctx.contentResolver.openInputStream(uri)!!
 }
 
+fun decodeUriToBitmap(ctx: Context, uri: Uri): Bitmap? {
+    return if (Build.VERSION.SDK_INT < 28) {
+        MediaStore.Images.Media.getBitmap(ctx.contentResolver, uri)
+    } else {
+        val source = ImageDecoder.createSource(ctx.contentResolver, uri)
+        ImageDecoder.decodeBitmap(source)
+    }
+}
+
 fun scrollToTop(
     scope: CoroutineScope,
     listState: LazyListState,
@@ -554,4 +573,11 @@ fun scrollToTop(
     scope.launch {
         listState.animateScrollToItem(index = 0)
     }
+}
+
+// https://stackoverflow.com/questions/69234880/how-to-get-intent-data-in-a-composable
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

@@ -88,6 +88,7 @@ fun CreatePostBody(
     url: String,
     onUrlChange: (url: String) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
+    image: Uri? = null,
     community: CommunitySafe? = null,
     navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit,
@@ -151,6 +152,7 @@ fun CreatePostBody(
         item {
             PickImage(
                 onPickedImage = onPickedImage,
+                image = image
             )
         }
         // TODO change this to reply text field at some point

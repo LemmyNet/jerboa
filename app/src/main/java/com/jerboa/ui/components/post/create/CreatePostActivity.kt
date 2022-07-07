@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post.create
 
+import android.net.Uri
 import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,9 @@ fun CreatePostActivity(
     navController: NavController,
     communityListViewModel: CommunityListViewModel,
     postViewModel: PostViewModel,
+    _url: String,
+    _body: String,
+    _image: Uri?,
 ) {
 
     Log.d("jerboa", "got to create post activity")
@@ -42,10 +46,21 @@ fun CreatePostActivity(
     val scope = rememberCoroutineScope()
 
     var name by rememberSaveable { mutableStateOf("") }
-    var url by rememberSaveable { mutableStateOf("") }
-    var body by rememberSaveable { mutableStateOf("") }
+    var url by rememberSaveable { mutableStateOf(_url) }
+    var body by rememberSaveable { mutableStateOf(_body) }
     var formValid by rememberSaveable { mutableStateOf(false) }
 
+    LaunchedEffect(_url) {
+        if (_url.isNotEmpty()) {
+            fetchSuggestedTitleJob?.cancel()
+            fetchSuggestedTitleJob = scope.launch {
+                delay(DEBOUNCE_DELAY)
+                if (Patterns.WEB_URL.matcher(_url).matches()) {
+                    createPostViewModel.fetchSuggestedTitle(_url, ctx)
+                }
+            }
+        }
+    }
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
             topBar = {
@@ -101,6 +116,7 @@ fun CreatePostActivity(
                     community = communityListViewModel.selectedCommunity,
                     formValid = { formValid = it },
                     suggestedTitle = createPostViewModel.suggestedTitle,
+                    image = _image,
                     onPickedImage = { uri ->
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
