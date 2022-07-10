@@ -223,6 +223,13 @@ interface API {
     suspend fun blockCommunity(@Body form: BlockCommunity): Response<BlockCommunityResponse>
 
     /**
+     * Save your user settings.
+     */
+    @PUT("user/save_user_settings")
+    suspend fun saveUserSettings(@Body form: SaveUserSettings): Response<LoginResponse>
+
+
+    /**
      * Upload an image.
      */
     @Multipart
@@ -723,6 +730,22 @@ suspend fun blockCommunityWrapper(
         toastException(ctx = ctx, error = e)
     }
     return blockCommunityRes
+}
+
+suspend fun saveUserSettingsWrapper(
+    form: SaveUserSettings,
+    ctx: Context,
+): LoginResponse? {
+
+    var saveUserSettingsResponse: LoginResponse? = null
+    val api = API.getInstance()
+
+    try {
+        saveUserSettingsResponse = retrofitErrorHandler(api.saveUserSettings(form))
+    } catch (e: Exception) {
+        toastException(ctx = ctx, error = e)
+    }
+    return saveUserSettingsResponse
 }
 
 suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Context): String? {

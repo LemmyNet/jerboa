@@ -47,6 +47,7 @@ fun Drawer(
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
+    onClickSettings: () -> Unit,
     unreadCounts: GetUnreadCountResponse?,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
@@ -71,6 +72,7 @@ fun Drawer(
         onClickProfile = onClickProfile,
         onClickInbox = onClickInbox,
         onClickSaved = onClickSaved,
+        onClickSettings = onClickSettings
     )
 }
 
@@ -86,6 +88,7 @@ fun DrawerContent(
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
+    onClickSettings: () -> Unit,
     follows: List<CommunityFollowerView>?,
     unreadCounts: GetUnreadCountResponse?,
 ) {
@@ -111,6 +114,7 @@ fun DrawerContent(
             onClickSaved = onClickSaved,
             follows = follows,
             unreadCounts = unreadCounts,
+            onClickSettings = onClickSettings
         )
     }
 }
@@ -121,6 +125,7 @@ fun DrawerItemsMain(
     onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
+    onClickSettings: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     unreadCounts: GetUnreadCountResponse? = null,
@@ -182,6 +187,13 @@ fun DrawerItemsMain(
             )
         }
         item {
+            IconAndTextDrawerItem(
+                text = "Settings",
+                icon = Icons.Default.Settings,
+                onClick = onClickSettings,
+            )
+        }
+        item {
             Divider()
         }
 
@@ -213,6 +225,7 @@ fun DrawerItemsMainPreview() {
         onClickInbox = {},
         onCommunityClick = {},
         onClickSaved = {},
+        onClickSettings = {}
     )
 }
 
