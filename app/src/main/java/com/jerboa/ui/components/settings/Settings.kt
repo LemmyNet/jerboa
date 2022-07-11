@@ -1,5 +1,10 @@
 package com.jerboa.ui.components.settings
 
+import android.graphics.Bitmap
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -7,22 +12,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.api.SaveUserSettings
 import com.jerboa.db.Account
+import com.jerboa.decodeUriToBitmap
+import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.components.common.LargerCircularIcon
+import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.theme.*
-
+import kotlinx.coroutines.launch
 
 fun settingsClickWrapper(
     navController: NavController,
@@ -68,7 +78,6 @@ fun SettingsHeader(
 @Composable
 fun SettingsField(
     label: String,
-    placeholder: String? = null,
     text: String,
     onValueChange: (String) -> Unit
 ) {
@@ -80,7 +89,6 @@ fun SettingsField(
             value = text,
             onValueChange = onValueChange,
             singleLine = true,
-            placeholder = { placeholder?.let { Text(text = it) } },
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.None,
                 keyboardType = KeyboardType.Text,
@@ -108,6 +116,114 @@ fun SettingsCheckBox(
 }
 
 @Composable
+fun PickAvatarOrBanner(
+    onPickedAvatarOrBanner: (image: Uri) -> Unit,
+    type: String
+) {
+    val ctx = LocalContext.current
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val bitmap = remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        imageUri = uri
+        bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
+        Log.d("jerboa", imageUri.toString())
+        onPickedAvatarOrBanner(uri!!)
+    }
+
+    OutlinedButton(onClick = {
+        launcher.launch("image/*")
+    }) {
+        Text(
+            text = "Upload $type",
+            color = MaterialTheme.colors.onBackground.muted,
+        )
+    }
+
+
+}
+
+//https://stackoverflow.com/a/67111599
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SettingsDropDown(
+    suggestions: List<String>,
+    onValueChange: (Int) -> Unit,
+    initialValue: Int,
+    label: String
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf(suggestions[initialValue]) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        }
+    ) {
+        TextField(
+            readOnly = true,
+            value = selectedText,
+            onValueChange = { },
+            label = { Text(label) },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            suggestions.forEach { selectionOption ->
+                DropdownMenuItem(
+                    onClick = {
+                        selectedText = selectionOption
+                        expanded = false
+                        onValueChange(suggestions.indexOf(selectedText))
+                    }
+                ) {
+                    Text(text = selectionOption)
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun BannerWithClose(url: String, onClick: () -> Unit) {
+    Box(contentAlignment = Alignment.TopEnd) {
+        PictrsBannerImage(url = url)
+        IconButton(onClick = onClick) {
+            Icon(imageVector = Icons.Default.Close, contentDescription = "Remove Current Banner")
+        }
+
+    }
+}
+
+@Composable
+fun AvatarWithClose(url: String, onClick: () -> Unit) {
+    Box(contentAlignment = Alignment.TopEnd) {
+        LargerCircularIcon(icon = url)
+        IconButton(onClick = onClick) {
+            Icon(imageVector = Icons.Default.Close, contentDescription = "Remove Current Avatar")
+        }
+    }
+}
+
+
+@Composable
 fun SettingsForm(
     settingsViewModel: SettingsViewModel,
     siteViewModel: SiteViewModel,
@@ -116,6 +232,8 @@ fun SettingsForm(
 ) {
 
     val luv = siteViewModel.siteRes?.my_user?.local_user_view
+    val scope = rememberCoroutineScope()
+    val ctx = LocalContext.current
 
 
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
@@ -165,7 +283,8 @@ fun SettingsForm(
         modifier = Modifier
             .fillMaxSize()
             .padding(SMALL_PADDING)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)
     ) {
         SettingsField(
             label = "Display Name",
@@ -187,6 +306,63 @@ fun SettingsForm(
             text = matrixUserId,
             onValueChange = { matrixUserId = it }
         )
+        Divider()
+        Text(text = "Avatar")
+        if (avatar.isNotEmpty()) {
+            AvatarWithClose(url = avatar, onClick = { avatar = "" })
+        } else {
+            PickAvatarOrBanner(onPickedAvatarOrBanner = { uri ->
+                val imageIs = imageInputStreamFromUri(ctx, uri)
+                scope.launch {
+                    account?.also { acct ->
+                        avatar = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                    }
+                }
+
+            }, type = "Avatar")
+        }
+        Text(text = "Banner")
+        if (banner.isNotEmpty()) {
+            BannerWithClose(url = banner, onClick = {
+                banner = ""
+            })
+        } else {
+            PickAvatarOrBanner(onPickedAvatarOrBanner = { uri ->
+                val imageIs = imageInputStreamFromUri(ctx, uri)
+                scope.launch {
+                    account?.also { acct ->
+                        banner = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                    }
+                }
+
+            }, type = "Banner")
+        }
+
+
+
+        Divider()
+        SettingsDropDown(
+            suggestions = listOf("All", "Local", "Subscribed"),
+            onValueChange = { defaultListingType = it }, defaultListingType ?: 0,
+            label = "Default Listing Type"
+        )
+        SettingsDropDown(
+            suggestions = listOf(
+                "Active",
+                "Hot",
+                "New",
+                "TopDay",
+                "TopWeek",
+                "TopMonth",
+                "TopYear",
+                "TopAll",
+                "MostComments",
+                "NewComments"
+            ),
+            onValueChange = { defaultSortType = it }, defaultSortType ?: 0,
+            label = "Default Sort Type"
+        )
+
         Divider()
         SettingsCheckBox(
             checked = showNsfw,
