@@ -88,6 +88,7 @@ fun SettingsField(
         OutlinedTextField(
             value = text,
             onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.None,
@@ -107,10 +108,15 @@ fun SettingsCheckBox(
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
-        modifier = Modifier.padding(SMALL_PADDING)
+        modifier = Modifier.padding(SMALL_PADDING),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = label, modifier = Modifier.fillMaxHeight())
-        Checkbox(checked = checked, onCheckedChange = onCheckedChange, enabled = enabled)
+        Text(text = label)
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            enabled = enabled,
+        )
     }
 
 }
@@ -170,6 +176,7 @@ fun SettingsDropDown(
         TextField(
             readOnly = true,
             value = selectedText,
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { },
             label = { Text(label) },
             trailingIcon = {
@@ -281,7 +288,6 @@ fun SettingsForm(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .padding(SMALL_PADDING)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)
@@ -306,7 +312,6 @@ fun SettingsForm(
             text = matrixUserId,
             onValueChange = { matrixUserId = it }
         )
-        Divider()
         Text(text = "Avatar")
         if (avatar.isNotEmpty()) {
             AvatarWithClose(url = avatar, onClick = { avatar = "" })
@@ -337,10 +342,6 @@ fun SettingsForm(
 
             }, type = "Banner")
         }
-
-
-
-        Divider()
         SettingsDropDown(
             suggestions = listOf("All", "Local", "Subscribed"),
             onValueChange = { defaultListingType = it }, defaultListingType ?: 0,
@@ -363,7 +364,6 @@ fun SettingsForm(
             label = "Default Sort Type"
         )
 
-        Divider()
         SettingsCheckBox(
             checked = showNsfw,
             label = "Show NSFW",
@@ -408,7 +408,8 @@ fun SettingsForm(
 
         Button(
             enabled = !settingsViewModel.loading,
-            onClick = { onClickSettings(form) }
+            onClick = { onClickSettings(form) },
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Save Settings")
         }
