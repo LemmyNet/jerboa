@@ -97,7 +97,6 @@ fun SettingsField(
             )
         )
     }
-
 }
 
 @Composable
@@ -118,7 +117,6 @@ fun SettingsCheckBox(
             enabled = enabled,
         )
     }
-
 }
 
 @Composable
@@ -151,11 +149,9 @@ fun PickAvatarOrBanner(
             color = MaterialTheme.colors.onBackground.muted,
         )
     }
-
-
 }
 
-//https://stackoverflow.com/a/67111599
+// https://stackoverflow.com/a/67111599
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SettingsDropDown(
@@ -205,7 +201,6 @@ fun SettingsDropDown(
             }
         }
     }
-
 }
 
 @Composable
@@ -215,7 +210,6 @@ fun BannerWithClose(url: String, onClick: () -> Unit) {
         IconButton(onClick = onClick) {
             Icon(imageVector = Icons.Default.Close, contentDescription = "Remove Current Banner")
         }
-
     }
 }
 
@@ -229,7 +223,6 @@ fun AvatarWithClose(url: String, onClick: () -> Unit) {
     }
 }
 
-
 @Composable
 fun SettingsForm(
     settingsViewModel: SettingsViewModel,
@@ -237,12 +230,9 @@ fun SettingsForm(
     account: Account?,
     onClickSettings: (form: SaveUserSettings) -> Unit,
 ) {
-
     val luv = siteViewModel.siteRes?.my_user?.local_user_view
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
-
-
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
     var bio by rememberSaveable { mutableStateOf(luv?.person?.bio.orEmpty()) }
     var email by rememberSaveable { mutableStateOf(luv?.local_user?.email.orEmpty()) }
@@ -261,8 +251,6 @@ fun SettingsForm(
     var showReadPosts by rememberSaveable { mutableStateOf(luv?.local_user?.show_read_posts) }
     var showNewPostNotifs by rememberSaveable { mutableStateOf(luv?.local_user?.show_new_post_notifs) }
     var sendNotificationsToEmail by rememberSaveable { mutableStateOf(luv?.local_user?.send_notifications_to_email) }
-
-
     val form = SaveUserSettings(
         display_name = displayName,
         bio = bio,
@@ -284,8 +272,6 @@ fun SettingsForm(
         theme = theme,
         show_scores = showScores
     )
-
-
     Column(
         modifier = Modifier
             .padding(SMALL_PADDING)
@@ -323,7 +309,6 @@ fun SettingsForm(
                         avatar = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                     }
                 }
-
             }, type = "Avatar")
         }
         Text(text = "Banner")
@@ -339,7 +324,6 @@ fun SettingsForm(
                         banner = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                     }
                 }
-
             }, type = "Banner")
         }
         SettingsDropDown(
@@ -413,9 +397,7 @@ fun SettingsForm(
         ) {
             Text(text = "Save Settings")
         }
-
     }
-
 }
 
 @Preview

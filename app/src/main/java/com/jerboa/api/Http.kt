@@ -227,8 +227,6 @@ interface API {
      */
     @PUT("user/save_user_settings")
     suspend fun saveUserSettings(@Body form: SaveUserSettings): Response<LoginResponse>
-
-
     /**
      * Upload an image.
      */

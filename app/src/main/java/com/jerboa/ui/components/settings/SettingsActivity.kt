@@ -12,7 +12,6 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
 
-
 @Composable
 fun SettingsActivity(
     navController: NavController,
