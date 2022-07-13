@@ -162,6 +162,7 @@ fun SettingsForm(
             text = displayName,
             onValueChange = { displayName = it }
         )
+        // Todo: Use MarkdownField
         SettingsTextField(
             label = "Bio",
             text = bio,
@@ -271,7 +272,7 @@ fun SettingsForm(
             label = "Send Notifications to Email",
             onCheckedChange = { sendNotificationsToEmail = it }
         )
-
+        // Todo: Remove this
         Button(
             enabled = !settingsViewModel.loading,
             onClick = { onClickSave(form) },
