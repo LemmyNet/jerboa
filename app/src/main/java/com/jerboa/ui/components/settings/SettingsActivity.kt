@@ -34,19 +34,21 @@ fun SettingsActivity(
                 )
             },
             content = {
-                SettingsForm(
-                    settingsViewModel,
-                    onClickSettings = { form ->
-                        settingsViewModel.saveSettings(
-                            form,
-                            ctx,
-                            siteViewModel = siteViewModel,
-                            account = account,
-                        )
-                    },
-                    siteViewModel = siteViewModel,
-                    account = account,
-                )
+                account.also {
+                    SettingsForm(
+                        settingsViewModel,
+                        onClickSave = { form ->
+                            settingsViewModel.saveSettings(
+                                form,
+                                ctx,
+                                siteViewModel = siteViewModel,
+                                account = account,
+                            )
+                        },
+                        siteViewModel = siteViewModel,
+                        account = account,
+                    )
+                }
             }
         )
     }
