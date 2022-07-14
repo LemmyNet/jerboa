@@ -131,6 +131,7 @@ class MainActivity : ComponentActivity() {
                             inboxViewModel = inboxViewModel,
                             postEditViewModel = postEditViewModel,
                             createReportViewModel = createReportViewModel,
+                            communityListViewModel = communityListViewModel,
                         )
                     }
                     composable(
