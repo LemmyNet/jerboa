@@ -544,6 +544,8 @@ fun fetchInitialData(
         homeViewModel.fetchPosts(
             account = account,
             clear = true,
+            changeListingType = ListingType.Local,
+            changeSortType = SortType.Active,
         )
     }
 
