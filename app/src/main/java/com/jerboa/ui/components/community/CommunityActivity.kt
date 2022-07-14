@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -18,6 +20,7 @@ import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.inbox.inboxClickWrapper
@@ -35,6 +38,7 @@ import com.jerboa.ui.components.report.postReportClickWrapper
 fun CommunityActivity(
     navController: NavController,
     communityViewModel: CommunityViewModel,
+    communityListViewModel: CommunityListViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
     accountViewModel: AccountViewModel,
@@ -231,6 +235,21 @@ fun CommunityActivity(
                     },
                     account = account,
                 )
+            },
+            floatingActionButtonPosition = FabPosition.End,
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        account?.also {
+                            communityViewModel.communityView?.also {
+                                communityListViewModel.selectCommunity(it.community)
+                                navController.navigate("createPost")
+                            }
+                        }
+                    }
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "TODO")
+                }
             },
             bottomBar = {
                 BottomAppBarAll(
