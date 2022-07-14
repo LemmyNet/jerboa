@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -152,7 +153,9 @@ fun CreatePostBody(
         item {
             PickImage(
                 onPickedImage = onPickedImage,
-                image = image
+                image = image,
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.End
             )
         }
         // TODO change this to reply text field at some point

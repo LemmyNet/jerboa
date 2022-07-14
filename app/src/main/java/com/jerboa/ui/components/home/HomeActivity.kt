@@ -40,6 +40,7 @@ import com.jerboa.ui.components.post.edit.postEditClickWrapper
 import com.jerboa.ui.components.post.postClickWrapper
 import com.jerboa.ui.components.report.CreateReportViewModel
 import com.jerboa.ui.components.report.postReportClickWrapper
+import com.jerboa.ui.components.settings.settingsClickWrapper
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -401,6 +402,13 @@ fun MainDrawer(
                 account = account,
                 navController = navController,
                 ctx = ctx,
+            )
+            closeDrawer(scope, scaffoldState)
+        },
+        onClickSettings = {
+            settingsClickWrapper(
+                navController = navController,
+                account = account
             )
             closeDrawer(scope, scaffoldState)
         },

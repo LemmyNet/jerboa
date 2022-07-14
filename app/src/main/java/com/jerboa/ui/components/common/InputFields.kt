@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -33,6 +34,7 @@ import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -509,6 +511,78 @@ fun MarkdownHelperBar(
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted,
             )
+        }
+    }
+}
+
+@Composable
+fun MyCheckBox(
+    checked: Boolean,
+    enabled: Boolean = true,
+    label: String,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier.padding(SMALL_PADDING),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = label)
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            enabled = enabled,
+        )
+    }
+}
+
+// https://stackoverflow.com/a/67111599
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun MyDropDown(
+    suggestions: List<String>,
+    onValueChange: (Int) -> Unit,
+    initialValue: Int,
+    label: String
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf(suggestions[initialValue]) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        }
+    ) {
+        TextField(
+            readOnly = true,
+            value = selectedText,
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { },
+            label = { Text(label) },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            suggestions.forEach { selectionOption ->
+                DropdownMenuItem(
+                    onClick = {
+                        selectedText = selectionOption
+                        expanded = false
+                        onValueChange(suggestions.indexOf(selectedText))
+                    }
+                ) {
+                    Text(text = selectionOption)
+                }
+            }
         }
     }
 }

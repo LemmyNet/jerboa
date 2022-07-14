@@ -47,6 +47,8 @@ import com.jerboa.ui.components.private_message.PrivateMessageReplyActivity
 import com.jerboa.ui.components.report.CreateReportViewModel
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
+import com.jerboa.ui.components.settings.SettingsActivity
+import com.jerboa.ui.components.settings.SettingsViewModel
 import com.jerboa.ui.theme.JerboaTheme
 
 class JerboaApplication : Application() {
@@ -69,6 +71,7 @@ class MainActivity : ComponentActivity() {
     private val commentEditViewModel by viewModels<CommentEditViewModel>()
     private val postEditViewModel by viewModels<PostEditViewModel>()
     private val createReportViewModel by viewModels<CreateReportViewModel>()
+    private val settingsViewModel by viewModels<SettingsViewModel>()
 
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).repository)
@@ -316,6 +319,16 @@ class MainActivity : ComponentActivity() {
                             createReportViewModel = createReportViewModel,
                             accountViewModel = accountViewModel,
                             navController = navController,
+                        )
+                    }
+                    composable(
+                        route = "settings",
+                    ) {
+                        SettingsActivity(
+                            navController = navController,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            settingsViewModel = settingsViewModel
                         )
                     }
                 }

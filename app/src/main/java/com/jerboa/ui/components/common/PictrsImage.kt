@@ -141,6 +141,7 @@ fun PickImage(
     onPickedImage: (image: Uri) -> Unit,
     image: Uri? = null,
     showImage: Boolean = true,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start
 ) {
     val ctx = LocalContext.current
     var imageUri by remember {
@@ -168,8 +169,8 @@ fun PickImage(
         onPickedImage(uri!!)
     }
     Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.End
+        modifier = modifier,
+        horizontalAlignment = horizontalAlignment
     ) {
         OutlinedButton(onClick = {
             launcher.launch("image/*")

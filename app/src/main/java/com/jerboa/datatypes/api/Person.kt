@@ -55,7 +55,7 @@ data class SaveUserSettings(
     val show_bot_accounts: Boolean?,
     val show_read_posts: Boolean?,
     val show_new_post_notifs: Boolean?,
-    val auth: String?,
+    val auth: String,
 )
 
 data class ChangePassword(
