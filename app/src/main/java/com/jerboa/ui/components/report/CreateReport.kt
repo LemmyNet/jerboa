@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.report
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
@@ -79,7 +80,13 @@ fun CreateReportBody(
         modifier = Modifier.simpleVerticalScrollbar(listState)
     ) {
         item {
-            MarkdownTextField(reply = reason, onReplyChange = onReasonChange, account = account)
+            MarkdownTextField(
+                text = reason,
+                onTextChange = onReasonChange,
+                account = account,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = "Type your reason"
+            )
         }
     }
 }

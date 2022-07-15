@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.db.AccountViewModel
@@ -42,7 +43,13 @@ fun PostEditActivity(
     val pv = postEditViewModel.postView.value
     var name by rememberSaveable { mutableStateOf(pv?.post?.name.orEmpty()) }
     var url by rememberSaveable { mutableStateOf(pv?.post?.url.orEmpty()) }
-    var body by rememberSaveable { mutableStateOf(pv?.post?.body.orEmpty()) }
+    var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(
+            TextFieldValue(
+                pv?.post?.body.orEmpty()
+            )
+        )
+    }
     var formValid by rememberSaveable { mutableStateOf(true) }
 
     Surface(color = MaterialTheme.colors.background) {
@@ -57,7 +64,7 @@ fun PostEditActivity(
                             account?.also { acct ->
                                 // Clean up that data
                                 val nameOut = name.trim()
-                                val bodyOut = body.trim().ifEmpty { null }
+                                val bodyOut = body.text.trim().ifEmpty { null }
                                 val urlOut = url.trim().ifEmpty { null }
 
                                 postEditViewModel.editPost(
@@ -96,7 +103,8 @@ fun PostEditActivity(
                                 url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                             }
                         }
-                    }
+                    },
+                    account = account
                 )
             }
         )

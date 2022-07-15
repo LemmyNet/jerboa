@@ -15,13 +15,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.db.Account
 import com.jerboa.ui.components.common.CircularIcon
+import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.*
@@ -84,8 +87,8 @@ fun CreatePostHeader(
 fun CreatePostBody(
     name: String,
     onNameChange: (name: String) -> Unit,
-    body: String,
-    onBodyChange: (body: String) -> Unit,
+    body: TextFieldValue,
+    onBodyChange: (body: TextFieldValue) -> Unit,
     url: String,
     onUrlChange: (url: String) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
@@ -94,6 +97,7 @@ fun CreatePostBody(
     navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit,
     suggestedTitle: String? = null,
+    account: Account?,
 ) {
 
     val nameField = validatePostName(name)
@@ -158,16 +162,16 @@ fun CreatePostBody(
                 horizontalAlignment = Alignment.End
             )
         }
-        // TODO change this to reply text field at some point
         item {
-            OutlinedTextField(
-                label = {
-                    Text("Body")
-                },
-                value = body,
-                onValueChange = onBodyChange,
+            MarkdownTextField(
+                text = body,
+                onTextChange = onBodyChange,
                 modifier = Modifier
                     .fillMaxWidth(),
+                outlined = true,
+                account = account,
+                focusImmediate = false,
+                placeholder = "Body"
             )
         }
         item {
@@ -229,7 +233,7 @@ fun CreatePostBody(
 fun CreatePostBodyPreview() {
     CreatePostBody(
         name = "",
-        body = "",
+        body = TextFieldValue(""),
         url = "",
         community = sampleCommunitySafe,
         formValid = {},
@@ -237,6 +241,7 @@ fun CreatePostBodyPreview() {
         onUrlChange = {},
         onBodyChange = {},
         onNameChange = {},
+        account = null,
     )
 }
 
@@ -245,7 +250,7 @@ fun CreatePostBodyPreview() {
 fun CreatePostBodyPreviewNoCommunity() {
     CreatePostBody(
         name = "",
-        body = "",
+        body = TextFieldValue(""),
         url = "",
         suggestedTitle = "a title here....",
         formValid = {},
@@ -253,5 +258,6 @@ fun CreatePostBodyPreviewNoCommunity() {
         onBodyChange = {},
         onUrlChange = {},
         onPickedImage = {},
+        account = null,
     )
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -113,7 +114,7 @@ fun SettingsForm(
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
-    var bio by rememberSaveable { mutableStateOf(luv?.person?.bio.orEmpty()) }
+    var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty())) }
     var email by rememberSaveable { mutableStateOf(luv?.local_user?.email.orEmpty()) }
     var matrixUserId by rememberSaveable { mutableStateOf(luv?.person?.matrix_user_id.orEmpty()) }
     val theme by rememberSaveable { mutableStateOf(luv?.local_user?.theme.orEmpty()) }
@@ -132,7 +133,7 @@ fun SettingsForm(
     var sendNotificationsToEmail by rememberSaveable { mutableStateOf(luv?.local_user?.send_notifications_to_email) }
     val form = SaveUserSettings(
         display_name = displayName,
-        bio = bio,
+        bio = bio.text,
         email = email,
         auth = account?.jwt ?: "",
         avatar = avatar,
@@ -162,12 +163,18 @@ fun SettingsForm(
             text = displayName,
             onValueChange = { displayName = it }
         )
-        // Todo: Use MarkdownField
-        SettingsTextField(
-            label = "Bio",
-            text = bio,
-            onValueChange = { bio = it }
-        )
+        Column() {
+            Text("Bio")
+            MarkdownTextField(
+                text = bio,
+                onTextChange = { bio = it },
+                account = account,
+                outlined = true,
+                focusImmediate = false,
+                modifier = Modifier.fillMaxWidth().padding(SMALL_PADDING)
+            )
+        }
+
         SettingsTextField(
             label = "Email",
             text = email,

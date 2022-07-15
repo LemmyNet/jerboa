@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.private_message
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -124,7 +125,13 @@ fun PrivateMessageReply(
             Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         }
         item {
-            MarkdownTextField(reply = reply, onReplyChange = onReplyChange, account = account)
+            MarkdownTextField(
+                text = reply,
+                onTextChange = onReplyChange,
+                account = account,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = "Type your message"
+            )
         }
     }
 }

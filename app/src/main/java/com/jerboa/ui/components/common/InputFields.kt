@@ -42,120 +42,137 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MarkdownTextField(
-    reply: TextFieldValue,
-    onReplyChange: (TextFieldValue) -> Unit,
+    text: TextFieldValue,
+    onTextChange: (TextFieldValue) -> Unit,
     account: Account?,
+    modifier: Modifier = Modifier,
+    placeholder: String = "",
+    focusImmediate: Boolean = true,
+    outlined: Boolean = false,
 ) {
     val focusRequester = remember { FocusRequester() }
     val imageUploading = rememberSaveable { mutableStateOf(false) }
-    val launcher = imageUploadLauncher(account, onReplyChange, reply, imageUploading)
+    val launcher = imageUploadLauncher(account, onTextChange, text, imageUploading)
 
     var showCreateLink by remember { mutableStateOf(false) }
     var showPreview by remember { mutableStateOf(false) }
 
     if (showCreateLink) {
         CreateLinkDialog(
-            value = reply,
+            value = text,
             onDismissRequest = { showCreateLink = false },
             onClickOk = {
                 showCreateLink = false
-                onReplyChange(it)
+                onTextChange(it)
             },
         )
     }
 
     if (showPreview) {
         ShowPreviewDialog(
-            content = reply.text,
+            content = text.text,
             onDismissRequest = { showPreview = false },
         )
     }
 
     Column {
-        TextField(
-            value = reply,
-            onValueChange = onReplyChange,
-            placeholder = { Text(text = "Type your comment") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                capitalization = KeyboardCapitalization.Sentences,
-                keyboardType = KeyboardType.Text,
-                // autoCorrect = true,
-            ),
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = MaterialTheme.colors.onSurface,
-                backgroundColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
+        if (outlined) {
+            OutlinedTextField(
+                value = text,
+                onValueChange = onTextChange,
+                label = { Text(text = placeholder) },
+                modifier = modifier.focusRequester(focusRequester),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text,
+                    // autoCorrect = true,
+                ),
             )
-        )
+        } else {
+            TextField(
+                value = text,
+                onValueChange = onTextChange,
+                placeholder = { Text(text = placeholder) },
+                modifier = modifier.focusRequester(focusRequester),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text,
+                    // autoCorrect = true,
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colors.onSurface,
+                    backgroundColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                )
+            )
+        }
+
         MarkdownHelperBar(
             imageUploading = imageUploading.value,
             onBoldClick = {
                 simpleMarkdownSurround(
                     "**",
-                    value = reply,
-                    onValueChange = onReplyChange
+                    value = text,
+                    onValueChange = onTextChange
                 )
             },
             onItalicsClick = {
                 simpleMarkdownSurround(
                     "*",
-                    value = reply,
-                    onValueChange = onReplyChange
+                    value = text,
+                    onValueChange = onTextChange
                 )
             },
             onQuoteClick = {
                 simpleMarkdownSurround(
                     "> ",
-                    value = reply,
-                    onValueChange = onReplyChange,
+                    value = text,
+                    onValueChange = onTextChange,
                     surround = false,
                 )
             },
             onHeaderClick = {
                 simpleMarkdownSurround(
                     "# ",
-                    value = reply,
-                    onValueChange = onReplyChange,
+                    value = text,
+                    onValueChange = onTextChange,
                     surround = false,
                 )
             },
             onCodeClick = {
                 simpleMarkdownSurround(
                     "`",
-                    value = reply,
-                    onValueChange = onReplyChange
+                    value = text,
+                    onValueChange = onTextChange
                 )
             },
             onStrikethroughClick = {
                 simpleMarkdownSurround(
                     "~~",
-                    value = reply,
-                    onValueChange = onReplyChange
+                    value = text,
+                    onValueChange = onTextChange
                 )
             },
             onSubscriptClick = {
                 simpleMarkdownSurround(
                     "~",
-                    value = reply,
-                    onValueChange = onReplyChange
+                    value = text,
+                    onValueChange = onTextChange
                 )
             },
             onSuperscriptClick = {
                 simpleMarkdownSurround(
                     "^",
-                    value = reply,
-                    onValueChange = onReplyChange
+                    value = text,
+                    onValueChange = onTextChange
                 )
             },
             onListClick = {
                 simpleMarkdownSurround(
                     "- ",
-                    value = reply,
-                    onValueChange = onReplyChange,
+                    value = text,
+                    onValueChange = onTextChange,
                     surround = false,
                 )
             },
@@ -172,7 +189,9 @@ fun MarkdownTextField(
     }
 
     DisposableEffect(Unit) {
-        focusRequester.requestFocus()
+        if (focusImmediate) {
+            focusRequester.requestFocus()
+        }
         onDispose { }
     }
 }
@@ -223,7 +242,9 @@ fun CreateLinkDialog(
         buttons = {
             Row(
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier.padding(horizontal = XXL_PADDING).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(horizontal = XXL_PADDING)
+                    .fillMaxWidth(),
             ) {
                 TextButton(
                     onClick = onDismissRequest,
@@ -274,7 +295,9 @@ fun ShowPreviewDialog(
         buttons = {
             Row(
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier.padding(horizontal = XXL_PADDING).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(horizontal = XXL_PADDING)
+                    .fillMaxWidth(),
             ) {
                 TextButton(
                     onClick = onDismissRequest,
@@ -298,8 +321,8 @@ fun CreateLinkDialogPreview() {
 @Composable
 private fun imageUploadLauncher(
     account: Account?,
-    onReplyChange: (TextFieldValue) -> Unit,
-    reply: TextFieldValue,
+    onTextChange: (TextFieldValue) -> Unit,
+    text: TextFieldValue,
     imageUploading: MutableState<Boolean>,
 ): ManagedActivityResultLauncher<String, Uri?> {
     val ctx = LocalContext.current
@@ -324,7 +347,7 @@ private fun imageUploadLauncher(
                     val url = uploadPictrsImage(acct, imageIs, ctx)
                     url?.also {
                         imageUploading.value = false
-                        onReplyChange(TextFieldValue(appendMarkdownImage(reply.text, it)))
+                        onTextChange(TextFieldValue(appendMarkdownImage(text.text, it)))
                     }
                 }
             }
@@ -589,7 +612,7 @@ fun MyDropDown(
 
 @Preview
 @Composable
-fun ReplyMarkdownBarPreview() {
+fun TextMarkdownBarPreview() {
     MarkdownHelperBar(
         onHeaderClick = {},
         onPreviewClick = {},
