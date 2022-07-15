@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.comment.edit
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
@@ -80,7 +81,13 @@ fun CommentEdit(
         modifier = Modifier.simpleVerticalScrollbar(listState)
     ) {
         item {
-            MarkdownTextField(reply = content, onReplyChange = onContentChange, account = account)
+            MarkdownTextField(
+                text = content,
+                onTextChange = onContentChange,
+                account = account,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = "Type your comment"
+            )
         }
     }
 }

@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.api.uploadPictrsImage
@@ -47,7 +48,13 @@ fun CreatePostActivity(
 
     var name by rememberSaveable { mutableStateOf("") }
     var url by rememberSaveable { mutableStateOf(_url) }
-    var body by rememberSaveable { mutableStateOf(_body) }
+    var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(
+            TextFieldValue(
+                _body
+            )
+        )
+    }
     var formValid by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(_url) {
@@ -74,7 +81,7 @@ fun CreatePostActivity(
                                 communityListViewModel.selectedCommunity?.id?.also {
                                     // Clean up that data
                                     val nameOut = name.trim()
-                                    val bodyOut = body.trim().ifEmpty { null }
+                                    val bodyOut = body.text.trim().ifEmpty { null }
                                     val urlOut = url.trim().ifEmpty { null }
                                     createPostViewModel.createPost(
                                         account = acct,
@@ -124,7 +131,8 @@ fun CreatePostActivity(
                                 url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                             }
                         }
-                    }
+                    },
+                    account = account
                 )
             }
         )
