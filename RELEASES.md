@@ -1,3 +1,21 @@
+# Jerboa v0.0.16-alpha Release (2022-07-20)
+
+- Adding instance name to accounts. Fixes #164 by @dessalines in https://github.com/dessalines/jerboa/pull/166
+- Removing Site creator by @dessalines in https://github.com/dessalines/jerboa/pull/172
+- Enable minify. Fixes #171 by @dessalines in https://github.com/dessalines/jerboa/pull/173
+- fix signout by @LunaticHacker in https://github.com/dessalines/jerboa/pull/180
+- Add deeplinks for createPost by @LunaticHacker in https://github.com/dessalines/jerboa/pull/178
+- fix a bug i introduced in #180 by @LunaticHacker in https://github.com/dessalines/jerboa/pull/185
+- Add api settings by @LunaticHacker in https://github.com/dessalines/jerboa/pull/183
+- add fab for create post from community page by @LunaticHacker in https://github.com/dessalines/jerboa/pull/184
+- Make MarkdownTextField generic by @LunaticHacker in https://github.com/dessalines/jerboa/pull/195
+
+## New Contributors
+
+- Special thanks to @LunaticHacker for their work on Jerboa!
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.15...0.0.16
+
 # Jerboa v0.0.15-alpha Release (2022-04-19)
 
 - Reverting back to old markdown renderer. Was much better overall. by @dessalines in https://github.com/dessalines/jerboa/pull/156
