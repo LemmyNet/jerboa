@@ -36,7 +36,7 @@ import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.postClickWrapper
-import com.jerboa.ui.components.private_message.PrivateMessage
+import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.ui.components.report.CreateReportViewModel
 import com.jerboa.ui.components.report.commentReportClickWrapper
 import kotlinx.coroutines.CoroutineScope
@@ -163,7 +163,7 @@ enum class InboxTab {
     Replies,
 
     //    Mentions,
-    Messages,
+    Messages
 }
 
 @OptIn(ExperimentalPagerApi::class)

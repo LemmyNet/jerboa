@@ -171,7 +171,7 @@ fun PersonProfileActivity(
 enum class UserTab {
     About,
     Posts,
-    Comments,
+    Comments
 }
 
 @OptIn(ExperimentalPagerApi::class)

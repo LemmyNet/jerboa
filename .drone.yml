@@ -12,7 +12,7 @@ steps:
     user: root
     image: circleci/android:api-30-node
     commands:
-      - ./gradlew ktlintCheck
+      - ./gradlew lintKotlin
 
   - name: build the project
     user: root

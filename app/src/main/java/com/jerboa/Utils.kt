@@ -86,7 +86,7 @@ fun toastException(ctx: Context?, error: Exception) {
 
 enum class VoteType {
     Upvote,
-    Downvote,
+    Downvote
 }
 
 fun newVote(currentVote: Int?, voteType: VoteType): Int {
@@ -295,7 +295,7 @@ fun hostName(url: String): String {
 
 enum class UnreadOrAll {
     All,
-    Unread,
+    Unread
 }
 
 fun unreadOrAllFromBool(b: Boolean): UnreadOrAll {
@@ -519,10 +519,14 @@ fun siFormat(num: Int): String {
     value /= 10.0.pow((power / 3 * 3).toDouble())
     var formattedNumber = formatter.format(value)
     formattedNumber += suffix[power / 3]
-    return if (formattedNumber.length > 4) formattedNumber.replace(
-        "\\.[0-9]+".toRegex(),
-        ""
-    ) else formattedNumber
+    return if (formattedNumber.length > 4) {
+        formattedNumber.replace(
+            "\\.[0-9]+".toRegex(),
+            ""
+        )
+    } else {
+        formattedNumber
+    }
 }
 
 fun fetchInitialData(
