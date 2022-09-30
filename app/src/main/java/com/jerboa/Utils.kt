@@ -22,10 +22,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.ColorUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -161,27 +159,6 @@ fun setDepth(node: CommentNodeData, i: Int = 0) {
         child.depth = i
         setDepth(child, i + 1)
     }
-}
-
-// TODO get rid of this if you can
-fun colorShade(color: Color, factor: Float): Color {
-    val hsl = FloatArray(3)
-    ColorUtils.colorToHSL(color.toArgb(), hsl)
-    hsl[2] *= factor
-    return Color(ColorUtils.HSLToColor(hsl))
-}
-
-val colorList = listOf(
-    hsl(0f),
-    hsl(100f),
-    hsl(150f),
-    hsl(200f),
-    hsl(250f),
-    hsl(300f)
-)
-
-fun hsl(num: Float): Color {
-    return Color(ColorUtils.HSLToColor(floatArrayOf(num, .35f, .5f)))
 }
 
 fun calculateCommentOffset(depth: Int?, multiplier: Int): Dp {

@@ -34,6 +34,7 @@ import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
+import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
 
 @Composable

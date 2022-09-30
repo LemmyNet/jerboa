@@ -3,7 +3,6 @@ package com.jerboa.ui.theme
 import androidx.compose.material.ContentAlpha
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.jerboa.colorShade
 
 val Blue200 = Color(0xFF3498db)
 val Blue500 = Color(0xFF21608B)
