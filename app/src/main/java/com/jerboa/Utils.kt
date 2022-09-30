@@ -7,7 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Patterns
@@ -56,7 +56,10 @@ const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
 
 val DEFAULT_LEMMY_INSTANCES = listOf(
-    "lemmy.ml", "szmer.info", "lemmygrad.ml", "lemmy.eus",
+    "lemmy.ml",
+    "szmer.info",
+    "lemmygrad.ml",
+    "lemmy.eus",
     "lemmy.pt"
 )
 
@@ -106,7 +109,7 @@ data class CommentNodeData(
     val commentView: CommentView,
     // Must use a SnapshotStateList and not a MutableList here, otherwise changes in the tree children won't trigger a UI update
     val children: SnapshotStateList<CommentNodeData>?,
-    var depth: Int?,
+    var depth: Int?
 )
 
 fun commentsToFlatNodes(
@@ -117,15 +120,14 @@ fun commentsToFlatNodes(
 
 fun buildCommentsTree(
     comments: List<CommentView>?,
-    sortType: SortType,
+    sortType: SortType
 ): List<CommentNodeData> {
-
     val map = LinkedHashMap<Number, CommentNodeData>()
     comments?.forEach { cv ->
         val node = CommentNodeData(
             commentView = cv,
             children = mutableStateListOf(),
-            depth = null,
+            depth = null
         )
         map[cv.comment.id] = node
     }
@@ -175,7 +177,7 @@ val colorList = listOf(
     hsl(150f),
     hsl(200f),
     hsl(250f),
-    hsl(300f),
+    hsl(300f)
 )
 
 fun hsl(num: Float): Color {
@@ -324,7 +326,7 @@ fun Modifier.border(
     start: Border? = null,
     top: Border? = null,
     end: Border? = null,
-    bottom: Border? = null,
+    bottom: Border? = null
 ) =
     drawBehind {
         start?.let {
@@ -464,11 +466,11 @@ fun isModerator(person: PersonSafe, moderators: List<CommunityModeratorView>): B
 
 data class InputField(
     val label: String,
-    val hasError: Boolean,
+    val hasError: Boolean
 )
 
 fun validatePostName(
-    name: String,
+    name: String
 ): InputField {
     return if (name.isEmpty()) {
         InputField(
@@ -494,17 +496,17 @@ fun validatePostName(
 }
 
 fun validateUrl(
-    url: String,
+    url: String
 ): InputField {
     return if (url.isNotEmpty() && !Patterns.WEB_URL.matcher(url).matches()) {
         InputField(
             label = "Invalid Url",
-            hasError = true,
+            hasError = true
         )
     } else {
         InputField(
             label = "Url",
-            hasError = false,
+            hasError = false
         )
     }
 }
@@ -535,23 +537,23 @@ fun fetchInitialData(
             account = account,
             changeListingType = ListingType.values()[account.defaultListingType],
             changeSortType = SortType.values()[account.defaultSortType],
-            clear = true,
+            clear = true
         )
         homeViewModel.fetchUnreadCounts(account = account)
     } else {
         Log.d("jerboa", "Fetching posts for anonymous user")
         API.changeLemmyInstance(DEFAULT_INSTANCE)
         homeViewModel.fetchPosts(
-            account = account,
+            account = null,
             clear = true,
             changeListingType = ListingType.Local,
-            changeSortType = SortType.Active,
+            changeSortType = SortType.Active
         )
     }
 
     siteViewModel.fetchSite(
         auth = account?.jwt,
-        ctx = null,
+        ctx = null
     )
 }
 
@@ -560,7 +562,8 @@ fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
 }
 
 fun decodeUriToBitmap(ctx: Context, uri: Uri): Bitmap? {
-    return if (Build.VERSION.SDK_INT < 28) {
+    return if (SDK_INT < 28) {
+        @Suppress("DEPRECATION")
         MediaStore.Images.Media.getBitmap(ctx.contentResolver, uri)
     } else {
         val source = ImageDecoder.createSource(ctx.contentResolver, uri)
@@ -570,7 +573,7 @@ fun decodeUriToBitmap(ctx: Context, uri: Uri): Bitmap? {
 
 fun scrollToTop(
     scope: CoroutineScope,
-    listState: LazyListState,
+    listState: LazyListState
 ) {
     scope.launch {
         listState.animateScrollToItem(index = 0)

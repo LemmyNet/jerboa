@@ -16,16 +16,15 @@ val topSortTypes = listOf(
     SortType.TopWeek,
     SortType.TopMonth,
     SortType.TopYear,
-    SortType.TopAll,
+    SortType.TopAll
 )
 
 @Composable
 fun SortTopOptionsDialog(
     onDismissRequest: () -> Unit,
     onClickSortType: (SortType) -> Unit,
-    selectedSortType: SortType,
+    selectedSortType: SortType
 ) {
-
     AlertDialog(
         onDismissRequest = onDismissRequest,
         text = {
@@ -33,31 +32,31 @@ fun SortTopOptionsDialog(
                 IconAndTextDrawerItem(
                     text = "Top Day",
                     onClick = { onClickSortType(SortType.TopDay) },
-                    highlight = (selectedSortType == SortType.TopDay),
+                    highlight = (selectedSortType == SortType.TopDay)
                 )
                 IconAndTextDrawerItem(
                     text = "Top Week",
                     onClick = { onClickSortType(SortType.TopWeek) },
-                    highlight = (selectedSortType == SortType.TopWeek),
+                    highlight = (selectedSortType == SortType.TopWeek)
                 )
                 IconAndTextDrawerItem(
                     text = "Top Month",
                     onClick = { onClickSortType(SortType.TopMonth) },
-                    highlight = (selectedSortType == SortType.TopMonth),
+                    highlight = (selectedSortType == SortType.TopMonth)
                 )
                 IconAndTextDrawerItem(
                     text = "Top Year",
                     onClick = { onClickSortType(SortType.TopYear) },
-                    highlight = (selectedSortType == SortType.TopYear),
+                    highlight = (selectedSortType == SortType.TopYear)
                 )
                 IconAndTextDrawerItem(
                     text = "Top All Time",
                     onClick = { onClickSortType(SortType.TopAll) },
-                    highlight = (selectedSortType == SortType.TopAll),
+                    highlight = (selectedSortType == SortType.TopAll)
                 )
             }
         },
-        buttons = {},
+        buttons = {}
     )
 }
 
@@ -68,7 +67,7 @@ fun SortOptionsDialogPreview() {
         selectedSortType = SortType.Hot,
         onDismissRequest = {},
         onClickSortTopOptions = {},
-        onClickSortType = {},
+        onClickSortType = {}
     )
 }
 
@@ -76,7 +75,7 @@ fun SortOptionsDialogPreview() {
 fun ListingTypeOptionsDialog(
     onDismissRequest: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
-    selectedListingType: ListingType,
+    selectedListingType: ListingType
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -86,24 +85,24 @@ fun ListingTypeOptionsDialog(
                     text = "Subscribed",
                     icon = Icons.Default.Bookmarks,
                     onClick = { onClickListingType(ListingType.Subscribed) },
-                    highlight = (selectedListingType == ListingType.Subscribed),
+                    highlight = (selectedListingType == ListingType.Subscribed)
                 )
                 // TODO hide local for non-federated instances
                 IconAndTextDrawerItem(
                     text = "Local",
                     icon = Icons.Default.LocationCity,
                     onClick = { onClickListingType(ListingType.Local) },
-                    highlight = (selectedListingType == ListingType.Local),
+                    highlight = (selectedListingType == ListingType.Local)
                 )
                 IconAndTextDrawerItem(
                     text = "All",
                     icon = Icons.Default.Public,
                     onClick = { onClickListingType(ListingType.All) },
-                    highlight = (selectedListingType == ListingType.All),
+                    highlight = (selectedListingType == ListingType.All)
                 )
             }
         },
-        buttons = {},
+        buttons = {}
     )
 }
 
@@ -112,7 +111,7 @@ fun SortOptionsDialog(
     onDismissRequest: () -> Unit,
     onClickSortType: (SortType) -> Unit,
     onClickSortTopOptions: () -> Unit,
-    selectedSortType: SortType,
+    selectedSortType: SortType
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -122,42 +121,42 @@ fun SortOptionsDialog(
                     text = "Active",
                     icon = Icons.Default.Moving,
                     onClick = { onClickSortType(SortType.Active) },
-                    highlight = (selectedSortType == SortType.Active),
+                    highlight = (selectedSortType == SortType.Active)
                 )
                 IconAndTextDrawerItem(
                     text = "Hot",
                     icon = Icons.Default.LocalFireDepartment,
                     onClick = { onClickSortType(SortType.Hot) },
-                    highlight = (selectedSortType == SortType.Hot),
+                    highlight = (selectedSortType == SortType.Hot)
                 )
                 IconAndTextDrawerItem(
                     text = "New",
                     icon = Icons.Default.BrightnessLow,
                     onClick = { onClickSortType(SortType.New) },
-                    highlight = (selectedSortType == SortType.New),
+                    highlight = (selectedSortType == SortType.New)
                 )
                 IconAndTextDrawerItem(
                     text = "Most Comments",
                     icon = Icons.Default.FormatListNumbered,
                     onClick = { onClickSortType(SortType.MostComments) },
-                    highlight = (selectedSortType == SortType.MostComments),
+                    highlight = (selectedSortType == SortType.MostComments)
                 )
                 IconAndTextDrawerItem(
                     text = "New Comments",
                     icon = Icons.Default.NewReleases,
                     onClick = { onClickSortType(SortType.NewComments) },
-                    highlight = (selectedSortType == SortType.NewComments),
+                    highlight = (selectedSortType == SortType.NewComments)
                 )
                 IconAndTextDrawerItem(
                     text = "Top",
                     icon = Icons.Default.BarChart,
                     onClick = onClickSortTopOptions,
                     more = true,
-                    highlight = (topSortTypes.contains(selectedSortType)),
+                    highlight = (topSortTypes.contains(selectedSortType))
                 )
             }
         },
-        buttons = {},
+        buttons = {}
     )
 }
 
@@ -165,7 +164,7 @@ fun SortOptionsDialog(
 fun UnreadOrAllOptionsDialog(
     onDismissRequest: () -> Unit,
     onClickUnreadOrAll: (UnreadOrAll) -> Unit,
-    selectedUnreadOrAll: UnreadOrAll,
+    selectedUnreadOrAll: UnreadOrAll
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -175,18 +174,18 @@ fun UnreadOrAllOptionsDialog(
                     text = "All",
                     icon = Icons.Default.List,
                     onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
-                    highlight = (selectedUnreadOrAll == UnreadOrAll.All),
+                    highlight = (selectedUnreadOrAll == UnreadOrAll.All)
                 )
                 // TODO hide local for non-federated instances
                 IconAndTextDrawerItem(
                     text = "Unread",
                     icon = Icons.Default.MarkunreadMailbox,
                     onClick = { onClickUnreadOrAll(UnreadOrAll.Unread) },
-                    highlight = (selectedUnreadOrAll == UnreadOrAll.Unread),
+                    highlight = (selectedUnreadOrAll == UnreadOrAll.Unread)
                 )
             }
         },
-        buttons = {},
+        buttons = {}
     )
 }
 
@@ -196,6 +195,6 @@ fun ListingTypeOptionsDialogPreview() {
     ListingTypeOptionsDialog(
         selectedListingType = ListingType.Local,
         onClickListingType = {},
-        onDismissRequest = {},
+        onDismissRequest = {}
     )
 }

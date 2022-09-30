@@ -18,7 +18,7 @@ fun SiteSidebar(siteView: SiteView) {
         published = site.published,
         usersActiveMonth = counts.users_active_month,
         postCount = counts.posts,
-        commentCount = counts.comments,
+        commentCount = counts.comments
     )
 }
 

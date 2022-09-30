@@ -63,7 +63,7 @@ class PersonProfileViewModel : ViewModel() {
             voteType = voteType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 
@@ -73,7 +73,7 @@ class PersonProfileViewModel : ViewModel() {
             comments = comments, // TODO should this be here?
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 
@@ -83,7 +83,7 @@ class PersonProfileViewModel : ViewModel() {
             comments = comments,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 
@@ -94,7 +94,7 @@ class PersonProfileViewModel : ViewModel() {
         nextPage: Boolean = false,
         changeSortType: SortType? = null,
         changeSavedOnly: Boolean? = null,
-        ctx: Context,
+        ctx: Context
     ) {
         val api = API.getInstance()
 
@@ -130,7 +130,7 @@ class PersonProfileViewModel : ViewModel() {
                     auth = account?.jwt,
                     sort = sortType.value.toString(),
                     page = page.value,
-                    saved_only = savedOnly.value,
+                    saved_only = savedOnly.value
                 )
                 val out = retrofitErrorHandler(api.getPersonDetails(form = form.serializeToMap()))
 
@@ -152,7 +152,7 @@ class PersonProfileViewModel : ViewModel() {
     fun blockCommunity(
         community: CommunitySafe,
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         blockCommunityRoutine(
             community = community,
@@ -166,7 +166,7 @@ class PersonProfileViewModel : ViewModel() {
     fun blockPerson(
         person: PersonSafe,
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         blockPersonRoutine(
             person = person,

@@ -20,7 +20,7 @@ fun LoginActivity(
     loginViewModel: LoginViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    homeViewModel: HomeViewModel,
+    homeViewModel: HomeViewModel
 ) {
     Log.d("jerboa", "Got to login activity")
 
@@ -48,7 +48,7 @@ fun LoginActivity(
                             ctx = ctx,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            homeViewModel = homeViewModel,
+                            homeViewModel = homeViewModel
                         )
                     }
                 )

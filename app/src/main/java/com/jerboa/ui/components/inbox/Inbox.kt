@@ -20,23 +20,23 @@ fun inboxClickWrapper(
     inboxViewModel: InboxViewModel,
     account: Account?,
     navController: NavController,
-    ctx: Context,
+    ctx: Context
 ) {
     account?.also {
         inboxViewModel.fetchReplies(
             account = account,
             clear = true,
-            ctx = ctx,
+            ctx = ctx
         )
         inboxViewModel.fetchPersonMentions(
             account = account,
             clear = true,
-            ctx = ctx,
+            ctx = ctx
         )
         inboxViewModel.fetchPrivateMessages(
             account = account,
             clear = true,
-            ctx = ctx,
+            ctx = ctx
         )
         navController.navigate(route = "inbox")
     }
@@ -48,7 +48,7 @@ fun InboxHeader(
     selectedUnreadOrAll: UnreadOrAll,
     onClickUnreadOrAll: (UnreadOrAll) -> Unit,
     onClickMarkAllAsRead: () -> Unit,
-    unreadCount: Int? = null,
+    unreadCount: Int? = null
 ) {
     var showUnreadOrAllOptions by remember { mutableStateOf(false) }
 
@@ -70,7 +70,7 @@ fun InboxHeader(
         title = {
             InboxHeaderTitle(
                 unreadCount = unreadCount,
-                selectedUnreadOrAll = selectedUnreadOrAll,
+                selectedUnreadOrAll = selectedUnreadOrAll
             )
         },
         backgroundColor = backgroundColor,
@@ -114,7 +114,7 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
     Column {
         Text(
             text = title,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.subtitle1
         )
         Text(
             text = selectedUnreadOrAll.toString(),

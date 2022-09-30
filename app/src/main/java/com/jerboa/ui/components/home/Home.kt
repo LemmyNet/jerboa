@@ -48,7 +48,7 @@ fun Drawer(
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
-    unreadCounts: GetUnreadCountResponse?,
+    unreadCounts: GetUnreadCountResponse?
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -90,12 +90,12 @@ fun DrawerContent(
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
     follows: List<CommunityFollowerView>?,
-    unreadCounts: GetUnreadCountResponse?,
+    unreadCounts: GetUnreadCountResponse?
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
         enter = expandVertically(),
-        exit = shrinkVertically(),
+        exit = shrinkVertically()
     ) {
         DrawerAddAccountMode(
             accounts = accounts,
@@ -128,7 +128,7 @@ fun DrawerItemsMain(
     onClickSettings: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
-    unreadCounts: GetUnreadCountResponse? = null,
+    unreadCounts: GetUnreadCountResponse? = null
 ) {
     val listState = rememberLazyListState()
 
@@ -136,14 +136,14 @@ fun DrawerItemsMain(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState),
+        modifier = Modifier.simpleVerticalScrollbar(listState)
     ) {
         if (!follows.isNullOrEmpty()) {
             item {
                 IconAndTextDrawerItem(
                     text = "Subscribed",
                     icon = Icons.Default.Bookmarks,
-                    onClick = { onClickListingType(ListingType.Subscribed) },
+                    onClick = { onClickListingType(ListingType.Subscribed) }
                 )
             }
         }
@@ -151,21 +151,21 @@ fun DrawerItemsMain(
             IconAndTextDrawerItem(
                 text = "Local",
                 icon = Icons.Default.LocationCity,
-                onClick = { onClickListingType(ListingType.Local) },
+                onClick = { onClickListingType(ListingType.Local) }
             )
         }
         item {
             IconAndTextDrawerItem(
                 text = "All",
                 icon = Icons.Default.Public,
-                onClick = { onClickListingType(ListingType.All) },
+                onClick = { onClickListingType(ListingType.All) }
             )
         }
         item {
             IconAndTextDrawerItem(
                 text = "Saved",
                 icon = Icons.Default.Star,
-                onClick = onClickSaved,
+                onClick = onClickSaved
             )
         }
         item {
@@ -175,7 +175,7 @@ fun DrawerItemsMain(
             IconAndTextDrawerItem(
                 text = "Profile",
                 icon = Icons.Default.Person,
-                onClick = onClickProfile,
+                onClick = onClickProfile
             )
         }
         item {
@@ -183,14 +183,14 @@ fun DrawerItemsMain(
                 text = "Inbox",
                 icon = Icons.Default.Email,
                 onClick = onClickInbox,
-                iconBadgeCount = totalUnreads,
+                iconBadgeCount = totalUnreads
             )
         }
         item {
             IconAndTextDrawerItem(
                 text = "Settings",
                 icon = Icons.Default.Settings,
-                onClick = onClickSettings,
+                onClick = onClickSettings
             )
         }
         item {
@@ -203,13 +203,13 @@ fun DrawerItemsMain(
                     text = "Subscriptions",
                     modifier = Modifier.padding(LARGE_PADDING),
                     style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onBackground.muted,
+                    color = MaterialTheme.colors.onBackground.muted
                 )
             }
             items(follows) { follow ->
                 CommunityLinkLarger(
                     community = follow.community,
-                    onClick = onCommunityClick,
+                    onClick = onCommunityClick
                 )
             }
         }
@@ -234,7 +234,7 @@ fun DrawerAddAccountMode(
     navController: NavController = rememberNavController(),
     accounts: List<Account>? = null,
     onSwitchAccountClick: (account: Account) -> Unit,
-    onSignOutClick: () -> Unit,
+    onSignOutClick: () -> Unit
 ) {
     val accountsWithoutCurrent = accounts?.toMutableList()
     val currentAccount = getCurrentAccount(accounts)
@@ -244,20 +244,20 @@ fun DrawerAddAccountMode(
         IconAndTextDrawerItem(
             text = "Add Account",
             icon = Icons.Default.Add,
-            onClick = { navController.navigate(route = "login") },
+            onClick = { navController.navigate(route = "login") }
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
                 text = "Switch to ${it.instance}/${it.name}",
                 icon = Icons.Default.Login,
-                onClick = { onSwitchAccountClick(it) },
+                onClick = { onSwitchAccountClick(it) }
             )
         }
         accounts?.also {
             IconAndTextDrawerItem(
                 text = "Sign Out",
                 icon = Icons.Default.Close,
-                onClick = onSignOutClick,
+                onClick = onSignOutClick
             )
         }
     }
@@ -268,7 +268,7 @@ fun DrawerAddAccountMode(
 fun DrawerAddAccountModePreview() {
     DrawerAddAccountMode(
         onSignOutClick = {},
-        onSwitchAccountClick = {},
+        onSwitchAccountClick = {}
     )
 }
 
@@ -276,7 +276,7 @@ fun DrawerAddAccountModePreview() {
 fun DrawerHeader(
     myPerson: PersonSafe?,
     onClickShowAccountAddMode: () -> Unit,
-    showAccountAddMode: Boolean = false,
+    showAccountAddMode: Boolean = false
 ) {
     val sizeMod = Modifier
         .fillMaxWidth()
@@ -284,11 +284,11 @@ fun DrawerHeader(
 
     Box(
         modifier = sizeMod
-            .clickable(onClick = onClickShowAccountAddMode),
+            .clickable(onClick = onClickShowAccountAddMode)
     ) {
         myPerson?.banner?.also {
             PictrsBannerImage(
-                url = it,
+                url = it
             )
         }
         // banner
@@ -305,7 +305,7 @@ fun DrawerHeader(
                 } else {
                     Icons.Default.ExpandMore
                 },
-                contentDescription = "TODO",
+                contentDescription = "TODO"
             )
         }
     }
@@ -343,9 +343,8 @@ fun IconAndTextDrawerItem(
     iconBadgeCount: Int? = null,
     onClick: () -> Unit,
     more: Boolean = false,
-    highlight: Boolean = false,
+    highlight: Boolean = false
 ) {
-
     val spacingMod = Modifier
         .padding(LARGE_PADDING)
 
@@ -358,7 +357,8 @@ fun IconAndTextDrawerItem(
             .background(
                 color = if (highlight) {
                     colorShade(
-                        MaterialTheme.colors.background, 2f
+                        MaterialTheme.colors.background,
+                        2f
                     )
                 } else {
                     Color.Transparent
@@ -396,7 +396,7 @@ fun IconAndTextDrawerItem(
 fun IconAndTextDrawerItemPreview() {
     IconAndTextDrawerItem(
         text = "A test item",
-        onClick = {},
+        onClick = {}
     )
 }
 
@@ -406,19 +406,19 @@ fun IconAndTextDrawerItemWithMorePreview() {
     IconAndTextDrawerItem(
         text = "A test item",
         onClick = {},
-        more = true,
+        more = true
     )
 }
 
 @Composable
 fun HomeHeaderTitle(
     selectedSortType: SortType,
-    selectedListingType: ListingType,
+    selectedListingType: ListingType
 ) {
     Column {
         Text(
             text = selectedListingType.toString(),
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.subtitle1
         )
         Text(
             text = selectedSortType.toString(),
@@ -437,9 +437,8 @@ fun HomeHeader(
     onClickRefresh: () -> Unit,
     selectedSortType: SortType,
     selectedListingType: ListingType,
-    navController: NavController,
+    navController: NavController
 ) {
-
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
@@ -486,7 +485,7 @@ fun HomeHeader(
         HomeMoreDialog(
             onDismissRequest = { showMoreOptions = false },
             onClickRefresh = onClickRefresh,
-            navController = navController,
+            navController = navController
         )
     }
 
@@ -497,7 +496,7 @@ fun HomeHeader(
         title = {
             HomeHeaderTitle(
                 selectedSortType = selectedSortType,
-                selectedListingType = selectedListingType,
+                selectedListingType = selectedListingType
             )
         },
         backgroundColor = backgroundColor,
@@ -523,7 +522,7 @@ fun HomeHeader(
                 Icon(
                     Icons.Default.FilterList,
                     contentDescription = "TODO",
-                    tint = contentColor,
+                    tint = contentColor
                 )
             }
             IconButton(onClick = {
@@ -532,7 +531,7 @@ fun HomeHeader(
                 Icon(
                     Icons.Default.Sort,
                     contentDescription = "TODO",
-                    tint = contentColor,
+                    tint = contentColor
                 )
             }
             IconButton(onClick = {
@@ -541,7 +540,7 @@ fun HomeHeader(
                 Icon(
                     Icons.Default.MoreVert,
                     contentDescription = "TODO",
-                    tint = contentColor,
+                    tint = contentColor
                 )
             }
         }
@@ -562,7 +561,7 @@ fun HomeHeaderPreview() {
         navController = rememberNavController(),
         onClickListingType = {},
         onClickSortType = {},
-        onClickRefresh = {},
+        onClickRefresh = {}
     )
 }
 
@@ -570,7 +569,7 @@ fun HomeHeaderPreview() {
 fun HomeMoreDialog(
     onDismissRequest: () -> Unit,
     navController: NavController,
-    onClickRefresh: () -> Unit,
+    onClickRefresh: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -582,7 +581,7 @@ fun HomeMoreDialog(
                     onClick = {
                         onDismissRequest()
                         onClickRefresh()
-                    },
+                    }
                 )
                 IconAndTextDrawerItem(
                     text = "View Sidebar",
@@ -590,10 +589,10 @@ fun HomeMoreDialog(
                     onClick = {
                         navController.navigate("siteSidebar")
                         onDismissRequest()
-                    },
+                    }
                 )
             }
         },
-        buttons = {},
+        buttons = {}
     )
 }

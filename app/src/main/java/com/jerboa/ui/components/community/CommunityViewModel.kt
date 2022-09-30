@@ -46,7 +46,7 @@ class CommunityViewModel : ViewModel() {
         clear: Boolean = false,
         changeSortType: SortType? = null,
         changeCommunityId: Int? = null,
-        ctx: Context,
+        ctx: Context
     ) {
         fetchPostsRoutine(
             posts = posts,
@@ -61,7 +61,7 @@ class CommunityViewModel : ViewModel() {
             changeCommunityId = changeCommunityId,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 
@@ -80,7 +80,7 @@ class CommunityViewModel : ViewModel() {
     fun followCommunity(
         cv: CommunityView,
         account: Account?,
-        ctx: Context,
+        ctx: Context
     ) {
         viewModelScope.launch {
             account?.also { acct ->
@@ -110,7 +110,7 @@ class CommunityViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e(
                     "jerboa",
-                    e.toString(),
+                    e.toString()
                 )
             } finally {
                 loading.value = false
@@ -120,7 +120,7 @@ class CommunityViewModel : ViewModel() {
 
     fun blockCommunity(
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         communityView?.community?.also {
             blockCommunityRoutine(
@@ -136,7 +136,7 @@ class CommunityViewModel : ViewModel() {
     fun blockCreator(
         creator: PersonSafe,
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         blockPersonRoutine(
             person = creator,

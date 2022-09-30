@@ -54,9 +54,8 @@ fun HomeActivity(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     postEditViewModel: PostEditViewModel,
-    createReportViewModel: CreateReportViewModel,
+    createReportViewModel: CreateReportViewModel
 ) {
-
     Log.d("jerboa", "got to home activity")
 
     val scope = rememberCoroutineScope()
@@ -77,7 +76,7 @@ fun HomeActivity(
                     homeViewModel = homeViewModel,
                     account = account,
                     ctx = ctx,
-                    navController = navController,
+                    navController = navController
                 )
             },
             drawerShape = MaterialTheme.shapes.small,
@@ -110,7 +109,7 @@ fun HomeActivity(
                     account = account,
                     ctx = ctx,
                     navController = navController,
-                    postListState = postListState,
+                    postListState = postListState
                 )
             },
             floatingActionButtonPosition = FabPosition.End,
@@ -136,7 +135,7 @@ fun HomeActivity(
                                 personId = it,
                                 account = account,
                                 navController = navController,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -151,11 +150,11 @@ fun HomeActivity(
                                 account = account,
                                 navController = navController,
                                 ctx = ctx,
-                                saved = true,
+                                saved = true
                             )
                         }
                     },
-                    navController = navController,
+                    navController = navController
                 )
             }
         )
@@ -174,7 +173,7 @@ fun MainPostListingsContent(
     ctx: Context,
     navController: NavController,
     padding: PaddingValues,
-    postListState: LazyListState,
+    postListState: LazyListState
 ) {
     PostListings(
         listState = postListState,
@@ -185,7 +184,7 @@ fun MainPostListingsContent(
                 voteType = VoteType.Upvote,
                 postView = postView,
                 account = account,
-                ctx = ctx,
+                ctx = ctx
             )
         },
         onDownvoteClick = { postView ->
@@ -193,7 +192,7 @@ fun MainPostListingsContent(
                 voteType = VoteType.Downvote,
                 postView = postView,
                 account = account,
-                ctx = ctx,
+                ctx = ctx
             )
         },
         onPostClick = { postView ->
@@ -202,7 +201,7 @@ fun MainPostListingsContent(
                 postId = postView.post.id,
                 account = account,
                 navController = navController,
-                ctx = ctx,
+                ctx = ctx
             )
         },
         onPostLinkClick = { url ->
@@ -213,7 +212,7 @@ fun MainPostListingsContent(
                 homeViewModel.savePost(
                     postView = postView,
                     account = acct,
-                    ctx = ctx,
+                    ctx = ctx
                 )
             }
         },
@@ -222,7 +221,7 @@ fun MainPostListingsContent(
                 homeViewModel.blockCommunity(
                     community = it,
                     account = acct,
-                    ctx = ctx,
+                    ctx = ctx
                 )
             }
         },
@@ -231,7 +230,7 @@ fun MainPostListingsContent(
                 homeViewModel.blockCreator(
                     creator = it,
                     account = acct,
-                    ctx = ctx,
+                    ctx = ctx
                 )
             }
         },
@@ -239,7 +238,7 @@ fun MainPostListingsContent(
             postEditClickWrapper(
                 postEditViewModel,
                 postView,
-                navController,
+                navController
             )
         },
         onDeletePostClick = { postView ->
@@ -247,7 +246,7 @@ fun MainPostListingsContent(
                 homeViewModel.deletePost(
                     postView = postView,
                     account = acct,
-                    ctx = ctx,
+                    ctx = ctx
                 )
             }
         },
@@ -255,7 +254,7 @@ fun MainPostListingsContent(
             postReportClickWrapper(
                 createReportViewModel,
                 postView.post.id,
-                navController,
+                navController
             )
         },
         onCommunityClick = { community ->
@@ -264,7 +263,7 @@ fun MainPostListingsContent(
                 communityId = community.id,
                 account = account,
                 navController = navController,
-                ctx = ctx,
+                ctx = ctx
             )
         },
         onPersonClick = { personId ->
@@ -273,14 +272,14 @@ fun MainPostListingsContent(
                 personId = personId,
                 account = account,
                 navController = navController,
-                ctx = ctx,
+                ctx = ctx
             )
         },
         onSwipeRefresh = {
             homeViewModel.fetchPosts(
                 account = account,
                 clear = true,
-                ctx = ctx,
+                ctx = ctx
             )
         },
         loading = homeViewModel.loading.value &&
@@ -291,11 +290,11 @@ fun MainPostListingsContent(
                 homeViewModel.fetchPosts(
                     account = account,
                     nextPage = true,
-                    ctx = ctx,
+                    ctx = ctx
                 )
             }
         },
-        account = account,
+        account = account
     )
 }
 
@@ -326,7 +325,7 @@ fun MainDrawer(
             fetchInitialData(
                 account = acct,
                 siteViewModel = siteViewModel,
-                homeViewModel = homeViewModel,
+                homeViewModel = homeViewModel
             )
 
             closeDrawer(scope, scaffoldState)
@@ -344,7 +343,7 @@ fun MainDrawer(
                     fetchInitialData(
                         account = updatedList.getOrNull(0),
                         siteViewModel = siteViewModel,
-                        homeViewModel = homeViewModel,
+                        homeViewModel = homeViewModel
                     )
 
                     closeDrawer(scope, scaffoldState)
@@ -356,7 +355,7 @@ fun MainDrawer(
                 account = account,
                 clear = true,
                 changeListingType = listingType,
-                ctx = ctx,
+                ctx = ctx
             )
             closeDrawer(scope, scaffoldState)
         },
@@ -366,7 +365,7 @@ fun MainDrawer(
                 community.id,
                 account,
                 navController,
-                ctx = ctx,
+                ctx = ctx
             )
             closeDrawer(scope, scaffoldState)
         },
@@ -378,7 +377,7 @@ fun MainDrawer(
                     account = account,
                     navController = navController,
                     ctx = ctx,
-                    saved = false,
+                    saved = false
                 )
                 closeDrawer(scope, scaffoldState)
             }
@@ -391,7 +390,7 @@ fun MainDrawer(
                     account = account,
                     navController = navController,
                     ctx = ctx,
-                    saved = true,
+                    saved = true
                 )
                 closeDrawer(scope, scaffoldState)
             }
@@ -401,7 +400,7 @@ fun MainDrawer(
                 inboxViewModel = inboxViewModel,
                 account = account,
                 navController = navController,
-                ctx = ctx,
+                ctx = ctx
             )
             closeDrawer(scope, scaffoldState)
         },
@@ -411,7 +410,7 @@ fun MainDrawer(
                 account = account
             )
             closeDrawer(scope, scaffoldState)
-        },
+        }
     )
 }
 
@@ -423,9 +422,8 @@ fun MainTopBar(
     homeViewModel: HomeViewModel,
     account: Account?,
     ctx: Context,
-    navController: NavController,
+    navController: NavController
 ) {
-
     Column {
         HomeHeader(
             scope = scope,
@@ -439,7 +437,7 @@ fun MainTopBar(
                     account = account,
                     clear = true,
                     changeSortType = sortType,
-                    ctx = ctx,
+                    ctx = ctx
                 )
             },
             onClickListingType = { listingType ->
@@ -448,7 +446,7 @@ fun MainTopBar(
                     account = account,
                     clear = true,
                     changeListingType = listingType,
-                    ctx = ctx,
+                    ctx = ctx
                 )
             },
             onClickRefresh = {
@@ -456,7 +454,7 @@ fun MainTopBar(
                 homeViewModel.fetchPosts(
                     account = account,
                     clear = true,
-                    ctx = ctx,
+                    ctx = ctx
                 )
             }
         )

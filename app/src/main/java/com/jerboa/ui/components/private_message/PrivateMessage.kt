@@ -28,7 +28,7 @@ import com.jerboa.ui.theme.muted
 fun PrivateMessageHeader(
     privateMessageView: PrivateMessageView,
     onPersonClick: (personId: Int) -> Unit,
-    myPersonId: Int,
+    myPersonId: Int
 ) {
     val otherPerson: PersonSafe
     val fromOrTo: String
@@ -49,18 +49,18 @@ fun PrivateMessageHeader(
             .padding(vertical = SMALL_PADDING)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = fromOrTo, color = MaterialTheme.colors.onBackground.muted)
             PersonProfileLink(
                 person = otherPerson,
-                onClick = { onPersonClick(otherPerson.id) },
+                onClick = { onPersonClick(otherPerson.id) }
             )
         }
 
         TimeAgo(
             published = privateMessageView.private_message.published,
-            updated = privateMessageView.private_message.updated,
+            updated = privateMessageView.private_message.updated
         )
     }
 }
@@ -75,7 +75,7 @@ fun PrivateMessageViewPreview() {
     PrivateMessageHeader(
         privateMessageView = samplePrivateMessageView,
         myPersonId = 23,
-        onPersonClick = {},
+        onPersonClick = {}
     )
 }
 
@@ -91,20 +91,19 @@ fun PrivateMessage(
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     myPersonId: Int, // Required so we know the from / to
-    account: Account?,
+    account: Account?
 ) {
     Column(
         modifier = Modifier
             .padding(
                 horizontal = LARGE_PADDING,
-                vertical = SMALL_PADDING,
+                vertical = SMALL_PADDING
             )
     ) {
-
         PrivateMessageHeader(
             privateMessageView = privateMessageView,
             onPersonClick = onPersonClick,
-            myPersonId = myPersonId,
+            myPersonId = myPersonId
         )
         PrivateMessageBody(privateMessageView = privateMessageView)
         PrivateMessageFooterLine(
@@ -112,7 +111,7 @@ fun PrivateMessage(
             onReplyClick = onReplyClick,
             onMarkAsReadClick = onMarkAsReadClick,
             myPersonId = myPersonId,
-            account = account,
+            account = account
         )
     }
 }
@@ -123,7 +122,7 @@ fun PrivateMessageFooterLine(
     onReplyClick: (privateMessageView: PrivateMessageView) -> Unit,
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
     myPersonId: Int,
-    account: Account?,
+    account: Account?
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
@@ -132,7 +131,7 @@ fun PrivateMessageFooterLine(
             .padding(top = LARGE_PADDING, bottom = SMALL_PADDING)
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
+            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
         ) {
             if (!isCreator(myPersonId, privateMessageView)) {
                 ActionBarButton(
@@ -143,12 +142,12 @@ fun PrivateMessageFooterLine(
                     } else {
                         MaterialTheme.colors.onBackground.muted
                     },
-                    account = account,
+                    account = account
                 )
                 ActionBarButton(
                     icon = Icons.Filled.Reply,
                     onClick = { onReplyClick(privateMessageView) },
-                    account = account,
+                    account = account
                 )
             }
             // TODO
@@ -169,6 +168,6 @@ fun PrivateMessagePreview() {
         account = null,
         onPersonClick = {},
         onReplyClick = {},
-        onMarkAsReadClick = {},
+        onMarkAsReadClick = {}
     )
 }

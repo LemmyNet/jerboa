@@ -45,9 +45,8 @@ fun CommunityActivity(
     homeViewModel: HomeViewModel,
     inboxViewModel: InboxViewModel,
     postEditViewModel: PostEditViewModel,
-    createReportViewModel: CreateReportViewModel,
+    createReportViewModel: CreateReportViewModel
 ) {
-
     Log.d("jerboa", "got to community activity")
 
     val scope = rememberCoroutineScope()
@@ -71,7 +70,7 @@ fun CommunityActivity(
                                 communityViewModel.fetchPosts(
                                     account = account,
                                     clear = true,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             },
                             onClickSortType = { sortType ->
@@ -80,18 +79,18 @@ fun CommunityActivity(
                                     account = account,
                                     clear = true,
                                     changeSortType = sortType,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             },
                             onBlockCommunityClick = {
                                 account?.also { acct ->
                                     communityViewModel.blockCommunity(
                                         account = acct,
-                                        ctx = ctx,
+                                        ctx = ctx
                                     )
                                 }
                             },
-                            navController = navController,
+                            navController = navController
                         )
                     }
                     if (communityViewModel.loading.value) {
@@ -112,7 +111,7 @@ fun CommunityActivity(
                                     communityViewModel.followCommunity(
                                         cv = cv,
                                         account = account,
-                                        ctx = ctx,
+                                        ctx = ctx
                                     )
                                 }
                             )
@@ -124,7 +123,7 @@ fun CommunityActivity(
                             voteType = VoteType.Upvote,
                             postView = postView,
                             account = account,
-                            ctx = ctx,
+                            ctx = ctx
                         )
                     },
                     onDownvoteClick = { postView ->
@@ -132,7 +131,7 @@ fun CommunityActivity(
                             voteType = VoteType.Downvote,
                             postView = postView,
                             account = account,
-                            ctx = ctx,
+                            ctx = ctx
                         )
                     },
                     onPostClick = { postView ->
@@ -141,7 +140,7 @@ fun CommunityActivity(
                             postId = postView.post.id,
                             account = account,
                             navController = navController,
-                            ctx = ctx,
+                            ctx = ctx
                         )
                     },
                     onPostLinkClick = { url ->
@@ -152,7 +151,7 @@ fun CommunityActivity(
                             communityViewModel.savePost(
                                 postView = postView,
                                 account = acct,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -160,7 +159,7 @@ fun CommunityActivity(
                         account?.also { acct ->
                             communityViewModel.blockCommunity(
                                 account = acct,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -169,7 +168,7 @@ fun CommunityActivity(
                             communityViewModel.blockCreator(
                                 creator = it,
                                 account = acct,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -179,14 +178,14 @@ fun CommunityActivity(
                             community.id,
                             account,
                             navController,
-                            ctx = ctx,
+                            ctx = ctx
                         )
                     },
                     onEditPostClick = { postView ->
                         postEditClickWrapper(
                             postEditViewModel,
                             postView,
-                            navController,
+                            navController
                         )
                     },
                     onDeletePostClick = { postView ->
@@ -194,7 +193,7 @@ fun CommunityActivity(
                             communityViewModel.deletePost(
                                 postView = postView,
                                 account = acct,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -202,14 +201,14 @@ fun CommunityActivity(
                         postReportClickWrapper(
                             createReportViewModel,
                             postView.post.id,
-                            navController,
+                            navController
                         )
                     },
                     onSwipeRefresh = {
                         communityViewModel.fetchPosts(
                             account = account,
                             clear = true,
-                            ctx = ctx,
+                            ctx = ctx
                         )
                     },
                     loading = communityViewModel.loading.value &&
@@ -220,7 +219,7 @@ fun CommunityActivity(
                             communityViewModel.fetchPosts(
                                 account = account,
                                 nextPage = true,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -230,10 +229,10 @@ fun CommunityActivity(
                             personId = personId,
                             account = account,
                             navController = navController,
-                            ctx = ctx,
+                            ctx = ctx
                         )
                     },
-                    account = account,
+                    account = account
                 )
             },
             floatingActionButtonPosition = FabPosition.End,
@@ -262,7 +261,7 @@ fun CommunityActivity(
                                 personId = it,
                                 account = account,
                                 navController = navController,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -277,11 +276,11 @@ fun CommunityActivity(
                                 account = account,
                                 navController = navController,
                                 ctx = ctx,
-                                saved = true,
+                                saved = true
                             )
                         }
                     },
-                    navController = navController,
+                    navController = navController
                 )
             }
         )

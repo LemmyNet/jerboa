@@ -32,9 +32,8 @@ fun CommunityListActivity(
     communityListViewModel: CommunityListViewModel,
     communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
-    selectMode: Boolean = false,
+    selectMode: Boolean = false
 ) {
-
     Log.d("jerboa", "got to community list activity")
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
@@ -58,10 +57,10 @@ fun CommunityListActivity(
                             communityListViewModel.searchCommunities(
                                 query = search,
                                 account = account,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
-                    },
+                    }
                 )
             },
             content = {
@@ -80,7 +79,7 @@ fun CommunityListActivity(
                                     communityId = it.id,
                                     account = account,
                                     navController = navController,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             }
                         }

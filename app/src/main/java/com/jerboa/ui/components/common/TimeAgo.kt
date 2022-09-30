@@ -30,7 +30,7 @@ fun TimeAgo(
     Row {
         Text(
             text = afterPreceding,
-            color = MaterialTheme.colors.onBackground.muted,
+            color = MaterialTheme.colors.onBackground.muted
         )
 
         updated?.also {
@@ -40,7 +40,7 @@ fun TimeAgo(
             Text(
                 text = "($updatedPretty)",
                 color = MaterialTheme.colors.onBackground.muted,
-                fontStyle = FontStyle.Italic,
+                fontStyle = FontStyle.Italic
             )
         }
     }

@@ -21,7 +21,7 @@ import com.jerboa.ui.theme.APP_BAR_ELEVATION
 fun CreateReportHeader(
     navController: NavController = rememberNavController(),
     onCreateClick: () -> Unit,
-    loading: Boolean,
+    loading: Boolean
 ) {
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
@@ -29,7 +29,7 @@ fun CreateReportHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Report",
+                text = "Report"
             )
         },
         backgroundColor = backgroundColor,
@@ -38,7 +38,7 @@ fun CreateReportHeader(
         actions = {
             IconButton(
                 onClick = onCreateClick,
-                enabled = !loading,
+                enabled = !loading
             ) {
                 if (loading) {
                     CircularProgressIndicator(
@@ -63,7 +63,7 @@ fun CreateReportHeader(
                     contentDescription = "Back"
                 )
             }
-        },
+        }
     )
 }
 
@@ -71,7 +71,7 @@ fun CreateReportHeader(
 fun CreateReportBody(
     reason: TextFieldValue,
     onReasonChange: (TextFieldValue) -> Unit,
-    account: Account?,
+    account: Account?
 ) {
     val listState = rememberLazyListState()
 
@@ -94,7 +94,7 @@ fun CreateReportBody(
 fun commentReportClickWrapper(
     createReportViewModel: CreateReportViewModel,
     commentId: Int,
-    navController: NavController,
+    navController: NavController
 ) {
     createReportViewModel.setCommentId(commentId)
     navController.navigate("commentReport")
@@ -103,7 +103,7 @@ fun commentReportClickWrapper(
 fun postReportClickWrapper(
     createReportViewModel: CreateReportViewModel,
     postId: Int,
-    navController: NavController,
+    navController: NavController
 ) {
     createReportViewModel.setPostId(postId)
     navController.navigate("postReport")

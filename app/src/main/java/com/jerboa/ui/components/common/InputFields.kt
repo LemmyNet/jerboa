@@ -48,7 +48,7 @@ fun MarkdownTextField(
     modifier: Modifier = Modifier,
     placeholder: String = "",
     focusImmediate: Boolean = true,
-    outlined: Boolean = false,
+    outlined: Boolean = false
 ) {
     val focusRequester = remember { FocusRequester() }
     val imageUploading = rememberSaveable { mutableStateOf(false) }
@@ -64,14 +64,14 @@ fun MarkdownTextField(
             onClickOk = {
                 showCreateLink = false
                 onTextChange(it)
-            },
+            }
         )
     }
 
     if (showPreview) {
         ShowPreviewDialog(
             content = text.text,
-            onDismissRequest = { showPreview = false },
+            onDismissRequest = { showPreview = false }
         )
     }
 
@@ -84,9 +84,9 @@ fun MarkdownTextField(
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = KeyboardType.Text
                     // autoCorrect = true,
-                ),
+                )
             )
         } else {
             TextField(
@@ -96,14 +96,14 @@ fun MarkdownTextField(
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = KeyboardType.Text
                     // autoCorrect = true,
                 ),
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = MaterialTheme.colors.onSurface,
                     backgroundColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
                 )
             )
         }
@@ -129,7 +129,7 @@ fun MarkdownTextField(
                     "> ",
                     value = text,
                     onValueChange = onTextChange,
-                    surround = false,
+                    surround = false
                 )
             },
             onHeaderClick = {
@@ -137,7 +137,7 @@ fun MarkdownTextField(
                     "# ",
                     value = text,
                     onValueChange = onTextChange,
-                    surround = false,
+                    surround = false
                 )
             },
             onCodeClick = {
@@ -173,7 +173,7 @@ fun MarkdownTextField(
                     "- ",
                     value = text,
                     onValueChange = onTextChange,
-                    surround = false,
+                    surround = false
                 )
             },
             onImageClick = {
@@ -200,7 +200,7 @@ fun MarkdownTextField(
 fun CreateLinkDialog(
     value: TextFieldValue,
     onClickOk: (TextFieldValue) -> Unit,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     val initialText = value.getSelectedText().text
 
@@ -219,7 +219,7 @@ fun CreateLinkDialog(
                 Text(
                     text = "Insert link",
                     style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.onSurface,
+                    color = MaterialTheme.colors.onSurface
                 )
                 OutlinedTextField(
                     value = text,
@@ -227,7 +227,7 @@ fun CreateLinkDialog(
                     label = {
                         Text(text = "Text")
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     value = link,
@@ -235,7 +235,7 @@ fun CreateLinkDialog(
                     label = {
                         Text(text = "Link")
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         },
@@ -244,14 +244,14 @@ fun CreateLinkDialog(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
                     .padding(horizontal = XXL_PADDING)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
             ) {
                 TextButton(
-                    onClick = onDismissRequest,
+                    onClick = onDismissRequest
                 ) {
                     Text(
                         text = "Cancel",
-                        color = MaterialTheme.colors.onBackground.muted,
+                        color = MaterialTheme.colors.onBackground.muted
                     )
                 }
                 TextButton(
@@ -265,10 +265,10 @@ fun CreateLinkDialog(
                         val end = value.selection.start + replacement.length
                         val cursor = TextRange(end, end)
                         onClickOk(TextFieldValue(out, cursor))
-                    },
+                    }
                 ) {
                     Text(
-                        text = "OK",
+                        text = "OK"
                     )
                 }
             }
@@ -279,7 +279,7 @@ fun CreateLinkDialog(
 @Composable
 fun ShowPreviewDialog(
     content: String,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -288,7 +288,7 @@ fun ShowPreviewDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 MyMarkdownText(
-                    markdown = content,
+                    markdown = content
                 )
             }
         },
@@ -297,14 +297,14 @@ fun ShowPreviewDialog(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
                     .padding(horizontal = XXL_PADDING)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
             ) {
                 TextButton(
-                    onClick = onDismissRequest,
+                    onClick = onDismissRequest
                 ) {
                     Text(
                         text = "OK",
-                        color = MaterialTheme.colors.onBackground.muted,
+                        color = MaterialTheme.colors.onBackground.muted
                     )
                 }
             }
@@ -323,7 +323,7 @@ private fun imageUploadLauncher(
     account: Account?,
     onTextChange: (TextFieldValue) -> Unit,
     text: TextFieldValue,
-    imageUploading: MutableState<Boolean>,
+    imageUploading: MutableState<Boolean>
 ): ManagedActivityResultLauncher<String, Uri?> {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -360,7 +360,7 @@ fun simpleMarkdownSurround(
     markdownChar: String,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
-    surround: Boolean = true,
+    surround: Boolean = true
 ) {
     val out = if (value.selection.start == value.selection.end) {
         var altered = value.text.insert(value.selection.start, markdownChar)
@@ -391,7 +391,7 @@ fun simpleMarkdownSurround(
         } else {
             TextRange(
                 start,
-                end,
+                end
             )
         }
         TextFieldValue(altered, cursor)
@@ -416,26 +416,25 @@ fun MarkdownHelperBar(
     onSuperscriptClick: () -> Unit,
     imageUploading: Boolean
 ) {
-
     Row(
         modifier = Modifier.horizontalScroll(rememberScrollState())
     ) {
         IconButton(
-            onClick = onPreviewClick,
+            onClick = onPreviewClick
         ) {
             Icon(
                 imageVector = Icons.Default.Preview,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
-            onClick = onLinkClick,
+            onClick = onLinkClick
         ) {
             Icon(
                 imageVector = Icons.Default.Link,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
@@ -450,89 +449,89 @@ fun MarkdownHelperBar(
                 Icon(
                     imageVector = Icons.Default.Image,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onBackground.muted,
+                    tint = MaterialTheme.colors.onBackground.muted
                 )
             }
         }
         IconButton(
-            onClick = onBoldClick,
+            onClick = onBoldClick
         ) {
             Icon(
                 imageVector = Icons.Default.FormatBold,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
-            onClick = onItalicsClick,
+            onClick = onItalicsClick
         ) {
             Icon(
                 imageVector = Icons.Default.FormatItalic,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
-            onClick = onQuoteClick,
+            onClick = onQuoteClick
         ) {
             Icon(
                 imageVector = Icons.Default.FormatQuote,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
-            onClick = onListClick,
+            onClick = onListClick
         ) {
             Icon(
                 imageVector = Icons.Default.FormatListBulleted,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
-            onClick = onHeaderClick,
+            onClick = onHeaderClick
         ) {
             Icon(
                 imageVector = Icons.Default.Title,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
-            onClick = onCodeClick,
+            onClick = onCodeClick
         ) {
             Icon(
                 imageVector = Icons.Default.Code,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
-            onClick = onStrikethroughClick,
+            onClick = onStrikethroughClick
         ) {
             Icon(
                 imageVector = Icons.Default.FormatStrikethrough,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
-            onClick = onSubscriptClick,
+            onClick = onSubscriptClick
         ) {
             Icon(
                 imageVector = Icons.Default.Subscript,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
         IconButton(
-            onClick = onSuperscriptClick,
+            onClick = onSuperscriptClick
         ) {
             Icon(
                 imageVector = Icons.Default.Superscript,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted,
+                tint = MaterialTheme.colors.onBackground.muted
             )
         }
     }
@@ -553,7 +552,7 @@ fun MyCheckBox(
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            enabled = enabled,
+            enabled = enabled
         )
     }
 }
@@ -626,35 +625,35 @@ fun TextMarkdownBarPreview() {
         onSubscriptClick = {},
         onSuperscriptClick = {},
         onLinkClick = {},
-        imageUploading = false,
+        imageUploading = false
     )
 }
 
 @Composable
 fun PreviewLines(
     text: String,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Text(
         text = text,
         maxLines = 5,
         overflow = TextOverflow.Ellipsis,
         modifier = modifier,
-        fontSize = 14.sp,
+        fontSize = 14.sp
     )
 }
 
 @Composable
 fun MyMarkdownText(
     markdown: String,
-    color: Color = MaterialTheme.colors.onSurface,
+    color: Color = MaterialTheme.colors.onSurface
 ) {
     MarkdownText(
         markdown = markdown,
         modifier = Modifier.fillMaxSize(),
         color = color,
         style = MaterialTheme.typography.body1,
-        fontSize = 18.sp,
+        fontSize = 18.sp
     )
 }
 

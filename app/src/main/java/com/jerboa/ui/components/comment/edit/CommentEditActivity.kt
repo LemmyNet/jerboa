@@ -23,9 +23,8 @@ fun CommentEditActivity(
     commentEditViewModel: CommentEditViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
-    inboxViewModel: InboxViewModel,
+    inboxViewModel: InboxViewModel
 ) {
-
     Log.d("jerboa", "got to comment edit activity")
 
     val ctx = LocalContext.current
@@ -51,7 +50,7 @@ fun CommentEditActivity(
                                 account = acct,
                                 personProfileViewModel = personProfileViewModel,
                                 postViewModel = postViewModel,
-                                inboxViewModel = inboxViewModel,
+                                inboxViewModel = inboxViewModel
                             )
                         }
                     }
@@ -61,7 +60,7 @@ fun CommentEditActivity(
                 CommentEdit(
                     content = content,
                     account = account,
-                    onContentChange = { content = it },
+                    onContentChange = { content = it }
                 )
             }
         )

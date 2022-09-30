@@ -37,7 +37,7 @@ class LoginViewModel : ViewModel() {
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
         homeViewModel: HomeViewModel,
-        ctx: Context,
+        ctx: Context
     ) {
         val api = API.changeLemmyInstance(instance)
 
@@ -84,7 +84,7 @@ class LoginViewModel : ViewModel() {
                 instance = instance,
                 jwt = jwt,
                 defaultListingType = luv.local_user.default_listing_type,
-                defaultSortType = luv.local_user.default_sort_type,
+                defaultSortType = luv.local_user.default_sort_type
             )
 
             // Refetch the front page

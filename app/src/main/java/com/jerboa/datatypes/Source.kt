@@ -16,7 +16,7 @@ data class LocalUserSettings(
     val show_read_posts: Boolean,
     val show_new_post_notifs: Boolean,
     val email_verified: Boolean,
-    val accepted_application: Boolean,
+    val accepted_application: Boolean
 )
 
 data class PersonSafe(
@@ -37,7 +37,7 @@ data class PersonSafe(
     val matrix_user_id: String?,
     val admin: Boolean,
     val bot_account: Boolean,
-    val ban_expires: String?,
+    val ban_expires: String?
 )
 
 data class Site(
@@ -57,7 +57,7 @@ data class Site(
     val require_email_verification: Boolean,
     val require_application: Boolean,
     val application_question: String?,
-    val private_instance: Boolean,
+    val private_instance: Boolean
 )
 
 data class PrivateMessage(
@@ -70,7 +70,7 @@ data class PrivateMessage(
     val published: String,
     val updated: String?,
     val ap_id: String,
-    val local: Boolean,
+    val local: Boolean
 )
 
 data class PostReport(
@@ -84,7 +84,7 @@ data class PostReport(
     val resolved: Boolean,
     val resolver_id: Int?,
     val published: String,
-    val updated: String?,
+    val updated: String?
 )
 
 data class Post(
@@ -106,14 +106,14 @@ data class Post(
     val embed_html: String?,
     val thumbnail_url: String?,
     val ap_id: String,
-    val local: Boolean,
+    val local: Boolean
 )
 
 data class PasswordResetRequest(
     val id: Int,
     val local_user_id: Int,
     val token_encrypted: String,
-    val published: String,
+    val published: String
 )
 
 data class ModRemovePost(
@@ -122,7 +122,7 @@ data class ModRemovePost(
     val post_id: Int,
     val reason: String?,
     val removed: Boolean?,
-    val when_: String,
+    val when_: String
 )
 
 data class ModLockPost(
@@ -130,7 +130,7 @@ data class ModLockPost(
     val mod_person_id: Int,
     val post_id: Int,
     val locked: Boolean?,
-    val when_: String,
+    val when_: String
 )
 
 data class ModStickyPost(
@@ -138,7 +138,7 @@ data class ModStickyPost(
     val mod_person_id: Int,
     val post_id: Int,
     val stickied: Boolean?,
-    val when_: String,
+    val when_: String
 )
 
 data class ModRemoveComment(
@@ -147,7 +147,7 @@ data class ModRemoveComment(
     val comment_id: Int,
     val reason: String?,
     val removed: Boolean?,
-    val when_: String,
+    val when_: String
 )
 
 data class ModRemoveCommunity(
@@ -157,7 +157,7 @@ data class ModRemoveCommunity(
     val reason: String?,
     val removed: Boolean?,
     val expires: String?,
-    val when_: String,
+    val when_: String
 )
 
 data class ModBanFromCommunity(
@@ -168,7 +168,7 @@ data class ModBanFromCommunity(
     val reason: String?,
     val banned: Boolean?,
     val expires: String?,
-    val when_: String,
+    val when_: String
 )
 
 data class ModBan(
@@ -178,7 +178,7 @@ data class ModBan(
     val reason: String?,
     val banned: Boolean?,
     val expires: String?,
-    val when_: String,
+    val when_: String
 )
 
 data class ModAddCommunity(
@@ -187,7 +187,7 @@ data class ModAddCommunity(
     val other_person_id: Int,
     val community_id: Int,
     val removed: Boolean?,
-    val when_: String,
+    val when_: String
 )
 
 data class ModTransferCommunity(
@@ -196,7 +196,7 @@ data class ModTransferCommunity(
     val other_person_id: Int,
     val community_id: Int,
     val removed: Boolean?,
-    val when_: String,
+    val when_: String
 )
 
 data class ModAdd(
@@ -204,7 +204,7 @@ data class ModAdd(
     val mod_person_id: Int,
     val other_person_id: Int,
     val removed: Boolean?,
-    val when_: String,
+    val when_: String
 )
 
 data class CommunitySafe(
@@ -220,7 +220,7 @@ data class CommunitySafe(
     val actor_id: String,
     val local: Boolean,
     val icon: String?,
-    val banner: String?,
+    val banner: String?
 )
 
 data class CommentReport(
@@ -232,7 +232,7 @@ data class CommentReport(
     val resolved: Boolean,
     val resolver_id: Int?,
     val published: String,
-    val updated: String?,
+    val updated: String?
 )
 
 data class Comment(
@@ -247,7 +247,7 @@ data class Comment(
     val updated: String?,
     val deleted: Boolean,
     val ap_id: String,
-    val local: Boolean,
+    val local: Boolean
 )
 
 data class PersonMention(
@@ -255,7 +255,7 @@ data class PersonMention(
     val recipient_id: Int,
     val comment_id: Int,
     val read: Boolean,
-    val published: String,
+    val published: String
 )
 
 /**
@@ -265,7 +265,7 @@ data class SiteMetadata(
     val title: String?,
     val description: String?,
     val image: String?,
-    val html: String?,
+    val html: String?
 )
 
 /**
@@ -343,12 +343,12 @@ enum class SearchType {
 
 data class PictrsImage(
     val file: String,
-    val delete_token: String,
+    val delete_token: String
 )
 
 data class PictrsImages(
     val msg: String,
-    val files: List<PictrsImage>?,
+    val files: List<PictrsImage>?
 )
 
 // export interface RegistrationApplication {

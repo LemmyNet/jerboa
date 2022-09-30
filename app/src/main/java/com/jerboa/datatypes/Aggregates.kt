@@ -9,7 +9,7 @@ data class PersonAggregates(
     val post_count: Int,
     val post_score: Int,
     val comment_count: Int,
-    val comment_score: Int,
+    val comment_score: Int
 )
 
 /**
@@ -25,7 +25,7 @@ data class SiteAggregates(
     val users_active_day: Int,
     val users_active_week: Int,
     val users_active_month: Int,
-    val users_active_half_year: Int,
+    val users_active_half_year: Int
 )
 
 /**
@@ -39,7 +39,7 @@ data class PostAggregates(
     val upvotes: Int,
     val downvotes: Int,
     val newest_comment_time_necro: String,
-    val newest_comment_time: String,
+    val newest_comment_time: String
 )
 
 /**
@@ -54,7 +54,7 @@ data class CommunityAggregates(
     val users_active_day: Int,
     val users_active_week: Int,
     val users_active_month: Int,
-    val users_active_half_year: Int,
+    val users_active_half_year: Int
 )
 
 /**
@@ -65,7 +65,7 @@ data class CommentAggregates(
     val comment_id: Int,
     val score: Int,
     val upvotes: Int,
-    val downvotes: Int,
+    val downvotes: Int
 )
 
 // export interface RegistrationApplicationView {

@@ -34,7 +34,7 @@ class CommentEditViewModel : ViewModel() {
         account: Account,
         personProfileViewModel: PersonProfileViewModel,
         postViewModel: PostViewModel,
-        inboxViewModel: InboxViewModel,
+        inboxViewModel: InboxViewModel
     ) {
         editCommentRoutine(
             commentView = commentView,
@@ -47,7 +47,7 @@ class CommentEditViewModel : ViewModel() {
             account = account,
             personProfileViewModel = personProfileViewModel,
             postViewModel = postViewModel,
-            inboxViewModel = inboxViewModel,
+            inboxViewModel = inboxViewModel
         )
     }
 }

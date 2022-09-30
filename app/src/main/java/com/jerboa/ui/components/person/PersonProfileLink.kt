@@ -28,7 +28,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 fun PersonName(
     person: PersonSafe?,
     color: Color = MaterialTheme.colors.secondary,
-    isPostCreator: Boolean = false,
+    isPostCreator: Boolean = false
 ) {
     val name = person?.let { personNameShown(it) } ?: run { "Anonymous" }
 
@@ -44,7 +44,7 @@ fun PersonName(
     } else {
         Text(
             text = name,
-            color = color,
+            color = color
         )
     }
 }
@@ -62,12 +62,12 @@ fun PersonProfileLink(
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
     isModerator: Boolean = false,
-    isCommunityBanned: Boolean = false,
+    isCommunityBanned: Boolean = false
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-        modifier = Modifier.clickable { onClick(person.id) },
+        modifier = Modifier.clickable { onClick(person.id) }
     ) {
         person.avatar?.also {
             CircularIcon(icon = it)
@@ -107,7 +107,7 @@ fun PersonProfileLink(
 fun PersonProfileLinkPreview() {
     PersonProfileLink(
         person = samplePersonSafe,
-        onClick = {},
+        onClick = {}
     )
 }
 
@@ -120,7 +120,7 @@ fun PersonProfileLinkPreviewTags() {
         isCommunityBanned = true,
         isModerator = true,
         showTags = true,
-        onClick = {},
+        onClick = {}
     )
 }
 
@@ -130,14 +130,14 @@ fun personClickWrapper(
     account: Account?,
     navController: NavController,
     ctx: Context,
-    saved: Boolean = false,
+    saved: Boolean = false
 ) {
     personProfileViewModel.fetchPersonDetails(
         id = personId,
         account = account,
         clear = true,
         ctx = ctx,
-        changeSavedOnly = saved,
+        changeSavedOnly = saved
     )
     navController.navigate(route = "profile?saved=$saved")
 }

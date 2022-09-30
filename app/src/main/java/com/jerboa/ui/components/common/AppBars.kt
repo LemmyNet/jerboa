@@ -38,7 +38,7 @@ import com.jerboa.unreadCountTotal
 @Composable
 fun SimpleTopAppBar(
     text: String,
-    navController: NavController,
+    navController: NavController
 ) {
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
@@ -46,7 +46,7 @@ fun SimpleTopAppBar(
     TopAppBar(
         title = {
             Text(
-                text = text,
+                text = text
             )
         },
         elevation = APP_BAR_ELEVATION,
@@ -59,7 +59,7 @@ fun SimpleTopAppBar(
                     contentDescription = "Back"
                 )
             }
-        },
+        }
     )
 }
 
@@ -70,19 +70,19 @@ fun BottomAppBarAll(
     unreadCounts: GetUnreadCountResponse? = null,
     onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit,
+    onClickInbox: () -> Unit
 ) {
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
     BottomAppBar(
         elevation = APP_BAR_ELEVATION,
-        backgroundColor = MaterialTheme.colors.background,
+        backgroundColor = MaterialTheme.colors.background
     ) {
         BottomNavigationItem(
             icon = {
                 Icon(
                     imageVector = Icons.Default.Home,
-                    contentDescription = "TODO",
+                    contentDescription = "TODO"
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
@@ -97,7 +97,7 @@ fun BottomAppBarAll(
             icon = {
                 Icon(
                     imageVector = Icons.Default.List,
-                    contentDescription = "TODO",
+                    contentDescription = "TODO"
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
@@ -116,7 +116,7 @@ fun BottomAppBarAll(
                         MaterialTheme.colors.primary
                     } else {
                         MaterialTheme.colors.onBackground.muted
-                    },
+                    }
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
@@ -130,7 +130,7 @@ fun BottomAppBarAll(
             icon = {
                 Icon(
                     imageVector = Icons.Default.Star,
-                    contentDescription = "TODO",
+                    contentDescription = "TODO"
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
@@ -144,7 +144,7 @@ fun BottomAppBarAll(
             icon = {
                 Icon(
                     imageVector = Icons.Default.Person,
-                    contentDescription = "TODO",
+                    contentDescription = "TODO"
                 )
             },
             selectedContentColor = MaterialTheme.colors.primary,
@@ -162,7 +162,7 @@ fun BottomAppBarAllPreview() {
         onClickInbox = {},
         onClickProfile = {},
         onClickSaved = {},
-        screen = "home",
+        screen = "home"
     )
 }
 
@@ -179,7 +179,7 @@ fun CommentOrPostNodeHeader(
     isPostCreator: Boolean,
     isModerator: Boolean,
     isCommunityBanned: Boolean,
-    onLongClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -189,7 +189,7 @@ fun CommentOrPostNodeHeader(
             .padding(vertical = LARGE_PADDING)
             .combinedClickable(
                 onLongClick = onLongClick,
-                onClick = {},
+                onClick = {}
             )
     ) {
         Row {
@@ -197,7 +197,7 @@ fun CommentOrPostNodeHeader(
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.error,
+                    tint = MaterialTheme.colors.error
                 )
                 DotSpacer()
             }
@@ -208,7 +208,7 @@ fun CommentOrPostNodeHeader(
                 showTags = true,
                 isPostCreator = isPostCreator,
                 isModerator = isModerator,
-                isCommunityBanned = isCommunityBanned,
+                isCommunityBanned = isCommunityBanned
             )
         }
         Row(
@@ -254,7 +254,7 @@ fun ActionBarButton(
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = barMod,
+        modifier = barMod
     ) {
         Icon(
             imageVector = icon,
@@ -266,7 +266,7 @@ fun ActionBarButton(
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(
                 text = text,
-                color = contentColor,
+                color = contentColor
             )
         }
     }
@@ -294,7 +294,7 @@ fun InboxIconAndBadge(
     iconBadgeCount: Int?,
     icon: ImageVector,
     tint: Color,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     if (iconBadgeCount !== null && iconBadgeCount > 0) {
         BadgedBox(
@@ -303,18 +303,18 @@ fun InboxIconAndBadge(
                 Badge(
                     content = {
                         Text(
-                            text = iconBadgeCount.toString(),
+                            text = iconBadgeCount.toString()
                         )
-                    },
+                    }
                 )
             },
             content = {
                 Icon(
                     imageVector = icon,
                     contentDescription = "TODO",
-                    tint = tint,
+                    tint = tint
                 )
-            },
+            }
         )
     } else {
         Icon(
@@ -335,7 +335,7 @@ fun Sidebar(
     published: String,
     usersActiveMonth: Int,
     postCount: Int,
-    commentCount: Int,
+    commentCount: Int
 ) {
     val listState = rememberLazyListState()
 
@@ -352,7 +352,8 @@ fun Sidebar(
             ) {
                 banner?.also {
                     PictrsBannerImage(
-                        url = it, modifier = Modifier.height(PROFILE_BANNER_SIZE)
+                        url = it,
+                        modifier = Modifier.height(PROFILE_BANNER_SIZE)
                     )
                 }
                 Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -387,7 +388,7 @@ fun Sidebar(
                     CommentsAndPosts(
                         usersActiveMonth = usersActiveMonth,
                         postCount = postCount,
-                        commentCount = commentCount,
+                        commentCount = commentCount
                     )
                 }
             }
@@ -396,7 +397,7 @@ fun Sidebar(
             content?.also {
                 MyMarkdownText(
                     markdown = it,
-                    color = MaterialTheme.colors.onBackground.muted,
+                    color = MaterialTheme.colors.onBackground.muted
                 )
             }
         }
@@ -407,22 +408,22 @@ fun Sidebar(
 fun CommentsAndPosts(
     usersActiveMonth: Int,
     postCount: Int,
-    commentCount: Int,
+    commentCount: Int
 ) {
     Row {
         Text(
             text = "${siFormat(usersActiveMonth)} users / month",
-            color = MaterialTheme.colors.onBackground.muted,
+            color = MaterialTheme.colors.onBackground.muted
         )
         DotSpacer()
         Text(
             text = "${siFormat(postCount)} posts",
-            color = MaterialTheme.colors.onBackground.muted,
+            color = MaterialTheme.colors.onBackground.muted
         )
         DotSpacer()
         Text(
             text = "${siFormat(commentCount)} comments",
-            color = MaterialTheme.colors.onBackground.muted,
+            color = MaterialTheme.colors.onBackground.muted
         )
     }
 }

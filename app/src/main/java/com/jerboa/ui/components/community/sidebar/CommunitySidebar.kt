@@ -16,6 +16,6 @@ fun CommunitySidebar(communityView: CommunityView) {
         published = community.published,
         usersActiveMonth = counts.users_active_month,
         postCount = counts.posts,
-        commentCount = counts.comments,
+        commentCount = counts.comments
     )
 }

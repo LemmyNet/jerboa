@@ -56,7 +56,7 @@ class ExampleUnitTest {
         val api = API.getInstance()
         val form = GetPost(
             id = 139549,
-            auth = null,
+            auth = null
         )
         val out = api.getPost(form.serializeToMap())
         println(out.comments)

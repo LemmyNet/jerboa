@@ -227,6 +227,7 @@ interface API {
      */
     @PUT("user/save_user_settings")
     suspend fun saveUserSettings(@Body form: SaveUserSettings): Response<LoginResponse>
+
     /**
      * Upload an image.
      */
@@ -278,7 +279,7 @@ interface API {
 suspend fun followCommunityWrapper(
     communityView: CommunityView,
     auth: String,
-    ctx: Context?,
+    ctx: Context?
 ): CommunityResponse? {
     var communityRes: CommunityResponse? = null
     val api = API.getInstance()
@@ -300,7 +301,7 @@ suspend fun followCommunityWrapper(
 
 suspend fun getSiteWrapper(
     auth: String?,
-    ctx: Context?,
+    ctx: Context?
 ): GetSiteResponse? {
     var siteRes: GetSiteResponse? = null
     val api = API.getInstance()
@@ -318,7 +319,7 @@ suspend fun getSiteWrapper(
 
 suspend fun getSiteMetadataWrapper(
     url: String,
-    ctx: Context?,
+    ctx: Context?
 ): SiteMetadata? {
     var res: SiteMetadata? = null
     val api = API.getInstance()
@@ -340,7 +341,7 @@ suspend fun fetchPostsWrapper(
     communityId: Int? = null,
     sortType: SortType,
     listingType: ListingType,
-    page: Int,
+    page: Int
 
 ): List<PostView> {
     var posts = listOf<PostView>()
@@ -352,7 +353,7 @@ suspend fun fetchPostsWrapper(
             sort = sortType.toString(),
             type_ = listingType.toString(),
             page = page,
-            auth = account?.jwt,
+            auth = account?.jwt
         )
         posts = retrofitErrorHandler(api.getPosts(form = form.serializeToMap())).posts
     } catch (e: Exception) {
@@ -371,7 +372,7 @@ suspend fun searchWrapper(
     searchType: SearchType,
     page: Int? = null,
     query: String,
-    creatorId: Int? = null,
+    creatorId: Int? = null
 ): SearchResponse? {
     var res: SearchResponse? = null
     val api = API.getInstance()
@@ -385,7 +386,7 @@ suspend fun searchWrapper(
             sort = sortType.toString(),
             listing_type = listingType.toString(),
             page = page,
-            auth = account?.jwt,
+            auth = account?.jwt
         )
         res = retrofitErrorHandler(api.search(form = form.serializeToMap()))
     } catch (e: Exception) {
@@ -401,7 +402,7 @@ suspend fun createPostWrapper(
     communityId: Int,
     body: String?,
     url: String?,
-    name: String,
+    name: String
 ): PostView? {
     var createdPostView: PostView? = null
     val api = API.getInstance()
@@ -412,7 +413,7 @@ suspend fun createPostWrapper(
             community_id = communityId,
             body = body,
             url = url,
-            auth = account.jwt,
+            auth = account.jwt
         )
         Log.d(
             "jerboa",
@@ -431,7 +432,7 @@ suspend fun editPostWrapper(
     ctx: Context?,
     body: String?,
     url: String?,
-    name: String,
+    name: String
 ): PostView? {
     var editedPostView: PostView? = null
     val api = API.getInstance()
@@ -442,7 +443,7 @@ suspend fun editPostWrapper(
             name = name,
             body = body,
             url = url,
-            auth = account.jwt,
+            auth = account.jwt
         )
         editedPostView = retrofitErrorHandler(api.editPost(form)).post_view
     } catch (e: Exception) {
@@ -453,9 +454,8 @@ suspend fun editPostWrapper(
 
 suspend fun deletePostWrapper(
     form: DeletePost,
-    ctx: Context,
+    ctx: Context
 ): PostResponse? {
-
     var deletedPost: PostResponse? = null
     val api = API.getInstance()
 
@@ -471,14 +471,16 @@ suspend fun likePostWrapper(
     pv: PostView,
     voteType: VoteType,
     account: Account,
-    ctx: Context,
+    ctx: Context
 ): PostResponse? {
     var updatedPost: PostResponse? = null
     val api = API.getInstance()
     try {
         val newVote = newVote(currentVote = pv.my_vote, voteType = voteType)
         val form = CreatePostLike(
-            post_id = pv.post.id, score = newVote, auth = account.jwt
+            post_id = pv.post.id,
+            score = newVote,
+            auth = account.jwt
         )
         updatedPost = retrofitErrorHandler(api.likePost(form))
     } catch (e: Exception) {
@@ -491,14 +493,16 @@ suspend fun likeCommentWrapper(
     cv: CommentView,
     voteType: VoteType,
     account: Account,
-    ctx: Context,
+    ctx: Context
 ): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
     try {
         val newVote = newVote(currentVote = cv.my_vote, voteType = voteType)
         val form = CreateCommentLike(
-            comment_id = cv.comment.id, score = newVote, auth = account.jwt
+            comment_id = cv.comment.id,
+            score = newVote,
+            auth = account.jwt
         )
         updatedComment = retrofitErrorHandler(api.likeComment(form))
     } catch (e: Exception) {
@@ -510,13 +514,15 @@ suspend fun likeCommentWrapper(
 suspend fun savePostWrapper(
     pv: PostView,
     account: Account,
-    ctx: Context,
+    ctx: Context
 ): PostResponse? {
     var updatedPost: PostResponse? = null
     val api = API.getInstance()
     try {
         val form = SavePost(
-            post_id = pv.post.id, save = !pv.saved, auth = account.jwt
+            post_id = pv.post.id,
+            save = !pv.saved,
+            auth = account.jwt
         )
         updatedPost = retrofitErrorHandler(api.savePost(form))
     } catch (e: Exception) {
@@ -528,13 +534,15 @@ suspend fun savePostWrapper(
 suspend fun saveCommentWrapper(
     cv: CommentView,
     account: Account,
-    ctx: Context,
+    ctx: Context
 ): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
     try {
         val form = SaveComment(
-            comment_id = cv.comment.id, save = !cv.saved, auth = account.jwt
+            comment_id = cv.comment.id,
+            save = !cv.saved,
+            auth = account.jwt
         )
         updatedComment = retrofitErrorHandler(api.saveComment(form))
     } catch (e: Exception) {
@@ -546,13 +554,15 @@ suspend fun saveCommentWrapper(
 suspend fun markCommentAsReadWrapper(
     cv: CommentView,
     account: Account,
-    ctx: Context,
+    ctx: Context
 ): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
     try {
         val form = MarkCommentAsRead(
-            comment_id = cv.comment.id, read = !cv.comment.read, auth = account.jwt
+            comment_id = cv.comment.id,
+            read = !cv.comment.read,
+            auth = account.jwt
         )
         updatedComment = retrofitErrorHandler(api.markCommentAsRead(form))
     } catch (e: Exception) {
@@ -564,7 +574,7 @@ suspend fun markCommentAsReadWrapper(
 suspend fun markPersonMentionAsReadWrapper(
     personMentionView: PersonMentionView,
     account: Account,
-    ctx: Context,
+    ctx: Context
 ): PersonMentionResponse? {
     var updatedPm: PersonMentionResponse? = null
     val api = API.getInstance()
@@ -585,13 +595,14 @@ suspend fun markPersonMentionAsReadWrapper(
 suspend fun markPrivateMessageAsReadWrapper(
     pm: PrivateMessageView,
     account: Account,
-    ctx: Context,
+    ctx: Context
 ): PrivateMessageResponse? {
     var updatedPm: PrivateMessageResponse? = null
     val api = API.getInstance()
     try {
         val form = MarkPrivateMessageAsRead(
-            private_message_id = pm.private_message.id, read = !pm.private_message.read,
+            private_message_id = pm.private_message.id,
+            read = !pm.private_message.read,
             auth = account
                 .jwt
         )
@@ -604,9 +615,8 @@ suspend fun markPrivateMessageAsReadWrapper(
 
 suspend fun createCommentWrapper(
     form: CreateComment,
-    ctx: Context,
+    ctx: Context
 ): CommentResponse? {
-
     var createdComment: CommentResponse? = null
     val api = API.getInstance()
 
@@ -620,9 +630,8 @@ suspend fun createCommentWrapper(
 
 suspend fun editCommentWrapper(
     form: EditComment,
-    ctx: Context,
+    ctx: Context
 ): CommentResponse? {
-
     var editedComment: CommentResponse? = null
     val api = API.getInstance()
 
@@ -636,9 +645,8 @@ suspend fun editCommentWrapper(
 
 suspend fun deleteCommentWrapper(
     form: DeleteComment,
-    ctx: Context,
+    ctx: Context
 ): CommentResponse? {
-
     var deletedComment: CommentResponse? = null
     val api = API.getInstance()
 
@@ -652,9 +660,8 @@ suspend fun deleteCommentWrapper(
 
 suspend fun createPrivateMessageWrapper(
     form: CreatePrivateMessage,
-    ctx: Context,
+    ctx: Context
 ): PrivateMessageResponse? {
-
     var createdPrivateMessage: PrivateMessageResponse? = null
     val api = API.getInstance()
 
@@ -668,9 +675,8 @@ suspend fun createPrivateMessageWrapper(
 
 suspend fun createCommentReportWrapper(
     form: CreateCommentReport,
-    ctx: Context,
+    ctx: Context
 ): CommentReportResponse? {
-
     var createdReport: CommentReportResponse? = null
     val api = API.getInstance()
 
@@ -684,9 +690,8 @@ suspend fun createCommentReportWrapper(
 
 suspend fun createPostReportWrapper(
     form: CreatePostReport,
-    ctx: Context,
+    ctx: Context
 ): PostReportResponse? {
-
     var createdReport: PostReportResponse? = null
     val api = API.getInstance()
 
@@ -700,9 +705,8 @@ suspend fun createPostReportWrapper(
 
 suspend fun blockPersonWrapper(
     form: BlockPerson,
-    ctx: Context,
+    ctx: Context
 ): BlockPersonResponse? {
-
     var blockPersonRes: BlockPersonResponse? = null
     val api = API.getInstance()
 
@@ -716,9 +720,8 @@ suspend fun blockPersonWrapper(
 
 suspend fun blockCommunityWrapper(
     form: BlockCommunity,
-    ctx: Context,
+    ctx: Context
 ): BlockCommunityResponse? {
-
     var blockCommunityRes: BlockCommunityResponse? = null
     val api = API.getInstance()
 
@@ -732,9 +735,8 @@ suspend fun blockCommunityWrapper(
 
 suspend fun saveUserSettingsWrapper(
     form: SaveUserSettings,
-    ctx: Context,
+    ctx: Context
 ): LoginResponse? {
-
     var saveUserSettingsResponse: LoginResponse? = null
     val api = API.getInstance()
 
@@ -771,7 +773,6 @@ fun <T> retrofitErrorHandler(res: Response<T>): T {
     if (res.isSuccessful) {
         return res.body()!!
     } else {
-
         val errMsg = res.errorBody()?.string()?.let {
             JSONObject(it).getString("error")
         } ?: run {

@@ -12,13 +12,13 @@ val * To get a federated community by name, use `name@instance.tld` .
 data class GetCommunity(
     val id: Int?,
     val name: String? = null,
-    val auth: String?,
+    val auth: String?
 )
 
 data class GetCommunityResponse(
     val community_view: CommunityView,
     val moderators: List<CommunityModeratorView>,
-    val online: Int,
+    val online: Int
 )
 
 data class CreateCommunity(
@@ -28,11 +28,11 @@ data class CreateCommunity(
     val icon: String?,
     val banner: String?,
     val nsfw: Boolean?,
-    val auth: String?,
+    val auth: String?
 )
 
 data class CommunityResponse(
-    val community_view: CommunityView,
+    val community_view: CommunityView
 )
 
 data class ListCommunities(
@@ -40,11 +40,11 @@ data class ListCommunities(
     val sort: String,
     val page: Int?,
     val limit: Int?,
-    val auth: String?,
+    val auth: String?
 )
 
 data class ListCommunitiesResponse(
-    val communities: List<CommunityView>,
+    val communities: List<CommunityView>
 )
 
 data class BanFromCommunity(
@@ -54,23 +54,23 @@ data class BanFromCommunity(
     val remove_data: Boolean,
     val reason: String?,
     val expires: Int,
-    val auth: String?,
+    val auth: String?
 )
 
 data class BanFromCommunityResponse(
     val person_view: PersonViewSafe,
-    val banned: Boolean,
+    val banned: Boolean
 )
 
 data class AddModToCommunity(
     val community_id: Int,
     val person_id: Int,
     val added: Boolean,
-    val auth: String,
+    val auth: String
 )
 
 data class AddModToCommunityResponse(
-    val moderators: List<CommunityModeratorView>,
+    val moderators: List<CommunityModeratorView>
 )
 
 /**
@@ -83,13 +83,13 @@ data class EditCommunity(
     val icon: String?,
     val banner: String?,
     val nsfw: Boolean?,
-    val auth: String?,
+    val auth: String?
 )
 
 data class DeleteCommunity(
     val community_id: Int,
     val deleted: Boolean,
-    val auth: String,
+    val auth: String
 )
 
 /**
@@ -100,28 +100,28 @@ data class RemoveCommunity(
     val removed: Boolean,
     val reason: String,
     val expires: Int,
-    val auth: String?,
+    val auth: String?
 )
 
 data class FollowCommunity(
     val community_id: Int,
     val follow: Boolean,
-    val auth: String,
+    val auth: String
 )
 
 data class TransferCommunity(
     val community_id: Int,
     val person_id: Int,
-    val auth: String,
+    val auth: String
 )
 
 data class BlockCommunity(
     val community_id: Int,
     val block: Boolean,
-    val auth: String,
+    val auth: String
 )
 
 data class BlockCommunityResponse(
     val community_view: CommunityView,
-    val blocked: Boolean,
+    val blocked: Boolean
 )

@@ -29,7 +29,7 @@ import com.jerboa.ui.theme.APP_BAR_ELEVATION
 fun CommunityListHeader(
     navController: NavController = rememberNavController(),
     search: String,
-    onSearchChange: (search: String) -> Unit,
+    onSearchChange: (search: String) -> Unit
 ) {
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
@@ -38,7 +38,7 @@ fun CommunityListHeader(
         title = {
             CommunityTopBarSearchView(
                 search = search,
-                onSearchChange = onSearchChange,
+                onSearchChange = onSearchChange
             )
         },
         backgroundColor = backgroundColor,
@@ -52,7 +52,7 @@ fun CommunityListHeader(
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = "TODO",
-                    tint = contentColor,
+                    tint = contentColor
                 )
             }
         },
@@ -67,7 +67,7 @@ fun CommunityListHeader(
                     contentDescription = "Back"
                 )
             }
-        },
+        }
     )
 }
 
@@ -80,18 +80,18 @@ fun CommunityListings(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState),
+        modifier = Modifier.simpleVerticalScrollbar(listState)
     ) {
         items(communities) { item ->
             if (item is CommunityFollowerView) {
                 CommunityLinkLarger(
                     community = item.community,
-                    onClick = onClickCommunity,
+                    onClick = onClickCommunity
                 )
             } else if (item is CommunityView) {
                 CommunityLinkLargerWithUserCount(
                     communityView = item,
-                    onClick = onClickCommunity,
+                    onClick = onClickCommunity
                 )
             }
         }
@@ -104,16 +104,15 @@ fun CommunityListingsPreview() {
     val communities = listOf(sampleCommunityView, sampleCommunityView)
     CommunityListings(
         communities = communities,
-        onClickCommunity = {},
+        onClickCommunity = {}
     )
 }
 
 @Composable
 fun CommunityTopBarSearchView(
     search: String,
-    onSearchChange: (search: String) -> Unit,
+    onSearchChange: (search: String) -> Unit
 ) {
-
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
 
@@ -134,7 +133,7 @@ fun CommunityTopBarSearchView(
                     Icon(
                         Icons.Default.Close,
                         contentDescription = "",
-                        tint = contentColor,
+                        tint = contentColor
                     )
                 }
             }
@@ -146,7 +145,7 @@ fun CommunityTopBarSearchView(
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
         ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)
     )
 }
 
@@ -155,6 +154,6 @@ fun CommunityTopBarSearchView(
 fun SearchViewPreview() {
     CommunityTopBarSearchView(
         search = "",
-        onSearchChange = {},
+        onSearchChange = {}
     )
 }

@@ -26,7 +26,7 @@ class CreatePostViewModel : ViewModel() {
         name: String,
         communityId: Int,
         navController: NavController,
-        postViewModel: PostViewModel,
+        postViewModel: PostViewModel
     ) {
         viewModelScope.launch {
             loading = true
@@ -36,11 +36,13 @@ class CreatePostViewModel : ViewModel() {
                 body = body,
                 url = url,
                 name = name,
-                ctx = ctx,
+                ctx = ctx
             )
             // TODO not sure here
             postViewModel.fetchPost(
-                id = postOut!!.post.id, clear = true, account = account,
+                id = postOut!!.post.id,
+                clear = true,
+                account = account,
                 ctx = ctx
             )
             loading = false

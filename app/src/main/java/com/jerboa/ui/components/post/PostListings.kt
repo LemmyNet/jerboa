@@ -41,11 +41,11 @@ fun PostListings(
     account: Account?,
     showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
-    listState: LazyListState,
+    listState: LazyListState
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
-        onRefresh = onSwipeRefresh,
+        onRefresh = onSwipeRefresh
     ) {
         LazyColumn(
             state = listState,
@@ -117,6 +117,6 @@ fun PreviewPostListings() {
         onSwipeRefresh = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
-        listState = rememberLazyListState(),
+        listState = rememberLazyListState()
     )
 }

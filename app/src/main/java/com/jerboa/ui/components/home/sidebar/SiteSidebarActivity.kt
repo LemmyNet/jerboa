@@ -12,9 +12,8 @@ import com.jerboa.ui.components.home.sidebar.SiteSidebar
 @Composable
 fun SiteSidebarActivity(
     siteViewModel: SiteViewModel,
-    navController: NavController,
+    navController: NavController
 ) {
-
     Log.d("jerboa", "got to site sidebar activity")
 
     val title = "${siteViewModel.siteRes?.site_view?.site?.name} Sidebar"

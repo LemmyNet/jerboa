@@ -25,9 +25,8 @@ fun PrivateMessageReplyActivity(
     inboxViewModel: InboxViewModel,
     accountViewModel: AccountViewModel,
     personProfileViewModel: PersonProfileViewModel,
-    navController: NavController,
+    navController: NavController
 ) {
-
     Log.d("jerboa", "got to private message reply activity")
 
     val ctx = LocalContext.current
@@ -55,7 +54,8 @@ fun PrivateMessageReplyActivity(
                                     )
                                 inboxViewModel.createPrivateMessage(
                                     form,
-                                    ctx, navController,
+                                    ctx,
+                                    navController,
                                     focusManager
                                 )
                             }

@@ -12,9 +12,8 @@ import com.jerboa.ui.components.community.CommunityViewModel
 @Composable
 fun CommunitySidebarActivity(
     communityViewModel: CommunityViewModel,
-    navController: NavController,
+    navController: NavController
 ) {
-
     Log.d("jerboa", "got to community sidebar activity")
 
     val title = "${communityViewModel.communityView?.community?.name} Sidebar"

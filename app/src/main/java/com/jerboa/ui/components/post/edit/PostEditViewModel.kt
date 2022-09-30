@@ -40,7 +40,7 @@ class PostEditViewModel : ViewModel() {
         personProfileViewModel: PersonProfileViewModel,
         postViewModel: PostViewModel,
         communityViewModel: CommunityViewModel,
-        homeViewModel: HomeViewModel,
+        homeViewModel: HomeViewModel
     ) {
         viewModelScope.launch {
             postView.value?.also { pv ->
@@ -51,7 +51,7 @@ class PostEditViewModel : ViewModel() {
                     body = body,
                     url = url,
                     name = name,
-                    ctx = ctx,
+                    ctx = ctx
                 )
                 postViewModel.postView.value = postView.value
                 findAndUpdatePost(personProfileViewModel.posts, postView.value)

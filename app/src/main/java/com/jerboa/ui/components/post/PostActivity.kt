@@ -48,9 +48,8 @@ fun PostActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     createReportViewModel: CreateReportViewModel,
-    navController: NavController,
+    navController: NavController
 ) {
-
     Log.d("jerboa", "got to post activity")
 
     val ctx = LocalContext.current
@@ -82,10 +81,10 @@ fun PostActivity(
                             postViewModel.fetchPost(
                                 id = postView.post.id,
                                 account = account,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
-                    },
+                    }
                 ) {
                     postViewModel.postView.value?.also { postView ->
                         // TODO LazyColumn and scrollbar is laggy here
@@ -103,7 +102,7 @@ fun PostActivity(
                                         postViewModel.likePost(
                                             voteType = VoteType.Upvote,
                                             account = account,
-                                            ctx = ctx,
+                                            ctx = ctx
                                         )
                                         // TODO will need to pass in postlistingsviewmodel
                                         // for the Home page to also be updated
@@ -112,7 +111,7 @@ fun PostActivity(
                                         postViewModel.likePost(
                                             voteType = VoteType.Downvote,
                                             account = account,
-                                            ctx = ctx,
+                                            ctx = ctx
                                         )
                                     },
                                     onSaveClick = {
@@ -127,7 +126,7 @@ fun PostActivity(
                                         account?.also { acct ->
                                             postViewModel.blockCommunity(
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -136,7 +135,7 @@ fun PostActivity(
                                             postViewModel.blockCreator(
                                                 creator = it,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -145,7 +144,7 @@ fun PostActivity(
                                             commentReplyViewModel = commentReplyViewModel,
                                             postId = postView.post.id,
                                             postView = postView,
-                                            navController = navController,
+                                            navController = navController
                                         )
                                     },
                                     onPostLinkClick = { url ->
@@ -173,14 +172,14 @@ fun PostActivity(
                                         postEditClickWrapper(
                                             postEditViewModel,
                                             postView,
-                                            navController,
+                                            navController
                                         )
                                     },
                                     onDeletePostClick = {
                                         account?.also { acct ->
                                             postViewModel.deletePost(
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -188,7 +187,7 @@ fun PostActivity(
                                         postReportClickWrapper(
                                             createReportViewModel,
                                             postView.post.id,
-                                            navController,
+                                            navController
                                         )
                                     },
                                     onPostClick = {}, // Do nothing
@@ -207,7 +206,7 @@ fun PostActivity(
                                                 commentView = commentView,
                                                 voteType = VoteType.Upvote,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -217,7 +216,7 @@ fun PostActivity(
                                                 commentView = commentView,
                                                 voteType = VoteType.Downvote,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -226,7 +225,7 @@ fun PostActivity(
                                             commentReplyViewModel = commentReplyViewModel,
                                             parentCommentView = commentView,
                                             postId = commentView.post.id,
-                                            navController = navController,
+                                            navController = navController
                                         )
                                     },
                                     onSaveClick = { commentView ->
@@ -234,7 +233,7 @@ fun PostActivity(
                                             postViewModel.saveComment(
                                                 commentView = commentView,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -251,7 +250,7 @@ fun PostActivity(
                                         commentEditClickWrapper(
                                             commentEditViewModel,
                                             commentView,
-                                            navController,
+                                            navController
                                         )
                                     },
                                     onDeleteCommentClick = { commentView ->
@@ -259,7 +258,7 @@ fun PostActivity(
                                             postViewModel.deleteComment(
                                                 commentView = commentView,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -267,7 +266,7 @@ fun PostActivity(
                                         commentReportClickWrapper(
                                             createReportViewModel,
                                             commentView.comment.id,
-                                            navController,
+                                            navController
                                         )
                                     },
                                     onBlockCreatorClick = {
@@ -275,7 +274,7 @@ fun PostActivity(
                                             postViewModel.blockCreator(
                                                 creator = it,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -290,7 +289,7 @@ fun PostActivity(
                                     },
                                     onPostClick = {}, // Do nothing
                                     account = account,
-                                    moderators = postViewModel.moderators,
+                                    moderators = postViewModel.moderators
                                 )
                             }
                         }
