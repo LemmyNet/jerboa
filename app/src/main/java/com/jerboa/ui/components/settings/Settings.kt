@@ -93,7 +93,10 @@ fun SettingsTextField(
 }
 
 @Composable
-fun ImageWithClose(onClick: () -> Unit, composable: @Composable() () -> Unit) {
+fun ImageWithClose(
+    onClick: () -> Unit,
+    composable: @Composable() () -> Unit // ktlint-disable annotation
+) {
     Box(contentAlignment = Alignment.TopEnd) {
         composable()
         IconButton(onClick = onClick) {
@@ -162,7 +165,7 @@ fun SettingsForm(
             text = displayName,
             onValueChange = { displayName = it }
         )
-        Column() {
+        Column {
             Text("Bio")
             MarkdownTextField(
                 text = bio,

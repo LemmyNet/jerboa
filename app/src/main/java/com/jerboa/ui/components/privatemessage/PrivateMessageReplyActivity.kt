@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.private_message
+package com.jerboa.ui.components.privatemessage
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth

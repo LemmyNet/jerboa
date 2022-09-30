@@ -316,7 +316,7 @@ enum class SortType {
     /**
      * Posts sorted by the newest comments, with no necrobumping. IE a forum sort.
      */
-    NewComments,
+    NewComments
 }
 
 /**
@@ -326,7 +326,7 @@ enum class ListingType {
     All,
     Local,
     Subscribed,
-    Community,
+    Community
 }
 
 /**
@@ -338,7 +338,7 @@ enum class SearchType {
     Posts,
     Communities,
     Users,
-    Url,
+    Url
 }
 
 data class PictrsImage(

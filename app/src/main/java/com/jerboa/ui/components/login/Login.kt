@@ -64,7 +64,9 @@ fun PasswordField(
         trailingIcon = {
             val image = if (passwordVisibility) {
                 Icons.Filled.Visibility
-            } else Icons.Filled.VisibilityOff
+            } else {
+                Icons.Filled.VisibilityOff
+            }
 
             IconButton(onClick = {
                 passwordVisibility = !passwordVisibility

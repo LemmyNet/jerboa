@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.private_message
+package com.jerboa.ui.components.privatemessage
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
