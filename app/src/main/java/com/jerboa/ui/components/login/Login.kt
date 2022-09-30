@@ -42,7 +42,7 @@ fun MyTextField(
         keyboardOptions = KeyboardOptions.Default.copy(
             capitalization = KeyboardCapitalization.None,
             keyboardType = KeyboardType.Text,
-            autoCorrect = false,
+            autoCorrect = false
         )
     )
 }
@@ -62,9 +62,9 @@ fun PasswordField(
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
-            val image = if (passwordVisibility)
+            val image = if (passwordVisibility) {
                 Icons.Filled.Visibility
-            else Icons.Filled.VisibilityOff
+            } else Icons.Filled.VisibilityOff
 
             IconButton(onClick = {
                 passwordVisibility = !passwordVisibility
@@ -79,7 +79,7 @@ fun PasswordField(
 @Composable
 fun LoginForm(
     loading: Boolean = false,
-    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> },
+    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> }
 ) {
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
@@ -99,7 +99,7 @@ fun LoginForm(
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -116,7 +116,7 @@ fun LoginForm(
                     TrailingIcon(
                         expanded = expanded
                     )
-                },
+                }
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -143,11 +143,11 @@ fun LoginForm(
         )
         PasswordField(
             password = password,
-            onValueChange = { password = it },
+            onValueChange = { password = it }
         )
         Button(
             enabled = isValid && !loading,
-            onClick = { onClickLogin(form, instance) },
+            onClick = { onClickLogin(form, instance) }
         ) {
             if (loading) {
                 CircularProgressIndicator(
@@ -170,16 +170,15 @@ fun LoginFormPreview() {
 @Composable
 fun LoginHeader(
     navController: NavController = rememberNavController(),
-    accounts: List<Account>? = null,
+    accounts: List<Account>? = null
 ) {
-
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
 
     TopAppBar(
         title = {
             Text(
-                text = "Login",
+                text = "Login"
             )
         },
         backgroundColor = backgroundColor,
@@ -197,7 +196,7 @@ fun LoginHeader(
                     contentDescription = "Back"
                 )
             }
-        },
+        }
     )
 }
 

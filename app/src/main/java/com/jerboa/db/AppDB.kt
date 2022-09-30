@@ -22,11 +22,13 @@ data class Account(
     @ColumnInfo(
         name = "default_listing_type",
         defaultValue = "0"
-    ) @NonNull val defaultListingType: Int,
+    ) @NonNull
+    val defaultListingType: Int,
     @ColumnInfo(
         name = "default_sort_type",
         defaultValue = "0"
-    ) @NonNull val defaultSortType: Int,
+    ) @NonNull
+    val defaultSortType: Int
 )
 
 @Dao
@@ -102,7 +104,7 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
 @Database(
     version = 2,
     entities = [Account::class],
-    exportSchema = true,
+    exportSchema = true
 )
 abstract class AppDB : RoomDatabase() {
     abstract fun accountDao(): AccountDao
@@ -112,7 +114,7 @@ abstract class AppDB : RoomDatabase() {
         private var INSTANCE: AppDB? = null
 
         fun getDatabase(
-            context: Context,
+            context: Context
         ): AppDB {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database

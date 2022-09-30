@@ -3,8 +3,8 @@ package com.jerboa
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -85,12 +85,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             JerboaTheme {
-
                 val navController = rememberNavController()
 
                 NavHost(
                     navController = navController,
-                    startDestination = "splashScreen",
+                    startDestination = "splashScreen"
                 ) {
                     composable(route = "login") {
                         LoginActivity(
@@ -98,12 +97,12 @@ class MainActivity : ComponentActivity() {
                             loginViewModel = loginViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            homeViewModel = homeViewModel,
+                            homeViewModel = homeViewModel
                         )
                     }
                     composable(route = "splashScreen") {
                         SplashScreenActivity(
-                            navController = navController,
+                            navController = navController
                         )
                     }
                     composable(route = "home") {
@@ -117,7 +116,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
-                            createReportViewModel = createReportViewModel,
+                            createReportViewModel = createReportViewModel
                         )
                     }
                     composable(route = "community") {
@@ -131,7 +130,7 @@ class MainActivity : ComponentActivity() {
                             inboxViewModel = inboxViewModel,
                             postEditViewModel = postEditViewModel,
                             createReportViewModel = createReportViewModel,
-                            communityListViewModel = communityListViewModel,
+                            communityListViewModel = communityListViewModel
                         )
                     }
                     composable(
@@ -155,7 +154,7 @@ class MainActivity : ComponentActivity() {
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
-                            createReportViewModel = createReportViewModel,
+                            createReportViewModel = createReportViewModel
                         )
                     }
                     composable(
@@ -182,15 +181,22 @@ class MainActivity : ComponentActivity() {
                         route = "createPost",
                         deepLinks = listOf(
                             navDeepLink { mimeType = "text/plain" },
-                            navDeepLink { mimeType = "image/*" },
+                            navDeepLink { mimeType = "image/*" }
                         )
                     ) {
-
                         val context = LocalContext.current
                         val activity = context.findActivity()
                         val text = activity?.intent?.getStringExtra(Intent.EXTRA_TEXT) ?: ""
                         val image =
-                            activity?.intent?.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                activity?.intent?.getParcelableExtra(
+                                    Intent.EXTRA_STREAM,
+                                    Uri::class.java
+                                )
+                            } else {
+                                @Suppress("DEPRECATION")
+                                activity?.intent?.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+                            }
                         // url and body will be empty everytime except when there is EXTRA TEXT in the intent
                         var url = ""
                         var body = ""
@@ -223,11 +229,11 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
-                            createReportViewModel = createReportViewModel,
+                            createReportViewModel = createReportViewModel
                         )
                     }
                     composable(
-                        route = "post",
+                        route = "post"
                     ) {
                         PostActivity(
                             postViewModel = postViewModel,
@@ -238,11 +244,11 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             createReportViewModel = createReportViewModel,
-                            navController = navController,
+                            navController = navController
                         )
                     }
                     composable(
-                        route = "commentReply",
+                        route = "commentReply"
                     ) {
                         CommentReplyActivity(
                             commentReplyViewModel = commentReplyViewModel,
@@ -250,27 +256,27 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
                             inboxViewModel = inboxViewModel,
-                            navController = navController,
+                            navController = navController
                         )
                     }
                     composable(
-                        route = "siteSidebar",
+                        route = "siteSidebar"
                     ) {
                         SiteSidebarActivity(
                             siteViewModel = siteViewModel,
-                            navController = navController,
+                            navController = navController
                         )
                     }
                     composable(
-                        route = "communitySidebar",
+                        route = "communitySidebar"
                     ) {
                         CommunitySidebarActivity(
                             communityViewModel = communityViewModel,
-                            navController = navController,
+                            navController = navController
                         )
                     }
                     composable(
-                        route = "commentEdit",
+                        route = "commentEdit"
                     ) {
                         CommentEditActivity(
                             commentEditViewModel = commentEditViewModel,
@@ -278,11 +284,11 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
                             postViewModel = postViewModel,
-                            inboxViewModel = inboxViewModel,
+                            inboxViewModel = inboxViewModel
                         )
                     }
                     composable(
-                        route = "postEdit",
+                        route = "postEdit"
                     ) {
                         PostEditActivity(
                             postEditViewModel = postEditViewModel,
@@ -291,39 +297,39 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
                             postViewModel = postViewModel,
-                            homeViewModel = homeViewModel,
+                            homeViewModel = homeViewModel
                         )
                     }
                     composable(
-                        route = "privateMessageReply",
+                        route = "privateMessageReply"
                     ) {
                         PrivateMessageReplyActivity(
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
-                            navController = navController,
+                            navController = navController
                         )
                     }
                     composable(
-                        route = "commentReport",
+                        route = "commentReport"
                     ) {
                         CreateCommentReportActivity(
                             createReportViewModel = createReportViewModel,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            navController = navController
                         )
                     }
                     composable(
-                        route = "postReport",
+                        route = "postReport"
                     ) {
                         CreatePostReportActivity(
                             createReportViewModel = createReportViewModel,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            navController = navController
                         )
                     }
                     composable(
-                        route = "settings",
+                        route = "settings"
                     ) {
                         SettingsActivity(
                             navController = navController,

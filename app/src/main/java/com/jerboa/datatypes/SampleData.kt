@@ -256,8 +256,11 @@ val sampleSecondCommentReply = Comment(
 )
 
 val sampleCommentAggregates = CommentAggregates(
-    id = 28, comment_id = 24, score = 8,
-    upvotes = 12, downvotes = 4
+    id = 28,
+    comment_id = 24,
+    score = 8,
+    upvotes = 12,
+    downvotes = 4
 )
 
 val sampleCommentView = CommentView(
@@ -271,7 +274,7 @@ val sampleCommentView = CommentView(
     subscribed = false,
     saved = false,
     creator_blocked = false,
-    my_vote = null,
+    my_vote = null
 )
 
 val sampleCommentReplyView = CommentView(
@@ -285,7 +288,7 @@ val sampleCommentReplyView = CommentView(
     subscribed = false,
     saved = false,
     creator_blocked = false,
-    my_vote = null,
+    my_vote = null
 )
 
 val sampleSecondCommentReplyView = CommentView(
@@ -299,7 +302,7 @@ val sampleSecondCommentReplyView = CommentView(
     subscribed = false,
     saved = false,
     creator_blocked = false,
-    my_vote = null,
+    my_vote = null
 )
 
 val sampleCommunityAggregates = CommunityAggregates(
@@ -311,14 +314,14 @@ val sampleCommunityAggregates = CommunityAggregates(
     users_active_day = 28,
     users_active_week = 98,
     users_active_month = 82,
-    users_active_half_year = 91,
+    users_active_half_year = 91
 )
 
 val sampleCommunityView = CommunityView(
     community = sampleCommunitySafe,
     subscribed = false,
     blocked = false,
-    counts = sampleCommunityAggregates,
+    counts = sampleCommunityAggregates
 )
 
 val samplePersonAggregates = PersonAggregates(
@@ -327,7 +330,7 @@ val samplePersonAggregates = PersonAggregates(
     post_count = 28,
     post_score = 38,
     comment_count = 98,
-    comment_score = 168,
+    comment_score = 168
 )
 
 val samplePersonView = PersonViewSafe(
@@ -351,7 +354,7 @@ val samplePrivateMessage = PrivateMessage(
 val samplePrivateMessageView = PrivateMessageView(
     private_message = samplePrivateMessage,
     creator = samplePersonSafe,
-    recipient = samplePersonSafe2,
+    recipient = samplePersonSafe2
 )
 
 val sampleSite = Site(
@@ -371,7 +374,7 @@ val sampleSite = Site(
     require_email_verification = false,
     require_application = false,
     application_question = null,
-    private_instance = false,
+    private_instance = false
 )
 
 val sampleSiteAggregates = SiteAggregates(
@@ -384,10 +387,10 @@ val sampleSiteAggregates = SiteAggregates(
     users_active_day = 21,
     users_active_week = 82,
     users_active_month = 208,
-    users_active_half_year = 689,
+    users_active_half_year = 689
 )
 
 val sampleSiteView = SiteView(
     site = sampleSite,
-    counts = sampleSiteAggregates,
+    counts = sampleSiteAggregates
 )

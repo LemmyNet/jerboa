@@ -22,7 +22,6 @@ class SettingsViewModel : ViewModel() {
         siteViewModel: SiteViewModel,
         account: Account?
     ) {
-
         viewModelScope.launch {
             loading = true
             saveUserSettingsWrapper(form, ctx)

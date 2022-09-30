@@ -15,7 +15,7 @@ data class Search(
     val listing_type: String? = null,
     val page: Int? = null,
     val limit: Int? = null,
-    val auth: String? = null,
+    val auth: String? = null
 )
 
 data class SearchResponse(
@@ -23,7 +23,7 @@ data class SearchResponse(
     val comments: List<CommentView>,
     val posts: List<PostView>,
     val communities: List<CommunityView>,
-    val users: List<PersonViewSafe>,
+    val users: List<PersonViewSafe>
 )
 
 data class GetModlog(
@@ -31,7 +31,7 @@ data class GetModlog(
     val community_id: Int?,
     val page: Int?,
     val limit: Int?,
-    val auth: String?,
+    val auth: String?
 )
 
 data class GetModlogResponse(
@@ -44,7 +44,7 @@ data class GetModlogResponse(
     val banned: List<ModBanView>,
     val added_to_community: List<ModAddCommunityView>,
     val transferred_to_community: List<ModTransferCommunityView>,
-    val added: List<ModAddView>,
+    val added: List<ModAddView>
 )
 
 data class CreateSite(
@@ -61,7 +61,7 @@ data class CreateSite(
     val require_application: Boolean?,
     val application_question: String?,
     val private_instance: Boolean?,
-    val auth: String?,
+    val auth: String?
 )
 
 data class EditSite(
@@ -78,15 +78,15 @@ data class EditSite(
     val require_application: Boolean?,
     val application_question: String?,
     val private_instance: Boolean?,
-    val auth: String?,
+    val auth: String?
 )
 
 data class GetSite(
-    val auth: String?,
+    val auth: String?
 )
 
 data class SiteResponse(
-    val site_view: SiteView,
+    val site_view: SiteView
 )
 
 data class GetSiteResponse(
@@ -95,7 +95,7 @@ data class GetSiteResponse(
     val online: Int,
     val version: String,
     val my_user: MyUserInfo?,
-    val federated_instances: FederatedInstances?,
+    val federated_instances: FederatedInstances?
 )
 
 /**
@@ -106,43 +106,43 @@ data class MyUserInfo(
     val follows: List<CommunityFollowerView>,
     val moderates: List<CommunityModeratorView>,
     val community_blocks: List<CommunityBlockView>,
-    val person_blocks: List<PersonBlockView>,
+    val person_blocks: List<PersonBlockView>
 )
 
 data class TransferSite(
     val person_id: Int,
-    val auth: String,
+    val auth: String
 )
 
 data class GetSiteConfig(
-    val auth: String,
+    val auth: String
 )
 
 data class GetSiteConfigResponse(
-    val config_hjson: String,
+    val config_hjson: String
 )
 
 data class SaveSiteConfig(
     val config_hjson: String,
-    val auth: String,
+    val auth: String
 )
 
 data class FederatedInstances(
     val linked: List<String>,
     val allowed: List<String>?,
-    val blocked: List<String>?,
+    val blocked: List<String>?
 )
 
 data class ResolveObject(
     val q: String,
-    val auth: String?,
+    val auth: String?
 )
 
 data class ResolveObjectResponse(
     val comment: CommentView,
     val post: PostView?,
     val community: CommunityView?,
-    val person: PersonViewSafe?,
+    val person: PersonViewSafe?
 )
 
 // export interface ListRegistrationApplications {

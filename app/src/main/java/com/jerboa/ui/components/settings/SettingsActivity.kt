@@ -17,7 +17,7 @@ fun SettingsActivity(
     navController: NavController,
     settingsViewModel: SettingsViewModel,
     accountViewModel: AccountViewModel,
-    siteViewModel: SiteViewModel,
+    siteViewModel: SiteViewModel
 ) {
     Log.d("jerboa", "Got to settings activity")
 
@@ -30,7 +30,7 @@ fun SettingsActivity(
             scaffoldState = scaffoldState,
             topBar = {
                 SettingsHeader(
-                    navController = navController,
+                    navController = navController
                 )
             },
             content = {
@@ -42,11 +42,11 @@ fun SettingsActivity(
                                 form,
                                 ctx,
                                 siteViewModel = siteViewModel,
-                                account = account,
+                                account = account
                             )
                         },
                         siteViewModel = siteViewModel,
-                        account = account,
+                        account = account
                     )
                 }
             }

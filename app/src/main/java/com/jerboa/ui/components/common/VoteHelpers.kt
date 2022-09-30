@@ -18,7 +18,7 @@ fun <T> VoteGeneric(
     type: VoteType,
     onVoteClick: (item: T) -> Unit,
     showNumber: Boolean = true,
-    account: Account?,
+    account: Account?
 ) {
     val voteColor =
         when (type) {
@@ -45,7 +45,7 @@ fun <T> VoteGeneric(
         contentColor = voteColor,
         icon = voteIcon,
         text = votesStr,
-        account = account,
+        account = account
     )
 }
 

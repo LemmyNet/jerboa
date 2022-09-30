@@ -65,9 +65,8 @@ fun PersonProfileActivity(
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
-    createReportViewModel: CreateReportViewModel,
+    createReportViewModel: CreateReportViewModel
 ) {
-
     Log.d("jerboa", "got to person activity")
 
     val scope = rememberCoroutineScope()
@@ -98,7 +97,7 @@ fun PersonProfileActivity(
                                 clear = true,
                                 changeSortType = sortType,
                                 ctx = ctx,
-                                changeSavedOnly = savedMode,
+                                changeSavedOnly = savedMode
                             )
                         },
                         onBlockPersonClick = {
@@ -106,11 +105,11 @@ fun PersonProfileActivity(
                                 personProfileViewModel.blockPerson(
                                     person = person,
                                     account = acct,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             }
                         },
-                        navController = navController,
+                        navController = navController
                     )
                 }
             },
@@ -129,7 +128,7 @@ fun PersonProfileActivity(
                     commentEditViewModel = commentEditViewModel,
                     commentReplyViewModel = commentReplyViewModel,
                     postEditViewModel = postEditViewModel,
-                    createReportViewModel = createReportViewModel,
+                    createReportViewModel = createReportViewModel
                 )
             },
             bottomBar = {
@@ -143,7 +142,7 @@ fun PersonProfileActivity(
                                 personId = it,
                                 account = account,
                                 navController = navController,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -158,11 +157,11 @@ fun PersonProfileActivity(
                                 account = account,
                                 navController = navController,
                                 ctx = ctx,
-                                saved = true,
+                                saved = true
                             )
                         }
                     },
-                    navController = navController,
+                    navController = navController
                 )
             }
         )
@@ -191,7 +190,7 @@ fun UserTabs(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     createReportViewModel: CreateReportViewModel,
-    padding: PaddingValues,
+    padding: PaddingValues
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -263,7 +262,7 @@ fun UserTabs(
                                     Text(
                                         text = "Moderates",
                                         style = MaterialTheme.typography.subtitle1,
-                                        modifier = Modifier.padding(MEDIUM_PADDING),
+                                        modifier = Modifier.padding(MEDIUM_PADDING)
                                     )
                                 }
                             }
@@ -277,7 +276,7 @@ fun UserTabs(
                                             community.id,
                                             account,
                                             navController,
-                                            ctx = ctx,
+                                            ctx = ctx
                                         )
                                     }
                                 )
@@ -294,7 +293,7 @@ fun UserTabs(
                                 voteType = VoteType.Upvote,
                                 postView = postView,
                                 account = account,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         },
                         onDownvoteClick = { postView ->
@@ -302,7 +301,7 @@ fun UserTabs(
                                 voteType = VoteType.Downvote,
                                 postView = postView,
                                 account = account,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         },
                         onBlockCommunityClick = {
@@ -310,7 +309,7 @@ fun UserTabs(
                                 personProfileViewModel.blockCommunity(
                                     community = it,
                                     account = acct,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             }
                         },
@@ -319,7 +318,7 @@ fun UserTabs(
                                 personProfileViewModel.blockPerson(
                                     person = it,
                                     account = acct,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             }
                         },
@@ -329,7 +328,7 @@ fun UserTabs(
                                 postId = postView.post.id,
                                 account = account,
                                 navController = navController,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         },
                         onPostLinkClick = { url ->
@@ -340,7 +339,7 @@ fun UserTabs(
                                 personProfileViewModel.savePost(
                                     postView = postView,
                                     account = acct,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             }
                         },
@@ -348,7 +347,7 @@ fun UserTabs(
                             postEditClickWrapper(
                                 postEditViewModel,
                                 postView,
-                                navController,
+                                navController
                             )
                         },
                         onDeletePostClick = { postView ->
@@ -356,7 +355,7 @@ fun UserTabs(
                                 personProfileViewModel.deletePost(
                                     postView = postView,
                                     account = acct,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             }
                         },
@@ -364,7 +363,7 @@ fun UserTabs(
                             postReportClickWrapper(
                                 createReportViewModel,
                                 postView.post.id,
-                                navController,
+                                navController
                             )
                         },
                         onCommunityClick = { community ->
@@ -373,7 +372,7 @@ fun UserTabs(
                                 community.id,
                                 account,
                                 navController,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         },
                         onPersonClick = { personId ->
@@ -382,7 +381,7 @@ fun UserTabs(
                                 personId = personId,
                                 account = account,
                                 navController = navController,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         },
                         onSwipeRefresh = {
@@ -392,7 +391,7 @@ fun UserTabs(
                                     account = account,
                                     clear = true,
                                     ctx = ctx,
-                                    changeSavedOnly = savedMode,
+                                    changeSavedOnly = savedMode
                                 )
                             }
                         },
@@ -407,12 +406,12 @@ fun UserTabs(
                                         account = account,
                                         nextPage = true,
                                         ctx = ctx,
-                                        changeSavedOnly = savedMode,
+                                        changeSavedOnly = savedMode
                                     )
                                 }
                             }
                         },
-                        account = account,
+                        account = account
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -440,7 +439,7 @@ fun UserTabs(
                                         account = account,
                                         nextPage = true,
                                         ctx = ctx,
-                                        changeSavedOnly = savedMode,
+                                        changeSavedOnly = savedMode
                                     )
                                 }
                             }
@@ -456,10 +455,10 @@ fun UserTabs(
                                     account = account,
                                     clear = true,
                                     ctx = ctx,
-                                    changeSavedOnly = savedMode,
+                                    changeSavedOnly = savedMode
                                 )
                             }
-                        },
+                        }
                     ) {
                         LazyColumn(
                             state = listState,
@@ -475,7 +474,7 @@ fun UserTabs(
                                                 commentView = commentView,
                                                 voteType = VoteType.Upvote,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -485,7 +484,7 @@ fun UserTabs(
                                                 commentView = commentView,
                                                 voteType = VoteType.Downvote,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -494,7 +493,7 @@ fun UserTabs(
                                             commentReplyViewModel = commentReplyViewModel,
                                             parentCommentView = commentView,
                                             postId = commentView.post.id,
-                                            navController = navController,
+                                            navController = navController
                                         )
                                     },
                                     onSaveClick = { commentView ->
@@ -502,7 +501,7 @@ fun UserTabs(
                                             personProfileViewModel.saveComment(
                                                 commentView = commentView,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -521,7 +520,7 @@ fun UserTabs(
                                             communityId = community.id,
                                             account = account,
                                             navController = navController,
-                                            ctx = ctx,
+                                            ctx = ctx
                                         )
                                     },
                                     onPostClick = { postId ->
@@ -530,14 +529,14 @@ fun UserTabs(
                                             postId = postId,
                                             account = account,
                                             navController = navController,
-                                            ctx = ctx,
+                                            ctx = ctx
                                         )
                                     },
                                     onEditCommentClick = { commentView ->
                                         commentEditClickWrapper(
                                             commentEditViewModel,
                                             commentView,
-                                            navController,
+                                            navController
                                         )
                                     },
                                     onDeleteCommentClick = { commentView ->
@@ -545,7 +544,7 @@ fun UserTabs(
                                             personProfileViewModel.deleteComment(
                                                 commentView = commentView,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -553,7 +552,7 @@ fun UserTabs(
                                         commentReportClickWrapper(
                                             createReportViewModel,
                                             commentView.comment.id,
-                                            navController,
+                                            navController
                                         )
                                     },
                                     onBlockCreatorClick = {
@@ -561,7 +560,7 @@ fun UserTabs(
                                             personProfileViewModel.blockPerson(
                                                 person = it,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },

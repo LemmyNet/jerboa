@@ -30,7 +30,7 @@ fun fetchPostsRoutine(
     changeSortType: SortType? = null,
     account: Account?,
     ctx: Context? = null,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         loading.value = true
@@ -78,13 +78,15 @@ fun likePostRoutine(
     voteType: VoteType,
     account: Account?,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         account?.also { account ->
             postView.value?.also { pv ->
                 val updatedPostView = likePostWrapper(
-                    pv, voteType, account,
+                    pv,
+                    voteType,
+                    account,
                     ctx
                 )?.post_view
                 postView.value = updatedPostView
@@ -101,14 +103,14 @@ fun savePostRoutine(
     posts: MutableList<PostView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         postView.value?.also { pv ->
             val updatedPostView = savePostWrapper(
                 pv,
                 account,
-                ctx,
+                ctx
             )?.post_view
             postView.value = updatedPostView
             posts?.also {
@@ -123,7 +125,7 @@ fun deletePostRoutine(
     posts: MutableList<PostView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         postView.value?.also { pv ->

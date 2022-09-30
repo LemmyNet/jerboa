@@ -31,7 +31,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 fun CommentReplyHeader(
     navController: NavController = rememberNavController(),
     onSendClick: () -> Unit,
-    loading: Boolean,
+    loading: Boolean
 ) {
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
@@ -39,7 +39,7 @@ fun CommentReplyHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Reply",
+                text = "Reply"
             )
         },
         backgroundColor = backgroundColor,
@@ -72,7 +72,7 @@ fun CommentReplyHeader(
                     contentDescription = "Back"
                 )
             }
-        },
+        }
     )
 }
 
@@ -80,7 +80,7 @@ fun CommentReplyHeader(
 fun RepliedComment(
     commentView: CommentView,
     onPersonClick: (personId: Int) -> Unit,
-    isModerator: Boolean,
+    isModerator: Boolean
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentNodeHeader(
@@ -88,7 +88,7 @@ fun RepliedComment(
             onPersonClick = onPersonClick,
             score = commentView.counts.score,
             myVote = commentView.my_vote,
-            isModerator = isModerator,
+            isModerator = isModerator
         )
         SelectionContainer {
             Text(text = commentView.comment.content)
@@ -102,7 +102,7 @@ fun RepliedCommentPreview() {
     RepliedComment(
         commentView = sampleCommentView,
         isModerator = false,
-        onPersonClick = {},
+        onPersonClick = {}
     )
 }
 
@@ -110,13 +110,13 @@ fun RepliedCommentPreview() {
 fun RepliedPost(
     postView: PostView,
     onPersonClick: (personId: Int) -> Unit,
-    isModerator: Boolean,
+    isModerator: Boolean
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PostNodeHeader(
             postView = postView,
             onPersonClick = onPersonClick,
-            isModerator = isModerator,
+            isModerator = isModerator
         )
         val text = postView.post.body ?: run { postView.post.name }
         SelectionContainer {
@@ -132,7 +132,7 @@ fun CommentReply(
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
-    account: Account?,
+    account: Account?
 ) {
     val listState = rememberLazyListState()
 
@@ -144,7 +144,7 @@ fun CommentReply(
             RepliedComment(
                 commentView = commentView,
                 onPersonClick = onPersonClick,
-                isModerator = isModerator,
+                isModerator = isModerator
             )
         }
         item {
@@ -168,7 +168,7 @@ fun PostReply(
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
-    account: Account?,
+    account: Account?
 ) {
     val listState = rememberLazyListState()
 
@@ -180,7 +180,7 @@ fun PostReply(
             RepliedPost(
                 postView = postView,
                 onPersonClick = onPersonClick,
-                isModerator = isModerator,
+                isModerator = isModerator
             )
         }
         item {
@@ -203,7 +203,7 @@ fun commentReplyClickWrapper(
     postId: Int,
     parentCommentView: CommentView? = null,
     postView: PostView? = null,
-    navController: NavController,
+    navController: NavController
 ) {
     // Post id is mandatory, but the other two only one must be set
     commentReplyViewModel.setPostId(postId)

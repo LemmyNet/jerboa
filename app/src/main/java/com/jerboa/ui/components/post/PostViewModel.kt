@@ -47,7 +47,7 @@ class PostViewModel : ViewModel() {
         id: Int,
         clear: Boolean = false,
         account: Account?,
-        ctx: Context,
+        ctx: Context
     ) {
         val api = API.getInstance()
 
@@ -83,7 +83,7 @@ class PostViewModel : ViewModel() {
         commentView: CommentView,
         voteType: VoteType,
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         likeCommentRoutine(
             commentView = mutableStateOf(commentView),
@@ -91,7 +91,7 @@ class PostViewModel : ViewModel() {
             commentTree = commentTree,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 
@@ -101,13 +101,13 @@ class PostViewModel : ViewModel() {
             commentTree = commentTree,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 
     fun savePost(
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         savePostRoutine(postView = postView, account = account, ctx = ctx, scope = viewModelScope)
     }
@@ -117,27 +117,27 @@ class PostViewModel : ViewModel() {
             postView = postView,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 
     fun saveComment(
         commentView: CommentView,
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         saveCommentRoutine(
             commentView = mutableStateOf(commentView),
             commentTree = commentTree,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 
     fun blockCommunity(
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         postView.value?.community?.also {
             blockCommunityRoutine(
@@ -153,7 +153,7 @@ class PostViewModel : ViewModel() {
     fun blockCreator(
         creator: PersonSafe,
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         blockPersonRoutine(
             person = creator,
@@ -170,7 +170,7 @@ class PostViewModel : ViewModel() {
             voteType = voteType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 }

@@ -22,7 +22,7 @@ import com.jerboa.ui.theme.APP_BAR_ELEVATION
 fun CommentEditHeader(
     navController: NavController = rememberNavController(),
     onSaveClick: () -> Unit,
-    loading: Boolean,
+    loading: Boolean
 ) {
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
@@ -30,7 +30,7 @@ fun CommentEditHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Edit",
+                text = "Edit"
             )
         },
         backgroundColor = backgroundColor,
@@ -39,7 +39,7 @@ fun CommentEditHeader(
         actions = {
             IconButton(
                 onClick = onSaveClick,
-                enabled = !loading,
+                enabled = !loading
             ) {
                 if (loading) {
                     CircularProgressIndicator(
@@ -64,7 +64,7 @@ fun CommentEditHeader(
                     contentDescription = "Back"
                 )
             }
-        },
+        }
     )
 }
 
@@ -72,7 +72,7 @@ fun CommentEditHeader(
 fun CommentEdit(
     content: TextFieldValue,
     onContentChange: (TextFieldValue) -> Unit,
-    account: Account?,
+    account: Account?
 ) {
     val listState = rememberLazyListState()
 
@@ -95,7 +95,7 @@ fun CommentEdit(
 fun commentEditClickWrapper(
     commentEditViewModel: CommentEditViewModel,
     commentView: CommentView,
-    navController: NavController,
+    navController: NavController
 ) {
     commentEditViewModel.setCommentView(commentView)
     navController.navigate("commentEdit")

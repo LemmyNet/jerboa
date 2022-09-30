@@ -53,9 +53,8 @@ fun InboxActivity(
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
-    createReportViewModel: CreateReportViewModel,
+    createReportViewModel: CreateReportViewModel
 ) {
-
     Log.d("jerboa", "got to inbox activity")
 
     val scope = rememberCoroutineScope()
@@ -79,19 +78,19 @@ fun InboxActivity(
                                 account = acct,
                                 clear = true,
                                 changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                             inboxViewModel.fetchPersonMentions(
                                 account = acct,
                                 clear = true,
                                 changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                             inboxViewModel.fetchPrivateMessages(
                                 account = acct,
                                 clear = true,
                                 changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -99,7 +98,7 @@ fun InboxActivity(
                         account?.also { acct ->
                             inboxViewModel.markAllAsRead(
                                 account = acct,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                             homeViewModel.markAllAsRead()
                         }
@@ -120,7 +119,7 @@ fun InboxActivity(
                     createReportViewModel = createReportViewModel,
                     ctx = ctx,
                     account = account,
-                    scope = scope,
+                    scope = scope
                 )
             },
             bottomBar = {
@@ -134,7 +133,7 @@ fun InboxActivity(
                                 personId = it,
                                 account = account,
                                 navController = navController,
-                                ctx = ctx,
+                                ctx = ctx
                             )
                         }
                     },
@@ -149,11 +148,11 @@ fun InboxActivity(
                                 account = account,
                                 navController = navController,
                                 ctx = ctx,
-                                saved = true,
+                                saved = true
                             )
                         }
                     },
-                    navController = navController,
+                    navController = navController
                 )
             }
         )
@@ -182,7 +181,7 @@ fun InboxTabs(
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     createReportViewModel: CreateReportViewModel,
-    padding: PaddingValues,
+    padding: PaddingValues
 ) {
     val tabTitles = InboxTab.values().map { it.toString() }
 
@@ -225,7 +224,6 @@ fun InboxTabs(
         ) { tabIndex ->
             when (tabIndex) {
                 InboxTab.Replies.ordinal -> {
-
                     val nodes = commentsToFlatNodes(inboxViewModel.replies)
 
                     val listState = rememberLazyListState()
@@ -248,7 +246,7 @@ fun InboxTabs(
                                     inboxViewModel.fetchReplies(
                                         account = acct,
                                         nextPage = true,
-                                        ctx = ctx,
+                                        ctx = ctx
                                     )
                                 }
                             }
@@ -262,10 +260,10 @@ fun InboxTabs(
                                 inboxViewModel.fetchReplies(
                                     account = acct,
                                     clear = true,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             }
-                        },
+                        }
                     ) {
                         LazyColumn(
                             state = listState,
@@ -282,7 +280,7 @@ fun InboxTabs(
                                                 commentView = commentView,
                                                 voteType = VoteType.Upvote,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -292,7 +290,7 @@ fun InboxTabs(
                                                 commentView = commentView,
                                                 voteType = VoteType.Downvote,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -301,14 +299,14 @@ fun InboxTabs(
                                             commentReplyViewModel = commentReplyViewModel,
                                             parentCommentView = commentView,
                                             postId = commentView.post.id,
-                                            navController = navController,
+                                            navController = navController
                                         )
                                     },
                                     onEditCommentClick = { commentView ->
                                         commentEditClickWrapper(
                                             commentEditViewModel,
                                             commentView,
-                                            navController,
+                                            navController
                                         )
                                     },
                                     onDeleteCommentClick = { commentView ->
@@ -316,7 +314,7 @@ fun InboxTabs(
                                             inboxViewModel.deleteComment(
                                                 commentView = commentView,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -324,7 +322,7 @@ fun InboxTabs(
                                         commentReportClickWrapper(
                                             createReportViewModel,
                                             commentView.comment.id,
-                                            navController,
+                                            navController
                                         )
                                     },
                                     onSaveClick = { commentView ->
@@ -332,7 +330,7 @@ fun InboxTabs(
                                             inboxViewModel.saveComment(
                                                 commentView = commentView,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -341,7 +339,7 @@ fun InboxTabs(
                                             inboxViewModel.blockCreator(
                                                 creator = it,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                         }
                                     },
@@ -350,7 +348,7 @@ fun InboxTabs(
                                             inboxViewModel.markReplyAsRead(
                                                 commentView = commentView,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                             homeViewModel.updateUnreads(commentView)
                                         }
@@ -370,7 +368,7 @@ fun InboxTabs(
                                             communityId = community.id,
                                             account = account,
                                             navController = navController,
-                                            ctx = ctx,
+                                            ctx = ctx
                                         )
                                     },
                                     onPostClick = { postId ->
@@ -379,7 +377,7 @@ fun InboxTabs(
                                             postId = postId,
                                             account = account,
                                             navController = navController,
-                                            ctx = ctx,
+                                            ctx = ctx
                                         )
                                     },
                                     showPostAndCommunityContext = true,
@@ -396,7 +394,6 @@ fun InboxTabs(
 //                    // TODO Need to do a whole type of its own here
 //                }
                 InboxTab.Messages.ordinal -> {
-
                     val listState = rememberLazyListState()
                     val loading = inboxViewModel.loading.value &&
                         inboxViewModel.page.value == 1 &&
@@ -417,7 +414,7 @@ fun InboxTabs(
                                     inboxViewModel.fetchPrivateMessages(
                                         account = acct,
                                         nextPage = true,
-                                        ctx = ctx,
+                                        ctx = ctx
                                     )
                                 }
                             }
@@ -431,10 +428,10 @@ fun InboxTabs(
                                 inboxViewModel.fetchPrivateMessages(
                                     account = acct,
                                     clear = true,
-                                    ctx = ctx,
+                                    ctx = ctx
                                 )
                             }
-                        },
+                        }
                     ) {
                         LazyColumn(
                             state = listState,
@@ -455,7 +452,7 @@ fun InboxTabs(
                                             inboxViewModel.markPrivateMessageAsRead(
                                                 privateMessageView = privateMessageView,
                                                 account = acct,
-                                                ctx = ctx,
+                                                ctx = ctx
                                             )
                                             homeViewModel.updateUnreads(privateMessageView)
                                         },
@@ -468,7 +465,7 @@ fun InboxTabs(
                                                 ctx
                                             )
                                         },
-                                        account = acct,
+                                        account = acct
                                     )
                                 }
                             }

@@ -51,7 +51,7 @@ class CommentReplyViewModel : ViewModel() {
         focusManager: FocusManager,
         personProfileViewModel: PersonProfileViewModel,
         postViewModel: PostViewModel,
-        inboxViewModel: InboxViewModel,
+        inboxViewModel: InboxViewModel
     ) {
         postId.value?.also { postId ->
             createCommentRoutine(
@@ -66,7 +66,7 @@ class CommentReplyViewModel : ViewModel() {
                 focusManager = focusManager,
                 personProfileViewModel = personProfileViewModel,
                 postViewModel = postViewModel,
-                inboxViewModel = inboxViewModel,
+                inboxViewModel = inboxViewModel
             )
         }
     }

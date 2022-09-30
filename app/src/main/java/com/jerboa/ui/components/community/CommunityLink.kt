@@ -26,13 +26,12 @@ import com.jerboa.ui.theme.*
 fun CommunityName(
     community: CommunitySafe,
     color: Color = MaterialTheme.colors.primary,
-    style: TextStyle = MaterialTheme.typography.body1,
+    style: TextStyle = MaterialTheme.typography.body1
 ) {
-
     Text(
         text = communityNameShown(community),
         style = style,
-        color = color,
+        color = color
     )
 }
 
@@ -52,12 +51,12 @@ fun CommunityLink(
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.body1,
-    onClick: (community: CommunitySafe) -> Unit,
+    onClick: (community: CommunitySafe) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing),
-        modifier = modifier.clickable { onClick(community) },
+        modifier = modifier.clickable { onClick(community) }
     ) {
         community.icon?.let {
             CircularIcon(
@@ -71,7 +70,7 @@ fun CommunityLink(
             usersPerMonth?.also {
                 Text(
                     text = "$usersPerMonth users / month",
-                    color = MaterialTheme.colors.onSurface,
+                    color = MaterialTheme.colors.onSurface
                 )
             }
         }
@@ -81,7 +80,7 @@ fun CommunityLink(
 @Composable
 fun CommunityLinkLarger(
     community: CommunitySafe,
-    onClick: (community: CommunitySafe) -> Unit,
+    onClick: (community: CommunitySafe) -> Unit
 ) {
     CommunityLink(
         community = community,
@@ -93,14 +92,14 @@ fun CommunityLinkLarger(
             .padding(LARGE_PADDING)
             .fillMaxWidth(),
         style = MaterialTheme.typography.subtitle1,
-        onClick = onClick,
+        onClick = onClick
     )
 }
 
 @Composable
 fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
-    onClick: (community: CommunitySafe) -> Unit,
+    onClick: (community: CommunitySafe) -> Unit
 ) {
     CommunityLink(
         community = communityView.community,
@@ -113,7 +112,7 @@ fun CommunityLinkLargerWithUserCount(
             .padding(LARGE_PADDING)
             .fillMaxWidth(),
         style = MaterialTheme.typography.subtitle1,
-        onClick = onClick,
+        onClick = onClick
     )
 }
 
@@ -122,7 +121,7 @@ fun CommunityLinkLargerWithUserCount(
 fun CommunityLinkPreview() {
     CommunityLink(
         community = sampleCommunitySafe,
-        onClick = {},
+        onClick = {}
     )
 }
 
@@ -131,7 +130,7 @@ fun CommunityLinkPreview() {
 fun CommunityLinkWithUsersPreview() {
     CommunityLinkLargerWithUserCount(
         communityView = sampleCommunityView,
-        onClick = {},
+        onClick = {}
     )
 }
 
@@ -140,7 +139,7 @@ fun communityClickWrapper(
     communityId: Int,
     account: Account?,
     navController: NavController,
-    ctx: Context,
+    ctx: Context
 ) {
     communityViewModel.fetchCommunity(
         id = communityId,

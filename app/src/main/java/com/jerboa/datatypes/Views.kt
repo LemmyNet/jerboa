@@ -2,7 +2,7 @@ package com.jerboa.datatypes
 
 data class PersonViewSafe(
     val person: PersonSafe,
-    val counts: PersonAggregates,
+    val counts: PersonAggregates
 )
 
 data class PersonMentionView(
@@ -17,24 +17,24 @@ data class PersonMentionView(
     val subscribed: Boolean,
     val saved: Boolean,
     val creator_blocked: Boolean,
-    val my_vote: Int?,
+    val my_vote: Int?
 )
 
 data class LocalUserSettingsView(
     val local_user: LocalUserSettings,
     val person: PersonSafe,
-    val counts: PersonAggregates,
+    val counts: PersonAggregates
 )
 
 data class SiteView(
     val site: Site,
-    val counts: SiteAggregates,
+    val counts: SiteAggregates
 )
 
 data class PrivateMessageView(
     val private_message: PrivateMessage,
     val creator: PersonSafe,
-    val recipient: PersonSafe,
+    val recipient: PersonSafe
 )
 
 data class PostView(
@@ -47,7 +47,7 @@ data class PostView(
     val saved: Boolean,
     val read: Boolean,
     val creator_blocked: Boolean,
-    val my_vote: Int?,
+    val my_vote: Int?
 )
 
 data class PostReportView(
@@ -59,7 +59,7 @@ data class PostReportView(
     val creator_banned_from_community: Boolean,
     val my_vote: Int?,
     val counts: PostAggregates,
-    val resolver: PersonSafe?,
+    val resolver: PersonSafe?
 )
 
 data class CommentView(
@@ -73,7 +73,7 @@ data class CommentView(
     val subscribed: Boolean,
     val saved: Boolean,
     val creator_blocked: Boolean,
-    val my_vote: Int?,
+    val my_vote: Int?
 )
 
 data class CommentReportView(
@@ -86,47 +86,47 @@ data class CommentReportView(
     val counts: CommentAggregates,
     val creator_banned_from_community: Boolean,
     val my_vote: Int?,
-    val resolver: PersonSafe?,
+    val resolver: PersonSafe?
 )
 
 data class ModAddCommunityView(
     val mod_add_community: ModAddCommunity,
     val moderator: PersonSafe,
     val community: CommunitySafe,
-    val modded_person: PersonSafe,
+    val modded_person: PersonSafe
 )
 
 data class ModTransferCommunityView(
     val mod_transfer_community: ModTransferCommunity,
     val moderator: PersonSafe,
     val community: CommunitySafe,
-    val modded_person: PersonSafe,
+    val modded_person: PersonSafe
 )
 
 data class ModAddView(
     val mod_add: ModAdd,
     val moderator: PersonSafe,
-    val modded_person: PersonSafe,
+    val modded_person: PersonSafe
 )
 
 data class ModBanFromCommunityView(
     val mod_ban_from_community: ModBanFromCommunity,
     val moderator: PersonSafe,
     val community: CommunitySafe,
-    val banned_person: PersonSafe,
+    val banned_person: PersonSafe
 )
 
 data class ModBanView(
     val mod_ban: ModBan,
     val moderator: PersonSafe,
-    val banned_person: PersonSafe,
+    val banned_person: PersonSafe
 )
 
 data class ModLockPostView(
     val mod_lock_post: ModLockPost,
     val moderator: PersonSafe,
     val post: Post,
-    val community: CommunitySafe,
+    val community: CommunitySafe
 )
 
 data class ModRemoveCommentView(
@@ -135,57 +135,57 @@ data class ModRemoveCommentView(
     val comment: Comment,
     val commenter: PersonSafe,
     val post: Post,
-    val community: CommunitySafe,
+    val community: CommunitySafe
 )
 
 data class ModRemoveCommunityView(
     val mod_remove_community: ModRemoveCommunity,
     val moderator: PersonSafe,
-    val community: CommunitySafe,
+    val community: CommunitySafe
 )
 
 data class ModRemovePostView(
     val mod_remove_post: ModRemovePost,
     val moderator: PersonSafe,
     val post: Post,
-    val community: CommunitySafe,
+    val community: CommunitySafe
 )
 
 data class ModStickyPostView(
     val mod_sticky_post: ModStickyPost,
     val moderator: PersonSafe,
     val post: Post,
-    val community: CommunitySafe,
+    val community: CommunitySafe
 )
 
 data class CommunityFollowerView(
     val community: CommunitySafe,
-    val follower: PersonSafe,
+    val follower: PersonSafe
 )
 
 data class CommunityBlockView(
     val person: PersonSafe,
-    val community: CommunitySafe,
+    val community: CommunitySafe
 )
 
 data class CommunityModeratorView(
     val community: CommunitySafe,
-    val moderator: PersonSafe,
+    val moderator: PersonSafe
 )
 
 data class CommunityPersonBanView(
     val community: CommunitySafe,
-    val person: PersonSafe,
+    val person: PersonSafe
 )
 
 data class PersonBlockView(
     val person: PersonSafe,
-    val target: PersonSafe,
+    val target: PersonSafe
 )
 
 data class CommunityView(
     val community: CommunitySafe,
     val subscribed: Boolean,
     val blocked: Boolean,
-    val counts: CommunityAggregates,
+    val counts: CommunityAggregates
 )

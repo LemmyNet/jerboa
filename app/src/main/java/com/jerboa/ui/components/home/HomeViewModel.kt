@@ -45,7 +45,7 @@ class HomeViewModel : ViewModel() {
         clear: Boolean = false,
         changeListingType: ListingType? = null,
         changeSortType: SortType? = null,
-        ctx: Context? = null,
+        ctx: Context? = null
     ) {
         fetchPostsRoutine(
             posts = posts,
@@ -59,7 +59,7 @@ class HomeViewModel : ViewModel() {
             changeSortType = changeSortType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 
@@ -77,13 +77,13 @@ class HomeViewModel : ViewModel() {
 
     fun fetchUnreadCounts(
         account: Account,
-        ctx: Context? = null,
+        ctx: Context? = null
     ) {
         viewModelScope.launch {
             try {
                 val api = API.getInstance()
                 val form = GetUnreadCount(
-                    auth = account.jwt,
+                    auth = account.jwt
                 )
                 Log.d(
                     "jerboa",
@@ -115,7 +115,8 @@ class HomeViewModel : ViewModel() {
 
     fun markAllAsRead() {
         unreadCountResponse = unreadCountResponse?.copy(
-            replies = 0, private_messages = 0,
+            replies = 0,
+            private_messages = 0,
             mentions = 0
         )
     }
@@ -123,7 +124,7 @@ class HomeViewModel : ViewModel() {
     fun blockCommunity(
         community: CommunitySafe,
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         blockCommunityRoutine(
             community = community,
@@ -137,14 +138,14 @@ class HomeViewModel : ViewModel() {
     fun blockCreator(
         creator: PersonSafe,
         account: Account,
-        ctx: Context,
+        ctx: Context
     ) {
         blockPersonRoutine(
             person = creator,
             block = true,
             account = account,
             ctx = ctx,
-            scope = viewModelScope,
+            scope = viewModelScope
         )
     }
 }

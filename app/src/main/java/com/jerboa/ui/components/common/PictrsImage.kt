@@ -35,7 +35,7 @@ import com.jerboa.ui.theme.*
 fun CircularIcon(
     icon: String,
     size: Dp = ICON_SIZE,
-    thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
+    thumbnailSize: Int = ICON_THUMBNAIL_SIZE
 ) {
     Image(
         painter = rememberImagePainter(
@@ -56,7 +56,7 @@ fun LargerCircularIcon(icon: String) {
     CircularIcon(
         icon = icon,
         size = LARGER_ICON_SIZE,
-        thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
+        thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE
     )
 }
 
@@ -79,11 +79,11 @@ fun PictrsThumbnailImage(
                 crossfade(true)
                 placeholder(R.drawable.ic_launcher_foreground)
                 transformations(RoundedCornersTransformation(12f))
-            },
+            }
         ),
         contentScale = ContentScale.Crop,
         contentDescription = null,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
@@ -104,7 +104,7 @@ fun PictrsUrlImage(
                 crossfade(true)
                 placeholder(R.drawable.ic_launcher_foreground)
                 transformations(RoundedCornersTransformation(12f))
-            },
+            }
         ),
         contentScale = ContentScale.Fit,
         contentDescription = null,
@@ -127,11 +127,11 @@ fun PictrsBannerImage(
                 size(OriginalSize)
                 crossfade(true)
                 placeholder(R.drawable.ic_launcher_foreground)
-            },
+            }
         ),
         contentScale = ContentScale.Crop,
         contentDescription = null,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
@@ -177,19 +177,18 @@ fun PickImage(
         }) {
             Text(
                 text = "Upload Image",
-                color = MaterialTheme.colors.onBackground.muted,
+                color = MaterialTheme.colors.onBackground.muted
             )
         }
 
         if (showImage) {
-
             Spacer(modifier = Modifier.height(SMALL_PADDING))
 
             imageUri?.let {
                 bitmap.value?.let { btm ->
                     Image(
                         bitmap = btm.asImageBitmap(),
-                        contentDescription = null,
+                        contentDescription = null
                     )
                 }
             }

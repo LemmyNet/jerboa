@@ -25,14 +25,14 @@ class CreateReportViewModel : ViewModel() {
         private set
 
     fun setCommentId(
-        newCommentId: Int,
+        newCommentId: Int
     ) {
         commentId = newCommentId
         postId = null
     }
 
     fun setPostId(
-        newPostId: Int,
+        newPostId: Int
     ) {
         postId = newPostId
         commentId = null
@@ -43,7 +43,7 @@ class CreateReportViewModel : ViewModel() {
         account: Account,
         ctx: Context,
         navController: NavController,
-        focusManager: FocusManager,
+        focusManager: FocusManager
     ) {
         commentId?.also { cId ->
             viewModelScope.launch {
@@ -70,7 +70,7 @@ class CreateReportViewModel : ViewModel() {
         account: Account,
         ctx: Context,
         navController: NavController,
-        focusManager: FocusManager,
+        focusManager: FocusManager
     ) {
         postId?.also { pId ->
             viewModelScope.launch {

@@ -24,7 +24,7 @@ fun CommentNodes(
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
     showPostAndCommunityContext: Boolean = false,
-    showRead: Boolean = false,
+    showRead: Boolean = false
 ) {
     Column {
         nodes.forEach { node ->
@@ -45,7 +45,7 @@ fun CommentNodes(
                 onReportClick = onReportClick,
                 onBlockCreatorClick = onBlockCreatorClick,
                 showPostAndCommunityContext = showPostAndCommunityContext,
-                showRead = showRead,
+                showRead = showRead
             )
         }
     }

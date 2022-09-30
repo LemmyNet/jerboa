@@ -37,9 +37,8 @@ fun CreatePostActivity(
     postViewModel: PostViewModel,
     _url: String,
     _body: String,
-    _image: Uri?,
+    _image: Uri?
 ) {
-
     Log.d("jerboa", "got to create post activity")
 
     val ctx = LocalContext.current
@@ -91,7 +90,7 @@ fun CreatePostActivity(
                                         name = nameOut,
                                         communityId = it,
                                         navController = navController,
-                                        postViewModel = postViewModel,
+                                        postViewModel = postViewModel
                                     )
                                 }
                             }

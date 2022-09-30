@@ -14,7 +14,7 @@ fun blockCommunityRoutine(
     block: Boolean,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         val form = BlockCommunity(community.id, block, account.jwt)

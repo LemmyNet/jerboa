@@ -21,9 +21,8 @@ import com.jerboa.ui.theme.*
 @Composable
 fun PersonProfileTopSection(
     personView: PersonViewSafe,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
-
     Column {
         Box(
             modifier = modifier.fillMaxWidth(),
@@ -31,7 +30,8 @@ fun PersonProfileTopSection(
         ) {
             personView.person.banner?.also {
                 PictrsBannerImage(
-                    url = it, modifier = Modifier.height(PROFILE_BANNER_SIZE)
+                    url = it,
+                    modifier = Modifier.height(PROFILE_BANNER_SIZE)
                 )
             }
             Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -64,7 +64,7 @@ fun PersonProfileTopSection(
                 personView.person.bio?.also {
                     MyMarkdownText(
                         markdown = it,
-                        color = MaterialTheme.colors.onBackground.muted,
+                        color = MaterialTheme.colors.onBackground.muted
                     )
                 }
             }
@@ -77,12 +77,12 @@ fun CommentsAndPosts(personView: PersonViewSafe) {
     Row {
         Text(
             text = "${personView.counts.post_count} posts",
-            color = MaterialTheme.colors.onBackground.muted,
+            color = MaterialTheme.colors.onBackground.muted
         )
         DotSpacer()
         Text(
             text = "${personView.counts.comment_count} comments",
-            color = MaterialTheme.colors.onBackground.muted,
+            color = MaterialTheme.colors.onBackground.muted
         )
     }
 }
@@ -106,9 +106,8 @@ fun PersonProfileHeader(
     onClickSortType: (SortType) -> Unit,
     onBlockPersonClick: () -> Unit,
     selectedSortType: SortType,
-    navController: NavController = rememberNavController(),
+    navController: NavController = rememberNavController()
 ) {
-
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -145,7 +144,7 @@ fun PersonProfileHeader(
             onBlockPersonClick = {
                 showMoreOptions = false
                 onBlockPersonClick()
-            },
+            }
         )
     }
 
@@ -156,7 +155,7 @@ fun PersonProfileHeader(
         title = {
             PersonProfileHeaderTitle(
                 personName = personName,
-                selectedSortType = selectedSortType,
+                selectedSortType = selectedSortType
             )
         },
         backgroundColor = backgroundColor,
@@ -198,12 +197,12 @@ fun PersonProfileHeader(
 @Composable
 fun PersonProfileHeaderTitle(
     personName: String,
-    selectedSortType: SortType,
+    selectedSortType: SortType
 ) {
     Column {
         Text(
             text = personName,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.subtitle1
         )
         Text(
             text = selectedSortType.toString(),
@@ -216,7 +215,7 @@ fun PersonProfileHeaderTitle(
 @Composable
 fun PersonProfileMoreDialog(
     onDismissRequest: () -> Unit,
-    onBlockPersonClick: () -> Unit,
+    onBlockPersonClick: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -225,10 +224,10 @@ fun PersonProfileMoreDialog(
                 IconAndTextDrawerItem(
                     text = "Block Person",
                     icon = Icons.Default.Block,
-                    onClick = onBlockPersonClick,
+                    onClick = onBlockPersonClick
                 )
             }
         },
-        buttons = {},
+        buttons = {}
     )
 }

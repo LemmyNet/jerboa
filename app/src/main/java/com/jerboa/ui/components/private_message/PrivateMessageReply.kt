@@ -29,7 +29,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 fun PrivateMessageReplyHeader(
     navController: NavController = rememberNavController(),
     onSendClick: () -> Unit,
-    loading: Boolean,
+    loading: Boolean
 ) {
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
@@ -37,7 +37,7 @@ fun PrivateMessageReplyHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Reply",
+                text = "Reply"
             )
         },
         backgroundColor = backgroundColor,
@@ -46,7 +46,7 @@ fun PrivateMessageReplyHeader(
         actions = {
             IconButton(
                 onClick = onSendClick,
-                enabled = !loading,
+                enabled = !loading
             ) {
                 if (loading) {
                     CircularProgressIndicator(
@@ -71,20 +71,20 @@ fun PrivateMessageReplyHeader(
                     contentDescription = "Back"
                 )
             }
-        },
+        }
     )
 }
 
 @Composable
 fun RepliedPrivateMessage(
     privateMessageView: PrivateMessageView,
-    onPersonClick: (personId: Int) -> Unit,
+    onPersonClick: (personId: Int) -> Unit
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PrivateMessageHeader(
             privateMessageView = privateMessageView,
             onPersonClick = onPersonClick,
-            myPersonId = privateMessageView.recipient.id,
+            myPersonId = privateMessageView.recipient.id
         )
         SelectionContainer {
             Text(text = privateMessageView.private_message.content)
@@ -97,7 +97,7 @@ fun RepliedPrivateMessage(
 fun RepliedPrivateMessagePreview() {
     RepliedPrivateMessage(
         privateMessageView = samplePrivateMessageView,
-        onPersonClick = {},
+        onPersonClick = {}
     )
 }
 
@@ -107,7 +107,7 @@ fun PrivateMessageReply(
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    account: Account?,
+    account: Account?
 ) {
     val listState = rememberLazyListState()
 
@@ -118,7 +118,7 @@ fun PrivateMessageReply(
         item {
             RepliedPrivateMessage(
                 privateMessageView = privateMessageView,
-                onPersonClick = onPersonClick,
+                onPersonClick = onPersonClick
             )
         }
         item {

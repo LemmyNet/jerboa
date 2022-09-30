@@ -28,9 +28,8 @@ fun CommentReplyActivity(
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
     inboxViewModel: InboxViewModel,
-    navController: NavController,
+    navController: NavController
 ) {
-
     Log.d("jerboa", "got to comment reply activity")
 
     val ctx = LocalContext.current
@@ -60,7 +59,7 @@ fun CommentReplyActivity(
                                 focusManager = focusManager,
                                 personProfileViewModel = personProfileViewModel,
                                 postViewModel = postViewModel,
-                                inboxViewModel = inboxViewModel,
+                                inboxViewModel = inboxViewModel
                             )
                         }
                     }
@@ -70,7 +69,6 @@ fun CommentReplyActivity(
                 if (commentReplyViewModel.loading.value) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 } else {
-
                     commentReplyViewModel.commentParentView.value?.also { commentView ->
                         CommentReply(
                             commentView = commentView,
@@ -90,7 +88,7 @@ fun CommentReplyActivity(
                                 commentView.creator,
                                 postViewModel
                                     .moderators
-                            ),
+                            )
                         )
                     } ?: run {
                         commentReplyViewModel.postView.value?.also { postView ->

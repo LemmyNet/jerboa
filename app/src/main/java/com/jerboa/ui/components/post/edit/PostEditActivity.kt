@@ -31,9 +31,8 @@ fun PostEditActivity(
     postViewModel: PostViewModel,
     personProfileViewModel: PersonProfileViewModel,
     communityViewModel: CommunityViewModel,
-    homeViewModel: HomeViewModel,
+    homeViewModel: HomeViewModel
 ) {
-
     Log.d("jerboa", "got to post edit activity")
 
     val ctx = LocalContext.current
@@ -77,7 +76,7 @@ fun PostEditActivity(
                                     postViewModel = postViewModel,
                                     personProfileViewModel = personProfileViewModel,
                                     communityViewModel = communityViewModel,
-                                    homeViewModel = homeViewModel,
+                                    homeViewModel = homeViewModel
                                 )
                             }
                         }

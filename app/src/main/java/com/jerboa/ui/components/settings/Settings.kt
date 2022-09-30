@@ -39,16 +39,15 @@ fun settingsClickWrapper(
 
 @Composable
 fun SettingsHeader(
-    navController: NavController = rememberNavController(),
+    navController: NavController = rememberNavController()
 ) {
-
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
 
     TopAppBar(
         title = {
             Text(
-                text = "Settings",
+                text = "Settings"
             )
         },
         backgroundColor = backgroundColor,
@@ -65,7 +64,7 @@ fun SettingsHeader(
                     contentDescription = "Back"
                 )
             }
-        },
+        }
     )
 }
 
@@ -87,7 +86,7 @@ fun SettingsTextField(
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.None,
                 keyboardType = KeyboardType.Text,
-                autoCorrect = false,
+                autoCorrect = false
             )
         )
     }
@@ -108,7 +107,7 @@ fun SettingsForm(
     settingsViewModel: SettingsViewModel,
     siteViewModel: SiteViewModel,
     account: Account?,
-    onClickSave: (form: SaveUserSettings) -> Unit,
+    onClickSave: (form: SaveUserSettings) -> Unit
 ) {
     val luv = siteViewModel.siteRes?.my_user?.local_user_view
     val scope = rememberCoroutineScope()
@@ -218,7 +217,8 @@ fun SettingsForm(
         // Todo Update AppDb to save new sort and listing_type settings.
         MyDropDown(
             suggestions = listOf("All", "Local", "Subscribed"),
-            onValueChange = { defaultListingType = it }, defaultListingType ?: 0,
+            onValueChange = { defaultListingType = it },
+            defaultListingType ?: 0,
             label = "Default Listing Type"
         )
         MyDropDown(
@@ -234,7 +234,8 @@ fun SettingsForm(
                 "MostComments",
                 "NewComments"
             ),
-            onValueChange = { defaultSortType = it }, defaultSortType ?: 0,
+            onValueChange = { defaultSortType = it },
+            defaultSortType ?: 0,
             label = "Default Sort Type"
         )
 

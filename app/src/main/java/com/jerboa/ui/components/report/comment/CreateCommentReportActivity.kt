@@ -20,9 +20,8 @@ import com.jerboa.ui.components.report.CreateReportViewModel
 fun CreateCommentReportActivity(
     accountViewModel: AccountViewModel,
     navController: NavController,
-    createReportViewModel: CreateReportViewModel,
+    createReportViewModel: CreateReportViewModel
 ) {
-
     Log.d("jerboa", "got to create comment report activity")
 
     val ctx = LocalContext.current
@@ -44,7 +43,7 @@ fun CreateCommentReportActivity(
                                 ctx = ctx,
                                 navController = navController,
                                 focusManager = focusManager,
-                                account = acct,
+                                account = acct
                             )
                         }
                     }
@@ -54,7 +53,7 @@ fun CreateCommentReportActivity(
                 CreateReportBody(
                     reason = reason,
                     onReasonChange = { reason = it },
-                    account = account,
+                    account = account
                 )
             }
         )

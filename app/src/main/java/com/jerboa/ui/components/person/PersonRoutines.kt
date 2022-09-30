@@ -39,7 +39,7 @@ fun fetchPrivateMessagesRoutine(
     changeUnreadOnly: Boolean? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         val api = API.getInstance()
@@ -61,7 +61,7 @@ fun fetchPrivateMessagesRoutine(
             val form = GetPrivateMessages(
                 page = page.value,
                 unread_only = unreadOnly.value,
-                auth = account.jwt,
+                auth = account.jwt
             )
             Log.d(
                 "jerboa",
@@ -91,14 +91,14 @@ fun markPrivateMessageAsReadRoutine(
     messages: MutableList<PrivateMessageView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         privateMessageView.value?.also { pmv ->
             val updatedPmv = markPrivateMessageAsReadWrapper(
                 pmv,
                 account,
-                ctx,
+                ctx
             )?.private_message_view
             privateMessageView.value = updatedPmv
             messages?.also {
@@ -113,7 +113,7 @@ fun blockPersonRoutine(
     block: Boolean,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         val form = BlockPerson(person.id, block, account.jwt)

@@ -31,12 +31,14 @@ fun likeCommentRoutine(
     voteType: VoteType,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         commentView.value?.also { cv ->
             val updatedCommentView = likeCommentWrapper(
-                cv, voteType, account,
+                cv,
+                voteType,
+                account,
                 ctx
             )?.comment_view
             commentView.value = updatedCommentView
@@ -56,14 +58,14 @@ fun saveCommentRoutine(
     commentTree: SnapshotStateList<CommentNodeData>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         commentView.value?.also { cv ->
             val updatedCommentView = saveCommentWrapper(
                 cv,
                 account,
-                ctx,
+                ctx
             )?.comment_view
             commentView.value = updatedCommentView
             comments?.also {
@@ -81,14 +83,14 @@ fun markCommentAsReadRoutine(
     comments: MutableList<CommentView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         commentView.value?.also { cv ->
             val updatedCommentView = markCommentAsReadWrapper(
                 cv,
                 account,
-                ctx,
+                ctx
             )?.comment_view
             commentView.value = updatedCommentView
             comments?.also {
@@ -103,14 +105,14 @@ fun markPersonMentionAsReadRoutine(
     mentions: MutableList<PersonMentionView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         personMentionView.value?.also { pmv ->
             val updatedPmv = markPersonMentionAsReadWrapper(
                 pmv,
                 account,
-                ctx,
+                ctx
             )?.person_mention_view
             personMentionView.value = updatedPmv
             mentions?.also {
@@ -132,7 +134,7 @@ fun createCommentRoutine(
     account: Account,
     postViewModel: PostViewModel,
     personProfileViewModel: PersonProfileViewModel,
-    inboxViewModel: InboxViewModel,
+    inboxViewModel: InboxViewModel
 ) {
     scope.launch {
         loading.value = true
@@ -180,7 +182,7 @@ fun editCommentRoutine(
     account: Account,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
-    inboxViewModel: InboxViewModel,
+    inboxViewModel: InboxViewModel
 ) {
     scope.launch {
         commentView.value?.also { cv ->
@@ -210,7 +212,7 @@ fun deleteCommentRoutine(
     commentTree: SnapshotStateList<CommentNodeData>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         commentView.value?.also { cv ->
@@ -238,7 +240,7 @@ fun createPrivateMessageRoutine(
     ctx: Context,
     scope: CoroutineScope,
     navController: NavController,
-    focusManager: FocusManager,
+    focusManager: FocusManager
 ) {
     scope.launch {
         loading.value = true
@@ -271,7 +273,7 @@ fun insertCommentIntoTree(
     var nodeData = CommentNodeData(
         commentView = cv,
         children = null,
-        depth = null,
+        depth = null
     )
     cv.comment.parent_id?.also { parentId ->
         val foundIndex = commentTree.indexOfFirst {
@@ -354,7 +356,7 @@ fun fetchRepliesRoutine(
     changeSortType: SortType? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         val api = API.getInstance()
@@ -381,7 +383,7 @@ fun fetchRepliesRoutine(
                 sort = sortType.value.toString(),
                 page = page.value,
                 unread_only = unreadOnly.value,
-                auth = account.jwt,
+                auth = account.jwt
             )
             Log.d(
                 "jerboa",
@@ -414,7 +416,7 @@ fun fetchPersonMentionsRoutine(
     changeSortType: SortType? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
     scope.launch {
         val api = API.getInstance()
@@ -441,7 +443,7 @@ fun fetchPersonMentionsRoutine(
                 sort = sortType.value.toString(),
                 page = page.value,
                 unread_only = unreadOnly.value,
-                auth = account.jwt,
+                auth = account.jwt
             )
             Log.d(
                 "jerboa",

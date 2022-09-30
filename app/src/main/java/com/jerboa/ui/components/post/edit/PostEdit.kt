@@ -32,7 +32,7 @@ fun EditPostHeader(
     navController: NavController = rememberNavController(),
     onEditPostClick: () -> Unit,
     formValid: Boolean,
-    loading: Boolean,
+    loading: Boolean
 ) {
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
@@ -40,7 +40,7 @@ fun EditPostHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Edit Post",
+                text = "Edit Post"
             )
         },
         backgroundColor = backgroundColor,
@@ -49,7 +49,7 @@ fun EditPostHeader(
         actions = {
             IconButton(
                 enabled = formValid && !loading,
-                onClick = onEditPostClick,
+                onClick = onEditPostClick
             ) {
                 if (loading) {
                     CircularProgressIndicator(
@@ -76,7 +76,7 @@ fun EditPostHeader(
                     contentDescription = "Close"
                 )
             }
-        },
+        }
     )
 }
 
@@ -92,7 +92,6 @@ fun EditPostBody(
     formValid: (valid: Boolean) -> Unit,
     account: Account?
 ) {
-
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
 
@@ -105,7 +104,7 @@ fun EditPostBody(
         modifier = Modifier
             .padding(MEDIUM_PADDING)
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
     ) {
         OutlinedTextField(
             value = name,
@@ -115,7 +114,7 @@ fun EditPostBody(
                 Text(text = nameField.label)
             },
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
         )
         OutlinedTextField(
             label = {
@@ -126,10 +125,10 @@ fun EditPostBody(
             onValueChange = onUrlChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
         )
         PickImage(
-            onPickedImage = onPickedImage,
+            onPickedImage = onPickedImage
         )
         MarkdownTextField(
             text = body,
@@ -163,7 +162,7 @@ fun EditPostBodyPreview() {
 fun postEditClickWrapper(
     postEditViewModel: PostEditViewModel,
     postView: PostView,
-    navController: NavController,
+    navController: NavController
 ) {
     postEditViewModel.setPostView(postView)
     navController.navigate("postEdit")

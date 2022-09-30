@@ -43,7 +43,7 @@ fun CommentNodeHeader(
     score: Int,
     myVote: Int?,
     isModerator: Boolean,
-    onLongClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -56,7 +56,7 @@ fun CommentNodeHeader(
         isPostCreator = isPostCreator(commentView),
         isModerator = isModerator,
         isCommunityBanned = commentView.creator_banned_from_community,
-        onLongClick = onLongClick,
+        onLongClick = onLongClick
     )
 }
 
@@ -68,14 +68,14 @@ fun CommentNodeHeaderPreview() {
         score = 23,
         myVote = 26,
         isModerator = false,
-        onPersonClick = {},
+        onPersonClick = {}
     )
 }
 
 @Composable
 fun CommentBody(
     commentView: CommentView,
-    viewSource: Boolean,
+    viewSource: Boolean
 ) {
     val content = if (commentView.comment.removed) {
         "*Removed*"
@@ -120,7 +120,7 @@ fun CommentNode(
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     showPostAndCommunityContext: Boolean = false,
     showRead: Boolean = false,
-    account: Account?,
+    account: Account?
 ) {
     val offset = calculateCommentOffset(node.depth, 4)
     val offset2 = if (node.depth == null) {
@@ -153,7 +153,7 @@ fun CommentNode(
         Column(
             modifier = Modifier
                 .padding(
-                    horizontal = LARGE_PADDING,
+                    horizontal = LARGE_PADDING
                 )
                 .border(start = border)
         ) {
@@ -164,7 +164,7 @@ fun CommentNode(
                     PostAndCommunityContextHeader(
                         commentView = commentView,
                         onCommunityClick = onCommunityClick,
-                        onPostClick = onPostClick,
+                        onPostClick = onPostClick
                     )
                 }
                 CommentNodeHeader(
@@ -180,12 +180,12 @@ fun CommentNode(
                 AnimatedVisibility(
                     visible = expanded,
                     enter = expandVertically(),
-                    exit = shrinkVertically(),
+                    exit = shrinkVertically()
                 ) {
                     Column {
                         CommentBody(
                             commentView = commentView,
-                            viewSource = viewSource,
+                            viewSource = viewSource
                         )
                         CommentFooterLine(
                             commentView = commentView,
@@ -209,7 +209,7 @@ fun CommentNode(
                             myVote = myVote,
                             upvotes = upvotes,
                             downvotes = downvotes,
-                            account = account,
+                            account = account
                         )
                     }
                 }
@@ -219,7 +219,7 @@ fun CommentNode(
     AnimatedVisibility(
         visible = expanded,
         enter = expandVertically(),
-        exit = shrinkVertically(),
+        exit = shrinkVertically()
     ) {
         node.children?.also { nodes ->
             CommentNodes(
@@ -239,7 +239,7 @@ fun CommentNode(
                 onReplyClick = onReplyClick,
                 onBlockCreatorClick = onBlockCreatorClick,
                 account = account,
-                moderators = moderators,
+                moderators = moderators
             )
         }
     }
@@ -249,7 +249,7 @@ fun CommentNode(
 fun PostAndCommunityContextHeader(
     commentView: CommentView,
     onCommunityClick: (community: CommunitySafe) -> Unit,
-    onPostClick: (postId: Int) -> Unit,
+    onPostClick: (postId: Int) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(top = LARGE_PADDING)
@@ -265,7 +265,7 @@ fun PostAndCommunityContextHeader(
             Text(text = "in ", color = MaterialTheme.colors.onBackground.muted)
             CommunityLink(
                 community = commentView.community,
-                onClick = onCommunityClick,
+                onClick = onCommunityClick
             )
         }
     }
@@ -277,7 +277,7 @@ fun PostAndCommunityContextHeaderPreview() {
     PostAndCommunityContextHeader(
         commentView = sampleCommentView,
         onCommunityClick = {},
-        onPostClick = {},
+        onPostClick = {}
     )
 }
 
@@ -298,9 +298,8 @@ fun CommentFooterLine(
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
-    account: Account?,
+    account: Account?
 ) {
-
     var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showMoreOptions) {
@@ -327,7 +326,7 @@ fun CommentFooterLine(
                 showMoreOptions = false
                 onBlockCreatorClick(commentView.creator)
             },
-            isCreator = account?.id == commentView.creator.id,
+            isCreator = account?.id == commentView.creator.id
         )
     }
 
@@ -338,7 +337,7 @@ fun CommentFooterLine(
             .padding(top = LARGE_PADDING, bottom = SMALL_PADDING)
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
+            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
         ) {
             VoteGeneric(
                 myVote = myVote,
@@ -347,7 +346,7 @@ fun CommentFooterLine(
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 showNumber = (downvotes != 0),
-                account = account,
+                account = account
             )
             VoteGeneric(
                 myVote = myVote,
@@ -355,7 +354,7 @@ fun CommentFooterLine(
                 item = commentView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
-                account = account,
+                account = account
             )
             if (showRead) {
                 ActionBarButton(
@@ -366,7 +365,7 @@ fun CommentFooterLine(
                     } else {
                         MaterialTheme.colors.onBackground.muted
                     },
-                    account = account,
+                    account = account
                 )
             }
             ActionBarButton(
@@ -384,7 +383,7 @@ fun CommentFooterLine(
                 ActionBarButton(
                     icon = Icons.Filled.Reply,
                     onClick = { onReplyClick(commentView) },
-                    account = account,
+                    account = account
                 )
             }
             ActionBarButton(
@@ -400,7 +399,9 @@ fun CommentFooterLine(
 @Composable
 fun CommentNodesPreview() {
     val comments = listOf(
-        sampleSecondCommentReplyView, sampleCommentReplyView, sampleCommentView
+        sampleSecondCommentReplyView,
+        sampleCommentReplyView,
+        sampleCommentView
     )
     val tree = buildCommentsTree(comments, SortType.Hot)
     CommentNodes(
@@ -417,7 +418,7 @@ fun CommentNodesPreview() {
         onReplyClick = {},
         onSaveClick = {},
         onUpvoteClick = {},
-        onBlockCreatorClick = {},
+        onBlockCreatorClick = {}
     )
 }
 
@@ -430,7 +431,7 @@ fun CommentOptionsDialog(
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
     isCreator: Boolean,
-    commentView: CommentView,
+    commentView: CommentView
 ) {
     val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
@@ -442,7 +443,7 @@ fun CommentOptionsDialog(
                 IconAndTextDrawerItem(
                     text = "View Source",
                     icon = Icons.Default.Description,
-                    onClick = onViewSourceClick,
+                    onClick = onViewSourceClick
                 )
                 IconAndTextDrawerItem(
                     text = "Copy Permalink",
@@ -458,38 +459,38 @@ fun CommentOptionsDialog(
                     IconAndTextDrawerItem(
                         text = "Report Comment",
                         icon = Icons.Default.Flag,
-                        onClick = onReportClick,
+                        onClick = onReportClick
                     )
                     IconAndTextDrawerItem(
                         text = "Block ${commentView.creator.name}",
                         icon = Icons.Default.Block,
-                        onClick = onBlockCreatorClick,
+                        onClick = onBlockCreatorClick
                     )
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(
                         text = "Edit",
                         icon = Icons.Default.Edit,
-                        onClick = onEditCommentClick,
+                        onClick = onEditCommentClick
                     )
                     val deleted = commentView.comment.deleted
                     if (deleted) {
                         IconAndTextDrawerItem(
                             text = "Restore",
                             icon = Icons.Default.Restore,
-                            onClick = onDeleteCommentClick,
+                            onClick = onDeleteCommentClick
                         )
                     } else {
                         IconAndTextDrawerItem(
                             text = "Delete",
                             icon = Icons.Default.Delete,
-                            onClick = onDeleteCommentClick,
+                            onClick = onDeleteCommentClick
                         )
                     }
                 }
             }
         },
-        buttons = {},
+        buttons = {}
     )
 }
 
@@ -504,7 +505,7 @@ fun CommentOptionsDialogPreview() {
         onDeleteCommentClick = {},
         onReportClick = {},
         onViewSourceClick = {},
-        onBlockCreatorClick = {},
+        onBlockCreatorClick = {}
     )
 }
 

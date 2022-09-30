@@ -36,14 +36,14 @@ fun CreatePostHeader(
     navController: NavController = rememberNavController(),
     onCreatePostClick: () -> Unit,
     formValid: Boolean,
-    loading: Boolean,
+    loading: Boolean
 ) {
     val backgroundColor = MaterialTheme.colors.primarySurface
     val contentColor = contentColorFor(backgroundColor)
     TopAppBar(
         title = {
             Text(
-                text = "Create post",
+                text = "Create post"
             )
         },
         backgroundColor = backgroundColor,
@@ -52,7 +52,7 @@ fun CreatePostHeader(
         actions = {
             IconButton(
                 enabled = formValid && !loading,
-                onClick = onCreatePostClick,
+                onClick = onCreatePostClick
             ) {
                 if (loading) {
                     CircularProgressIndicator(
@@ -79,7 +79,7 @@ fun CreatePostHeader(
                     contentDescription = "Close"
                 )
             }
-        },
+        }
     )
 }
 
@@ -97,9 +97,8 @@ fun CreatePostBody(
     navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit,
     suggestedTitle: String? = null,
-    account: Account?,
+    account: Account?
 ) {
-
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
 
@@ -117,7 +116,7 @@ fun CreatePostBody(
             .padding(MEDIUM_PADDING)
             .fillMaxWidth()
             .simpleVerticalScrollbar(listState),
-        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
     ) {
         item {
             OutlinedTextField(
@@ -128,7 +127,7 @@ fun CreatePostBody(
                     Text(text = nameField.label)
                 },
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
             )
         }
         item {
@@ -141,7 +140,7 @@ fun CreatePostBody(
                 onValueChange = onUrlChange,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
             )
         }
         item {
@@ -177,7 +176,6 @@ fun CreatePostBody(
         item {
             Box {
                 community?.also {
-
                     OutlinedTextField(
                         value = community.name,
                         readOnly = true,
@@ -241,7 +239,7 @@ fun CreatePostBodyPreview() {
         onUrlChange = {},
         onBodyChange = {},
         onNameChange = {},
-        account = null,
+        account = null
     )
 }
 
@@ -258,6 +256,6 @@ fun CreatePostBodyPreviewNoCommunity() {
         onBodyChange = {},
         onUrlChange = {},
         onPickedImage = {},
-        account = null,
+        account = null
     )
 }

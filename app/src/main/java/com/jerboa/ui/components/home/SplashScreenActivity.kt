@@ -24,10 +24,9 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreenActivity(
-    navController: NavController,
+    navController: NavController
 ) {
     Surface(color = MaterialTheme.colors.background) {
-
         val startRoute = "home"
 
         val scale = remember {
@@ -36,7 +35,6 @@ fun SplashScreenActivity(
 
         // AnimationEffect
         LaunchedEffect(key1 = true) {
-
             scale.animateTo(
                 targetValue = 0.7f,
                 animationSpec = tween(
