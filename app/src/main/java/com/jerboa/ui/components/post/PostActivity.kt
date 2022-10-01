@@ -200,11 +200,7 @@ fun PostActivity(
                             // Can't really do scrolling well here either because of tree
                             items(
                                 postViewModel.commentTree,
-                                key = {
-                                        node ->
-                                    node.commentView
-                                        .comment.id
-                                }
+                                key = { node -> node.commentView.comment.id }
                             ) { node ->
                                 CommentNode(
                                     node = node,
