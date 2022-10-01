@@ -75,11 +75,11 @@ android {
 
 dependencies {
     def room_version = "2.4.3"
-    def accompanist_version = '0.23.1'
+    def accompanist_version = '0.25.1'
     def lifecycle_version = "2.5.1"
     def compose_version = "1.2.1"
 
-    implementation 'com.github.jeziellago:compose-markdown:0.2.9'
+    implementation 'com.github.jeziellago:compose-markdown:0.3.0'
 
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
 

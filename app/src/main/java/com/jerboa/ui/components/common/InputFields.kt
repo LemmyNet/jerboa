@@ -638,8 +638,7 @@ fun PreviewLines(
         text = text,
         maxLines = 5,
         overflow = TextOverflow.Ellipsis,
-        modifier = modifier,
-        fontSize = 14.sp
+        modifier = modifier
     )
 }
 
@@ -653,7 +652,7 @@ fun MyMarkdownText(
         modifier = Modifier.fillMaxSize(),
         color = color,
         style = MaterialTheme.typography.body1,
-        fontSize = 18.sp
+        fontSize = 22.sp
     )
 }
 
