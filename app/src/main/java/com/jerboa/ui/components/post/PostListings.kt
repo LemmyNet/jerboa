@@ -59,7 +59,12 @@ fun PostListings(
             }
 
             // List of items
-            items(posts) { postView ->
+            items(
+                posts,
+                key = { postView ->
+                    postView.post.id
+                }
+            ) { postView ->
                 PostListing(
                     postView = postView,
                     onUpvoteClick = onUpvoteClick,
@@ -89,11 +94,9 @@ fun PostListings(
         }
     }
 
-    // act when end of list reached
-    if (endOfListReached) {
-        LaunchedEffect(endOfListReached) {
-            isScrolledToEnd()
-        }
+    // Act when end of list reached
+    LaunchedEffect(endOfListReached) {
+        isScrolledToEnd()
     }
 }
 

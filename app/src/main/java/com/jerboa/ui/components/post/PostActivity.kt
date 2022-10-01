@@ -3,6 +3,7 @@ package com.jerboa.ui.components.post
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -73,7 +74,7 @@ fun PostActivity(
                     }
                 }
             },
-            content = {
+            content = { padding ->
                 SwipeRefresh(
                     state = swipeRefreshState,
                     onRefresh = {
@@ -90,7 +91,7 @@ fun PostActivity(
                         // TODO LazyColumn and scrollbar is laggy here
                         LazyColumn(
                             state = listState,
-                            modifier = Modifier
+                            modifier = Modifier.padding(padding)
                             // .simpleVerticalScrollbar(listState)
                         ) {
                             item {
@@ -197,7 +198,14 @@ fun PostActivity(
                                 )
                             }
                             // Can't really do scrolling well here either because of tree
-                            items(postViewModel.commentTree) { node ->
+                            items(
+                                postViewModel.commentTree,
+                                key = {
+                                        node ->
+                                    node.commentView
+                                        .comment.id
+                                }
+                            ) { node ->
                                 CommentNode(
                                     node = node,
                                     onUpvoteClick = { commentView ->
