@@ -132,7 +132,7 @@ fun BottomAppBarAll(
         BottomNavigationItem(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Star,
+                    imageVector = Icons.Default.Bookmarks,
                     contentDescription = "TODO"
                 )
             },

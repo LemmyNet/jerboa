@@ -378,7 +378,10 @@ fun PostFooterLine(
                 account = account
             )
             ActionBarButton(
-                icon = Icons.Default.Star,
+                icon = if (postView.saved) { Icons.Default.BookmarkAdded } else {
+                    Icons.Default
+                        .BookmarkAdd
+                },
                 onClick = { onSaveClick(postView) },
                 contentColor = if (postView.saved) {
                     Color.Yellow

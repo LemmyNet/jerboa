@@ -370,7 +370,10 @@ fun CommentFooterLine(
                 )
             }
             ActionBarButton(
-                icon = Icons.Filled.Star,
+                icon = if (commentView.saved) { Icons.Default.BookmarkAdded } else {
+                    Icons.Default
+                        .BookmarkAdd
+                },
                 onClick = { onSaveClick(commentView) },
                 contentColor = if (commentView.saved) {
                     Color.Yellow

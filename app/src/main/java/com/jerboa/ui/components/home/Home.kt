@@ -163,7 +163,7 @@ fun DrawerItemsMain(
         item {
             IconAndTextDrawerItem(
                 text = "Saved",
-                icon = Icons.Default.Star,
+                icon = Icons.Default.Bookmarks,
                 onClick = onClickSaved
             )
         }
