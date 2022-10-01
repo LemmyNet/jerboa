@@ -21,6 +21,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -28,16 +29,17 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
+import com.halilibo.richtext.markdown.Markdown
+import com.halilibo.richtext.ui.material.MaterialRichText
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.ui.theme.RICH_TEXT_STYLE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 
 @Composable
@@ -638,8 +640,7 @@ fun PreviewLines(
         text = text,
         maxLines = 5,
         overflow = TextOverflow.Ellipsis,
-        modifier = modifier,
-        fontSize = 14.sp
+        modifier = modifier
     )
 }
 
@@ -648,13 +649,21 @@ fun MyMarkdownText(
     markdown: String,
     color: Color = MaterialTheme.colors.onSurface
 ) {
-    MarkdownText(
-        markdown = markdown,
-        modifier = Modifier.fillMaxSize(),
-        color = color,
-        style = MaterialTheme.typography.body1,
-        fontSize = 18.sp
-    )
+    val uriHandler = LocalUriHandler.current
+    val style = MaterialTheme.typography.body2.copy(color = color)
+    ProvideTextStyle(style) {
+        MaterialRichText(
+            style = RICH_TEXT_STYLE,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Markdown(
+                content = markdown,
+                onLinkClicked = { link ->
+                    uriHandler.openUri(link)
+                }
+            )
+        }
+    }
 }
 
 fun String.insert(index: Int, string: String): String {

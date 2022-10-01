@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
+import com.halilibo.richtext.ui.RichTextStyle
+import com.halilibo.richtext.ui.resolveDefaults
 
 private val DarkColorPalette = darkColors(
     primary = Green200,
@@ -71,3 +73,5 @@ val colorList = listOf(
 fun hsl(num: Float): Color {
     return Color(ColorUtils.HSLToColor(floatArrayOf(num, .35f, .5f)))
 }
+
+val RICH_TEXT_STYLE = RichTextStyle().resolveDefaults()
