@@ -27,6 +27,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
@@ -181,36 +184,33 @@ fun CommentOrPostNodeHeader(
     isCommunityBanned: Boolean,
     onLongClick: () -> Unit = {}
 ) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    FlowRow(
+        mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
+        crossAxisAlignment = FlowCrossAxisAlignment.Center,
+        crossAxisSpacing = LARGE_PADDING,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = LARGE_PADDING)
             .combinedClickable(
                 onLongClick = onLongClick,
                 onClick = {}
             )
     ) {
-        Row {
-            if (deleted) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "TODO",
-                    tint = MaterialTheme.colors.error
-                )
-                DotSpacer()
-            }
-
-            PersonProfileLink(
-                person = creator,
-                onClick = { onPersonClick(creator.id) },
-                showTags = true,
-                isPostCreator = isPostCreator,
-                isModerator = isModerator,
-                isCommunityBanned = isCommunityBanned
+        if (deleted) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "TODO",
+                tint = MaterialTheme.colors.error
             )
+            DotSpacer()
         }
+
+        PersonProfileLink(
+            person = creator,
+            onClick = { onPersonClick(creator.id) },
+            showTags = true,
+            isPostCreator = isPostCreator,
+            isModerator = isModerator,
+            isCommunityBanned = isCommunityBanned
+        )
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             verticalAlignment = Alignment.CenterVertically
