@@ -187,8 +187,9 @@ fun CommentOrPostNodeHeader(
     FlowRow(
         mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
-        crossAxisSpacing = LARGE_PADDING,
         modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = LARGE_PADDING)
             .combinedClickable(
                 onLongClick = onLongClick,
                 onClick = {}
@@ -217,7 +218,8 @@ fun CommentOrPostNodeHeader(
         ) {
             Text(
                 text = score.toString(),
-                color = scoreColor(myVote = myVote)
+                color = scoreColor(myVote = myVote),
+                fontSize = MaterialTheme.typography.subtitle1.fontSize
             )
             DotSpacer(0.dp)
             TimeAgo(published = published, updated = updated)
