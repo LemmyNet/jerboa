@@ -343,6 +343,7 @@ fun PostFooterLine(
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING)
@@ -408,11 +409,12 @@ fun CommentCount(
     account: Account?
 ) {
     ActionBarButton(
-        icon = Icons.Default.ChatBubbleOutline,
+        icon = Icons.Default.ChatBubble,
         text = "$comments comments",
         noClick = true,
         account = account,
-        onClick = {}
+        onClick = {},
+        smallIcon = true
     )
 }
 

@@ -234,7 +234,8 @@ fun ActionBarButton(
     text: String? = null,
     contentColor: Color = MaterialTheme.colors.onBackground.muted,
     noClick: Boolean = false,
-    account: Account?
+    account: Account?,
+    smallIcon: Boolean = false
 ) {
 //    Button(
 //        onClick = onClick,
@@ -249,6 +250,7 @@ fun ActionBarButton(
 //        modifier = Modifier
 //            .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
 //    )
+    val iconHeight = if (smallIcon) { ACTION_BAR_ICON_SIZE_SMALLER } else { ACTION_BAR_ICON_SIZE }
     val barMod = if (noClick) {
         Modifier
     } else {
@@ -262,7 +264,7 @@ fun ActionBarButton(
             imageVector = icon,
             contentDescription = "TODO",
             tint = contentColor,
-            modifier = Modifier.height(ACTION_BAR_ICON_SIZE)
+            modifier = Modifier.height(iconHeight)
         )
         text?.also {
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
