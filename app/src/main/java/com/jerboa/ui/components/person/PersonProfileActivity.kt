@@ -266,7 +266,10 @@ fun UserTabs(
                                     )
                                 }
                             }
-                            items(moderates) { cmv ->
+                            items(
+                                moderates,
+                                key = { cmv -> cmv.community.id }
+                            ) { cmv ->
                                 CommunityLink(
                                     community = cmv.community,
                                     modifier = Modifier.padding(MEDIUM_PADDING),
@@ -430,18 +433,16 @@ fun UserTabs(
                     }
 
                     // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(endOfListReached) {
-                            if (personProfileViewModel.comments.size > 0) {
-                                personProfileViewModel.personId.value?.also {
-                                    personProfileViewModel.fetchPersonDetails(
-                                        id = it,
-                                        account = account,
-                                        nextPage = true,
-                                        ctx = ctx,
-                                        changeSavedOnly = savedMode
-                                    )
-                                }
+                    LaunchedEffect(endOfListReached) {
+                        if (personProfileViewModel.comments.size > 0) {
+                            personProfileViewModel.personId.value?.also {
+                                personProfileViewModel.fetchPersonDetails(
+                                    id = it,
+                                    account = account,
+                                    nextPage = true,
+                                    ctx = ctx,
+                                    changeSavedOnly = savedMode
+                                )
                             }
                         }
                     }
@@ -465,7 +466,10 @@ fun UserTabs(
                             modifier = Modifier.fillMaxSize()
                             // .simpleVerticalScrollbar(listState)
                         ) {
-                            items(nodes) { node ->
+                            items(
+                                nodes,
+                                key = { node -> node.commentView.comment.id }
+                            ) { node ->
                                 CommentNode(
                                     node = node,
                                     onUpvoteClick = { commentView ->

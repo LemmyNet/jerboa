@@ -205,7 +205,10 @@ fun DrawerItemsMain(
                     color = MaterialTheme.colors.onBackground.muted
                 )
             }
-            items(follows) { follow ->
+            items(
+                follows,
+                key = { follow -> follow.community.id }
+            ) { follow ->
                 CommunityLinkLarger(
                     community = follow.community,
                     onClick = onCommunityClick

@@ -110,7 +110,7 @@ fun PictrsUrlImage(
         contentDescription = null,
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(0.dp, screenHeight)
+            .heightIn(100.dp, screenHeight)
     )
 }
 

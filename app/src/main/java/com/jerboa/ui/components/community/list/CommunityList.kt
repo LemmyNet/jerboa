@@ -82,7 +82,40 @@ fun CommunityListings(
         state = listState,
         modifier = Modifier.simpleVerticalScrollbar(listState)
     ) {
-        items(communities) { item ->
+        items(
+            communities,
+            key = { item ->
+                when (item) {
+                    is CommunityFollowerView -> {
+                        item.community.id
+                    }
+
+                    is CommunityView -> {
+                        item.community.id
+                    }
+
+                    else -> {
+                        0
+                    }
+                }
+            },
+            contentType = { item ->
+                when (item) {
+                    is CommunityFollowerView -> {
+                        item.follower
+                    }
+
+                    is CommunityView -> {
+                        item.community
+                    }
+
+                    else -> {
+                        0
+                    }
+                }
+            }
+
+        ) { item ->
             if (item is CommunityFollowerView) {
                 CommunityLinkLarger(
                     community = item.community,

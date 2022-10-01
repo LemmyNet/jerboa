@@ -239,16 +239,14 @@ fun InboxTabs(
                     }
 
                     // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(endOfListReached) {
-                            account?.also { acct ->
-                                if (inboxViewModel.replies.size > 0) {
-                                    inboxViewModel.fetchReplies(
-                                        account = acct,
-                                        nextPage = true,
-                                        ctx = ctx
-                                    )
-                                }
+                    LaunchedEffect(endOfListReached) {
+                        account?.also { acct ->
+                            if (inboxViewModel.replies.size > 0) {
+                                inboxViewModel.fetchReplies(
+                                    account = acct,
+                                    nextPage = true,
+                                    ctx = ctx
+                                )
                             }
                         }
                     }
@@ -271,7 +269,10 @@ fun InboxTabs(
                                 .fillMaxSize()
                             // .simpleVerticalScrollbar(listState)
                         ) {
-                            items(nodes) { node ->
+                            items(
+                                nodes,
+                                key = { node -> node.commentView.comment.id }
+                            ) { node ->
                                 CommentNode(
                                     node = node,
                                     onUpvoteClick = { commentView ->
@@ -407,16 +408,14 @@ fun InboxTabs(
                     }
 
                     // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(endOfListReached) {
-                            account?.also { acct ->
-                                if (inboxViewModel.messages.size > 0) {
-                                    inboxViewModel.fetchPrivateMessages(
-                                        account = acct,
-                                        nextPage = true,
-                                        ctx = ctx
-                                    )
-                                }
+                    LaunchedEffect(endOfListReached) {
+                        account?.also { acct ->
+                            if (inboxViewModel.messages.size > 0) {
+                                inboxViewModel.fetchPrivateMessages(
+                                    account = acct,
+                                    nextPage = true,
+                                    ctx = ctx
+                                )
                             }
                         }
                     }
@@ -438,7 +437,10 @@ fun InboxTabs(
                             modifier = Modifier.fillMaxSize()
                             // .simpleVerticalScrollbar(listState)
                         ) {
-                            items(inboxViewModel.messages) { message ->
+                            items(
+                                inboxViewModel.messages,
+                                key = { message -> message.private_message.id }
+                            ) { message ->
                                 account?.also { acct ->
                                     PrivateMessage(
                                         myPersonId = acct.id,
