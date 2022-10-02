@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import coil.size.OriginalSize
@@ -94,8 +93,6 @@ fun PictrsUrlImage(
     modifier: Modifier = Modifier
 ) {
     val configuration = LocalConfiguration.current
-    val screenHeight = (configuration.screenHeightDp - 150).dp
-
     Image(
         painter = rememberImagePainter(
             data = pictrsImageThumbnail(url, MAX_IMAGE_SIZE),
@@ -103,14 +100,11 @@ fun PictrsUrlImage(
                 size(OriginalSize)
                 crossfade(true)
                 placeholder(R.drawable.ic_launcher_foreground)
-                transformations(RoundedCornersTransformation(12f))
             }
         ),
-        contentScale = ContentScale.Fit,
+        contentScale = ContentScale.FillWidth,
         contentDescription = null,
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(100.dp, screenHeight)
+        modifier = modifier.fillMaxWidth()
     )
 }
 
@@ -129,9 +123,9 @@ fun PictrsBannerImage(
                 placeholder(R.drawable.ic_launcher_foreground)
             }
         ),
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.FillWidth,
         contentDescription = null,
-        modifier = modifier
+        modifier = modifier.fillMaxWidth()
     )
 }
 
