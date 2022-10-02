@@ -67,7 +67,16 @@ fun fetchPostsRoutine(
         if (clear) {
             posts.clear()
         }
-        posts.addAll(newPosts)
+
+        val newPostsDeduped = newPosts.filterNot { pv ->
+            posts.map { op -> op.post.id }.contains(
+                pv
+                    .post.id
+            )
+        }
+
+        posts.addAll(newPostsDeduped)
+
         loading.value = false
     }
 }
