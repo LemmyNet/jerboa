@@ -122,15 +122,20 @@ fun CommentNode(
     showRead: Boolean = false,
     account: Account?
 ) {
-    val offset = calculateCommentOffset(node.depth, 4)
+    val offset = remember { calculateCommentOffset(node.depth, 4) }
 
     // The ones with a border on the left need a little extra padding
-    val offset2 = if (node.depth == null) {
-        LARGE_PADDING
-    } else {
-        XXL_PADDING
+    val offset2 = remember {
+        if (node.depth == null) {
+            LARGE_PADDING
+        } else {
+            XXL_PADDING
+        }
     }
-    val borderColor = calculateBorderColor(node.depth)
+    val backgroundColor = MaterialTheme.colors.background
+    val borderColor = remember { calculateBorderColor(backgroundColor, node.depth) }
+    val border = remember { Border(SMALL_PADDING, borderColor) }
+
     val commentView = node.commentView
 
     // These are necessary for instant comment voting
@@ -142,8 +147,6 @@ fun CommentNode(
     var expanded by remember { mutableStateOf(true) }
 
     var viewSource by remember { mutableStateOf(false) }
-
-    val border = Border(SMALL_PADDING, borderColor)
 
     Column(
         modifier = Modifier
@@ -510,10 +513,9 @@ fun CommentOptionsDialogPreview() {
     )
 }
 
-@Composable
-fun calculateBorderColor(depth: Int?): Color {
+fun calculateBorderColor(defaultBackground: Color, depth: Int?): Color {
     return if (depth == null) {
-        MaterialTheme.colors.background
+        defaultBackground
     } else {
         colorList[depth.mod(colorList.size)]
     }
