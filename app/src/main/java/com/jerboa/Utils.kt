@@ -82,6 +82,10 @@ fun toastException(ctx: Context?, error: Exception) {
     }
 }
 
+fun loginFirstToast(ctx: Context) {
+    Toast.makeText(ctx, "Login first", Toast.LENGTH_SHORT).show()
+}
+
 enum class VoteType {
     Upvote,
     Downvote

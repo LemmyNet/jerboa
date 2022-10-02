@@ -15,6 +15,7 @@ import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.GetCommunity
 import com.jerboa.db.Account
+import com.jerboa.loginFirstToast
 import com.jerboa.serializeToMap
 import com.jerboa.ui.components.person.blockPersonRoutine
 import com.jerboa.ui.components.post.deletePostRoutine
@@ -86,6 +87,8 @@ class CommunityViewModel : ViewModel() {
             account?.also { acct ->
                 communityView =
                     followCommunityWrapper(communityView = cv, auth = acct.jwt, ctx = ctx)?.community_view
+            } ?: run {
+                loginFirstToast(ctx)
             }
         }
     }

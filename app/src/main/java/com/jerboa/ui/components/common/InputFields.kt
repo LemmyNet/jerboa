@@ -652,7 +652,7 @@ fun MyMarkdownText(
         modifier = Modifier.fillMaxSize(),
         color = color,
         style = MaterialTheme.typography.body1,
-        fontSize = 22.sp
+        fontSize = 18.sp
     )
 }
 

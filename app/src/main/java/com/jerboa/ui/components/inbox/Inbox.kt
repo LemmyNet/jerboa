@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.UnreadOrAll
 import com.jerboa.db.Account
+import com.jerboa.loginFirstToast
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.muted
@@ -39,6 +40,8 @@ fun inboxClickWrapper(
             ctx = ctx
         )
         navController.navigate(route = "inbox")
+    } ?: run {
+        loginFirstToast(ctx)
     }
 }
 
