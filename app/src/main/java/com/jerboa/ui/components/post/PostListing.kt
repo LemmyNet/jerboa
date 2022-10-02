@@ -37,10 +37,12 @@ fun PostHeaderLine(
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     isSameInstance: Boolean = false,
-    showCommunityName: Boolean = true
+    showCommunityName: Boolean = true,
+    modifier: Modifier = Modifier
 ) {
     FlowRow(
-        crossAxisAlignment = FlowCrossAxisAlignment.Center
+        crossAxisAlignment = FlowCrossAxisAlignment.Center,
+        modifier = modifier
     ) {
         if (postView.post.stickied) {
             Icon(
@@ -163,11 +165,10 @@ fun PostTitleAndImageLink(
             text = postView.post.name,
             style = MaterialTheme.typography.subtitle1,
             color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
-            modifier = Modifier.padding(bottom = MEDIUM_PADDING)
+            modifier = Modifier.padding(bottom = MEDIUM_PADDING, start = LARGE_PADDING, end = LARGE_PADDING)
         )
 
         val postLinkPicMod = Modifier
-            .fillMaxWidth()
             .clickable { onPostLinkClick(url) }
         PictrsUrlImage(
             url = url,
@@ -189,7 +190,7 @@ fun PostTitleAndThumbnail(
             text = post.name,
             style = MaterialTheme.typography.subtitle1,
             color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f).padding(horizontal = LARGE_PADDING)
         )
 
         post.url?.also { url ->
@@ -251,7 +252,7 @@ fun PostBody(
             Card(
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
-                    .padding(vertical = MEDIUM_PADDING)
+                    .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
                     .fillMaxWidth(),
                 elevation = BODY_ELEVATION,
                 content = {
@@ -300,7 +301,8 @@ fun PostFooterLine(
     onBlockCreatorClick: (person: PersonSafe) -> Unit,
     onBlockCommunityClick: (community: CommunitySafe) -> Unit,
     showReply: Boolean = false,
-    account: Account?
+    account: Account?,
+    modifier: Modifier = Modifier
 ) {
     // TODO val score = postView.counts.score
     val myVote = postView.my_vote
@@ -344,7 +346,7 @@ fun PostFooterLine(
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING)
     ) {
@@ -576,7 +578,7 @@ fun PostListing(
             .clickable { onPostClick(postView) }
     ) {
         Column(
-            modifier = Modifier.padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING),
+            modifier = Modifier.padding(vertical = MEDIUM_PADDING),
             verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
         ) {
             // Header
@@ -586,7 +588,8 @@ fun PostListing(
                 onPersonClick = onPersonClick,
                 isModerator = isModerator,
                 isSameInstance = postView.post.url?.let { hostName(it) } == account?.instance,
-                showCommunityName = showCommunityName
+                showCommunityName = showCommunityName,
+                modifier = Modifier.padding(horizontal = LARGE_PADDING)
             )
 
             //  Title + metadata
@@ -610,7 +613,8 @@ fun PostListing(
                 onBlockCommunityClick = onBlockCommunityClick,
                 onBlockCreatorClick = onBlockCreatorClick,
                 showReply = showReply,
-                account = account
+                account = account,
+                modifier = Modifier.padding(horizontal = LARGE_PADDING)
             )
         }
     }
@@ -644,7 +648,7 @@ fun MetadataCard(post: Post) {
     Card(
         shape = MaterialTheme.shapes.medium,
         modifier = Modifier
-            .padding(vertical = MEDIUM_PADDING)
+            .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
             .fillMaxWidth(),
         elevation = BODY_ELEVATION,
         content = {
