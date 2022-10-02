@@ -22,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
+import com.jerboa.loginFirstToast
 import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
@@ -237,6 +239,7 @@ fun ActionBarButton(
     account: Account?,
     smallIcon: Boolean = false
 ) {
+    val ctx = LocalContext.current
 //    Button(
 //        onClick = onClick,
 //        colors = ButtonDefaults.buttonColors(
@@ -254,7 +257,13 @@ fun ActionBarButton(
     val barMod = if (noClick) {
         Modifier
     } else {
-        Modifier.clickable(onClick = onClick, enabled = (account !== null))
+        Modifier.clickable(onClick = {
+            if (account !== null) {
+                onClick()
+            } else {
+                loginFirstToast(ctx)
+            }
+        })
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,

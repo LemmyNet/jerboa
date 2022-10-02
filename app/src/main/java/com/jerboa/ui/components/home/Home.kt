@@ -61,7 +61,7 @@ fun Drawer(
     DrawerContent(
         accounts = accounts,
         unreadCounts = unreadCounts,
-        follows = myUserInfo?.follows,
+        myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
         navController = navController,
         onSwitchAccountClick = onSwitchAccountClick,
@@ -88,7 +88,7 @@ fun DrawerContent(
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
-    follows: List<CommunityFollowerView>?,
+    myUserInfo: MyUserInfo?,
     unreadCounts: GetUnreadCountResponse?
 ) {
     AnimatedVisibility(
@@ -106,12 +106,12 @@ fun DrawerContent(
 
     if (!showAccountAddMode) {
         DrawerItemsMain(
+            myUserInfo = myUserInfo,
             onClickListingType = onClickListingType,
             onCommunityClick = onCommunityClick,
             onClickProfile = onClickProfile,
             onClickInbox = onClickInbox,
             onClickSaved = onClickSaved,
-            follows = follows,
             unreadCounts = unreadCounts,
             onClickSettings = onClickSettings
         )
@@ -120,7 +120,7 @@ fun DrawerContent(
 
 @Composable
 fun DrawerItemsMain(
-    follows: List<CommunityFollowerView>? = null,
+    myUserInfo: MyUserInfo?,
     onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
@@ -132,6 +132,7 @@ fun DrawerItemsMain(
     val listState = rememberLazyListState()
 
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
+    val follows = myUserInfo?.follows
 
     LazyColumn(
         state = listState,
@@ -161,39 +162,51 @@ fun DrawerItemsMain(
             )
         }
         item {
-            IconAndTextDrawerItem(
-                text = "Saved",
-                icon = Icons.Default.Bookmarks,
-                onClick = onClickSaved
-            )
+            myUserInfo?.also {
+                IconAndTextDrawerItem(
+                    text = "Saved",
+                    icon = Icons.Default.Bookmarks,
+                    onClick = onClickSaved
+                )
+            }
         }
         item {
-            Divider()
+            myUserInfo?.also {
+                Divider()
+            }
         }
         item {
-            IconAndTextDrawerItem(
-                text = "Profile",
-                icon = Icons.Default.Person,
-                onClick = onClickProfile
-            )
+            myUserInfo?.also {
+                IconAndTextDrawerItem(
+                    text = "Profile",
+                    icon = Icons.Default.Person,
+                    onClick = onClickProfile
+                )
+            }
         }
         item {
-            IconAndTextDrawerItem(
-                text = "Inbox",
-                icon = Icons.Default.Email,
-                onClick = onClickInbox,
-                iconBadgeCount = totalUnreads
-            )
+            myUserInfo?.also {
+                IconAndTextDrawerItem(
+                    text = "Inbox",
+                    icon = Icons.Default.Email,
+                    onClick = onClickInbox,
+                    iconBadgeCount = totalUnreads
+                )
+            }
         }
         item {
-            IconAndTextDrawerItem(
-                text = "Settings",
-                icon = Icons.Default.Settings,
-                onClick = onClickSettings
-            )
+            myUserInfo?.also {
+                IconAndTextDrawerItem(
+                    text = "Settings",
+                    icon = Icons.Default.Settings,
+                    onClick = onClickSettings
+                )
+            }
         }
         item {
-            Divider()
+            myUserInfo?.also {
+                Divider()
+            }
         }
 
         follows?.also { follows ->
@@ -222,6 +235,7 @@ fun DrawerItemsMain(
 @Composable
 fun DrawerItemsMainPreview() {
     DrawerItemsMain(
+        myUserInfo = null,
         onClickListingType = {},
         onClickProfile = {},
         onClickInbox = {},

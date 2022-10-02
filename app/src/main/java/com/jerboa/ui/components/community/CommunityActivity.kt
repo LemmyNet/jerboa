@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.loginFirstToast
 import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
@@ -244,6 +245,8 @@ fun CommunityActivity(
                                 communityListViewModel.selectCommunity(it.community)
                                 navController.navigate("createPost")
                             }
+                        } ?: run {
+                            loginFirstToast(ctx)
                         }
                     }
                 ) {

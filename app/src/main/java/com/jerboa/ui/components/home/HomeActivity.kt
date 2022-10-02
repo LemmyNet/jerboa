@@ -23,6 +23,7 @@ import com.jerboa.closeDrawer
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.fetchInitialData
+import com.jerboa.loginFirstToast
 import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
@@ -118,6 +119,8 @@ fun HomeActivity(
                     onClick = {
                         account?.also {
                             navController.navigate("createPost")
+                        } ?: run {
+                            loginFirstToast(ctx)
                         }
                     }
                 ) {
@@ -137,6 +140,8 @@ fun HomeActivity(
                                 navController = navController,
                                 ctx = ctx
                             )
+                        } ?: run {
+                            loginFirstToast(ctx)
                         }
                     },
                     onClickInbox = {
@@ -152,6 +157,8 @@ fun HomeActivity(
                                 ctx = ctx,
                                 saved = true
                             )
+                        } ?: run {
+                            loginFirstToast(ctx)
                         }
                     },
                     navController = navController
