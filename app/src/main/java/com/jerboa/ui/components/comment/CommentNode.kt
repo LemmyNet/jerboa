@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jerboa.*
 import com.jerboa.datatypes.*
 import com.jerboa.db.Account
@@ -124,10 +123,12 @@ fun CommentNode(
     account: Account?
 ) {
     val offset = calculateCommentOffset(node.depth, 4)
+
+    // The ones with a border on the left need a little extra padding
     val offset2 = if (node.depth == null) {
-        0.dp
-    } else {
         LARGE_PADDING
+    } else {
+        XXL_PADDING
     }
     val borderColor = calculateBorderColor(node.depth)
     val commentView = node.commentView
@@ -150,16 +151,12 @@ fun CommentNode(
                 start = offset
             )
     ) {
-        Divider(startIndent = offset2)
+        Divider()
         Column(
-            modifier = Modifier
-                .padding(
-                    horizontal = LARGE_PADDING
-                )
-                .border(start = border)
+            modifier = Modifier.border(start = border)
         ) {
             Column(
-                modifier = Modifier.padding(start = offset2)
+                modifier = Modifier.padding(start = offset2, end = LARGE_PADDING)
             ) {
                 if (showPostAndCommunityContext) {
                     PostAndCommunityContextHeader(

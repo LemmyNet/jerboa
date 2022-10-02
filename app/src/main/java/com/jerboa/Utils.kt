@@ -165,7 +165,7 @@ fun calculateCommentOffset(depth: Int?, multiplier: Int): Dp {
     return if (depth == null) {
         0.dp
     } else {
-        ((depth + 1) * multiplier).dp
+        ((depth * multiplier).dp)
     }
 }
 
