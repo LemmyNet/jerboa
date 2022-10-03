@@ -197,23 +197,29 @@ fun CommentOrPostNodeHeader(
                 onClick = {}
             )
     ) {
-        if (deleted) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "TODO",
-                tint = MaterialTheme.colors.error
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (deleted) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colors.error
+                )
+                DotSpacer()
+            }
+
+            PersonProfileLink(
+                person = creator,
+                onClick = { onPersonClick(creator.id) },
+                showTags = true,
+                isPostCreator = isPostCreator,
+                isModerator = isModerator,
+                isCommunityBanned = isCommunityBanned
             )
-            DotSpacer()
         }
 
-        PersonProfileLink(
-            person = creator,
-            onClick = { onPersonClick(creator.id) },
-            showTags = true,
-            isPostCreator = isPostCreator,
-            isModerator = isModerator,
-            isCommunityBanned = isCommunityBanned
-        )
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             verticalAlignment = Alignment.CenterVertically
