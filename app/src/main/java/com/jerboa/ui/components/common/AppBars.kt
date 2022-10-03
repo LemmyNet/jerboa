@@ -449,6 +449,7 @@ fun Modifier.simpleVerticalScrollbar(
 ): Modifier {
     val targetAlpha = if (state.isScrollInProgress) 0.5f else 0f
     val duration = if (state.isScrollInProgress) 150 else 500
+    val color = MaterialTheme.colors.onBackground
 
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
@@ -468,7 +469,7 @@ fun Modifier.simpleVerticalScrollbar(
             val scrollbarHeight = state.layoutInfo.visibleItemsInfo.size * elementHeight
 
             drawRect(
-                color = Color.LightGray,
+                color = color,
                 topLeft = Offset(this.size.width - width.toPx(), scrollbarOffsetY),
                 size = Size(width.toPx(), scrollbarHeight),
                 alpha = alpha

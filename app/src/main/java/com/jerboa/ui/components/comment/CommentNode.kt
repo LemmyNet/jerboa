@@ -6,6 +6,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Divider
@@ -102,15 +103,16 @@ fun CommentBodyPreview() {
     CommentBody(commentView = sampleCommentView, viewSource = false)
 }
 
-@Composable
-fun CommentNode(
+fun LazyListScope.commentNodeItem(
     node: CommentNodeData,
+    isExpanded: (commentId: Int) -> Boolean,
+    toggleExpanded: (commentId: Int) -> Unit,
     moderators: List<CommunityModeratorView>,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
     onSaveClick: (commentView: CommentView) -> Unit,
-    onMarkAsReadClick: (commentView: CommentView) -> Unit = {},
+    onMarkAsReadClick: (commentView: CommentView) -> Unit,
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -122,21 +124,8 @@ fun CommentNode(
     showRead: Boolean = false,
     account: Account?
 ) {
-    val offset = remember { calculateCommentOffset(node.depth, 4) }
-
-    // The ones with a border on the left need a little extra padding
-    val offset2 = remember {
-        if (node.depth == null) {
-            LARGE_PADDING
-        } else {
-            XXL_PADDING
-        }
-    }
-    val backgroundColor = MaterialTheme.colors.background
-    val borderColor = remember { calculateBorderColor(backgroundColor, node.depth) }
-    val border = remember { Border(SMALL_PADDING, borderColor) }
-
     val commentView = node.commentView
+    val commentId = commentView.comment.id
 
     // These are necessary for instant comment voting
     val score = node.commentView.counts.score
@@ -144,87 +133,97 @@ fun CommentNode(
     val upvotes = node.commentView.counts.upvotes
     val downvotes = node.commentView.counts.downvotes
 
-    var expanded by remember { mutableStateOf(true) }
+    val offset = calculateCommentOffset(node.depth, 4) // The ones with a border on
+    val offset2 = if (node.depth == null) {
+        LARGE_PADDING
+    } else {
+        XXL_PADDING
+    }
 
-    var viewSource by remember { mutableStateOf(false) }
+    item {
+        var viewSource by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .padding(
-                start = offset
-            )
-    ) {
-        Divider()
+        val backgroundColor = MaterialTheme.colors.background
+        val borderColor = calculateBorderColor(backgroundColor, node.depth)
+        val border = Border(SMALL_PADDING, borderColor)
+
         Column(
-            modifier = Modifier.border(start = border)
-        ) {
-            Column(
-                modifier = Modifier.padding(start = offset2, end = LARGE_PADDING)
-            ) {
-                if (showPostAndCommunityContext) {
-                    PostAndCommunityContextHeader(
-                        commentView = commentView,
-                        onCommunityClick = onCommunityClick,
-                        onPostClick = onPostClick
-                    )
-                }
-                CommentNodeHeader(
-                    commentView = commentView,
-                    onPersonClick = onPersonClick,
-                    score = score,
-                    myVote = myVote,
-                    isModerator = isModerator(commentView.creator, moderators),
-                    onLongClick = {
-                        expanded = !expanded
-                    }
+            modifier = Modifier
+                .padding(
+                    start = offset
                 )
-                AnimatedVisibility(
-                    visible = expanded,
-                    enter = expandVertically(),
-                    exit = shrinkVertically()
+        ) {
+            Divider()
+            Column(
+                modifier = Modifier.border(start = border)
+            ) {
+                Column(
+                    modifier = Modifier.padding(start = offset2, end = LARGE_PADDING)
                 ) {
-                    Column {
-                        CommentBody(
+                    if (showPostAndCommunityContext) {
+                        PostAndCommunityContextHeader(
                             commentView = commentView,
-                            viewSource = viewSource
+                            onCommunityClick = onCommunityClick,
+                            onPostClick = onPostClick
                         )
-                        CommentFooterLine(
-                            commentView = commentView,
-                            onUpvoteClick = {
-                                onUpvoteClick(it)
-                            },
-                            onDownvoteClick = {
-                                onDownvoteClick(it)
-                            },
-                            onViewSourceClick = {
-                                viewSource = !viewSource
-                            },
-                            onEditCommentClick = onEditCommentClick,
-                            onDeleteCommentClick = onDeleteCommentClick,
-                            onReplyClick = onReplyClick,
-                            onSaveClick = onSaveClick,
-                            onMarkAsReadClick = onMarkAsReadClick,
-                            onReportClick = onReportClick,
-                            onBlockCreatorClick = onBlockCreatorClick,
-                            showRead = showRead,
-                            myVote = myVote,
-                            upvotes = upvotes,
-                            downvotes = downvotes,
-                            account = account
-                        )
+                    }
+                    CommentNodeHeader(
+                        commentView = commentView,
+                        onPersonClick = onPersonClick,
+                        score = score,
+                        myVote = myVote,
+                        isModerator = isModerator(commentView.creator, moderators),
+                        onLongClick = {
+                            toggleExpanded(commentId)
+                        }
+                    )
+                    AnimatedVisibility(
+                        visible = isExpanded(commentId),
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
+                        Column {
+                            CommentBody(
+                                commentView = commentView,
+                                viewSource = viewSource
+                            )
+                            CommentFooterLine(
+                                commentView = commentView,
+                                onUpvoteClick = {
+                                    onUpvoteClick(it)
+                                },
+                                onDownvoteClick = {
+                                    onDownvoteClick(it)
+                                },
+                                onViewSourceClick = {
+                                    viewSource = !viewSource
+                                },
+                                onEditCommentClick = onEditCommentClick,
+                                onDeleteCommentClick = onDeleteCommentClick,
+                                onReplyClick = onReplyClick,
+                                onSaveClick = onSaveClick,
+                                onMarkAsReadClick = onMarkAsReadClick,
+                                onReportClick = onReportClick,
+                                onBlockCreatorClick = onBlockCreatorClick,
+                                showRead = showRead,
+                                myVote = myVote,
+                                upvotes = upvotes,
+                                downvotes = downvotes,
+                                account = account
+                            )
+                        }
                     }
                 }
             }
         }
     }
-    AnimatedVisibility(
-        visible = expanded,
-        enter = expandVertically(),
-        exit = shrinkVertically()
-    ) {
+
+    if (isExpanded(commentId)) {
         node.children?.also { nodes ->
-            CommentNodes(
+            commentNodeItems(
                 nodes = nodes,
+                toggleExpanded = toggleExpanded,
+                isExpanded = isExpanded,
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
                 onSaveClick = onSaveClick,
