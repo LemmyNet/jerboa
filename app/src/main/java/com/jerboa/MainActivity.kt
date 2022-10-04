@@ -9,6 +9,7 @@ import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -16,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import arrow.core.Either
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -86,12 +88,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             JerboaTheme {
                 val navController = rememberNavController()
+                val ctx = LocalContext.current
 
                 NavHost(
                     navController = navController,
                     startDestination = "splashScreen"
                 ) {
-                    composable(route = "login") {
+                    composable(
+                        route = "login",
+                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/login" }
+                        }
+                    ) {
                         LoginActivity(
                             navController = navController,
                             loginViewModel = loginViewModel,
@@ -105,56 +113,163 @@ class MainActivity : ComponentActivity() {
                             navController = navController
                         )
                     }
-                    composable(route = "home") {
+                    composable(
+                        route = "home",
+                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = instance }
+                        }
+                    ) {
                         HomeActivity(
                             navController = navController,
                             homeViewModel = homeViewModel,
-                            communityViewModel = communityViewModel,
-                            personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel,
-                            inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            postEditViewModel = postEditViewModel,
-                            createReportViewModel = createReportViewModel
+                            postEditViewModel = postEditViewModel
                         )
                     }
-                    composable(route = "community") {
+                    composable(
+                        route = "community/{id}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.IntType
+                            }
+                        )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            val communityId = it.arguments?.getInt("id")!!
+                            val idOrName = Either.Left(communityId)
+
+                            communityViewModel.fetchCommunity(
+                                idOrName = idOrName,
+                                auth = account?.jwt
+                            )
+
+                            communityViewModel.fetchPosts(
+                                communityIdOrName = idOrName,
+                                account = account,
+                                clear = true,
+                                ctx = ctx
+                            )
+                        }
+
                         CommunityActivity(
                             navController = navController,
                             communityViewModel = communityViewModel,
-                            personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
-                            inboxViewModel = inboxViewModel,
                             postEditViewModel = postEditViewModel,
-                            createReportViewModel = createReportViewModel,
+                            communityListViewModel = communityListViewModel
+                        )
+                    }
+                    // Only necessary for community deeplinks
+                    composable(
+                        route = "c/{name}",
+                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/c/{name}" }
+                        },
+                        arguments = listOf(
+                            navArgument("name") {
+                                type = NavType.StringType
+                            }
+                        )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            val name = it.arguments?.getString("name")!!
+                            val idOrName = Either.Right(name)
+
+                            communityViewModel.fetchCommunity(
+                                idOrName = idOrName,
+                                auth = account?.jwt
+                            )
+
+                            communityViewModel.fetchPosts(
+                                communityIdOrName = idOrName,
+                                account = account,
+                                clear = true,
+                                ctx = ctx
+                            )
+                        }
+
+                        CommunityActivity(
+                            navController = navController,
+                            communityViewModel = communityViewModel,
+                            accountViewModel = accountViewModel,
+                            homeViewModel = homeViewModel,
+                            postEditViewModel = postEditViewModel,
                             communityListViewModel = communityListViewModel
                         )
                     }
                     composable(
-                        route = "profile?saved={saved}",
+                        route = "profile/{id}?saved={saved}",
                         arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.IntType
+                            },
                             navArgument("saved") {
                                 defaultValue = false
                                 type = NavType.BoolType
                             }
                         )
                     ) {
+                        val savedMode = it.arguments?.getBoolean("saved")!!
+
+                        LaunchedEffect(Unit) {
+                            val personId = it.arguments?.getInt("id")!!
+                            val idOrName = Either.Left(personId)
+
+                            personProfileViewModel.fetchPersonDetails(
+                                idOrName = idOrName,
+                                account = account,
+                                clear = true,
+                                ctx = ctx,
+                                changeSavedOnly = savedMode
+                            )
+                        }
+
                         PersonProfileActivity(
-                            savedMode = it.arguments?.getBoolean("saved")!!,
+                            savedMode = savedMode,
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel,
-                            communityViewModel = communityViewModel,
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
-                            inboxViewModel = inboxViewModel,
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
-                            postEditViewModel = postEditViewModel,
-                            createReportViewModel = createReportViewModel
+                            postEditViewModel = postEditViewModel
+                        )
+                    }
+                    // Necessary for deep links
+                    composable(
+                        route = "u/{name}",
+                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/u/{name}" }
+                        },
+                        arguments = listOf(
+                            navArgument("name") {
+                                type = NavType.StringType
+                            }
+                        )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            val name = it.arguments?.getString("name")!!
+                            val idOrName = Either.Right(name)
+
+                            personProfileViewModel.fetchPersonDetails(
+                                idOrName = idOrName,
+                                account = account,
+                                clear = true,
+                                ctx = ctx
+                            )
+                        }
+
+                        PersonProfileActivity(
+                            savedMode = false,
+                            navController = navController,
+                            personProfileViewModel = personProfileViewModel,
+                            accountViewModel = accountViewModel,
+                            homeViewModel = homeViewModel,
+                            commentEditViewModel = commentEditViewModel,
+                            commentReplyViewModel = commentReplyViewModel,
+                            postEditViewModel = postEditViewModel
                         )
                     }
                     composable(
@@ -172,7 +287,6 @@ class MainActivity : ComponentActivity() {
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            communityViewModel = communityViewModel,
                             communityListViewModel = communityListViewModel,
                             selectMode = it.arguments?.getBoolean("select")!!
                         )
@@ -184,8 +298,7 @@ class MainActivity : ComponentActivity() {
                             navDeepLink { mimeType = "image/*" }
                         )
                     ) {
-                        val context = LocalContext.current
-                        val activity = context.findActivity()
+                        val activity = ctx.findActivity()
                         val text = activity?.intent?.getStringExtra(Intent.EXTRA_TEXT) ?: ""
                         val image =
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -218,32 +331,67 @@ class MainActivity : ComponentActivity() {
                         )
                         activity?.intent?.replaceExtras(Bundle())
                     }
-                    composable(route = "inbox") {
+                    composable(
+                        route = "inbox",
+                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/inbox" }
+                        }
+                    ) {
+                        if (account != null) {
+                            LaunchedEffect(Unit) {
+                                inboxViewModel.fetchReplies(
+                                    account = account,
+                                    clear = true,
+                                    ctx = ctx
+                                )
+                                inboxViewModel.fetchPersonMentions(
+                                    account = account,
+                                    clear = true,
+                                    ctx = ctx
+                                )
+                                inboxViewModel.fetchPrivateMessages(
+                                    account = account,
+                                    clear = true,
+                                    ctx = ctx
+                                )
+                            }
+                        }
+
                         InboxActivity(
                             navController = navController,
                             inboxViewModel = inboxViewModel,
-                            personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel,
-                            communityViewModel = communityViewModel,
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
                             commentEditViewModel = commentEditViewModel,
-                            commentReplyViewModel = commentReplyViewModel,
-                            createReportViewModel = createReportViewModel
+                            commentReplyViewModel = commentReplyViewModel
                         )
                     }
                     composable(
-                        route = "post"
+                        route = "post/{id}",
+                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/post/{id}" }
+                        },
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.IntType
+                            }
+                        )
                     ) {
+                        LaunchedEffect(Unit) {
+                            val postId = it.arguments?.getInt("id")!!
+                            postViewModel.fetchPost(
+                                id = postId,
+                                account = account,
+                                clear = true,
+                                ctx = ctx
+                            )
+                        }
                         PostActivity(
                             postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
-                            communityViewModel = communityViewModel,
-                            personProfileViewModel = personProfileViewModel,
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
-                            createReportViewModel = createReportViewModel,
                             navController = navController
                         )
                     }
@@ -306,13 +454,18 @@ class MainActivity : ComponentActivity() {
                         PrivateMessageReplyActivity(
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
-                            personProfileViewModel = personProfileViewModel,
                             navController = navController
                         )
                     }
                     composable(
-                        route = "commentReport"
+                        route = "commentReport/{id}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.IntType
+                            }
+                        )
                     ) {
+                        createReportViewModel.setCommentId(it.arguments?.getInt("id")!!)
                         CreateCommentReportActivity(
                             createReportViewModel = createReportViewModel,
                             accountViewModel = accountViewModel,
@@ -320,8 +473,14 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = "postReport"
+                        route = "postReport/{id}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.IntType
+                            }
+                        )
                     ) {
+                        createReportViewModel.setPostId(it.arguments?.getInt("id")!!)
                         CreatePostReportActivity(
                             createReportViewModel = createReportViewModel,
                             accountViewModel = accountViewModel,
@@ -329,7 +488,10 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = "settings"
+                        route = "settings",
+                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/settings" }
+                        }
                     ) {
                         SettingsActivity(
                             navController = navController,

@@ -10,7 +10,7 @@ import com.jerboa.datatypes.PersonViewSafe
 val * To get a federated community by name, use `name@instance.tld` .
  */
 data class GetCommunity(
-    val id: Int?,
+    val id: Int? = null,
     val name: String? = null,
     val auth: String?
 )

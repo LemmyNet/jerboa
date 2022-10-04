@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import arrow.core.Either
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.VoteType
@@ -23,32 +24,19 @@ import com.jerboa.isModerator
 import com.jerboa.openLink
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
-import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
-import com.jerboa.ui.components.comment.reply.commentReplyClickWrapper
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.community.CommunityViewModel
-import com.jerboa.ui.components.community.communityClickWrapper
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.edit.PostEditViewModel
-import com.jerboa.ui.components.post.edit.postEditClickWrapper
-import com.jerboa.ui.components.report.CreateReportViewModel
-import com.jerboa.ui.components.report.commentReportClickWrapper
-import com.jerboa.ui.components.report.postReportClickWrapper
 
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
-    communityViewModel: CommunityViewModel,
-    personProfileViewModel: PersonProfileViewModel,
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
-    createReportViewModel: CreateReportViewModel,
     navController: NavController
 ) {
     Log.d("jerboa", "got to post activity")
@@ -143,40 +131,21 @@ fun PostActivity(
                                         }
                                     },
                                     onReplyClick = { postView ->
-                                        commentReplyClickWrapper(
-                                            commentReplyViewModel = commentReplyViewModel,
-                                            postId = postView.post.id,
-                                            postView = postView,
-                                            navController = navController
-                                        )
+                                        commentReplyViewModel.initialize(Either.Right(postView))
+                                        navController.navigate("commentReply")
                                     },
                                     onPostLinkClick = { url ->
                                         openLink(url, ctx)
                                     },
                                     onCommunityClick = { community ->
-                                        communityClickWrapper(
-                                            communityViewModel,
-                                            community.id,
-                                            account,
-                                            navController,
-                                            ctx
-                                        )
+                                        navController.navigate(route = "community/${community.id}")
                                     },
                                     onPersonClick = { personId ->
-                                        personClickWrapper(
-                                            personProfileViewModel,
-                                            personId,
-                                            account,
-                                            navController,
-                                            ctx
-                                        )
+                                        navController.navigate(route = "profile/$personId")
                                     },
                                     onEditPostClick = { postView ->
-                                        postEditClickWrapper(
-                                            postEditViewModel,
-                                            postView,
-                                            navController
-                                        )
+                                        postEditViewModel.initialize(postView)
+                                        navController.navigate("postEdit")
                                     },
                                     onDeletePostClick = {
                                         account?.also { acct ->
@@ -187,11 +156,7 @@ fun PostActivity(
                                         }
                                     },
                                     onReportClick = { postView ->
-                                        postReportClickWrapper(
-                                            createReportViewModel,
-                                            postView.post.id,
-                                            navController
-                                        )
+                                        navController.navigate("postReport/${postView.post.id}")
                                     },
                                     onPostClick = {}, // Do nothing
                                     showReply = true,
@@ -231,12 +196,8 @@ fun PostActivity(
                                     }
                                 },
                                 onReplyClick = { commentView ->
-                                    commentReplyClickWrapper(
-                                        commentReplyViewModel = commentReplyViewModel,
-                                        parentCommentView = commentView,
-                                        postId = commentView.post.id,
-                                        navController = navController
-                                    )
+                                    commentReplyViewModel.initialize(Either.Left(commentView))
+                                    navController.navigate("commentReply")
                                 },
                                 onSaveClick = { commentView ->
                                     account?.also { acct ->
@@ -248,20 +209,11 @@ fun PostActivity(
                                     }
                                 },
                                 onPersonClick = { personId ->
-                                    personClickWrapper(
-                                        personProfileViewModel,
-                                        personId,
-                                        account,
-                                        navController,
-                                        ctx
-                                    )
+                                    navController.navigate(route = "profile/$personId")
                                 },
                                 onEditCommentClick = { commentView ->
-                                    commentEditClickWrapper(
-                                        commentEditViewModel,
-                                        commentView,
-                                        navController
-                                    )
+                                    commentEditViewModel.initialize(commentView)
+                                    navController.navigate("commentEdit")
                                 },
                                 onDeleteCommentClick = { commentView ->
                                     account?.also { acct ->
@@ -273,10 +225,9 @@ fun PostActivity(
                                     }
                                 },
                                 onReportClick = { commentView ->
-                                    commentReportClickWrapper(
-                                        createReportViewModel,
-                                        commentView.comment.id,
-                                        navController
+                                    navController.navigate(
+                                        "commentReport/${commentView.comment
+                                            .id}"
                                     )
                                 },
                                 onBlockCreatorClick = {
@@ -289,13 +240,7 @@ fun PostActivity(
                                     }
                                 },
                                 onCommunityClick = { community ->
-                                    communityClickWrapper(
-                                        communityViewModel,
-                                        community.id,
-                                        account,
-                                        navController,
-                                        ctx
-                                    )
+                                    navController.navigate(route = "community/${community.id}")
                                 },
                                 onPostClick = {}, // Do nothing
                                 account = account,

@@ -1,8 +1,9 @@
 package com.jerboa.ui.components.comment.edit
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -12,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.datatypes.CommentView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 
 @Composable
@@ -74,29 +73,17 @@ fun CommentEdit(
     onContentChange: (TextFieldValue) -> Unit,
     account: Account?
 ) {
-    val listState = rememberLazyListState()
+    val scrollState = rememberScrollState()
 
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState)
+    Column(
+        modifier = Modifier.verticalScroll(scrollState)
     ) {
-        item {
-            MarkdownTextField(
-                text = content,
-                onTextChange = onContentChange,
-                account = account,
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = "Type your comment"
-            )
-        }
+        MarkdownTextField(
+            text = content,
+            onTextChange = onContentChange,
+            account = account,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = "Type your comment"
+        )
     }
-}
-
-fun commentEditClickWrapper(
-    commentEditViewModel: CommentEditViewModel,
-    commentView: CommentView,
-    navController: NavController
-) {
-    commentEditViewModel.setCommentView(commentView)
-    navController.navigate("commentEdit")
 }

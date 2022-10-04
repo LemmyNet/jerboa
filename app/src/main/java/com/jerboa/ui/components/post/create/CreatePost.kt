@@ -3,9 +3,9 @@ package com.jerboa.ui.components.post.create
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -26,7 +26,6 @@ import com.jerboa.db.Account
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.*
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
@@ -108,120 +107,106 @@ fun CreatePostBody(
             (community !== null)
     )
 
-    val listState = rememberLazyListState()
+    val scrollState = rememberScrollState()
 
-    LazyColumn(
-        state = listState,
+    Column(
         modifier = Modifier
             .padding(MEDIUM_PADDING)
             .fillMaxWidth()
-            .simpleVerticalScrollbar(listState),
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
     ) {
-        item {
-            OutlinedTextField(
-                value = name,
-                onValueChange = onNameChange,
-                isError = nameField.hasError,
-                label = {
-                    Text(text = nameField.label)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
+        OutlinedTextField(
+            value = name,
+            onValueChange = onNameChange,
+            isError = nameField.hasError,
+            label = {
+                Text(text = nameField.label)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+        OutlinedTextField(
+            label = {
+                Text(text = urlField.label)
+            },
+            value = url,
+            isError = urlField.hasError,
+            onValueChange = onUrlChange,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+        suggestedTitle?.also {
+            Text(
+                text = "copy suggested title: $it",
+                style = MaterialTheme.typography.subtitle2,
+                color = MaterialTheme.colors.onBackground.muted,
+                modifier = Modifier.clickable { onNameChange(it) }
             )
         }
-        item {
-            OutlinedTextField(
-                label = {
-                    Text(text = urlField.label)
-                },
-                value = url,
-                isError = urlField.hasError,
-                onValueChange = onUrlChange,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-        }
-        item {
-            suggestedTitle?.also {
-                Text(
-                    text = "copy suggested title: $it",
-                    style = MaterialTheme.typography.subtitle2,
-                    color = MaterialTheme.colors.onBackground.muted,
-                    modifier = Modifier.clickable { onNameChange(it) }
-                )
-            }
-        }
-        item {
-            PickImage(
-                onPickedImage = onPickedImage,
-                image = image,
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
-            )
-        }
-        item {
-            MarkdownTextField(
-                text = body,
-                onTextChange = onBodyChange,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                outlined = true,
-                account = account,
-                focusImmediate = false,
-                placeholder = "Body"
-            )
-        }
-        item {
-            Box {
-                community?.also {
-                    OutlinedTextField(
-                        value = community.name,
-                        readOnly = true,
-                        onValueChange = {}, // TODO what?
-                        label = {
-                            Text("Community")
-                        },
-                        leadingIcon = {
-                            community.icon?.let {
-                                CircularIcon(
-                                    icon = it,
-                                    size = ICON_SIZE,
-                                    thumbnailSize = THUMBNAIL_SIZE
-                                )
-                            }
-                        },
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.ArrowDropDown,
-                                contentDescription = "TODO"
+        PickImage(
+            onPickedImage = onPickedImage,
+            image = image,
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.End
+        )
+        MarkdownTextField(
+            text = body,
+            onTextChange = onBodyChange,
+            modifier = Modifier.fillMaxWidth(),
+            outlined = true,
+            account = account,
+            focusImmediate = false,
+            placeholder = "Body"
+        )
+        Box {
+            community?.also {
+                OutlinedTextField(
+                    value = community.name,
+                    readOnly = true,
+                    onValueChange = {}, // TODO what?
+                    label = {
+                        Text("Community")
+                    },
+                    leadingIcon = {
+                        community.icon?.let {
+                            CircularIcon(
+                                icon = it,
+                                size = ICON_SIZE,
+                                thumbnailSize = THUMBNAIL_SIZE
                             )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                } ?: run {
-                    OutlinedTextField(
-                        value = "",
-                        onValueChange = {}, // TODO what?
-                        label = {
-                            Text("Community")
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-                // A box to draw over the textview and override clicks
-                Box(
-                    modifier = Modifier
-                        .height(60.dp)
-                        .fillMaxWidth()
-                        .clickable {
-                            navController.navigate("communityList?select=true")
                         }
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = "TODO"
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            } ?: run {
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = {}, // TODO what?
+                    label = {
+                        Text("Community")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
                 )
             }
+            // A box to draw over the textview and override clicks
+            Box(
+                modifier = Modifier
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        navController.navigate("communityList?select=true")
+                    }
+            )
         }
     }
 }

@@ -96,8 +96,10 @@ fun PostListings(
     }
 
     // Act when end of list reached
-    LaunchedEffect(endOfListReached) {
-        isScrolledToEnd()
+    if (endOfListReached) {
+        LaunchedEffect(Unit) {
+            isScrolledToEnd()
+        }
     }
 }
 

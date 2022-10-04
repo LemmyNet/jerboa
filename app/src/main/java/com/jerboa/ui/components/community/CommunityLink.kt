@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.community
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -12,13 +11,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.navigation.NavController
 import com.jerboa.communityNameShown
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.sampleCommunitySafe
 import com.jerboa.datatypes.sampleCommunityView
-import com.jerboa.db.Account
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.theme.*
 
@@ -132,25 +129,4 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {}
     )
-}
-
-fun communityClickWrapper(
-    communityViewModel: CommunityViewModel,
-    communityId: Int,
-    account: Account?,
-    navController: NavController,
-    ctx: Context
-) {
-    communityViewModel.fetchCommunity(
-        id = communityId,
-        auth = account?.jwt
-    )
-
-    communityViewModel.fetchPosts(
-        changeCommunityId = communityId,
-        account = account,
-        clear = true,
-        ctx = ctx
-    )
-    navController.navigate(route = "community")
 }

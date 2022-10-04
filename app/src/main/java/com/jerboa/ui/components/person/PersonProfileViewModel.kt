@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
@@ -30,7 +31,6 @@ class PersonProfileViewModel : ViewModel() {
 
     var res by mutableStateOf<GetPersonDetailsResponse?>(null)
         private set
-    var personId = mutableStateOf<Int?>(null)
     var loading = mutableStateOf(false)
         private set
     var posts = mutableStateListOf<PostView>()
@@ -41,8 +41,7 @@ class PersonProfileViewModel : ViewModel() {
         private set
     var sortType = mutableStateOf(SortType.New)
         private set
-    var savedOnly = mutableStateOf(false)
-        private set
+    private var savedOnly = mutableStateOf(false)
 
     fun likePost(voteType: VoteType, postView: PostView, account: Account?, ctx: Context) {
         likePostRoutine(mutableStateOf(postView), posts, voteType, account, ctx, viewModelScope)
@@ -88,7 +87,7 @@ class PersonProfileViewModel : ViewModel() {
     }
 
     fun fetchPersonDetails(
-        id: Int,
+        idOrName: Either<Int, String>,
         account: Account?,
         clear: Boolean = false,
         nextPage: Boolean = false,
@@ -99,10 +98,11 @@ class PersonProfileViewModel : ViewModel() {
         val api = API.getInstance()
 
         viewModelScope.launch {
+            val idOrNameStr = idOrName.fold({ it.toString() }, { it })
             try {
                 Log.d(
                     "jerboa",
-                    "Fetching person details id: $id"
+                    "Fetching person details: $idOrNameStr"
                 )
 
                 loading.value = true
@@ -123,10 +123,11 @@ class PersonProfileViewModel : ViewModel() {
                     savedOnly.value = it
                 }
 
-                personId.value = id
-
+                val personId = idOrName.fold({ it }, { null })
+                val userName = idOrName.fold({ null }, { it })
                 val form = GetPersonDetails(
-                    person_id = id,
+                    person_id = personId,
+                    username = userName,
                     auth = account?.jwt,
                     sort = sortType.value.toString(),
                     page = page.value,

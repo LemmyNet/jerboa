@@ -149,16 +149,18 @@ fun PickImage(
         LaunchedEffect(image) {
             imageUri = image
             bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
+            Log.d("jerboa", "Uploading image...")
             Log.d("jerboa", imageUri.toString())
             onPickedImage(image)
         }
     }
 
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+        ActivityResultContracts.GetContent()
+    ) { uri ->
         imageUri = uri
         bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
+        Log.d("jerboa", "Uploading image...")
         Log.d("jerboa", imageUri.toString())
         onPickedImage(uri!!)
     }

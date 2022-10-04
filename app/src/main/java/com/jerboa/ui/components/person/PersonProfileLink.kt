@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.person
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -16,10 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.samplePersonSafe
-import com.jerboa.db.Account
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -122,22 +119,4 @@ fun PersonProfileLinkPreviewTags() {
         showTags = true,
         onClick = {}
     )
-}
-
-fun personClickWrapper(
-    personProfileViewModel: PersonProfileViewModel,
-    personId: Int,
-    account: Account?,
-    navController: NavController,
-    ctx: Context,
-    saved: Boolean = false
-) {
-    personProfileViewModel.fetchPersonDetails(
-        id = personId,
-        account = account,
-        clear = true,
-        ctx = ctx,
-        changeSavedOnly = saved
-    )
-    navController.navigate(route = "profile?saved=$saved")
 }

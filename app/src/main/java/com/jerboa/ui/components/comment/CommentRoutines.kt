@@ -154,7 +154,7 @@ fun createCommentRoutine(
             insertCommentIntoTree(postViewModel.commentTree, commentView)
 
             // Maybe a back button would view this page.
-            if (account.id == personProfileViewModel.personId.value) {
+            if (account.id == personProfileViewModel.res?.person_view?.person?.id) {
                 addCommentToMutableList(personProfileViewModel.comments, commentView)
             }
         }

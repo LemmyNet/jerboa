@@ -24,21 +24,12 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
-import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
-import com.jerboa.ui.components.comment.reply.commentReplyClickWrapper
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.community.CommunityViewModel
-import com.jerboa.ui.components.community.communityClickWrapper
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.HomeViewModel
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.person.personClickWrapper
-import com.jerboa.ui.components.post.PostViewModel
-import com.jerboa.ui.components.post.postClickWrapper
 import com.jerboa.ui.components.privatemessage.PrivateMessage
-import com.jerboa.ui.components.report.CreateReportViewModel
-import com.jerboa.ui.components.report.commentReportClickWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -47,13 +38,9 @@ fun InboxActivity(
     navController: NavController,
     inboxViewModel: InboxViewModel,
     homeViewModel: HomeViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
-    communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
-    commentReplyViewModel: CommentReplyViewModel,
-    createReportViewModel: CreateReportViewModel
+    commentReplyViewModel: CommentReplyViewModel
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -109,14 +96,10 @@ fun InboxActivity(
                 InboxTabs(
                     padding = it,
                     navController = navController,
-                    personProfileViewModel = personProfileViewModel,
                     commentEditViewModel = commentEditViewModel,
                     commentReplyViewModel = commentReplyViewModel,
                     inboxViewModel = inboxViewModel,
-                    postViewModel = postViewModel,
-                    communityViewModel = communityViewModel,
                     homeViewModel = homeViewModel,
-                    createReportViewModel = createReportViewModel,
                     ctx = ctx,
                     account = account,
                     scope = scope
@@ -128,28 +111,21 @@ fun InboxActivity(
                     unreadCounts = homeViewModel.unreadCountResponse,
                     onClickProfile = {
                         account?.id?.also {
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = it,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx
-                            )
+                            navController.navigate(route = "profile/$it")
                         }
                     },
                     onClickInbox = {
-                        inboxClickWrapper(inboxViewModel, account, navController, ctx)
+                        account?.also {
+                            navController.navigate(route = "inbox")
+                        } ?: run {
+                            loginFirstToast(ctx)
+                        }
                     },
                     onClickSaved = {
                         account?.id?.also {
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = it,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx,
-                                saved = true
-                            )
+                            navController.navigate(route = "profile/$it?saved=${true}")
+                        } ?: run {
+                            loginFirstToast(ctx)
                         }
                     },
                     navController = navController
@@ -170,21 +146,16 @@ enum class InboxTab {
 @Composable
 fun InboxTabs(
     navController: NavController,
-    personProfileViewModel: PersonProfileViewModel,
     inboxViewModel: InboxViewModel,
-    communityViewModel: CommunityViewModel,
     homeViewModel: HomeViewModel,
     ctx: Context,
     account: Account?,
     scope: CoroutineScope,
-    postViewModel: PostViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
-    createReportViewModel: CreateReportViewModel,
     padding: PaddingValues
 ) {
     val tabTitles = InboxTab.values().map { it.toString() }
-
     val pagerState = rememberPagerState()
 
     Column(
@@ -199,20 +170,21 @@ fun InboxTabs(
                         tabPositions
                     )
                 )
+            },
+            tabs = {
+                tabTitles.forEachIndexed { index, title ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                        text = { Text(text = title) }
+                    )
+                }
             }
-        ) {
-            tabTitles.forEachIndexed { index, title ->
-                Tab(
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                    text = { Text(text = title) }
-                )
-            }
-        }
+        )
         if (inboxViewModel.loading.value) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
@@ -239,14 +211,16 @@ fun InboxTabs(
                     }
 
                     // act when end of list reached
-                    LaunchedEffect(endOfListReached) {
-                        account?.also { acct ->
-                            if (inboxViewModel.replies.size > 0) {
-                                inboxViewModel.fetchReplies(
-                                    account = acct,
-                                    nextPage = true,
-                                    ctx = ctx
-                                )
+                    if (endOfListReached) {
+                        LaunchedEffect(Unit) {
+                            account?.also { acct ->
+                                if (inboxViewModel.replies.size > 0) {
+                                    inboxViewModel.fetchReplies(
+                                        account = acct,
+                                        nextPage = true,
+                                        ctx = ctx
+                                    )
+                                }
                             }
                         }
                     }
@@ -286,19 +260,14 @@ fun InboxTabs(
                                 }
                             },
                             onReplyClick = { commentView ->
-                                commentReplyClickWrapper(
-                                    commentReplyViewModel = commentReplyViewModel,
-                                    parentCommentView = commentView,
-                                    postId = commentView.post.id,
-                                    navController = navController
+                                commentReplyViewModel.initialize(
+                                    newCommentParentView = commentView
                                 )
+                                navController.navigate("commentReply")
                             },
                             onEditCommentClick = { commentView ->
-                                commentEditClickWrapper(
-                                    commentEditViewModel,
-                                    commentView,
-                                    navController
-                                )
+                                commentEditViewModel.initialize(commentView)
+                                navController.navigate("commentEdit")
                             },
                             onDeleteCommentClick = { commentView ->
                                 account?.also { acct ->
@@ -310,11 +279,7 @@ fun InboxTabs(
                                 }
                             },
                             onReportClick = { commentView ->
-                                commentReportClickWrapper(
-                                    createReportViewModel,
-                                    commentView.comment.id,
-                                    navController
-                                )
+                                navController.navigate("commentReport/${commentView.comment.id}")
                             },
                             onSaveClick = { commentView ->
                                 account?.also { acct ->
@@ -345,31 +310,13 @@ fun InboxTabs(
                                 }
                             },
                             onPersonClick = { personId ->
-                                personClickWrapper(
-                                    personProfileViewModel,
-                                    personId,
-                                    account,
-                                    navController,
-                                    ctx
-                                )
+                                navController.navigate(route = "profile/$personId")
                             },
                             onCommunityClick = { community ->
-                                communityClickWrapper(
-                                    communityViewModel = communityViewModel,
-                                    communityId = community.id,
-                                    account = account,
-                                    navController = navController,
-                                    ctx = ctx
-                                )
+                                navController.navigate(route = "community/${community.id}")
                             },
                             onPostClick = { postId ->
-                                postClickWrapper(
-                                    postViewModel = postViewModel,
-                                    postId = postId,
-                                    account = account,
-                                    navController = navController,
-                                    ctx = ctx
-                                )
+                                navController.navigate(route = "post/$postId")
                             },
                             showPostAndCommunityContext = true,
                             showRead = true,
@@ -396,14 +343,16 @@ fun InboxTabs(
                     }
 
                     // act when end of list reached
-                    LaunchedEffect(endOfListReached) {
-                        account?.also { acct ->
-                            if (inboxViewModel.messages.size > 0) {
-                                inboxViewModel.fetchPrivateMessages(
-                                    account = acct,
-                                    nextPage = true,
-                                    ctx = ctx
-                                )
+                    if (endOfListReached) {
+                        LaunchedEffect(Unit) {
+                            account?.also { acct ->
+                                if (inboxViewModel.messages.size > 0) {
+                                    inboxViewModel.fetchPrivateMessages(
+                                        account = acct,
+                                        nextPage = true,
+                                        ctx = ctx
+                                    )
+                                }
                             }
                         }
                     }
@@ -423,7 +372,7 @@ fun InboxTabs(
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.fillMaxSize()
-                            // .simpleVerticalScrollbar(listState)
+                                .simpleVerticalScrollbar(listState)
                         ) {
                             items(
                                 inboxViewModel.messages,
@@ -447,13 +396,7 @@ fun InboxTabs(
                                             homeViewModel.updateUnreads(privateMessageView)
                                         },
                                         onPersonClick = { personId ->
-                                            personClickWrapper(
-                                                personProfileViewModel,
-                                                personId,
-                                                account,
-                                                navController,
-                                                ctx
-                                            )
+                                            navController.navigate(route = "profile/$personId")
                                         },
                                         account = acct
                                     )

@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.inbox
 
-import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,39 +10,9 @@ import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.UnreadOrAll
-import com.jerboa.db.Account
-import com.jerboa.loginFirstToast
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.muted
-
-fun inboxClickWrapper(
-    inboxViewModel: InboxViewModel,
-    account: Account?,
-    navController: NavController,
-    ctx: Context
-) {
-    account?.also {
-        inboxViewModel.fetchReplies(
-            account = account,
-            clear = true,
-            ctx = ctx
-        )
-        inboxViewModel.fetchPersonMentions(
-            account = account,
-            clear = true,
-            ctx = ctx
-        )
-        inboxViewModel.fetchPrivateMessages(
-            account = account,
-            clear = true,
-            ctx = ctx
-        )
-        navController.navigate(route = "inbox")
-    } ?: run {
-        loginFirstToast(ctx)
-    }
-}
 
 @Composable
 fun InboxHeader(

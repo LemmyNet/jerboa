@@ -20,7 +20,7 @@ class CommentEditViewModel : ViewModel() {
     var loading = mutableStateOf(false)
         private set
 
-    fun setCommentView(
+    fun initialize(
         newCommentView: CommentView
     ) {
         commentView.value = newCommentView

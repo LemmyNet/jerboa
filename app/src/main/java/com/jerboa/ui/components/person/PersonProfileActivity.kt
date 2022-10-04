@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import arrow.core.Either
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -25,29 +26,19 @@ import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.isScrolledToEnd
+import com.jerboa.loginFirstToast
 import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
-import com.jerboa.ui.components.comment.edit.commentEditClickWrapper
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
-import com.jerboa.ui.components.comment.reply.commentReplyClickWrapper
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
-import com.jerboa.ui.components.community.CommunityViewModel
-import com.jerboa.ui.components.community.communityClickWrapper
 import com.jerboa.ui.components.home.HomeViewModel
-import com.jerboa.ui.components.inbox.InboxViewModel
-import com.jerboa.ui.components.inbox.inboxClickWrapper
 import com.jerboa.ui.components.post.PostListings
-import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
-import com.jerboa.ui.components.post.edit.postEditClickWrapper
-import com.jerboa.ui.components.post.postClickWrapper
-import com.jerboa.ui.components.report.CreateReportViewModel
-import com.jerboa.ui.components.report.commentReportClickWrapper
-import com.jerboa.ui.components.report.postReportClickWrapper
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -57,15 +48,11 @@ fun PersonProfileActivity(
     savedMode: Boolean,
     navController: NavController,
     personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
-    communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
     homeViewModel: HomeViewModel,
-    inboxViewModel: InboxViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
-    postEditViewModel: PostEditViewModel,
-    createReportViewModel: CreateReportViewModel
+    postEditViewModel: PostEditViewModel
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -93,12 +80,15 @@ fun PersonProfileActivity(
                         onClickSortType = { sortType ->
                             scrollToTop(scope, postListState)
                             personProfileViewModel.fetchPersonDetails(
-                                id = personProfileViewModel.personId.value!!,
+                                idOrName = Either.Left(
+                                    personProfileViewModel.res!!.person_view
+                                        .person.id
+                                ),
                                 account = account,
                                 clear = true,
                                 changeSortType = sortType,
-                                ctx = ctx,
-                                changeSavedOnly = savedMode
+                                changeSavedOnly = savedMode,
+                                ctx = ctx
                             )
                         },
                         onBlockPersonClick = {
@@ -120,16 +110,13 @@ fun PersonProfileActivity(
                     padding = it,
                     navController = navController,
                     personProfileViewModel = personProfileViewModel,
-                    postViewModel = postViewModel,
-                    communityViewModel = communityViewModel,
                     ctx = ctx,
                     account = account,
                     scope = scope,
                     postListState = postListState,
                     commentEditViewModel = commentEditViewModel,
                     commentReplyViewModel = commentReplyViewModel,
-                    postEditViewModel = postEditViewModel,
-                    createReportViewModel = createReportViewModel
+                    postEditViewModel = postEditViewModel
                 )
             },
             bottomBar = {
@@ -138,28 +125,21 @@ fun PersonProfileActivity(
                     unreadCounts = homeViewModel.unreadCountResponse,
                     onClickProfile = {
                         account?.id?.also {
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = it,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx
-                            )
+                            navController.navigate(route = "profile/$it")
                         }
                     },
                     onClickInbox = {
-                        inboxClickWrapper(inboxViewModel, account, navController, ctx)
+                        account?.also {
+                            navController.navigate(route = "inbox")
+                        } ?: run {
+                            loginFirstToast(ctx)
+                        }
                     },
                     onClickSaved = {
                         account?.id?.also {
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = it,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx,
-                                saved = true
-                            )
+                            navController.navigate(route = "profile/$it?saved=${true}")
+                        } ?: run {
+                            loginFirstToast(ctx)
                         }
                     },
                     navController = navController
@@ -181,16 +161,13 @@ fun UserTabs(
     savedMode: Boolean,
     navController: NavController,
     personProfileViewModel: PersonProfileViewModel,
-    communityViewModel: CommunityViewModel,
     ctx: Context,
     account: Account?,
     scope: CoroutineScope,
     postListState: LazyListState,
-    postViewModel: PostViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
-    createReportViewModel: CreateReportViewModel,
     padding: PaddingValues
 ) {
     val tabTitles = if (savedMode) {
@@ -248,7 +225,7 @@ fun UserTabs(
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.fillMaxSize()
-                        // .simpleVerticalScrollbar(listState),
+                            .simpleVerticalScrollbar(listState)
                     ) {
                         item {
                             personProfileViewModel.res?.person_view?.also {
@@ -275,13 +252,7 @@ fun UserTabs(
                                     community = cmv.community,
                                     modifier = Modifier.padding(MEDIUM_PADDING),
                                     onClick = { community ->
-                                        communityClickWrapper(
-                                            communityViewModel,
-                                            community.id,
-                                            account,
-                                            navController,
-                                            ctx = ctx
-                                        )
+                                        navController.navigate(route = "community/${community.id}")
                                     }
                                 )
                             }
@@ -327,13 +298,7 @@ fun UserTabs(
                             }
                         },
                         onPostClick = { postView ->
-                            postClickWrapper(
-                                postViewModel = postViewModel,
-                                postId = postView.post.id,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx
-                            )
+                            navController.navigate(route = "post/${postView.post.id}")
                         },
                         onPostLinkClick = { url ->
                             openLink(url, ctx)
@@ -348,11 +313,8 @@ fun UserTabs(
                             }
                         },
                         onEditPostClick = { postView ->
-                            postEditClickWrapper(
-                                postEditViewModel,
-                                postView,
-                                navController
-                            )
+                            postEditViewModel.initialize(postView)
+                            navController.navigate("postEdit")
                         },
                         onDeletePostClick = { postView ->
                             account?.also { acct ->
@@ -364,38 +326,22 @@ fun UserTabs(
                             }
                         },
                         onReportClick = { postView ->
-                            postReportClickWrapper(
-                                createReportViewModel,
-                                postView.post.id,
-                                navController
-                            )
+                            navController.navigate("postReport/${postView.post.id}")
                         },
                         onCommunityClick = { community ->
-                            communityClickWrapper(
-                                communityViewModel,
-                                community.id,
-                                account,
-                                navController,
-                                ctx = ctx
-                            )
+                            navController.navigate(route = "community/${community.id}")
                         },
                         onPersonClick = { personId ->
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = personId,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx
-                            )
+                            navController.navigate(route = "profile/$personId")
                         },
                         onSwipeRefresh = {
-                            personProfileViewModel.personId.value?.also {
+                            personProfileViewModel.res?.person_view?.person?.id?.also {
                                 personProfileViewModel.fetchPersonDetails(
-                                    id = it,
+                                    idOrName = Either.Left(it),
                                     account = account,
                                     clear = true,
-                                    ctx = ctx,
-                                    changeSavedOnly = savedMode
+                                    changeSavedOnly = savedMode,
+                                    ctx = ctx
                                 )
                             }
                         },
@@ -404,13 +350,13 @@ fun UserTabs(
                             personProfileViewModel.posts.isNotEmpty(),
                         isScrolledToEnd = {
                             if (personProfileViewModel.posts.size > 0) {
-                                personProfileViewModel.personId.value?.also {
+                                personProfileViewModel.res?.person_view?.person?.id?.also {
                                     personProfileViewModel.fetchPersonDetails(
-                                        id = it,
+                                        idOrName = Either.Left(it),
                                         account = account,
                                         nextPage = true,
-                                        ctx = ctx,
-                                        changeSavedOnly = savedMode
+                                        changeSavedOnly = savedMode,
+                                        ctx = ctx
                                     )
                                 }
                             }
@@ -434,16 +380,18 @@ fun UserTabs(
                     }
 
                     // act when end of list reached
-                    LaunchedEffect(endOfListReached) {
-                        if (personProfileViewModel.comments.size > 0) {
-                            personProfileViewModel.personId.value?.also {
-                                personProfileViewModel.fetchPersonDetails(
-                                    id = it,
-                                    account = account,
-                                    nextPage = true,
-                                    ctx = ctx,
-                                    changeSavedOnly = savedMode
-                                )
+                    if (endOfListReached) {
+                        LaunchedEffect(Unit) {
+                            if (personProfileViewModel.comments.size > 0) {
+                                personProfileViewModel.res?.person_view?.person?.id?.also {
+                                    personProfileViewModel.fetchPersonDetails(
+                                        idOrName = Either.Left(it),
+                                        account = account,
+                                        nextPage = true,
+                                        changeSavedOnly = savedMode,
+                                        ctx = ctx
+                                    )
+                                }
                             }
                         }
                     }
@@ -451,13 +399,13 @@ fun UserTabs(
                     SwipeRefresh(
                         state = rememberSwipeRefreshState(loading),
                         onRefresh = {
-                            personProfileViewModel.personId.value?.also {
+                            personProfileViewModel.res?.person_view?.person?.id?.also {
                                 personProfileViewModel.fetchPersonDetails(
-                                    id = it,
+                                    idOrName = Either.Left(it),
                                     account = account,
                                     clear = true,
-                                    ctx = ctx,
-                                    changeSavedOnly = savedMode
+                                    changeSavedOnly = savedMode,
+                                    ctx = ctx
                                 )
                             }
                         }
@@ -486,12 +434,8 @@ fun UserTabs(
                                 }
                             },
                             onReplyClick = { commentView ->
-                                commentReplyClickWrapper(
-                                    commentReplyViewModel = commentReplyViewModel,
-                                    parentCommentView = commentView,
-                                    postId = commentView.post.id,
-                                    navController = navController
-                                )
+                                commentReplyViewModel.initialize(Either.Left(commentView))
+                                navController.navigate("commentReply")
                             },
                             onSaveClick = { commentView ->
                                 account?.also { acct ->
@@ -503,38 +447,17 @@ fun UserTabs(
                                 }
                             },
                             onPersonClick = { personId ->
-                                personClickWrapper(
-                                    personProfileViewModel,
-                                    personId,
-                                    account,
-                                    navController,
-                                    ctx
-                                )
+                                navController.navigate(route = "profile/$personId")
                             },
                             onCommunityClick = { community ->
-                                communityClickWrapper(
-                                    communityViewModel = communityViewModel,
-                                    communityId = community.id,
-                                    account = account,
-                                    navController = navController,
-                                    ctx = ctx
-                                )
+                                navController.navigate(route = "community/${community.id}")
                             },
                             onPostClick = { postId ->
-                                postClickWrapper(
-                                    postViewModel = postViewModel,
-                                    postId = postId,
-                                    account = account,
-                                    navController = navController,
-                                    ctx = ctx
-                                )
+                                navController.navigate(route = "post/$postId")
                             },
                             onEditCommentClick = { commentView ->
-                                commentEditClickWrapper(
-                                    commentEditViewModel,
-                                    commentView,
-                                    navController
-                                )
+                                commentEditViewModel.initialize(commentView)
+                                navController.navigate("commentEdit")
                             },
                             onDeleteCommentClick = { commentView ->
                                 account?.also { acct ->
@@ -546,11 +469,7 @@ fun UserTabs(
                                 }
                             },
                             onReportClick = { commentView ->
-                                commentReportClickWrapper(
-                                    createReportViewModel,
-                                    commentView.comment.id,
-                                    navController
-                                )
+                                navController.navigate("commentReport/${commentView.comment.id}")
                             },
                             onBlockCreatorClick = {
                                 account?.also { acct ->

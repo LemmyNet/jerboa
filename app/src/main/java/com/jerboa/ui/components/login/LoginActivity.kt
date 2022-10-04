@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.login
 
 import android.util.Log
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -8,6 +9,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
@@ -37,9 +39,10 @@ fun LoginActivity(
                     accounts = accounts
                 )
             },
-            content = {
+            content = { padding ->
                 LoginForm(
                     loading = loginViewModel.loading,
+                    modifier = Modifier.padding(padding),
                     onClickLogin = { form, instance ->
                         loginViewModel.login(
                             navController = navController,

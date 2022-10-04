@@ -2,6 +2,7 @@ package com.jerboa.api
 
 import android.content.Context
 import android.util.Log
+import arrow.core.Either
 import com.jerboa.VoteType
 import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.*
@@ -338,7 +339,7 @@ suspend fun getSiteMetadataWrapper(
 suspend fun fetchPostsWrapper(
     account: Account?,
     ctx: Context?,
-    communityId: Int? = null,
+    communityIdOrName: Either<Int, String>? = null,
     sortType: SortType,
     listingType: ListingType,
     page: Int
@@ -347,9 +348,13 @@ suspend fun fetchPostsWrapper(
     var posts = listOf<PostView>()
     val api = API.getInstance()
 
+    val communityId = communityIdOrName?.fold({ it }, { null })
+    val communityName = communityIdOrName?.fold({ null }, { it })
+
     try {
         val form = GetPosts(
             community_id = communityId,
+            community_name = communityName,
             sort = sortType.toString(),
             type_ = listingType.toString(),
             page = page,

@@ -17,7 +17,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.datatypes.PostView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
@@ -25,7 +24,6 @@ import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
-import org.w3c.dom.Text
 
 @Composable
 fun EditPostHeader(
@@ -90,7 +88,8 @@ fun EditPostBody(
     onUrlChange: (url: String) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
     formValid: (valid: Boolean) -> Unit,
-    account: Account?
+    account: Account?,
+    modifier: Modifier = Modifier
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -101,7 +100,7 @@ fun EditPostBody(
     )
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(MEDIUM_PADDING)
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
@@ -157,13 +156,4 @@ fun EditPostBodyPreview() {
         onUrlChange = {},
         account = null
     )
-}
-
-fun postEditClickWrapper(
-    postEditViewModel: PostEditViewModel,
-    postView: PostView,
-    navController: NavController
-) {
-    postEditViewModel.setPostView(postView)
-    navController.navigate("postEdit")
 }

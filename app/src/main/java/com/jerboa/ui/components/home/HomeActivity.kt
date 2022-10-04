@@ -28,34 +28,17 @@ import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.community.CommunityViewModel
-import com.jerboa.ui.components.community.communityClickWrapper
-import com.jerboa.ui.components.inbox.InboxViewModel
-import com.jerboa.ui.components.inbox.inboxClickWrapper
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostListings
-import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
-import com.jerboa.ui.components.post.edit.postEditClickWrapper
-import com.jerboa.ui.components.post.postClickWrapper
-import com.jerboa.ui.components.report.CreateReportViewModel
-import com.jerboa.ui.components.report.postReportClickWrapper
-import com.jerboa.ui.components.settings.settingsClickWrapper
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun HomeActivity(
     navController: NavController,
     homeViewModel: HomeViewModel,
-    communityViewModel: CommunityViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
-    inboxViewModel: InboxViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    postEditViewModel: PostEditViewModel,
-    createReportViewModel: CreateReportViewModel
+    postEditViewModel: PostEditViewModel
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -88,10 +71,7 @@ fun HomeActivity(
                     accounts = accounts,
                     navController = navController,
                     accountViewModel = accountViewModel,
-                    communityViewModel = communityViewModel,
                     homeViewModel = homeViewModel,
-                    personProfileViewModel = personProfileViewModel,
-                    inboxViewModel = inboxViewModel,
                     scope = scope,
                     scaffoldState = scaffoldState,
                     account = account,
@@ -102,11 +82,7 @@ fun HomeActivity(
                 MainPostListingsContent(
                     padding = it,
                     homeViewModel = homeViewModel,
-                    communityViewModel = communityViewModel,
-                    personProfileViewModel = personProfileViewModel,
-                    postViewModel = postViewModel,
                     postEditViewModel = postEditViewModel,
-                    createReportViewModel = createReportViewModel,
                     account = account,
                     ctx = ctx,
                     navController = navController,
@@ -133,30 +109,21 @@ fun HomeActivity(
                     unreadCounts = homeViewModel.unreadCountResponse,
                     onClickProfile = {
                         account?.id?.also {
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = it,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx
-                            )
+                            navController.navigate(route = "profile/$it")
                         } ?: run {
                             loginFirstToast(ctx)
                         }
                     },
                     onClickInbox = {
-                        inboxClickWrapper(inboxViewModel, account, navController, ctx)
+                        account?.also {
+                            navController.navigate(route = "inbox")
+                        } ?: run {
+                            loginFirstToast(ctx)
+                        }
                     },
                     onClickSaved = {
                         account?.id?.also {
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = it,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx,
-                                saved = true
-                            )
+                            navController.navigate(route = "profile/$it?saved=${true}")
                         } ?: run {
                             loginFirstToast(ctx)
                         }
@@ -171,11 +138,7 @@ fun HomeActivity(
 @Composable
 fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
-    communityViewModel: CommunityViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
     postEditViewModel: PostEditViewModel,
-    createReportViewModel: CreateReportViewModel,
     account: Account?,
     ctx: Context,
     navController: NavController,
@@ -203,13 +166,7 @@ fun MainPostListingsContent(
             )
         },
         onPostClick = { postView ->
-            postClickWrapper(
-                postViewModel = postViewModel,
-                postId = postView.post.id,
-                account = account,
-                navController = navController,
-                ctx = ctx
-            )
+            navController.navigate(route = "post/${postView.post.id}")
         },
         onPostLinkClick = { url ->
             openLink(url, ctx)
@@ -242,11 +199,8 @@ fun MainPostListingsContent(
             }
         },
         onEditPostClick = { postView ->
-            postEditClickWrapper(
-                postEditViewModel,
-                postView,
-                navController
-            )
+            postEditViewModel.initialize(postView)
+            navController.navigate("postEdit")
         },
         onDeletePostClick = { postView ->
             account?.also { acct ->
@@ -258,29 +212,13 @@ fun MainPostListingsContent(
             }
         },
         onReportClick = { postView ->
-            postReportClickWrapper(
-                createReportViewModel,
-                postView.post.id,
-                navController
-            )
+            navController.navigate("postReport/${postView.post.id}")
         },
         onCommunityClick = { community ->
-            communityClickWrapper(
-                communityViewModel = communityViewModel,
-                communityId = community.id,
-                account = account,
-                navController = navController,
-                ctx = ctx
-            )
+            navController.navigate(route = "community/${community.id}")
         },
         onPersonClick = { personId ->
-            personClickWrapper(
-                personProfileViewModel = personProfileViewModel,
-                personId = personId,
-                account = account,
-                navController = navController,
-                ctx = ctx
-            )
+            navController.navigate(route = "profile/$personId")
         },
         onSwipeRefresh = {
             homeViewModel.fetchPosts(
@@ -311,9 +249,6 @@ fun MainDrawer(
     accounts: List<Account>?,
     navController: NavController,
     accountViewModel: AccountViewModel,
-    communityViewModel: CommunityViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    inboxViewModel: InboxViewModel,
     homeViewModel: HomeViewModel,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
@@ -367,55 +302,35 @@ fun MainDrawer(
             closeDrawer(scope, scaffoldState)
         },
         onCommunityClick = { community ->
-            communityClickWrapper(
-                communityViewModel,
-                community.id,
-                account,
-                navController,
-                ctx = ctx
-            )
+            navController.navigate(route = "community/${community.id}")
             closeDrawer(scope, scaffoldState)
         },
         onClickProfile = {
             account?.id?.also {
-                personClickWrapper(
-                    personProfileViewModel = personProfileViewModel,
-                    personId = it,
-                    account = account,
-                    navController = navController,
-                    ctx = ctx,
-                    saved = false
-                )
+                navController.navigate(route = "profile/$it")
                 closeDrawer(scope, scaffoldState)
             }
         },
         onClickSaved = {
             account?.id?.also {
-                personClickWrapper(
-                    personProfileViewModel = personProfileViewModel,
-                    personId = it,
-                    account = account,
-                    navController = navController,
-                    ctx = ctx,
-                    saved = true
-                )
+                navController.navigate(route = "profile/$it?saved=${true}")
                 closeDrawer(scope, scaffoldState)
             }
         },
         onClickInbox = {
-            inboxClickWrapper(
-                inboxViewModel = inboxViewModel,
-                account = account,
-                navController = navController,
-                ctx = ctx
-            )
+            account?.also {
+                navController.navigate(route = "inbox")
+            } ?: run {
+                loginFirstToast(ctx)
+            }
             closeDrawer(scope, scaffoldState)
         },
         onClickSettings = {
-            settingsClickWrapper(
-                navController = navController,
-                account = account
-            )
+            account.also {
+                navController.navigate(route = "settings")
+            } ?: run {
+                loginFirstToast(ctx)
+            }
             closeDrawer(scope, scaffoldState)
         }
     )

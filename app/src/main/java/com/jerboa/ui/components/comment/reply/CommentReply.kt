@@ -3,9 +3,9 @@ package com.jerboa.ui.components.comment.reply
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -22,7 +22,6 @@ import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.common.MarkdownTextField
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -132,32 +131,26 @@ fun CommentReply(
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
-    account: Account?
+    account: Account?,
+    modifier: Modifier = Modifier
 ) {
-    val listState = rememberLazyListState()
+    val scrollState = rememberScrollState()
 
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState)
+    Column(
+        modifier = modifier.verticalScroll(scrollState)
     ) {
-        item {
-            RepliedComment(
-                commentView = commentView,
-                onPersonClick = onPersonClick,
-                isModerator = isModerator
-            )
-        }
-        item {
-            Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
-        }
-        item {
-            MarkdownTextField(
-                text = reply,
-                onTextChange = onReplyChange,
-                account = account,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+        RepliedComment(
+            commentView = commentView,
+            onPersonClick = onPersonClick,
+            isModerator = isModerator
+        )
+        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        MarkdownTextField(
+            text = reply,
+            onTextChange = onReplyChange,
+            account = account,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -168,46 +161,26 @@ fun PostReply(
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
-    account: Account?
+    account: Account?,
+    modifier: Modifier = Modifier
 ) {
-    val listState = rememberLazyListState()
+    val scrollState = rememberScrollState()
 
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState)
+    Column(
+        modifier = Modifier.verticalScroll(scrollState)
     ) {
-        item {
-            RepliedPost(
-                postView = postView,
-                onPersonClick = onPersonClick,
-                isModerator = isModerator
-            )
-        }
-        item {
-            Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
-        }
-        item {
-            MarkdownTextField(
-                text = reply,
-                onTextChange = onReplyChange,
-                account = account,
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = "Type your comment"
-            )
-        }
+        RepliedPost(
+            postView = postView,
+            onPersonClick = onPersonClick,
+            isModerator = isModerator
+        )
+        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        MarkdownTextField(
+            text = reply,
+            onTextChange = onReplyChange,
+            account = account,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = "Type your comment"
+        )
     }
-}
-
-fun commentReplyClickWrapper(
-    commentReplyViewModel: CommentReplyViewModel,
-    postId: Int,
-    parentCommentView: CommentView? = null,
-    postView: PostView? = null,
-    navController: NavController
-) {
-    // Post id is mandatory, but the other two only one must be set
-    commentReplyViewModel.setPostId(postId)
-    commentReplyViewModel.setCommentParentView(parentCommentView)
-    commentReplyViewModel.setPostView(postView)
-    navController.navigate("commentReply")
 }
