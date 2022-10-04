@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import arrow.core.Either
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -261,7 +262,7 @@ fun InboxTabs(
                             },
                             onReplyClick = { commentView ->
                                 commentReplyViewModel.initialize(
-                                    newCommentParentView = commentView
+                                    Either.Left(commentView)
                                 )
                                 navController.navigate("commentReply")
                             },

@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -92,7 +91,6 @@ fun PictrsUrlImage(
     url: String,
     modifier: Modifier = Modifier
 ) {
-    val configuration = LocalConfiguration.current
     Image(
         painter = rememberImagePainter(
             data = pictrsImageThumbnail(url, MAX_IMAGE_SIZE),

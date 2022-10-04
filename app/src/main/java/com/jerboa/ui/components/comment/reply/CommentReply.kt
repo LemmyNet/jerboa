@@ -167,7 +167,7 @@ fun PostReply(
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier.verticalScroll(scrollState)
+        modifier = modifier.verticalScroll(scrollState)
     ) {
         RepliedPost(
             postView = postView,
