@@ -1,3 +1,26 @@
+# Jerboa v0.0.17-alpha Release (2022-10-04)
+
+## What's Changed
+
+- Running lint, updating deps. by @dessalines in https://github.com/dessalines/jerboa/pull/197
+- Moving to kotlinter-gradle by @dessalines in https://github.com/dessalines/jerboa/pull/198
+- Fixing unit tests. by @dessalines in https://github.com/dessalines/jerboa/pull/199
+- Some items fixes. by @dessalines in https://github.com/dessalines/jerboa/pull/204
+- Upgrade accompanist by @dessalines in https://github.com/dessalines/jerboa/pull/208
+- Fix comment header with flowrow. Fixes #207 by @dessalines in https://github.com/dessalines/jerboa/pull/209
+- Make comment slightly larger. Fixes #213 by @dessalines in https://github.com/dessalines/jerboa/pull/214
+- Make comment icon smaller. Fixes #212 by @dessalines in https://github.com/dessalines/jerboa/pull/215
+- Changing star to bookmark. Fixes #210 by @dessalines in https://github.com/dessalines/jerboa/pull/216
+- Fix comment indent. Fixes #211 by @dessalines in https://github.com/dessalines/jerboa/pull/217
+- Make post pictures wider. Fixes #196 by @dessalines in https://github.com/dessalines/jerboa/pull/218
+- Deduplicate scrolling posts. Fixes #219 by @dessalines in https://github.com/dessalines/jerboa/pull/220
+- Adding a login first message. Fixes #206 by @dessalines in https://github.com/dessalines/jerboa/pull/221
+- Lazycolumn 2 by @dessalines in https://github.com/dessalines/jerboa/pull/223
+- Fix deleted item header spacing. Fixes #222 by @dessalines in https://github.com/dessalines/jerboa/pull/224
+- Adding deep links. by @dessalines in https://github.com/dessalines/jerboa/pull/228
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.16...0.0.17
+
 # Jerboa v0.0.16-alpha Release (2022-07-20)
 
 - Adding instance name to accounts. Fixes #164 by @dessalines in https://github.com/dessalines/jerboa/pull/166
@@ -103,8 +126,7 @@
 - CommentReplyView refactored on its own viewmodel. Added mark replied message as read. Fixes [#45](https://github.com/dessalines/jerboa/issues/45)
 - Adding modified times. Fixes [#46](https://github.com/dessalines/jerboa/issues/46)
 - Add bottom app bar padding.
-
-Added Community and Site 
+- Added Community and Site
 
 # Jerboa v0.0.3-alpha Release (2022-01-18)
 
