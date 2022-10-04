@@ -19,15 +19,15 @@ import kotlinx.coroutines.launch
 
 class PostEditViewModel : ViewModel() {
 
-    var postView = mutableStateOf<PostView?>(null)
+    var postView by mutableStateOf<PostView?>(null)
         private set
     var loading by mutableStateOf(false)
         private set
 
-    fun setPostView(
+    fun initialize(
         newPostView: PostView
     ) {
-        postView.value = newPostView
+        postView = newPostView
     }
 
     fun editPost(
@@ -43,9 +43,9 @@ class PostEditViewModel : ViewModel() {
         homeViewModel: HomeViewModel
     ) {
         viewModelScope.launch {
-            postView.value?.also { pv ->
+            postView?.also { pv ->
                 loading = true
-                postView.value = editPostWrapper(
+                postView = editPostWrapper(
                     postView = pv,
                     account = account,
                     body = body,
@@ -53,10 +53,10 @@ class PostEditViewModel : ViewModel() {
                     name = name,
                     ctx = ctx
                 )
-                postViewModel.postView.value = postView.value
-                findAndUpdatePost(personProfileViewModel.posts, postView.value)
-                findAndUpdatePost(communityViewModel.posts, postView.value)
-                findAndUpdatePost(homeViewModel.posts, postView.value)
+                postViewModel.postView.value = postView
+                findAndUpdatePost(personProfileViewModel.posts, postView)
+                findAndUpdatePost(communityViewModel.posts, postView)
+                findAndUpdatePost(homeViewModel.posts, postView)
 
                 loading = false
                 navController.popBackStack()

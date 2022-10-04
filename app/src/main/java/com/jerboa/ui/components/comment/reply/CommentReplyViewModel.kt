@@ -1,11 +1,14 @@
 package com.jerboa.ui.components.comment.reply
 
 import android.content.Context
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import arrow.core.Either
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.db.Account
@@ -16,31 +19,15 @@ import com.jerboa.ui.components.post.PostViewModel
 
 class CommentReplyViewModel : ViewModel() {
 
-    var commentParentView = mutableStateOf<CommentView?>(null)
-        private set
-    var postId = mutableStateOf<Int?>(null)
-        private set
-    var postView = mutableStateOf<PostView?>(null)
+    var replyItem by mutableStateOf<Either<CommentView, PostView>?>(null)
         private set
     var loading = mutableStateOf(false)
         private set
 
-    fun setCommentParentView(
-        newCommentParentView: CommentView?
+    fun initialize(
+        newReplyItem: Either<CommentView, PostView>
     ) {
-        commentParentView.value = newCommentParentView
-    }
-
-    fun setPostView(
-        newPostView: PostView?
-    ) {
-        postView.value = newPostView
-    }
-
-    fun setPostId(
-        newPostId: Int
-    ) {
-        postId.value = newPostId
+        replyItem = newReplyItem
     }
 
     fun createComment(
@@ -53,21 +40,22 @@ class CommentReplyViewModel : ViewModel() {
         postViewModel: PostViewModel,
         inboxViewModel: InboxViewModel
     ) {
-        postId.value?.also { postId ->
-            createCommentRoutine(
-                content = content,
-                parentCommentView = commentParentView.value,
-                postId = postId,
-                account = account,
-                loading = loading,
-                ctx = ctx,
-                scope = viewModelScope,
-                navController = navController,
-                focusManager = focusManager,
-                personProfileViewModel = personProfileViewModel,
-                postViewModel = postViewModel,
-                inboxViewModel = inboxViewModel
-            )
-        }
+        val commentParentView = replyItem?.fold({ it }, { null })
+        val postId = replyItem?.fold({ it.post.id }, { it.post.id })!!
+
+        createCommentRoutine(
+            content = content,
+            parentCommentView = commentParentView,
+            postId = postId,
+            account = account,
+            loading = loading,
+            ctx = ctx,
+            scope = viewModelScope,
+            navController = navController,
+            focusManager = focusManager,
+            personProfileViewModel = personProfileViewModel,
+            postViewModel = postViewModel,
+            inboxViewModel = inboxViewModel
+        )
     }
 }

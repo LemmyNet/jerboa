@@ -1,8 +1,9 @@
 package com.jerboa.ui.components.report
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -14,7 +15,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 
 @Composable
@@ -73,38 +73,17 @@ fun CreateReportBody(
     onReasonChange: (TextFieldValue) -> Unit,
     account: Account?
 ) {
-    val listState = rememberLazyListState()
+    val scrollState = rememberScrollState()
 
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState)
+    Column(
+        modifier = Modifier.verticalScroll(scrollState)
     ) {
-        item {
-            MarkdownTextField(
-                text = reason,
-                onTextChange = onReasonChange,
-                account = account,
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = "Type your reason"
-            )
-        }
+        MarkdownTextField(
+            text = reason,
+            onTextChange = onReasonChange,
+            account = account,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = "Type your reason"
+        )
     }
-}
-
-fun commentReportClickWrapper(
-    createReportViewModel: CreateReportViewModel,
-    commentId: Int,
-    navController: NavController
-) {
-    createReportViewModel.setCommentId(commentId)
-    navController.navigate("commentReport")
-}
-
-fun postReportClickWrapper(
-    createReportViewModel: CreateReportViewModel,
-    postId: Int,
-    navController: NavController
-) {
-    createReportViewModel.setPostId(postId)
-    navController.navigate("postReport")
 }

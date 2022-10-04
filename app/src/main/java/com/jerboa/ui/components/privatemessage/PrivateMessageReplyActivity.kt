@@ -2,6 +2,7 @@ package com.jerboa.ui.components.privatemessage
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -17,14 +18,11 @@ import com.jerboa.datatypes.api.CreatePrivateMessage
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.inbox.InboxViewModel
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.person.personClickWrapper
 
 @Composable
 fun PrivateMessageReplyActivity(
     inboxViewModel: InboxViewModel,
     accountViewModel: AccountViewModel,
-    personProfileViewModel: PersonProfileViewModel,
     navController: NavController
 ) {
     Log.d("jerboa", "got to private message reply activity")
@@ -63,7 +61,7 @@ fun PrivateMessageReplyActivity(
                     }
                 )
             },
-            content = {
+            content = { padding ->
                 if (inboxViewModel.privateMessageReplyLoading.value) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 } else {
@@ -74,14 +72,9 @@ fun PrivateMessageReplyActivity(
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = { personId ->
-                                personClickWrapper(
-                                    personProfileViewModel,
-                                    personId,
-                                    account,
-                                    navController,
-                                    ctx
-                                )
-                            }
+                                navController.navigate(route = "profile/$personId")
+                            },
+                            modifier = Modifier.padding(padding)
                         )
                     }
                 }

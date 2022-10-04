@@ -3,6 +3,7 @@ package com.jerboa.ui.components.post.edit
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -39,7 +40,7 @@ fun PostEditActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
 
-    val pv = postEditViewModel.postView.value
+    val pv = postEditViewModel.postView
     var name by rememberSaveable { mutableStateOf(pv?.post?.name.orEmpty()) }
     var url by rememberSaveable { mutableStateOf(pv?.post?.url.orEmpty()) }
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -86,7 +87,7 @@ fun PostEditActivity(
                     }
                 }
             },
-            content = {
+            content = { padding ->
                 EditPostBody(
                     name = name,
                     onNameChange = { name = it },
@@ -103,7 +104,8 @@ fun PostEditActivity(
                             }
                         }
                     },
-                    account = account
+                    account = account,
+                    modifier = Modifier.padding(padding)
                 )
             }
         )

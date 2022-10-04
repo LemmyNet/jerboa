@@ -81,7 +81,8 @@ fun PasswordField(
 @Composable
 fun LoginForm(
     loading: Boolean = false,
-    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> }
+    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> },
+    modifier: Modifier = Modifier
 ) {
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
@@ -98,7 +99,7 @@ fun LoginForm(
     )
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally

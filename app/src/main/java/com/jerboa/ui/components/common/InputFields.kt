@@ -75,7 +75,7 @@ fun MarkdownTextField(
         )
     }
 
-    Column {
+    Column(modifier = modifier) {
         if (outlined) {
             OutlinedTextField(
                 value = text,

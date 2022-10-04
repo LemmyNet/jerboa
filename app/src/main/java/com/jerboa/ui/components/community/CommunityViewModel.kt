@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.followCommunityWrapper
@@ -31,7 +32,6 @@ class CommunityViewModel : ViewModel() {
     var moderators = mutableStateListOf<CommunityModeratorView>()
         private set
 
-    var communityId = mutableStateOf<Int?>(null)
     var loading = mutableStateOf(false)
         private set
     var posts = mutableStateListOf<PostView>()
@@ -43,23 +43,22 @@ class CommunityViewModel : ViewModel() {
 
     fun fetchPosts(
         account: Account?,
+        communityIdOrName: Either<Int, String>,
         nextPage: Boolean = false,
         clear: Boolean = false,
         changeSortType: SortType? = null,
-        changeCommunityId: Int? = null,
         ctx: Context
     ) {
         fetchPostsRoutine(
             posts = posts,
             loading = loading,
             page = page,
-            communityId = communityId,
+            communityIdOrName = communityIdOrName,
             listingType = mutableStateOf(ListingType.Community),
             sortType = sortType,
             nextPage = nextPage,
             clear = clear,
             changeSortType = changeSortType,
-            changeCommunityId = changeCommunityId,
             account = account,
             ctx = ctx,
             scope = viewModelScope
@@ -93,21 +92,29 @@ class CommunityViewModel : ViewModel() {
         }
     }
 
-    fun fetchCommunity(id: Int, auth: String?) {
+    fun fetchCommunity(
+        idOrName: Either<Int, String>,
+        auth: String?
+    ) {
         val api = API.getInstance()
 
         viewModelScope.launch {
+            val idOrNameStr = idOrName.fold({ id -> id.toString() }, { it })
+
             try {
                 Log.d(
                     "jerboa",
-                    "Fetching community id: $id"
+                    "Fetching community: $idOrNameStr"
                 )
                 loading.value = true
 
-                val form = GetCommunity(id = id, auth = auth)
+                val form = idOrName.fold({ id ->
+                    GetCommunity(id = id, auth = auth)
+                }, { name ->
+                    GetCommunity(name = name, auth = auth)
+                })
                 val out = retrofitErrorHandler(api.getCommunity(form = form.serializeToMap()))
                 communityView = out.community_view
-                communityId.value = id
                 moderators.clear()
                 moderators.addAll(out.moderators)
             } catch (e: Exception) {

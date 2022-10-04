@@ -2,6 +2,7 @@ package com.jerboa.ui.components.community.list
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -18,8 +19,6 @@ import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.community.CommunityViewModel
-import com.jerboa.ui.components.community.communityClickWrapper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -30,7 +29,6 @@ private var fetchCommunitiesJob: Job? = null
 fun CommunityListActivity(
     navController: NavController,
     communityListViewModel: CommunityListViewModel,
-    communityViewModel: CommunityViewModel,
     accountViewModel: AccountViewModel,
     selectMode: Boolean = false
 ) {
@@ -63,26 +61,21 @@ fun CommunityListActivity(
                     }
                 )
             },
-            content = {
+            content = { padding ->
                 if (communityListViewModel.loading.value) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 } else {
                     CommunityListings(
                         communities = communityListViewModel.communityList,
-                        onClickCommunity = {
+                        onClickCommunity = { cs ->
                             if (selectMode) {
-                                communityListViewModel.selectCommunity(it)
+                                communityListViewModel.selectCommunity(cs)
                                 navController.navigateUp()
                             } else {
-                                communityClickWrapper(
-                                    communityViewModel = communityViewModel,
-                                    communityId = it.id,
-                                    account = account,
-                                    navController = navController,
-                                    ctx = ctx
-                                )
+                                navController.navigate(route = "community/${cs.id}")
                             }
-                        }
+                        },
+                        modifier = Modifier.padding(padding)
                     )
                 }
             }

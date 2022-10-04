@@ -74,13 +74,14 @@ fun CommunityListHeader(
 @Composable
 fun CommunityListings(
     communities: List<Any>,
-    onClickCommunity: (community: CommunitySafe) -> Unit
+    onClickCommunity: (community: CommunitySafe) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState)
+        modifier = modifier.simpleVerticalScrollbar(listState)
     ) {
         items(
             communities,

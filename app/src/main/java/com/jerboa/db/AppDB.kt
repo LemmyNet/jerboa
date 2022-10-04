@@ -1,7 +1,6 @@
 package com.jerboa.db
 
 import android.content.Context
-import androidx.annotation.NonNull
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -22,12 +21,12 @@ data class Account(
     @ColumnInfo(
         name = "default_listing_type",
         defaultValue = "0"
-    ) @NonNull
+    )
     val defaultListingType: Int,
     @ColumnInfo(
         name = "default_sort_type",
         defaultValue = "0"
-    ) @NonNull
+    )
     val defaultSortType: Int
 )
 

@@ -3,9 +3,9 @@ package com.jerboa.ui.components.privatemessage
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -20,7 +20,6 @@ import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -107,31 +106,25 @@ fun PrivateMessageReply(
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    account: Account?
+    account: Account?,
+    modifier: Modifier = Modifier
 ) {
-    val listState = rememberLazyListState()
+    val scrollState = rememberScrollState()
 
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState)
+    Column(
+        modifier = modifier.verticalScroll(scrollState)
     ) {
-        item {
-            RepliedPrivateMessage(
-                privateMessageView = privateMessageView,
-                onPersonClick = onPersonClick
-            )
-        }
-        item {
-            Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
-        }
-        item {
-            MarkdownTextField(
-                text = reply,
-                onTextChange = onReplyChange,
-                account = account,
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = "Type your message"
-            )
-        }
+        RepliedPrivateMessage(
+            privateMessageView = privateMessageView,
+            onPersonClick = onPersonClick
+        )
+        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        MarkdownTextField(
+            text = reply,
+            onTextChange = onReplyChange,
+            account = account,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = "Type your message"
+        )
     }
 }

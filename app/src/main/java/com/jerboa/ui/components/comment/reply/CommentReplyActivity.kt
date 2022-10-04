@@ -2,6 +2,7 @@ package com.jerboa.ui.components.comment.reply
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -18,7 +19,6 @@ import com.jerboa.isModerator
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostViewModel
 
 @Composable
@@ -65,51 +65,43 @@ fun CommentReplyActivity(
                     }
                 )
             },
-            content = {
+            content = { padding ->
                 if (commentReplyViewModel.loading.value) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 } else {
-                    commentReplyViewModel.commentParentView.value?.also { commentView ->
+                    commentReplyViewModel.replyItem?.fold({ commentView ->
                         CommentReply(
                             commentView = commentView,
                             account = account,
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = { personId ->
-                                personClickWrapper(
-                                    personProfileViewModel,
-                                    personId,
-                                    account,
-                                    navController,
-                                    ctx
-                                )
+                                navController.navigate(route = "profile/$personId")
                             },
                             isModerator = isModerator(
                                 commentView.creator,
                                 postViewModel
                                     .moderators
-                            )
+                            ),
+                            modifier = Modifier.padding(padding)
                         )
-                    } ?: run {
-                        commentReplyViewModel.postView.value?.also { postView ->
-                            PostReply(
-                                postView = postView,
-                                account = account,
-                                reply = reply,
-                                onReplyChange = { reply = it },
-                                onPersonClick = { personId ->
-                                    personClickWrapper(
-                                        personProfileViewModel,
-                                        personId,
-                                        account,
-                                        navController,
-                                        ctx
-                                    )
-                                },
-                                isModerator = isModerator(postView.creator, postViewModel.moderators)
-                            )
-                        }
-                    }
+                    }, { postView ->
+                        PostReply(
+                            postView = postView,
+                            account = account,
+                            reply = reply,
+                            onReplyChange = { reply = it },
+                            onPersonClick = { personId ->
+                                navController.navigate(route = "profile/$personId")
+                            },
+                            isModerator = isModerator(
+                                postView.creator,
+                                postViewModel
+                                    .moderators
+                            ),
+                            modifier = Modifier.padding(padding)
+                        )
+                    })
                 }
             }
         )

@@ -2,7 +2,7 @@ package com.jerboa.ui.components.post
 
 import android.content.Context
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import arrow.core.Either
 import com.jerboa.VoteType
 import com.jerboa.api.deletePostWrapper
 import com.jerboa.api.fetchPostsWrapper
@@ -18,14 +18,13 @@ import kotlinx.coroutines.launch
 
 fun fetchPostsRoutine(
     posts: MutableList<PostView>,
+    communityIdOrName: Either<Int, String>? = null,
     loading: MutableState<Boolean>,
     page: MutableState<Int>,
-    communityId: MutableState<Int?> = mutableStateOf(null),
     listingType: MutableState<ListingType>,
     sortType: MutableState<SortType>,
     nextPage: Boolean = false,
     clear: Boolean = false,
-    changeCommunityId: Int? = null,
     changeListingType: ListingType? = null,
     changeSortType: SortType? = null,
     account: Account?,
@@ -51,14 +50,10 @@ fun fetchPostsRoutine(
             sortType.value = it
         }
 
-        changeCommunityId?.also {
-            communityId.value = it
-        }
-
         val newPosts = fetchPostsWrapper(
             account = account,
             ctx = ctx,
-            communityId = communityId.value,
+            communityIdOrName = communityIdOrName,
             sortType = sortType.value,
             listingType = listingType.value,
             page = page.value

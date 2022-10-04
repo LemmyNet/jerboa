@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.post
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -36,9 +34,9 @@ fun PostHeaderLine(
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
+    modifier: Modifier = Modifier,
     isSameInstance: Boolean = false,
-    showCommunityName: Boolean = true,
-    modifier: Modifier = Modifier
+    showCommunityName: Boolean = true
 ) {
     FlowRow(
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
@@ -300,9 +298,9 @@ fun PostFooterLine(
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onBlockCreatorClick: (person: PersonSafe) -> Unit,
     onBlockCommunityClick: (community: CommunitySafe) -> Unit,
+    modifier: Modifier = Modifier,
     showReply: Boolean = false,
-    account: Account?,
-    modifier: Modifier = Modifier
+    account: Account?
 ) {
     // TODO val score = postView.counts.score
     val myVote = postView.my_vote
@@ -625,22 +623,6 @@ fun PostListing(
 fun PostListingHeaderPreview() {
     val navController = rememberNavController()
     SimpleTopAppBar("Post", navController)
-}
-
-fun postClickWrapper(
-    postViewModel: PostViewModel,
-    postId: Int,
-    account: Account?,
-    navController: NavController,
-    ctx: Context
-) {
-    postViewModel.fetchPost(
-        id = postId,
-        account = account,
-        clear = true,
-        ctx = ctx
-    )
-    navController.navigate(route = "post")
 }
 
 @Composable

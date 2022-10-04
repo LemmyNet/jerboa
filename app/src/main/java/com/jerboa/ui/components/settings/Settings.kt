@@ -28,15 +28,6 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.theme.*
 import kotlinx.coroutines.launch
 
-fun settingsClickWrapper(
-    navController: NavController,
-    account: Account?
-) {
-    account.also {
-        navController.navigate(route = "settings")
-    }
-}
-
 @Composable
 fun SettingsHeader(
     navController: NavController = rememberNavController()
@@ -95,7 +86,7 @@ fun SettingsTextField(
 @Composable
 fun ImageWithClose(
     onClick: () -> Unit,
-    composable: @Composable() () -> Unit // ktlint-disable annotation
+    composable: @Composable () -> Unit
 ) {
     Box(contentAlignment = Alignment.TopEnd) {
         composable()

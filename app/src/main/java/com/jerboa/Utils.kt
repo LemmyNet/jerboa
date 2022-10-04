@@ -55,10 +55,13 @@ const val MAX_POST_TITLE_LENGTH = 200
 
 val DEFAULT_LEMMY_INSTANCES = listOf(
     "lemmy.ml",
-    "szmer.info",
     "lemmygrad.ml",
-    "lemmy.eus",
-    "lemmy.pt"
+    "mujico.org",
+    "feddit.de",
+    "szmer.info",
+    "beehaw.org",
+    "feddit.it",
+    "sopuli.xyz"
 )
 
 // convert a data class to a map

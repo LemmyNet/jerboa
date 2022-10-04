@@ -14,6 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import arrow.core.Either
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.loginFirstToast
@@ -23,30 +24,17 @@ import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.HomeViewModel
-import com.jerboa.ui.components.inbox.InboxViewModel
-import com.jerboa.ui.components.inbox.inboxClickWrapper
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.person.personClickWrapper
 import com.jerboa.ui.components.post.PostListings
-import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
-import com.jerboa.ui.components.post.edit.postEditClickWrapper
-import com.jerboa.ui.components.post.postClickWrapper
-import com.jerboa.ui.components.report.CreateReportViewModel
-import com.jerboa.ui.components.report.postReportClickWrapper
 
 @Composable
 fun CommunityActivity(
     navController: NavController,
     communityViewModel: CommunityViewModel,
     communityListViewModel: CommunityListViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
     accountViewModel: AccountViewModel,
     homeViewModel: HomeViewModel,
-    inboxViewModel: InboxViewModel,
-    postEditViewModel: PostEditViewModel,
-    createReportViewModel: CreateReportViewModel
+    postEditViewModel: PostEditViewModel
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -69,6 +57,7 @@ fun CommunityActivity(
                             onClickRefresh = {
                                 scrollToTop(scope, postListState)
                                 communityViewModel.fetchPosts(
+                                    communityIdOrName = Either.Left(com.id),
                                     account = account,
                                     clear = true,
                                     ctx = ctx
@@ -77,6 +66,7 @@ fun CommunityActivity(
                             onClickSortType = { sortType ->
                                 scrollToTop(scope, postListState)
                                 communityViewModel.fetchPosts(
+                                    communityIdOrName = Either.Left(com.id),
                                     account = account,
                                     clear = true,
                                     changeSortType = sortType,
@@ -105,12 +95,12 @@ fun CommunityActivity(
                     listState = postListState,
                     padding = it,
                     contentAboveListings = {
-                        communityViewModel.communityView?.also {
+                        communityViewModel.communityView?.also { cv ->
                             CommunityTopSection(
-                                communityView = it,
-                                onClickFollowCommunity = { cv ->
+                                communityView = cv,
+                                onClickFollowCommunity = { cfv ->
                                     communityViewModel.followCommunity(
-                                        cv = cv,
+                                        cv = cfv,
                                         account = account,
                                         ctx = ctx
                                     )
@@ -136,13 +126,7 @@ fun CommunityActivity(
                         )
                     },
                     onPostClick = { postView ->
-                        postClickWrapper(
-                            postViewModel = postViewModel,
-                            postId = postView.post.id,
-                            account = account,
-                            navController = navController,
-                            ctx = ctx
-                        )
+                        navController.navigate(route = "post/${postView.post.id}")
                     },
                     onPostLinkClick = { url ->
                         openLink(url, ctx)
@@ -174,20 +158,11 @@ fun CommunityActivity(
                         }
                     },
                     onCommunityClick = { community ->
-                        communityClickWrapper(
-                            communityViewModel,
-                            community.id,
-                            account,
-                            navController,
-                            ctx = ctx
-                        )
+                        navController.navigate(route = "community/${community.id}")
                     },
                     onEditPostClick = { postView ->
-                        postEditClickWrapper(
-                            postEditViewModel,
-                            postView,
-                            navController
-                        )
+                        postEditViewModel.initialize(postView)
+                        navController.navigate("postEdit")
                     },
                     onDeletePostClick = { postView ->
                         account?.also { acct ->
@@ -199,14 +174,14 @@ fun CommunityActivity(
                         }
                     },
                     onReportClick = { postView ->
-                        postReportClickWrapper(
-                            createReportViewModel,
-                            postView.post.id,
-                            navController
-                        )
+                        navController.navigate("postReport/${postView.post.id}")
                     },
                     onSwipeRefresh = {
                         communityViewModel.fetchPosts(
+                            communityIdOrName = Either.Left(
+                                communityViewModel.communityView!!
+                                    .community.id
+                            ),
                             account = account,
                             clear = true,
                             ctx = ctx
@@ -218,6 +193,10 @@ fun CommunityActivity(
                     isScrolledToEnd = {
                         if (communityViewModel.posts.size > 0) {
                             communityViewModel.fetchPosts(
+                                communityIdOrName = Either.Left(
+                                    communityViewModel.communityView!!
+                                        .community.id
+                                ),
                                 account = account,
                                 nextPage = true,
                                 ctx = ctx
@@ -225,13 +204,7 @@ fun CommunityActivity(
                         }
                     },
                     onPersonClick = { personId ->
-                        personClickWrapper(
-                            personProfileViewModel = personProfileViewModel,
-                            personId = personId,
-                            account = account,
-                            navController = navController,
-                            ctx = ctx
-                        )
+                        navController.navigate(route = "profile/$personId")
                     },
                     account = account
                 )
@@ -259,28 +232,23 @@ fun CommunityActivity(
                     unreadCounts = homeViewModel.unreadCountResponse,
                     onClickProfile = {
                         account?.id?.also {
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = it,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx
-                            )
+                            navController.navigate(route = "profile/$it")
+                        } ?: run {
+                            loginFirstToast(ctx)
                         }
                     },
                     onClickInbox = {
-                        inboxClickWrapper(inboxViewModel, account, navController, ctx)
+                        account?.also {
+                            navController.navigate(route = "inbox")
+                        } ?: run {
+                            loginFirstToast(ctx)
+                        }
                     },
                     onClickSaved = {
                         account?.id?.also {
-                            personClickWrapper(
-                                personProfileViewModel = personProfileViewModel,
-                                personId = it,
-                                account = account,
-                                navController = navController,
-                                ctx = ctx,
-                                saved = true
-                            )
+                            navController.navigate(route = "profile/$it?saved=${true}")
+                        } ?: run {
+                            loginFirstToast(ctx)
                         }
                     },
                     navController = navController
