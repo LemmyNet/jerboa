@@ -112,7 +112,7 @@ fun PrivateMessageReply(
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier.verticalScroll(scrollState)
+        modifier = modifier.verticalScroll(scrollState)
     ) {
         RepliedPrivateMessage(
             privateMessageView = privateMessageView,
