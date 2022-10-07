@@ -26,6 +26,7 @@ import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.api.MyUserInfo
 import com.jerboa.db.Account
+import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.person.PersonName
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun Drawer(
     navController: NavController = rememberNavController(),
-    accounts: List<Account>? = null,
+    accountViewModel: AccountViewModel,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
@@ -59,7 +60,7 @@ fun Drawer(
     Divider()
     // Drawer items
     DrawerContent(
-        accounts = accounts,
+        accountViewModel = accountViewModel,
         unreadCounts = unreadCounts,
         myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
@@ -79,7 +80,7 @@ fun Drawer(
 fun DrawerContent(
     showAccountAddMode: Boolean,
     navController: NavController,
-    accounts: List<Account>?,
+    accountViewModel: AccountViewModel,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
@@ -97,7 +98,7 @@ fun DrawerContent(
         exit = shrinkVertically()
     ) {
         DrawerAddAccountMode(
-            accounts = accounts,
+            accountViewModel = accountViewModel,
             navController = navController,
             onSwitchAccountClick = onSwitchAccountClick,
             onSignOutClick = onSignOutClick
@@ -248,12 +249,12 @@ fun DrawerItemsMainPreview() {
 @Composable
 fun DrawerAddAccountMode(
     navController: NavController = rememberNavController(),
-    accounts: List<Account>? = null,
+    accountViewModel: AccountViewModel?,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit
 ) {
-    val accountsWithoutCurrent = accounts?.toMutableList()
-    val currentAccount = getCurrentAccount(accounts)
+    val accountsWithoutCurrent = accountViewModel?.allAccounts?.value?.toMutableList()
+    val currentAccount = accountsWithoutCurrent?.firstOrNull { it.current }
     accountsWithoutCurrent?.remove(currentAccount)
 
     Column {
@@ -269,7 +270,7 @@ fun DrawerAddAccountMode(
                 onClick = { onSwitchAccountClick(it) }
             )
         }
-        accounts?.also {
+        currentAccount?.also {
             IconAndTextDrawerItem(
                 text = "Sign Out",
                 icon = Icons.Default.Close,
@@ -284,7 +285,8 @@ fun DrawerAddAccountMode(
 fun DrawerAddAccountModePreview() {
     DrawerAddAccountMode(
         onSignOutClick = {},
-        onSwitchAccountClick = {}
+        onSwitchAccountClick = {},
+        accountViewModel = null
     )
 }
 

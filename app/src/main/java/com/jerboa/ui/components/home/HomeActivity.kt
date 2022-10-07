@@ -11,8 +11,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,8 +44,7 @@ fun HomeActivity(
     val postListState = rememberLazyListState()
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
-    val accounts by accountViewModel.allAccounts.observeAsState()
-    val account = getCurrentAccount(accounts = accounts)
+    val account = getCurrentAccount(accountViewModel)
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(
@@ -68,13 +65,11 @@ fun HomeActivity(
             drawerContent = {
                 MainDrawer(
                     siteViewModel = siteViewModel,
-                    accounts = accounts,
                     navController = navController,
                     accountViewModel = accountViewModel,
                     homeViewModel = homeViewModel,
                     scope = scope,
                     scaffoldState = scaffoldState,
-                    account = account,
                     ctx = ctx
                 )
             },
@@ -246,19 +241,20 @@ fun MainPostListingsContent(
 @Composable
 fun MainDrawer(
     siteViewModel: SiteViewModel,
-    accounts: List<Account>?,
     navController: NavController,
     accountViewModel: AccountViewModel,
     homeViewModel: HomeViewModel,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
-    account: Account?,
     ctx: Context
 ) {
+    val accounts = accountViewModel.allAccounts.value
+    val account = getCurrentAccount(accountViewModel)
+
     Drawer(
         myUserInfo = siteViewModel.siteRes?.my_user,
         unreadCounts = homeViewModel.unreadCountResponse,
-        accounts = accounts,
+        accountViewModel = accountViewModel,
         navController = navController,
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
@@ -273,10 +269,10 @@ fun MainDrawer(
             closeDrawer(scope, scaffoldState)
         },
         onSignOutClick = {
-            accounts?.also { accounts ->
-                getCurrentAccount(accounts)?.also {
+            accounts?.also { accts ->
+                account?.also {
                     accountViewModel.delete(it)
-                    val updatedList = accounts.toMutableList()
+                    val updatedList = accts.toMutableList()
                     updatedList.remove(it)
 
                     if (updatedList.isNotEmpty()) {

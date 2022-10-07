@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -60,8 +59,7 @@ fun PersonProfileActivity(
     val postListState = rememberLazyListState()
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
-    val accounts by accountViewModel.allAccounts.observeAsState()
-    val account = getCurrentAccount(accounts = accounts)
+    val account = getCurrentAccount(accountViewModel)
     val bottomAppBarScreen = if (savedMode) { "saved" } else { "profile" }
 
     Surface(color = MaterialTheme.colors.background) {
