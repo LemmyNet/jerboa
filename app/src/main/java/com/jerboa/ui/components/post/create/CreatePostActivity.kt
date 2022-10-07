@@ -21,7 +21,6 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListViewModel
-import com.jerboa.ui.components.post.PostViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -34,7 +33,6 @@ fun CreatePostActivity(
     createPostViewModel: CreatePostViewModel,
     navController: NavController,
     communityListViewModel: CommunityListViewModel,
-    postViewModel: PostViewModel,
     _url: String,
     _body: String,
     _image: Uri?
@@ -89,8 +87,7 @@ fun CreatePostActivity(
                                         url = urlOut,
                                         name = nameOut,
                                         communityId = it,
-                                        navController = navController,
-                                        postViewModel = postViewModel
+                                        navController = navController
                                     )
                                 }
                             }

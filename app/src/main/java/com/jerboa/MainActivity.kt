@@ -325,7 +325,6 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             createPostViewModel = createPostViewModel,
                             communityListViewModel = communityListViewModel,
-                            postViewModel = postViewModel,
                             _url = url,
                             _body = body,
                             _image = image

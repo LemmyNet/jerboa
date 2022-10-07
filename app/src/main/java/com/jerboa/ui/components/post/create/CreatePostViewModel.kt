@@ -10,7 +10,6 @@ import androidx.navigation.NavController
 import com.jerboa.api.createPostWrapper
 import com.jerboa.api.getSiteMetadataWrapper
 import com.jerboa.db.Account
-import com.jerboa.ui.components.post.PostViewModel
 import kotlinx.coroutines.launch
 
 class CreatePostViewModel : ViewModel() {
@@ -25,8 +24,7 @@ class CreatePostViewModel : ViewModel() {
         url: String?,
         name: String,
         communityId: Int,
-        navController: NavController,
-        postViewModel: PostViewModel
+        navController: NavController
     ) {
         viewModelScope.launch {
             loading = true
@@ -38,16 +36,11 @@ class CreatePostViewModel : ViewModel() {
                 name = name,
                 ctx = ctx
             )
-            // TODO not sure here
-            postViewModel.fetchPost(
-                id = postOut!!.post.id,
-                clear = true,
-                account = account,
-                ctx = ctx
-            )
             loading = false
             navController.popBackStack()
-            navController.navigate("post")
+            postOut?.also { pv ->
+                navController.navigate(route = "post/${pv.post.id}")
+            }
         }
     }
 
