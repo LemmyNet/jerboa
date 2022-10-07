@@ -27,6 +27,7 @@ import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
@@ -82,14 +83,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // TODO this is bad
-        val account = getCurrentAccount(accountViewModel.allAccountSync)
-        fetchInitialData(account, siteViewModel, homeViewModel)
+        val accountSync = getCurrentAccountSync(accountViewModel)
+        fetchInitialData(accountSync, siteViewModel, homeViewModel)
 
         setContent {
             JerboaTheme {
                 val navController = rememberNavController()
                 val ctx = LocalContext.current
+                val account = getCurrentAccount(accountViewModel)
 
                 NavHost(
                     navController = navController,

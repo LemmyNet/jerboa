@@ -12,6 +12,11 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account? {
     return getCurrentAccount(accounts)
 }
 
-fun getCurrentAccount(accounts: List<Account>?): Account? {
+fun getCurrentAccountSync(accountViewModel: AccountViewModel): Account? {
+    val accounts = accountViewModel.allAccountSync
+    return getCurrentAccount(accounts)
+}
+
+private fun getCurrentAccount(accounts: List<Account>?): Account? {
     return accounts?.firstOrNull { it.current }
 }
