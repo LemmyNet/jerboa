@@ -643,6 +643,7 @@ fun MetadataCard(post: Post) {
                     style = MaterialTheme.typography.subtitle1
                 )
                 post.embed_description?.also {
+                    Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
                     // This is actually html, but markdown can render it
                     MyMarkdownText(markdown = it)
                 }

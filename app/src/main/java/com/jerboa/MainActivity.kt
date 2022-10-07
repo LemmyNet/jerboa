@@ -82,6 +82,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // TODO this is bad
         val account = getCurrentAccount(accountViewModel.allAccountSync)
         fetchInitialData(account, siteViewModel, homeViewModel)
 
