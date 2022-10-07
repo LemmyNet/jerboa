@@ -2,6 +2,7 @@ package com.jerboa.ui.components.comment
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
@@ -12,6 +13,7 @@ import com.jerboa.db.Account
 @Composable
 fun CommentNodes(
     nodes: List<CommentNodeData>,
+    listState: LazyListState,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -32,7 +34,7 @@ fun CommentNodes(
     // Holds the un-expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
 
-    LazyColumn {
+    LazyColumn(state = listState) {
         commentNodeItems(
             nodes = nodes,
             isExpanded = { commentId -> !unExpandedComments.contains(commentId) },

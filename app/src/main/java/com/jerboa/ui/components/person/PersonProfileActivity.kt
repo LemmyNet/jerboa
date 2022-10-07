@@ -412,6 +412,7 @@ fun UserTabs(
                     ) {
                         CommentNodes(
                             nodes = nodes,
+                            listState = listState,
                             onMarkAsReadClick = {},
                             onUpvoteClick = { commentView ->
                                 account?.also { acct ->
