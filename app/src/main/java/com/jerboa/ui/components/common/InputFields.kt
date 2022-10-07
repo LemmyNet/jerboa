@@ -651,8 +651,9 @@ fun MyMarkdownText(
         markdown = markdown,
         modifier = Modifier.fillMaxSize(),
         color = color,
-        style = MaterialTheme.typography.body1,
         fontSize = 18.sp
+//        style = MaterialTheme.typography.h6,
+//        imageLoader =  LocalImageLoader.current
     )
 }
 

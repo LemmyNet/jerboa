@@ -252,12 +252,16 @@ fun closeDrawer(
     }
 }
 
-fun personNameShown(person: PersonSafe): String {
-    val name = person.display_name ?: person.name
-    return if (person.local) {
-        name
+fun personNameShown(person: PersonSafe, federatedName: Boolean = false): String {
+    return if (!federatedName) {
+        person.display_name ?: "@${person.name}"
     } else {
-        "$name@${hostName(person.actor_id)}"
+        val name = person.display_name ?: person.name
+        if (person.local) {
+            name
+        } else {
+            "$name@${hostName(person.actor_id)}"
+        }
     }
 }
 

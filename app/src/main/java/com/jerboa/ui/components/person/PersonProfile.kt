@@ -51,7 +51,7 @@ fun PersonProfileTopSection(
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
             ) {
                 Text(
-                    text = personNameShown(personView.person),
+                    text = personNameShown(personView.person, true),
                     style = MaterialTheme.typography.h6
                 )
 
