@@ -7,6 +7,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Divider
@@ -409,19 +410,20 @@ fun CommentNodesPreview() {
     val tree = buildCommentsTree(comments, SortType.Hot)
     CommentNodes(
         nodes = tree,
-        moderators = listOf(),
-        onCommunityClick = {},
+        onUpvoteClick = {},
         onDownvoteClick = {},
-        onEditCommentClick = {},
-        onDeleteCommentClick = {},
-        onMarkAsReadClick = {},
-        onPersonClick = {},
-        onPostClick = {},
-        onReportClick = {},
         onReplyClick = {},
         onSaveClick = {},
-        onUpvoteClick = {},
-        onBlockCreatorClick = {}
+        onMarkAsReadClick = {},
+        onEditCommentClick = {},
+        onDeleteCommentClick = {},
+        onReportClick = {},
+        onPersonClick = {},
+        onCommunityClick = {},
+        onBlockCreatorClick = {},
+        onPostClick = {},
+        moderators = listOf(),
+        listState = rememberLazyListState()
     )
 }
 

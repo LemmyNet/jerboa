@@ -240,6 +240,7 @@ fun InboxTabs(
                     ) {
                         CommentNodes(
                             nodes = nodes,
+                            listState = listState,
                             onUpvoteClick = { commentView ->
                                 account?.also { acct ->
                                     inboxViewModel.likeComment(
@@ -266,6 +267,25 @@ fun InboxTabs(
                                 )
                                 navController.navigate("commentReply")
                             },
+                            onSaveClick = { commentView ->
+                                account?.also { acct ->
+                                    inboxViewModel.saveComment(
+                                        commentView = commentView,
+                                        account = acct,
+                                        ctx = ctx
+                                    )
+                                }
+                            },
+                            onMarkAsReadClick = { commentView ->
+                                account?.also { acct ->
+                                    inboxViewModel.markReplyAsRead(
+                                        commentView = commentView,
+                                        account = acct,
+                                        ctx = ctx
+                                    )
+                                    homeViewModel.updateUnreads(commentView)
+                                }
+                            },
                             onEditCommentClick = { commentView ->
                                 commentEditViewModel.initialize(commentView)
                                 navController.navigate("commentEdit")
@@ -282,14 +302,11 @@ fun InboxTabs(
                             onReportClick = { commentView ->
                                 navController.navigate("commentReport/${commentView.comment.id}")
                             },
-                            onSaveClick = { commentView ->
-                                account?.also { acct ->
-                                    inboxViewModel.saveComment(
-                                        commentView = commentView,
-                                        account = acct,
-                                        ctx = ctx
-                                    )
-                                }
+                            onPersonClick = { personId ->
+                                navController.navigate(route = "profile/$personId")
+                            },
+                            onCommunityClick = { community ->
+                                navController.navigate(route = "community/${community.id}")
                             },
                             onBlockCreatorClick = {
                                 account?.also { acct ->
@@ -300,29 +317,13 @@ fun InboxTabs(
                                     )
                                 }
                             },
-                            onMarkAsReadClick = { commentView ->
-                                account?.also { acct ->
-                                    inboxViewModel.markReplyAsRead(
-                                        commentView = commentView,
-                                        account = acct,
-                                        ctx = ctx
-                                    )
-                                    homeViewModel.updateUnreads(commentView)
-                                }
-                            },
-                            onPersonClick = { personId ->
-                                navController.navigate(route = "profile/$personId")
-                            },
-                            onCommunityClick = { community ->
-                                navController.navigate(route = "community/${community.id}")
-                            },
                             onPostClick = { postId ->
                                 navController.navigate(route = "post/$postId")
                             },
-                            showPostAndCommunityContext = true,
-                            showRead = true,
                             account = account,
-                            moderators = listOf()
+                            moderators = listOf(),
+                            showPostAndCommunityContext = true,
+                            showRead = true
                         )
                     }
                 }
