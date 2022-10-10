@@ -1,3 +1,14 @@
+# Jerboa v0.0.18-alpha Release (2022-10-10)
+
+## What's Changed
+
+- Coil upgrade v2 by @dessalines in https://github.com/dessalines/jerboa/pull/234
+- Fix comment scrolling bug. Fixes #231 by @dessalines in https://github.com/dessalines/jerboa/pull/235
+- Fix create post bug. Fixes #230 by @dessalines in https://github.com/dessalines/jerboa/pull/236
+- Fix account bug. Fixes #229 by @dessalines in https://github.com/dessalines/jerboa/pull/237
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.17...0.0.18
+
 # Jerboa v0.0.17-alpha Release (2022-10-04)
 
 ## What's Changed
