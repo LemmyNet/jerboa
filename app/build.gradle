@@ -43,11 +43,11 @@ android {
     }
 
     buildTypes {
-        if(project.hasProperty("RELEASE_STORE_FILE")) {
-            release {
-                minifyEnabled true
-                shrinkResources true
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if(project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig signingConfigs.release
             }
         }
