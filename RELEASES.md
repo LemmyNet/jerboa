@@ -1,3 +1,11 @@
+# Jerboa v0.0.20-alpha Release (2022-10-18)
+
+## What's Changed
+
+- Fix prettytime crash. Fixes #238 by @dessalines in https://github.com/dessalines/jerboa/pull/239
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.19...0.0.20
+
 # Jerboa v0.0.18-alpha Release (2022-10-10)
 
 ## What's Changed
