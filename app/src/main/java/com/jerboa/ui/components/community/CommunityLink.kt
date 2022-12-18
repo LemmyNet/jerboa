@@ -1,7 +1,11 @@
 package com.jerboa.ui.components.community
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +21,13 @@ import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.sampleCommunitySafe
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.ui.components.common.CircularIcon
-import com.jerboa.ui.theme.*
+import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
+import com.jerboa.ui.theme.ICON_SIZE
+import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
+import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
+import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.ui.theme.LINK_ICON_SIZE
+import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
 fun CommunityName(

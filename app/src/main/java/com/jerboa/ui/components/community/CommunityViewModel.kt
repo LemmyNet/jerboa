@@ -13,7 +13,12 @@ import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.followCommunityWrapper
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.*
+import com.jerboa.datatypes.CommunityModeratorView
+import com.jerboa.datatypes.CommunityView
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.PersonSafe
+import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetCommunity
 import com.jerboa.db.Account
 import com.jerboa.loginFirstToast

@@ -11,7 +11,13 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.*
+import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunitySafe
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.PersonSafe
+import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.PrivateMessageView
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetUnreadCount
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
