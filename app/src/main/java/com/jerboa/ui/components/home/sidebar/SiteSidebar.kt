@@ -12,11 +12,14 @@ fun SiteSidebar(siteView: SiteView) {
     val counts = siteView.counts
     Sidebar(
         title = site.description,
-        content = site.sidebar,
         banner = site.banner,
         icon = site.icon,
+        content = site.sidebar,
         published = site.published,
+        usersActiveDay = counts.users_active_day,
+        usersActiveWeek = counts.users_active_week,
         usersActiveMonth = counts.users_active_month,
+        usersActiveHalfYear = counts.users_active_half_year,
         postCount = counts.posts,
         commentCount = counts.comments
     )
