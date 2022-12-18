@@ -28,10 +28,10 @@ import com.jerboa.datatypes.*
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
+import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityLink
-import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING

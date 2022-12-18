@@ -15,11 +15,11 @@ import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.sampleCommunityView
+import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
-import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.theme.*
 
 @Composable
