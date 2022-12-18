@@ -602,7 +602,7 @@ fun HomeMoreDialog(
                     }
                 )
                 IconAndTextDrawerItem(
-                    text = "View Sidebar",
+                    text = "Site Info",
                     icon = Icons.Default.Info,
                     onClick = {
                         navController.navigate("siteSidebar")
