@@ -23,8 +23,6 @@ import com.jerboa.datatypes.*
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.community.CommunityLink
-import com.jerboa.ui.components.community.CommunityLinkLarger
-import com.jerboa.ui.components.home.IconAndTextDrawerItem
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 
@@ -671,11 +669,24 @@ fun PostOptionsDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                // TODO maybe add Go To?
-                CommunityLinkLarger(
-                    community = postView.community,
-                    onClick = { onCommunityClick() }
+                IconAndTextDrawerItem(
+                    text = "Go to ${communityNameShown(postView.community)}",
+                    icon = Icons.Default.Forum,
+                    onClick = {
+                        onCommunityClick()
+                    }
                 )
+                postView.post.url?.also {
+                    IconAndTextDrawerItem(
+                        text = "Copy link",
+                        icon = Icons.Default.Link,
+                        onClick = {
+                            localClipboardManager.setText(AnnotatedString(it))
+                            Toast.makeText(ctx, "Link Copied", Toast.LENGTH_SHORT).show()
+                            onDismissRequest()
+                        }
+                    )
+                }
                 IconAndTextDrawerItem(
                     text = "Copy Permalink",
                     icon = Icons.Default.Link,

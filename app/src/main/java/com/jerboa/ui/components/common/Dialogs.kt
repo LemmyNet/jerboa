@@ -9,7 +9,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.UnreadOrAll
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
-import com.jerboa.ui.components.home.IconAndTextDrawerItem
 
 val topSortTypes = listOf(
     SortType.TopDay,
