@@ -116,10 +116,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = "home",
-                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                            navDeepLink { uriPattern = instance }
-                        }
+                        route = "home"
                     ) {
                         HomeActivity(
                             navController = navController,
