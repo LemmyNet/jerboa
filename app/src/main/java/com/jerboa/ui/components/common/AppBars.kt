@@ -352,9 +352,12 @@ fun Sidebar(
     icon: String?,
     content: String?,
     published: String,
-    usersActiveMonth: Int,
     postCount: Int,
-    commentCount: Int
+    commentCount: Int,
+    usersActiveDay: Int,
+    usersActiveWeek: Int,
+    usersActiveMonth: Int,
+    usersActiveHalfYear: Int
 ) {
     val listState = rememberLazyListState()
 
@@ -405,7 +408,10 @@ fun Sidebar(
                         published = published
                     )
                     CommentsAndPosts(
+                        usersActiveDay = usersActiveDay,
+                        usersActiveWeek = usersActiveWeek,
                         usersActiveMonth = usersActiveMonth,
+                        usersActiveHalfYear = usersActiveHalfYear,
                         postCount = postCount,
                         commentCount = commentCount
                     )
@@ -425,13 +431,31 @@ fun Sidebar(
 
 @Composable
 fun CommentsAndPosts(
+    usersActiveDay: Int,
+    usersActiveWeek: Int,
     usersActiveMonth: Int,
+    usersActiveHalfYear: Int,
     postCount: Int,
     commentCount: Int
 ) {
-    Row {
+    FlowRow {
+        Text(
+            text = "${siFormat(usersActiveDay)} users / day",
+            color = MaterialTheme.colors.onBackground.muted
+        )
+        DotSpacer()
+        Text(
+            text = "${siFormat(usersActiveWeek)} users / week",
+            color = MaterialTheme.colors.onBackground.muted
+        )
+        DotSpacer()
         Text(
             text = "${siFormat(usersActiveMonth)} users / month",
+            color = MaterialTheme.colors.onBackground.muted
+        )
+        DotSpacer()
+        Text(
+            text = "${siFormat(usersActiveHalfYear)} users / 6 months",
             color = MaterialTheme.colors.onBackground.muted
         )
         DotSpacer()

@@ -14,7 +14,10 @@ fun CommunitySidebar(communityView: CommunityView) {
         banner = community.banner,
         icon = community.icon,
         published = community.published,
+        usersActiveDay = counts.users_active_day,
+        usersActiveWeek = counts.users_active_week,
         usersActiveMonth = counts.users_active_month,
+        usersActiveHalfYear = counts.users_active_half_year,
         postCount = counts.posts,
         commentCount = counts.comments
     )
