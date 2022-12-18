@@ -16,7 +16,7 @@ fun SiteSidebarActivity(
 ) {
     Log.d("jerboa", "got to site sidebar activity")
 
-    val title = "${siteViewModel.siteRes?.site_view?.site?.name} Sidebar"
+    val title = "${siteViewModel.siteRes?.site_view?.site?.name} Info"
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(

@@ -16,7 +16,7 @@ fun CommunitySidebarActivity(
 ) {
     Log.d("jerboa", "got to community sidebar activity")
 
-    val title = "${communityViewModel.communityView?.community?.name} Sidebar"
+    val title = "${communityViewModel.communityView?.community?.name} Info"
 
     Surface(color = MaterialTheme.colors.background) {
         Scaffold(

@@ -233,7 +233,7 @@ fun CommunityMoreDialog(
                     }
                 )
                 IconAndTextDrawerItem(
-                    text = "View Sidebar",
+                    text = "Community Info",
                     icon = Icons.Default.Info,
                     onClick = {
                         navController.navigate("communitySidebar")
