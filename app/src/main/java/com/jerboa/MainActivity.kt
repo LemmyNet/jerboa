@@ -10,7 +10,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,6 +25,9 @@ import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
 import com.jerboa.db.AppDB
+import com.jerboa.db.AppSettingsRepository
+import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
@@ -51,12 +57,15 @@ import com.jerboa.ui.components.report.CreateReportViewModel
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
-import com.jerboa.ui.components.settings.SettingsViewModel
+import com.jerboa.ui.components.settings.account.AccountSettingsActivity
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
+import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
-    val repository by lazy { AccountRepository(database.accountDao()) }
+    val accountRepository by lazy { AccountRepository(database.accountDao()) }
+    val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
 }
 
 class MainActivity : ComponentActivity() {
@@ -74,10 +83,12 @@ class MainActivity : ComponentActivity() {
     private val commentEditViewModel by viewModels<CommentEditViewModel>()
     private val postEditViewModel by viewModels<PostEditViewModel>()
     private val createReportViewModel by viewModels<CreateReportViewModel>()
-    private val settingsViewModel by viewModels<SettingsViewModel>()
-
+    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>()
     private val accountViewModel: AccountViewModel by viewModels {
-        AccountViewModelFactory((application as JerboaApplication).repository)
+        AccountViewModelFactory((application as JerboaApplication).accountRepository)
+    }
+    private val appSettingsViewModel: AppSettingsViewModel by viewModels {
+        AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,10 +98,15 @@ class MainActivity : ComponentActivity() {
         fetchInitialData(accountSync, siteViewModel, homeViewModel)
 
         setContent {
-            JerboaTheme {
+            val account = getCurrentAccount(accountViewModel)
+            val appSettings by appSettingsViewModel.appSettings.observeAsState()
+
+            JerboaTheme(
+                themeMode = ThemeMode.values()[appSettings?.theme ?: 0],
+                fontSize = (appSettings?.fontSize ?: 13).sp
+            ) {
                 val navController = rememberNavController()
                 val ctx = LocalContext.current
-                val account = getCurrentAccount(accountViewModel)
 
                 NavHost(
                     navController = navController,
@@ -486,16 +502,32 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = "settings",
+                        route = "settings"
+                    ) {
+                        SettingsActivity(
+                            navController = navController,
+                            accountViewModel = accountViewModel
+                        )
+                    }
+                    composable(
+                        route = "lookAndFeel"
+                    ) {
+                        LookAndFeelActivity(
+                            navController = navController,
+                            appSettingsViewModel = appSettingsViewModel
+                        )
+                    }
+                    composable(
+                        route = "accountSettings",
                         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
                             navDeepLink { uriPattern = "$instance/settings" }
                         }
                     ) {
-                        SettingsActivity(
+                        AccountSettingsActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            settingsViewModel = settingsViewModel
+                            accountSettingsViewModel = accountSettingsViewModel
                         )
                     }
                 }

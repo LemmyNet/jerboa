@@ -88,7 +88,6 @@ fun PostActivity(
                             item {
                                 PostListing(
                                     postView = postView,
-                                    fullBody = true,
                                     showCommunityName = true,
                                     onUpvoteClick = {
                                         postViewModel.likePost(

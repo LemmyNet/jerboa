@@ -28,7 +28,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
@@ -651,7 +650,7 @@ fun MyMarkdownText(
         markdown = markdown,
         modifier = Modifier.fillMaxSize(),
         color = color,
-        fontSize = 18.sp
+        fontSize = MaterialTheme.typography.body1.fontSize.times(1.2)
 //        style = MaterialTheme.typography.h6,
 //        imageLoader =  LocalImageLoader.current
     )

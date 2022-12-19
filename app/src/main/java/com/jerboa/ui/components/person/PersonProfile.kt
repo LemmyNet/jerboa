@@ -233,11 +233,11 @@ fun PersonProfileHeaderTitle(
     Column {
         Text(
             text = personName,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.h6
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.subtitle1,
             color = contentColorFor(MaterialTheme.colors.primarySurface).muted
         )
     }

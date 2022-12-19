@@ -1,6 +1,8 @@
 package com.jerboa.db
 
+import android.content.ContentValues
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +12,7 @@ import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
 
 @Entity
 data class Account(
@@ -28,6 +31,21 @@ data class Account(
         defaultValue = "0"
     )
     val defaultSortType: Int
+)
+
+@Entity
+data class AppSettings(
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    @ColumnInfo(
+        name = "font_size",
+        defaultValue = "13"
+    )
+    val fontSize: Int,
+    @ColumnInfo(
+        name = "theme",
+        defaultValue = "0"
+    )
+    val theme: Int
 )
 
 @Dao
@@ -49,6 +67,15 @@ interface AccountDao {
 
     @Delete(entity = Account::class)
     suspend fun delete(account: Account)
+}
+
+@Dao
+interface AppSettingsDao {
+    @Query("SELECT * FROM AppSettings limit 1")
+    fun getSettings(): LiveData<AppSettings>
+
+    @Update
+    suspend fun updateAppSettings(appSettings: AppSettings)
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -87,6 +114,20 @@ class AccountRepository(private val accountDao: AccountDao) {
     }
 }
 
+// Declares the DAO as a private property in the constructor. Pass in the DAO
+// instead of the whole database, because you only need access to the DAO
+class AppSettingsRepository(private val appSettingsDao: AppSettingsDao) {
+
+    // Room executes all queries on a separate thread.
+    // Observed Flow will notify the observer when the data has changed.
+    val appSettings = appSettingsDao.getSettings()
+
+    @WorkerThread
+    suspend fun update(appSettings: AppSettings) {
+        appSettingsDao.updateAppSettings(appSettings)
+    }
+}
+
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(
@@ -101,12 +142,13 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
 }
 
 @Database(
-    version = 2,
-    entities = [Account::class],
+    version = 3,
+    entities = [Account::class, AppSettings::class],
     exportSchema = true
 )
 abstract class AppDB : RoomDatabase() {
     abstract fun accountDao(): AccountDao
+    abstract fun appSettingsDao(): AppSettingsDao
 
     companion object {
         @Volatile
@@ -125,6 +167,23 @@ abstract class AppDB : RoomDatabase() {
                 )
                     .allowMainThreadQueries()
                     .addMigrations(MIGRATION_1_2)
+                    // Note, this is necessary because adding data in a migration does not work.
+                    .addCallback(object : Callback() {
+                        override fun onOpen(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            Executors.newSingleThreadExecutor().execute() {
+                                db.insert(
+                                    "AppSettings",
+                                    CONFLICT_IGNORE, // Ensures it wont overwrite the existing data
+                                    ContentValues(2).apply {
+                                        put("id", 1)
+                                        put("font_size", 13)
+                                        put("theme", 0)
+                                    }
+                                )
+                            }
+                        }
+                    })
                     .build()
                 INSTANCE = instance
                 // return instance
@@ -163,6 +222,26 @@ class AccountViewModelFactory(private val repository: AccountRepository) :
         if (modelClass.isAssignableFrom(AccountViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return AccountViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class AppSettingsViewModel(private val repository: AppSettingsRepository) : ViewModel() {
+
+    val appSettings = repository.appSettings
+
+    fun update(appSettings: AppSettings) = viewModelScope.launch {
+        repository.update(appSettings)
+    }
+}
+
+class AppSettingsViewModelFactory(private val repository: AppSettingsRepository) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(AppSettingsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return AppSettingsViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

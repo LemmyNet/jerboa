@@ -215,7 +215,7 @@ fun PostTitleAndImageLink(
         // Title of the post
         Text(
             text = postView.post.name,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.h6,
             color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
             modifier = Modifier.padding(bottom = MEDIUM_PADDING, start = LARGE_PADDING, end = LARGE_PADDING)
         )
@@ -240,7 +240,7 @@ fun PostTitleAndThumbnail(
         // Title of the post
         Text(
             text = post.name,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.h6,
             color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
             modifier = Modifier.weight(1f).padding(horizontal = LARGE_PADDING)
         )
@@ -505,7 +505,6 @@ fun PostFooterLinePreview() {
 fun PreviewPostListing() {
     PostListing(
         postView = samplePostView,
-        fullBody = true,
         account = null,
         isModerator = true,
         onReportClick = {},
@@ -529,7 +528,6 @@ fun PreviewPostListing() {
 fun PreviewLinkPostListing() {
     PostListing(
         postView = sampleLinkPostView,
-        fullBody = true,
         account = null,
         isModerator = false,
         onReportClick = {},
@@ -553,7 +551,6 @@ fun PreviewLinkPostListing() {
 fun PreviewImagePostListing() {
     PostListing(
         postView = sampleImagePostView,
-        fullBody = true,
         account = null,
         isModerator = false,
         onReportClick = {},
@@ -577,7 +574,6 @@ fun PreviewImagePostListing() {
 fun PreviewLinkNoThumbnailPostListing() {
     PostListing(
         postView = sampleLinkNoThumbnailPostView,
-        fullBody = true,
         account = null,
         isModerator = true,
         onReportClick = {},
@@ -599,7 +595,6 @@ fun PreviewLinkNoThumbnailPostListing() {
 @Composable
 fun PostListing(
     postView: PostView,
-    fullBody: Boolean = false,
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
@@ -620,13 +615,7 @@ fun PostListing(
 ) {
     Card(
         shape = MaterialTheme.shapes.small,
-        elevation = if (fullBody) {
-            0.dp
-        } else {
-            1.dp
-        },
         modifier = Modifier
-            .padding(vertical = MEDIUM_PADDING)
             .clickable { onPostClick(postView) }
     ) {
         Column(
@@ -647,7 +636,6 @@ fun PostListing(
             //  Title + metadata
             PostBody(
                 postView = postView,
-                fullBody,
                 onPostLinkClick = onPostLinkClick
             )
 
@@ -694,7 +682,7 @@ fun MetadataCard(post: Post) {
             ) {
                 Text(
                     text = post.embed_title!!,
-                    style = MaterialTheme.typography.subtitle1
+                    style = MaterialTheme.typography.h6
                 )
                 post.embed_description?.also {
                     Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))

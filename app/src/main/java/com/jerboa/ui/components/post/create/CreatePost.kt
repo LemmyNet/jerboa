@@ -140,7 +140,7 @@ fun CreatePostBody(
         suggestedTitle?.also {
             Text(
                 text = "copy suggested title: $it",
-                style = MaterialTheme.typography.subtitle2,
+                style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.onBackground.muted,
                 modifier = Modifier.clickable { onNameChange(it) }
             )

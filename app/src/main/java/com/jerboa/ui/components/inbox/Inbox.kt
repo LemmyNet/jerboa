@@ -86,11 +86,11 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
     Column {
         Text(
             text = title,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.h6
         )
         Text(
             text = selectedUnreadOrAll.toString(),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.subtitle1,
             color = contentColorFor(MaterialTheme.colors.primarySurface).muted
         )
     }

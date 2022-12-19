@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.settings
+package com.jerboa.ui.components.settings.account
 
 import android.content.Context
 import androidx.compose.runtime.getValue
@@ -12,7 +12,7 @@ import com.jerboa.db.Account
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.launch
 
-class SettingsViewModel : ViewModel() {
+class AccountSettingsViewModel : ViewModel() {
 
     var loading by mutableStateOf(false)
 

@@ -212,7 +212,6 @@ fun DrawerItemsMain(
                 Text(
                     text = "Subscriptions",
                     modifier = Modifier.padding(LARGE_PADDING),
-                    style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onBackground.muted
                 )
             }
@@ -359,11 +358,11 @@ fun HomeHeaderTitle(
     Column {
         Text(
             text = selectedListingType.toString(),
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.h6
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.subtitle1,
             color = contentColorFor(MaterialTheme.colors.primarySurface).muted
         )
     }
