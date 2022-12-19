@@ -500,6 +500,8 @@ fun validateUrl(
 }
 
 fun siFormat(num: Int): String {
+    // Weird bug where if num is zero, it won't format
+    if (num == 0) return "0"
     var value = num.toDouble()
     val suffix = " KMBT"
     val formatter = DecimalFormat("#,###.#")
