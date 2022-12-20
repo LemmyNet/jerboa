@@ -13,7 +13,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -102,8 +101,7 @@ class MainActivity : ComponentActivity() {
             val appSettings by appSettingsViewModel.appSettings.observeAsState()
 
             JerboaTheme(
-                themeMode = ThemeMode.values()[appSettings?.theme ?: 0],
-                fontSize = (appSettings?.fontSize ?: 13).sp
+                appSettings = appSettings
             ) {
                 val navController = rememberNavController()
                 val ctx = LocalContext.current

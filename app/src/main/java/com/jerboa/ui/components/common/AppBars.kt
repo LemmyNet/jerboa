@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -207,7 +208,7 @@ fun CommentOrPostNodeHeader(
                     contentDescription = "TODO",
                     tint = MaterialTheme.colors.error
                 )
-                DotSpacer()
+                DotSpacer(style = MaterialTheme.typography.body2)
             }
 
             PersonProfileLink(
@@ -229,7 +230,7 @@ fun CommentOrPostNodeHeader(
                 color = scoreColor(myVote = myVote),
                 fontSize = MaterialTheme.typography.body1.fontSize.times(1.1)
             )
-            DotSpacer(0.dp)
+            DotSpacer(0.dp, MaterialTheme.typography.body2)
             TimeAgo(published = published, updated = updated)
         }
     }
@@ -292,9 +293,14 @@ fun ActionBarButton(
 }
 
 @Composable
-fun DotSpacer(padding: Dp = SMALL_PADDING) {
+fun DotSpacer(
+    padding: Dp = SMALL_PADDING,
+    style: TextStyle = MaterialTheme.typography.body2
+) {
     Text(
         text = "·",
+        style = style,
+        color = MaterialTheme.colors.onBackground.muted,
         modifier = Modifier.padding(horizontal = padding)
     )
 }
@@ -443,27 +449,27 @@ fun CommentsAndPosts(
             text = "${siFormat(usersActiveDay)} users / day",
             color = MaterialTheme.colors.onBackground.muted
         )
-        DotSpacer()
+        DotSpacer(style = MaterialTheme.typography.body2)
         Text(
             text = "${siFormat(usersActiveWeek)} users / week",
             color = MaterialTheme.colors.onBackground.muted
         )
-        DotSpacer()
+        DotSpacer(style = MaterialTheme.typography.body2)
         Text(
             text = "${siFormat(usersActiveMonth)} users / month",
             color = MaterialTheme.colors.onBackground.muted
         )
-        DotSpacer()
+        DotSpacer(style = MaterialTheme.typography.body2)
         Text(
             text = "${siFormat(usersActiveHalfYear)} users / 6 months",
             color = MaterialTheme.colors.onBackground.muted
         )
-        DotSpacer()
+        DotSpacer(style = MaterialTheme.typography.body2)
         Text(
             text = "${siFormat(postCount)} posts",
             color = MaterialTheme.colors.onBackground.muted
         )
-        DotSpacer()
+        DotSpacer(style = MaterialTheme.typography.body2)
         Text(
             text = "${siFormat(commentCount)} comments",
             color = MaterialTheme.colors.onBackground.muted

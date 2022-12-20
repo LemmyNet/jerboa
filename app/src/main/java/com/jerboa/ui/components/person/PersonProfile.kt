@@ -110,7 +110,7 @@ fun CommentsAndPosts(personView: PersonViewSafe) {
             text = "${personView.counts.post_count} posts",
             color = MaterialTheme.colors.onBackground.muted
         )
-        DotSpacer()
+        DotSpacer(style = MaterialTheme.typography.body2)
         Text(
             text = "${personView.counts.comment_count} comments",
             color = MaterialTheme.colors.onBackground.muted

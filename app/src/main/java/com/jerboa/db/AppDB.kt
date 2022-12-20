@@ -14,6 +14,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
+const val DEFAULT_FONT_SIZE = 14
+
 @Entity
 data class Account(
     @PrimaryKey val id: Int,
@@ -38,14 +40,24 @@ data class AppSettings(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(
         name = "font_size",
-        defaultValue = "13"
+        defaultValue = DEFAULT_FONT_SIZE.toString()
     )
     val fontSize: Int,
     @ColumnInfo(
         name = "theme",
         defaultValue = "0"
     )
-    val theme: Int
+    val theme: Int,
+    @ColumnInfo(
+        name = "light_theme",
+        defaultValue = "0"
+    )
+    val lightTheme: Int,
+    @ColumnInfo(
+        name = "dark_theme",
+        defaultValue = "0"
+    )
+    val darkTheme: Int
 )
 
 @Dao
@@ -145,9 +157,13 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(
             """
-                CREATE TABLE IF NOT EXISTS AppSettings (id INTEGER PRIMARY KEY 
-                AUTOINCREMENT NOT NULL, font_size INTEGER NOT NULL DEFAULT 13, theme INTEGER 
-                NOT NULL DEFAULT 0)
+                CREATE TABLE IF NOT EXISTS AppSettings (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                    font_size INTEGER NOT NULL DEFAULT $DEFAULT_FONT_SIZE,  
+                    theme INTEGER NOT NULL DEFAULT 0,
+                    light_theme INTEGER NOT NULL DEFAULT 0,
+                    dark_theme INTEGER NOT NULL DEFAULT 0
+                )
             """
         )
     }
@@ -189,8 +205,10 @@ abstract class AppDB : RoomDatabase() {
                                     CONFLICT_IGNORE, // Ensures it won't overwrite the existing data
                                     ContentValues(2).apply {
                                         put("id", 1)
-                                        put("font_size", 13)
+                                        put("font_size", DEFAULT_FONT_SIZE)
                                         put("theme", 0)
+                                        put("light_theme", 0)
+                                        put("dark_theme", 0)
                                     }
                                 )
                             }

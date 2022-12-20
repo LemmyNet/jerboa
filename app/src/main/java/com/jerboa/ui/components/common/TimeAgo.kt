@@ -30,15 +30,20 @@ fun TimeAgo(
     Row {
         Text(
             text = afterPreceding,
-            color = MaterialTheme.colors.onBackground.muted
+            color = MaterialTheme.colors.onBackground.muted,
+            style = MaterialTheme.typography.body2
         )
 
         updated?.also {
             val updatedPretty = dateStringToPretty(it, includeAgo)
 
-            DotSpacer(SMALL_PADDING)
+            DotSpacer(
+                padding = SMALL_PADDING,
+                style = MaterialTheme.typography.body2
+            )
             Text(
                 text = "($updatedPretty)",
+                style = MaterialTheme.typography.body2,
                 color = MaterialTheme.colors.onBackground.muted,
                 fontStyle = FontStyle.Italic
             )

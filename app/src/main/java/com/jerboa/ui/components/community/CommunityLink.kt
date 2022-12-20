@@ -33,7 +33,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 fun CommunityName(
     community: CommunitySafe,
     color: Color = MaterialTheme.colors.primary,
-    style: TextStyle = MaterialTheme.typography.body1
+    style: TextStyle = MaterialTheme.typography.body2
 ) {
     Text(
         text = communityNameShown(community),
@@ -57,7 +57,7 @@ fun CommunityLink(
     spacing: Dp = SMALL_PADDING,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
-    style: TextStyle = MaterialTheme.typography.body1,
+    style: TextStyle = MaterialTheme.typography.body2,
     onClick: (community: CommunitySafe) -> Unit
 ) {
     Row(
@@ -92,6 +92,7 @@ fun CommunityLinkLarger(
     CommunityLink(
         community = community,
         color = MaterialTheme.colors.onSurface,
+        style = MaterialTheme.typography.h6,
         size = LINK_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
         spacing = DRAWER_ITEM_SPACING,

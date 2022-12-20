@@ -102,7 +102,7 @@ fun PostHeaderLine(
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
-            DotSpacer()
+            DotSpacer(style = MaterialTheme.typography.body2)
         }
         if (postView.post.locked) {
             Icon(
@@ -110,7 +110,7 @@ fun PostHeaderLine(
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.error
             )
-            DotSpacer()
+            DotSpacer(style = MaterialTheme.typography.body2)
         }
         if (postView.post.deleted) {
             Icon(
@@ -118,14 +118,14 @@ fun PostHeaderLine(
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.error
             )
-            DotSpacer()
+            DotSpacer(style = MaterialTheme.typography.body2)
         }
         if (showCommunityName) {
             CommunityLink(
                 community = postView.community,
                 onClick = onCommunityClick
             )
-            DotSpacer()
+            DotSpacer(style = MaterialTheme.typography.body2)
         }
         PersonProfileLink(
             person = postView.creator,
@@ -136,11 +136,15 @@ fun PostHeaderLine(
             isCommunityBanned = postView.creator_banned_from_community
 
         )
-        DotSpacer()
+        DotSpacer(style = MaterialTheme.typography.body2)
         if (!isSameInstance) {
             postView.post.url?.also {
-                Text(text = hostName(it), color = MaterialTheme.colors.onBackground.muted)
-                DotSpacer()
+                Text(
+                    text = hostName(it),
+                    color = MaterialTheme.colors.onBackground.muted,
+                    style = MaterialTheme.typography.body2
+                )
+                DotSpacer(style = MaterialTheme.typography.body2)
             }
         }
 
