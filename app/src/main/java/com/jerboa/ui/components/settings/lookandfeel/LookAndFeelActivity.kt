@@ -165,7 +165,8 @@ private fun updateAppSettings(
             fontSize = fontSizeState.value.toInt(),
             theme = themeState.value,
             lightTheme = lightThemeState.value,
-            darkTheme = darkThemeState.value
+            darkTheme = darkThemeState.value,
+            viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0
         )
     )
 }
