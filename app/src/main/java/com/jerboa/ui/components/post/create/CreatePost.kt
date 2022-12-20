@@ -8,9 +8,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +60,7 @@ fun CreatePostHeader(
                 } else {
                     // Todo add are you sure cancel dialog
                     Icon(
-                        Icons.Filled.Add,
+                        Icons.Outlined.Add,
                         contentDescription = "TODO"
                     )
                 }
@@ -74,7 +74,7 @@ fun CreatePostHeader(
             ) {
                 // Todo add are you sure cancel dialog
                 Icon(
-                    Icons.Filled.Close,
+                    Icons.Outlined.Close,
                     contentDescription = "Close"
                 )
             }
@@ -180,7 +180,7 @@ fun CreatePostBody(
                     },
                     trailingIcon = {
                         Icon(
-                            imageVector = Icons.Default.ArrowDropDown,
+                            imageVector = Icons.Outlined.ArrowDropDown,
                             contentDescription = "TODO"
                         )
                     },

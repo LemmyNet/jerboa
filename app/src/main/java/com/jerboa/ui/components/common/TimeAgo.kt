@@ -12,7 +12,7 @@ import com.jerboa.prettyTimeShortener
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 import java.time.Instant
-import java.util.*
+import java.util.Date
 
 @Composable
 fun TimeAgo(

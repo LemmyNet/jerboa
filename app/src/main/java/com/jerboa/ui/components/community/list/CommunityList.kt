@@ -14,8 +14,8 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -58,7 +58,7 @@ fun CommunityListHeader(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
+                    imageVector = Icons.Outlined.MoreVert,
                     contentDescription = "TODO",
                     tint = contentColor
                 )
@@ -71,7 +71,7 @@ fun CommunityListHeader(
                 }
             ) {
                 Icon(
-                    Icons.Filled.Close,
+                    Icons.Outlined.Close,
                     contentDescription = "Back"
                 )
             }
@@ -173,7 +173,7 @@ fun CommunityTopBarSearchView(
                     onClick = { onSearchChange("") }
                 ) {
                     Icon(
-                        Icons.Default.Close,
+                        Icons.Outlined.Close,
                         contentDescription = "",
                         tint = contentColor
                     )

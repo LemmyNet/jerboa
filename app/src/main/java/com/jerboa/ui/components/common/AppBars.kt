@@ -12,7 +12,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -61,7 +61,7 @@ fun SimpleTopAppBar(
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.Outlined.ArrowBack,
                     contentDescription = "Back"
                 )
             }
@@ -87,7 +87,7 @@ fun BottomAppBarAll(
         BottomNavigationItem(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Home,
+                    imageVector = Icons.Outlined.Home,
                     contentDescription = "TODO"
                 )
             },
@@ -102,7 +102,7 @@ fun BottomAppBarAll(
         BottomNavigationItem(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.List,
+                    imageVector = Icons.Outlined.List,
                     contentDescription = "TODO"
                 )
             },
@@ -117,7 +117,7 @@ fun BottomAppBarAll(
             icon = {
                 InboxIconAndBadge(
                     iconBadgeCount = totalUnreads,
-                    icon = Icons.Default.Email,
+                    icon = Icons.Outlined.Email,
                     tint = if (screen == "inbox") {
                         MaterialTheme.colors.primary
                     } else {
@@ -135,7 +135,7 @@ fun BottomAppBarAll(
         BottomNavigationItem(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Bookmarks,
+                    imageVector = Icons.Outlined.Bookmarks,
                     contentDescription = "TODO"
                 )
             },
@@ -149,7 +149,7 @@ fun BottomAppBarAll(
         BottomNavigationItem(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Person,
+                    imageVector = Icons.Outlined.Person,
                     contentDescription = "TODO"
                 )
             },
@@ -204,7 +204,7 @@ fun CommentOrPostNodeHeader(
         ) {
             if (deleted) {
                 Icon(
-                    imageVector = Icons.Default.Delete,
+                    imageVector = Icons.Outlined.Delete,
                     contentDescription = "TODO",
                     tint = MaterialTheme.colors.error
                 )
@@ -243,8 +243,7 @@ fun ActionBarButton(
     text: String? = null,
     contentColor: Color = MaterialTheme.colors.onBackground.muted,
     noClick: Boolean = false,
-    account: Account?,
-    smallIcon: Boolean = false
+    account: Account?
 ) {
     val ctx = LocalContext.current
 //    Button(
@@ -260,7 +259,6 @@ fun ActionBarButton(
 //        modifier = Modifier
 //            .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
 //    )
-    val iconHeight = if (smallIcon) { ACTION_BAR_ICON_SIZE_SMALLER } else { ACTION_BAR_ICON_SIZE }
     val barMod = if (noClick) {
         Modifier
     } else {
@@ -279,14 +277,14 @@ fun ActionBarButton(
         Icon(
             imageVector = icon,
             contentDescription = "TODO",
-            tint = contentColor,
-            modifier = Modifier.height(iconHeight)
+            tint = contentColor
         )
         text?.also {
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(
                 text = text,
-                color = contentColor
+                color = contentColor,
+                style = MaterialTheme.typography.body2
             )
         }
     }

@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -56,7 +56,7 @@ fun EditPostHeader(
                 } else {
                     // Todo add are you sure cancel dialog
                     Icon(
-                        Icons.Filled.Save,
+                        Icons.Outlined.Save,
                         contentDescription = "TODO"
                     )
                 }
@@ -70,7 +70,7 @@ fun EditPostHeader(
             ) {
                 // Todo add are you sure cancel dialog
                 Icon(
-                    Icons.Filled.Close,
+                    Icons.Outlined.Close,
                     contentDescription = "Close"
                 )
             }

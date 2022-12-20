@@ -14,7 +14,17 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.BookmarkAdd
+import androidx.compose.material.icons.outlined.BookmarkAdded
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -359,10 +369,14 @@ fun CommentFooterLine(
             )
             if (showRead) {
                 ActionBarButton(
-                    icon = Icons.Filled.Check,
+                    icon = if (commentView.comment.read) {
+                        Icons.Outlined.MarkChatRead
+                    } else {
+                        Icons.Outlined.MarkChatUnread
+                    },
                     onClick = { onMarkAsReadClick(commentView) },
                     contentColor = if (commentView.comment.read) {
-                        Color.Green
+                        MaterialTheme.colors.primary
                     } else {
                         MaterialTheme.colors.onBackground.muted
                     },
@@ -370,13 +384,12 @@ fun CommentFooterLine(
                 )
             }
             ActionBarButton(
-                icon = if (commentView.saved) { Icons.Default.BookmarkAdded } else {
-                    Icons.Default
-                        .BookmarkAdd
+                icon = if (commentView.saved) { Icons.Outlined.BookmarkAdded } else {
+                    Icons.Outlined.BookmarkAdd
                 },
                 onClick = { onSaveClick(commentView) },
                 contentColor = if (commentView.saved) {
-                    Color.Yellow
+                    MaterialTheme.colors.primary
                 } else {
                     MaterialTheme.colors.onBackground.muted
                 },
@@ -385,13 +398,13 @@ fun CommentFooterLine(
             // Don't let you respond to your own comment.
             if (commentView.creator.id != account?.id) {
                 ActionBarButton(
-                    icon = Icons.Filled.Reply,
+                    icon = Icons.Outlined.Textsms,
                     onClick = { onReplyClick(commentView) },
                     account = account
                 )
             }
             ActionBarButton(
-                icon = Icons.Filled.MoreVert,
+                icon = Icons.Outlined.MoreVert,
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions }
             )
@@ -447,12 +460,12 @@ fun CommentOptionsDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = "View Source",
-                    icon = Icons.Default.Description,
+                    icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick
                 )
                 IconAndTextDrawerItem(
                     text = "Copy Permalink",
-                    icon = Icons.Default.Link,
+                    icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = "${commentView.post.ap_id}/comment/${commentView.comment.id}"
                         localClipboardManager.setText(AnnotatedString(permalink))
@@ -463,32 +476,32 @@ fun CommentOptionsDialog(
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = "Report Comment",
-                        icon = Icons.Default.Flag,
+                        icon = Icons.Outlined.Flag,
                         onClick = onReportClick
                     )
                     IconAndTextDrawerItem(
                         text = "Block ${commentView.creator.name}",
-                        icon = Icons.Default.Block,
+                        icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick
                     )
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(
                         text = "Edit",
-                        icon = Icons.Default.Edit,
+                        icon = Icons.Outlined.Edit,
                         onClick = onEditCommentClick
                     )
                     val deleted = commentView.comment.deleted
                     if (deleted) {
                         IconAndTextDrawerItem(
                             text = "Restore",
-                            icon = Icons.Default.Restore,
+                            icon = Icons.Outlined.Restore,
                             onClick = onDeleteCommentClick
                         )
                     } else {
                         IconAndTextDrawerItem(
                             text = "Delete",
-                            icon = Icons.Default.Delete,
+                            icon = Icons.Outlined.Delete,
                             onClick = onDeleteCommentClick
                         )
                     }

@@ -2,8 +2,8 @@ package com.jerboa.ui.components.common
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.ThumbDown
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.jerboa.VoteType
@@ -26,8 +26,8 @@ fun <T> VoteGeneric(
             else -> downvoteColor(myVote = myVote)
         }
     val voteIcon = when (type) {
-        VoteType.Upvote -> Icons.Default.ArrowUpward
-        else -> Icons.Default.ArrowDownward
+        VoteType.Upvote -> Icons.Outlined.FavoriteBorder
+        else -> Icons.Outlined.ThumbDown
     }
 
     val votesStr = if (showNumber) {

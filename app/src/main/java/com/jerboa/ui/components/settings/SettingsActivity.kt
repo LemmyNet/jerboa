@@ -9,9 +9,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.ManageAccounts
-import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.ManageAccounts
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,7 +44,7 @@ fun SettingsActivity(
                         title = { Text("Look and feel") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.Palette,
+                                imageVector = Icons.Outlined.Palette,
                                 contentDescription = "TODO"
                             )
                         },
@@ -54,7 +55,7 @@ fun SettingsActivity(
                             title = { Text("${acct.name} settings") },
                             icon = {
                                 Icon(
-                                    imageVector = Icons.Default.ManageAccounts,
+                                    imageVector = Icons.Outlined.ManageAccounts,
                                     contentDescription = "TODO"
                                 )
                             },
@@ -65,7 +66,7 @@ fun SettingsActivity(
                         title = { Text("About") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.Info,
+                                imageVector = Icons.Outlined.Info,
                                 contentDescription = "TODO"
                             )
                         },

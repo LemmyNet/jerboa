@@ -8,8 +8,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.NoAccounts
-import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.NoAccounts
+import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,21 +75,21 @@ fun PersonProfileLink(
         if (showTags) {
             if (isModerator) {
                 Icon(
-                    imageVector = Icons.Default.Shield,
+                    imageVector = Icons.Outlined.Shield,
                     contentDescription = "TODO",
                     tint = MaterialTheme.colors.secondary
                 )
             }
             if (person.admin) {
                 Icon(
-                    imageVector = Icons.Default.Shield,
+                    imageVector = Icons.Outlined.Shield,
                     contentDescription = "TODO",
                     tint = MaterialTheme.colors.primary
                 )
             }
             if (isCommunityBanned || person.banned) {
                 Icon(
-                    imageVector = Icons.Default.NoAccounts,
+                    imageVector = Icons.Outlined.NoAccounts,
                     contentDescription = "TODO",
                     tint = Color.Red
                 )

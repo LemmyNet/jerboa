@@ -16,10 +16,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Block
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -195,7 +196,7 @@ fun PersonProfileHeader(
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.Outlined.ArrowBack,
                     contentDescription = "Back"
                 )
             }
@@ -205,7 +206,7 @@ fun PersonProfileHeader(
                 showSortOptions = !showSortOptions
             }) {
                 Icon(
-                    Icons.Default.Sort,
+                    Icons.Outlined.Sort,
                     contentDescription = "TODO",
                     tint = contentColor
                 )
@@ -215,7 +216,7 @@ fun PersonProfileHeader(
                     showMoreOptions = !showMoreOptions
                 }) {
                     Icon(
-                        Icons.Default.MoreVert,
+                        Icons.Outlined.MoreVert,
                         contentDescription = "TODO",
                         tint = contentColor
                     )
@@ -254,7 +255,7 @@ fun PersonProfileMoreDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = "Block Person",
-                    icon = Icons.Default.Block,
+                    icon = Icons.Outlined.Block,
                     onClick = onBlockPersonClick
                 )
             }
