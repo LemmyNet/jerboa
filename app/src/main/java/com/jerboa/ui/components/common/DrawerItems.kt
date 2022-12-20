@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
 import com.jerboa.ui.theme.LARGE_PADDING
-import com.jerboa.ui.theme.colorShade
 
 @Composable
 fun IconAndTextDrawerItem(
@@ -43,10 +42,7 @@ fun IconAndTextDrawerItem(
             .clickable(onClick = onClick)
             .background(
                 color = if (highlight) {
-                    colorShade(
-                        MaterialTheme.colors.background,
-                        2f
-                    )
+                    MaterialTheme.colors.onBackground.copy(alpha = .1f)
                 } else {
                     Color.Transparent
                 }
@@ -63,7 +59,6 @@ fun IconAndTextDrawerItem(
             }
             Text(
                 text = text,
-                style = MaterialTheme.typography.subtitle1,
                 modifier = spacingMod
             )
         }

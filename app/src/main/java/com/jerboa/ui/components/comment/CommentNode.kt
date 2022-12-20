@@ -257,7 +257,7 @@ fun PostAndCommunityContextHeader(
     ) {
         Text(
             text = commentView.post.name,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.h6,
             modifier = Modifier.clickable { onPostClick(commentView.post.id) }
         )
         Row(

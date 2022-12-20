@@ -237,7 +237,7 @@ fun UserTabs(
                                 item {
                                     Text(
                                         text = "Moderates",
-                                        style = MaterialTheme.typography.subtitle1,
+                                        style = MaterialTheme.typography.body1,
                                         modifier = Modifier.padding(MEDIUM_PADDING)
                                     )
                                 }

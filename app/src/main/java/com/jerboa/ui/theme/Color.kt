@@ -13,6 +13,6 @@ val Green700 = Color(0xFF004634)
 val Yellow40 = Color(0xff7d5700)
 
 val DarkSurfaceBlue = Color(0xFF0e1d29)
-val DarkBackgroundBlue = colorShade(DarkSurfaceBlue, 1f)
+val BlackSurface = Color(0xFF000000)
 
 val Color.muted @Composable get() = this.copy(alpha = ContentAlpha.medium)

@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.settings
+package com.jerboa.ui.components.settings.account
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -6,7 +6,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,8 +16,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.api.SaveUserSettings
 import com.jerboa.db.Account
@@ -28,37 +25,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.theme.*
 import kotlinx.coroutines.launch
 
-@Composable
-fun SettingsHeader(
-    navController: NavController = rememberNavController()
-) {
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
-
-    TopAppBar(
-        title = {
-            Text(
-                text = "Settings"
-            )
-        },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
-        elevation = APP_BAR_ELEVATION,
-        navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                }
-            ) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-        }
-    )
-}
-
+// TODO replace all these
 @Composable
 fun SettingsTextField(
     label: String,
@@ -98,10 +65,11 @@ fun ImageWithClose(
 
 @Composable
 fun SettingsForm(
-    settingsViewModel: SettingsViewModel,
+    accountSettingsViewModel: AccountSettingsViewModel,
     siteViewModel: SiteViewModel,
     account: Account?,
-    onClickSave: (form: SaveUserSettings) -> Unit
+    onClickSave: (form: SaveUserSettings) -> Unit,
+    padding: PaddingValues
 ) {
     val luv = siteViewModel.siteRes?.my_user?.local_user_view
     val scope = rememberCoroutineScope()
@@ -147,7 +115,7 @@ fun SettingsForm(
     )
     Column(
         modifier = Modifier
-            .padding(SMALL_PADDING)
+            .padding(padding)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)
     ) {
@@ -276,7 +244,7 @@ fun SettingsForm(
         )
         // Todo: Remove this
         Button(
-            enabled = !settingsViewModel.loading,
+            enabled = !accountSettingsViewModel.loading,
             onClick = { onClickSave(form) },
             modifier = Modifier.fillMaxWidth()
         ) {

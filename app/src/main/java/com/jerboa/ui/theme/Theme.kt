@@ -6,15 +6,30 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.TextUnit
 import androidx.core.graphics.ColorUtils
+import com.jerboa.ThemeMode
 
 private val DarkColorPalette = darkColors(
     primary = Green200,
     primaryVariant = Green700,
+    secondary = Blue200
+)
+
+private val DarkBlueColorPalette = darkColors(
+    primary = Green200,
+    primaryVariant = Green700,
     secondary = Blue200,
-    background = DarkBackgroundBlue,
+    background = DarkSurfaceBlue,
     surface = DarkSurfaceBlue
+)
+
+private val BlackColorPalette = darkColors(
+    primary = Green200,
+    primaryVariant = Green700,
+    secondary = Blue200,
+    background = BlackSurface,
+    surface = BlackSurface
 )
 
 private val LightColorPalette = lightColors(
@@ -34,29 +49,32 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun JerboaTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode,
+    fontSize: TextUnit,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
+    val systemTheme = if (isSystemInDarkTheme()) {
         DarkColorPalette
     } else {
         LightColorPalette
     }
 
+    val colors = when (themeMode) {
+        ThemeMode.System -> systemTheme
+        ThemeMode.Light -> LightColorPalette
+        ThemeMode.Dark -> DarkColorPalette
+        ThemeMode.DarkBlue -> DarkBlueColorPalette
+        ThemeMode.Black -> BlackColorPalette
+    }
+
+    val typography = generateTypography(fontSize)
+
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = typography,
         shapes = Shapes,
         content = content
     )
-}
-
-// TODO get rid of this if you can
-fun colorShade(color: Color, factor: Float): Color {
-    val hsl = FloatArray(3)
-    ColorUtils.colorToHSL(color.toArgb(), hsl)
-    hsl[2] *= factor
-    return Color(ColorUtils.HSLToColor(hsl))
 }
 
 val colorList = listOf(

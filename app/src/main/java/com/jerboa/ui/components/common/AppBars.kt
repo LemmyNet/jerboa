@@ -227,7 +227,7 @@ fun CommentOrPostNodeHeader(
             Text(
                 text = score.toString(),
                 color = scoreColor(myVote = myVote),
-                fontSize = MaterialTheme.typography.subtitle1.fontSize
+                fontSize = MaterialTheme.typography.body1.fontSize.times(1.1)
             )
             DotSpacer(0.dp)
             TimeAgo(published = published, updated = updated)
@@ -399,7 +399,7 @@ fun Sidebar(
                     title?.also {
                         Text(
                             text = it,
-                            style = MaterialTheme.typography.subtitle1
+                            style = MaterialTheme.typography.h6
                         )
                     }
                     TimeAgo(

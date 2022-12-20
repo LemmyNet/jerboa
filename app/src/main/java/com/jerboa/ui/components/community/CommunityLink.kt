@@ -98,7 +98,6 @@ fun CommunityLinkLarger(
         modifier = Modifier
             .padding(LARGE_PADDING)
             .fillMaxWidth(),
-        style = MaterialTheme.typography.subtitle1,
         onClick = onClick
     )
 }
@@ -118,7 +117,7 @@ fun CommunityLinkLargerWithUserCount(
         modifier = Modifier
             .padding(LARGE_PADDING)
             .fillMaxWidth(),
-        style = MaterialTheme.typography.subtitle1,
+        style = MaterialTheme.typography.h6,
         onClick = onClick
     )
 }

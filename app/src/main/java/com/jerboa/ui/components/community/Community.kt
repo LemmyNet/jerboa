@@ -81,12 +81,6 @@ fun CommunityTopSection(
                 )
             }
         }
-//            communityView.community.description?.also {
-//                Text(
-//                    text = it,
-//                    style = MaterialTheme.typography.subtitle1
-//                )
-//            }
     }
 }
 
@@ -203,11 +197,11 @@ fun CommunityHeaderTitle(
     Column {
         Text(
             text = communityName,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.h6
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.subtitle1,
             color = contentColorFor(MaterialTheme.colors.primarySurface).muted
         )
     }

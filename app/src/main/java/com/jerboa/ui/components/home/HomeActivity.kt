@@ -81,9 +81,9 @@ fun HomeActivity(
                     ctx = ctx
                 )
             },
-            content = {
+            content = { padding ->
                 MainPostListingsContent(
-                    padding = it,
+                    padding = padding,
                     homeViewModel = homeViewModel,
                     postEditViewModel = postEditViewModel,
                     account = account,
