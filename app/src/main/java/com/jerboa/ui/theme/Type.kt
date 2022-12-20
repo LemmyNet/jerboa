@@ -17,8 +17,7 @@ fun generateTypography(baseFontSize: TextUnit): Typography {
         ),
         body2 = TextStyle(
             fontWeight = FontWeight.Normal,
-            letterSpacing = 0.25.sp,
-            fontSize = baseFontSize.times(.875),
+            fontSize = baseFontSize.times(.8),
             lineHeight = 1.3.em
         ),
         subtitle1 = TextStyle(
@@ -28,7 +27,7 @@ fun generateTypography(baseFontSize: TextUnit): Typography {
         ),
         h6 = TextStyle(
             fontWeight = FontWeight.Medium,
-            fontSize = baseFontSize.times(1.25),
+            fontSize = baseFontSize,
             letterSpacing = 0.15.sp
         )
     )

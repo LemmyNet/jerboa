@@ -28,7 +28,7 @@ fun PersonName(
     isPostCreator: Boolean = false
 ) {
     val name = person?.let { personNameShown(it) } ?: run { "Anonymous" }
-    val style = MaterialTheme.typography.body1
+    val style = MaterialTheme.typography.body2
 
     if (isPostCreator) {
         Badge(
