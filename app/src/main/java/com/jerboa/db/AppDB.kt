@@ -57,7 +57,12 @@ data class AppSettings(
         name = "dark_theme",
         defaultValue = "0"
     )
-    val darkTheme: Int
+    val darkTheme: Int,
+    @ColumnInfo(
+        name = "viewed_changelog",
+        defaultValue = "0"
+    )
+    val viewedChangelog: Int
 )
 
 @Dao
@@ -88,6 +93,9 @@ interface AppSettingsDao {
 
     @Update
     suspend fun updateAppSettings(appSettings: AppSettings)
+
+    @Query("UPDATE AppSettings set viewed_changelog = 1")
+    suspend fun markChangelogViewed()
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -138,6 +146,11 @@ class AppSettingsRepository(private val appSettingsDao: AppSettingsDao) {
     suspend fun update(appSettings: AppSettings) {
         appSettingsDao.updateAppSettings(appSettings)
     }
+
+    @WorkerThread
+    suspend fun markChangelogViewed() {
+        appSettingsDao.markChangelogViewed()
+    }
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -169,8 +182,19 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     }
 }
 
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+                alter table AppSettings add column viewed_changelog INTEGER NOT NULL 
+                default 0
+            """
+        )
+    }
+}
+
 @Database(
-    version = 3,
+    version = 4,
     entities = [Account::class, AppSettings::class],
     exportSchema = true
 )
@@ -194,7 +218,7 @@ abstract class AppDB : RoomDatabase() {
                     "jerboa"
                 )
                     .allowMainThreadQueries()
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
                         override fun onOpen(db: SupportSQLiteDatabase) {
@@ -205,10 +229,11 @@ abstract class AppDB : RoomDatabase() {
                                     CONFLICT_IGNORE, // Ensures it won't overwrite the existing data
                                     ContentValues(2).apply {
                                         put("id", 1)
-                                        put("font_size", DEFAULT_FONT_SIZE)
-                                        put("theme", 0)
-                                        put("light_theme", 0)
-                                        put("dark_theme", 0)
+//                                        put("font_size", DEFAULT_FONT_SIZE)
+//                                        put("theme", 0)
+//                                        put("light_theme", 0)
+//                                        put("dark_theme", 0)
+//                                        put("")
                                     }
                                 )
                             }
@@ -262,6 +287,10 @@ class AppSettingsViewModel(private val repository: AppSettingsRepository) : View
 
     fun update(appSettings: AppSettings) = viewModelScope.launch {
         repository.update(appSettings)
+    }
+
+    fun markChangelogViewed() = viewModelScope.launch {
+        repository.markChangelogViewed()
     }
 }
 

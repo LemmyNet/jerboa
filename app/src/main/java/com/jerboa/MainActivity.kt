@@ -31,6 +31,7 @@ import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.community.CommunityActivity
@@ -56,6 +57,7 @@ import com.jerboa.ui.components.report.CreateReportViewModel
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
+import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
@@ -105,6 +107,8 @@ class MainActivity : ComponentActivity() {
             ) {
                 val navController = rememberNavController()
                 val ctx = LocalContext.current
+
+                ShowChangelog(appSettingsViewModel = appSettingsViewModel)
 
                 NavHost(
                     navController = navController,
@@ -526,6 +530,13 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             accountSettingsViewModel = accountSettingsViewModel
+                        )
+                    }
+                    composable(
+                        route = "about"
+                    ) {
+                        AboutActivity(
+                            navController = navController
                         )
                     }
                 }

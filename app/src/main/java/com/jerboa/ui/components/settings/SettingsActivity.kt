@@ -9,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.rememberScaffoldState
@@ -60,6 +61,16 @@ fun SettingsActivity(
                             onClick = { navController.navigate("accountSettings") }
                         )
                     }
+                    SettingsMenuLink(
+                        title = { Text("About") },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = "TODO"
+                            )
+                        },
+                        onClick = { navController.navigate("about") }
+                    )
                 }
             }
         )
