@@ -1,8 +1,6 @@
 package com.jerboa.db
 
-import android.content.ContentValues
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +10,6 @@ import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
 
 @Entity
 data class Account(
@@ -141,6 +138,19 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+                CREATE TABLE IF NOT EXISTS AppSettings (id INTEGER PRIMARY KEY 
+                AUTOINCREMENT NOT NULL, font_size INTEGER NOT NULL DEFAULT 13, theme INTEGER 
+                NOT NULL DEFAULT 0)
+            """
+        )
+        database.execSQL("insert into AppSettings default values")
+    }
+}
+
 @Database(
     version = 3,
     entities = [Account::class, AppSettings::class],
@@ -166,24 +176,7 @@ abstract class AppDB : RoomDatabase() {
                     "jerboa"
                 )
                     .allowMainThreadQueries()
-                    .addMigrations(MIGRATION_1_2)
-                    // Note, this is necessary because adding data in a migration does not work.
-                    .addCallback(object : Callback() {
-                        override fun onOpen(db: SupportSQLiteDatabase) {
-                            super.onCreate(db)
-                            Executors.newSingleThreadExecutor().execute() {
-                                db.insert(
-                                    "AppSettings",
-                                    CONFLICT_IGNORE, // Ensures it wont overwrite the existing data
-                                    ContentValues(2).apply {
-                                        put("id", 1)
-                                        put("font_size", 13)
-                                        put("theme", 0)
-                                    }
-                                )
-                            }
-                        }
-                    })
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 // return instance

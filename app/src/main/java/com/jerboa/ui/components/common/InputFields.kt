@@ -650,7 +650,7 @@ fun MyMarkdownText(
         markdown = markdown,
         modifier = Modifier.fillMaxSize(),
         color = color,
-        fontSize = MaterialTheme.typography.body1.fontSize.times(1.2)
+        fontSize = MaterialTheme.typography.body1.fontSize.times(1.3)
 //        style = MaterialTheme.typography.h6,
 //        imageLoader =  LocalImageLoader.current
     )
