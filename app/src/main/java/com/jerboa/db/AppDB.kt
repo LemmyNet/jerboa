@@ -1,6 +1,8 @@
 package com.jerboa.db
 
+import android.content.ContentValues
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +12,7 @@ import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
 
 @Entity
 data class Account(
@@ -147,7 +150,6 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
                 NOT NULL DEFAULT 0)
             """
         )
-        database.execSQL("insert into AppSettings default values")
     }
 }
 
@@ -177,7 +179,23 @@ abstract class AppDB : RoomDatabase() {
                 )
                     .allowMainThreadQueries()
                     .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
-                    .build()
+                    // Necessary because it can't insert data on creation
+                    .addCallback(object : Callback() {
+                        override fun onOpen(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            Executors.newSingleThreadExecutor().execute {
+                                db.insert(
+                                    "AppSettings",
+                                    CONFLICT_IGNORE, // Ensures it won't overwrite the existing data
+                                    ContentValues(2).apply {
+                                        put("id", 1)
+                                        put("font_size", 13)
+                                        put("theme", 0)
+                                    }
+                                )
+                            }
+                        }
+                    }).build()
                 INSTANCE = instance
                 // return instance
                 instance
