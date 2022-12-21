@@ -1,3 +1,18 @@
+# Jerboa v0.0.21-alpha Release (2022-12-21)
+
+## What's Changed
+
+- Change sidebar to info by @dessalines in https://github.com/dessalines/jerboa/pull/245
+- Remove top route. by @dessalines in https://github.com/dessalines/jerboa/pull/246
+- Adding copy post link. Fixes #168 by @dessalines in https://github.com/dessalines/jerboa/pull/247
+- Organizing imports. by @dessalines in https://github.com/dessalines/jerboa/pull/248
+- More sidebar stats by @dessalines in https://github.com/dessalines/jerboa/pull/249
+- Fixing siFormat issue when 0. Fixes #170 by @dessalines in https://github.com/dessalines/jerboa/pull/252
+- Adding a settings page. by @dessalines in https://github.com/dessalines/jerboa/pull/253
+- Adding light and dark theme options. Fixes #254 by @dessalines in https://github.com/dessalines/jerboa/pull/259
+- Add about page by @dessalines in https://github.com/dessalines/jerboa/pull/260
+- Smaller action bars by @dessalines in https://github.com/dessalines/jerboa/pull/261
+
 # Jerboa v0.0.20-alpha Release (2022-10-18)
 
 ## What's Changed
