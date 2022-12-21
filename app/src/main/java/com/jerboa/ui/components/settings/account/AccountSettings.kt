@@ -6,7 +6,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -58,7 +59,7 @@ fun ImageWithClose(
     Box(contentAlignment = Alignment.TopEnd) {
         composable()
         IconButton(onClick = onClick) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = "Remove Current Avatar")
+            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Remove Current Avatar")
         }
     }
 }

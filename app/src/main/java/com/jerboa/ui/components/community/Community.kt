@@ -4,7 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,7 +61,7 @@ fun CommunityTopSection(
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Icon(
-                    imageVector = Icons.Default.CheckCircle,
+                    imageVector = Icons.Outlined.CheckCircle,
                     contentDescription = "TODO",
                     tint = if (communityView.subscribed) {
                         Color.Green
@@ -160,7 +160,7 @@ fun CommunityHeader(
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.Outlined.ArrowBack,
                     contentDescription = "Back",
                     tint = contentColor
                 )
@@ -171,7 +171,7 @@ fun CommunityHeader(
                 showSortOptions = !showSortOptions
             }) {
                 Icon(
-                    Icons.Default.Sort,
+                    Icons.Outlined.Sort,
                     contentDescription = "TODO",
                     tint = contentColor
                 )
@@ -180,7 +180,7 @@ fun CommunityHeader(
                 showMoreOptions = !showMoreOptions
             }) {
                 Icon(
-                    Icons.Default.MoreVert,
+                    Icons.Outlined.MoreVert,
                     contentDescription = "TODO",
                     tint = contentColor
                 )
@@ -220,7 +220,7 @@ fun CommunityMoreDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = "Refresh",
-                    icon = Icons.Default.Refresh,
+                    icon = Icons.Outlined.Refresh,
                     onClick = {
                         onDismissRequest()
                         onClickRefresh()
@@ -228,7 +228,7 @@ fun CommunityMoreDialog(
                 )
                 IconAndTextDrawerItem(
                     text = "Community Info",
-                    icon = Icons.Default.Info,
+                    icon = Icons.Outlined.Info,
                     onClick = {
                         navController.navigate("communitySidebar")
                         onDismissRequest()
@@ -236,7 +236,7 @@ fun CommunityMoreDialog(
                 )
                 IconAndTextDrawerItem(
                     text = "Block Community",
-                    icon = Icons.Default.Block,
+                    icon = Icons.Outlined.Block,
                     onClick = onBlockCommunityClick
                 )
             }

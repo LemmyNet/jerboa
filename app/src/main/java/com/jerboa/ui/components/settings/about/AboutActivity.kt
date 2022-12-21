@@ -11,12 +11,13 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.NewReleases
-import androidx.compose.material.icons.filled.TravelExplore
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.AttachMoney
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.NewReleases
+import androidx.compose.material.icons.outlined.TravelExplore
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -46,6 +47,8 @@ fun AboutActivity(
 
     val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
+
+    @Suppress("DEPRECATION")
     val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName
 
     Surface(color = MaterialTheme.colors.background) {
@@ -61,7 +64,7 @@ fun AboutActivity(
                         subtitle = { Text("Version $version") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.NewReleases,
+                                imageVector = Icons.Outlined.NewReleases,
                                 contentDescription = "TODO"
                             )
                         },
@@ -75,7 +78,7 @@ fun AboutActivity(
                         title = { Text("Issue tracker") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.BugReport,
+                                imageVector = Icons.Outlined.BugReport,
                                 contentDescription = "TODO"
                             )
                         },
@@ -87,7 +90,7 @@ fun AboutActivity(
                         title = { Text("Developer Matrix chatroom") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.Chat,
+                                imageVector = Icons.Outlined.Chat,
                                 contentDescription = "TODO"
                             )
                         },
@@ -99,7 +102,7 @@ fun AboutActivity(
                         title = { Text("Donate to Jerboa development") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.AttachMoney,
+                                imageVector = Icons.Outlined.AttachMoney,
                                 contentDescription = "TODO"
                             )
                         },
@@ -126,7 +129,7 @@ fun AboutActivity(
                         title = { Text("Follow on Mastodon") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.TravelExplore,
+                                imageVector = Icons.Outlined.TravelExplore,
                                 contentDescription = "TODO"
                             )
                         },
@@ -147,7 +150,7 @@ fun AboutActivity(
                         },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.Code,
+                                imageVector = Icons.Outlined.Code,
                                 contentDescription = "TODO"
                             )
                         },

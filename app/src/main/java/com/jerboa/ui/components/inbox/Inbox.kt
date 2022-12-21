@@ -1,12 +1,22 @@
 package com.jerboa.ui.components.inbox
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.DoneAll
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.DoneAll
+import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material.primarySurface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.UnreadOrAll
@@ -51,7 +61,7 @@ fun InboxHeader(
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.Outlined.ArrowBack,
                     contentDescription = "Back"
                 )
             }
@@ -61,14 +71,14 @@ fun InboxHeader(
                 showUnreadOrAllOptions = !showUnreadOrAllOptions
             }) {
                 Icon(
-                    Icons.Default.FilterList,
+                    Icons.Outlined.FilterList,
                     contentDescription = "TODO",
                     tint = contentColor
                 )
             }
             IconButton(onClick = onClickMarkAllAsRead) {
                 Icon(
-                    Icons.Default.DoneAll,
+                    Icons.Outlined.DoneAll,
                     contentDescription = "TODO",
                     tint = contentColor
                 )

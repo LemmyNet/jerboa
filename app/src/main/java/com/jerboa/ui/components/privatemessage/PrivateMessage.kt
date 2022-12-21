@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Reply
+import androidx.compose.material.icons.outlined.MarkChatRead
+import androidx.compose.material.icons.outlined.MarkChatUnread
+import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PrivateMessageView
@@ -139,24 +139,28 @@ fun PrivateMessageFooterLine(
         ) {
             if (!isCreator(myPersonId, privateMessageView)) {
                 ActionBarButton(
-                    icon = Icons.Filled.Check,
+                    icon = if (privateMessageView.private_message.read) {
+                        Icons.Outlined.MarkChatRead
+                    } else {
+                        Icons.Outlined.MarkChatUnread
+                    },
                     onClick = { onMarkAsReadClick(privateMessageView) },
                     contentColor = if (privateMessageView.private_message.read) {
-                        Color.Green
+                        MaterialTheme.colors.primary
                     } else {
                         MaterialTheme.colors.onBackground.muted
                     },
                     account = account
                 )
                 ActionBarButton(
-                    icon = Icons.Filled.Reply,
+                    icon = Icons.Outlined.Textsms,
                     onClick = { onReplyClick(privateMessageView) },
                     account = account
                 )
             }
             // TODO
 //            ActionBarButton(
-//                icon = Icons.Filled.MoreVert,
+//                icon = Icons.Outlined.MoreVert,
 //                account = account,
 //            )
         }

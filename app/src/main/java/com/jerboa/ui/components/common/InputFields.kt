@@ -12,7 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -422,7 +422,7 @@ fun MarkdownHelperBar(
             onClick = onPreviewClick
         ) {
             Icon(
-                imageVector = Icons.Default.Preview,
+                imageVector = Icons.Outlined.Preview,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -431,7 +431,7 @@ fun MarkdownHelperBar(
             onClick = onLinkClick
         ) {
             Icon(
-                imageVector = Icons.Default.Link,
+                imageVector = Icons.Outlined.Link,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -446,7 +446,7 @@ fun MarkdownHelperBar(
                 )
             } else {
                 Icon(
-                    imageVector = Icons.Default.Image,
+                    imageVector = Icons.Outlined.Image,
                     contentDescription = "TODO",
                     tint = MaterialTheme.colors.onBackground.muted
                 )
@@ -456,7 +456,7 @@ fun MarkdownHelperBar(
             onClick = onBoldClick
         ) {
             Icon(
-                imageVector = Icons.Default.FormatBold,
+                imageVector = Icons.Outlined.FormatBold,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -465,7 +465,7 @@ fun MarkdownHelperBar(
             onClick = onItalicsClick
         ) {
             Icon(
-                imageVector = Icons.Default.FormatItalic,
+                imageVector = Icons.Outlined.FormatItalic,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -474,7 +474,7 @@ fun MarkdownHelperBar(
             onClick = onQuoteClick
         ) {
             Icon(
-                imageVector = Icons.Default.FormatQuote,
+                imageVector = Icons.Outlined.FormatQuote,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -483,7 +483,7 @@ fun MarkdownHelperBar(
             onClick = onListClick
         ) {
             Icon(
-                imageVector = Icons.Default.FormatListBulleted,
+                imageVector = Icons.Outlined.FormatListBulleted,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -492,7 +492,7 @@ fun MarkdownHelperBar(
             onClick = onHeaderClick
         ) {
             Icon(
-                imageVector = Icons.Default.Title,
+                imageVector = Icons.Outlined.Title,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -501,7 +501,7 @@ fun MarkdownHelperBar(
             onClick = onCodeClick
         ) {
             Icon(
-                imageVector = Icons.Default.Code,
+                imageVector = Icons.Outlined.Code,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -510,7 +510,7 @@ fun MarkdownHelperBar(
             onClick = onStrikethroughClick
         ) {
             Icon(
-                imageVector = Icons.Default.FormatStrikethrough,
+                imageVector = Icons.Outlined.FormatStrikethrough,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -519,7 +519,7 @@ fun MarkdownHelperBar(
             onClick = onSubscriptClick
         ) {
             Icon(
-                imageVector = Icons.Default.Subscript,
+                imageVector = Icons.Outlined.Subscript,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -528,7 +528,7 @@ fun MarkdownHelperBar(
             onClick = onSuperscriptClick
         ) {
             Icon(
-                imageVector = Icons.Default.Superscript,
+                imageVector = Icons.Outlined.Superscript,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )

@@ -2,8 +2,7 @@ package com.jerboa.ui.theme
 
 import androidx.compose.ui.unit.dp
 
-val ACTION_BAR_ICON_SIZE = 24.dp
-val ACTION_BAR_ICON_SIZE_SMALLER = 16.dp
+val ACTION_BAR_ICON_SIZE = 16.dp
 
 val SMALL_PADDING = 4.dp
 val MEDIUM_PADDING = 8.dp

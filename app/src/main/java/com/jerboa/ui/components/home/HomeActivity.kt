@@ -16,7 +16,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -103,7 +103,7 @@ fun HomeActivity(
                         }
                     }
                 ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "TODO")
+                    Icon(imageVector = Icons.Outlined.Add, contentDescription = "TODO")
                 }
             },
             bottomBar = {

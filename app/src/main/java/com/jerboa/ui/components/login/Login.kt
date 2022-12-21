@@ -7,9 +7,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -63,9 +63,9 @@ fun PasswordField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
             val image = if (passwordVisibility) {
-                Icons.Filled.Visibility
+                Icons.Outlined.Visibility
             } else {
-                Icons.Filled.VisibilityOff
+                Icons.Outlined.VisibilityOff
             }
 
             IconButton(onClick = {
@@ -195,7 +195,7 @@ fun LoginHeader(
                 }
             ) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.Outlined.ArrowBack,
                     contentDescription = "Back"
                 )
             }

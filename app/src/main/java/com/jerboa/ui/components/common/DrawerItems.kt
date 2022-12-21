@@ -11,7 +11,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowRight
+import androidx.compose.material.icons.outlined.ArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,7 +64,7 @@ fun IconAndTextDrawerItem(
         }
         if (more) {
             Icon(
-                imageVector = Icons.Default.ArrowRight,
+                imageVector = Icons.Outlined.ArrowRight,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onSurface,
                 modifier = Modifier.size(24.dp)

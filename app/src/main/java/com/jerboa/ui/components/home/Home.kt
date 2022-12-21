@@ -4,30 +4,84 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Divider
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.LocationCity
+import androidx.compose.material.icons.outlined.Login
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Public
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Sort
+import androidx.compose.material.primarySurface
+import androidx.compose.material.rememberDrawerState
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.datatypes.*
+import com.jerboa.datatypes.CommunitySafe
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.PersonSafe
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.api.MyUserInfo
+import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
-import com.jerboa.ui.components.common.*
+import com.jerboa.ui.components.common.IconAndTextDrawerItem
+import com.jerboa.ui.components.common.LargerCircularIcon
+import com.jerboa.ui.components.common.ListingTypeOptionsDialog
+import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.common.SortOptionsDialog
+import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.person.PersonName
-import com.jerboa.ui.theme.*
+import com.jerboa.ui.theme.APP_BAR_ELEVATION
+import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
+import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.XL_PADDING
+import com.jerboa.ui.theme.muted
 import com.jerboa.unreadCountTotal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -140,7 +194,7 @@ fun DrawerItemsMain(
             item {
                 IconAndTextDrawerItem(
                     text = "Subscribed",
-                    icon = Icons.Default.Bookmarks,
+                    icon = Icons.Outlined.Bookmarks,
                     onClick = { onClickListingType(ListingType.Subscribed) }
                 )
             }
@@ -148,14 +202,14 @@ fun DrawerItemsMain(
         item {
             IconAndTextDrawerItem(
                 text = "Local",
-                icon = Icons.Default.LocationCity,
+                icon = Icons.Outlined.LocationCity,
                 onClick = { onClickListingType(ListingType.Local) }
             )
         }
         item {
             IconAndTextDrawerItem(
                 text = "All",
-                icon = Icons.Default.Public,
+                icon = Icons.Outlined.Public,
                 onClick = { onClickListingType(ListingType.All) }
             )
         }
@@ -163,7 +217,7 @@ fun DrawerItemsMain(
             myUserInfo?.also {
                 IconAndTextDrawerItem(
                     text = "Saved",
-                    icon = Icons.Default.Bookmarks,
+                    icon = Icons.Outlined.Bookmarks,
                     onClick = onClickSaved
                 )
             }
@@ -177,7 +231,7 @@ fun DrawerItemsMain(
             myUserInfo?.also {
                 IconAndTextDrawerItem(
                     text = "Profile",
-                    icon = Icons.Default.Person,
+                    icon = Icons.Outlined.Person,
                     onClick = onClickProfile
                 )
             }
@@ -186,7 +240,7 @@ fun DrawerItemsMain(
             myUserInfo?.also {
                 IconAndTextDrawerItem(
                     text = "Inbox",
-                    icon = Icons.Default.Email,
+                    icon = Icons.Outlined.Email,
                     onClick = onClickInbox,
                     iconBadgeCount = totalUnreads
                 )
@@ -196,7 +250,7 @@ fun DrawerItemsMain(
             myUserInfo?.also {
                 IconAndTextDrawerItem(
                     text = "Settings",
-                    icon = Icons.Default.Settings,
+                    icon = Icons.Outlined.Settings,
                     onClick = onClickSettings
                 )
             }
@@ -256,20 +310,20 @@ fun DrawerAddAccountMode(
     Column {
         IconAndTextDrawerItem(
             text = "Add Account",
-            icon = Icons.Default.Add,
+            icon = Icons.Outlined.Add,
             onClick = { navController.navigate(route = "login") }
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
                 text = "Switch to ${it.instance}/${it.name}",
-                icon = Icons.Default.Login,
+                icon = Icons.Outlined.Login,
                 onClick = { onSwitchAccountClick(it) }
             )
         }
         currentAccount?.also {
             IconAndTextDrawerItem(
                 text = "Sign Out",
-                icon = Icons.Default.Close,
+                icon = Icons.Outlined.Close,
                 onClick = onSignOutClick
             )
         }
@@ -315,9 +369,9 @@ fun DrawerHeader(
             AvatarAndAccountName(myPerson)
             Icon(
                 imageVector = if (showAccountAddMode) {
-                    Icons.Default.ExpandLess
+                    Icons.Outlined.ExpandLess
                 } else {
-                    Icons.Default.ExpandMore
+                    Icons.Outlined.ExpandMore
                 },
                 contentDescription = "TODO"
             )
@@ -449,7 +503,7 @@ fun HomeHeader(
                 }
             }) {
                 Icon(
-                    Icons.Filled.Menu,
+                    Icons.Outlined.Menu,
                     contentDescription = "Menu"
                 )
             }
@@ -460,7 +514,7 @@ fun HomeHeader(
                 showListingTypeOptions = !showListingTypeOptions
             }) {
                 Icon(
-                    Icons.Default.FilterList,
+                    Icons.Outlined.FilterList,
                     contentDescription = "TODO",
                     tint = contentColor
                 )
@@ -469,7 +523,7 @@ fun HomeHeader(
                 showSortOptions = !showSortOptions
             }) {
                 Icon(
-                    Icons.Default.Sort,
+                    Icons.Outlined.Sort,
                     contentDescription = "TODO",
                     tint = contentColor
                 )
@@ -478,7 +532,7 @@ fun HomeHeader(
                 showMoreOptions = !showMoreOptions
             }) {
                 Icon(
-                    Icons.Default.MoreVert,
+                    Icons.Outlined.MoreVert,
                     contentDescription = "TODO",
                     tint = contentColor
                 )
@@ -517,7 +571,7 @@ fun HomeMoreDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = "Refresh",
-                    icon = Icons.Default.Refresh,
+                    icon = Icons.Outlined.Refresh,
                     onClick = {
                         onDismissRequest()
                         onClickRefresh()
@@ -525,7 +579,7 @@ fun HomeMoreDialog(
                 )
                 IconAndTextDrawerItem(
                     text = "Site Info",
-                    icon = Icons.Default.Info,
+                    icon = Icons.Outlined.Info,
                     onClick = {
                         navController.navigate("siteSidebar")
                         onDismissRequest()

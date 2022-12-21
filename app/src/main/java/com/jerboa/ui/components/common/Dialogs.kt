@@ -13,17 +13,17 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.BrightnessLow
-import androidx.compose.material.icons.filled.FormatListNumbered
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material.icons.filled.LocationCity
-import androidx.compose.material.icons.filled.MarkunreadMailbox
-import androidx.compose.material.icons.filled.Moving
-import androidx.compose.material.icons.filled.NewReleases
-import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.BrightnessLow
+import androidx.compose.material.icons.outlined.FormatListNumbered
+import androidx.compose.material.icons.outlined.List
+import androidx.compose.material.icons.outlined.LocalFireDepartment
+import androidx.compose.material.icons.outlined.LocationCity
+import androidx.compose.material.icons.outlined.MarkunreadMailbox
+import androidx.compose.material.icons.outlined.Moving
+import androidx.compose.material.icons.outlined.NewReleases
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -114,20 +114,20 @@ fun ListingTypeOptionsDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = "Subscribed",
-                    icon = Icons.Default.Bookmarks,
+                    icon = Icons.Outlined.Bookmarks,
                     onClick = { onClickListingType(ListingType.Subscribed) },
                     highlight = (selectedListingType == ListingType.Subscribed)
                 )
                 // TODO hide local for non-federated instances
                 IconAndTextDrawerItem(
                     text = "Local",
-                    icon = Icons.Default.LocationCity,
+                    icon = Icons.Outlined.LocationCity,
                     onClick = { onClickListingType(ListingType.Local) },
                     highlight = (selectedListingType == ListingType.Local)
                 )
                 IconAndTextDrawerItem(
                     text = "All",
-                    icon = Icons.Default.Public,
+                    icon = Icons.Outlined.Public,
                     onClick = { onClickListingType(ListingType.All) },
                     highlight = (selectedListingType == ListingType.All)
                 )
@@ -150,37 +150,37 @@ fun SortOptionsDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = "Active",
-                    icon = Icons.Default.Moving,
+                    icon = Icons.Outlined.Moving,
                     onClick = { onClickSortType(SortType.Active) },
                     highlight = (selectedSortType == SortType.Active)
                 )
                 IconAndTextDrawerItem(
                     text = "Hot",
-                    icon = Icons.Default.LocalFireDepartment,
+                    icon = Icons.Outlined.LocalFireDepartment,
                     onClick = { onClickSortType(SortType.Hot) },
                     highlight = (selectedSortType == SortType.Hot)
                 )
                 IconAndTextDrawerItem(
                     text = "New",
-                    icon = Icons.Default.BrightnessLow,
+                    icon = Icons.Outlined.BrightnessLow,
                     onClick = { onClickSortType(SortType.New) },
                     highlight = (selectedSortType == SortType.New)
                 )
                 IconAndTextDrawerItem(
                     text = "Most Comments",
-                    icon = Icons.Default.FormatListNumbered,
+                    icon = Icons.Outlined.FormatListNumbered,
                     onClick = { onClickSortType(SortType.MostComments) },
                     highlight = (selectedSortType == SortType.MostComments)
                 )
                 IconAndTextDrawerItem(
                     text = "New Comments",
-                    icon = Icons.Default.NewReleases,
+                    icon = Icons.Outlined.NewReleases,
                     onClick = { onClickSortType(SortType.NewComments) },
                     highlight = (selectedSortType == SortType.NewComments)
                 )
                 IconAndTextDrawerItem(
                     text = "Top",
-                    icon = Icons.Default.BarChart,
+                    icon = Icons.Outlined.BarChart,
                     onClick = onClickSortTopOptions,
                     more = true,
                     highlight = (topSortTypes.contains(selectedSortType))
@@ -203,14 +203,14 @@ fun UnreadOrAllOptionsDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = "All",
-                    icon = Icons.Default.List,
+                    icon = Icons.Outlined.List,
                     onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
                     highlight = (selectedUnreadOrAll == UnreadOrAll.All)
                 )
                 // TODO hide local for non-federated instances
                 IconAndTextDrawerItem(
                     text = "Unread",
-                    icon = Icons.Default.MarkunreadMailbox,
+                    icon = Icons.Outlined.MarkunreadMailbox,
                     onClick = { onClickUnreadOrAll(UnreadOrAll.Unread) },
                     highlight = (selectedUnreadOrAll == UnreadOrAll.Unread)
                 )

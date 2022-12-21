@@ -12,7 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -227,7 +227,7 @@ fun CommunityActivity(
                         }
                     }
                 ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "TODO")
+                    Icon(imageVector = Icons.Outlined.Add, contentDescription = "TODO")
                 }
             },
             bottomBar = {

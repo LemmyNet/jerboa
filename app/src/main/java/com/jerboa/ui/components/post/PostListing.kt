@@ -16,20 +16,20 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Block
-import androidx.compose.material.icons.filled.BookmarkAdd
-import androidx.compose.material.icons.filled.BookmarkAdded
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.Forum
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PushPin
-import androidx.compose.material.icons.filled.Reply
-import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.BookmarkAdd
+import androidx.compose.material.icons.outlined.BookmarkAdded
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.CommentsDisabled
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.PushPin
+import androidx.compose.material.icons.outlined.Restore
+import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
@@ -79,7 +78,6 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
-import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
 
 @Composable
@@ -98,7 +96,7 @@ fun PostHeaderLine(
     ) {
         if (postView.post.stickied) {
             Icon(
-                imageVector = Icons.Default.PushPin,
+                imageVector = Icons.Outlined.PushPin,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.onBackground.muted
             )
@@ -106,7 +104,7 @@ fun PostHeaderLine(
         }
         if (postView.post.locked) {
             Icon(
-                imageVector = Icons.Default.Lock,
+                imageVector = Icons.Outlined.CommentsDisabled,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.error
             )
@@ -114,7 +112,7 @@ fun PostHeaderLine(
         }
         if (postView.post.deleted) {
             Icon(
-                imageVector = Icons.Default.Delete,
+                imageVector = Icons.Outlined.Delete,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colors.error
             )
@@ -272,7 +270,7 @@ fun PostTitleAndThumbnail(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
-                            imageVector = Icons.Default.Link,
+                            imageVector = Icons.Outlined.Link,
                             contentDescription = "TODO",
                             modifier = Modifier.size(LINK_ICON_SIZE)
                         )
@@ -406,61 +404,54 @@ fun PostFooterLine(
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING)
     ) {
-        Row {
-            CommentCount(
-                comments = postView.counts.comments,
+        CommentCount(
+            comments = postView.counts.comments,
+            account = account
+        )
+        VoteGeneric(
+            myVote = myVote,
+            votes = upvotes,
+            item = postView,
+            type = VoteType.Upvote,
+            onVoteClick = {
+                onUpvoteClick(it)
+            },
+            account = account
+        )
+        VoteGeneric(
+            myVote = myVote,
+            votes = downvotes,
+            item = postView,
+            type = VoteType.Downvote,
+            onVoteClick = {
+                onDownvoteClick(it)
+            },
+            account = account
+        )
+        ActionBarButton(
+            icon = if (postView.saved) { Icons.Outlined.BookmarkAdded } else {
+                Icons.Outlined.BookmarkAdd
+            },
+            onClick = { onSaveClick(postView) },
+            contentColor = if (postView.saved) {
+                MaterialTheme.colors.primary
+            } else {
+                MaterialTheme.colors.onBackground.muted
+            },
+            account = account
+        )
+        if (showReply) {
+            ActionBarButton(
+                icon = Icons.Outlined.Textsms,
+                onClick = { onReplyClick(postView) },
                 account = account
             )
         }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
-        ) {
-            VoteGeneric(
-                myVote = myVote,
-                votes = upvotes,
-                item = postView,
-                type = VoteType.Upvote,
-                onVoteClick = {
-                    onUpvoteClick(it)
-                },
-                account = account
-            )
-            VoteGeneric(
-                myVote = myVote,
-                votes = downvotes,
-                item = postView,
-                type = VoteType.Downvote,
-                onVoteClick = {
-                    onDownvoteClick(it)
-                },
-                account = account
-            )
-            ActionBarButton(
-                icon = if (postView.saved) { Icons.Default.BookmarkAdded } else {
-                    Icons.Default
-                        .BookmarkAdd
-                },
-                onClick = { onSaveClick(postView) },
-                contentColor = if (postView.saved) {
-                    Color.Yellow
-                } else {
-                    MaterialTheme.colors.onBackground.muted
-                },
-                account = account
-            )
-            if (showReply) {
-                ActionBarButton(
-                    icon = Icons.Default.Reply,
-                    onClick = { onReplyClick(postView) },
-                    account = account
-                )
-            }
-            ActionBarButton(
-                icon = Icons.Default.MoreVert,
-                account = account,
-                onClick = { showMoreOptions = !showMoreOptions }
-            )
-        }
+        ActionBarButton(
+            icon = Icons.Outlined.MoreVert,
+            account = account,
+            onClick = { showMoreOptions = !showMoreOptions }
+        )
     }
 }
 
@@ -470,12 +461,11 @@ fun CommentCount(
     account: Account?
 ) {
     ActionBarButton(
-        icon = Icons.Default.ChatBubble,
-        text = "$comments comments",
+        icon = Icons.Outlined.ChatBubbleOutline,
+        text = "$comments",
         noClick = true,
         account = account,
-        onClick = {},
-        smallIcon = true
+        onClick = {}
     )
 }
 
@@ -719,7 +709,7 @@ fun PostOptionsDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = "Go to ${communityNameShown(postView.community)}",
-                    icon = Icons.Default.Forum,
+                    icon = Icons.Outlined.Forum,
                     onClick = {
                         onCommunityClick()
                     }
@@ -727,7 +717,7 @@ fun PostOptionsDialog(
                 postView.post.url?.also {
                     IconAndTextDrawerItem(
                         text = "Copy link",
-                        icon = Icons.Default.Link,
+                        icon = Icons.Outlined.Link,
                         onClick = {
                             localClipboardManager.setText(AnnotatedString(it))
                             Toast.makeText(ctx, "Link Copied", Toast.LENGTH_SHORT).show()
@@ -737,7 +727,7 @@ fun PostOptionsDialog(
                 }
                 IconAndTextDrawerItem(
                     text = "Copy Permalink",
-                    icon = Icons.Default.Link,
+                    icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = postView.post.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
@@ -748,37 +738,37 @@ fun PostOptionsDialog(
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = "Report Post",
-                        icon = Icons.Default.Flag,
+                        icon = Icons.Outlined.Flag,
                         onClick = onReportClick
                     )
                     IconAndTextDrawerItem(
                         text = "Block ${postView.creator.name}",
-                        icon = Icons.Default.Block,
+                        icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick
                     )
                     IconAndTextDrawerItem(
                         text = "Block ${postView.community.name}",
-                        icon = Icons.Default.Block,
+                        icon = Icons.Outlined.Block,
                         onClick = onBlockCommunityClick
                     )
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(
                         text = "Edit",
-                        icon = Icons.Default.Edit,
+                        icon = Icons.Outlined.Edit,
                         onClick = onEditPostClick
                     )
                     val deleted = postView.post.deleted
                     if (deleted) {
                         IconAndTextDrawerItem(
                             text = "Restore",
-                            icon = Icons.Default.Restore,
+                            icon = Icons.Outlined.Restore,
                             onClick = onDeletePostClick
                         )
                     } else {
                         IconAndTextDrawerItem(
                             text = "Delete",
-                            icon = Icons.Default.Delete,
+                            icon = Icons.Outlined.Delete,
                             onClick = onDeletePostClick
                         )
                     }

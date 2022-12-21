@@ -9,10 +9,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FlashlightOn
-import androidx.compose.material.icons.filled.FormatSize
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.ShieldMoon
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.FlashlightOn
+import androidx.compose.material.icons.outlined.FormatSize
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.ShieldMoon
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -63,7 +64,7 @@ fun LookAndFeelActivity(
                         state = fontSizeState,
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.FormatSize,
+                                imageVector = Icons.Outlined.FormatSize,
                                 contentDescription = "TODO"
                             )
                         },
@@ -85,7 +86,7 @@ fun LookAndFeelActivity(
                         items = ThemeMode.values().map { it.name },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.Palette,
+                                imageVector = Icons.Outlined.Palette,
                                 contentDescription = "TODO"
                             )
                         },
@@ -107,7 +108,7 @@ fun LookAndFeelActivity(
                         items = LightTheme.values().map { it.name },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.FlashlightOn,
+                                imageVector = Icons.Outlined.FlashlightOn,
                                 contentDescription = "TODO"
                             )
                         },
@@ -129,7 +130,7 @@ fun LookAndFeelActivity(
                         items = DarkTheme.values().map { it.name },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.ShieldMoon,
+                                imageVector = Icons.Outlined.ShieldMoon,
                                 contentDescription = "TODO"
                             )
                         },
