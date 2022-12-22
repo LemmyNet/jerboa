@@ -216,8 +216,15 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
     }
 }
 
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        //  Update changelog viewed
+        database.execSQL("UPDATE AppSettings SET viewed_changelog = 0")
+    }
+}
+
 @Database(
-    version = 5,
+    version = 6,
     entities = [Account::class, AppSettings::class],
     exportSchema = true
 )
@@ -241,7 +248,7 @@ abstract class AppDB : RoomDatabase() {
                     "jerboa"
                 )
                     .allowMainThreadQueries()
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
                         override fun onOpen(db: SupportSQLiteDatabase) {
