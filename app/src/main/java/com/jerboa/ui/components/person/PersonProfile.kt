@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.person
 
 import androidx.compose.foundation.layout.Arrangement
@@ -7,21 +9,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Sort
-import androidx.compose.material.primarySurface
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,10 +41,8 @@ import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.components.common.TimeAgo
-import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
-import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 
 @Composable
@@ -72,33 +67,26 @@ fun PersonProfileTopSection(
                 }
             }
         }
-        Card(
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier
-                .padding(vertical = SMALL_PADDING)
-                .fillMaxWidth()
+        Column(
+            modifier = Modifier.padding(MEDIUM_PADDING),
+            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
         ) {
-            Column(
-                modifier = Modifier.padding(MEDIUM_PADDING),
-                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
-            ) {
-                Text(
-                    text = personNameShown(personView.person, true),
-                    style = MaterialTheme.typography.h6
-                )
+            Text(
+                text = personNameShown(personView.person, true),
+                style = MaterialTheme.typography.titleLarge
+            )
 
-                TimeAgo(
-                    precedingString = "Joined",
-                    includeAgo = true,
-                    published = personView.person.published
+            TimeAgo(
+                precedingString = "Joined",
+                includeAgo = true,
+                published = personView.person.published
+            )
+            CommentsAndPosts(personView)
+            personView.person.bio?.also {
+                MyMarkdownText(
+                    markdown = it,
+                    color = MaterialTheme.colorScheme.onBackground.muted
                 )
-                CommentsAndPosts(personView)
-                personView.person.bio?.also {
-                    MyMarkdownText(
-                        markdown = it,
-                        color = MaterialTheme.colors.onBackground.muted
-                    )
-                }
             }
         }
     }
@@ -109,12 +97,12 @@ fun CommentsAndPosts(personView: PersonViewSafe) {
     Row {
         Text(
             text = "${personView.counts.post_count} posts",
-            color = MaterialTheme.colors.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted
         )
-        DotSpacer(style = MaterialTheme.typography.body2)
+        DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
             text = "${personView.counts.comment_count} comments",
-            color = MaterialTheme.colors.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted
         )
     }
 }
@@ -138,7 +126,8 @@ fun PersonProfileHeader(
     onClickSortType: (SortType) -> Unit,
     onBlockPersonClick: () -> Unit,
     selectedSortType: SortType,
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -180,19 +169,14 @@ fun PersonProfileHeader(
         )
     }
 
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
-
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         title = {
             PersonProfileHeaderTitle(
                 personName = personName,
                 selectedSortType = selectedSortType
             )
         },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
-        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
@@ -207,8 +191,7 @@ fun PersonProfileHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
-                    tint = contentColor
+                    contentDescription = "TODO"
                 )
             }
             if (!myProfile) {
@@ -217,8 +200,7 @@ fun PersonProfileHeader(
                 }) {
                     Icon(
                         Icons.Outlined.MoreVert,
-                        contentDescription = "TODO",
-                        tint = contentColor
+                        contentDescription = "TODO"
                     )
                 }
             }
@@ -234,12 +216,11 @@ fun PersonProfileHeaderTitle(
     Column {
         Text(
             text = personName,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.titleLarge
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.subtitle1,
-            color = contentColorFor(MaterialTheme.colors.primarySurface).muted
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
@@ -260,6 +241,6 @@ fun PersonProfileMoreDialog(
                 )
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }

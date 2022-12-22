@@ -1,9 +1,10 @@
 package com.jerboa.ui.components.comment.edit
 
 import android.util.Log
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
@@ -16,6 +17,7 @@ import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentEditActivity(
     accountViewModel: AccountViewModel,
@@ -34,7 +36,7 @@ fun CommentEditActivity(
 
     val focusManager = LocalFocusManager.current
 
-    Surface(color = MaterialTheme.colors.background) {
+    Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             topBar = {
                 CommentEditHeader(
@@ -56,11 +58,12 @@ fun CommentEditActivity(
                     }
                 )
             },
-            content = {
+            content = { padding ->
                 CommentEdit(
                     content = content,
                     account = account,
-                    onContentChange = { content = it }
+                    onContentChange = { content = it },
+                    padding = padding
                 )
             }
         )

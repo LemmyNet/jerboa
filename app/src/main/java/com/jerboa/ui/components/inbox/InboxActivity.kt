@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.inbox
 
 import android.content.Context
@@ -6,16 +8,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -45,93 +47,94 @@ fun InboxActivity(
     Log.d("jerboa", "got to inbox activity")
 
     val scope = rememberCoroutineScope()
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
     val unreadCount = homeViewModel.unreadCountResponse?.let { unreadCountTotal(it) }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    Surface(color = MaterialTheme.colors.background) {
-        Scaffold(
-            scaffoldState = scaffoldState,
-            topBar = {
-                InboxHeader(
-                    unreadCount = unreadCount,
-                    navController = navController,
-                    selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly.value),
-                    onClickUnreadOrAll = { unreadOrAll ->
-                        account?.also { acct ->
-                            inboxViewModel.fetchReplies(
-                                account = acct,
-                                clear = true,
-                                changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                                ctx = ctx
-                            )
-                            inboxViewModel.fetchPersonMentions(
-                                account = acct,
-                                clear = true,
-                                changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                                ctx = ctx
-                            )
-                            inboxViewModel.fetchPrivateMessages(
-                                account = acct,
-                                clear = true,
-                                changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                                ctx = ctx
-                            )
-                        }
-                    },
-                    onClickMarkAllAsRead = {
-                        account?.also { acct ->
-                            inboxViewModel.markAllAsRead(
-                                account = acct,
-                                ctx = ctx
-                            )
-                            homeViewModel.markAllAsRead()
-                        }
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            InboxHeader(
+                scrollBehavior = scrollBehavior,
+                unreadCount = unreadCount,
+                navController = navController,
+                selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly.value),
+                onClickUnreadOrAll = { unreadOrAll ->
+                    account?.also { acct ->
+                        inboxViewModel.fetchReplies(
+                            account = acct,
+                            clear = true,
+                            changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
+                            ctx = ctx
+                        )
+                        inboxViewModel.fetchPersonMentions(
+                            account = acct,
+                            clear = true,
+                            changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
+                            ctx = ctx
+                        )
+                        inboxViewModel.fetchPrivateMessages(
+                            account = acct,
+                            clear = true,
+                            changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
+                            ctx = ctx
+                        )
                     }
-                )
-            },
-            content = {
-                InboxTabs(
-                    padding = it,
-                    navController = navController,
-                    commentEditViewModel = commentEditViewModel,
-                    commentReplyViewModel = commentReplyViewModel,
-                    inboxViewModel = inboxViewModel,
-                    homeViewModel = homeViewModel,
-                    ctx = ctx,
-                    account = account,
-                    scope = scope
-                )
-            },
-            bottomBar = {
-                BottomAppBarAll(
-                    screen = "inbox",
-                    unreadCounts = homeViewModel.unreadCountResponse,
-                    onClickProfile = {
-                        account?.id?.also {
-                            navController.navigate(route = "profile/$it")
-                        }
-                    },
-                    onClickInbox = {
-                        account?.also {
-                            navController.navigate(route = "inbox")
-                        } ?: run {
-                            loginFirstToast(ctx)
-                        }
-                    },
-                    onClickSaved = {
-                        account?.id?.also {
-                            navController.navigate(route = "profile/$it?saved=${true}")
-                        } ?: run {
-                            loginFirstToast(ctx)
-                        }
-                    },
-                    navController = navController
-                )
-            }
-        )
-    }
+                },
+                onClickMarkAllAsRead = {
+                    account?.also { acct ->
+                        inboxViewModel.markAllAsRead(
+                            account = acct,
+                            ctx = ctx
+                        )
+                        homeViewModel.markAllAsRead()
+                    }
+                }
+            )
+        },
+        content = {
+            InboxTabs(
+                padding = it,
+                navController = navController,
+                commentEditViewModel = commentEditViewModel,
+                commentReplyViewModel = commentReplyViewModel,
+                inboxViewModel = inboxViewModel,
+                homeViewModel = homeViewModel,
+                ctx = ctx,
+                account = account,
+                scope = scope
+            )
+        },
+        bottomBar = {
+            BottomAppBarAll(
+                screen = "inbox",
+                unreadCounts = homeViewModel.unreadCountResponse,
+                onClickProfile = {
+                    account?.id?.also {
+                        navController.navigate(route = "profile/$it")
+                    }
+                },
+                onClickInbox = {
+                    account?.also {
+                        navController.navigate(route = "inbox")
+                    } ?: run {
+                        loginFirstToast(ctx)
+                    }
+                },
+                onClickSaved = {
+                    account?.id?.also {
+                        navController.navigate(route = "profile/$it?saved=${true}")
+                    } ?: run {
+                        loginFirstToast(ctx)
+                    }
+                },
+                navController = navController
+            )
+        }
+    )
 }
 
 enum class InboxTab {
@@ -164,7 +167,7 @@ fun InboxTabs(
             selectedTabIndex = pagerState.currentPage,
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset(
+                    Modifier.pagerTabIndicatorOffset2(
                         pagerState,
                         tabPositions
                     )

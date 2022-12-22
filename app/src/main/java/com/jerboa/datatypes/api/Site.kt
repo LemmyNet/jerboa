@@ -1,6 +1,25 @@
 package com.jerboa.datatypes.api
 
-import com.jerboa.datatypes.*
+import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunityBlockView
+import com.jerboa.datatypes.CommunityFollowerView
+import com.jerboa.datatypes.CommunityModeratorView
+import com.jerboa.datatypes.CommunityView
+import com.jerboa.datatypes.LocalUserSettingsView
+import com.jerboa.datatypes.ModAddCommunityView
+import com.jerboa.datatypes.ModAddView
+import com.jerboa.datatypes.ModBanFromCommunityView
+import com.jerboa.datatypes.ModBanView
+import com.jerboa.datatypes.ModLockPostView
+import com.jerboa.datatypes.ModRemoveCommentView
+import com.jerboa.datatypes.ModRemoveCommunityView
+import com.jerboa.datatypes.ModRemovePostView
+import com.jerboa.datatypes.ModStickyPostView
+import com.jerboa.datatypes.ModTransferCommunityView
+import com.jerboa.datatypes.PersonBlockView
+import com.jerboa.datatypes.PersonViewSafe
+import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.SiteView
 
 /**
  * Search lemmy for different types of data.

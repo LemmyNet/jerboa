@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.community.list
 
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -5,18 +7,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.primarySurface
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +31,6 @@ import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
-import com.jerboa.ui.theme.APP_BAR_ELEVATION
 
 @Composable
 fun CommunityListHeader(
@@ -39,9 +38,6 @@ fun CommunityListHeader(
     search: String,
     onSearchChange: (search: String) -> Unit
 ) {
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
-
     TopAppBar(
         title = {
             CommunityTopBarSearchView(
@@ -49,9 +45,6 @@ fun CommunityListHeader(
                 onSearchChange = onSearchChange
             )
         },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
-        elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(
                 onClick = { // TODO
@@ -59,8 +52,7 @@ fun CommunityListHeader(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
-                    tint = contentColor
+                    contentDescription = "TODO"
                 )
             }
         },
@@ -155,15 +147,12 @@ fun CommunityTopBarSearchView(
     search: String,
     onSearchChange: (search: String) -> Unit
 ) {
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
-
     TextField(
         value = search,
         onValueChange = onSearchChange,
-        textStyle = MaterialTheme.typography.body1,
+        textStyle = MaterialTheme.typography.bodyLarge,
         placeholder = {
-            Text("Search...", color = contentColor)
+            Text("Search...")
         },
         modifier = Modifier
             .fillMaxWidth(),
@@ -174,15 +163,14 @@ fun CommunityTopBarSearchView(
                 ) {
                     Icon(
                         Icons.Outlined.Close,
-                        contentDescription = "",
-                        tint = contentColor
+                        contentDescription = ""
                     )
                 }
             }
         },
         singleLine = true,
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.Transparent,
+            containerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent

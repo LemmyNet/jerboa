@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa
 
 import android.app.Activity
@@ -13,7 +15,9 @@ import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.ScaffoldState
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -22,8 +26,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -33,6 +42,7 @@ import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
@@ -172,7 +182,7 @@ fun calculateCommentOffset(depth: Int?, multiplier: Int): Dp {
     return if (depth == null) {
         0.dp
     } else {
-        ((depth * multiplier).dp)
+        ((depth * multiplier).dp) + SMALL_PADDING
     }
 }
 
@@ -243,12 +253,13 @@ val imageRegex = Regex(
     pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))"
 )
 
+// Todo is the scope.launch still necessary?
 fun closeDrawer(
     scope: CoroutineScope,
-    scaffoldState: ScaffoldState
+    drawerState: DrawerState
 ) {
     scope.launch {
-        scaffoldState.drawerState.close()
+        drawerState.close()
     }
 }
 
@@ -587,13 +598,58 @@ enum class ThemeMode {
     Dark
 }
 
-enum class LightTheme {
+enum class ThemeColor {
+    Dynamic,
     Green,
     Pink
 }
 
-enum class DarkTheme {
-    Gray,
-    Blue,
-    Black
+@ExperimentalPagerApi
+fun Modifier.pagerTabIndicatorOffset2(
+    pagerState: PagerState,
+    tabPositions: List<TabPosition>,
+    pageIndexMapping: (Int) -> Int = { it }
+): Modifier = layout { measurable, constraints ->
+    if (tabPositions.isEmpty()) {
+        // If there are no pages, nothing to show
+        layout(constraints.maxWidth, 0) {}
+    } else {
+        val currentPage = minOf(tabPositions.lastIndex, pageIndexMapping(pagerState.currentPage))
+        val currentTab = tabPositions[currentPage]
+        val previousTab = tabPositions.getOrNull(currentPage - 1)
+        val nextTab = tabPositions.getOrNull(currentPage + 1)
+        val fraction = pagerState.currentPageOffset
+        val indicatorWidth = if (fraction > 0 && nextTab != null) {
+            lerp(currentTab.width, nextTab.width, fraction).roundToPx()
+        } else if (fraction < 0 && previousTab != null) {
+            lerp(currentTab.width, previousTab.width, -fraction).roundToPx()
+        } else {
+            currentTab.width.roundToPx()
+        }
+        val indicatorOffset = if (fraction > 0 && nextTab != null) {
+            lerp(currentTab.left, nextTab.left, fraction).roundToPx()
+        } else if (fraction < 0 && previousTab != null) {
+            lerp(currentTab.left, previousTab.left, -fraction).roundToPx()
+        } else {
+            currentTab.left.roundToPx()
+        }
+        val placeable = measurable.measure(
+            Constraints(
+                minWidth = indicatorWidth,
+                maxWidth = indicatorWidth,
+                minHeight = 0,
+                maxHeight = constraints.maxHeight
+            )
+        )
+        layout(constraints.maxWidth, maxOf(placeable.height, constraints.minHeight)) {
+            placeable.placeRelative(
+                indicatorOffset,
+                maxOf(constraints.minHeight - placeable.height, 0)
+            )
+        }
+    }
+}
+
+fun isSameInstance(url: String?, instance: String?): Boolean {
+    return url?.let { hostName(it) } == instance
 }

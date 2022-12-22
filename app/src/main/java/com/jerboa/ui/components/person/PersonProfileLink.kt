@@ -1,16 +1,17 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.person
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.Badge
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material.icons.outlined.NoAccounts
-import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material3.Badge
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,15 +26,15 @@ import com.jerboa.ui.theme.SMALL_PADDING
 @Composable
 fun PersonName(
     person: PersonSafe?,
-    color: Color = MaterialTheme.colors.secondary,
+    color: Color = MaterialTheme.colorScheme.tertiary,
     isPostCreator: Boolean = false
 ) {
     val name = person?.let { personNameShown(it) } ?: run { "Anonymous" }
-    val style = MaterialTheme.typography.body2
+    val style = MaterialTheme.typography.bodyMedium
 
     if (isPostCreator) {
         Badge(
-            backgroundColor = MaterialTheme.colors.secondary
+            containerColor = MaterialTheme.colorScheme.tertiary
         ) {
             Text(
                 text = name,
@@ -77,14 +78,14 @@ fun PersonProfileLink(
                 Icon(
                     imageVector = Icons.Outlined.Shield,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.secondary
+                    tint = MaterialTheme.colorScheme.secondary
                 )
             }
             if (person.admin) {
                 Icon(
                     imageVector = Icons.Outlined.Shield,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
             if (isCommunityBanned || person.banned) {

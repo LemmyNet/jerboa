@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.common
 
 import android.net.Uri
@@ -6,15 +8,52 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.FormatBold
+import androidx.compose.material.icons.outlined.FormatItalic
+import androidx.compose.material.icons.outlined.FormatListBulleted
+import androidx.compose.material.icons.outlined.FormatQuote
+import androidx.compose.material.icons.outlined.FormatStrikethrough
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.Preview
+import androidx.compose.material.icons.outlined.Subscript
+import androidx.compose.material.icons.outlined.Superscript
+import androidx.compose.material.icons.outlined.Title
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -34,7 +73,6 @@ import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
@@ -99,8 +137,8 @@ fun MarkdownTextField(
                     // autoCorrect = true,
                 ),
                 colors = TextFieldDefaults.textFieldColors(
-                    textColor = MaterialTheme.colors.onSurface,
-                    backgroundColor = Color.Transparent,
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 )
@@ -217,8 +255,8 @@ fun CreateLinkDialog(
             ) {
                 Text(
                     text = "Insert link",
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.onSurface
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 OutlinedTextField(
                     value = text,
@@ -238,38 +276,33 @@ fun CreateLinkDialog(
                 )
             }
         },
-        buttons = {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .padding(horizontal = XXL_PADDING)
-                    .fillMaxWidth()
+        dismissButton = {
+            TextButton(
+                onClick = onDismissRequest
             ) {
-                TextButton(
-                    onClick = onDismissRequest
-                ) {
-                    Text(
-                        text = "Cancel",
-                        color = MaterialTheme.colors.onBackground.muted
+                Text(
+                    text = "Cancel",
+                    color = MaterialTheme.colorScheme.onBackground.muted
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val replacement = "[$text]($link)"
+                    val out = value.text.replaceRange(
+                        value.selection.start,
+                        value.selection.end,
+                        replacement
                     )
+                    val end = value.selection.start + replacement.length
+                    val cursor = TextRange(end, end)
+                    onClickOk(TextFieldValue(out, cursor))
                 }
-                TextButton(
-                    onClick = {
-                        val replacement = "[$text]($link)"
-                        val out = value.text.replaceRange(
-                            value.selection.start,
-                            value.selection.end,
-                            replacement
-                        )
-                        val end = value.selection.start + replacement.length
-                        val cursor = TextRange(end, end)
-                        onClickOk(TextFieldValue(out, cursor))
-                    }
-                ) {
-                    Text(
-                        text = "OK"
-                    )
-                }
+            ) {
+                Text(
+                    text = "OK"
+                )
             }
         }
     )
@@ -291,21 +324,14 @@ fun ShowPreviewDialog(
                 )
             }
         },
-        buttons = {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .padding(horizontal = XXL_PADDING)
-                    .fillMaxWidth()
+        confirmButton = {
+            TextButton(
+                onClick = onDismissRequest
             ) {
-                TextButton(
-                    onClick = onDismissRequest
-                ) {
-                    Text(
-                        text = "OK",
-                        color = MaterialTheme.colors.onBackground.muted
-                    )
-                }
+                Text(
+                    text = "OK",
+                    color = MaterialTheme.colorScheme.onBackground.muted
+                )
             }
         }
     )
@@ -424,7 +450,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Preview,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -433,7 +459,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Link,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -442,13 +468,13 @@ fun MarkdownHelperBar(
         ) {
             if (imageUploading) {
                 CircularProgressIndicator(
-                    color = MaterialTheme.colors.onSurface
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             } else {
                 Icon(
                     imageVector = Icons.Outlined.Image,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colors.onBackground.muted
+                    tint = MaterialTheme.colorScheme.onBackground.muted
                 )
             }
         }
@@ -458,7 +484,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.FormatBold,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -467,7 +493,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.FormatItalic,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -476,7 +502,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.FormatQuote,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -485,7 +511,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.FormatListBulleted,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -494,7 +520,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Title,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -503,7 +529,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Code,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -512,7 +538,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.FormatStrikethrough,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -521,7 +547,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Subscript,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
         IconButton(
@@ -530,7 +556,7 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Superscript,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
         }
     }
@@ -557,7 +583,6 @@ fun MyCheckBox(
 }
 
 // https://stackoverflow.com/a/67111599
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MyDropDown(
     suggestions: List<String>,
@@ -595,14 +620,15 @@ fun MyDropDown(
         ) {
             suggestions.forEach { selectionOption ->
                 DropdownMenuItem(
+                    text = {
+                        Text(text = selectionOption)
+                    },
                     onClick = {
                         selectedText = selectionOption
                         expanded = false
                         onValueChange(suggestions.indexOf(selectedText))
                     }
-                ) {
-                    Text(text = selectionOption)
-                }
+                )
             }
         }
     }
@@ -644,14 +670,14 @@ fun PreviewLines(
 @Composable
 fun MyMarkdownText(
     markdown: String,
-    color: Color = MaterialTheme.colors.onSurface
+    color: Color = MaterialTheme.colorScheme.onSurface
 ) {
     MarkdownText(
         markdown = markdown,
         modifier = Modifier.fillMaxSize(),
         color = color,
-        fontSize = MaterialTheme.typography.body1.fontSize.times(1.3)
-//        style = MaterialTheme.typography.h6,
+        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(1.3)
+//        style = MaterialTheme.typography.titleLarge,
 //        imageLoader =  LocalImageLoader.current
     )
 }

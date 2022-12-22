@@ -1,34 +1,26 @@
 package com.jerboa.ui.theme
 
-import androidx.compose.material.Typography
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.material3.Typography
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
 fun generateTypography(baseFontSize: TextUnit): Typography {
     return Typography(
-        body1 = TextStyle(
-            fontWeight = FontWeight.Normal,
+        bodyLarge = Typography().bodyLarge.copy(
             fontSize = baseFontSize,
-            lineHeight = 1.3.em
+            lineHeight = baseFontSize.times(1.3)
         ),
-        body2 = TextStyle(
-            fontWeight = FontWeight.Normal,
+        bodyMedium = Typography().bodyMedium.copy(
             fontSize = baseFontSize.times(.8),
-            lineHeight = 1.3.em
+            lineHeight = baseFontSize.times(.8 * 1.3)
         ),
-        subtitle1 = TextStyle(
-            fontWeight = FontWeight.Normal,
+        titleMedium = Typography().titleMedium.copy(
             fontSize = baseFontSize,
-            letterSpacing = 0.15.sp
+            lineHeight = baseFontSize.times(1.3)
         ),
-        h6 = TextStyle(
-            fontWeight = FontWeight.Medium,
-            fontSize = baseFontSize,
-            letterSpacing = 0.15.sp
+        titleLarge = Typography().titleLarge.copy(
+            fontSize = baseFontSize.times(1.3),
+            lineHeight = baseFontSize.times(1.3 * 1.3)
         )
     )
 }

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.post
 
 import android.widget.Toast
@@ -6,15 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkAdd
@@ -30,6 +27,14 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,7 +63,9 @@ import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
 import com.jerboa.hostName
 import com.jerboa.isImage
+import com.jerboa.isSameInstance
 import com.jerboa.ui.components.common.ActionBarButton
+import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -70,15 +77,108 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityLink
+import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
-import com.jerboa.ui.theme.BODY_ELEVATION
+import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
+import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
+
+@Composable
+fun PostHeaderLineAlt(
+    postView: PostView,
+    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
+    isModerator: Boolean,
+    modifier: Modifier = Modifier,
+    showCommunityName: Boolean = true
+) {
+    val community = postView.community
+    Column(modifier = modifier) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING)) {
+                if (showCommunityName) {
+                    community.icon?.let {
+                        CircularIcon(
+                            icon = it,
+                            size = MEDIUM_ICON_SIZE,
+                            modifier = Modifier.clickable { onCommunityClick(community) },
+                            thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE
+                        )
+                    }
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)) {
+                    if (showCommunityName) {
+                        CommunityName(
+                            community = postView.community,
+                            modifier = Modifier.clickable { onCommunityClick(community) }
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)
+                    ) {
+                        PersonProfileLink(
+                            person = postView.creator,
+                            onClick = onPersonClick,
+                            showTags = true,
+                            isPostCreator = false, // Set this to false, we already know this
+                            isModerator = isModerator,
+                            isCommunityBanned = postView.creator_banned_from_community
+                        )
+                        if (postView.post.stickied) {
+                            DotSpacer(style = MaterialTheme.typography.bodyMedium)
+                            Icon(
+                                imageVector = Icons.Outlined.PushPin,
+                                contentDescription = "TODO",
+                                tint = MaterialTheme.colorScheme.onBackground.muted
+                            )
+                        }
+                        if (postView.post.locked) {
+                            DotSpacer(style = MaterialTheme.typography.bodyMedium)
+                            Icon(
+                                imageVector = Icons.Outlined.CommentsDisabled,
+                                contentDescription = "TODO",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
+            }
+            TimeAgo(
+                published = postView.post.published,
+                updated = postView.post.updated
+            )
+        }
+        Row {
+            if (postView.post.deleted) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colorScheme.error
+                )
+                DotSpacer(style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PostHeaderLineAltPreview() {
+    val postView = sampleLinkPostView
+    PostHeaderLineAlt(
+        postView = postView,
+        isModerator = false,
+        onCommunityClick = {},
+        onPersonClick = {}
+    )
+}
 
 @Composable
 fun PostHeaderLine(
@@ -87,8 +187,8 @@ fun PostHeaderLine(
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     modifier: Modifier = Modifier,
-    isSameInstance: Boolean = false,
-    showCommunityName: Boolean = true
+    showCommunityName: Boolean = true,
+    account: Account?
 ) {
     FlowRow(
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
@@ -98,32 +198,32 @@ fun PostHeaderLine(
             Icon(
                 imageVector = Icons.Outlined.PushPin,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
-            DotSpacer(style = MaterialTheme.typography.body2)
+            DotSpacer(style = MaterialTheme.typography.bodyMedium)
         }
         if (postView.post.locked) {
             Icon(
                 imageVector = Icons.Outlined.CommentsDisabled,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.error
+                tint = MaterialTheme.colorScheme.error
             )
-            DotSpacer(style = MaterialTheme.typography.body2)
+            DotSpacer(style = MaterialTheme.typography.bodyMedium)
         }
         if (postView.post.deleted) {
             Icon(
                 imageVector = Icons.Outlined.Delete,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.error
+                tint = MaterialTheme.colorScheme.error
             )
-            DotSpacer(style = MaterialTheme.typography.body2)
+            DotSpacer(style = MaterialTheme.typography.bodyMedium)
         }
         if (showCommunityName) {
             CommunityLink(
                 community = postView.community,
                 onClick = onCommunityClick
             )
-            DotSpacer(style = MaterialTheme.typography.body2)
+            DotSpacer(style = MaterialTheme.typography.bodyMedium)
         }
         PersonProfileLink(
             person = postView.creator,
@@ -134,15 +234,15 @@ fun PostHeaderLine(
             isCommunityBanned = postView.creator_banned_from_community
 
         )
-        DotSpacer(style = MaterialTheme.typography.body2)
-        if (!isSameInstance) {
+        DotSpacer(style = MaterialTheme.typography.bodyMedium)
+        if (!isSameInstance(postView.post.url, account?.instance)) {
             postView.post.url?.also {
                 Text(
                     text = hostName(it),
-                    color = MaterialTheme.colors.onBackground.muted,
-                    style = MaterialTheme.typography.body2
+                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    style = MaterialTheme.typography.bodyMedium
                 )
-                DotSpacer(style = MaterialTheme.typography.body2)
+                DotSpacer(style = MaterialTheme.typography.bodyMedium)
             }
         }
 
@@ -161,7 +261,8 @@ fun PostHeaderLinePreview() {
         postView = postView,
         isModerator = false,
         onCommunityClick = {},
-        onPersonClick = {}
+        onPersonClick = {},
+        account = null
     )
 }
 
@@ -188,7 +289,8 @@ fun PostNodeHeader(
 @Composable
 fun PostTitleBlock(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit
+    onPostLinkClick: (url: String) -> Unit,
+    account: Account?
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
@@ -200,7 +302,8 @@ fun PostTitleBlock(
     } else {
         PostTitleAndThumbnail(
             postView = postView,
-            onPostLinkClick = onPostLinkClick
+            onPostLinkClick = onPostLinkClick,
+            account = account
         )
     }
 }
@@ -217,8 +320,8 @@ fun PostTitleAndImageLink(
         // Title of the post
         Text(
             text = postView.post.name,
-            style = MaterialTheme.typography.h6,
-            color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
+            style = MaterialTheme.typography.titleLarge,
+            color = if (postView.read) { MaterialTheme.colorScheme.onBackground.muted } else { MaterialTheme.colorScheme.onSurface },
             modifier = Modifier.padding(bottom = MEDIUM_PADDING, start = LARGE_PADDING, end = LARGE_PADDING)
         )
 
@@ -234,18 +337,37 @@ fun PostTitleAndImageLink(
 @Composable
 fun PostTitleAndThumbnail(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit
+    onPostLinkClick: (url: String) -> Unit,
+    account: Account?
 ) {
     val post = postView.post
-
-    Row {
+    Row(
+        modifier = Modifier.padding(horizontal = LARGE_PADDING)
+    ) {
         // Title of the post
-        Text(
-            text = post.name,
-            style = MaterialTheme.typography.h6,
-            color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
-            modifier = Modifier.weight(1f).padding(horizontal = LARGE_PADDING)
-        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = post.name,
+                style = MaterialTheme.typography.titleLarge,
+                color = if (postView.read) {
+                    MaterialTheme.colorScheme.onBackground.muted
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                }
+            )
+            postView.post.url?.also {
+                if (!isSameInstance(it, account?.instance)) {
+                    Text(
+                        text = hostName(it),
+                        color = MaterialTheme.colorScheme.onBackground.muted,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+        }
 
         post.url?.also { url ->
             val postLinkPicMod = Modifier
@@ -268,7 +390,10 @@ fun PostTitleAndThumbnail(
                     modifier = postLinkPicMod,
                     shape = MaterialTheme.shapes.large
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
                         Icon(
                             imageVector = Icons.Outlined.Link,
                             contentDescription = "TODO",
@@ -284,14 +409,15 @@ fun PostTitleAndThumbnail(
 @Composable
 fun PostBody(
     postView: PostView,
-    fullBody: Boolean = false,
-    onPostLinkClick: (url: String) -> Unit
+    fullBody: Boolean,
+    onPostLinkClick: (url: String) -> Unit,
+    account: Account?
 ) {
     val post = postView.post
     Column(
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
     ) {
-        PostTitleBlock(postView = postView, onPostLinkClick = onPostLinkClick)
+        PostTitleBlock(postView = postView, onPostLinkClick = onPostLinkClick, account = account)
 
         // The metadata card
         if (fullBody && post.embed_title !== null) {
@@ -308,7 +434,6 @@ fun PostBody(
                 modifier = Modifier
                     .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
                     .fillMaxWidth(),
-                elevation = BODY_ELEVATION,
                 content = {
                     if (fullBody) {
                         Column(
@@ -337,7 +462,9 @@ fun PostBody(
 fun PreviewStoryTitleAndMetadata() {
     PostBody(
         postView = samplePostView,
-        onPostLinkClick = {}
+        onPostLinkClick = {},
+        fullBody = false,
+        account = null
     )
 }
 
@@ -434,9 +561,9 @@ fun PostFooterLine(
             },
             onClick = { onSaveClick(postView) },
             contentColor = if (postView.saved) {
-                MaterialTheme.colors.primary
+                MaterialTheme.colorScheme.primary
             } else {
-                MaterialTheme.colors.onBackground.muted
+                MaterialTheme.colorScheme.onBackground.muted
             },
             account = account
         )
@@ -513,7 +640,8 @@ fun PreviewPostListing() {
         onPersonClick = {},
         onPostClick = {},
         onBlockCommunityClick = {},
-        onBlockCreatorClick = {}
+        onBlockCreatorClick = {},
+        fullBody = false
     )
 }
 
@@ -536,7 +664,8 @@ fun PreviewLinkPostListing() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCommunityClick = {},
-        onBlockCreatorClick = {}
+        onBlockCreatorClick = {},
+        fullBody = false
     )
 }
 
@@ -559,7 +688,8 @@ fun PreviewImagePostListing() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCommunityClick = {},
-        onBlockCreatorClick = {}
+        onBlockCreatorClick = {},
+        fullBody = false
     )
 }
 
@@ -582,7 +712,8 @@ fun PreviewLinkNoThumbnailPostListing() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCommunityClick = {},
-        onBlockCreatorClick = {}
+        onBlockCreatorClick = {},
+        fullBody = false
     )
 }
 
@@ -605,52 +736,49 @@ fun PostListing(
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
+    fullBody: Boolean,
     account: Account?
 ) {
-    Card(
-        shape = MaterialTheme.shapes.small,
-        modifier = Modifier
-            .clickable { onPostClick(postView) }
+    Column(
+        modifier = Modifier.padding(vertical = MEDIUM_PADDING)
+            .clickable { onPostClick(postView) },
+        verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
     ) {
-        Column(
-            modifier = Modifier.padding(vertical = MEDIUM_PADDING),
-            verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
-        ) {
-            // Header
-            PostHeaderLine(
-                postView = postView,
-                onCommunityClick = onCommunityClick,
-                onPersonClick = onPersonClick,
-                isModerator = isModerator,
-                isSameInstance = postView.post.url?.let { hostName(it) } == account?.instance,
-                showCommunityName = showCommunityName,
-                modifier = Modifier.padding(horizontal = LARGE_PADDING)
-            )
+        // Header
+        PostHeaderLineAlt(
+            postView = postView,
+            onCommunityClick = onCommunityClick,
+            onPersonClick = onPersonClick,
+            isModerator = isModerator,
+            showCommunityName = showCommunityName,
+            modifier = Modifier.padding(horizontal = LARGE_PADDING)
+        )
 
-            //  Title + metadata
-            PostBody(
-                postView = postView,
-                onPostLinkClick = onPostLinkClick
-            )
+        //  Title + metadata
+        PostBody(
+            postView = postView,
+            onPostLinkClick = onPostLinkClick,
+            fullBody = fullBody,
+            account = account
+        )
 
-            // Footer bar
-            PostFooterLine(
-                postView = postView,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                onSaveClick = onSaveClick,
-                onReplyClick = onReplyClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onReportClick = onReportClick,
-                onBlockCommunityClick = onBlockCommunityClick,
-                onBlockCreatorClick = onBlockCreatorClick,
-                showReply = showReply,
-                account = account,
-                modifier = Modifier.padding(horizontal = LARGE_PADDING)
-            )
-        }
+        // Footer bar
+        PostFooterLine(
+            postView = postView,
+            onUpvoteClick = onUpvoteClick,
+            onDownvoteClick = onDownvoteClick,
+            onSaveClick = onSaveClick,
+            onReplyClick = onReplyClick,
+            onCommunityClick = onCommunityClick,
+            onEditPostClick = onEditPostClick,
+            onDeletePostClick = onDeletePostClick,
+            onReportClick = onReportClick,
+            onBlockCommunityClick = onBlockCommunityClick,
+            onBlockCreatorClick = onBlockCreatorClick,
+            showReply = showReply,
+            account = account,
+            modifier = Modifier.padding(horizontal = LARGE_PADDING)
+        )
     }
 }
 
@@ -663,20 +791,18 @@ fun PostListingHeaderPreview() {
 
 @Composable
 fun MetadataCard(post: Post) {
-    Card(
+    OutlinedCard(
         shape = MaterialTheme.shapes.medium,
         modifier = Modifier
             .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
             .fillMaxWidth(),
-        elevation = BODY_ELEVATION,
         content = {
             Column(
-                modifier = Modifier
-                    .padding(MEDIUM_PADDING)
+                modifier = Modifier.padding(MEDIUM_PADDING)
             ) {
                 Text(
                     text = post.embed_title!!,
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.titleLarge
                 )
                 post.embed_description?.also {
                     Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
@@ -775,7 +901,7 @@ fun PostOptionsDialog(
                 }
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }
 

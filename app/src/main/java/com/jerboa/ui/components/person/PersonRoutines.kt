@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
-import com.jerboa.api.*
+import com.jerboa.api.API
+import com.jerboa.api.blockPersonWrapper
+import com.jerboa.api.markPrivateMessageAsReadWrapper
+import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.api.BlockPerson

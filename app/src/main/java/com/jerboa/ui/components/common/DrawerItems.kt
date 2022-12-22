@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +42,7 @@ fun IconAndTextDrawerItem(
             .clickable(onClick = onClick)
             .background(
                 color = if (highlight) {
-                    MaterialTheme.colors.onBackground.copy(alpha = .1f)
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = .1f)
                 } else {
                     Color.Transparent
                 }
@@ -54,7 +54,7 @@ fun IconAndTextDrawerItem(
                     iconBadgeCount = iconBadgeCount,
                     modifier = spacingMod.size(DRAWER_ITEM_SPACING),
                     icon = ico,
-                    tint = MaterialTheme.colors.onSurface
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
             Text(
@@ -66,7 +66,7 @@ fun IconAndTextDrawerItem(
             Icon(
                 imageVector = Icons.Outlined.ArrowRight,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onSurface,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(24.dp)
             )
         }

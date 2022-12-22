@@ -5,12 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +55,7 @@ fun PrivateMessageHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = fromOrTo, color = MaterialTheme.colors.onBackground.muted)
+            Text(text = fromOrTo, color = MaterialTheme.colorScheme.onBackground.muted)
             PersonProfileLink(
                 person = otherPerson,
                 onClick = { onPersonClick(otherPerson.id) }
@@ -146,9 +146,9 @@ fun PrivateMessageFooterLine(
                     },
                     onClick = { onMarkAsReadClick(privateMessageView) },
                     contentColor = if (privateMessageView.private_message.read) {
-                        MaterialTheme.colors.primary
+                        MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colors.onBackground.muted
+                        MaterialTheme.colorScheme.onBackground.muted
                     },
                     account = account
                 )

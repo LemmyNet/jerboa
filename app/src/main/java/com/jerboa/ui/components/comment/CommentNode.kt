@@ -5,16 +5,15 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material.icons.outlined.BookmarkAdded
@@ -23,9 +22,20 @@ import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.MarkChatRead
+import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,9 +43,23 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.*
-import com.jerboa.datatypes.*
+import com.jerboa.Border
+import com.jerboa.CommentNodeData
+import com.jerboa.VoteType
+import com.jerboa.border
+import com.jerboa.buildCommentsTree
+import com.jerboa.calculateCommentOffset
+import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunityModeratorView
+import com.jerboa.datatypes.CommunitySafe
+import com.jerboa.datatypes.PersonSafe
+import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.sampleCommentReplyView
+import com.jerboa.datatypes.sampleCommentView
+import com.jerboa.datatypes.sampleSecondCommentReplyView
 import com.jerboa.db.Account
+import com.jerboa.isModerator
+import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -154,7 +178,7 @@ fun LazyListScope.commentNodeItem(
     item {
         var viewSource by remember { mutableStateOf(false) }
 
-        val backgroundColor = MaterialTheme.colors.background
+        val backgroundColor = MaterialTheme.colorScheme.background
         val borderColor = calculateBorderColor(backgroundColor, node.depth)
         val border = Border(SMALL_PADDING, borderColor)
 
@@ -267,13 +291,13 @@ fun PostAndCommunityContextHeader(
     ) {
         Text(
             text = commentView.post.name,
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.clickable { onPostClick(commentView.post.id) }
         )
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "in ", color = MaterialTheme.colors.onBackground.muted)
+            Text(text = "in ", color = MaterialTheme.colorScheme.onBackground.muted)
             CommunityLink(
                 community = commentView.community,
                 onClick = onCommunityClick
@@ -376,9 +400,9 @@ fun CommentFooterLine(
                     },
                     onClick = { onMarkAsReadClick(commentView) },
                     contentColor = if (commentView.comment.read) {
-                        MaterialTheme.colors.primary
+                        MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colors.onBackground.muted
+                        MaterialTheme.colorScheme.onBackground.muted
                     },
                     account = account
                 )
@@ -389,9 +413,9 @@ fun CommentFooterLine(
                 },
                 onClick = { onSaveClick(commentView) },
                 contentColor = if (commentView.saved) {
-                    MaterialTheme.colors.primary
+                    MaterialTheme.colorScheme.primary
                 } else {
-                    MaterialTheme.colors.onBackground.muted
+                    MaterialTheme.colorScheme.onBackground.muted
                 },
                 account = account
             )
@@ -508,7 +532,7 @@ fun CommentOptionsDialog(
                 }
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }
 

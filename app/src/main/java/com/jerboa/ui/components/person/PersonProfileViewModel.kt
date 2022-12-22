@@ -12,7 +12,11 @@ import arrow.core.Either
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.*
+import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunitySafe
+import com.jerboa.datatypes.PersonSafe
+import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetPersonDetails
 import com.jerboa.datatypes.api.GetPersonDetailsResponse
 import com.jerboa.db.Account

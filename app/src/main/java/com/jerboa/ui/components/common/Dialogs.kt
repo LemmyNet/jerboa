@@ -1,17 +1,11 @@
 package com.jerboa.ui.components.common
 
 import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Bookmarks
@@ -24,6 +18,9 @@ import androidx.compose.material.icons.outlined.MarkunreadMailbox
 import androidx.compose.material.icons.outlined.Moving
 import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Public
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jerboa.UnreadOrAll
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
@@ -87,7 +83,7 @@ fun SortTopOptionsDialog(
                 )
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }
 
@@ -133,7 +129,7 @@ fun ListingTypeOptionsDialog(
                 )
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }
 
@@ -187,7 +183,7 @@ fun SortOptionsDialog(
                 )
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }
 
@@ -216,7 +212,7 @@ fun UnreadOrAllOptionsDialog(
                 )
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }
 
@@ -251,20 +247,15 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                         MyMarkdownText(markdown = markdown.value)
                     }
                 },
-                buttons = {
-                    Row(
-                        modifier = Modifier.padding(8.dp),
-                        horizontalArrangement = Arrangement.Center
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            whatsChangedDialogOpen.value = false
+                            appSettingsViewModel.markChangelogViewed()
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Button(
-                            onClick = {
-                                whatsChangedDialogOpen.value = false
-                                appSettingsViewModel.markChangelogViewed()
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("Done")
-                        }
+                        Text("Done")
                     }
                 },
                 onDismissRequest = {
