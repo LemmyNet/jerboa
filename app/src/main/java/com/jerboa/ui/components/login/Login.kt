@@ -111,14 +111,13 @@ fun LoginForm(
             }
         ) {
             OutlinedTextField(
+                modifier = Modifier.menuAnchor(),
                 label = { Text("Instance") },
                 placeholder = { Text("ex: lemmy.ml") },
                 value = instance,
                 onValueChange = { instance = it },
                 trailingIcon = {
-                    TrailingIcon(
-                        expanded = expanded
-                    )
+                    TrailingIcon(expanded = expanded)
                 }
             )
             ExposedDropdownMenu(
@@ -129,13 +128,15 @@ fun LoginForm(
             ) {
                 instanceOptions.forEach { selectionOption ->
                     DropdownMenuItem(
+                        modifier = Modifier.exposedDropdownSize(),
                         text = {
                             Text(text = selectionOption)
                         },
                         onClick = {
                             instance = selectionOption
                             expanded = false
-                        }
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
                 }
             }

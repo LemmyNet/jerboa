@@ -44,6 +44,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -429,7 +431,8 @@ fun HomeHeader(
     onClickRefresh: () -> Unit,
     selectedSortType: SortType,
     selectedListingType: ListingType,
-    navController: NavController
+    navController: NavController,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -480,8 +483,8 @@ fun HomeHeader(
             navController = navController
         )
     }
-
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         title = {
             HomeHeaderTitle(
                 selectedSortType = selectedSortType,
@@ -543,7 +546,8 @@ fun HomeHeaderPreview() {
         onClickRefresh = {},
         selectedSortType = SortType.Hot,
         selectedListingType = ListingType.All,
-        navController = rememberNavController()
+        navController = rememberNavController(),
+        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     )
 }
 

@@ -102,7 +102,8 @@ fun CommunityHeader(
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
     selectedSortType: SortType,
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -147,6 +148,7 @@ fun CommunityHeader(
     }
 
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         title = {
             CommunityHeaderTitle(
                 communityName = communityName,

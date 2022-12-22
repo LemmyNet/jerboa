@@ -13,6 +13,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +30,8 @@ fun InboxHeader(
     selectedUnreadOrAll: UnreadOrAll,
     onClickUnreadOrAll: (UnreadOrAll) -> Unit,
     onClickMarkAllAsRead: () -> Unit,
-    unreadCount: Int? = null
+    unreadCount: Int? = null,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     var showUnreadOrAllOptions by remember { mutableStateOf(false) }
 
@@ -45,6 +47,7 @@ fun InboxHeader(
     }
 
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         title = {
             InboxHeaderTitle(
                 unreadCount = unreadCount,

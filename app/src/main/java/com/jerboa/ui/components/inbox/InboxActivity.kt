@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import arrow.core.Either
@@ -50,11 +51,14 @@ fun InboxActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
     val unreadCount = homeViewModel.unreadCountResponse?.let { unreadCountTotal(it) }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             InboxHeader(
+                scrollBehavior = scrollBehavior,
                 unreadCount = unreadCount,
                 navController = navController,
                 selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly.value),

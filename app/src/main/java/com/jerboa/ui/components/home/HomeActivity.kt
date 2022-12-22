@@ -23,11 +23,15 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.VoteType
@@ -58,6 +62,7 @@ fun HomeActivity(
     val postListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
 
@@ -80,6 +85,7 @@ fun HomeActivity(
         },
         content = {
             Scaffold(
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 snackbarHost = { SnackbarHost(snackbarHostState) },
                 topBar = {
                     MainTopBar(
@@ -89,7 +95,8 @@ fun HomeActivity(
                         homeViewModel = homeViewModel,
                         account = account,
                         ctx = ctx,
-                        navController = navController
+                        navController = navController,
+                        scrollBehavior = scrollBehavior
                     )
                 },
                 content = { padding ->
@@ -360,11 +367,13 @@ fun MainTopBar(
     homeViewModel: HomeViewModel,
     account: Account?,
     ctx: Context,
-    navController: NavController
+    navController: NavController,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     Column {
         HomeHeader(
             scope = scope,
+            scrollBehavior = scrollBehavior,
             drawerState = drawerState,
             navController = navController,
             selectedSortType = homeViewModel.sortType.value,

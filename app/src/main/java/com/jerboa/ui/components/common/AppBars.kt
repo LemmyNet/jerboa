@@ -46,9 +46,11 @@ import com.jerboa.unreadCountTotal
 @Composable
 fun SimpleTopAppBar(
     text: String,
-    navController: NavController
+    navController: NavController,
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         title = {
             Text(
                 text = text

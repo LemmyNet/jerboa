@@ -13,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import arrow.core.Either
@@ -63,12 +64,15 @@ fun PersonProfileActivity(
     val account = getCurrentAccount(accountViewModel)
     val bottomAppBarScreen = if (savedMode) { "saved" } else { "profile" }
     val snackbarHostState = remember { SnackbarHostState() }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             personProfileViewModel.res?.person_view?.person?.also { person ->
                 PersonProfileHeader(
+                    scrollBehavior = scrollBehavior,
                     personName = if (savedMode) {
                         "Saved"
                     } else {

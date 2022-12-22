@@ -33,7 +33,7 @@ fun pink(): Pair<ColorScheme, ColorScheme> {
     val md_theme_light_inverseOnSurface = Color(0xFFFAEEF0)
     val md_theme_light_inverseSurface = Color(0xFF352F30)
     val md_theme_light_inversePrimary = Color(0xFFFFB0CB)
-    val md_theme_light_shadow = Color(0xFF000000)
+//    val md_theme_light_shadow = Color(0xFF000000)
     val md_theme_light_surfaceTint = Color(0xFFA63166)
     val md_theme_light_outlineVariant = Color(0xFFD5C2C6)
     val md_theme_light_scrim = Color(0xFF000000)
@@ -64,12 +64,12 @@ fun pink(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_inverseOnSurface = Color(0xFF201A1C)
     val md_theme_dark_inverseSurface = Color(0xFFEBE0E1)
     val md_theme_dark_inversePrimary = Color(0xFFA63166)
-    val md_theme_dark_shadow = Color(0xFF000000)
+//    val md_theme_dark_shadow = Color(0xFF000000)
     val md_theme_dark_surfaceTint = Color(0xFFFFB0CB)
     val md_theme_dark_outlineVariant = Color(0xFF514347)
     val md_theme_dark_scrim = Color(0xFF000000)
 
-    val seed = Color(0xFFFF78AE)
+//    val seed = Color(0xFFFF78AE)
 
     val light = lightColorScheme(
         primary = md_theme_light_primary,
@@ -164,7 +164,7 @@ fun green(): Pair<ColorScheme, ColorScheme> {
     val md_theme_light_inverseOnSurface = Color(0xFFF0F1EB)
     val md_theme_light_inverseSurface = Color(0xFF2F312D)
     val md_theme_light_inversePrimary = Color(0xFF8BD987)
-    val md_theme_light_shadow = Color(0xFF000000)
+//    val md_theme_light_shadow = Color(0xFF000000)
     val md_theme_light_surfaceTint = Color(0xFF216C29)
     val md_theme_light_outlineVariant = Color(0xFFC2C9BD)
     val md_theme_light_scrim = Color(0xFF000000)
@@ -195,12 +195,12 @@ fun green(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_inverseOnSurface = Color(0xFF1A1C19)
     val md_theme_dark_inverseSurface = Color(0xFFE2E3DD)
     val md_theme_dark_inversePrimary = Color(0xFF216C29)
-    val md_theme_dark_shadow = Color(0xFF000000)
+//    val md_theme_dark_shadow = Color(0xFF000000)
     val md_theme_dark_surfaceTint = Color(0xFF8BD987)
     val md_theme_dark_outlineVariant = Color(0xFF424940)
     val md_theme_dark_scrim = Color(0xFF000000)
 
-    val seed = Color(0xFF78C475)
+//    val seed = Color(0xFF78C475)
 
     val light = lightColorScheme(
         primary = md_theme_light_primary,
