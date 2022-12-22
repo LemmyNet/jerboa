@@ -1,3 +1,15 @@
+# Jerboa v0.0.22-alpha Release (2022-12-22)
+
+## What's Changed
+
+- Material v3 by @dessalines in https://github.com/dessalines/jerboa/pull/263
+- Dynamic Themes, and Green and Pink.
+- Adds Scrolling app bars.
+- Better post listing header layout.
+- Various UI improvements.
+
+- **Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.21...0.0.22
+
 # Jerboa v0.0.21-alpha Release (2022-12-21)
 
 ## What's Changed
