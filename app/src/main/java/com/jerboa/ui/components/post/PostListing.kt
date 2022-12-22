@@ -63,7 +63,9 @@ import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
 import com.jerboa.hostName
 import com.jerboa.isImage
+import com.jerboa.isSameInstance
 import com.jerboa.ui.components.common.ActionBarButton
+import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -75,14 +77,108 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityLink
+import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
+import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
+import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
+
+@Composable
+fun PostHeaderLineAlt(
+    postView: PostView,
+    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
+    isModerator: Boolean,
+    modifier: Modifier = Modifier,
+    showCommunityName: Boolean = true
+) {
+    val community = postView.community
+    Column(modifier = modifier) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING)) {
+                if (showCommunityName) {
+                    community.icon?.let {
+                        CircularIcon(
+                            icon = it,
+                            size = MEDIUM_ICON_SIZE,
+                            modifier = Modifier.clickable { onCommunityClick(community) },
+                            thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE
+                        )
+                    }
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)) {
+                    if (showCommunityName) {
+                        CommunityName(
+                            community = postView.community,
+                            modifier = Modifier.clickable { onCommunityClick(community) }
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)
+                    ) {
+                        PersonProfileLink(
+                            person = postView.creator,
+                            onClick = onPersonClick,
+                            showTags = true,
+                            isPostCreator = false, // Set this to false, we already know this
+                            isModerator = isModerator,
+                            isCommunityBanned = postView.creator_banned_from_community
+                        )
+                        if (postView.post.stickied) {
+                            DotSpacer(style = MaterialTheme.typography.bodyMedium)
+                            Icon(
+                                imageVector = Icons.Outlined.PushPin,
+                                contentDescription = "TODO",
+                                tint = MaterialTheme.colorScheme.onBackground.muted
+                            )
+                        }
+                        if (postView.post.locked) {
+                            DotSpacer(style = MaterialTheme.typography.bodyMedium)
+                            Icon(
+                                imageVector = Icons.Outlined.CommentsDisabled,
+                                contentDescription = "TODO",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
+            }
+            TimeAgo(
+                published = postView.post.published,
+                updated = postView.post.updated
+            )
+        }
+        Row {
+            if (postView.post.deleted) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = "TODO",
+                    tint = MaterialTheme.colorScheme.error
+                )
+                DotSpacer(style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PostHeaderLineAltPreview() {
+    val postView = sampleLinkPostView
+    PostHeaderLineAlt(
+        postView = postView,
+        isModerator = false,
+        onCommunityClick = {},
+        onPersonClick = {}
+    )
+}
 
 @Composable
 fun PostHeaderLine(
@@ -91,8 +187,8 @@ fun PostHeaderLine(
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     modifier: Modifier = Modifier,
-    isSameInstance: Boolean = false,
-    showCommunityName: Boolean = true
+    showCommunityName: Boolean = true,
+    account: Account?
 ) {
     FlowRow(
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
@@ -139,7 +235,7 @@ fun PostHeaderLine(
 
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
-        if (!isSameInstance) {
+        if (!isSameInstance(postView.post.url, account?.instance)) {
             postView.post.url?.also {
                 Text(
                     text = hostName(it),
@@ -165,7 +261,8 @@ fun PostHeaderLinePreview() {
         postView = postView,
         isModerator = false,
         onCommunityClick = {},
-        onPersonClick = {}
+        onPersonClick = {},
+        account = null
     )
 }
 
@@ -192,7 +289,8 @@ fun PostNodeHeader(
 @Composable
 fun PostTitleBlock(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit
+    onPostLinkClick: (url: String) -> Unit,
+    account: Account?
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
@@ -204,7 +302,8 @@ fun PostTitleBlock(
     } else {
         PostTitleAndThumbnail(
             postView = postView,
-            onPostLinkClick = onPostLinkClick
+            onPostLinkClick = onPostLinkClick,
+            account = account
         )
     }
 }
@@ -238,18 +337,37 @@ fun PostTitleAndImageLink(
 @Composable
 fun PostTitleAndThumbnail(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit
+    onPostLinkClick: (url: String) -> Unit,
+    account: Account?
 ) {
     val post = postView.post
-
-    Row {
+    Row(
+        modifier = Modifier.padding(horizontal = LARGE_PADDING)
+    ) {
         // Title of the post
-        Text(
-            text = post.name,
-            style = MaterialTheme.typography.titleLarge,
-            color = if (postView.read) { MaterialTheme.colorScheme.onBackground.muted } else { MaterialTheme.colorScheme.onSurface },
-            modifier = Modifier.weight(1f).padding(horizontal = LARGE_PADDING)
-        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = post.name,
+                style = MaterialTheme.typography.titleLarge,
+                color = if (postView.read) {
+                    MaterialTheme.colorScheme.onBackground.muted
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                }
+            )
+            postView.post.url?.also {
+                if (!isSameInstance(it, account?.instance)) {
+                    Text(
+                        text = hostName(it),
+                        color = MaterialTheme.colorScheme.onBackground.muted,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+        }
 
         post.url?.also { url ->
             val postLinkPicMod = Modifier
@@ -292,13 +410,14 @@ fun PostTitleAndThumbnail(
 fun PostBody(
     postView: PostView,
     fullBody: Boolean,
-    onPostLinkClick: (url: String) -> Unit
+    onPostLinkClick: (url: String) -> Unit,
+    account: Account?
 ) {
     val post = postView.post
     Column(
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
     ) {
-        PostTitleBlock(postView = postView, onPostLinkClick = onPostLinkClick)
+        PostTitleBlock(postView = postView, onPostLinkClick = onPostLinkClick, account = account)
 
         // The metadata card
         if (fullBody && post.embed_title !== null) {
@@ -344,7 +463,8 @@ fun PreviewStoryTitleAndMetadata() {
     PostBody(
         postView = samplePostView,
         onPostLinkClick = {},
-        fullBody = false
+        fullBody = false,
+        account = null
     )
 }
 
@@ -625,12 +745,11 @@ fun PostListing(
         verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
     ) {
         // Header
-        PostHeaderLine(
+        PostHeaderLineAlt(
             postView = postView,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             isModerator = isModerator,
-            isSameInstance = postView.post.url?.let { hostName(it) } == account?.instance,
             showCommunityName = showCommunityName,
             modifier = Modifier.padding(horizontal = LARGE_PADDING)
         )
@@ -639,7 +758,8 @@ fun PostListing(
         PostBody(
             postView = postView,
             onPostLinkClick = onPostLinkClick,
-            fullBody = fullBody
+            fullBody = fullBody,
+            account = account
         )
 
         // Footer bar

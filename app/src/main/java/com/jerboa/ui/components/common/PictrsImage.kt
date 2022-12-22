@@ -49,7 +49,8 @@ import com.jerboa.ui.theme.muted
 fun CircularIcon(
     icon: String,
     size: Dp = ICON_SIZE,
-    thumbnailSize: Int = ICON_THUMBNAIL_SIZE
+    thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
+    modifier: Modifier = Modifier
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -59,7 +60,7 @@ fun CircularIcon(
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = Modifier
+        modifier = modifier
             .size(size)
             .clip(CircleShape)
     )

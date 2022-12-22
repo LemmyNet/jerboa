@@ -649,3 +649,7 @@ fun Modifier.pagerTabIndicatorOffset2(
         }
     }
 }
+
+fun isSameInstance(url: String?, instance: String?): Boolean {
+    return url?.let { hostName(it) } == instance
+}

@@ -33,12 +33,14 @@ import com.jerboa.ui.theme.SMALL_PADDING
 fun CommunityName(
     community: CommunitySafe,
     color: Color = MaterialTheme.colorScheme.primary,
-    style: TextStyle = MaterialTheme.typography.bodyMedium
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    modifier: Modifier = Modifier
 ) {
     Text(
         text = communityNameShown(community),
         style = style,
-        color = color
+        color = color,
+        modifier = modifier
     )
 }
 
