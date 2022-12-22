@@ -42,6 +42,7 @@ import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
@@ -181,7 +182,7 @@ fun calculateCommentOffset(depth: Int?, multiplier: Int): Dp {
     return if (depth == null) {
         0.dp
     } else {
-        ((depth * multiplier).dp)
+        ((depth * multiplier).dp) + SMALL_PADDING
     }
 }
 

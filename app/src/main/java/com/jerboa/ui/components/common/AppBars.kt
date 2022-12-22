@@ -109,11 +109,7 @@ fun BottomAppBarAll(
                 InboxIconAndBadge(
                     iconBadgeCount = totalUnreads,
                     icon = Icons.Outlined.Email,
-                    tint = if (screen == "inbox") {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onBackground.muted
-                    }
+                    tint = LocalContentColor.current
                 )
             },
             onClick = {

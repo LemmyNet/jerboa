@@ -125,8 +125,8 @@ fun CreatePostBody(
 
     Column(
         modifier = Modifier
-            .padding(padding)
             .fillMaxWidth()
+            .padding(vertical = padding.calculateTopPadding(), horizontal = MEDIUM_PADDING)
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
     ) {
