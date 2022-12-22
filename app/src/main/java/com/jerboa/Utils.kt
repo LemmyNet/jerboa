@@ -597,15 +597,10 @@ enum class ThemeMode {
     Dark
 }
 
-enum class LightTheme {
+enum class ThemeColor {
+    Dynamic,
     Green,
     Pink
-}
-
-enum class DarkTheme {
-    Gray,
-    Blue,
-    Black
 }
 
 @ExperimentalPagerApi

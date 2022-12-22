@@ -23,8 +23,7 @@ import com.alorma.compose.settings.storage.base.rememberFloatSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsSlider
-import com.jerboa.DarkTheme
-import com.jerboa.LightTheme
+import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
@@ -40,8 +39,7 @@ fun LookAndFeelActivity(
 
     val settings = appSettingsViewModel.appSettings.value
     val themeState = rememberIntSettingState(settings?.theme ?: 0)
-    val lightThemeState = rememberIntSettingState(settings?.lightTheme ?: 0)
-    val darkThemeState = rememberIntSettingState(settings?.darkTheme ?: 0)
+    val themeColorState = rememberIntSettingState(settings?.themeColor ?: 0)
     val fontSizeState = rememberFloatSettingState(
         settings?.fontSize?.toFloat()
             ?: DEFAULT_FONT_SIZE.toFloat()
@@ -74,8 +72,7 @@ fun LookAndFeelActivity(
                             appSettingsViewModel,
                             fontSizeState,
                             themeState,
-                            lightThemeState,
-                            darkThemeState
+                            themeColorState
                         )
                     }
                 )
@@ -96,52 +93,28 @@ fun LookAndFeelActivity(
                             appSettingsViewModel,
                             fontSizeState,
                             themeState,
-                            lightThemeState,
-                            darkThemeState
+                            themeColorState
                         )
                     }
                 )
                 SettingsList(
-                    state = lightThemeState,
-                    items = LightTheme.values().map { it.name },
+                    state = themeColorState,
+                    items = ThemeColor.values().map { it.name },
                     icon = {
                         Icon(
-                            imageVector = Icons.Outlined.FlashlightOn,
+                            imageVector = Icons.Outlined.Colorize,
                             contentDescription = "TODO"
                         )
                     },
                     title = {
-                        Text(text = "Light theme")
+                        Text(text = "Theme color")
                     },
                     action = {
                         updateAppSettings(
                             appSettingsViewModel,
                             fontSizeState,
                             themeState,
-                            lightThemeState,
-                            darkThemeState
-                        )
-                    }
-                )
-                SettingsList(
-                    state = darkThemeState,
-                    items = DarkTheme.values().map { it.name },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.ShieldMoon,
-                            contentDescription = "TODO"
-                        )
-                    },
-                    title = {
-                        Text(text = "Dark theme")
-                    },
-                    action = {
-                        updateAppSettings(
-                            appSettingsViewModel,
-                            fontSizeState,
-                            themeState,
-                            lightThemeState,
-                            darkThemeState
+                            themeColorState
                         )
                     }
                 )
@@ -154,16 +127,14 @@ private fun updateAppSettings(
     appSettingsViewModel: AppSettingsViewModel,
     fontSizeState: SettingValueState<Float>,
     themeState: SettingValueState<Int>,
-    lightThemeState: SettingValueState<Int>,
-    darkThemeState: SettingValueState<Int>
+    themeColorState: SettingValueState<Int>
 ) {
     appSettingsViewModel.update(
         AppSettings(
             id = 1,
             fontSize = fontSizeState.value.toInt(),
             theme = themeState.value,
-            lightTheme = lightThemeState.value,
-            darkTheme = darkThemeState.value,
+            themeColor = themeColorState.value,
             viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0
         )
     )

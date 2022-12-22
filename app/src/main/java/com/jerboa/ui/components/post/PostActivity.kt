@@ -164,7 +164,12 @@ fun PostActivity(
                                     onPostClick = {}, // Do nothing
                                     showReply = true,
                                     account = account,
-                                    isModerator = isModerator(postView.creator, postViewModel.moderators)
+                                    isModerator = isModerator(
+                                        postView.creator,
+                                        postViewModel
+                                            .moderators
+                                    ),
+                                    fullBody = true
                                 )
                             }
                             commentNodeItems(

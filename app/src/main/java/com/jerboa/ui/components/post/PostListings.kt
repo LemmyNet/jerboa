@@ -87,7 +87,8 @@ fun PostListings(
                     onBlockCreatorClick = onBlockCreatorClick,
                     account = account,
                     showCommunityName = showCommunityName,
-                    isModerator = false // TODO can't know with many posts
+                    isModerator = false, // TODO can't know with many posts
+                    fullBody = false
                 )
                 Divider()
             }

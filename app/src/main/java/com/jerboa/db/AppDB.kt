@@ -49,15 +49,10 @@ data class AppSettings(
     )
     val theme: Int,
     @ColumnInfo(
-        name = "light_theme",
+        name = "theme_color",
         defaultValue = "0"
     )
-    val lightTheme: Int,
-    @ColumnInfo(
-        name = "dark_theme",
-        defaultValue = "0"
-    )
-    val darkTheme: Int,
+    val themeColor: Int,
     @ColumnInfo(
         name = "viewed_changelog",
         defaultValue = "0"
@@ -193,8 +188,36 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
     }
 }
 
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Material v3 migration
+        // Remove dark_theme and light_theme
+        // Add theme_color
+        // SQLITE for android cant drop columns, you have to redo the table
+        database.execSQL(
+            """
+                CREATE TABLE IF NOT EXISTS AppSettingsBackup(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                    font_size INTEGER NOT NULL DEFAULT $DEFAULT_FONT_SIZE,  
+                    theme INTEGER NOT NULL DEFAULT 0,
+                    theme_color INTEGER NOT NULL DEFAULT 0,
+                    viewed_changelog INTEGER NOT NULL DEFAULT 0
+                )
+            """
+        )
+        database.execSQL(
+            """
+            INSERT INTO AppSettingsBackup (id, font_size, theme, viewed_changelog)
+            select id, font_size, theme, viewed_changelog from AppSettings
+            """
+        )
+        database.execSQL("DROP TABLE AppSettings")
+        database.execSQL("ALTER TABLE AppSettingsBackup RENAME to AppSettings")
+    }
+}
+
 @Database(
-    version = 4,
+    version = 5,
     entities = [Account::class, AppSettings::class],
     exportSchema = true
 )
@@ -218,7 +241,7 @@ abstract class AppDB : RoomDatabase() {
                     "jerboa"
                 )
                     .allowMainThreadQueries()
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
                         override fun onOpen(db: SupportSQLiteDatabase) {
@@ -229,11 +252,6 @@ abstract class AppDB : RoomDatabase() {
                                     CONFLICT_IGNORE, // Ensures it won't overwrite the existing data
                                     ContentValues(2).apply {
                                         put("id", 1)
-//                                        put("font_size", DEFAULT_FONT_SIZE)
-//                                        put("theme", 0)
-//                                        put("light_theme", 0)
-//                                        put("dark_theme", 0)
-//                                        put("")
                                     }
                                 )
                             }

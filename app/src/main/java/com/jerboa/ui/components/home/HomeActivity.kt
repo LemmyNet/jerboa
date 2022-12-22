@@ -62,6 +62,7 @@ fun HomeActivity(
     val account = getCurrentAccount(accountViewModel)
 
     ModalNavigationDrawer(
+        drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(
                 content = {

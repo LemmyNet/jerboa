@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,7 +42,6 @@ import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
-import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 
 @Composable
@@ -68,33 +66,26 @@ fun PersonProfileTopSection(
                 }
             }
         }
-        Card(
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier
-                .padding(vertical = SMALL_PADDING)
-                .fillMaxWidth()
+        Column(
+            modifier = Modifier.padding(MEDIUM_PADDING),
+            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
         ) {
-            Column(
-                modifier = Modifier.padding(MEDIUM_PADDING),
-                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
-            ) {
-                Text(
-                    text = personNameShown(personView.person, true),
-                    style = MaterialTheme.typography.titleLarge
-                )
+            Text(
+                text = personNameShown(personView.person, true),
+                style = MaterialTheme.typography.titleLarge
+            )
 
-                TimeAgo(
-                    precedingString = "Joined",
-                    includeAgo = true,
-                    published = personView.person.published
+            TimeAgo(
+                precedingString = "Joined",
+                includeAgo = true,
+                published = personView.person.published
+            )
+            CommentsAndPosts(personView)
+            personView.person.bio?.also {
+                MyMarkdownText(
+                    markdown = it,
+                    color = MaterialTheme.colorScheme.onBackground.muted
                 )
-                CommentsAndPosts(personView)
-                personView.person.bio?.also {
-                    MyMarkdownText(
-                        markdown = it,
-                        color = MaterialTheme.colorScheme.onBackground.muted
-                    )
-                }
             }
         }
     }

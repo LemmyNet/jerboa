@@ -374,44 +374,44 @@ fun Sidebar(
             }
         }
         item {
-            Card(
-                shape = MaterialTheme.shapes.small,
-                modifier = Modifier
-                    .padding(vertical = SMALL_PADDING)
-                    .fillMaxWidth()
+            Column(
+                modifier = Modifier.padding(MEDIUM_PADDING),
+                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
             ) {
-                Column(
-                    modifier = Modifier.padding(MEDIUM_PADDING),
-                    verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
-                ) {
-                    title?.also {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                    TimeAgo(
-                        precedingString = "Created",
-                        includeAgo = true,
-                        published = published
-                    )
-                    CommentsAndPosts(
-                        usersActiveDay = usersActiveDay,
-                        usersActiveWeek = usersActiveWeek,
-                        usersActiveMonth = usersActiveMonth,
-                        usersActiveHalfYear = usersActiveHalfYear,
-                        postCount = postCount,
-                        commentCount = commentCount
+                title?.also {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.titleLarge
                     )
                 }
+                TimeAgo(
+                    precedingString = "Created",
+                    includeAgo = true,
+                    published = published
+                )
+                CommentsAndPosts(
+                    usersActiveDay = usersActiveDay,
+                    usersActiveWeek = usersActiveWeek,
+                    usersActiveMonth = usersActiveMonth,
+                    usersActiveHalfYear = usersActiveHalfYear,
+                    postCount = postCount,
+                    commentCount = commentCount
+                )
             }
         }
         item {
+            Divider()
+        }
+        item {
             content?.also {
-                MyMarkdownText(
-                    markdown = it,
-                    color = MaterialTheme.colorScheme.onBackground.muted
-                )
+                Column(
+                    modifier = Modifier.padding(MEDIUM_PADDING)
+                ) {
+                    MyMarkdownText(
+                        markdown = it,
+                        color = MaterialTheme.colorScheme.onBackground.muted
+                    )
+                }
             }
         }
     }

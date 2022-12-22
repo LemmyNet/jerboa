@@ -26,7 +26,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 @Composable
 fun PersonName(
     person: PersonSafe?,
-    color: Color = MaterialTheme.colorScheme.secondary,
+    color: Color = MaterialTheme.colorScheme.tertiary,
     isPostCreator: Boolean = false
 ) {
     val name = person?.let { personNameShown(it) } ?: run { "Anonymous" }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -267,7 +269,10 @@ fun PostTitleAndThumbnail(
                     modifier = postLinkPicMod,
                     shape = MaterialTheme.shapes.large
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
                         Icon(
                             imageVector = Icons.Outlined.Link,
                             contentDescription = "TODO",
@@ -283,7 +288,7 @@ fun PostTitleAndThumbnail(
 @Composable
 fun PostBody(
     postView: PostView,
-    fullBody: Boolean = false,
+    fullBody: Boolean,
     onPostLinkClick: (url: String) -> Unit
 ) {
     val post = postView.post
@@ -335,7 +340,8 @@ fun PostBody(
 fun PreviewStoryTitleAndMetadata() {
     PostBody(
         postView = samplePostView,
-        onPostLinkClick = {}
+        onPostLinkClick = {},
+        fullBody = false
     )
 }
 
@@ -511,7 +517,8 @@ fun PreviewPostListing() {
         onPersonClick = {},
         onPostClick = {},
         onBlockCommunityClick = {},
-        onBlockCreatorClick = {}
+        onBlockCreatorClick = {},
+        fullBody = false
     )
 }
 
@@ -534,7 +541,8 @@ fun PreviewLinkPostListing() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCommunityClick = {},
-        onBlockCreatorClick = {}
+        onBlockCreatorClick = {},
+        fullBody = false
     )
 }
 
@@ -557,7 +565,8 @@ fun PreviewImagePostListing() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCommunityClick = {},
-        onBlockCreatorClick = {}
+        onBlockCreatorClick = {},
+        fullBody = false
     )
 }
 
@@ -580,7 +589,8 @@ fun PreviewLinkNoThumbnailPostListing() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCommunityClick = {},
-        onBlockCreatorClick = {}
+        onBlockCreatorClick = {},
+        fullBody = false
     )
 }
 
@@ -603,52 +613,49 @@ fun PostListing(
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
+    fullBody: Boolean,
     account: Account?
 ) {
-    Card(
-        shape = MaterialTheme.shapes.small,
-        modifier = Modifier
-            .clickable { onPostClick(postView) }
+    Column(
+        modifier = Modifier.padding(vertical = MEDIUM_PADDING)
+            .clickable { onPostClick(postView) },
+        verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
     ) {
-        Column(
-            modifier = Modifier.padding(vertical = MEDIUM_PADDING),
-            verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
-        ) {
-            // Header
-            PostHeaderLine(
-                postView = postView,
-                onCommunityClick = onCommunityClick,
-                onPersonClick = onPersonClick,
-                isModerator = isModerator,
-                isSameInstance = postView.post.url?.let { hostName(it) } == account?.instance,
-                showCommunityName = showCommunityName,
-                modifier = Modifier.padding(horizontal = LARGE_PADDING)
-            )
+        // Header
+        PostHeaderLine(
+            postView = postView,
+            onCommunityClick = onCommunityClick,
+            onPersonClick = onPersonClick,
+            isModerator = isModerator,
+            isSameInstance = postView.post.url?.let { hostName(it) } == account?.instance,
+            showCommunityName = showCommunityName,
+            modifier = Modifier.padding(horizontal = LARGE_PADDING)
+        )
 
-            //  Title + metadata
-            PostBody(
-                postView = postView,
-                onPostLinkClick = onPostLinkClick
-            )
+        //  Title + metadata
+        PostBody(
+            postView = postView,
+            onPostLinkClick = onPostLinkClick,
+            fullBody = fullBody
+        )
 
-            // Footer bar
-            PostFooterLine(
-                postView = postView,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                onSaveClick = onSaveClick,
-                onReplyClick = onReplyClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onReportClick = onReportClick,
-                onBlockCommunityClick = onBlockCommunityClick,
-                onBlockCreatorClick = onBlockCreatorClick,
-                showReply = showReply,
-                account = account,
-                modifier = Modifier.padding(horizontal = LARGE_PADDING)
-            )
-        }
+        // Footer bar
+        PostFooterLine(
+            postView = postView,
+            onUpvoteClick = onUpvoteClick,
+            onDownvoteClick = onDownvoteClick,
+            onSaveClick = onSaveClick,
+            onReplyClick = onReplyClick,
+            onCommunityClick = onCommunityClick,
+            onEditPostClick = onEditPostClick,
+            onDeletePostClick = onDeletePostClick,
+            onReportClick = onReportClick,
+            onBlockCommunityClick = onBlockCommunityClick,
+            onBlockCreatorClick = onBlockCreatorClick,
+            showReply = showReply,
+            account = account,
+            modifier = Modifier.padding(horizontal = LARGE_PADDING)
+        )
     }
 }
 
@@ -661,7 +668,7 @@ fun PostListingHeaderPreview() {
 
 @Composable
 fun MetadataCard(post: Post) {
-    Card(
+    OutlinedCard(
         shape = MaterialTheme.shapes.medium,
         modifier = Modifier
             .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
