@@ -1,13 +1,14 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.post.edit
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,62 +57,60 @@ fun PostEditActivity(
     }
     var formValid by rememberSaveable { mutableStateOf(true) }
 
-    Surface(color = MaterialTheme.colors.background) {
-        Scaffold(
-            topBar = {
-                Column {
-                    EditPostHeader(
-                        navController = navController,
-                        formValid = formValid,
-                        loading = postEditViewModel.loading,
-                        onEditPostClick = {
-                            account?.also { acct ->
-                                // Clean up that data
-                                val nameOut = name.trim()
-                                val bodyOut = body.text.trim().ifEmpty { null }
-                                val urlOut = url.trim().ifEmpty { null }
+    Scaffold(
+        topBar = {
+            Column {
+                EditPostHeader(
+                    navController = navController,
+                    formValid = formValid,
+                    loading = postEditViewModel.loading,
+                    onEditPostClick = {
+                        account?.also { acct ->
+                            // Clean up that data
+                            val nameOut = name.trim()
+                            val bodyOut = body.text.trim().ifEmpty { null }
+                            val urlOut = url.trim().ifEmpty { null }
 
-                                postEditViewModel.editPost(
-                                    account = acct,
-                                    ctx = ctx,
-                                    body = bodyOut,
-                                    url = urlOut,
-                                    name = nameOut,
-                                    navController = navController,
-                                    postViewModel = postViewModel,
-                                    personProfileViewModel = personProfileViewModel,
-                                    communityViewModel = communityViewModel,
-                                    homeViewModel = homeViewModel
-                                )
-                            }
+                            postEditViewModel.editPost(
+                                account = acct,
+                                ctx = ctx,
+                                body = bodyOut,
+                                url = urlOut,
+                                name = nameOut,
+                                navController = navController,
+                                postViewModel = postViewModel,
+                                personProfileViewModel = personProfileViewModel,
+                                communityViewModel = communityViewModel,
+                                homeViewModel = homeViewModel
+                            )
                         }
-                    )
-                    if (postEditViewModel.loading) {
-                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
-                }
-            },
-            content = { padding ->
-                EditPostBody(
-                    name = name,
-                    onNameChange = { name = it },
-                    body = body,
-                    onBodyChange = { body = it },
-                    url = url,
-                    onUrlChange = { url = it },
-                    formValid = { formValid = it },
-                    onPickedImage = { uri ->
-                        val imageIs = imageInputStreamFromUri(ctx, uri)
-                        scope.launch {
-                            account?.also { acct ->
-                                url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
-                            }
-                        }
-                    },
-                    account = account,
-                    modifier = Modifier.padding(padding)
                 )
+                if (postEditViewModel.loading) {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
             }
-        )
-    }
+        },
+        content = { padding ->
+            EditPostBody(
+                name = name,
+                onNameChange = { name = it },
+                body = body,
+                onBodyChange = { body = it },
+                url = url,
+                onUrlChange = { url = it },
+                formValid = { formValid = it },
+                onPickedImage = { uri ->
+                    val imageIs = imageInputStreamFromUri(ctx, uri)
+                    scope.launch {
+                        account?.also { acct ->
+                            url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                        }
+                    }
+                },
+                account = account,
+                modifier = Modifier.padding(padding)
+            )
+        }
+    )
 }

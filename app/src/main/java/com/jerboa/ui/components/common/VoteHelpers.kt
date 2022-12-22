@@ -1,9 +1,9 @@
 package com.jerboa.ui.components.common
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.ThumbDown
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.jerboa.VoteType
@@ -52,15 +52,15 @@ fun <T> VoteGeneric(
 @Composable
 fun upvoteColor(myVote: Int?): Color {
     return when (myVote) {
-        1 -> MaterialTheme.colors.secondary
-        else -> MaterialTheme.colors.onBackground.muted
+        1 -> MaterialTheme.colorScheme.secondary
+        else -> MaterialTheme.colorScheme.onBackground.muted
     }
 }
 
 @Composable
 fun downvoteColor(myVote: Int?): Color {
     return when (myVote) {
-        -1 -> MaterialTheme.colors.error
-        else -> MaterialTheme.colors.onBackground.muted
+        -1 -> MaterialTheme.colorScheme.error
+        else -> MaterialTheme.colorScheme.onBackground.muted
     }
 }

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.home
 
 import androidx.compose.animation.AnimatedVisibility
@@ -14,16 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Divider
-import androidx.compose.material.DrawerValue
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Bookmarks
@@ -42,9 +34,17 @@ import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Sort
-import androidx.compose.material.primarySurface
-import androidx.compose.material.rememberDrawerState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -76,7 +76,6 @@ import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.person.PersonName
-import com.jerboa.ui.theme.APP_BAR_ELEVATION
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -266,7 +265,7 @@ fun DrawerItemsMain(
                 Text(
                     text = "Subscriptions",
                     modifier = Modifier.padding(LARGE_PADDING),
-                    color = MaterialTheme.colors.onBackground.muted
+                    color = MaterialTheme.colorScheme.onBackground.muted
                 )
             }
             items(
@@ -412,12 +411,11 @@ fun HomeHeaderTitle(
     Column {
         Text(
             text = selectedListingType.toString(),
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.titleLarge
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.subtitle1,
-            color = contentColorFor(MaterialTheme.colors.primarySurface).muted
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
@@ -425,7 +423,7 @@ fun HomeHeaderTitle(
 @Composable
 fun HomeHeader(
     scope: CoroutineScope,
-    scaffoldState: ScaffoldState,
+    drawerState: DrawerState,
     onClickSortType: (SortType) -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onClickRefresh: () -> Unit,
@@ -483,9 +481,6 @@ fun HomeHeader(
         )
     }
 
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
-
     TopAppBar(
         title = {
             HomeHeaderTitle(
@@ -493,13 +488,10 @@ fun HomeHeader(
                 selectedListingType = selectedListingType
             )
         },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
-        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = {
                 scope.launch {
-                    scaffoldState.drawerState.open()
+                    drawerState.open()
                 }
             }) {
                 Icon(
@@ -515,8 +507,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.FilterList,
-                    contentDescription = "TODO",
-                    tint = contentColor
+                    contentDescription = "TODO"
                 )
             }
             IconButton(onClick = {
@@ -524,8 +515,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
-                    tint = contentColor
+                    contentDescription = "TODO"
                 )
             }
             IconButton(onClick = {
@@ -533,8 +523,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
-                    tint = contentColor
+                    contentDescription = "TODO"
                 )
             }
         }
@@ -545,17 +534,16 @@ fun HomeHeader(
 @Composable
 fun HomeHeaderPreview() {
     val scope = rememberCoroutineScope()
-    val scaffoldState =
-        rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     HomeHeader(
         scope,
-        scaffoldState,
+        drawerState,
+        onClickSortType = {},
+        onClickListingType = {},
+        onClickRefresh = {},
         selectedSortType = SortType.Hot,
         selectedListingType = ListingType.All,
-        navController = rememberNavController(),
-        onClickListingType = {},
-        onClickSortType = {},
-        onClickRefresh = {}
+        navController = rememberNavController()
     )
 }
 
@@ -587,6 +575,6 @@ fun HomeMoreDialog(
                 )
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }

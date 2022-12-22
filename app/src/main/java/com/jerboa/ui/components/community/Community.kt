@@ -1,10 +1,12 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.community
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,8 +58,8 @@ fun CommunityTopSection(
             ) {
                 Text(
                     text = communityView.community.title,
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.onSurface
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Icon(
@@ -66,7 +68,7 @@ fun CommunityTopSection(
                     tint = if (communityView.subscribed) {
                         Color.Green
                     } else {
-                        MaterialTheme.colors.onBackground.muted
+                        MaterialTheme.colorScheme.onBackground.muted
                     },
                     modifier = Modifier
                         .height(ACTION_BAR_ICON_SIZE)
@@ -76,8 +78,8 @@ fun CommunityTopSection(
             Row {
                 Text(
                     text = "${communityView.counts.users_active_month} users / month",
-                    style = MaterialTheme.typography.body1,
-                    color = MaterialTheme.colors.onBackground.muted
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground.muted
                 )
             }
         }
@@ -144,9 +146,6 @@ fun CommunityHeader(
         )
     }
 
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
-
     TopAppBar(
         title = {
             CommunityHeaderTitle(
@@ -154,15 +153,11 @@ fun CommunityHeader(
                 selectedSortType = selectedSortType
             )
         },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
-        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
-                    tint = contentColor
+                    contentDescription = "Back"
                 )
             }
         },
@@ -172,8 +167,7 @@ fun CommunityHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
-                    tint = contentColor
+                    contentDescription = "TODO"
                 )
             }
             IconButton(onClick = {
@@ -181,8 +175,7 @@ fun CommunityHeader(
             }) {
                 Icon(
                     Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
-                    tint = contentColor
+                    contentDescription = "TODO"
                 )
             }
         }
@@ -197,12 +190,11 @@ fun CommunityHeaderTitle(
     Column {
         Text(
             text = communityName,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.titleLarge
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.subtitle1,
-            color = contentColorFor(MaterialTheme.colors.primarySurface).muted
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
@@ -241,6 +233,6 @@ fun CommunityMoreDialog(
                 )
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }

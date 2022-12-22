@@ -1,6 +1,11 @@
 package com.jerboa.datatypes.api
 
-import com.jerboa.datatypes.*
+import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunityModeratorView
+import com.jerboa.datatypes.PersonMentionView
+import com.jerboa.datatypes.PersonViewSafe
+import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.PrivateMessageView
 
 data class Login(
     val username_or_email: String,

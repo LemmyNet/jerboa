@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.person
 
 import android.content.Context
@@ -7,7 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +18,6 @@ import androidx.navigation.NavController
 import arrow.core.Either
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -27,6 +28,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
+import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
@@ -57,94 +59,92 @@ fun PersonProfileActivity(
 
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
-    val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
     val bottomAppBarScreen = if (savedMode) { "saved" } else { "profile" }
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    Surface(color = MaterialTheme.colors.background) {
-        Scaffold(
-            scaffoldState = scaffoldState,
-            topBar = {
-                personProfileViewModel.res?.person_view?.person?.also { person ->
-                    PersonProfileHeader(
-                        personName = if (savedMode) {
-                            "Saved"
-                        } else {
-                            person.name
-                        },
-                        myProfile = account?.id == person.id,
-                        selectedSortType = personProfileViewModel.sortType.value,
-                        onClickSortType = { sortType ->
-                            scrollToTop(scope, postListState)
-                            personProfileViewModel.fetchPersonDetails(
-                                idOrName = Either.Left(
-                                    personProfileViewModel.res!!.person_view
-                                        .person.id
-                                ),
-                                account = account,
-                                clear = true,
-                                changeSortType = sortType,
-                                changeSavedOnly = savedMode,
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            personProfileViewModel.res?.person_view?.person?.also { person ->
+                PersonProfileHeader(
+                    personName = if (savedMode) {
+                        "Saved"
+                    } else {
+                        person.name
+                    },
+                    myProfile = account?.id == person.id,
+                    selectedSortType = personProfileViewModel.sortType.value,
+                    onClickSortType = { sortType ->
+                        scrollToTop(scope, postListState)
+                        personProfileViewModel.fetchPersonDetails(
+                            idOrName = Either.Left(
+                                personProfileViewModel.res!!.person_view
+                                    .person.id
+                            ),
+                            account = account,
+                            clear = true,
+                            changeSortType = sortType,
+                            changeSavedOnly = savedMode,
+                            ctx = ctx
+                        )
+                    },
+                    onBlockPersonClick = {
+                        account?.also { acct ->
+                            personProfileViewModel.blockPerson(
+                                person = person,
+                                account = acct,
                                 ctx = ctx
                             )
-                        },
-                        onBlockPersonClick = {
-                            account?.also { acct ->
-                                personProfileViewModel.blockPerson(
-                                    person = person,
-                                    account = acct,
-                                    ctx = ctx
-                                )
-                            }
-                        },
-                        navController = navController
-                    )
-                }
-            },
-            content = {
-                UserTabs(
-                    savedMode = savedMode,
-                    padding = it,
-                    navController = navController,
-                    personProfileViewModel = personProfileViewModel,
-                    ctx = ctx,
-                    account = account,
-                    scope = scope,
-                    postListState = postListState,
-                    commentEditViewModel = commentEditViewModel,
-                    commentReplyViewModel = commentReplyViewModel,
-                    postEditViewModel = postEditViewModel
-                )
-            },
-            bottomBar = {
-                BottomAppBarAll(
-                    screen = bottomAppBarScreen,
-                    unreadCounts = homeViewModel.unreadCountResponse,
-                    onClickProfile = {
-                        account?.id?.also {
-                            navController.navigate(route = "profile/$it")
-                        }
-                    },
-                    onClickInbox = {
-                        account?.also {
-                            navController.navigate(route = "inbox")
-                        } ?: run {
-                            loginFirstToast(ctx)
-                        }
-                    },
-                    onClickSaved = {
-                        account?.id?.also {
-                            navController.navigate(route = "profile/$it?saved=${true}")
-                        } ?: run {
-                            loginFirstToast(ctx)
                         }
                     },
                     navController = navController
                 )
             }
-        )
-    }
+        },
+        content = {
+            UserTabs(
+                savedMode = savedMode,
+                padding = it,
+                navController = navController,
+                personProfileViewModel = personProfileViewModel,
+                ctx = ctx,
+                account = account,
+                scope = scope,
+                postListState = postListState,
+                commentEditViewModel = commentEditViewModel,
+                commentReplyViewModel = commentReplyViewModel,
+                postEditViewModel = postEditViewModel
+            )
+        },
+        bottomBar = {
+            BottomAppBarAll(
+                screen = bottomAppBarScreen,
+                unreadCounts = homeViewModel.unreadCountResponse,
+                onClickProfile = {
+                    account?.id?.also {
+                        navController.navigate(route = "profile/$it")
+                    }
+                },
+                onClickInbox = {
+                    account?.also {
+                        navController.navigate(route = "inbox")
+                    } ?: run {
+                        loginFirstToast(ctx)
+                    }
+                },
+                onClickSaved = {
+                    account?.id?.also {
+                        navController.navigate(route = "profile/$it?saved=${true}")
+                    } ?: run {
+                        loginFirstToast(ctx)
+                    }
+                },
+                navController = navController
+            )
+        }
+    )
 }
 
 enum class UserTab {
@@ -182,7 +182,7 @@ fun UserTabs(
             selectedTabIndex = pagerState.currentPage,
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset(
+                    Modifier.pagerTabIndicatorOffset2(
                         pagerState,
                         tabPositions
                     )
@@ -237,7 +237,7 @@ fun UserTabs(
                                 item {
                                     Text(
                                         text = "Moderates",
-                                        style = MaterialTheme.typography.body1,
+                                        style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.padding(MEDIUM_PADDING)
                                     )
                                 }

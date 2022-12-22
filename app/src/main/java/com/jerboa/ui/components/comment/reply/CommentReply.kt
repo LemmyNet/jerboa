@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.comment.reply
 
 import androidx.compose.foundation.layout.Column
@@ -6,11 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Send
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
@@ -33,17 +33,12 @@ fun CommentReplyHeader(
     onSendClick: () -> Unit,
     loading: Boolean
 ) {
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
-
     TopAppBar(
         title = {
             Text(
                 text = "Reply"
             )
         },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
         actions = {
             IconButton(
                 onClick = onSendClick,
@@ -51,7 +46,7 @@ fun CommentReplyHeader(
             ) {
                 if (loading) {
                     CircularProgressIndicator(
-                        color = MaterialTheme.colors.onSurface
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 } else {
                     Icon(

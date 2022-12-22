@@ -1,17 +1,18 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.inbox
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.outlined.FilterList
-import androidx.compose.material.primarySurface
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,8 +22,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.UnreadOrAll
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
-import com.jerboa.ui.theme.APP_BAR_ELEVATION
-import com.jerboa.ui.theme.muted
 
 @Composable
 fun InboxHeader(
@@ -45,9 +44,6 @@ fun InboxHeader(
         )
     }
 
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
-
     TopAppBar(
         title = {
             InboxHeaderTitle(
@@ -55,9 +51,6 @@ fun InboxHeader(
                 selectedUnreadOrAll = selectedUnreadOrAll
             )
         },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
-        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
@@ -72,15 +65,13 @@ fun InboxHeader(
             }) {
                 Icon(
                     Icons.Outlined.FilterList,
-                    contentDescription = "TODO",
-                    tint = contentColor
+                    contentDescription = "TODO"
                 )
             }
             IconButton(onClick = onClickMarkAllAsRead) {
                 Icon(
                     Icons.Outlined.DoneAll,
-                    contentDescription = "TODO",
-                    tint = contentColor
+                    contentDescription = "TODO"
                 )
             }
         }
@@ -96,12 +87,11 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
     Column {
         Text(
             text = title,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.titleLarge
         )
         Text(
             text = selectedUnreadOrAll.toString(),
-            style = MaterialTheme.typography.subtitle1,
-            color = contentColorFor(MaterialTheme.colors.primarySurface).muted
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }

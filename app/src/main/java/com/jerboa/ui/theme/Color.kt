@@ -1,6 +1,5 @@
 package com.jerboa.ui.theme
 
-import androidx.compose.material.ContentAlpha
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -82,4 +81,5 @@ val md_theme_dark_scrim = Color(0xFF000000)
 
 val seed = Color(0xFFFFC0CB)
 
-val Color.muted @Composable get() = this.copy(alpha = ContentAlpha.medium)
+// TODO check this
+val Color.muted @Composable get() = this.copy(alpha = 0.5F)

@@ -7,7 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import com.jerboa.CommentNodeData
-import com.jerboa.datatypes.*
+import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunityModeratorView
+import com.jerboa.datatypes.CommunitySafe
+import com.jerboa.datatypes.PersonSafe
 import com.jerboa.db.Account
 
 @Composable

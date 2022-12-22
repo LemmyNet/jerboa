@@ -1,14 +1,17 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.login
 
 import android.util.Log
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
@@ -26,36 +29,34 @@ fun LoginActivity(
 ) {
     Log.d("jerboa", "Got to login activity")
 
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { SnackbarHostState() }
     val accounts by accountViewModel.allAccounts.observeAsState()
     val ctx = LocalContext.current
 
-    Surface(color = MaterialTheme.colors.background) {
-        Scaffold(
-            scaffoldState = scaffoldState,
-            topBar = {
-                LoginHeader(
-                    navController = navController,
-                    accounts = accounts
-                )
-            },
-            content = { padding ->
-                LoginForm(
-                    loading = loginViewModel.loading,
-                    modifier = Modifier.padding(padding),
-                    onClickLogin = { form, instance ->
-                        loginViewModel.login(
-                            navController = navController,
-                            form = form,
-                            instance = instance.trim(),
-                            ctx = ctx,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            homeViewModel = homeViewModel
-                        )
-                    }
-                )
-            }
-        )
-    }
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            LoginHeader(
+                navController = navController,
+                accounts = accounts
+            )
+        },
+        content = { padding ->
+            LoginForm(
+                loading = loginViewModel.loading,
+                modifier = Modifier.padding(padding),
+                onClickLogin = { form, instance ->
+                    loginViewModel.login(
+                        navController = navController,
+                        form = form,
+                        instance = instance.trim(),
+                        ctx = ctx,
+                        accountViewModel = accountViewModel,
+                        siteViewModel = siteViewModel,
+                        homeViewModel = homeViewModel
+                    )
+                }
+            )
+        }
+    )
 }

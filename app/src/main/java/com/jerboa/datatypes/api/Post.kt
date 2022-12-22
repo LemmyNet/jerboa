@@ -1,6 +1,13 @@
 package com.jerboa.datatypes.api
 
-import com.jerboa.datatypes.*
+import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunityModeratorView
+import com.jerboa.datatypes.CommunityView
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.PostReportView
+import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.SiteMetadata
+import com.jerboa.datatypes.SortType
 
 data class CreatePost(
     val name: String,

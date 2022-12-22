@@ -1,11 +1,14 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.settings.account
 
 import android.util.Log
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
@@ -22,34 +25,32 @@ fun AccountSettingsActivity(
 ) {
     Log.d("jerboa", "Got to settings activity")
 
-    val scaffoldState = rememberScaffoldState()
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    Surface(color = MaterialTheme.colors.background) {
-        Scaffold(
-            scaffoldState = scaffoldState,
-            topBar = {
-                SimpleTopAppBar(text = "Account Settings", navController = navController)
-            },
-            content = { padding ->
-                account.also {
-                    SettingsForm(
-                        accountSettingsViewModel,
-                        onClickSave = { form ->
-                            accountSettingsViewModel.saveSettings(
-                                form,
-                                ctx,
-                                siteViewModel = siteViewModel,
-                                account = account
-                            )
-                        },
-                        siteViewModel = siteViewModel,
-                        account = account,
-                        padding = padding
-                    )
-                }
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            SimpleTopAppBar(text = "Account Settings", navController = navController)
+        },
+        content = { padding ->
+            account.also {
+                SettingsForm(
+                    accountSettingsViewModel,
+                    onClickSave = { form ->
+                        accountSettingsViewModel.saveSettings(
+                            form,
+                            ctx,
+                            siteViewModel = siteViewModel,
+                            account = account
+                        )
+                    },
+                    siteViewModel = siteViewModel,
+                    account = account,
+                    padding = padding
+                )
             }
-        )
-    }
+        }
+    )
 }

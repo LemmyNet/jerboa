@@ -9,12 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkAdd
@@ -30,6 +24,12 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -71,7 +71,6 @@ import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.person.PersonProfileLink
-import com.jerboa.ui.theme.BODY_ELEVATION
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -98,32 +97,32 @@ fun PostHeaderLine(
             Icon(
                 imageVector = Icons.Outlined.PushPin,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted
             )
-            DotSpacer(style = MaterialTheme.typography.body2)
+            DotSpacer(style = MaterialTheme.typography.bodyMedium)
         }
         if (postView.post.locked) {
             Icon(
                 imageVector = Icons.Outlined.CommentsDisabled,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.error
+                tint = MaterialTheme.colorScheme.error
             )
-            DotSpacer(style = MaterialTheme.typography.body2)
+            DotSpacer(style = MaterialTheme.typography.bodyMedium)
         }
         if (postView.post.deleted) {
             Icon(
                 imageVector = Icons.Outlined.Delete,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colors.error
+                tint = MaterialTheme.colorScheme.error
             )
-            DotSpacer(style = MaterialTheme.typography.body2)
+            DotSpacer(style = MaterialTheme.typography.bodyMedium)
         }
         if (showCommunityName) {
             CommunityLink(
                 community = postView.community,
                 onClick = onCommunityClick
             )
-            DotSpacer(style = MaterialTheme.typography.body2)
+            DotSpacer(style = MaterialTheme.typography.bodyMedium)
         }
         PersonProfileLink(
             person = postView.creator,
@@ -134,15 +133,15 @@ fun PostHeaderLine(
             isCommunityBanned = postView.creator_banned_from_community
 
         )
-        DotSpacer(style = MaterialTheme.typography.body2)
+        DotSpacer(style = MaterialTheme.typography.bodyMedium)
         if (!isSameInstance) {
             postView.post.url?.also {
                 Text(
                     text = hostName(it),
-                    color = MaterialTheme.colors.onBackground.muted,
-                    style = MaterialTheme.typography.body2
+                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    style = MaterialTheme.typography.bodyMedium
                 )
-                DotSpacer(style = MaterialTheme.typography.body2)
+                DotSpacer(style = MaterialTheme.typography.bodyMedium)
             }
         }
 
@@ -217,8 +216,8 @@ fun PostTitleAndImageLink(
         // Title of the post
         Text(
             text = postView.post.name,
-            style = MaterialTheme.typography.h6,
-            color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
+            style = MaterialTheme.typography.titleLarge,
+            color = if (postView.read) { MaterialTheme.colorScheme.onBackground.muted } else { MaterialTheme.colorScheme.onSurface },
             modifier = Modifier.padding(bottom = MEDIUM_PADDING, start = LARGE_PADDING, end = LARGE_PADDING)
         )
 
@@ -242,8 +241,8 @@ fun PostTitleAndThumbnail(
         // Title of the post
         Text(
             text = post.name,
-            style = MaterialTheme.typography.h6,
-            color = if (postView.read) { MaterialTheme.colors.onBackground.muted } else { MaterialTheme.colors.onSurface },
+            style = MaterialTheme.typography.titleLarge,
+            color = if (postView.read) { MaterialTheme.colorScheme.onBackground.muted } else { MaterialTheme.colorScheme.onSurface },
             modifier = Modifier.weight(1f).padding(horizontal = LARGE_PADDING)
         )
 
@@ -308,7 +307,6 @@ fun PostBody(
                 modifier = Modifier
                     .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
                     .fillMaxWidth(),
-                elevation = BODY_ELEVATION,
                 content = {
                     if (fullBody) {
                         Column(
@@ -434,9 +432,9 @@ fun PostFooterLine(
             },
             onClick = { onSaveClick(postView) },
             contentColor = if (postView.saved) {
-                MaterialTheme.colors.primary
+                MaterialTheme.colorScheme.primary
             } else {
-                MaterialTheme.colors.onBackground.muted
+                MaterialTheme.colorScheme.onBackground.muted
             },
             account = account
         )
@@ -668,15 +666,13 @@ fun MetadataCard(post: Post) {
         modifier = Modifier
             .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
             .fillMaxWidth(),
-        elevation = BODY_ELEVATION,
         content = {
             Column(
-                modifier = Modifier
-                    .padding(MEDIUM_PADDING)
+                modifier = Modifier.padding(MEDIUM_PADDING)
             ) {
                 Text(
                     text = post.embed_title!!,
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.titleLarge
                 )
                 post.embed_description?.also {
                     Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
@@ -775,7 +771,7 @@ fun PostOptionsDialog(
                 }
             }
         },
-        buttons = {}
+        confirmButton = {}
     )
 }
 

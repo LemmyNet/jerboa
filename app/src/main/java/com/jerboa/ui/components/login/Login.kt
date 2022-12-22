@@ -1,15 +1,17 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
+import androidx.compose.material3.*
+import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -24,7 +26,6 @@ import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
-import com.jerboa.ui.theme.APP_BAR_ELEVATION
 
 @Composable
 fun MyTextField(
@@ -77,12 +78,11 @@ fun PasswordField(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginForm(
+    modifier: Modifier = Modifier,
     loading: Boolean = false,
-    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> },
-    modifier: Modifier = Modifier
+    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> }
 ) {
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
@@ -129,13 +129,14 @@ fun LoginForm(
             ) {
                 instanceOptions.forEach { selectionOption ->
                     DropdownMenuItem(
+                        text = {
+                            Text(text = selectionOption)
+                        },
                         onClick = {
                             instance = selectionOption
                             expanded = false
                         }
-                    ) {
-                        Text(text = selectionOption)
-                    }
+                    )
                 }
             }
         }
@@ -153,10 +154,7 @@ fun LoginForm(
             onClick = { onClickLogin(form, instance) }
         ) {
             if (loading) {
-                CircularProgressIndicator(
-                    color = MaterialTheme
-                        .colors.onSurface
-                )
+                CircularProgressIndicator()
             } else {
                 Text("Login")
             }
@@ -175,18 +173,12 @@ fun LoginHeader(
     navController: NavController = rememberNavController(),
     accounts: List<Account>? = null
 ) {
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
-
     TopAppBar(
         title = {
             Text(
                 text = "Login"
             )
         },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
-        elevation = APP_BAR_ELEVATION,
         navigationIcon = {
             IconButton(
                 enabled = !accounts.isNullOrEmpty(),

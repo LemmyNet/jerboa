@@ -1,16 +1,31 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
 package com.jerboa.ui.components.post.create
 
 import android.net.Uri
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +41,10 @@ import com.jerboa.db.Account
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
-import com.jerboa.ui.theme.*
+import com.jerboa.ui.theme.ICON_SIZE
+import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.ui.theme.THUMBNAIL_SIZE
+import com.jerboa.ui.theme.muted
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 
@@ -37,17 +55,12 @@ fun CreatePostHeader(
     formValid: Boolean,
     loading: Boolean
 ) {
-    val backgroundColor = MaterialTheme.colors.primarySurface
-    val contentColor = contentColorFor(backgroundColor)
     TopAppBar(
         title = {
             Text(
                 text = "Create post"
             )
         },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
-        elevation = APP_BAR_ELEVATION,
         actions = {
             IconButton(
                 enabled = formValid && !loading,
@@ -55,7 +68,7 @@ fun CreatePostHeader(
             ) {
                 if (loading) {
                     CircularProgressIndicator(
-                        color = MaterialTheme.colors.onSurface
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 } else {
                     // Todo add are you sure cancel dialog
@@ -96,7 +109,8 @@ fun CreatePostBody(
     navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit,
     suggestedTitle: String? = null,
-    account: Account?
+    account: Account?,
+    padding: PaddingValues
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -111,7 +125,7 @@ fun CreatePostBody(
 
     Column(
         modifier = Modifier
-            .padding(MEDIUM_PADDING)
+            .padding(padding)
             .fillMaxWidth()
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
@@ -140,8 +154,8 @@ fun CreatePostBody(
         suggestedTitle?.also {
             Text(
                 text = "copy suggested title: $it",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onBackground.muted,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground.muted,
                 modifier = Modifier.clickable { onNameChange(it) }
             )
         }
@@ -216,15 +230,16 @@ fun CreatePostBody(
 fun CreatePostBodyPreview() {
     CreatePostBody(
         name = "",
+        onNameChange = {},
         body = TextFieldValue(""),
+        onBodyChange = {},
         url = "",
+        onUrlChange = {},
+        onPickedImage = {},
         community = sampleCommunitySafe,
         formValid = {},
-        onPickedImage = {},
-        onUrlChange = {},
-        onBodyChange = {},
-        onNameChange = {},
-        account = null
+        account = null,
+        padding = PaddingValues()
     )
 }
 
@@ -233,14 +248,15 @@ fun CreatePostBodyPreview() {
 fun CreatePostBodyPreviewNoCommunity() {
     CreatePostBody(
         name = "",
-        body = TextFieldValue(""),
-        url = "",
-        suggestedTitle = "a title here....",
-        formValid = {},
         onNameChange = {},
+        body = TextFieldValue(""),
         onBodyChange = {},
+        url = "",
         onUrlChange = {},
         onPickedImage = {},
-        account = null
+        formValid = {},
+        suggestedTitle = "a title here....",
+        account = null,
+        padding = PaddingValues()
     )
 }

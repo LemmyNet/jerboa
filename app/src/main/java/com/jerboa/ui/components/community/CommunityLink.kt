@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,8 +32,8 @@ import com.jerboa.ui.theme.SMALL_PADDING
 @Composable
 fun CommunityName(
     community: CommunitySafe,
-    color: Color = MaterialTheme.colors.primary,
-    style: TextStyle = MaterialTheme.typography.body2
+    color: Color = MaterialTheme.colorScheme.primary,
+    style: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
     Text(
         text = communityNameShown(community),
@@ -53,11 +53,11 @@ fun CommunityLink(
     modifier: Modifier = Modifier,
     community: CommunitySafe,
     usersPerMonth: Int? = null,
-    color: Color = MaterialTheme.colors.primary,
+    color: Color = MaterialTheme.colorScheme.primary,
     spacing: Dp = SMALL_PADDING,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
-    style: TextStyle = MaterialTheme.typography.body2,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
     onClick: (community: CommunitySafe) -> Unit
 ) {
     Row(
@@ -77,7 +77,7 @@ fun CommunityLink(
             usersPerMonth?.also {
                 Text(
                     text = "$usersPerMonth users / month",
-                    color = MaterialTheme.colors.onSurface
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -91,8 +91,8 @@ fun CommunityLinkLarger(
 ) {
     CommunityLink(
         community = community,
-        color = MaterialTheme.colors.onSurface,
-        style = MaterialTheme.typography.h6,
+        color = MaterialTheme.colorScheme.onSurface,
+        style = MaterialTheme.typography.titleLarge,
         size = LINK_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
         spacing = DRAWER_ITEM_SPACING,
@@ -111,14 +111,14 @@ fun CommunityLinkLargerWithUserCount(
     CommunityLink(
         community = communityView.community,
         usersPerMonth = communityView.counts.users_active_month,
-        color = MaterialTheme.colors.onSurface,
+        color = MaterialTheme.colorScheme.onSurface,
         size = LINK_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
         spacing = DRAWER_ITEM_SPACING,
         modifier = Modifier
             .padding(LARGE_PADDING)
             .fillMaxWidth(),
-        style = MaterialTheme.typography.h6,
+        style = MaterialTheme.typography.titleLarge,
         onClick = onClick
     )
 }
