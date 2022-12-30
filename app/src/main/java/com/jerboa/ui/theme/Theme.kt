@@ -28,19 +28,14 @@ fun JerboaTheme(
     val android12OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     // Dynamic schemes crash on lower than android 12
-    val dynamicLight = if (android12OrLater) {
-        dynamicLightColorScheme(ctx)
+    val dynamicPair = if (android12OrLater) {
+        Pair(dynamicLightColorScheme(ctx), dynamicDarkColorScheme(ctx))
     } else {
-        pink().first
-    }
-    val dynamicDark = if (android12OrLater) {
-        dynamicDarkColorScheme(ctx)
-    } else {
-        pink().second
+        pink()
     }
 
     val colorPair = when (themeColor) {
-        ThemeColor.Dynamic -> Pair(dynamicLight, dynamicDark)
+        ThemeColor.Dynamic -> dynamicPair
         ThemeColor.Green -> green()
         ThemeColor.Pink -> pink()
     }
