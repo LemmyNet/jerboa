@@ -38,6 +38,18 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
+val DONATION_MARKDOWN = """
+    ### Support Jerboa
+    
+    Jerboa is free, open-source software, meaning no advertising, monetizing, or venture capital, 
+    ever. Your donations directly support full-time development of the project.
+
+    - [Support on Liberapay](https://liberapay.com/Lemmy).
+    - [Support on Patreon](https://www.patreon.com/dessalines).
+    - [Support on OpenCollective](https://opencollective.com/lemmy).
+
+""".trimIndent()
+
 val topSortTypes = listOf(
     SortType.TopDay,
     SortType.TopWeek,
@@ -244,7 +256,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
             AlertDialog(
                 text = {
                     Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
-                        MyMarkdownText(markdown = markdown.value)
+                        MyMarkdownText(markdown = DONATION_MARKDOWN + markdown.value)
                     }
                 },
                 confirmButton = {
