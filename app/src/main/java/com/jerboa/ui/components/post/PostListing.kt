@@ -48,8 +48,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.VoteType
 import com.jerboa.communityNameShown
 import com.jerboa.datatypes.CommunitySafe
@@ -76,7 +74,6 @@ import com.jerboa.ui.components.common.PreviewLines
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
-import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
@@ -90,7 +87,7 @@ import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
 
 @Composable
-fun PostHeaderLineAlt(
+fun PostHeaderLine(
     postView: PostView,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -170,99 +167,13 @@ fun PostHeaderLineAlt(
 
 @Preview
 @Composable
-fun PostHeaderLineAltPreview() {
-    val postView = sampleLinkPostView
-    PostHeaderLineAlt(
-        postView = postView,
-        isModerator = false,
-        onCommunityClick = {},
-        onPersonClick = {}
-    )
-}
-
-@Composable
-fun PostHeaderLine(
-    postView: PostView,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
-    isModerator: Boolean,
-    modifier: Modifier = Modifier,
-    showCommunityName: Boolean = true,
-    account: Account?
-) {
-    FlowRow(
-        crossAxisAlignment = FlowCrossAxisAlignment.Center,
-        modifier = modifier
-    ) {
-        if (postView.post.stickied) {
-            Icon(
-                imageVector = Icons.Outlined.PushPin,
-                contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
-            )
-            DotSpacer(style = MaterialTheme.typography.bodyMedium)
-        }
-        if (postView.post.locked) {
-            Icon(
-                imageVector = Icons.Outlined.CommentsDisabled,
-                contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.error
-            )
-            DotSpacer(style = MaterialTheme.typography.bodyMedium)
-        }
-        if (postView.post.deleted) {
-            Icon(
-                imageVector = Icons.Outlined.Delete,
-                contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.error
-            )
-            DotSpacer(style = MaterialTheme.typography.bodyMedium)
-        }
-        if (showCommunityName) {
-            CommunityLink(
-                community = postView.community,
-                onClick = onCommunityClick
-            )
-            DotSpacer(style = MaterialTheme.typography.bodyMedium)
-        }
-        PersonProfileLink(
-            person = postView.creator,
-            onClick = onPersonClick,
-            showTags = true,
-            isPostCreator = false, // Set this to false, we already know this
-            isModerator = isModerator,
-            isCommunityBanned = postView.creator_banned_from_community
-
-        )
-        DotSpacer(style = MaterialTheme.typography.bodyMedium)
-        if (!isSameInstance(postView.post.url, account?.instance)) {
-            postView.post.url?.also {
-                Text(
-                    text = hostName(it),
-                    color = MaterialTheme.colorScheme.onBackground.muted,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                DotSpacer(style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-
-        TimeAgo(
-            published = postView.post.published,
-            updated = postView.post.updated
-        )
-    }
-}
-
-@Preview
-@Composable
 fun PostHeaderLinePreview() {
-    val postView = samplePostView
+    val postView = sampleLinkPostView
     PostHeaderLine(
         postView = postView,
         isModerator = false,
         onCommunityClick = {},
-        onPersonClick = {},
-        account = null
+        onPersonClick = {}
     )
 }
 
@@ -358,13 +269,16 @@ fun PostTitleAndThumbnail(
                     MaterialTheme.colorScheme.onSurface
                 }
             )
-            postView.post.url?.also {
-                if (!isSameInstance(it, account?.instance)) {
-                    Text(
-                        text = hostName(it),
-                        color = MaterialTheme.colorScheme.onBackground.muted,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+            postView.post.url?.also { postUrl ->
+                if (!isSameInstance(postUrl, account?.instance)) {
+                    val hostName = hostName(postUrl)
+                    hostName?.also {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.onBackground.muted,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
             }
         }
@@ -745,7 +659,7 @@ fun PostListing(
         verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
     ) {
         // Header
-        PostHeaderLineAlt(
+        PostHeaderLine(
             postView = postView,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,

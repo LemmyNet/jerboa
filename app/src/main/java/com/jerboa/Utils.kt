@@ -284,11 +284,11 @@ fun communityNameShown(community: CommunitySafe): String {
     }
 }
 
-fun hostName(url: String): String {
+fun hostName(url: String): String? {
     return try {
         URL(url).host
     } catch (e: java.net.MalformedURLException) {
-        "bad_url"
+        null
     }
 }
 
