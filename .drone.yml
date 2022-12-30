@@ -15,6 +15,6 @@ steps:
 
   - name: build the project
     user: root
-    image: cimg/android:2022.12.1
+    image: cimg/android:2022.12
     commands: 
       - ./gradlew assembleDebug
