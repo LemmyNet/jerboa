@@ -78,7 +78,7 @@ fun PersonProfileLink(
                 Icon(
                     imageVector = Icons.Outlined.Shield,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colorScheme.secondary
+                    tint = MaterialTheme.colorScheme.tertiary
                 )
             }
             if (person.admin) {
