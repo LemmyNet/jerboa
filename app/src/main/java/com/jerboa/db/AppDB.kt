@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 const val DEFAULT_FONT_SIZE = 14
+const val UPDATE_APP_CHANGELOG_UNVIEWED = "UPDATE AppSettings SET viewed_changelog = 0"
 
 @Entity
 data class Account(
@@ -219,12 +220,17 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
 val MIGRATION_5_6 = object : Migration(5, 6) {
     override fun migrate(database: SupportSQLiteDatabase) {
         //  Update changelog viewed
-        database.execSQL("UPDATE AppSettings SET viewed_changelog = 0")
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+    }
+}
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
     }
 }
 
 @Database(
-    version = 6,
+    version = 7,
     entities = [Account::class, AppSettings::class],
     exportSchema = true
 )
@@ -248,7 +254,14 @@ abstract class AppDB : RoomDatabase() {
                     "jerboa"
                 )
                     .allowMainThreadQueries()
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+                    .addMigrations(
+                        MIGRATION_1_2,
+                        MIGRATION_2_3,
+                        MIGRATION_3_4,
+                        MIGRATION_4_5,
+                        MIGRATION_5_6,
+                        MIGRATION_6_7
+                    )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
                         override fun onOpen(db: SupportSQLiteDatabase) {
