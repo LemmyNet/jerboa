@@ -256,7 +256,9 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
             AlertDialog(
                 text = {
                     Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
-                        MyMarkdownText(markdown = DONATION_MARKDOWN + markdown.value)
+                        MyMarkdownText(
+                            markdown = DONATION_MARKDOWN + markdown.value
+                        )
                     }
                 },
                 confirmButton = {

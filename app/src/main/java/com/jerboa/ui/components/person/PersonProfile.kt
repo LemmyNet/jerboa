@@ -84,8 +84,7 @@ fun PersonProfileTopSection(
             CommentsAndPosts(personView)
             personView.person.bio?.also {
                 MyMarkdownText(
-                    markdown = it,
-                    color = MaterialTheme.colorScheme.onBackground.muted
+                    markdown = it
                 )
             }
         }

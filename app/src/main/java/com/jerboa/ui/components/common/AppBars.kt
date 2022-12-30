@@ -406,8 +406,7 @@ fun Sidebar(
                     modifier = Modifier.padding(MEDIUM_PADDING)
                 ) {
                     MyMarkdownText(
-                        markdown = it,
-                        color = MaterialTheme.colorScheme.onBackground.muted
+                        markdown = it
                     )
                 }
             }

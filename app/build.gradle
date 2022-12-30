@@ -74,9 +74,10 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.alorma:compose-settings-ui-m3:0.15.0'
+    implementation 'com.halilibo.compose-richtext:richtext-ui-material3:0.16.0'
+    implementation 'com.halilibo.compose-richtext:richtext-commonmark:0.16.0'
 
-    implementation 'com.github.jeziellago:compose-markdown:0.3.1'
+    implementation 'com.github.alorma:compose-settings-ui-m3:0.15.0'
 
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
 

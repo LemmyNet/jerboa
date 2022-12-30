@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.common
 
@@ -67,14 +67,20 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.halilibo.richtext.markdown.Markdown
+import com.halilibo.richtext.markdown.MarkdownParseOptions
+import com.halilibo.richtext.ui.RichTextStyle
+import com.halilibo.richtext.ui.material3.Material3RichText
+import com.halilibo.richtext.ui.resolveDefaults
+import com.halilibo.richtext.ui.string.RichTextStringStyle
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.openLink
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 
 @Composable
@@ -669,17 +675,40 @@ fun PreviewLines(
 
 @Composable
 fun MyMarkdownText(
-    markdown: String,
-    color: Color = MaterialTheme.colorScheme.onSurface
+    markdown: String
 ) {
-    MarkdownText(
-        markdown = markdown,
+    val richTextStyle = RichTextStyle().resolveDefaults().copy(
+        stringStyle = RichTextStringStyle().copy(
+            linkStyle = MaterialTheme.typography.bodyLarge.toSpanStyle().copy(
+                color = MaterialTheme.colorScheme.primary
+            )
+        )
+    )
+
+    val markdownParseOptions = MarkdownParseOptions.Default
+    val ctx = LocalContext.current
+
+    Material3RichText(
         modifier = Modifier.fillMaxSize(),
-        color = color,
-        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(1.3)
+        style = richTextStyle
+    ) {
+        Markdown(
+            content = markdown,
+            markdownParseOptions = markdownParseOptions,
+            onLinkClicked = {
+                openLink(it, ctx)
+            }
+        )
+    }
+
+//    MarkdownText(
+//        markdown = markdown,
+//        modifier = Modifier.fillMaxSize(),
+//        color = color,
+//        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(1.3)
 //        style = MaterialTheme.typography.titleLarge,
 //        imageLoader =  LocalImageLoader.current
-    )
+//    )
 }
 
 fun String.insert(index: Int, string: String): String {

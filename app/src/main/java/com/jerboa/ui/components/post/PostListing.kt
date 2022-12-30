@@ -721,7 +721,9 @@ fun MetadataCard(post: Post) {
                 post.embed_description?.also {
                     Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
                     // This is actually html, but markdown can render it
-                    MyMarkdownText(markdown = it)
+                    MyMarkdownText(
+                        markdown = it
+                    )
                 }
             }
         }
