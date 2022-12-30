@@ -10,7 +10,7 @@ steps:
 
   - name: check formatting
     user: root
-    image: circleci/android:api-30-node
+    image: cimg/android:2022.12.1
     commands:
       - ./gradlew lintKotlin
 
