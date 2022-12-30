@@ -1,5 +1,6 @@
 package com.jerboa.ui.theme
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -24,11 +25,17 @@ fun JerboaTheme(
     val fontSize = (appSettings?.fontSize ?: DEFAULT_FONT_SIZE).sp
 
     val ctx = LocalContext.current
-    val dynamicLight = dynamicLightColorScheme(ctx)
-    val dynamicDark = dynamicDarkColorScheme(ctx)
+    val android12OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+    // Dynamic schemes crash on lower than android 12
+    val dynamicPair = if (android12OrLater) {
+        Pair(dynamicLightColorScheme(ctx), dynamicDarkColorScheme(ctx))
+    } else {
+        pink()
+    }
 
     val colorPair = when (themeColor) {
-        ThemeColor.Dynamic -> Pair(dynamicLight, dynamicDark)
+        ThemeColor.Dynamic -> dynamicPair
         ThemeColor.Green -> green()
         ThemeColor.Pink -> pink()
     }
