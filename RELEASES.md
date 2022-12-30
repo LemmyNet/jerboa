@@ -1,3 +1,13 @@
+# Jerboa v0.0.23-alpha Release (2022-12-29)
+
+## What's Changed
+
+- Fix material 3 crash on android 11 and below devices. Fixes #264 by @dessalines in https://github.com/dessalines/jerboa/pull/268
+- Add donation link by @dessalines in https://github.com/dessalines/jerboa/pull/269
+- Fix bad_url for torrent magnet links. Fixes #270 by @dessalines in https://github.com/dessalines/jerboa/pull/271
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.22...0.0.23
+
 # Jerboa v0.0.22-alpha Release (2022-12-22)
 
 ## What's Changed
@@ -8,7 +18,7 @@
 - Better post listing header layout.
 - Various UI improvements.
 
-- **Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.21...0.0.22
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.21...0.0.22
 
 # Jerboa v0.0.21-alpha Release (2022-12-21)
 
