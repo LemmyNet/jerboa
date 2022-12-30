@@ -9,13 +9,12 @@ platform:
 steps:
 
   - name: check formatting
-    user: root
-    image: cimg/android:2022.12.1
+    image: gradle:jdk17-alpine
     commands:
       - ./gradlew lintKotlin
 
   - name: build the project
     user: root
-    image: circleci/android:api-30-node
+    image: cimg/android:2022.12
     commands: 
       - ./gradlew assembleDebug
