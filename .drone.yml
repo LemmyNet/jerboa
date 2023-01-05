@@ -15,6 +15,7 @@ steps:
 
   - name: build the project
     user: root
-    image: cimg/android:2022.12
+    # image: cimg/android:2022.12
+    image: gradle:jdk17-alpine
     commands: 
       - ./gradlew assembleDebug
