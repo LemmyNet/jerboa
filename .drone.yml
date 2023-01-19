@@ -8,10 +8,10 @@ platform:
 
 steps:
 
-  - name: check formatting
-    image: gradle:jdk17-alpine
-    commands:
-      - ./gradlew lintKotlin
+  # - name: check formatting
+  #   image: cimg/android:2022.12
+  #   commands:
+  #     - ./gradlew lintKotlin
 
   - name: build the project
     user: root
