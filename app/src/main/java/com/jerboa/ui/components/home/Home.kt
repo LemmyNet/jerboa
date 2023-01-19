@@ -417,7 +417,7 @@ fun HomeHeaderTitle(
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleSmall
         )
     }
 }

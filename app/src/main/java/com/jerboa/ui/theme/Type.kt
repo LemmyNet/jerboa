@@ -3,24 +3,32 @@ package com.jerboa.ui.theme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.unit.TextUnit
 
+const val FONT_LARGE_MULTIPLIER = 1.3
+const val FONT_SMALL_MULTIPLIER = 0.8
+const val MARKDOWN_FONT_MULTIPLIER = 1.2
+
 // Set of Material typography styles to start with
 fun generateTypography(baseFontSize: TextUnit): Typography {
     return Typography(
         bodyLarge = Typography().bodyLarge.copy(
             fontSize = baseFontSize,
-            lineHeight = baseFontSize.times(1.3)
+            lineHeight = baseFontSize.times(FONT_LARGE_MULTIPLIER)
         ),
         bodyMedium = Typography().bodyMedium.copy(
-            fontSize = baseFontSize.times(.8),
-            lineHeight = baseFontSize.times(.8 * 1.3)
+            fontSize = baseFontSize.times(FONT_SMALL_MULTIPLIER),
+            lineHeight = baseFontSize.times(FONT_SMALL_MULTIPLIER * FONT_LARGE_MULTIPLIER)
         ),
         titleMedium = Typography().titleMedium.copy(
             fontSize = baseFontSize,
-            lineHeight = baseFontSize.times(1.3)
+            lineHeight = baseFontSize.times(FONT_LARGE_MULTIPLIER)
         ),
         titleLarge = Typography().titleLarge.copy(
-            fontSize = baseFontSize.times(1.3),
-            lineHeight = baseFontSize.times(1.3 * 1.3)
+            fontSize = baseFontSize,
+            lineHeight = baseFontSize.times(FONT_LARGE_MULTIPLIER)
+        ),
+        titleSmall = Typography().titleSmall.copy(
+            fontSize = baseFontSize.times(FONT_SMALL_MULTIPLIER),
+            lineHeight = baseFontSize.times(FONT_LARGE_MULTIPLIER)
         )
     )
 }

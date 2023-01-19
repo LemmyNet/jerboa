@@ -13,6 +13,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -78,18 +82,29 @@ fun BottomAppBarAll(
 ) {
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
-    BottomAppBar {
+    BottomAppBar(
+        tonalElevation = 0.dp,
+        modifier = Modifier.height(52.dp)
+    ) {
         NavigationBarItem(
             icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Home,
-                    contentDescription = "TODO"
-                )
+                if (screen == "home") {
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = "TODO"
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.Home,
+                        contentDescription = "TODO"
+                    )
+                }
             },
+            selected = false,
             onClick = {
                 navController.navigate("home")
-            },
-            selected = screen == "home"
+            }
         )
 
         NavigationBarItem(
@@ -106,38 +121,61 @@ fun BottomAppBarAll(
         )
         NavigationBarItem(
             icon = {
-                InboxIconAndBadge(
-                    iconBadgeCount = totalUnreads,
-                    icon = Icons.Outlined.Email,
-                    tint = LocalContentColor.current
-                )
+                if (screen == "inbox") {
+                    InboxIconAndBadge(
+                        iconBadgeCount = totalUnreads,
+                        icon = Icons.Filled.Email,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    InboxIconAndBadge(
+                        iconBadgeCount = totalUnreads,
+                        icon = Icons.Outlined.Email
+                    )
+                }
             },
             onClick = {
                 onClickInbox()
             },
-            selected = screen == "inbox"
+            selected = false
         )
         NavigationBarItem(
             icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Bookmarks,
-                    contentDescription = "TODO"
-                )
+                if (screen == "saved") {
+                    Icon(
+                        imageVector = Icons.Filled.Bookmarks,
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = "TODO"
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.Bookmarks,
+                        contentDescription = "TODO"
+                    )
+                }
             },
             onClick = {
                 onClickSaved()
             },
-            selected = screen == "saved"
+            selected = false
         )
         NavigationBarItem(
             icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Person,
-                    contentDescription = "TODO"
-                )
+                if (screen == "profile") {
+                    Icon(
+                        imageVector = Icons.Filled.Person,
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = "TODO"
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.Person,
+                        contentDescription = "TODO"
+                    )
+                }
             },
             onClick = onClickProfile,
-            selected = screen == "profile"
+            selected = false
         )
     }
 }
@@ -297,8 +335,8 @@ fun scoreColor(myVote: Int?): Color {
 fun InboxIconAndBadge(
     iconBadgeCount: Int?,
     icon: ImageVector,
-    tint: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tint: Color = LocalContentColor.current
 ) {
     if (iconBadgeCount !== null && iconBadgeCount > 0) {
         BadgedBox(

@@ -71,6 +71,7 @@ import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.theme.MARKDOWN_FONT_MULTIPLIER
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
@@ -661,6 +662,7 @@ fun PreviewLines(
 ) {
     Text(
         text = text,
+        style = MaterialTheme.typography.bodySmall,
         maxLines = 5,
         overflow = TextOverflow.Ellipsis,
         modifier = modifier
@@ -676,7 +678,7 @@ fun MyMarkdownText(
         markdown = markdown,
         modifier = Modifier.fillMaxSize(),
         color = color,
-        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(1.3)
+        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(MARKDOWN_FONT_MULTIPLIER)
 //        style = MaterialTheme.typography.titleLarge,
 //        imageLoader =  LocalImageLoader.current
     )
