@@ -17,4 +17,5 @@ steps:
     user: root
     image: cimg/android:2022.12
     commands: 
+      - export JAVA_HOME='/usr/lib/jvm/java-17-openjdk-amd64'
       - ./gradlew assembleDebug
