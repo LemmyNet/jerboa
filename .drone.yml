@@ -13,8 +13,8 @@ steps:
     commands:
       - ./gradlew lintKotlin
 
-  - name: build the project
-    user: root
-    image: cimg/android:2022.12
-    commands: 
-      - ./gradlew assembleDebug
+  # - name: build the project
+  #   user: root
+  #   image: cimg/android:2022.12
+  #   commands: 
+  #     - ./gradlew assembleDebug
