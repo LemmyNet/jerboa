@@ -81,7 +81,7 @@ fun SettingsForm(
     var email by rememberSaveable { mutableStateOf(luv?.local_user?.email.orEmpty()) }
     var matrixUserId by rememberSaveable { mutableStateOf(luv?.person?.matrix_user_id.orEmpty()) }
     val theme by rememberSaveable { mutableStateOf(luv?.local_user?.theme.orEmpty()) }
-    val lang by rememberSaveable { mutableStateOf(luv?.local_user?.lang.orEmpty()) }
+    val interfaceLang by rememberSaveable { mutableStateOf(luv?.local_user?.interface_language.orEmpty()) }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
     var defaultSortType by rememberSaveable { mutableStateOf(luv?.local_user?.default_sort_type) }
@@ -102,7 +102,7 @@ fun SettingsForm(
         avatar = avatar,
         banner = banner,
         matrix_user_id = matrixUserId,
-        lang = lang,
+        interface_language = interfaceLang,
         bot_account = botAccount,
         default_sort_type = defaultSortType,
         send_notifications_to_email = sendNotificationsToEmail,
@@ -113,7 +113,8 @@ fun SettingsForm(
         show_new_post_notifs = showNewPostNotifs,
         show_read_posts = showReadPosts,
         theme = theme,
-        show_scores = showScores
+        show_scores = showScores,
+        discussion_languages = null
     )
     Column(
         modifier = Modifier

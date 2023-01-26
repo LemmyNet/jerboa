@@ -128,12 +128,20 @@ fun PostHeaderLine(
                             isModerator = isModerator,
                             isCommunityBanned = postView.creator_banned_from_community
                         )
-                        if (postView.post.stickied) {
+                        if (postView.post.featured_local) {
                             DotSpacer(style = MaterialTheme.typography.bodyMedium)
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
                                 contentDescription = "TODO",
-                                tint = MaterialTheme.colorScheme.onBackground.muted
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        if (postView.post.featured_community) {
+                            DotSpacer(style = MaterialTheme.typography.bodyMedium)
+                            Icon(
+                                imageVector = Icons.Outlined.PushPin,
+                                contentDescription = "TODO",
+                                tint = MaterialTheme.colorScheme.secondary
                             )
                         }
                         if (postView.post.locked) {

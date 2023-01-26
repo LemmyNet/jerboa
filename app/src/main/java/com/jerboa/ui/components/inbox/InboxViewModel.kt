@@ -9,24 +9,23 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.api.API
-import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommentReplyView
+import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PrivateMessageView
-import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.CreatePrivateMessage
 import com.jerboa.datatypes.api.MarkAllAsRead
 import com.jerboa.db.Account
 import com.jerboa.toastException
 import com.jerboa.ui.components.comment.createPrivateMessageRoutine
-import com.jerboa.ui.components.comment.deleteCommentRoutine
 import com.jerboa.ui.components.comment.fetchPersonMentionsRoutine
 import com.jerboa.ui.components.comment.fetchRepliesRoutine
-import com.jerboa.ui.components.comment.likeCommentRoutine
-import com.jerboa.ui.components.comment.markCommentAsReadRoutine
+import com.jerboa.ui.components.comment.likeCommentReplyRoutine
+import com.jerboa.ui.components.comment.markCommentReplyAsReadRoutine
 import com.jerboa.ui.components.comment.markPersonMentionAsReadRoutine
-import com.jerboa.ui.components.comment.saveCommentRoutine
+import com.jerboa.ui.components.comment.saveCommentReplyRoutine
 import com.jerboa.ui.components.community.blockCommunityRoutine
 import com.jerboa.ui.components.person.blockPersonRoutine
 import com.jerboa.ui.components.person.fetchPrivateMessagesRoutine
@@ -35,7 +34,7 @@ import kotlinx.coroutines.launch
 
 class InboxViewModel : ViewModel() {
 
-    var replies = mutableStateListOf<CommentView>()
+    var replies = mutableStateListOf<CommentReplyView>()
         private set
     var mentions = mutableStateListOf<PersonMentionView>()
         private set
@@ -43,7 +42,7 @@ class InboxViewModel : ViewModel() {
         private set
     var page = mutableStateOf(1)
         private set
-    var sortType = mutableStateOf(SortType.Active)
+    var sortType = mutableStateOf(CommentSortType.New)
         private set
     var unreadOnly = mutableStateOf(true)
         private set
@@ -57,7 +56,7 @@ class InboxViewModel : ViewModel() {
         account: Account,
         nextPage: Boolean = false,
         clear: Boolean = false,
-        changeSortType: SortType? = null,
+        changeSortType: CommentSortType? = null,
         changeUnreadOnly: Boolean? = null,
         ctx: Context
     ) {
@@ -81,7 +80,7 @@ class InboxViewModel : ViewModel() {
         account: Account,
         nextPage: Boolean = false,
         clear: Boolean = false,
-        changeSortType: SortType? = null,
+        changeSortType: CommentSortType? = null,
         changeUnreadOnly: Boolean? = null,
         ctx: Context
     ) {
@@ -122,45 +121,30 @@ class InboxViewModel : ViewModel() {
         )
     }
 
-    fun likeComment(
-        commentView: CommentView,
+    fun likeCommentReply(
+        commentReplyView: CommentReplyView,
         voteType: VoteType,
         account: Account,
         ctx: Context
     ) {
-        likeCommentRoutine(
-            commentView = mutableStateOf(commentView),
+        likeCommentReplyRoutine(
+            commentReplyView = commentReplyView,
+            replies = replies,
             voteType = voteType,
-            // TODO find a way to get this to set the mention likes too
-            comments = replies,
             account = account,
             ctx = ctx,
             scope = viewModelScope
         )
     }
 
-    fun deleteComment(
-        commentView: CommentView,
+    fun saveCommentReply(
+        commentReplyView: CommentReplyView,
         account: Account,
         ctx: Context
     ) {
-        deleteCommentRoutine(
-            commentView = mutableStateOf(commentView),
-            comments = replies,
-            account = account,
-            ctx = ctx,
-            scope = viewModelScope
-        )
-    }
-
-    fun saveComment(
-        commentView: CommentView,
-        account: Account,
-        ctx: Context
-    ) {
-        saveCommentRoutine(
-            commentView = mutableStateOf(commentView),
-            comments = replies,
+        saveCommentReplyRoutine(
+            commentReplyView = commentReplyView,
+            replies = replies,
             account = account,
             ctx = ctx,
             scope = viewModelScope
@@ -168,13 +152,13 @@ class InboxViewModel : ViewModel() {
     }
 
     fun markReplyAsRead(
-        commentView: CommentView,
+        commentReplyView: CommentReplyView,
         account: Account,
         ctx: Context
     ) {
-        markCommentAsReadRoutine(
-            commentView = mutableStateOf(commentView),
-            comments = replies,
+        markCommentReplyAsReadRoutine(
+            commentReplyView = commentReplyView,
+            replies = replies,
             account = account,
             ctx = ctx,
             scope = viewModelScope
@@ -274,15 +258,15 @@ class InboxViewModel : ViewModel() {
             } else {
                 for (i in replies.indices) {
                     val commentView = replies[i]
-                    val updatedComment = commentView.comment.copy(read = true)
-                    val updatedCv = commentView.copy(comment = updatedComment)
-                    replies[i] = updatedCv
+                    val updatedReply = commentView.comment_reply.copy(read = true)
+                    val updatedReplyView = commentView.copy(comment_reply = updatedReply)
+                    replies[i] = updatedReplyView
                 }
                 for (i in mentions.indices) {
                     val pmv = mentions[i]
-                    val updatedComment = pmv.comment.copy(read = true)
-                    val updatedPmv = pmv.copy(comment = updatedComment)
-                    mentions[i] = updatedPmv
+                    val updatedMention = pmv.person_mention.copy(read = true)
+                    val updatedMentionView = pmv.copy(person_mention = updatedMention)
+                    mentions[i] = updatedMentionView
                 }
                 for (i in messages.indices) {
                     val pmv = messages[i]

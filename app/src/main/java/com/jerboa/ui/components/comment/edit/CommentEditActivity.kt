@@ -13,7 +13,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 
@@ -24,8 +23,7 @@ fun CommentEditActivity(
     navController: NavController,
     commentEditViewModel: CommentEditViewModel,
     personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
-    inboxViewModel: InboxViewModel
+    postViewModel: PostViewModel
 ) {
     Log.d("jerboa", "got to comment edit activity")
 
@@ -51,8 +49,7 @@ fun CommentEditActivity(
                                 focusManager = focusManager,
                                 account = acct,
                                 personProfileViewModel = personProfileViewModel,
-                                postViewModel = postViewModel,
-                                inboxViewModel = inboxViewModel
+                                postViewModel = postViewModel
                             )
                         }
                     }

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.inbox
 
 import android.content.Context
@@ -15,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import arrow.core.Either
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -24,9 +21,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
-import com.jerboa.ui.components.comment.CommentNodes
-import com.jerboa.ui.components.comment.edit.CommentEditViewModel
+import com.jerboa.ui.components.comment.CommentReplyNode
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -35,13 +32,13 @@ import com.jerboa.ui.components.privatemessage.PrivateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxActivity(
     navController: NavController,
     inboxViewModel: InboxViewModel,
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
-    commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel
 ) {
     Log.d("jerboa", "got to inbox activity")
@@ -99,7 +96,6 @@ fun InboxActivity(
             InboxTabs(
                 padding = it,
                 navController = navController,
-                commentEditViewModel = commentEditViewModel,
                 commentReplyViewModel = commentReplyViewModel,
                 inboxViewModel = inboxViewModel,
                 homeViewModel = homeViewModel,
@@ -153,7 +149,6 @@ fun InboxTabs(
     ctx: Context,
     account: Account?,
     scope: CoroutineScope,
-    commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     padding: PaddingValues
 ) {
@@ -198,8 +193,6 @@ fun InboxTabs(
         ) { tabIndex ->
             when (tabIndex) {
                 InboxTab.Replies.ordinal -> {
-                    val nodes = commentsToFlatNodes(inboxViewModel.replies)
-
                     val listState = rememberLazyListState()
                     val loading = inboxViewModel.loading.value &&
                         inboxViewModel.page.value == 1 &&
@@ -239,93 +232,91 @@ fun InboxTabs(
                             }
                         }
                     ) {
-                        CommentNodes(
-                            nodes = nodes,
-                            listState = listState,
-                            onUpvoteClick = { commentView ->
-                                account?.also { acct ->
-                                    inboxViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Upvote,
-                                        account = acct,
-                                        ctx = ctx
-                                    )
-                                }
-                            },
-                            onDownvoteClick = { commentView ->
-                                account?.also { acct ->
-                                    inboxViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Downvote,
-                                        account = acct,
-                                        ctx = ctx
-                                    )
-                                }
-                            },
-                            onReplyClick = { commentView ->
-                                commentReplyViewModel.initialize(
-                                    Either.Left(commentView)
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier.fillMaxSize()
+                                .simpleVerticalScrollbar(listState)
+                        ) {
+                            items(
+                                inboxViewModel.replies,
+                                key = { reply -> reply.comment_reply.id }
+                            ) { crv ->
+                                CommentReplyNode(
+                                    commentReplyView = crv,
+                                    onUpvoteClick = { commentReplyView ->
+                                        account?.also { acct ->
+                                            inboxViewModel.likeCommentReply(
+                                                commentReplyView = commentReplyView,
+                                                voteType = VoteType.Upvote,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                        }
+                                    },
+                                    onDownvoteClick = { commentView ->
+                                        account?.also { acct ->
+                                            inboxViewModel.likeCommentReply(
+                                                commentReplyView = commentView,
+                                                voteType = VoteType.Downvote,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                        }
+                                    },
+                                    onReplyClick = { commentReplyView ->
+                                        commentReplyViewModel.initialize(
+                                            ReplyItem
+                                                .CommentReplyItem(commentReplyView)
+                                        )
+                                        navController.navigate("commentReply")
+                                    },
+                                    onSaveClick = { commentReplyView ->
+                                        account?.also { acct ->
+                                            inboxViewModel.saveCommentReply(
+                                                commentReplyView = commentReplyView,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                        }
+                                    },
+                                    onMarkAsReadClick = { commentReplyView ->
+                                        account?.also { acct ->
+                                            inboxViewModel.markReplyAsRead(
+                                                commentReplyView = commentReplyView,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                            homeViewModel.updateUnreads(commentReplyView)
+                                        }
+                                    },
+                                    onReportClick = { commentView ->
+                                        navController.navigate("commentReport/${commentView.comment.id}")
+                                    },
+                                    onCommentLinkClick = { commentView ->
+                                        navController.navigate("comment/${commentView.comment.id}")
+                                    },
+                                    onPersonClick = { personId ->
+                                        navController.navigate(route = "profile/$personId")
+                                    },
+                                    onCommunityClick = { community ->
+                                        navController.navigate(route = "community/${community.id}")
+                                    },
+                                    onBlockCreatorClick = {
+                                        account?.also { acct ->
+                                            inboxViewModel.blockCreator(
+                                                creator = it,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                        }
+                                    },
+                                    onPostClick = { postId ->
+                                        navController.navigate(route = "post/$postId")
+                                    },
+                                    account = account
                                 )
-                                navController.navigate("commentReply")
-                            },
-                            onSaveClick = { commentView ->
-                                account?.also { acct ->
-                                    inboxViewModel.saveComment(
-                                        commentView = commentView,
-                                        account = acct,
-                                        ctx = ctx
-                                    )
-                                }
-                            },
-                            onMarkAsReadClick = { commentView ->
-                                account?.also { acct ->
-                                    inboxViewModel.markReplyAsRead(
-                                        commentView = commentView,
-                                        account = acct,
-                                        ctx = ctx
-                                    )
-                                    homeViewModel.updateUnreads(commentView)
-                                }
-                            },
-                            onEditCommentClick = { commentView ->
-                                commentEditViewModel.initialize(commentView)
-                                navController.navigate("commentEdit")
-                            },
-                            onDeleteCommentClick = { commentView ->
-                                account?.also { acct ->
-                                    inboxViewModel.deleteComment(
-                                        commentView = commentView,
-                                        account = acct,
-                                        ctx = ctx
-                                    )
-                                }
-                            },
-                            onReportClick = { commentView ->
-                                navController.navigate("commentReport/${commentView.comment.id}")
-                            },
-                            onPersonClick = { personId ->
-                                navController.navigate(route = "profile/$personId")
-                            },
-                            onCommunityClick = { community ->
-                                navController.navigate(route = "community/${community.id}")
-                            },
-                            onBlockCreatorClick = {
-                                account?.also { acct ->
-                                    inboxViewModel.blockCreator(
-                                        creator = it,
-                                        account = acct,
-                                        ctx = ctx
-                                    )
-                                }
-                            },
-                            onPostClick = { postId ->
-                                navController.navigate(route = "post/$postId")
-                            },
-                            account = account,
-                            moderators = listOf(),
-                            showPostAndCommunityContext = true,
-                            showRead = true
-                        )
+                            }
+                        }
                     }
                 }
 

@@ -124,65 +124,124 @@ data class CommentNodeData(
     val commentView: CommentView,
     // Must use a SnapshotStateList and not a MutableList here, otherwise changes in the tree children won't trigger a UI update
     val children: SnapshotStateList<CommentNodeData>?,
-    var depth: Int?
+    var depth: Int
 )
 
 fun commentsToFlatNodes(
     comments: List<CommentView>
 ): List<CommentNodeData> {
-    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = null) }
+    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }
 }
 
 fun buildCommentsTree(
     comments: List<CommentView>?,
-    sortType: SortType
+    parentComment: Boolean
 ): List<CommentNodeData> {
     val map = LinkedHashMap<Number, CommentNodeData>()
+    val firstComment = comments?.firstOrNull()?.comment
+
+    val depthOffset = if (!parentComment) { 0 } else {
+        getDepthFromComment(firstComment) ?: 0
+    }
+
     comments?.forEach { cv ->
+        val depth = getDepthFromComment(cv.comment)?.minus(depthOffset) ?: 0
         val node = CommentNodeData(
             commentView = cv,
             children = mutableStateListOf(),
-            depth = null
+            depth
         )
         map[cv.comment.id] = node
     }
 
     val tree = mutableListOf<CommentNodeData>()
+
     comments?.forEach { cv ->
         val child = map[cv.comment.id]
-        child?.also { cChild ->
-            val parentId = cv.comment.parent_id
-            parentId?.also { cParentId ->
+        child?.let { cChild ->
+            val parentId = getCommentParentId(cv.comment)
+            parentId?.let { cParentId ->
                 val parent = map[cParentId]
 
                 // Necessary because blocked comment might not exist
-                parent?.also { cParent ->
+                parent?.let { cParent ->
                     cParent.children?.add(cChild)
                 }
             } ?: run {
                 tree.add(cChild)
             }
-            setDepth(cChild)
         }
     }
-
-    sortNodes(tree, sortType)
 
     return tree
 }
 
-fun setDepth(node: CommentNodeData, i: Int = 0) {
-    node.children?.forEach { child ->
-        child.depth = i
-        setDepth(child, i + 1)
+fun insertCommentIntoTree(
+    commentTree: MutableList<CommentNodeData>,
+    cv: CommentView,
+    parentComment: Boolean
+) {
+    val nodeData = CommentNodeData(
+        commentView = cv,
+        children = null,
+        depth = 0
+    )
+    val parentId = getCommentParentId(cv.comment)
+    parentId?.also { cParentId ->
+        val foundIndex = commentTree.indexOfFirst {
+            it.commentView.comment.id == cParentId
+        }
+
+        if (foundIndex != -1) {
+            val parent = commentTree[foundIndex]
+            nodeData.depth = parent.depth.plus(1)
+
+            parent.children?.also { children ->
+                children.add(0, nodeData)
+            } ?: run {
+                commentTree[foundIndex] = parent.copy(children = mutableStateListOf(nodeData))
+            }
+        } else {
+            commentTree.forEach { node ->
+                node.children?.also { children ->
+                    insertCommentIntoTree(children, cv, parentComment)
+                }
+            }
+        }
+    } ?: run {
+        if (!parentComment) {
+            commentTree.add(0, nodeData)
+        }
     }
 }
 
-fun calculateCommentOffset(depth: Int?, multiplier: Int): Dp {
-    return if (depth == null) {
+fun findAndUpdateCommentInTree(
+    commentTree: SnapshotStateList<CommentNodeData>,
+    cv: CommentView?
+) {
+    cv?.also {
+        val foundIndex = commentTree.indexOfFirst {
+            it.commentView.comment.id == cv.comment.id
+        }
+
+        if (foundIndex != -1) {
+            val updatedComment = commentTree[foundIndex].copy(commentView = cv)
+            commentTree[foundIndex] = updatedComment
+        } else {
+            commentTree.forEach { node ->
+                node.children?.also { children ->
+                    findAndUpdateCommentInTree(children, cv)
+                }
+            }
+        }
+    }
+}
+
+fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
+    return if (depth == 0) {
         0.dp
     } else {
-        ((depth * multiplier).dp) + SMALL_PADDING
+        ((depth.minus(1) * multiplier).dp) + SMALL_PADDING
     }
 }
 
@@ -424,27 +483,6 @@ private fun DrawScope.drawEndBorder(
     )
 }
 
-fun sortNodes(nodes: MutableList<CommentNodeData>, sortType: SortType) {
-    when (sortType) {
-        SortType.Hot -> nodes.sortByDescending {
-            hotRank(
-                it.commentView.counts.score,
-                it.commentView.comment.published
-            )
-        }
-        else -> {}
-    }
-
-    nodes.sortBy { it.commentView.comment.deleted || it.commentView.comment.removed }
-
-    // Go through the children recursively
-    nodes.forEach { node ->
-        node.children?.also {
-            sortNodes(it, sortType)
-        }
-    }
-}
-
 fun hotRank(score: Int, dateStr: String): Double {
     // Rank = ScaleFactor * sign(Score) * log(1 + abs(Score)) / (Time + 2)^Gravity
     val date = Date.from(Instant.parse(dateStr + "Z"))
@@ -652,4 +690,18 @@ fun Modifier.pagerTabIndicatorOffset2(
 
 fun isSameInstance(url: String?, instance: String?): Boolean {
     return url?.let { hostName(it) } == instance
+}
+
+fun getCommentParentId(comment: Comment?): Int? {
+    val split = comment?.path?.split(".")?.toMutableList()
+    // remove the 0
+    split?.removeFirst()
+    return if (split !== null && split.size > 1) {
+        split[split.size - 2].toInt()
+    } else {
+        null
+    }
+}
+fun getDepthFromComment(comment: Comment?): Int? {
+    return comment?.path?.split(".")?.size?.minus(2)
 }

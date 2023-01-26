@@ -59,7 +59,7 @@ class CommunityViewModel : ViewModel() {
             loading = loading,
             page = page,
             communityIdOrName = communityIdOrName,
-            listingType = mutableStateOf(ListingType.Community),
+            listingType = mutableStateOf(ListingType.All),
             sortType = sortType,
             nextPage = nextPage,
             clear = clear,

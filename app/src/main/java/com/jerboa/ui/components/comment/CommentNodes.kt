@@ -16,6 +16,7 @@ import com.jerboa.db.Account
 @Composable
 fun CommentNodes(
     nodes: List<CommentNodeData>,
+    isFlat: Boolean,
     listState: LazyListState,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
@@ -25,14 +26,15 @@ fun CommentNodes(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
+    onCommentLinkClick: (commentView: CommentView) -> Unit,
+    onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
-    showPostAndCommunityContext: Boolean = false,
-    showRead: Boolean = false
+    showPostAndCommunityContext: Boolean = false
 ) {
     // Holds the un-expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
@@ -40,6 +42,7 @@ fun CommentNodes(
     LazyColumn(state = listState) {
         commentNodeItems(
             nodes = nodes,
+            isFlat = isFlat,
             isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
             toggleExpanded = { commentId ->
                 if (unExpandedComments.contains(commentId)) {
@@ -61,15 +64,17 @@ fun CommentNodes(
             onEditCommentClick = onEditCommentClick,
             onDeleteCommentClick = onDeleteCommentClick,
             onReportClick = onReportClick,
+            onCommentLinkClick = onCommentLinkClick,
+            onFetchChildrenClick = onFetchChildrenClick,
             onBlockCreatorClick = onBlockCreatorClick,
-            showPostAndCommunityContext = showPostAndCommunityContext,
-            showRead = showRead
+            showPostAndCommunityContext = showPostAndCommunityContext
         )
     }
 }
 
 fun LazyListScope.commentNodeItems(
     nodes: List<CommentNodeData>,
+    isFlat: Boolean,
     isExpanded: (commentId: Int) -> Boolean,
     toggleExpanded: (commentId: Int) -> Unit,
     onUpvoteClick: (commentView: CommentView) -> Unit,
@@ -80,18 +85,20 @@ fun LazyListScope.commentNodeItems(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
+    onCommentLinkClick: (commentView: CommentView) -> Unit,
+    onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
-    showPostAndCommunityContext: Boolean = false,
-    showRead: Boolean = false
+    showPostAndCommunityContext: Boolean = false
 ) {
     nodes.forEach { node ->
         commentNodeItem(
             node = node,
+            isFlat = isFlat,
             isExpanded = isExpanded,
             toggleExpanded = toggleExpanded,
             onUpvoteClick = onUpvoteClick,
@@ -107,9 +114,10 @@ fun LazyListScope.commentNodeItems(
             onEditCommentClick = onEditCommentClick,
             onDeleteCommentClick = onDeleteCommentClick,
             onReportClick = onReportClick,
+            onCommentLinkClick = onCommentLinkClick,
+            onFetchChildrenClick = onFetchChildrenClick,
             onBlockCreatorClick = onBlockCreatorClick,
-            showPostAndCommunityContext = showPostAndCommunityContext,
-            showRead = showRead
+            showPostAndCommunityContext = showPostAndCommunityContext
         )
     }
 }

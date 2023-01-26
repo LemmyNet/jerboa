@@ -1,13 +1,15 @@
 package com.jerboa.datatypes.api
 
 import com.jerboa.datatypes.CommentReportView
+import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
 
 data class CreateComment(
     val content: String,
-    val parent_id: Int?,
+    val parent_id: Int? = null,
+    val language_id: Int? = null,
     val post_id: Int,
     /**
      * An optional front end ID, to tell which is comment is coming back.
@@ -17,8 +19,13 @@ data class CreateComment(
 )
 
 data class EditComment(
-    val content: String,
     val comment_id: Int,
+    val content: String?,
+    /**
+     * "Distinguishes" a comment, or speak officially. Only doable by community mods or admins.
+     */
+    val distinguished: Boolean? = null,
+    val language_id: Int? = null,
     /**
      * An optional front end ID, to tell which is comment is coming back.
      */
@@ -43,15 +50,6 @@ data class RemoveComment(
     val removed: Boolean,
     val reason: String,
     val auth: String?
-)
-
-/**
- * Only the recipient can do this.
- */
-data class MarkCommentAsRead(
-    val comment_id: Int,
-    val read: Boolean,
-    val auth: String
 )
 
 data class SaveComment(
@@ -85,16 +83,19 @@ data class GetComments(
     /**
      * The [ListingType].
      */
-    val type_: String,
+    val type_: ListingType? = null,
     /**
      * The [SortType].
      */
-    val sort: String,
-    val page: Int?,
-    val limit: Int?,
-    val community_id: Int?,
-    val community_name: String?,
-    val saved_only: Boolean?,
+    val sort: CommentSortType? = null,
+    val max_depth: Int? = null,
+    val page: Int? = null,
+    val limit: Int? = null,
+    val community_id: Int? = null,
+    val community_name: String? = null,
+    val post_id: Int? = null,
+    val parent_id: Int? = null,
+    val saved_only: Boolean? = null,
     val auth: String?
 )
 

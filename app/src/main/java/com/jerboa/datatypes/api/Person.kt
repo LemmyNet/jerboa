@@ -1,5 +1,7 @@
 package com.jerboa.datatypes.api
 
+import com.jerboa.datatypes.CommentReplyView
+import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.PersonMentionView
@@ -46,7 +48,7 @@ data class SaveUserSettings(
     val theme: String?,
     val default_sort_type: Int?,
     val default_listing_type: Int?,
-    val lang: String?,
+    val interface_language: String?,
     val avatar: String?,
     val banner: String?,
     val display_name: String?,
@@ -60,6 +62,7 @@ data class SaveUserSettings(
     val show_bot_accounts: Boolean?,
     val show_read_posts: Boolean?,
     val show_new_post_notifs: Boolean?,
+    val discussion_languages: List<Int>?,
     val auth: String
 )
 
@@ -98,7 +101,7 @@ data class GetPersonDetailsResponse(
 )
 
 data class GetRepliesResponse(
-    val replies: List<CommentView>
+    val replies: List<CommentReplyView>
 )
 
 data class GetPersonMentionsResponse(
@@ -134,7 +137,7 @@ data class BanPersonResponse(
 )
 
 data class GetReplies(
-    val sort: String,
+    val sort: CommentSortType? = null,
     val page: Int? = null,
     val limit: Int? = null,
     val unread_only: Boolean? = null,
@@ -142,7 +145,7 @@ data class GetReplies(
 )
 
 data class GetPersonMentions(
-    val sort: String? = null,
+    val sort: CommentSortType? = null,
     val page: Int? = null,
     val limit: Int? = null,
     val unread_only: Boolean? = null,
@@ -153,6 +156,16 @@ data class MarkPersonMentionAsRead(
     val person_mention_id: Int,
     val read: Boolean,
     val auth: String
+)
+
+data class MarkCommentReplyAsRead(
+    val comment_reply_id: Int,
+    val read: Boolean,
+    val auth: String
+)
+
+data class CommentReplyResponse(
+    val comment_reply_view: CommentReplyView
 )
 
 data class PersonMentionResponse(
@@ -235,7 +248,8 @@ data class GetReportCount(
 data class GetReportCountResponse(
     val community_id: Int,
     val comment_reports: Int?,
-    val post_reports: Int
+    val post_reports: Int,
+    val private_message_reports: Int?
 )
 
 data class GetUnreadCount(

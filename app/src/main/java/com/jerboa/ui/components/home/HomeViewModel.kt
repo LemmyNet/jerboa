@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PersonSafe
@@ -107,8 +107,8 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun updateUnreads(commentView: CommentView) {
-        val inc = incrementFromRead(commentView.comment.read)
+    fun updateUnreads(commentReplyView: CommentReplyView) {
+        val inc = incrementFromRead(commentReplyView.comment_reply.read)
         val newReplyCount = unreadCountResponse!!.replies + inc
         unreadCountResponse = unreadCountResponse?.copy(replies = newReplyCount)
     }

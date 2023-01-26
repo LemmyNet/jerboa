@@ -1,5 +1,7 @@
 package com.jerboa.datatypes
 
+import com.google.gson.annotations.SerializedName
+
 data class LocalUserSettings(
     val id: Int,
     val person_id: Int,
@@ -8,9 +10,10 @@ data class LocalUserSettings(
     val theme: String,
     val default_sort_type: Int,
     val default_listing_type: Int,
-    val lang: String,
+    val interface_language: String,
     val show_avatars: Boolean,
     val send_notifications_to_email: Boolean,
+    val validator_time: String,
     val show_bot_accounts: Boolean,
     val show_scores: Boolean,
     val show_read_posts: Boolean,
@@ -33,32 +36,68 @@ data class PersonSafe(
     val banner: String?,
     val deleted: Boolean,
     val inbox_url: String,
-    val shared_inbox_url: String,
+    val shared_inbox_url: String?,
     val matrix_user_id: String?,
     val admin: Boolean,
     val bot_account: Boolean,
-    val ban_expires: String?
+    val ban_expires: String?,
+    val instance_id: Int
 )
 
 data class Site(
     val id: Int,
     val name: String,
     val sidebar: String?,
-    val description: String?,
-    val creator_id: Int,
     val published: String,
     val updated: String?,
-    val enable_downvotes: Boolean,
-    val open_registration: Boolean,
-    val enable_nsfw: Boolean,
-    val community_creation_admin_only: Boolean,
     val icon: String?,
     val banner: String?,
-    val require_email_verification: Boolean,
-    val require_application: Boolean,
-    val application_question: String?,
-    val private_instance: Boolean
+    val description: String?,
+    val actor_id: String,
+    val last_refreshed_at: String,
+    val inbox_url: String,
+    val private_key: String?,
+    val public_key: String,
+    val instance_id: Int
 )
+
+data class LocalSite(
+    val id: Int,
+    val site_id: Int,
+    val site_setup: Boolean,
+    val enable_downvotes: Boolean,
+    val registration_mode: RegistrationMode,
+    val enable_nsfw: Boolean,
+    val community_creation_admin_only: Boolean,
+    val require_email_verification: Boolean,
+    val application_question: String?,
+    val private_instance: Boolean,
+    val default_theme: String,
+    val default_post_listing_type: String,
+    val legal_information: String?,
+    val hide_modlog_mod_names: Boolean,
+    val application_email_admins: Boolean,
+    val slur_filter_regex: String?,
+    val actor_name_max_length: Int,
+    val federation_enabled: Boolean,
+    val federation_debug: Boolean,
+    val federation_worker_count: Int,
+    val captcha_enabled: Boolean,
+    val captcha_difficulty: String,
+    val published: String,
+    val updated: String?
+)
+
+enum class RegistrationMode {
+    @SerializedName("closed")
+    Closed,
+
+    @SerializedName("requireapplication")
+    RequireApplication,
+
+    @SerializedName("open")
+    Open
+}
 
 data class PrivateMessage(
     val id: Int,
@@ -100,13 +139,15 @@ data class Post(
     val updated: String?,
     val deleted: Boolean,
     val nsfw: Boolean,
-    val stickied: Boolean,
     val embed_title: String?,
     val embed_description: String?,
-    val embed_html: String?,
+    val embed_video_url: String?,
     val thumbnail_url: String?,
     val ap_id: String,
-    val local: Boolean
+    val local: Boolean,
+    val language_id: Int,
+    val featured_community: Boolean,
+    val featured_local: Boolean
 )
 
 data class PasswordResetRequest(
@@ -133,11 +174,12 @@ data class ModLockPost(
     val when_: String
 )
 
-data class ModStickyPost(
+data class ModFeaturePost(
     val id: Int,
     val mod_person_id: Int,
     val post_id: Int,
-    val stickied: Boolean?,
+    val featured: Boolean,
+    val is_featured_community: Boolean,
     val when_: String
 )
 
@@ -220,7 +262,10 @@ data class CommunitySafe(
     val actor_id: String,
     val local: Boolean,
     val icon: String?,
-    val banner: String?
+    val banner: String?,
+    val hidden: Boolean,
+    val posting_restricted_to_mods: Boolean,
+    val instance_id: Int
 )
 
 data class CommentReport(
@@ -239,15 +284,24 @@ data class Comment(
     val id: Int,
     val creator_id: Int,
     val post_id: Int,
-    val parent_id: Int?,
     val content: String,
     val removed: Boolean,
-    val read: Boolean, // Whether the recipient has read the comment or not
     val published: String,
     val updated: String?,
     val deleted: Boolean,
     val ap_id: String,
-    val local: Boolean
+    val local: Boolean,
+    val path: String,
+    val distinguished: Boolean,
+    val language_id: Int
+)
+
+data class CommentReply(
+    val id: Int,
+    val recipient_id: Int,
+    val comment_id: Int,
+    val read: Boolean,
+    val published: String
 )
 
 data class PersonMention(
@@ -268,6 +322,20 @@ data class SiteMetadata(
     val html: String?
 )
 
+data class Language(
+    val id: Int,
+    val code: String,
+    val name: String
+)
+
+data class Tagline(
+    val id: Int,
+    val local_site_id: Int,
+    val content: String,
+    val published: String,
+    val updated: String?
+)
+
 /**
  * Different sort types used in lemmy.
  */
@@ -275,70 +343,157 @@ enum class SortType {
     /**
      * Posts sorted by the most recent comment.
      */
+    @SerializedName("Active")
     Active,
 
     /**
      * Posts sorted by the published time.
      */
+    @SerializedName("Hot")
     Hot,
+
+    @SerializedName("New")
     New,
+
+    /**
+     * Posts sorted by the published time ascending
+     */
+    @SerializedName("Old")
+    Old,
 
     /**
      * The top posts for this last day.
      */
+    @SerializedName("TopDay")
     TopDay,
 
     /**
      * The top posts for this last week.
      */
+    @SerializedName("TopWeek")
     TopWeek,
 
     /**
      * The top posts for this last month.
      */
+    @SerializedName("TopMonth")
     TopMonth,
 
     /**
      * The top posts for this last year.
      */
+    @SerializedName("TopYear")
     TopYear,
 
     /**
      * The top posts of all time.
      */
+    @SerializedName("TopAll")
     TopAll,
 
     /**
      * Posts sorted by the most comments.
      */
+    @SerializedName("MostComments")
     MostComments,
 
     /**
      * Posts sorted by the newest comments, with no necrobumping. IE a forum sort.
      */
+    @SerializedName("NewComments")
     NewComments
+}
+
+/**
+ * Different comment sort types used in lemmy.
+ */
+enum class CommentSortType {
+    /**
+     * Comments sorted by a decaying rank.
+     */
+    @SerializedName("Hot")
+    Hot,
+
+    /**
+     * Comments sorted by top score.
+     */
+    @SerializedName("Top")
+    Top,
+
+    /**
+     * Comments sorted by new.
+     */
+    @SerializedName("New")
+    New,
+
+    /**
+     * Comments sorted by old.
+     */
+    @SerializedName("Old")
+    Old
 }
 
 /**
  * The different listing types for post and comment fetches.
  */
 enum class ListingType {
+
+    @SerializedName("All")
     All,
+
+    @SerializedName("Local")
     Local,
-    Subscribed,
-    Community
+
+    @SerializedName("Subscribed")
+    Subscribed
 }
 
 /**
  * Search types for lemmy's search.
  */
 enum class SearchType {
+    @SerializedName("All")
     All,
+
+    @SerializedName("Comments")
     Comments,
+
+    @SerializedName("Posts")
     Posts,
+
+    @SerializedName("Communities")
     Communities,
+
+    @SerializedName("Users")
     Users,
+
+    @SerializedName("Url")
     Url
+}
+
+/**
+ * Different Subscribed states
+ */
+enum class SubscribedType {
+    @SerializedName("Subscribed")
+    Subscribed,
+
+    @SerializedName("NotSubscribed")
+    NotSubscribed,
+
+    @SerializedName("Pending")
+    Pending
+}
+
+/**
+ * Different Subscribed states
+ */
+enum class PostFeatureType {
+    @SerializedName("Local")
+    Local,
+
+    @SerializedName("Community")
+    Community
 }
 
 data class PictrsImage(

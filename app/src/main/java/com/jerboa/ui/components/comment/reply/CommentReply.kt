@@ -17,11 +17,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.CommentNodeHeader
+import com.jerboa.ui.components.comment.CommentReplyNodeHeader
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
@@ -91,6 +93,24 @@ fun RepliedComment(
     }
 }
 
+@Composable
+fun RepliedCommentReply(
+    commentReplyView: CommentReplyView,
+    onPersonClick: (personId: Int) -> Unit
+) {
+    Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
+        CommentReplyNodeHeader(
+            commentReplyView = commentReplyView,
+            onPersonClick = onPersonClick,
+            score = commentReplyView.counts.score,
+            myVote = commentReplyView.my_vote
+        )
+        SelectionContainer {
+            Text(text = commentReplyView.comment.content)
+        }
+    }
+}
+
 @Preview
 @Composable
 fun RepliedCommentPreview() {
@@ -139,6 +159,34 @@ fun CommentReply(
             commentView = commentView,
             onPersonClick = onPersonClick,
             isModerator = isModerator
+        )
+        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        MarkdownTextField(
+            text = reply,
+            onTextChange = onReplyChange,
+            account = account,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun CommentReplyReply(
+    commentReplyView: CommentReplyView,
+    reply: TextFieldValue,
+    onReplyChange: (TextFieldValue) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
+    account: Account?,
+    modifier: Modifier = Modifier
+) {
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = modifier.verticalScroll(scrollState)
+    ) {
+        RepliedCommentReply(
+            commentReplyView = commentReplyView,
+            onPersonClick = onPersonClick
         )
         Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(

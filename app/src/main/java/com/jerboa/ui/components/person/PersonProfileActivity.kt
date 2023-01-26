@@ -34,6 +34,7 @@ import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -414,6 +415,7 @@ fun UserTabs(
                     ) {
                         CommentNodes(
                             nodes = nodes,
+                            isFlat = true,
                             listState = listState,
                             onMarkAsReadClick = {},
                             onUpvoteClick = { commentView ->
@@ -437,7 +439,10 @@ fun UserTabs(
                                 }
                             },
                             onReplyClick = { commentView ->
-                                commentReplyViewModel.initialize(Either.Left(commentView))
+                                commentReplyViewModel.initialize(
+                                    ReplyItem.CommentItem
+                                    (commentView)
+                                )
                                 navController.navigate("commentReply")
                             },
                             onSaveClick = { commentView ->
@@ -474,6 +479,10 @@ fun UserTabs(
                             onReportClick = { commentView ->
                                 navController.navigate("commentReport/${commentView.comment.id}")
                             },
+                            onCommentLinkClick = { commentView ->
+                                navController.navigate("comment/${commentView.comment.id}")
+                            },
+                            onFetchChildrenClick = {},
                             onBlockCreatorClick = {
                                 account?.also { acct ->
                                     personProfileViewModel.blockPerson(
