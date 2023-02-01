@@ -1,3 +1,12 @@
+# Jerboa v0.0.24-alpha Release (2023-02-01)
+
+## What's Changed
+
+- Fix font sizes by @dessalines in https://github.com/dessalines/jerboa/pull/28
+- Upgrade to lemmy version 0.17.0 . Fixes #277 by @dessalines in https://github.com/dessalines/jerboa/pull/289
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.23...0.0.24
+
 # Jerboa v0.0.23-alpha Release (2022-12-29)
 
 ## What's Changed
