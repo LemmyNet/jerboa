@@ -5,21 +5,13 @@ import com.jerboa.datatypes.CommunityBlockView
 import com.jerboa.datatypes.CommunityFollowerView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.CommunityView
+import com.jerboa.datatypes.Language
 import com.jerboa.datatypes.LocalUserSettingsView
-import com.jerboa.datatypes.ModAddCommunityView
-import com.jerboa.datatypes.ModAddView
-import com.jerboa.datatypes.ModBanFromCommunityView
-import com.jerboa.datatypes.ModBanView
-import com.jerboa.datatypes.ModLockPostView
-import com.jerboa.datatypes.ModRemoveCommentView
-import com.jerboa.datatypes.ModRemoveCommunityView
-import com.jerboa.datatypes.ModRemovePostView
-import com.jerboa.datatypes.ModStickyPostView
-import com.jerboa.datatypes.ModTransferCommunityView
 import com.jerboa.datatypes.PersonBlockView
 import com.jerboa.datatypes.PersonViewSafe
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.SiteView
+import com.jerboa.datatypes.Tagline
 
 /**
  * Search lemmy for different types of data.
@@ -53,36 +45,6 @@ data class GetModlog(
     val auth: String?
 )
 
-data class GetModlogResponse(
-    val removed_posts: List<ModRemovePostView>,
-    val locked_posts: List<ModLockPostView>,
-    val stickied_posts: List<ModStickyPostView>,
-    val removed_comments: List<ModRemoveCommentView>,
-    val removed_communities: List<ModRemoveCommunityView>,
-    val banned_from_community: List<ModBanFromCommunityView>,
-    val banned: List<ModBanView>,
-    val added_to_community: List<ModAddCommunityView>,
-    val transferred_to_community: List<ModTransferCommunityView>,
-    val added: List<ModAddView>
-)
-
-data class CreateSite(
-    val name: String,
-    val sidebar: String,
-    val description: String?,
-    val icon: String?,
-    val banner: String?,
-    val enable_downvotes: Boolean?,
-    val open_registration: Boolean?,
-    val enable_nsfw: Boolean?,
-    val community_creation_admin_only: Boolean?,
-    val require_email_verification: Boolean?,
-    val require_application: Boolean?,
-    val application_question: String?,
-    val private_instance: Boolean?,
-    val auth: String?
-)
-
 data class EditSite(
     val name: String,
     val sidebar: String?,
@@ -109,12 +71,15 @@ data class SiteResponse(
 )
 
 data class GetSiteResponse(
-    val site_view: SiteView?,
+    val site_view: SiteView,
     val admins: List<PersonViewSafe>,
     val online: Int,
     val version: String,
     val my_user: MyUserInfo?,
-    val federated_instances: FederatedInstances?
+    val federated_instances: FederatedInstances?,
+    val all_languages: List<Language>,
+    val discussion_languages: List<Int>,
+    val taglines: List<Tagline>?
 )
 
 /**
@@ -125,24 +90,12 @@ data class MyUserInfo(
     val follows: List<CommunityFollowerView>,
     val moderates: List<CommunityModeratorView>,
     val community_blocks: List<CommunityBlockView>,
-    val person_blocks: List<PersonBlockView>
+    val person_blocks: List<PersonBlockView>,
+    val discussion_languages: List<Int>
 )
 
 data class TransferSite(
     val person_id: Int,
-    val auth: String
-)
-
-data class GetSiteConfig(
-    val auth: String
-)
-
-data class GetSiteConfigResponse(
-    val config_hjson: String
-)
-
-data class SaveSiteConfig(
-    val config_hjson: String,
     val auth: String
 )
 

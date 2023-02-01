@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.jerboa
 
 import android.app.Application
@@ -9,6 +11,7 @@ import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -378,7 +381,6 @@ class MainActivity : ComponentActivity() {
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
-                            commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel
                         )
                     }
@@ -396,7 +398,36 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(Unit) {
                             val postId = it.arguments?.getInt("id")!!
                             postViewModel.fetchPost(
-                                id = postId,
+                                id = Either.Left(postId),
+                                account = account,
+                                clear = true,
+                                ctx = ctx
+                            )
+                        }
+                        PostActivity(
+                            postViewModel = postViewModel,
+                            accountViewModel = accountViewModel,
+                            commentEditViewModel = commentEditViewModel,
+                            commentReplyViewModel = commentReplyViewModel,
+                            postEditViewModel = postEditViewModel,
+                            navController = navController
+                        )
+                    }
+                    composable(
+                        route = "comment/{id}",
+                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/comment/{id}" }
+                        },
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.IntType
+                            }
+                        )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            val commentId = it.arguments?.getInt("id")!!
+                            postViewModel.fetchPost(
+                                id = Either.Right(commentId),
                                 account = account,
                                 clear = true,
                                 ctx = ctx
@@ -419,7 +450,6 @@ class MainActivity : ComponentActivity() {
                             postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
-                            inboxViewModel = inboxViewModel,
                             navController = navController
                         )
                     }
@@ -447,8 +477,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel,
-                            inboxViewModel = inboxViewModel
+                            postViewModel = postViewModel
                         )
                     }
                     composable(

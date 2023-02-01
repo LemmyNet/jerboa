@@ -9,7 +9,6 @@ import androidx.navigation.NavController
 import com.jerboa.datatypes.CommentView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.editCommentRoutine
-import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 
@@ -33,8 +32,7 @@ class CommentEditViewModel : ViewModel() {
         focusManager: FocusManager,
         account: Account,
         personProfileViewModel: PersonProfileViewModel,
-        postViewModel: PostViewModel,
-        inboxViewModel: InboxViewModel
+        postViewModel: PostViewModel
     ) {
         editCommentRoutine(
             commentView = commentView,
@@ -46,8 +44,7 @@ class CommentEditViewModel : ViewModel() {
             focusManager = focusManager,
             account = account,
             personProfileViewModel = personProfileViewModel,
-            postViewModel = postViewModel,
-            inboxViewModel = inboxViewModel
+            postViewModel = postViewModel
         )
     }
 }

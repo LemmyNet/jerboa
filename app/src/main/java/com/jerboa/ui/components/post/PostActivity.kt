@@ -25,11 +25,15 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.getCommentParentId
+import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
 import com.jerboa.openLink
+import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -61,6 +65,11 @@ fun PostActivity(
     val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
+    val firstComment = postViewModel.commentTree.firstOrNull()?.commentView?.comment
+    val depth = getDepthFromComment(firstComment)
+    val commentParentId = getCommentParentId(firstComment)
+    val showContextButton = depth != null && depth > 0
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -80,9 +89,19 @@ fun PostActivity(
             SwipeRefresh(
                 state = swipeRefreshState,
                 onRefresh = {
-                    postViewModel.postView.value?.also { postView ->
+                    val postId = postViewModel.postView.value?.post?.id
+                    val commentId = postViewModel.commentId.value
+                    val id = if (commentId != null) {
+                        Either.Right(commentId)
+                    } else if (postId != null) {
+                        Either.Left(postId)
+                    } else {
+                        null
+                    }
+
+                    id?.let {
                         postViewModel.fetchPost(
-                            id = postView.post.id,
+                            id = it,
                             account = account,
                             ctx = ctx
                         )
@@ -141,7 +160,7 @@ fun PostActivity(
                                     }
                                 },
                                 onReplyClick = { postView ->
-                                    commentReplyViewModel.initialize(Either.Right(postView))
+                                    commentReplyViewModel.initialize(ReplyItem.PostItem(postView))
                                     navController.navigate("commentReply")
                                 },
                                 onPostLinkClick = { url ->
@@ -179,8 +198,26 @@ fun PostActivity(
                                 fullBody = true
                             )
                         }
+                        item {
+                            if (postViewModel.isCommentView()) {
+                                postViewModel.postView.value?.post?.id?.let { postId ->
+                                    ShowCommentContextButtons(
+                                        postId,
+                                        commentParentId = commentParentId,
+                                        showContextButton = showContextButton,
+                                        onPostClick = { id ->
+                                            navController.navigate("post/$id")
+                                        },
+                                        onCommentClick = { commentId ->
+                                            navController.navigate("comment/$commentId")
+                                        }
+                                    )
+                                }
+                            }
+                        }
                         commentNodeItems(
                             nodes = postViewModel.commentTree,
+                            isFlat = false,
                             isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
                             toggleExpanded = { commentId ->
                                 if (unExpandedComments.contains(commentId)) {
@@ -211,7 +248,7 @@ fun PostActivity(
                                 }
                             },
                             onReplyClick = { commentView ->
-                                commentReplyViewModel.initialize(Either.Left(commentView))
+                                commentReplyViewModel.initialize(ReplyItem.CommentItem(commentView))
                                 navController.navigate("commentReply")
                             },
                             onSaveClick = { commentView ->
@@ -243,6 +280,17 @@ fun PostActivity(
                                 navController.navigate(
                                     "commentReport/${commentView.comment
                                         .id}"
+                                )
+                            },
+                            onCommentLinkClick = { commentView ->
+                                navController.navigate("comment/${commentView.comment.id}")
+                            },
+                            onFetchChildrenClick = {
+                                postViewModel.fetchMoreChildren(
+                                    commentView = it,
+                                    account = account,
+                                    ctx = ctx
+
                                 )
                             },
                             onBlockCreatorClick = {

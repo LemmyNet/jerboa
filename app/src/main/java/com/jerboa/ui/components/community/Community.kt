@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.SubscribedType
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
@@ -65,7 +66,7 @@ fun CommunityTopSection(
                 Icon(
                     imageVector = Icons.Outlined.CheckCircle,
                     contentDescription = "TODO",
-                    tint = if (communityView.subscribed) {
+                    tint = if (communityView.subscribed == SubscribedType.Subscribed) {
                         Color.Green
                     } else {
                         MaterialTheme.colorScheme.onBackground.muted

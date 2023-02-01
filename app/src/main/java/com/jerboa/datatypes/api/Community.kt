@@ -3,6 +3,7 @@ package com.jerboa.datatypes.api
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.PersonViewSafe
+import com.jerboa.datatypes.Site
 
 /**
  * You can use either `id` or `name` as an id.
@@ -17,22 +18,28 @@ data class GetCommunity(
 
 data class GetCommunityResponse(
     val community_view: CommunityView,
+    val site: Site?,
     val moderators: List<CommunityModeratorView>,
-    val online: Int
+    val online: Int,
+    val discussion_languages: List<Int>,
+    val default_post_language: Int?
 )
 
 data class CreateCommunity(
     val name: String,
     val title: String,
-    val description: String,
+    val description: String?,
     val icon: String?,
     val banner: String?,
     val nsfw: Boolean?,
-    val auth: String?
+    val posting_restricted_to_mods: Boolean?,
+    val discussion_languages: List<Int>?,
+    val auth: String
 )
 
 data class CommunityResponse(
-    val community_view: CommunityView
+    val community_view: CommunityView,
+    val discussion_languages: List<Int>?
 )
 
 data class ListCommunities(
@@ -83,6 +90,8 @@ data class EditCommunity(
     val icon: String?,
     val banner: String?,
     val nsfw: Boolean?,
+    val posting_restricted_to_mods: Boolean?,
+    val discussion_languages: List<Int>?,
     val auth: String?
 )
 

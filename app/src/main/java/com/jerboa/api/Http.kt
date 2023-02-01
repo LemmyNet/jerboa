@@ -89,6 +89,12 @@ interface API {
     suspend fun saveComment(@Body form: SaveComment): Response<CommentResponse>
 
     /**
+     * Get / fetch comments.
+     */
+    @GET("comment/list")
+    suspend fun getComments(@QueryMap form: Map<String, String>): Response<GetCommentsResponse>
+
+    /**
      * Get / fetch a community.
      */
     @GET("community")
@@ -111,7 +117,8 @@ interface API {
      * Mark a comment as read.
      */
     @POST("comment/mark_as_read")
-    suspend fun markCommentAsRead(@Body form: MarkCommentAsRead): Response<CommentResponse>
+    suspend fun markCommentReplyAsRead(@Body form: MarkCommentReplyAsRead):
+        Response<CommentResponse>
 
     /**
      * Mark a person mention as read.
@@ -290,7 +297,7 @@ suspend fun followCommunityWrapper(
         // name and avatar
         val form = FollowCommunity(
             community_id = communityView.community.id,
-            follow = !communityView.subscribed,
+            follow = communityView.subscribed != SubscribedType.Subscribed,
             auth = auth
         )
         communityRes = retrofitErrorHandler(api.followCommunity(form))
@@ -495,7 +502,8 @@ suspend fun likePostWrapper(
 }
 
 suspend fun likeCommentWrapper(
-    cv: CommentView,
+    commentId: Int,
+    myVote: Int?,
     voteType: VoteType,
     account: Account,
     ctx: Context
@@ -503,9 +511,9 @@ suspend fun likeCommentWrapper(
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
     try {
-        val newVote = newVote(currentVote = cv.my_vote, voteType = voteType)
+        val newVote = newVote(currentVote = myVote, voteType = voteType)
         val form = CreateCommentLike(
-            comment_id = cv.comment.id,
+            comment_id = commentId,
             score = newVote,
             auth = account.jwt
         )
@@ -537,7 +545,8 @@ suspend fun savePostWrapper(
 }
 
 suspend fun saveCommentWrapper(
-    cv: CommentView,
+    commentId: Int,
+    saved: Boolean,
     account: Account,
     ctx: Context
 ): CommentResponse? {
@@ -545,8 +554,8 @@ suspend fun saveCommentWrapper(
     val api = API.getInstance()
     try {
         val form = SaveComment(
-            comment_id = cv.comment.id,
-            save = !cv.saved,
+            comment_id = commentId,
+            save = !saved,
             auth = account.jwt
         )
         updatedComment = retrofitErrorHandler(api.saveComment(form))
@@ -556,20 +565,20 @@ suspend fun saveCommentWrapper(
     return updatedComment
 }
 
-suspend fun markCommentAsReadWrapper(
-    cv: CommentView,
+suspend fun markCommentReplyAsReadWrapper(
+    crv: CommentReplyView,
     account: Account,
     ctx: Context
 ): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
     try {
-        val form = MarkCommentAsRead(
-            comment_id = cv.comment.id,
-            read = !cv.comment.read,
+        val form = MarkCommentReplyAsRead(
+            comment_reply_id = crv.comment_reply.id,
+            read = !crv.comment_reply.read,
             auth = account.jwt
         )
-        updatedComment = retrofitErrorHandler(api.markCommentAsRead(form))
+        updatedComment = retrofitErrorHandler(api.markCommentReplyAsRead(form))
     } catch (e: Exception) {
         toastException(ctx = ctx, error = e)
     }
@@ -787,360 +796,3 @@ fun <T> retrofitErrorHandler(res: Response<T>): T {
         throw Exception(errMsg)
     }
 }
-
-//
-//
-//  /**
-//   * Create your site.
-//   */
-//  async createSite(form: CreateSite): Promise<SiteResponse> {
-//    return this.wrapper(HttpType.Post, "/site", form);
-//  }
-//
-//  /**
-//   * Edit your site.
-//   */
-//  async editSite(form: EditSite): Promise<SiteResponse> {
-//    return this.wrapper(HttpType.Put, "/site", form);
-//  }
-//
-//  /**
-//   * Transfer your site to another user.
-//   */
-//  async transferSite(form: TransferSite): Promise<GetSiteResponse> {
-//    return this.wrapper(HttpType.Post, "/site/transfer", form);
-//  }
-//
-//  /**
-//   * Get your site configuration.
-//   */
-//  async getSiteConfig(form: GetSiteConfig): Promise<GetSiteConfigResponse> {
-//    return this.wrapper(HttpType.Get, "/site/config", form);
-//  }
-//
-//  /**
-//   * Save your site config.
-//   */
-//  async saveSiteConfig(form: SaveSiteConfig): Promise<GetSiteConfigResponse> {
-//    return this.wrapper(HttpType.Put, "/site/config", form);
-//  }
-//
-//  /**
-//   * Get the modlog.
-//   */
-//  async getModlog(form: GetModlog): Promise<GetModlogResponse> {
-//    return this.wrapper(HttpType.Get, "/modlog", form);
-//  }
-//
-//
-//  /**
-//   * Fetch a non-local / federated object.
-//   */
-//  async resolveObject(form: ResolveObject): Promise<ResolveObjectResponse> {
-//    return this.wrapper(HttpType.Get, "/resolve_object", form);
-//  }
-//
-//  /**
-//   * Create a new community.
-//   */
-//  async createCommunity(form: CreateCommunity): Promise<CommunityResponse> {
-//    return this.wrapper(HttpType.Post, "/community", form);
-//  }
-//
-//
-//  /**
-//   * Edit a community.
-//   */
-//  async editCommunity(form: EditCommunity): Promise<CommunityResponse> {
-//    return this.wrapper(HttpType.Put, "/community", form);
-//  }
-//
-//  /**
-//   * List communities, with various filters.
-//   */
-//  async listCommunities(
-//  form: ListCommunities
-//  ): Promise<ListCommunitiesResponse> {
-//    return this.wrapper(HttpType.Get, "/community/list", form);
-//  }
-//
-//
-//
-//  /**
-//   * Delete a community.
-//   */
-//  async deleteCommunity(form: DeleteCommunity): Promise<CommunityResponse> {
-//    return this.wrapper(HttpType.Post, "/community/delete", form);
-//  }
-//
-//  /**
-//   * A moderator remove for a community.
-//   */
-//  async removeCommunity(form: RemoveCommunity): Promise<CommunityResponse> {
-//    return this.wrapper(HttpType.Post, "/community/remove", form);
-//  }
-//
-//  /**
-//   * Transfer your community to an existing moderator.
-//   */
-//  async transferCommunity(
-//  form: TransferCommunity
-//  ): Promise<GetCommunityResponse> {
-//    return this.wrapper(HttpType.Post, "/community/transfer", form);
-//  }
-//
-//  /**
-//   * Ban a user from a community.
-//   */
-//  async banFromCommunity(
-//  form: BanFromCommunity
-//  ): Promise<BanFromCommunityResponse> {
-//    return this.wrapper(HttpType.Post, "/community/ban_user", form);
-//  }
-//
-//  /**
-//   * Add a moderator to your community.
-//   */
-//  async addModToCommunity(
-//  form: AddModToCommunity
-//  ): Promise<AddModToCommunityResponse> {
-//    return this.wrapper(HttpType.Post, "/community/mod", form);
-//  }
-//
-//
-//
-//
-//
-//  /**
-//   * A moderator remove for a post.
-//   */
-//  async removePost(form: RemovePost): Promise<PostResponse> {
-//    return this.wrapper(HttpType.Post, "/post/remove", form);
-//  }
-//
-//  /**
-//   * A moderator can lock a post ( IE disable new comments ).
-//   */
-//  async lockPost(form: LockPost): Promise<PostResponse> {
-//    return this.wrapper(HttpType.Post, "/post/lock", form);
-//  }
-//
-//  /**
-//   * A moderator can sticky a post ( IE stick it to the top of a community ).
-//   */
-//  async stickyPost(form: StickyPost): Promise<PostResponse> {
-//    return this.wrapper(HttpType.Post, "/post/sticky", form);
-//  }
-//
-//
-//
-//
-//
-//  /**
-//   * Resolve a post report. Only a mod can do this.
-//   */
-//  async resolvePostReport(
-//  form: ResolvePostReport
-//  ): Promise<PostReportResponse> {
-//    return this.wrapper(HttpType.Put, "/post/report/resolve", form);
-//  }
-//
-//  /**
-//   * List post reports.
-//   */
-//  async listPostReports(
-//  form: ListPostReports
-//  ): Promise<ListPostReportsResponse> {
-//    return this.wrapper(HttpType.Get, "/post/report/list", form);
-//  }
-//
-//
-//
-//
-//  /**
-//   * A moderator remove for a comment.
-//   */
-//  async removeComment(form: RemoveComment): Promise<CommentResponse> {
-//    return this.wrapper(HttpType.Post, "/comment/remove", form);
-//  }
-//
-//
-//
-//
-//  /**
-//   * Get / fetch comments.
-//   */
-//  async getComments(form: GetComments): Promise<GetCommentsResponse> {
-//    return this.wrapper(HttpType.Get, "/comment/list", form);
-//  }
-//
-//
-//  /**
-//   * Resolve a comment report. Only a mod can do this.
-//   */
-//  async resolveCommentReport(
-//  form: ResolveCommentReport
-//  ): Promise<CommentReportResponse> {
-//    return this.wrapper(HttpType.Put, "/comment/report/resolve", form);
-//  }
-//
-//  /**
-//   * List comment reports.
-//   */
-//  async listCommentReports(
-//  form: ListCommentReports
-//  ): Promise<ListCommentReportsResponse> {
-//    return this.wrapper(HttpType.Get, "/comment/report/list", form);
-//  }
-//
-//
-//
-//  /**
-//   * Edit a private message.
-//   */
-//  async editPrivateMessage(
-//  form: EditPrivateMessage
-//  ): Promise<PrivateMessageResponse> {
-//    return this.wrapper(HttpType.Put, "/private_message", form);
-//  }
-//
-//  /**
-//   * Delete a private message.
-//   */
-//  async deletePrivateMessage(
-//  form: DeletePrivateMessage
-//  ): Promise<PrivateMessageResponse> {
-//    return this.wrapper(HttpType.Post, "/private_message/delete", form);
-//  }
-//
-//
-//  /**
-//   * Register a new user.
-//   */
-//  async register(form: Register): Promise<LoginResponse> {
-//    return this.wrapper(HttpType.Post, "/user/register", form);
-//  }
-//
-//
-//  /**
-//   * Ban a person from your site.
-//   */
-//  async banPerson(form: BanPerson): Promise<BanPersonResponse> {
-//    return this.wrapper(HttpType.Post, "/user/ban", form);
-//  }
-//
-// /**
-// * Verify your email
-// */
-// async verifyEmail(form: VerifyEmail): Promise<VerifyEmailResponse> {
-//    return this.wrapper(HttpType.Post, "/user/verify_email", form);
-// }
-// }
-/**
- * Get a list of banned users
- */
-// async getBannedPersons(
-// form: GetBannedPersons
-// ): Promise<BannedPersonsResponse> {
-//    return this.wrapper(HttpType.Get, "/user/banned", form);
-// }
-// }
-
-// /**
-// * Get the unread registration applications count.
-// */
-// async getUnreadRegistrationApplicationCount(
-// form: GetUnreadRegistrationApplicationCount
-// ): Promise<GetUnreadRegistrationApplicationCountResponse> {
-//    return this.wrapper(
-//        HttpType.Get,
-//        "/admin/registration_application/count",
-//        form
-//    );
-// }
-//
-// /**
-// * List the unread registration applications.
-// */
-// async listRegistrationApplications(
-// form: ListRegistrationApplications
-// ): Promise<ListRegistrationApplicationsResponse> {
-//    return this.wrapper(
-//        HttpType.Get,
-//        "/admin/registration_application/list",
-//        form
-//    );
-// }
-//
-// /**
-// * Approve a registration application
-// */
-// async approveRegistrationApplication(
-// form: ApproveRegistrationApplication
-// ): Promise<RegistrationApplicationResponse> {
-//    return this.wrapper(
-//        HttpType.Put,
-//        "/admin/registration_application/approve",
-//        form
-//    );
-// }
-// }
-//
-//  /**
-//   * Fetch a Captcha.
-//   */
-//  async getCaptcha(): Promise<GetCaptchaResponse> {
-//    return this.wrapper(HttpType.Get, "/user/get_captcha", {});
-//  }
-//
-//  /**
-//   * Delete your account.
-//   */
-//  async deleteAccount(form: DeleteAccount): Promise<LoginResponse> {
-//    return this.wrapper(HttpType.Post, "/user/delete_account", form);
-//  }
-//
-//  /**
-//   * Reset your password.
-//   */
-//  async passwordReset(form: PasswordReset): Promise<PasswordResetResponse> {
-//    return this.wrapper(HttpType.Post, "/user/password_reset", form);
-//  }
-//
-//  /**
-//   * Change your password from an email / token based reset.
-//   */
-//  async passwordChange(form: PasswordChange): Promise<LoginResponse> {
-//    return this.wrapper(HttpType.Post, "/user/password_change", form);
-//  }
-//
-//
-//  /**
-//   * Save your user settings.
-//   */
-//  async saveUserSettings(form: SaveUserSettings): Promise<LoginResponse> {
-//    return this.wrapper(HttpType.Put, "/user/save_user_settings", form);
-//  }
-//
-//  /**
-//   * Change your user password.
-//   */
-//  async changePassword(form: ChangePassword): Promise<LoginResponse> {
-//    return this.wrapper(HttpType.Put, "/user/change_password", form);
-//  }
-//
-//  /**
-//   * Get counts for your reports
-//   */
-//  async getReportCount(form: GetReportCount): Promise<GetReportCountResponse> {
-//    return this.wrapper(HttpType.Get, "/user/report_count", form);
-//  }
-//
-//
-//  /**
-//   * Add an admin to your site.
-//   */
-//  async addAdmin(form: AddAdmin): Promise<AddAdminResponse> {
-//    return this.wrapper(HttpType.Post, "/admin/add", form);
-//  }
-//

@@ -8,24 +8,29 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import arrow.core.Either
+import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PostView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.createCommentRoutine
-import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 
+sealed class ReplyItem {
+    class PostItem(val item: PostView) : ReplyItem()
+    class CommentItem(val item: CommentView) : ReplyItem()
+    class CommentReplyItem(val item: CommentReplyView) : ReplyItem()
+}
+
 class CommentReplyViewModel : ViewModel() {
 
-    var replyItem by mutableStateOf<Either<CommentView, PostView>?>(null)
+    var replyItem by mutableStateOf<ReplyItem?>(null)
         private set
     var loading = mutableStateOf(false)
         private set
 
     fun initialize(
-        newReplyItem: Either<CommentView, PostView>
+        newReplyItem: ReplyItem
     ) {
         replyItem = newReplyItem
     }
@@ -37,15 +42,24 @@ class CommentReplyViewModel : ViewModel() {
         navController: NavController,
         focusManager: FocusManager,
         personProfileViewModel: PersonProfileViewModel,
-        postViewModel: PostViewModel,
-        inboxViewModel: InboxViewModel
+        postViewModel: PostViewModel
     ) {
-        val commentParentView = replyItem?.fold({ it }, { null })
-        val postId = replyItem?.fold({ it.post.id }, { it.post.id })!!
+        val reply = replyItem!! // This should have been initialized
+        val (postId, commentParentId) = when (reply) {
+            is ReplyItem.PostItem -> Pair(reply.item.post.id, null)
+            is ReplyItem.CommentItem -> Pair(
+                reply.item.post.id,
+                reply.item.comment.id
+            )
+            is ReplyItem.CommentReplyItem -> Pair(
+                reply.item.post.id,
+                reply.item.comment.id
+            )
+        }
 
         createCommentRoutine(
             content = content,
-            parentCommentView = commentParentView,
+            commentParentId = commentParentId,
             postId = postId,
             account = account,
             loading = loading,
@@ -54,8 +68,7 @@ class CommentReplyViewModel : ViewModel() {
             navController = navController,
             focusManager = focusManager,
             personProfileViewModel = personProfileViewModel,
-            postViewModel = postViewModel,
-            inboxViewModel = inboxViewModel
+            postViewModel = postViewModel
         )
     }
 }

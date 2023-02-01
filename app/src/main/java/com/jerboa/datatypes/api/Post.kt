@@ -1,9 +1,9 @@
 package com.jerboa.datatypes.api
 
-import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.PostFeatureType
 import com.jerboa.datatypes.PostReportView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.SiteMetadata
@@ -14,9 +14,10 @@ data class CreatePost(
     val url: String? = null,
     val body: String? = null,
     val nsfw: Boolean? = null,
+    val language_id: Int? = null,
     val community_id: Int,
-    val auth: String,
-    val honeypot: String? = null
+    val honeypot: String? = null,
+    val auth: String
 )
 
 data class PostResponse(
@@ -24,14 +25,14 @@ data class PostResponse(
 )
 
 data class GetPost(
-    val id: Int,
+    val id: Int? = null,
+    val comment_id: Int? = null,
     val auth: String?
 )
 
 data class GetPostResponse(
     val post_view: PostView,
     val community_view: CommunityView,
-    val comments: List<CommentView>,
     val moderators: List<CommunityModeratorView>,
     val online: Int
 )
@@ -44,6 +45,7 @@ data class GetPosts(
     val community_id: Int? = null,
     val community_name: String? = null,
     val saved_only: Boolean? = null,
+    val language_id: Int? = null,
     val auth: String? = null
 )
 
@@ -94,9 +96,10 @@ data class LockPost(
 /**
  * Only admins and mods can sticky a post.
  */
-data class StickyPost(
+data class FeaturePost(
     val post_id: Int,
-    val stickied: Boolean,
+    val featured: Boolean,
+    val feature_type: PostFeatureType,
     val auth: String
 )
 

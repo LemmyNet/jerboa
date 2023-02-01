@@ -39,7 +39,9 @@ data class PostAggregates(
     val upvotes: Int,
     val downvotes: Int,
     val newest_comment_time_necro: String,
-    val newest_comment_time: String
+    val newest_comment_time: String,
+    val featured_community: Boolean,
+    val featured_local: Boolean
 )
 
 /**
@@ -65,12 +67,6 @@ data class CommentAggregates(
     val comment_id: Int,
     val score: Int,
     val upvotes: Int,
-    val downvotes: Int
+    val downvotes: Int,
+    val child_count: Int
 )
-
-// export interface RegistrationApplicationView {
-//    registration_application: RegistrationApplication;
-//    creator_local_user: LocalUserSettings;
-//    creator: PersonSafe;
-//    admin?: PersonSafe;
-// }

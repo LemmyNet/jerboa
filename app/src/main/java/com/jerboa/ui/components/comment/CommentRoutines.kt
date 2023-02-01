@@ -3,7 +3,6 @@ package com.jerboa.ui.components.comment
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.focus.FocusManager
 import androidx.navigation.NavController
@@ -15,14 +14,15 @@ import com.jerboa.api.createPrivateMessageWrapper
 import com.jerboa.api.deleteCommentWrapper
 import com.jerboa.api.editCommentWrapper
 import com.jerboa.api.likeCommentWrapper
-import com.jerboa.api.markCommentAsReadWrapper
+import com.jerboa.api.markCommentReplyAsReadWrapper
 import com.jerboa.api.markPersonMentionAsReadWrapper
 import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.api.saveCommentWrapper
+import com.jerboa.datatypes.CommentReplyView
+import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PrivateMessageView
-import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.CreateComment
 import com.jerboa.datatypes.api.CreatePrivateMessage
 import com.jerboa.datatypes.api.DeleteComment
@@ -30,9 +30,10 @@ import com.jerboa.datatypes.api.EditComment
 import com.jerboa.datatypes.api.GetPersonMentions
 import com.jerboa.datatypes.api.GetReplies
 import com.jerboa.db.Account
+import com.jerboa.findAndUpdateCommentInTree
+import com.jerboa.insertCommentIntoTree
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
-import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -50,18 +51,41 @@ fun likeCommentRoutine(
     scope.launch {
         commentView.value?.also { cv ->
             val updatedCommentView = likeCommentWrapper(
-                cv,
+                cv.comment.id,
+                cv.my_vote,
                 voteType,
                 account,
                 ctx
             )?.comment_view
             commentView.value = updatedCommentView
             comments?.also {
-                findAndUpdateComment(comments, updatedCommentView)
+                findAndUpdateCommentView(comments, updatedCommentView)
             }
             commentTree?.also {
                 findAndUpdateCommentInTree(commentTree, updatedCommentView)
             }
+        }
+    }
+}
+
+fun likeCommentReplyRoutine(
+    commentReplyView: CommentReplyView,
+    replies: MutableList<CommentReplyView>? = null,
+    voteType: VoteType,
+    account: Account,
+    ctx: Context,
+    scope: CoroutineScope
+) {
+    scope.launch {
+        val updatedCommentView = likeCommentWrapper(
+            commentReplyView.comment.id,
+            commentReplyView.my_vote,
+            voteType,
+            account,
+            ctx
+        )?.comment_view
+        if (updatedCommentView != null) {
+            findAndUpdateCommentReplyView(replies, commentReplyView, updatedCommentView)
         }
     }
 }
@@ -77,13 +101,15 @@ fun saveCommentRoutine(
     scope.launch {
         commentView.value?.also { cv ->
             val updatedCommentView = saveCommentWrapper(
-                cv,
+                cv.comment.id,
+                cv.saved,
                 account,
                 ctx
             )?.comment_view
             commentView.value = updatedCommentView
+
             comments?.also {
-                findAndUpdateComment(comments, updatedCommentView)
+                findAndUpdateCommentView(comments, updatedCommentView)
             }
             commentTree?.also {
                 findAndUpdateCommentInTree(commentTree, updatedCommentView)
@@ -92,24 +118,47 @@ fun saveCommentRoutine(
     }
 }
 
-fun markCommentAsReadRoutine(
-    commentView: MutableState<CommentView?>,
-    comments: MutableList<CommentView>? = null,
+fun saveCommentReplyRoutine(
+    commentReplyView: CommentReplyView,
+    replies: MutableList<CommentReplyView>? = null,
     account: Account,
     ctx: Context,
     scope: CoroutineScope
 ) {
     scope.launch {
-        commentView.value?.also { cv ->
-            val updatedCommentView = markCommentAsReadWrapper(
-                cv,
-                account,
-                ctx
-            )?.comment_view
-            commentView.value = updatedCommentView
-            comments?.also {
-                findAndUpdateComment(comments, updatedCommentView)
-            }
+        val updatedCommentView = saveCommentWrapper(
+            commentReplyView.comment.id,
+            commentReplyView.saved,
+            account,
+            ctx
+        )?.comment_view
+        if (updatedCommentView != null) {
+            findAndUpdateCommentReplyView(replies, commentReplyView, updatedCommentView)
+        }
+    }
+}
+
+fun markCommentReplyAsReadRoutine(
+    commentReplyView: CommentReplyView,
+    replies: MutableList<CommentReplyView>? = null,
+    account: Account,
+    ctx: Context,
+    scope: CoroutineScope
+) {
+    scope.launch {
+        markCommentReplyAsReadWrapper(
+            commentReplyView,
+            account,
+            ctx
+        )
+        val foundIndex = replies?.indexOfFirst {
+            it.comment_reply.id == commentReplyView.comment_reply.id
+        }
+        if (foundIndex != -1 && foundIndex != null) {
+            val cr = replies[foundIndex].comment_reply
+            replies[foundIndex] = replies[foundIndex].copy(
+                comment_reply = cr.copy(read = !cr.read)
+            )
         }
     }
 }
@@ -139,7 +188,7 @@ fun markPersonMentionAsReadRoutine(
 fun createCommentRoutine(
     loading: MutableState<Boolean>,
     content: String,
-    parentCommentView: CommentView?,
+    commentParentId: Int?,
     postId: Int,
     ctx: Context,
     scope: CoroutineScope,
@@ -147,14 +196,13 @@ fun createCommentRoutine(
     focusManager: FocusManager,
     account: Account,
     postViewModel: PostViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    inboxViewModel: InboxViewModel
+    personProfileViewModel: PersonProfileViewModel
 ) {
     scope.launch {
         loading.value = true
         val form = CreateComment(
             content = content,
-            parent_id = parentCommentView?.comment?.id,
+            parent_id = commentParentId,
             post_id = postId,
             auth = account.jwt
         )
@@ -165,19 +213,11 @@ fun createCommentRoutine(
 
         // Add to all the views which might have your comment
         if (commentView != null) {
-            insertCommentIntoTree(postViewModel.commentTree, commentView)
+            insertCommentIntoTree(postViewModel.commentTree, commentView, postViewModel.isCommentView())
 
             // Maybe a back button would view this page.
             if (account.id == personProfileViewModel.res?.person_view?.person?.id) {
                 addCommentToMutableList(personProfileViewModel.comments, commentView)
-            }
-        }
-
-        // Mark as read if you replied to it, and the grandparent is you
-        parentCommentView?.also { pcv ->
-            if (listOf(pcv.comment.parent_id, pcv.post.creator_id).contains(account.id)) {
-                val readCommentView = pcv.copy(comment = pcv.comment.copy(read = true))
-                findAndUpdateComment(inboxViewModel.replies, readCommentView)
             }
         }
 
@@ -195,8 +235,7 @@ fun editCommentRoutine(
     focusManager: FocusManager,
     account: Account,
     personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
-    inboxViewModel: InboxViewModel
+    postViewModel: PostViewModel
 ) {
     scope.launch {
         commentView.value?.also { cv ->
@@ -211,9 +250,8 @@ fun editCommentRoutine(
             focusManager.clearFocus()
 
             // Update all the views which might have your comment
-            findAndUpdateComment(personProfileViewModel.comments, commentView.value)
+            findAndUpdateCommentView(personProfileViewModel.comments, commentView.value)
             findAndUpdateCommentInTree(postViewModel.commentTree, commentView.value)
-            findAndUpdateComment(inboxViewModel.replies, commentView.value)
 
             navController.navigateUp()
         }
@@ -238,7 +276,7 @@ fun deleteCommentRoutine(
             val deletedCommentView = deleteCommentWrapper(form, ctx)?.comment_view
             commentView.value = deletedCommentView
             comments?.also {
-                findAndUpdateComment(comments, deletedCommentView)
+                findAndUpdateCommentView(comments, deletedCommentView)
             }
             commentTree?.also {
                 findAndUpdateCommentInTree(commentTree, deletedCommentView)
@@ -266,7 +304,25 @@ fun createPrivateMessageRoutine(
     }
 }
 
-fun findAndUpdateComment(
+fun findAndUpdateCommentReplyView(
+    replies: MutableList<CommentReplyView>?,
+    commentReplyView: CommentReplyView,
+    updatedCommentView: CommentView
+) {
+    val foundIndex = replies?.indexOfFirst {
+        it.comment_reply.id == commentReplyView.comment_reply.id
+    }
+    if (foundIndex != -1 && foundIndex != null) {
+        replies[foundIndex] = replies[foundIndex].copy(
+            my_vote = updatedCommentView.my_vote,
+            counts = updatedCommentView.counts,
+            saved = updatedCommentView.saved,
+            comment = updatedCommentView.comment
+        )
+    }
+}
+
+fun findAndUpdateCommentView(
     comments: MutableList<CommentView>,
     updatedCommentView: CommentView?
 ) {
@@ -276,63 +332,6 @@ fun findAndUpdateComment(
         }
         if (foundIndex != -1) {
             comments[foundIndex] = ucv
-        }
-    }
-}
-
-fun insertCommentIntoTree(
-    commentTree: MutableList<CommentNodeData>,
-    cv: CommentView
-) {
-    var nodeData = CommentNodeData(
-        commentView = cv,
-        children = null,
-        depth = null
-    )
-    cv.comment.parent_id?.also { parentId ->
-        val foundIndex = commentTree.indexOfFirst {
-            it.commentView.comment.id == parentId
-        }
-
-        if (foundIndex != -1) {
-            val parent = commentTree[foundIndex]
-            nodeData.depth = parent.depth?.plus(1) ?: 0
-
-            parent.children?.also { children ->
-                children.add(0, nodeData)
-            } ?: run {
-                commentTree[foundIndex] = parent.copy(children = mutableStateListOf(nodeData))
-            }
-        } else {
-            commentTree.forEach { node ->
-                node.children?.also { children ->
-                    insertCommentIntoTree(children, cv)
-                }
-            }
-        }
-    } ?: run {
-        commentTree.add(0, nodeData)
-    }
-}
-
-fun findAndUpdateCommentInTree(
-    commentTree: SnapshotStateList<CommentNodeData>,
-    cv: CommentView?
-) {
-    cv?.also {
-        val foundIndex = commentTree.indexOfFirst {
-            it.commentView.comment.id == cv.comment.id
-        }
-
-        if (foundIndex != -1) {
-            val updatedComment = commentTree[foundIndex].copy(commentView = cv)
-            commentTree[foundIndex] = updatedComment
-        } else {
-            commentTree.forEach { node ->
-                node.children?.also { children ->
-                    findAndUpdateCommentInTree(children, cv)
-                }
-            }
         }
     }
 }
@@ -359,15 +358,15 @@ fun findAndUpdateMention(
 }
 
 fun fetchRepliesRoutine(
-    replies: MutableList<CommentView>,
+    replies: MutableList<CommentReplyView>,
     loading: MutableState<Boolean>,
     page: MutableState<Int>,
     unreadOnly: MutableState<Boolean>,
-    sortType: MutableState<SortType>,
+    sortType: MutableState<CommentSortType>,
     nextPage: Boolean = false,
     clear: Boolean = false,
     changeUnreadOnly: Boolean? = null,
-    changeSortType: SortType? = null,
+    changeSortType: CommentSortType? = null,
     account: Account,
     ctx: Context,
     scope: CoroutineScope
@@ -394,7 +393,7 @@ fun fetchRepliesRoutine(
             }
 
             val form = GetReplies(
-                sort = sortType.value.toString(),
+                sort = sortType.value,
                 page = page.value,
                 unread_only = unreadOnly.value,
                 auth = account.jwt
@@ -423,11 +422,11 @@ fun fetchPersonMentionsRoutine(
     loading: MutableState<Boolean>,
     page: MutableState<Int>,
     unreadOnly: MutableState<Boolean>,
-    sortType: MutableState<SortType>,
+    sortType: MutableState<CommentSortType>,
     nextPage: Boolean = false,
     clear: Boolean = false,
     changeUnreadOnly: Boolean? = null,
-    changeSortType: SortType? = null,
+    changeSortType: CommentSortType? = null,
     account: Account,
     ctx: Context,
     scope: CoroutineScope
@@ -454,7 +453,7 @@ fun fetchPersonMentionsRoutine(
             }
 
             val form = GetPersonMentions(
-                sort = sortType.value.toString(),
+                sort = sortType.value,
                 page = page.value,
                 unread_only = unreadOnly.value,
                 auth = account.jwt

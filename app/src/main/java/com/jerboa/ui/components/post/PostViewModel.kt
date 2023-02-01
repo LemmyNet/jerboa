@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.jerboa.CommentNodeData
 import com.jerboa.VoteType
 import com.jerboa.api.API
@@ -17,9 +18,8 @@ import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.api.GetComments
 import com.jerboa.datatypes.api.GetPost
-import com.jerboa.datatypes.api.GetPostResponse
 import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import com.jerboa.toastException
@@ -30,11 +30,20 @@ import com.jerboa.ui.components.community.blockCommunityRoutine
 import com.jerboa.ui.components.person.blockPersonRoutine
 import kotlinx.coroutines.launch
 
+const val COMMENTS_DEPTH_MAX = 10
+
+typealias PostId = Int
+typealias CommentId = Int
+
 class PostViewModel : ViewModel() {
 
-    var res by mutableStateOf<GetPostResponse?>(null)
-        private set
     var postView = mutableStateOf<PostView?>(null)
+        private set
+
+    // If this is set, its a comment type view
+    var commentId = mutableStateOf<Int?>(null)
+        private set
+    var comments = mutableStateListOf<CommentView>()
         private set
     var commentTree = mutableStateListOf<CommentNodeData>()
         private set
@@ -44,12 +53,15 @@ class PostViewModel : ViewModel() {
         private set
 
     fun fetchPost(
-        id: Int,
+        id: Either<PostId, CommentId>,
         clear: Boolean = false,
         account: Account?,
         ctx: Context
     ) {
         val api = API.getInstance()
+
+        // Set the commentId for the right case
+        id.fold({ commentId.value = null }, { commentId.value = it })
 
         viewModelScope.launch {
             try {
@@ -63,19 +75,90 @@ class PostViewModel : ViewModel() {
                 }
 
                 loading = true
-                val form = GetPost(id = id, auth = account?.jwt)
-                val out = retrofitErrorHandler(api.getPost(form = form.serializeToMap()))
-                res = out
-                postView.value = out.post_view
+
+                val postForm = id.fold({
+                    GetPost(id = it, auth = account?.jwt)
+                }, {
+                    GetPost(comment_id = it, auth = account?.jwt)
+                })
+
+                val postOut = retrofitErrorHandler(api.getPost(form = postForm.serializeToMap()))
+                postView.value = postOut.post_view
+
+                val commentsForm = id.fold({
+                    GetComments(
+                        max_depth = COMMENTS_DEPTH_MAX,
+                        post_id = it,
+                        auth = account?.jwt
+                    )
+                }, {
+                    GetComments(
+                        max_depth = COMMENTS_DEPTH_MAX,
+                        parent_id = it,
+                        auth = account?.jwt
+                    )
+                })
+
+                val commentsOut = retrofitErrorHandler(
+                    api.getComments(
+                        commentsForm
+                            .serializeToMap()
+                    )
+                )
+                comments.clear()
+                comments.addAll(commentsOut.comments)
+
                 commentTree.clear()
-                commentTree.addAll(buildCommentsTree(out.comments, SortType.Hot))
+                commentTree.addAll(buildCommentsTree(comments, isCommentView()))
                 moderators.clear()
-                moderators.addAll(out.moderators)
+                moderators.addAll(postOut.moderators)
             } catch (e: Exception) {
                 toastException(ctx, e)
             } finally {
                 loading = false
             }
+        }
+    }
+
+    fun isCommentView(): Boolean {
+        return commentId.value != null
+    }
+
+    fun fetchMoreChildren(
+        commentView: CommentView,
+        account: Account?,
+        ctx: Context
+    ) {
+        val api = API.getInstance()
+        val commentId = commentView.comment.id
+
+        viewModelScope.launch {
+            try {
+                Log.d(
+                    "jerboa",
+                    "Fetching more children for comment: $commentId"
+                )
+                val commentsForm = GetComments(
+                    parent_id = commentView.comment.id,
+                    max_depth = COMMENTS_DEPTH_MAX,
+                    auth = account?.jwt
+                )
+                val commentsOut = retrofitErrorHandler(
+                    api.getComments(
+                        commentsForm
+                            .serializeToMap()
+                    )
+                )
+
+                comments.addAll(commentsOut.comments)
+                commentTree.clear()
+                commentTree.addAll(buildCommentsTree(comments, isCommentView()))
+            } catch (e: Exception) {
+                toastException(ctx, e)
+            } // TODO do the more comments loading
+//            finally {
+//            loading = false
+//        }
         }
     }
 
