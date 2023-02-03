@@ -1,3 +1,11 @@
+# Jerboa v0.0.25-alpha Release (2023-02-02)
+
+## What's Changed
+
+- Fix not showing federated comments. Fixes #290 by @dessalines in https://github.com/dessalines/jerboa/pull/294
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.24...0.0.25
+
 # Jerboa v0.0.24-alpha Release (2023-02-01)
 
 ## What's Changed
