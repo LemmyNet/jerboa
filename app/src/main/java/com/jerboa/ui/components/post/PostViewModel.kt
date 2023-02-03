@@ -16,6 +16,7 @@ import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
+import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.GetComments
@@ -88,12 +89,14 @@ class PostViewModel : ViewModel() {
                 val commentsForm = id.fold({
                     GetComments(
                         max_depth = COMMENTS_DEPTH_MAX,
+                        type_ = ListingType.All,
                         post_id = it,
                         auth = account?.jwt
                     )
                 }, {
                     GetComments(
                         max_depth = COMMENTS_DEPTH_MAX,
+                        type_ = ListingType.All,
                         parent_id = it,
                         auth = account?.jwt
                     )
@@ -141,6 +144,7 @@ class PostViewModel : ViewModel() {
                 val commentsForm = GetComments(
                     parent_id = commentView.comment.id,
                     max_depth = COMMENTS_DEPTH_MAX,
+                    type_ = ListingType.All,
                     auth = account?.jwt
                 )
                 val commentsOut = retrofitErrorHandler(
