@@ -14,9 +14,9 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.BookmarkAdd
-import androidx.compose.material.icons.outlined.BookmarkAdded
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
@@ -409,8 +409,8 @@ fun CommentFooterLine(
                 account = account
             )
             ActionBarButton(
-                icon = if (commentView.saved) { Icons.Outlined.BookmarkAdded } else {
-                    Icons.Outlined.BookmarkAdd
+                icon = if (commentView.saved) { Icons.Filled.Bookmark } else {
+                    Icons.Outlined.BookmarkBorder
                 },
                 onClick = { onSaveClick(commentView) },
                 contentColor = if (commentView.saved) {
