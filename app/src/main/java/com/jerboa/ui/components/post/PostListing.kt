@@ -72,8 +72,8 @@ import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.PreviewLines
+import com.jerboa.ui.components.common.ScoreAndTime
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
@@ -157,7 +157,9 @@ fun PostHeaderLine(
                     }
                 }
             }
-            TimeAgo(
+            ScoreAndTime(
+                score = postView.counts.score,
+                myVote = postView.my_vote,
                 published = postView.post.published,
                 updated = postView.post.updated
             )
@@ -466,6 +468,7 @@ fun PostFooterLine(
             votes = upvotes,
             item = postView,
             type = VoteType.Upvote,
+            showNumber = (downvotes != 0),
             onVoteClick = {
                 onUpvoteClick(it)
             },

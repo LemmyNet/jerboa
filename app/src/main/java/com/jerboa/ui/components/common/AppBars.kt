@@ -40,6 +40,8 @@ import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.api.GetUnreadCountResponse
+import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.datatypes.samplePost
 import com.jerboa.db.Account
 import com.jerboa.loginFirstToast
 import com.jerboa.siFormat
@@ -239,20 +241,25 @@ fun CommentOrPostNodeHeader(
                 isCommunityBanned = isCommunityBanned
             )
         }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = score.toString(),
-                color = scoreColor(myVote = myVote),
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(1.1)
-            )
-            DotSpacer(0.dp, MaterialTheme.typography.bodyMedium)
-            TimeAgo(published = published, updated = updated)
-        }
+        ScoreAndTime(score = score, myVote = myVote, published = published, updated = updated)
     }
+}
+
+@Preview
+@Composable
+fun CommentOrPostNodeHeaderPreview() {
+    CommentOrPostNodeHeader(
+        creator = samplePersonSafe,
+        score = 23,
+        myVote = 1,
+        published = samplePost.published,
+        updated = samplePost.updated,
+        deleted = false,
+        onPersonClick = {},
+        isPostCreator = true,
+        isModerator = true,
+        isCommunityBanned = false
+    )
 }
 
 @Composable
