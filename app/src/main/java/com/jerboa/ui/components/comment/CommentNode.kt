@@ -31,6 +31,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -250,16 +251,16 @@ fun LazyListScope.commentNodeItem(
                                 downvotes = downvotes,
                                 account = account
                             )
-                            if (showMoreChildren) {
-                                ShowMoreChildren(
-                                    commentView = commentView,
-                                    onFetchChildrenClick = onFetchChildrenClick
-                                )
-                            }
                         }
                     }
                 }
             }
+        }
+    }
+
+    if (showMoreChildren) {
+        item {
+            ShowMoreChildrenNode(node.depth, commentView, onFetchChildrenClick)
         }
     }
 
@@ -288,6 +289,47 @@ fun LazyListScope.commentNodeItem(
                 account = account,
                 moderators = moderators
             )
+        }
+    }
+}
+
+@Composable
+private fun ShowMoreChildrenNode(
+    depth: Int,
+    commentView: CommentView,
+    onFetchChildrenClick: (commentView: CommentView) -> Unit
+) {
+    val newDepth = depth + 1
+
+    val offset = calculateCommentOffset(newDepth, 4) // The ones with a border on
+    val offset2 = if (newDepth == 0) {
+        LARGE_PADDING
+    } else {
+        XXL_PADDING
+    }
+
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val borderColor = calculateBorderColor(backgroundColor, newDepth)
+    val border = Border(SMALL_PADDING, borderColor)
+
+    Column(
+        modifier = Modifier
+            .padding(
+                start = offset
+            )
+    ) {
+        Divider()
+        Column(
+            modifier = Modifier.border(start = border)
+        ) {
+            Column(
+                modifier = Modifier.padding(start = offset2, end = LARGE_PADDING)
+            ) {
+                ShowMoreChildren(
+                    commentView = commentView,
+                    onFetchChildrenClick = onFetchChildrenClick
+                )
+            }
         }
     }
 }
@@ -567,7 +609,7 @@ fun ShowMoreChildren(
     commentView: CommentView,
     onFetchChildrenClick: (commentView: CommentView) -> Unit
 ) {
-    OutlinedButton(
+    TextButton(
         content = {
             Text("${commentView.counts.child_count} more replies")
         },
