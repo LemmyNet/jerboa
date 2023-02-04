@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.comment
+package com.jerboa.ui.components.comment.replynode
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Flag
@@ -40,6 +39,8 @@ import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.db.Account
+import com.jerboa.ui.components.comment.CommentBody
+import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -74,7 +75,7 @@ fun CommentReplyNodeHeader(
 
 @Preview
 @Composable
-fun CommentReplyHeaderPreview() {
+fun CommentReplyNodeHeaderPreview() {
     CommentReplyNodeHeader(
         commentReplyView = sampleCommentReplyView,
         score = 23,
@@ -84,7 +85,7 @@ fun CommentReplyHeaderPreview() {
 }
 
 @Composable
-fun CommentReplyFooterLine(
+fun CommentReplyNodeFooterLine(
     commentReplyView: CommentReplyView,
     onUpvoteClick: (commentReplyView: CommentReplyView) -> Unit,
     onDownvoteClick: (commentReplyView: CommentReplyView) -> Unit,
@@ -103,7 +104,7 @@ fun CommentReplyFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showMoreOptions) {
-        CommentReplyOptionsDialog(
+        CommentReplyNodeOptionsDialog(
             commentReplyView = commentReplyView,
             onDismissRequest = { showMoreOptions = false },
             onViewSourceClick = {
@@ -197,7 +198,7 @@ fun CommentReplyFooterLine(
 }
 
 @Composable
-fun CommentReplyOptionsDialog(
+fun CommentReplyNodeOptionsDialog(
     commentReplyView: CommentReplyView,
     onDismissRequest: () -> Unit,
     onViewSourceClick: () -> Unit,
@@ -299,7 +300,7 @@ fun CommentReplyNode(
                     comment = commentReplyView.comment,
                     viewSource = viewSource
                 )
-                CommentReplyFooterLine(
+                CommentReplyNodeFooterLine(
                     commentReplyView = commentReplyView,
                     onUpvoteClick = {
                         onUpvoteClick(it)
