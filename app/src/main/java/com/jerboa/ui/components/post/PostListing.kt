@@ -76,6 +76,7 @@ import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
+import com.jerboa.ui.theme.CARD_COLORS
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
@@ -309,6 +310,7 @@ fun PostTitleAndThumbnail(
                 )
             } ?: run {
                 Card(
+                    colors = CARD_COLORS,
                     modifier = postLinkPicMod,
                     shape = MaterialTheme.shapes.large
                 ) {
@@ -352,6 +354,7 @@ fun PostBody(
         // The desc
         body?.also { text ->
             Card(
+                colors = CARD_COLORS,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
@@ -662,7 +665,8 @@ fun PostListing(
     account: Account?
 ) {
     Column(
-        modifier = Modifier.padding(vertical = MEDIUM_PADDING)
+        modifier = Modifier
+            .padding(vertical = MEDIUM_PADDING)
             .clickable { onPostClick(postView) },
         verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
     ) {

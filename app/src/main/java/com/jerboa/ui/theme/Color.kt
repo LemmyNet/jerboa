@@ -1,6 +1,8 @@
 package com.jerboa.ui.theme
 
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -270,3 +272,6 @@ fun green(): Pair<ColorScheme, ColorScheme> {
 
 // TODO check this
 val Color.muted @Composable get() = this.copy(alpha = 0.5F)
+
+val CARD_COLORS @Composable
+get() = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
