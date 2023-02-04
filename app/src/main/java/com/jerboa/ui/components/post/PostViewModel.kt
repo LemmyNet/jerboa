@@ -31,7 +31,7 @@ import com.jerboa.ui.components.community.blockCommunityRoutine
 import com.jerboa.ui.components.person.blockPersonRoutine
 import kotlinx.coroutines.launch
 
-const val COMMENTS_DEPTH_MAX = 10
+const val COMMENTS_DEPTH_MAX = 6
 
 typealias PostId = Int
 typealias CommentId = Int
@@ -154,7 +154,11 @@ class PostViewModel : ViewModel() {
                     )
                 )
 
-                comments.addAll(commentsOut.comments)
+                // Remove the first comment, since it is a parent
+                val newComments = commentsOut.comments.toMutableList()
+                newComments.removeAt(0)
+
+                comments.addAll(newComments)
                 commentTree.clear()
                 commentTree.addAll(buildCommentsTree(comments, isCommentView()))
             } catch (e: Exception) {
