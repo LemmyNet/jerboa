@@ -288,7 +288,7 @@ fun ActionBarButton(
     val barMod = if (noClick) {
         Modifier
     } else {
-        Modifier.clickable(onClick = {
+        Modifier.bounceClick().clickable(onClick = {
             if (account !== null) {
                 onClick()
             } else {
