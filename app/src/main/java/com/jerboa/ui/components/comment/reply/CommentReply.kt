@@ -23,7 +23,7 @@ import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.CommentNodeHeader
-import com.jerboa.ui.components.comment.CommentReplyNodeHeader
+import com.jerboa.ui.components.comment.replynode.CommentReplyNodeHeader
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
