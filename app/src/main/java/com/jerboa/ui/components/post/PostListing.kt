@@ -13,9 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.BookmarkAdd
-import androidx.compose.material.icons.outlined.BookmarkAdded
+import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.Delete
@@ -481,8 +482,8 @@ fun PostFooterLine(
             account = account
         )
         ActionBarButton(
-            icon = if (postView.saved) { Icons.Outlined.BookmarkAdded } else {
-                Icons.Outlined.BookmarkAdd
+            icon = if (postView.saved) { Icons.Filled.Bookmark } else {
+                Icons.Outlined.BookmarkBorder
             },
             onClick = { onSaveClick(postView) },
             contentColor = if (postView.saved) {
