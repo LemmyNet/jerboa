@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.post
 
 import android.widget.Toast
@@ -63,6 +61,7 @@ import com.jerboa.db.Account
 import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
+import com.jerboa.nsfwCheck
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -252,6 +251,7 @@ fun PostTitleAndImageLink(
             .clickable { onPostLinkClick(url) }
         PictrsUrlImage(
             url = url,
+            nsfw = nsfwCheck(postView),
             modifier = postLinkPicMod
         )
     }
@@ -309,6 +309,7 @@ fun PostTitleAndThumbnail(
             post.thumbnail_url?.also { thumbnail ->
                 PictrsThumbnailImage(
                     thumbnail = thumbnail,
+                    nsfw = nsfwCheck(postView),
                     modifier = postLinkPicMod
                 )
             } ?: run {
@@ -712,6 +713,7 @@ fun PostListing(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun PostListingHeaderPreview() {
