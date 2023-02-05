@@ -24,6 +24,7 @@ import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
 fun PostListings(
@@ -90,7 +91,7 @@ fun PostListings(
                     isModerator = false, // TODO can't know with many posts
                     fullBody = false
                 )
-                Divider()
+                Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
             }
         }
     }

@@ -536,7 +536,7 @@ fun CommentCount(
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(
                 text = "( $unread new )",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.tertiary
             )
         }

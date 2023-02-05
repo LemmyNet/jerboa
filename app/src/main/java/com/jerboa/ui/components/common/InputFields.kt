@@ -662,7 +662,7 @@ fun PreviewLines(
 ) {
     Text(
         text = text,
-        style = MaterialTheme.typography.bodySmall,
+        style = MaterialTheme.typography.bodyMedium,
         maxLines = 5,
         overflow = TextOverflow.Ellipsis,
         modifier = modifier
