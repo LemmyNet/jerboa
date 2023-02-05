@@ -297,7 +297,7 @@ suspend fun followCommunityWrapper(
         // name and avatar
         val form = FollowCommunity(
             community_id = communityView.community.id,
-            follow = communityView.subscribed != SubscribedType.Subscribed,
+            follow = communityView.subscribed == SubscribedType.NotSubscribed,
             auth = auth
         )
         communityRes = retrofitErrorHandler(api.followCommunity(form))
