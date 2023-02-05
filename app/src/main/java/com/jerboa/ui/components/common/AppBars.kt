@@ -213,7 +213,10 @@ fun CommentOrPostNodeHeader(
         crossAxisAlignment = FlowCrossAxisAlignment.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = LARGE_PADDING)
+            .padding(
+                top = LARGE_PADDING,
+                bottom = MEDIUM_PADDING
+            )
             .combinedClickable(
                 onLongClick = onLongClick,
                 onClick = {}

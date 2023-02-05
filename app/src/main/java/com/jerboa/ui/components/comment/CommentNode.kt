@@ -202,7 +202,10 @@ fun LazyListScope.commentNodeItem(
                 modifier = Modifier.border(start = border)
             ) {
                 Column(
-                    modifier = Modifier.padding(start = offset2, end = LARGE_PADDING)
+                    modifier = Modifier.padding(
+                        start = offset2,
+                        end = LARGE_PADDING
+                    )
                 ) {
                     if (showPostAndCommunityContext) {
                         PostAndCommunityContextHeader(
