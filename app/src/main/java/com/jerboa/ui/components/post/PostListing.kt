@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
@@ -27,6 +27,7 @@ import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -462,6 +463,7 @@ fun PostFooterLine(
     ) {
         CommentCount(
             comments = postView.counts.comments,
+            unreadCount = postView.unread_comments,
             account = account
         )
         VoteGeneric(
@@ -515,21 +517,36 @@ fun PostFooterLine(
 @Composable
 fun CommentCount(
     comments: Int,
+    unreadCount: Int,
     account: Account?
 ) {
-    ActionBarButton(
-        icon = Icons.Outlined.ChatBubbleOutline,
-        text = "$comments",
-        noClick = true,
-        account = account,
-        onClick = {}
-    )
+    val unread = if (unreadCount == 0 || comments == unreadCount) { null } else { unreadCount }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ActionBarButton(
+            icon = Icons.Outlined.ChatBubbleOutline,
+            text = comments.toString(),
+            noClick = true,
+            account = account,
+            onClick = {} // This is handled by the whole button click
+        )
+        if (unread != null) {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            Text(
+                text = "( $unread new )",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.tertiary
+            )
+        }
+    }
 }
 
 @Preview
 @Composable
 fun CommentCountPreview() {
-    CommentCount(42, account = null)
+    CommentCount(42, 0, account = null)
 }
 
 @Preview
