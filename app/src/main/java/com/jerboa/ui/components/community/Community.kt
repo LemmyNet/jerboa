@@ -2,7 +2,6 @@
 
 package com.jerboa.ui.components.community
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -10,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -62,19 +60,6 @@ fun CommunityTopSection(
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Icon(
-                    imageVector = Icons.Outlined.CheckCircle,
-                    contentDescription = "TODO",
-                    tint = if (communityView.subscribed == SubscribedType.Subscribed) {
-                        Color.Green
-                    } else {
-                        MaterialTheme.colorScheme.onBackground.muted
-                    },
-                    modifier = Modifier
-                        .height(ACTION_BAR_ICON_SIZE)
-                        .clickable { onClickFollowCommunity(communityView) }
-                )
             }
             Row {
                 Text(
@@ -82,6 +67,39 @@ fun CommunityTopSection(
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground.muted
                 )
+            }
+            Row {
+                when (communityView.subscribed) {
+                    SubscribedType.Subscribed -> {
+                        OutlinedButton(
+                            onClick = { onClickFollowCommunity(communityView) }
+                        ) {
+                            Text("Joined")
+                            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                            Icon(
+                                imageVector = Icons.Outlined.CheckCircle,
+                                contentDescription = "TODO",
+                                modifier = Modifier
+                                    .height(ACTION_BAR_ICON_SIZE)
+                            )
+                        }
+                    }
+                    SubscribedType.NotSubscribed -> {
+                        Button(
+                            onClick = { onClickFollowCommunity(communityView) }
+                        ) {
+                            Text("Subscribe")
+                        }
+                    }
+
+                    SubscribedType.Pending -> {
+                        Button(
+                            onClick = { onClickFollowCommunity(communityView) }
+                        ) {
+                            Text("Pending")
+                        }
+                    }
+                }
             }
         }
     }
