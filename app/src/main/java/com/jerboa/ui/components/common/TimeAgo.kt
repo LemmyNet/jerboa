@@ -79,8 +79,6 @@ fun ScoreAndTime(
     published: String,
     updated: String?
 ) {
-    val expandSize = if (myVote == 0) { 1.0 } else { 1.3 }
-
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         verticalAlignment = Alignment.CenterVertically
@@ -88,7 +86,7 @@ fun ScoreAndTime(
         Text(
             text = score.toString(),
             color = scoreColor(myVote = myVote),
-            fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(expandSize)
+            fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3)
         )
         DotSpacer(0.dp, MaterialTheme.typography.bodyMedium)
         TimeAgo(published = published, updated = updated)
