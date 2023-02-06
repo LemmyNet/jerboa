@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.home
 
 import android.content.Context
@@ -48,6 +46,7 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import kotlinx.coroutines.CoroutineScope
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeActivity(
     navController: NavController,
@@ -103,6 +102,7 @@ fun HomeActivity(
                     MainPostListingsContent(
                         padding = padding,
                         homeViewModel = homeViewModel,
+                        siteViewModel = siteViewModel,
                         postEditViewModel = postEditViewModel,
                         account = account,
                         ctx = ctx,
@@ -160,6 +160,7 @@ fun HomeActivity(
 @Composable
 fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
+    siteViewModel: SiteViewModel,
     postEditViewModel: PostEditViewModel,
     account: Account?,
     ctx: Context,
@@ -171,6 +172,7 @@ fun MainPostListingsContent(
         listState = postListState,
         padding = padding,
         posts = homeViewModel.posts,
+        taglines = siteViewModel.siteRes?.taglines,
         onUpvoteClick = { postView ->
             homeViewModel.likePost(
                 voteType = VoteType.Upvote,
@@ -265,6 +267,7 @@ fun MainPostListingsContent(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainDrawer(
     siteViewModel: SiteViewModel,
@@ -359,6 +362,7 @@ fun MainDrawer(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
     scope: CoroutineScope,

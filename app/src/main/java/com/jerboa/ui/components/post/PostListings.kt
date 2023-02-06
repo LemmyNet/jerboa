@@ -20,10 +20,12 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.Tagline
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.home.Tagline
 import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
@@ -48,7 +50,8 @@ fun PostListings(
     account: Account?,
     showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
-    listState: LazyListState
+    listState: LazyListState,
+    taglines: List<Tagline>?
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
@@ -60,6 +63,9 @@ fun PostListings(
                 .padding(padding)
                 .simpleVerticalScrollbar(listState)
         ) {
+            item {
+                taglines?.let { Tagline(it) }
+            }
             // TODO this should be a .also?
             item {
                 contentAboveListings()
@@ -116,21 +122,22 @@ fun PostListings(
 fun PreviewPostListings() {
     PostListings(
         posts = listOf(samplePostView, samplePostView),
-        account = null,
-        onReportClick = {},
-        isScrolledToEnd = {},
-        onCommunityClick = {},
+        onUpvoteClick = {},
+        onDownvoteClick = {},
+        onPostClick = {},
+        onPostLinkClick = {},
+        onSaveClick = {},
         onEditPostClick = {},
         onDeletePostClick = {},
-        onDownvoteClick = {},
-        onUpvoteClick = {},
+        onReportClick = {},
+        onCommunityClick = {},
         onPersonClick = {},
-        onSaveClick = {},
-        onPostLinkClick = {},
-        onPostClick = {},
-        onSwipeRefresh = {},
-        onBlockCreatorClick = {},
         onBlockCommunityClick = {},
-        listState = rememberLazyListState()
+        onBlockCreatorClick = {},
+        onSwipeRefresh = {},
+        isScrolledToEnd = {},
+        account = null,
+        listState = rememberLazyListState(),
+        taglines = null
     )
 }

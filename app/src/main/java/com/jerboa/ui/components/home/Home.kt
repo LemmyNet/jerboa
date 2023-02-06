@@ -64,6 +64,7 @@ import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.Tagline
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.api.MyUserInfo
 import com.jerboa.datatypes.samplePersonSafe
@@ -72,6 +73,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
+import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
@@ -581,4 +583,14 @@ fun HomeMoreDialog(
         },
         confirmButton = {}
     )
+}
+
+@Composable
+fun Tagline(taglines: List<Tagline>) {
+    val tagline by remember { mutableStateOf(taglines.random()) }
+    Column(
+        Modifier.padding(LARGE_PADDING)
+    ) {
+        MyMarkdownText(markdown = tagline.content)
+    }
 }

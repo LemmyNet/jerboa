@@ -265,7 +265,6 @@ fun UserTabs(
                 UserTab.Posts.ordinal -> {
                     PostListings(
                         posts = personProfileViewModel.posts,
-                        listState = postListState,
                         onUpvoteClick = { postView ->
                             personProfileViewModel.likePost(
                                 voteType = VoteType.Upvote,
@@ -281,24 +280,6 @@ fun UserTabs(
                                 account = account,
                                 ctx = ctx
                             )
-                        },
-                        onBlockCommunityClick = {
-                            account?.also { acct ->
-                                personProfileViewModel.blockCommunity(
-                                    community = it,
-                                    account = acct,
-                                    ctx = ctx
-                                )
-                            }
-                        },
-                        onBlockCreatorClick = {
-                            account?.also { acct ->
-                                personProfileViewModel.blockPerson(
-                                    person = it,
-                                    account = acct,
-                                    ctx = ctx
-                                )
-                            }
                         },
                         onPostClick = { postView ->
                             navController.navigate(route = "post/${postView.post.id}")
@@ -337,6 +318,24 @@ fun UserTabs(
                         onPersonClick = { personId ->
                             navController.navigate(route = "profile/$personId")
                         },
+                        onBlockCommunityClick = {
+                            account?.also { acct ->
+                                personProfileViewModel.blockCommunity(
+                                    community = it,
+                                    account = acct,
+                                    ctx = ctx
+                                )
+                            }
+                        },
+                        onBlockCreatorClick = {
+                            account?.also { acct ->
+                                personProfileViewModel.blockPerson(
+                                    person = it,
+                                    account = acct,
+                                    ctx = ctx
+                                )
+                            }
+                        },
                         onSwipeRefresh = {
                             personProfileViewModel.res?.person_view?.person?.id?.also {
                                 personProfileViewModel.fetchPersonDetails(
@@ -364,7 +363,9 @@ fun UserTabs(
                                 }
                             }
                         },
-                        account = account
+                        account = account,
+                        listState = postListState,
+                        taglines = null
                     )
                 }
                 UserTab.Comments.ordinal -> {
