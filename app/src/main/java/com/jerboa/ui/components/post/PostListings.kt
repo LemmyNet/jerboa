@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.jerboa.PostViewMode
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
@@ -51,7 +52,8 @@ fun PostListings(
     showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
     listState: LazyListState,
-    taglines: List<Tagline>?
+    taglines: List<Tagline>?,
+    postViewMode: PostViewMode
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
@@ -80,6 +82,7 @@ fun PostListings(
             ) { postView ->
                 PostListing(
                     postView = postView,
+                    postViewMode = postViewMode,
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
                     onPostClick = onPostClick,
@@ -138,6 +141,7 @@ fun PreviewPostListings() {
         isScrolledToEnd = {},
         account = null,
         listState = rememberLazyListState(),
-        taglines = null
+        taglines = null,
+        postViewMode = PostViewMode.Card
     )
 }

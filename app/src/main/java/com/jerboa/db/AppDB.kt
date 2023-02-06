@@ -58,7 +58,12 @@ data class AppSettings(
         name = "viewed_changelog",
         defaultValue = "0"
     )
-    val viewedChangelog: Int
+    val viewedChangelog: Int,
+    @ColumnInfo(
+        name = "post_view_mode",
+        defaultValue = "0"
+    )
+    val postViewMode: Int
 )
 
 @Dao
@@ -92,6 +97,9 @@ interface AppSettingsDao {
 
     @Query("UPDATE AppSettings set viewed_changelog = 1")
     suspend fun markChangelogViewed()
+
+    @Query("UPDATE AppSettings set post_view_mode = :postViewMode")
+    suspend fun updatePostViewMode(postViewMode: Int)
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -146,6 +154,11 @@ class AppSettingsRepository(private val appSettingsDao: AppSettingsDao) {
     @WorkerThread
     suspend fun markChangelogViewed() {
         appSettingsDao.markChangelogViewed()
+    }
+
+    @WorkerThread
+    suspend fun updatePostViewMode(postViewMode: Int) {
+        appSettingsDao.updatePostViewMode(postViewMode)
     }
 }
 
@@ -228,9 +241,17 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
     }
 }
+val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "alter table AppSettings add column post_view_mode INTEGER NOT NULL default 0"
+        )
+    }
+}
 
 @Database(
-    version = 7,
+    version = 8,
     entities = [Account::class, AppSettings::class],
     exportSchema = true
 )
@@ -260,7 +281,8 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_3_4,
                         MIGRATION_4_5,
                         MIGRATION_5_6,
-                        MIGRATION_6_7
+                        MIGRATION_6_7,
+                        MIGRATION_7_8
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
@@ -329,6 +351,10 @@ class AppSettingsViewModel(private val repository: AppSettingsRepository) : View
 
     fun markChangelogViewed() = viewModelScope.launch {
         repository.markChangelogViewed()
+    }
+
+    fun updatedPostViewMode(postViewMode: Int) = viewModelScope.launch {
+        repository.updatePostViewMode(postViewMode)
     }
 }
 

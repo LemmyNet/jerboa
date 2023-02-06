@@ -28,11 +28,13 @@ import androidx.navigation.NavController
 import arrow.core.Either
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.post.PostListings
@@ -45,7 +47,8 @@ fun CommunityActivity(
     communityListViewModel: CommunityListViewModel,
     accountViewModel: AccountViewModel,
     homeViewModel: HomeViewModel,
-    postEditViewModel: PostEditViewModel
+    postEditViewModel: PostEditViewModel,
+    appSettingsViewModel: AppSettingsViewModel
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -219,7 +222,8 @@ fun CommunityActivity(
                 showCommunityName = false,
                 padding = it,
                 listState = postListState,
-                taglines = null
+                taglines = null,
+                postViewMode = getPostViewMode(appSettingsViewModel)
             )
         },
         floatingActionButtonPosition = FabPosition.End,

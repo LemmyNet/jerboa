@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.settings.lookandfeel
 
 import android.util.Log
@@ -23,6 +21,7 @@ import com.alorma.compose.settings.storage.base.rememberFloatSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsSlider
+import com.jerboa.PostViewMode
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.AppSettings
@@ -30,6 +29,7 @@ import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.DEFAULT_FONT_SIZE
 import com.jerboa.ui.components.common.SimpleTopAppBar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LookAndFeelActivity(
     navController: NavController,
@@ -44,6 +44,7 @@ fun LookAndFeelActivity(
         settings?.fontSize?.toFloat()
             ?: DEFAULT_FONT_SIZE.toFloat()
     )
+    val postViewModeState = rememberIntSettingState(settings?.postViewMode ?: 0)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -72,7 +73,8 @@ fun LookAndFeelActivity(
                             appSettingsViewModel,
                             fontSizeState,
                             themeState,
-                            themeColorState
+                            themeColorState,
+                            postViewModeState
                         )
                     }
                 )
@@ -93,7 +95,8 @@ fun LookAndFeelActivity(
                             appSettingsViewModel,
                             fontSizeState,
                             themeState,
-                            themeColorState
+                            themeColorState,
+                            postViewModeState
                         )
                     }
                 )
@@ -114,7 +117,30 @@ fun LookAndFeelActivity(
                             appSettingsViewModel,
                             fontSizeState,
                             themeState,
-                            themeColorState
+                            themeColorState,
+                            postViewModeState
+                        )
+                    }
+                )
+                SettingsList(
+                    state = postViewModeState,
+                    items = PostViewMode.values().map { it.mode },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.ViewList,
+                            contentDescription = "TODO"
+                        )
+                    },
+                    title = {
+                        Text(text = "Post View")
+                    },
+                    action = {
+                        updateAppSettings(
+                            appSettingsViewModel,
+                            fontSizeState,
+                            themeState,
+                            themeColorState,
+                            postViewModeState
                         )
                     }
                 )
@@ -127,7 +153,8 @@ private fun updateAppSettings(
     appSettingsViewModel: AppSettingsViewModel,
     fontSizeState: SettingValueState<Float>,
     themeState: SettingValueState<Int>,
-    themeColorState: SettingValueState<Int>
+    themeColorState: SettingValueState<Int>,
+    postViewModeState: SettingValueState<Int>
 ) {
     appSettingsViewModel.update(
         AppSettings(
@@ -135,7 +162,8 @@ private fun updateAppSettings(
             fontSize = fontSizeState.value.toInt(),
             theme = themeState.value,
             themeColor = themeColorState.value,
-            viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0
+            viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
+            postViewMode = postViewModeState.value
         )
     )
 }
