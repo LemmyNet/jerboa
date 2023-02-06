@@ -293,7 +293,14 @@ fun InboxTabs(
                                         navController.navigate("commentReport/${commentView.comment.id}")
                                     },
                                     onCommentLinkClick = { commentView ->
-                                        navController.navigate("comment/${commentView.comment.id}")
+                                        // Go to the parent comment or post instead for context
+                                        val parent = getCommentParentId(commentView.comment)
+                                        val route = if (parent != null) {
+                                            "comment/$parent"
+                                        } else {
+                                            "post/${commentView.post.id}"
+                                        }
+                                        navController.navigate(route)
                                     },
                                     onPersonClick = { personId ->
                                         navController.navigate(route = "profile/$personId")
