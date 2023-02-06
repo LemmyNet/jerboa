@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import arrow.core.Either
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.jerboa.PostViewMode
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCommentParentId
@@ -117,7 +118,6 @@ fun PostActivity(
                         item {
                             PostListing(
                                 postView = postView,
-                                showCommunityName = true,
                                 onUpvoteClick = {
                                     postViewModel.likePost(
                                         voteType = VoteType.Upvote,
@@ -134,6 +134,14 @@ fun PostActivity(
                                         ctx = ctx
                                     )
                                 },
+                                onReplyClick = { postView ->
+                                    commentReplyViewModel.initialize(ReplyItem.PostItem(postView))
+                                    navController.navigate("commentReply")
+                                },
+                                onPostClick = {},
+                                onPostLinkClick = { url ->
+                                    openLink(url, ctx)
+                                },
                                 onSaveClick = {
                                     account?.also { acct ->
                                         postViewModel.savePost(
@@ -141,6 +149,27 @@ fun PostActivity(
                                             ctx = ctx
                                         )
                                     }
+                                },
+                                onCommunityClick = { community ->
+                                    navController.navigate(route = "community/${community.id}")
+                                },
+                                onEditPostClick = { postView ->
+                                    postEditViewModel.initialize(postView)
+                                    navController.navigate("postEdit")
+                                },
+                                onDeletePostClick = {
+                                    account?.also { acct ->
+                                        postViewModel.deletePost(
+                                            account = acct,
+                                            ctx = ctx
+                                        )
+                                    }
+                                },
+                                onReportClick = { postView ->
+                                    navController.navigate("postReport/${postView.post.id}")
+                                },
+                                onPersonClick = { personId ->
+                                    navController.navigate(route = "profile/$personId")
                                 },
                                 onBlockCommunityClick = {
                                     account?.also { acct ->
@@ -159,43 +188,16 @@ fun PostActivity(
                                         )
                                     }
                                 },
-                                onReplyClick = { postView ->
-                                    commentReplyViewModel.initialize(ReplyItem.PostItem(postView))
-                                    navController.navigate("commentReply")
-                                },
-                                onPostLinkClick = { url ->
-                                    openLink(url, ctx)
-                                },
-                                onCommunityClick = { community ->
-                                    navController.navigate(route = "community/${community.id}")
-                                },
-                                onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
-                                },
-                                onEditPostClick = { postView ->
-                                    postEditViewModel.initialize(postView)
-                                    navController.navigate("postEdit")
-                                },
-                                onDeletePostClick = {
-                                    account?.also { acct ->
-                                        postViewModel.deletePost(
-                                            account = acct,
-                                            ctx = ctx
-                                        )
-                                    }
-                                },
-                                onReportClick = { postView ->
-                                    navController.navigate("postReport/${postView.post.id}")
-                                },
-                                onPostClick = {}, // Do nothing
-                                showReply = true,
-                                account = account,
+                                showReply = true, // Do nothing
                                 isModerator = isModerator(
                                     postView.creator,
                                     postViewModel
                                         .moderators
                                 ),
-                                fullBody = true
+                                showCommunityName = true,
+                                fullBody = true,
+                                account = account,
+                                postViewMode = PostViewMode.Card
                             )
                         }
                         item {

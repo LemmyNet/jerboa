@@ -36,12 +36,14 @@ import com.jerboa.VoteType
 import com.jerboa.closeDrawer
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.fetchInitialData
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -53,7 +55,8 @@ fun HomeActivity(
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    postEditViewModel: PostEditViewModel
+    postEditViewModel: PostEditViewModel,
+    appSettingsViewModel: AppSettingsViewModel
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -92,6 +95,7 @@ fun HomeActivity(
                         postListState = postListState,
                         drawerState = drawerState,
                         homeViewModel = homeViewModel,
+                        appSettingsViewModel = appSettingsViewModel,
                         account = account,
                         ctx = ctx,
                         navController = navController,
@@ -104,6 +108,7 @@ fun HomeActivity(
                         homeViewModel = homeViewModel,
                         siteViewModel = siteViewModel,
                         postEditViewModel = postEditViewModel,
+                        appSettingsViewModel = appSettingsViewModel,
                         account = account,
                         ctx = ctx,
                         navController = navController,
@@ -166,13 +171,15 @@ fun MainPostListingsContent(
     ctx: Context,
     navController: NavController,
     padding: PaddingValues,
-    postListState: LazyListState
+    postListState: LazyListState,
+    appSettingsViewModel: AppSettingsViewModel
 ) {
     PostListings(
         listState = postListState,
         padding = padding,
         posts = homeViewModel.posts,
         taglines = siteViewModel.siteRes?.taglines,
+        postViewMode = getPostViewMode(appSettingsViewModel),
         onUpvoteClick = { postView ->
             homeViewModel.likePost(
                 voteType = VoteType.Upvote,
@@ -369,6 +376,7 @@ fun MainTopBar(
     postListState: LazyListState,
     drawerState: DrawerState,
     homeViewModel: HomeViewModel,
+    appSettingsViewModel: AppSettingsViewModel,
     account: Account?,
     ctx: Context,
     navController: NavController,
@@ -382,6 +390,7 @@ fun MainTopBar(
             navController = navController,
             selectedSortType = homeViewModel.sortType.value,
             selectedListingType = homeViewModel.listingType.value,
+            selectedPostViewMode = getPostViewMode(appSettingsViewModel),
             onClickSortType = { sortType ->
                 scrollToTop(scope, postListState)
                 homeViewModel.fetchPosts(
@@ -399,6 +408,9 @@ fun MainTopBar(
                     changeListingType = listingType,
                     ctx = ctx
                 )
+            },
+            onClickPostViewMode = {
+                appSettingsViewModel.updatedPostViewMode(it.ordinal)
             },
             onClickRefresh = {
                 scrollToTop(scope, postListState)

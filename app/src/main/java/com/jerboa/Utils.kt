@@ -630,6 +630,24 @@ enum class ThemeColor {
     Pink
 }
 
+enum class PostViewMode(val mode: String) {
+    /**
+     * The full size post view card. For image posts, this expands them to their full height. For
+     * link posts, the thumbnail is shown to the right of the title.
+     */
+    Card("Card"),
+
+    /**
+     * The same as regular card, except image posts only show a thumbnail image.
+     */
+    SmallCard("Small Card"),
+
+    /**
+     * A list view that has no action bar.
+     */
+    List("List")
+}
+
 @ExperimentalPagerApi
 fun Modifier.pagerTabIndicatorOffset2(
     pagerState: PagerState,

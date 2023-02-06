@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa
 
 import android.app.Application
@@ -11,7 +9,6 @@ import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -144,7 +141,8 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            postEditViewModel = postEditViewModel
+                            postEditViewModel = postEditViewModel,
+                            appSettingsViewModel = appSettingsViewModel
                         )
                     }
                     composable(
@@ -178,7 +176,8 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
                             postEditViewModel = postEditViewModel,
-                            communityListViewModel = communityListViewModel
+                            communityListViewModel = communityListViewModel,
+                            appSettingsViewModel = appSettingsViewModel
                         )
                     }
                     // Only necessary for community deeplinks
@@ -213,10 +212,11 @@ class MainActivity : ComponentActivity() {
                         CommunityActivity(
                             navController = navController,
                             communityViewModel = communityViewModel,
+                            communityListViewModel = communityListViewModel,
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
                             postEditViewModel = postEditViewModel,
-                            communityListViewModel = communityListViewModel
+                            appSettingsViewModel = appSettingsViewModel
                         )
                     }
                     composable(
@@ -254,7 +254,8 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
-                            postEditViewModel = postEditViewModel
+                            postEditViewModel = postEditViewModel,
+                            appSettingsViewModel = appSettingsViewModel
                         )
                     }
                     // Necessary for deep links
@@ -289,7 +290,8 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
-                            postEditViewModel = postEditViewModel
+                            postEditViewModel = postEditViewModel,
+                            appSettingsViewModel = appSettingsViewModel
                         )
                     }
                     composable(

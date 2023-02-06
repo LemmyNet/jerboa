@@ -34,6 +34,7 @@ import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Sort
+import androidx.compose.material.icons.outlined.ViewAgenda
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
@@ -60,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.PostViewMode
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PersonSafe
@@ -75,6 +77,7 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -431,8 +434,10 @@ fun HomeHeader(
     onClickSortType: (SortType) -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onClickRefresh: () -> Unit,
+    onClickPostViewMode: (PostViewMode) -> Unit,
     selectedSortType: SortType,
     selectedListingType: ListingType,
+    selectedPostViewMode: PostViewMode,
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
@@ -440,6 +445,7 @@ fun HomeHeader(
     var showTopOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
+    var showPostViewModeOptions by remember { mutableStateOf(false) }
 
     if (showSortOptions) {
         SortOptionsDialog(
@@ -482,7 +488,22 @@ fun HomeHeader(
         HomeMoreDialog(
             onDismissRequest = { showMoreOptions = false },
             onClickRefresh = onClickRefresh,
+            onClickShowPostViewModeDialog = {
+                showMoreOptions = false
+                showPostViewModeOptions = !showPostViewModeOptions
+            },
             navController = navController
+        )
+    }
+
+    if (showPostViewModeOptions) {
+        PostViewModeDialog(
+            onDismissRequest = { showPostViewModeOptions = false },
+            selectedPostViewMode = selectedPostViewMode,
+            onClickPostViewMode = {
+                showPostViewModeOptions = false
+                onClickPostViewMode(it)
+            }
         )
     }
     TopAppBar(
@@ -546,8 +567,10 @@ fun HomeHeaderPreview() {
         onClickSortType = {},
         onClickListingType = {},
         onClickRefresh = {},
+        onClickPostViewMode = {},
         selectedSortType = SortType.Hot,
         selectedListingType = ListingType.All,
+        selectedPostViewMode = PostViewMode.Card,
         navController = rememberNavController(),
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     )
@@ -557,7 +580,8 @@ fun HomeHeaderPreview() {
 fun HomeMoreDialog(
     onDismissRequest: () -> Unit,
     navController: NavController,
-    onClickRefresh: () -> Unit
+    onClickRefresh: () -> Unit,
+    onClickShowPostViewModeDialog: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -569,6 +593,14 @@ fun HomeMoreDialog(
                     onClick = {
                         onDismissRequest()
                         onClickRefresh()
+                    }
+                )
+                IconAndTextDrawerItem(
+                    text = "Post View Mode",
+                    icon = Icons.Outlined.ViewAgenda,
+                    onClick = {
+                        onDismissRequest()
+                        onClickShowPostViewModeDialog()
                     }
                 )
                 IconAndTextDrawerItem(

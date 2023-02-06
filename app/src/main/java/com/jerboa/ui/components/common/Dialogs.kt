@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.PostViewMode
 import com.jerboa.UnreadOrAll
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
@@ -222,6 +223,29 @@ fun UnreadOrAllOptionsDialog(
                     onClick = { onClickUnreadOrAll(UnreadOrAll.Unread) },
                     highlight = (selectedUnreadOrAll == UnreadOrAll.Unread)
                 )
+            }
+        },
+        confirmButton = {}
+    )
+}
+
+@Composable
+fun PostViewModeDialog(
+    onDismissRequest: () -> Unit,
+    onClickPostViewMode: (PostViewMode) -> Unit,
+    selectedPostViewMode: PostViewMode
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                PostViewMode.values().map {
+                    IconAndTextDrawerItem(
+                        text = it.mode,
+                        onClick = { onClickPostViewMode(it) },
+                        highlight = (selectedPostViewMode == it)
+                    )
+                }
             }
         },
         confirmButton = {}

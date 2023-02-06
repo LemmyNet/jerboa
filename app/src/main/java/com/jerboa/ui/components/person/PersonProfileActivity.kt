@@ -26,6 +26,7 @@ import com.jerboa.VoteType
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
@@ -37,6 +38,7 @@ import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.home.HomeViewModel
@@ -55,7 +57,8 @@ fun PersonProfileActivity(
     homeViewModel: HomeViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
-    postEditViewModel: PostEditViewModel
+    postEditViewModel: PostEditViewModel,
+    appSettingsViewModel: AppSettingsViewModel
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -120,7 +123,8 @@ fun PersonProfileActivity(
                 postListState = postListState,
                 commentEditViewModel = commentEditViewModel,
                 commentReplyViewModel = commentReplyViewModel,
-                postEditViewModel = postEditViewModel
+                postEditViewModel = postEditViewModel,
+                appSettingsViewModel = appSettingsViewModel
             )
         },
         bottomBar = {
@@ -171,7 +175,8 @@ fun UserTabs(
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
-    padding: PaddingValues
+    padding: PaddingValues,
+    appSettingsViewModel: AppSettingsViewModel
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -365,7 +370,8 @@ fun UserTabs(
                         },
                         account = account,
                         listState = postListState,
-                        taglines = null
+                        taglines = null,
+                        postViewMode = getPostViewMode(appSettingsViewModel)
                     )
                 }
                 UserTab.Comments.ordinal -> {
