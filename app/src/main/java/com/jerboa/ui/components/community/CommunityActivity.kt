@@ -103,9 +103,7 @@ fun CommunityActivity(
         },
         content = {
             PostListings(
-                showCommunityName = false,
-                listState = postListState,
-                padding = it,
+                posts = communityViewModel.posts,
                 contentAboveListings = {
                     communityViewModel.communityView?.also { cv ->
                         CommunityTopSection(
@@ -120,7 +118,6 @@ fun CommunityActivity(
                         )
                     }
                 },
-                posts = communityViewModel.posts,
                 onUpvoteClick = { postView ->
                     communityViewModel.likePost(
                         voteType = VoteType.Upvote,
@@ -152,6 +149,28 @@ fun CommunityActivity(
                         )
                     }
                 },
+                onEditPostClick = { postView ->
+                    postEditViewModel.initialize(postView)
+                    navController.navigate("postEdit")
+                },
+                onDeletePostClick = { postView ->
+                    account?.also { acct ->
+                        communityViewModel.deletePost(
+                            postView = postView,
+                            account = acct,
+                            ctx = ctx
+                        )
+                    }
+                },
+                onReportClick = { postView ->
+                    navController.navigate("postReport/${postView.post.id}")
+                },
+                onCommunityClick = { community ->
+                    navController.navigate(route = "community/${community.id}")
+                },
+                onPersonClick = { personId ->
+                    navController.navigate(route = "profile/$personId")
+                },
                 onBlockCommunityClick = {
                     account?.also { acct ->
                         communityViewModel.blockCommunity(
@@ -168,25 +187,6 @@ fun CommunityActivity(
                             ctx = ctx
                         )
                     }
-                },
-                onCommunityClick = { community ->
-                    navController.navigate(route = "community/${community.id}")
-                },
-                onEditPostClick = { postView ->
-                    postEditViewModel.initialize(postView)
-                    navController.navigate("postEdit")
-                },
-                onDeletePostClick = { postView ->
-                    account?.also { acct ->
-                        communityViewModel.deletePost(
-                            postView = postView,
-                            account = acct,
-                            ctx = ctx
-                        )
-                    }
-                },
-                onReportClick = { postView ->
-                    navController.navigate("postReport/${postView.post.id}")
                 },
                 onSwipeRefresh = {
                     communityViewModel.fetchPosts(
@@ -215,10 +215,11 @@ fun CommunityActivity(
                         )
                     }
                 },
-                onPersonClick = { personId ->
-                    navController.navigate(route = "profile/$personId")
-                },
-                account = account
+                account = account,
+                showCommunityName = false,
+                padding = it,
+                listState = postListState,
+                taglines = null
             )
         },
         floatingActionButtonPosition = FabPosition.End,
