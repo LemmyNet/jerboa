@@ -1,4 +1,4 @@
-# Jerboa v0.0.25-alpha Release (2023-02-06)
+# Jerboa v0.0.26-alpha Release (2023-02-06)
 
 ## What's Changed
 
