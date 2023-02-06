@@ -1,3 +1,24 @@
+# Jerboa v0.0.25-alpha Release (2023-02-06)
+
+## What's Changed
+
+- Fixing bookmark style. Fixes #297 by @dessalines in https://github.com/dessalines/jerboa/pull/304
+- Softer post card color. Fixes #296 by @dessalines in https://github.com/dessalines/jerboa/pull/305
+- Show post score next to time. Fixes #303 by @dessalines in https://github.com/dessalines/jerboa/pull/306
+- Make icons squircle. Fixes #301 by @dessalines in https://github.com/dessalines/jerboa/pull/307
+- Remove @ sign for usernames. Fixes #295 by @dessalines in https://github.com/dessalines/jerboa/pull/308
+- Better more comments button. Fixes #292 by @dessalines in https://github.com/dessalines/jerboa/pull/309
+- Adding nsfw image blurring. Fixes #291 by @dessalines in https://github.com/dessalines/jerboa/pull/310
+- Reply node by @dessalines in https://github.com/dessalines/jerboa/pull/311
+- Adding vote icons. Fixes #302 by @dessalines in https://github.com/dessalines/jerboa/pull/313
+- Adding new comments indicator. Fixes #283 by @dessalines in https://github.com/dessalines/jerboa/pull/314
+- Better subscribe button. Fixes #273 by @dessalines in https://github.com/dessalines/jerboa/pull/315
+- Comment reply links now go to parent for context. Fixes #155 by @dessalines in https://github.com/dessalines/jerboa/pull/316
+- Adding taglines. Fixes #286 by @dessalines in https://github.com/dessalines/jerboa/pull/317
+- Adding post view modes: Card, Small Card, and List. Fixes #278 by @dessalines in https://github.com/dessalines/jerboa/pull/318
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.25...0.0.26
+
 # Jerboa v0.0.25-alpha Release (2023-02-02)
 
 ## What's Changed
