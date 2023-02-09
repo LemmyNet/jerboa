@@ -122,8 +122,8 @@ fun MarkdownTextField(
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text
-                    // autoCorrect = true,
+                    keyboardType = KeyboardType.Email,
+                    autoCorrect = false
                 )
             )
         } else {
@@ -134,8 +134,8 @@ fun MarkdownTextField(
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text
-                    // autoCorrect = true,
+                    keyboardType = KeyboardType.Email,
+                    autoCorrect = false
                 ),
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = MaterialTheme.colorScheme.onSurface,

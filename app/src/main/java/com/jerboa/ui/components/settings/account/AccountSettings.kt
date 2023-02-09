@@ -45,7 +45,7 @@ fun SettingsTextField(
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.None,
-                keyboardType = KeyboardType.Text,
+                keyboardType = KeyboardType.Email,
                 autoCorrect = false
             )
         )
