@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -94,6 +95,7 @@ import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
 
 @Composable
@@ -478,51 +480,57 @@ fun PostFooterLine(
             unreadCount = postView.unread_comments,
             account = account
         )
-        VoteGeneric(
-            myVote = myVote,
-            votes = upvotes,
-            item = postView,
-            type = VoteType.Upvote,
-            showNumber = (downvotes != 0),
-            onVoteClick = {
-                onUpvoteClick(it)
-            },
-            account = account
-        )
-        VoteGeneric(
-            myVote = myVote,
-            votes = downvotes,
-            item = postView,
-            type = VoteType.Downvote,
-            onVoteClick = {
-                onDownvoteClick(it)
-            },
-            account = account
-        )
-        ActionBarButton(
-            icon = if (postView.saved) { Icons.Filled.Bookmark } else {
-                Icons.Outlined.BookmarkBorder
-            },
-            onClick = { onSaveClick(postView) },
-            contentColor = if (postView.saved) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onBackground.muted
-            },
-            account = account
-        )
-        if (showReply) {
-            ActionBarButton(
-                icon = Icons.Outlined.Textsms,
-                onClick = { onReplyClick(postView) },
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
+        ) {
+            VoteGeneric(
+                myVote = myVote,
+                votes = upvotes,
+                item = postView,
+                type = VoteType.Upvote,
+                showNumber = (downvotes != 0),
+                onVoteClick = {
+                    onUpvoteClick(it)
+                },
                 account = account
             )
+            VoteGeneric(
+                myVote = myVote,
+                votes = downvotes,
+                item = postView,
+                type = VoteType.Downvote,
+                onVoteClick = {
+                    onDownvoteClick(it)
+                },
+                account = account
+            )
+            ActionBarButton(
+                icon = if (postView.saved) {
+                    Icons.Filled.Bookmark
+                } else {
+                    Icons.Outlined.BookmarkBorder
+                },
+                onClick = { onSaveClick(postView) },
+                contentColor = if (postView.saved) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onBackground.muted
+                },
+                account = account
+            )
+            if (showReply) {
+                ActionBarButton(
+                    icon = Icons.Outlined.Textsms,
+                    onClick = { onReplyClick(postView) },
+                    account = account
+                )
+            }
+            ActionBarButton(
+                icon = Icons.Outlined.MoreVert,
+                account = account,
+                onClick = { showMoreOptions = !showMoreOptions }
+            )
         }
-        ActionBarButton(
-            icon = Icons.Outlined.MoreVert,
-            account = account,
-            onClick = { showMoreOptions = !showMoreOptions }
-        )
     }
 }
 
@@ -537,7 +545,7 @@ fun CommentCount(
     ) {
         ActionBarButton(
             icon = Icons.Outlined.ChatBubbleOutline,
-            text = comments.toString(),
+            text = "$comments comments",
             noClick = true,
             account = account,
             onClick = {} // This is handled by the whole button click
@@ -554,7 +562,7 @@ fun CommentCount(
 fun CommentNewCount(
     comments: Int,
     unreadCount: Int,
-    style: TextStyle = MaterialTheme.typography.bodySmall,
+    style: TextStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
     spacing: Dp = 0.dp
 ) {
     val unread = if (unreadCount == 0 || comments == unreadCount) {
@@ -568,7 +576,7 @@ fun CommentNewCount(
         Text(
             text = "( $unread new )",
             style = style,
-            color = MaterialTheme.colorScheme.tertiary.muted
+            color = MaterialTheme.colorScheme.onSurface.muted
         )
     }
 }
