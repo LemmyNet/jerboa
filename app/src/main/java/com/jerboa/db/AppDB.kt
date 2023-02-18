@@ -14,7 +14,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
-const val DEFAULT_FONT_SIZE = 16
+const val DEFAULT_FONT_SIZE = 14
 const val UPDATE_APP_CHANGELOG_UNVIEWED = "UPDATE AppSettings SET viewed_changelog = 0"
 
 @Entity
