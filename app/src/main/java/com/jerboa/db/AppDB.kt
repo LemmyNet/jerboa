@@ -14,7 +14,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
-const val DEFAULT_FONT_SIZE = 14
+const val DEFAULT_FONT_SIZE = 16
 const val UPDATE_APP_CHANGELOG_UNVIEWED = "UPDATE AppSettings SET viewed_changelog = 0"
 
 @Entity
@@ -41,7 +41,7 @@ data class AppSettings(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(
         name = "font_size",
-        defaultValue = DEFAULT_FONT_SIZE.toString()
+        defaultValue = DEFAULT_FONT_SIZE.toString() // This is changed to 16
     )
     val fontSize: Int,
     @ColumnInfo(
@@ -181,7 +181,7 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
             """
                 CREATE TABLE IF NOT EXISTS AppSettings (
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-                    font_size INTEGER NOT NULL DEFAULT $DEFAULT_FONT_SIZE,  
+                    font_size INTEGER NOT NULL DEFAULT 14,  
                     theme INTEGER NOT NULL DEFAULT 0,
                     light_theme INTEGER NOT NULL DEFAULT 0,
                     dark_theme INTEGER NOT NULL DEFAULT 0
@@ -212,7 +212,7 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
             """
                 CREATE TABLE IF NOT EXISTS AppSettingsBackup(
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-                    font_size INTEGER NOT NULL DEFAULT $DEFAULT_FONT_SIZE,  
+                    font_size INTEGER NOT NULL DEFAULT 14,  
                     theme INTEGER NOT NULL DEFAULT 0,
                     theme_color INTEGER NOT NULL DEFAULT 0,
                     viewed_changelog INTEGER NOT NULL DEFAULT 0
@@ -250,8 +250,37 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
     }
 }
 
+val MIGRATION_8_9 = object : Migration(8, 9) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Add new default_font_size of 16
+        // SQLITE for android cant drop columns or redo defaults, you have to redo the table
+        database.execSQL(
+            """
+                CREATE TABLE IF NOT EXISTS AppSettingsBackup(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                    font_size INTEGER NOT NULL DEFAULT 16,  
+                    theme INTEGER NOT NULL DEFAULT 0,
+                    theme_color INTEGER NOT NULL DEFAULT 0,
+                    viewed_changelog INTEGER NOT NULL DEFAULT 0,
+                    post_view_mode INTEGER NOT NULL default 0
+                )
+            """
+        )
+        database.execSQL(
+            """
+            INSERT INTO AppSettingsBackup (id, font_size, theme, theme_color, viewed_changelog, 
+            post_view_mode)
+            select id, font_size, theme, theme_color, viewed_changelog, post_view_mode from 
+            AppSettings
+            """
+        )
+        database.execSQL("DROP TABLE AppSettings")
+        database.execSQL("ALTER TABLE AppSettingsBackup RENAME to AppSettings")
+    }
+}
+
 @Database(
-    version = 8,
+    version = 9,
     entities = [Account::class, AppSettings::class],
     exportSchema = true
 )
@@ -282,7 +311,8 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_4_5,
                         MIGRATION_5_6,
                         MIGRATION_6_7,
-                        MIGRATION_7_8
+                        MIGRATION_7_8,
+                        MIGRATION_8_9
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
