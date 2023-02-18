@@ -335,7 +335,7 @@ fun DotSpacer(
 @Composable
 fun scoreColor(myVote: Int?): Color {
     return when (myVote) {
-        1 -> MaterialTheme.colorScheme.primary
+        1 -> MaterialTheme.colorScheme.secondary
         -1 -> MaterialTheme.colorScheme.error
         else -> MaterialTheme.colorScheme.onBackground.muted
     }

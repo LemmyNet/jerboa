@@ -48,8 +48,7 @@ fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
     return when (myVote) {
         1 -> Pair(
             ImageVector.vectorResource(id = R.drawable.up_filled),
-            MaterialTheme.colorScheme
-                .primary
+            scoreColor(myVote = myVote)
         )
         else -> Pair(
             ImageVector.vectorResource(id = R.drawable.up_outline),
@@ -64,8 +63,7 @@ fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
     return when (myVote) {
         -1 -> Pair(
             ImageVector.vectorResource(id = R.drawable.down_filled),
-            MaterialTheme
-                .colorScheme.error
+            scoreColor(myVote = myVote)
         )
         else -> Pair(
             ImageVector.vectorResource(id = R.drawable.down_outline),
