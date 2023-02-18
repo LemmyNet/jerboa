@@ -107,8 +107,14 @@ fun PostHeaderLine(
 ) {
     val community = postView.community
     Column(modifier = modifier) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Row(horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING),
+                modifier = Modifier.weight(1f)
+            ) {
                 if (showCommunityName) {
                     community.icon?.let {
                         CircularIcon(
@@ -136,7 +142,8 @@ fun PostHeaderLine(
                             showTags = true,
                             isPostCreator = false, // Set this to false, we already know this
                             isModerator = isModerator,
-                            isCommunityBanned = postView.creator_banned_from_community
+                            isCommunityBanned = postView.creator_banned_from_community,
+                            color = MaterialTheme.colorScheme.onSurface.muted
                         )
                         if (postView.post.featured_local) {
                             DotSpacer(0.dp)
@@ -843,7 +850,8 @@ fun PostListingList(
                     PersonProfileLink(
                         person = postView.creator,
                         isModerator = isModerator,
-                        onClick = onPersonClick
+                        onClick = onPersonClick,
+                        color = MaterialTheme.colorScheme.onSurface.muted
                     )
                     DotSpacer(0.dp)
                     postView.post.url?.also { postUrl ->

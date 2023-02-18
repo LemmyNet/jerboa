@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.jerboa.communityNameShown
@@ -40,7 +41,9 @@ fun CommunityName(
         text = communityNameShown(community),
         style = style,
         color = color,
-        modifier = modifier
+        modifier = modifier,
+        overflow = TextOverflow.Clip,
+        maxLines = 1
     )
 }
 

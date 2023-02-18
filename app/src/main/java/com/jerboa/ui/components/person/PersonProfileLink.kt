@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.samplePersonSafe
@@ -38,14 +39,18 @@ fun PersonName(
         ) {
             Text(
                 text = name,
-                style = style
+                style = style,
+                overflow = TextOverflow.Clip,
+                maxLines = 1
             )
         }
     } else {
         Text(
             text = name,
             color = color,
-            style = style
+            style = style,
+            overflow = TextOverflow.Clip,
+            maxLines = 1
         )
     }
 }
@@ -63,7 +68,8 @@ fun PersonProfileLink(
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
     isModerator: Boolean = false,
-    isCommunityBanned: Boolean = false
+    isCommunityBanned: Boolean = false,
+    color: Color = MaterialTheme.colorScheme.tertiary
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -98,7 +104,8 @@ fun PersonProfileLink(
         }
         PersonName(
             person = person,
-            isPostCreator = isPostCreator
+            isPostCreator = isPostCreator,
+            color = color
         )
     }
 }
