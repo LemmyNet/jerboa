@@ -1,3 +1,15 @@
+# Jerboa v0.0.27-alpha Release (2023-02-19)
+
+## What's Changed
+
+- Use muted profile names, better colors, and align post header bar. by @dessalines in https://github.com/dessalines/jerboa/pull/328
+- Downgrade from gradle RC to gradle 8.0 by @dessalines in https://github.com/dessalines/jerboa/pull/329
+- Make default font size 16. Fixes #330 @dessalines in https://github.com/dessalines/jerboa/pull/334
+- Changing the post action bar. Fixes #324 by @dessalines in https://github.com/dessalines/jerboa/pull/332
+- Adding instant post and comment voting. Fixes #299 by @dessalines in https://github.com/dessalines/jerboa/pull/335
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.26...0.0.27
+
 # Jerboa v0.0.26-alpha Release (2023-02-06)
 
 ## What's Changed
