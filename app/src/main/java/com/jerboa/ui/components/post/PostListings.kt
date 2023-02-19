@@ -82,23 +82,23 @@ fun PostListings(
             ) { postView ->
                 PostListing(
                     postView = postView,
-                    postViewMode = postViewMode,
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
                     onPostClick = onPostClick,
                     onPostLinkClick = onPostLinkClick,
                     onSaveClick = onSaveClick,
                     onCommunityClick = onCommunityClick,
-                    onPersonClick = onPersonClick,
                     onEditPostClick = onEditPostClick,
                     onDeletePostClick = onDeletePostClick,
                     onReportClick = onReportClick,
+                    onPersonClick = onPersonClick,
                     onBlockCommunityClick = onBlockCommunityClick,
                     onBlockCreatorClick = onBlockCreatorClick,
-                    account = account,
+                    isModerator = false,
                     showCommunityName = showCommunityName,
-                    isModerator = false, // TODO can't know with many posts
-                    fullBody = false
+                    fullBody = false,
+                    account = account, // TODO can't know with many posts
+                    postViewMode = postViewMode
                 )
                 Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
             }

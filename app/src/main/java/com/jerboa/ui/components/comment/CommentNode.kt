@@ -46,10 +46,12 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.Border
 import com.jerboa.CommentNodeData
+import com.jerboa.InstantScores
 import com.jerboa.VoteType
 import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
+import com.jerboa.calculateNewInstantScores
 import com.jerboa.datatypes.Comment
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
@@ -169,12 +171,6 @@ fun LazyListScope.commentNodeItem(
     val commentView = node.commentView
     val commentId = commentView.comment.id
 
-    // These are necessary for instant comment voting
-    val score = node.commentView.counts.score
-    val myVote = node.commentView.my_vote
-    val upvotes = node.commentView.counts.upvotes
-    val downvotes = node.commentView.counts.downvotes
-
     val offset = calculateCommentOffset(node.depth, 4) // The ones with a border on
     val offset2 = if (node.depth == 0) {
         LARGE_PADDING
@@ -190,6 +186,17 @@ fun LazyListScope.commentNodeItem(
         val backgroundColor = MaterialTheme.colorScheme.background
         val borderColor = calculateBorderColor(backgroundColor, node.depth)
         val border = Border(SMALL_PADDING, borderColor)
+
+        val instantScores = remember {
+            mutableStateOf(
+                InstantScores(
+                    myVote = commentView.my_vote,
+                    score = commentView.counts.score,
+                    upvotes = commentView.counts.upvotes,
+                    downvotes = commentView.counts.downvotes
+                )
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -218,8 +225,8 @@ fun LazyListScope.commentNodeItem(
                     CommentNodeHeader(
                         commentView = commentView,
                         onPersonClick = onPersonClick,
-                        score = score,
-                        myVote = myVote,
+                        score = instantScores.value.score,
+                        myVote = instantScores.value.myVote,
                         isModerator = isModerator(commentView.creator, moderators),
                         onLongClick = {
                             toggleExpanded(commentId)
@@ -237,8 +244,21 @@ fun LazyListScope.commentNodeItem(
                             )
                             CommentFooterLine(
                                 commentView = commentView,
-                                onUpvoteClick = onUpvoteClick,
-                                onDownvoteClick = onDownvoteClick,
+                                instantScores = instantScores.value,
+                                onUpvoteClick = {
+                                    instantScores.value = calculateNewInstantScores(
+                                        instantScores.value,
+                                        voteType = VoteType.Upvote
+                                    )
+                                    onUpvoteClick(it)
+                                },
+                                onDownvoteClick = {
+                                    instantScores.value = calculateNewInstantScores(
+                                        instantScores.value,
+                                        voteType = VoteType.Downvote
+                                    )
+                                    onDownvoteClick(it)
+                                },
                                 onViewSourceClick = {
                                     viewSource = !viewSource
                                 },
@@ -249,9 +269,6 @@ fun LazyListScope.commentNodeItem(
                                 onReportClick = onReportClick,
                                 onCommentLinkClick = onCommentLinkClick,
                                 onBlockCreatorClick = onBlockCreatorClick,
-                                myVote = myVote,
-                                upvotes = upvotes,
-                                downvotes = downvotes,
                                 account = account
                             )
                         }
@@ -378,6 +395,7 @@ fun PostAndCommunityContextHeaderPreview() {
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
+    instantScores: InstantScores,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -388,9 +406,6 @@ fun CommentFooterLine(
     onReportClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
-    myVote: Int?,
-    upvotes: Int,
-    downvotes: Int,
     account: Account?
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -437,17 +452,17 @@ fun CommentFooterLine(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
         ) {
             VoteGeneric(
-                myVote = myVote,
-                votes = upvotes,
+                myVote = instantScores.myVote,
+                votes = instantScores.upvotes,
                 item = commentView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0),
+                showNumber = (instantScores.downvotes != 0),
                 account = account
             )
             VoteGeneric(
-                myVote = myVote,
-                votes = downvotes,
+                myVote = instantScores.myVote,
+                votes = instantScores.downvotes,
                 item = commentView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,

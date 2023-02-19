@@ -53,8 +53,10 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.jerboa.InstantScores
 import com.jerboa.PostViewMode
 import com.jerboa.VoteType
+import com.jerboa.calculateNewInstantScores
 import com.jerboa.communityNameShown
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
@@ -101,6 +103,8 @@ import com.jerboa.ui.theme.muted
 @Composable
 fun PostHeaderLine(
     postView: PostView,
+    myVote: Int?,
+    score: Int,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
@@ -178,8 +182,8 @@ fun PostHeaderLine(
                 }
             }
             ScoreAndTime(
-                score = postView.counts.score,
-                myVote = postView.my_vote,
+                score = score,
+                myVote = myVote,
                 published = postView.post.published,
                 updated = postView.post.updated
             )
@@ -203,6 +207,8 @@ fun PostHeaderLinePreview() {
     val postView = sampleLinkPostView
     PostHeaderLine(
         postView = postView,
+        myVote = null,
+        score = 10,
         isModerator = false,
         onCommunityClick = {},
         onPersonClick = {}
@@ -212,13 +218,15 @@ fun PostHeaderLinePreview() {
 @Composable
 fun PostNodeHeader(
     postView: PostView,
+    myVote: Int?,
+    score: Int,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean
 ) {
     CommentOrPostNodeHeader(
         creator = postView.creator,
-        score = postView.counts.score,
-        myVote = postView.my_vote,
+        myVote = myVote,
+        score = score,
         published = postView.post.published,
         updated = postView.post.updated,
         deleted = postView.post.deleted,
@@ -311,7 +319,6 @@ fun PostTitleAndThumbnail(
     onPostLinkClick: (url: String) -> Unit,
     account: Account?
 ) {
-    val post = postView.post
     Column(
         modifier = Modifier.padding(horizontal = LARGE_PADDING)
     ) {
@@ -415,6 +422,7 @@ fun PreviewStoryTitleAndMetadata() {
 @Composable
 fun PostFooterLine(
     postView: PostView,
+    instantScores: InstantScores,
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onReplyClick: (postView: PostView) -> Unit,
@@ -429,11 +437,6 @@ fun PostFooterLine(
     showReply: Boolean = false,
     account: Account?
 ) {
-    // TODO val score = postView.counts.score
-    val myVote = postView.my_vote
-    val upvotes = postView.counts.upvotes
-    val downvotes = postView.counts.downvotes
-
     var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showMoreOptions) {
@@ -484,24 +487,20 @@ fun PostFooterLine(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
         ) {
             VoteGeneric(
-                myVote = myVote,
-                votes = upvotes,
+                myVote = instantScores.myVote,
+                votes = instantScores.upvotes,
                 item = postView,
                 type = VoteType.Upvote,
-                showNumber = (downvotes != 0),
-                onVoteClick = {
-                    onUpvoteClick(it)
-                },
+                showNumber = (instantScores.downvotes != 0),
+                onVoteClick = onUpvoteClick,
                 account = account
             )
             VoteGeneric(
-                myVote = myVote,
-                votes = downvotes,
+                myVote = instantScores.myVote,
+                votes = instantScores.downvotes,
                 item = postView,
                 type = VoteType.Downvote,
-                onVoteClick = {
-                    onDownvoteClick(it)
-                },
+                onVoteClick = onDownvoteClick,
                 account = account
             )
             ActionBarButton(
@@ -590,8 +589,17 @@ fun CommentCountPreview() {
 @Preview
 @Composable
 fun PostFooterLinePreview() {
+    val postView = samplePostView
+    val instantScores =
+        InstantScores(
+            myVote = postView.my_vote,
+            score = postView.counts.score,
+            upvotes = postView.counts.upvotes,
+            downvotes = postView.counts.downvotes
+        )
     PostFooterLine(
-        postView = samplePostView,
+        postView = postView,
+        instantScores = instantScores,
         account = null,
         onReportClick = {},
         onCommunityClick = {},
@@ -754,11 +762,36 @@ fun PostListing(
     account: Account?,
     postViewMode: PostViewMode
 ) {
+    // This stores vote data
+    val instantScores = remember {
+        mutableStateOf(
+            InstantScores(
+                myVote = postView.my_vote,
+                score = postView.counts.score,
+                upvotes = postView.counts.upvotes,
+                downvotes = postView.counts.downvotes
+            )
+        )
+    }
+
     when (postViewMode) {
         PostViewMode.Card -> PostListingCard(
             postView = postView,
-            onUpvoteClick = onUpvoteClick,
-            onDownvoteClick = onDownvoteClick,
+            instantScores = instantScores.value,
+            onUpvoteClick = {
+                instantScores.value = calculateNewInstantScores(
+                    instantScores.value,
+                    voteType = VoteType.Upvote
+                )
+                onUpvoteClick(it)
+            },
+            onDownvoteClick = {
+                instantScores.value = calculateNewInstantScores(
+                    instantScores.value,
+                    voteType = VoteType.Downvote
+                )
+                onDownvoteClick(it)
+            },
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
             onPostLinkClick = onPostLinkClick,
@@ -779,8 +812,21 @@ fun PostListing(
         )
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
-            onUpvoteClick = onUpvoteClick,
-            onDownvoteClick = onDownvoteClick,
+            instantScores = instantScores.value,
+            onUpvoteClick = {
+                instantScores.value = calculateNewInstantScores(
+                    instantScores.value,
+                    voteType = VoteType.Upvote
+                )
+                onUpvoteClick(it)
+            },
+            onDownvoteClick = {
+                instantScores.value = calculateNewInstantScores(
+                    instantScores.value,
+                    voteType = VoteType.Downvote
+                )
+                onDownvoteClick(it)
+            },
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
             onPostLinkClick = onPostLinkClick,
@@ -801,6 +847,7 @@ fun PostListing(
         )
         PostViewMode.List -> PostListingList(
             postView = postView,
+            instantScores = instantScores.value,
             onPostClick = onPostClick,
             onPostLinkClick = onPostLinkClick,
             onCommunityClick = onCommunityClick,
@@ -815,6 +862,7 @@ fun PostListing(
 @Composable
 fun PostListingList(
     postView: PostView,
+    instantScores: InstantScores,
     onPostClick: (postView: PostView) -> Unit,
     onPostLinkClick: (url: String) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
@@ -882,9 +930,9 @@ fun PostListingList(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = postView.counts.score.toString(),
+                        text = instantScores.score.toString(),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = scoreColor(myVote = postView.my_vote)
+                        color = scoreColor(myVote = instantScores.myVote)
                     )
                     DotSpacer(0.dp)
                     Text(
@@ -944,8 +992,17 @@ private fun ThumbnailTile(
 @Preview
 @Composable
 fun PostListingListPreview() {
+    val postView = samplePostView
+    val instantScores =
+        InstantScores(
+            myVote = postView.my_vote,
+            score = postView.counts.score,
+            upvotes = postView.counts.upvotes,
+            downvotes = postView.counts.downvotes
+        )
     PostListingList(
-        postView = samplePostView,
+        postView = postView,
+        instantScores = instantScores,
         onPostClick = {},
         onPostLinkClick = {},
         onCommunityClick = {},
@@ -958,8 +1015,17 @@ fun PostListingListPreview() {
 @Preview
 @Composable
 fun PostListingListWithThumbPreview() {
+    val postView = sampleImagePostView
+    val instantScores =
+        InstantScores(
+            myVote = postView.my_vote,
+            score = postView.counts.score,
+            upvotes = postView.counts.upvotes,
+            downvotes = postView.counts.downvotes
+        )
     PostListingList(
-        postView = sampleImagePostView,
+        postView = postView,
+        instantScores = instantScores,
         onPostClick = {},
         onPostLinkClick = {},
         onCommunityClick = {},
@@ -972,6 +1038,7 @@ fun PostListingListWithThumbPreview() {
 @Composable
 fun PostListingCard(
     postView: PostView,
+    instantScores: InstantScores,
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
@@ -1001,6 +1068,8 @@ fun PostListingCard(
         // Header
         PostHeaderLine(
             postView = postView,
+            myVote = instantScores.myVote,
+            score = instantScores.score,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             isModerator = isModerator,
@@ -1020,6 +1089,7 @@ fun PostListingCard(
         // Footer bar
         PostFooterLine(
             postView = postView,
+            instantScores = instantScores,
             onUpvoteClick = onUpvoteClick,
             onDownvoteClick = onDownvoteClick,
             onSaveClick = onSaveClick,
