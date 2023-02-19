@@ -130,6 +130,8 @@ fun RepliedPost(
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PostNodeHeader(
             postView = postView,
+            myVote = postView.my_vote,
+            score = postView.counts.score,
             onPersonClick = onPersonClick,
             isModerator = isModerator
         )

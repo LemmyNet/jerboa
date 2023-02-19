@@ -102,6 +102,32 @@ enum class VoteType {
     Downvote
 }
 
+fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType): InstantScores {
+    val newVote = newVote(
+        currentVote = instantScores.myVote,
+        voteType =
+        voteType
+    )
+    val score = newScore(
+        instantScores.score,
+        instantScores.myVote,
+        voteType
+    )
+    val votes = newVoteCount(
+        Pair(instantScores.upvotes, instantScores.downvotes),
+        instantScores
+            .myVote,
+        voteType
+    )
+
+    return InstantScores(
+        myVote = newVote,
+        upvotes = votes.first,
+        downvotes = votes.second,
+        score = score
+    )
+}
+
 fun newVote(currentVote: Int?, voteType: VoteType): Int {
     return if (voteType == VoteType.Upvote) {
         if (currentVote == 1) {
@@ -117,6 +143,73 @@ fun newVote(currentVote: Int?, voteType: VoteType): Int {
         }
     }
 }
+
+fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
+    return if (voteType == VoteType.Upvote) {
+        when (currentVote) {
+            1 -> {
+                currentScore - 1
+            }
+            -1 -> {
+                currentScore + 2
+            }
+            else -> {
+                currentScore + 1
+            }
+        }
+    } else {
+        when (currentVote) {
+            -1 -> {
+                currentScore + 1
+            }
+            1 -> {
+                currentScore - 2
+            }
+            else -> {
+                currentScore - 1
+            }
+        }
+    }
+}
+
+fun newVoteCount(votes: Pair<Int, Int>, currentVote: Int?, voteType: VoteType): Pair<Int, Int> {
+    return if (voteType == VoteType.Upvote) {
+        when (currentVote) {
+            1 -> {
+                Pair(votes.first - 1, votes.second)
+            }
+            -1 -> {
+                Pair(votes.first + 1, votes.second - 1)
+            }
+            else -> {
+                Pair(votes.first + 1, votes.second)
+            }
+        }
+    } else {
+        when (currentVote) {
+            -1 -> {
+                Pair(votes.first, votes.second - 1)
+            }
+            1 -> {
+                Pair(votes.first - 1, votes.second + 1)
+            }
+            else -> {
+                Pair(votes.first, votes.second + 1)
+            }
+        }
+    }
+}
+
+/**
+ * This stores live info about votes / scores, in order to update the front end without waiting
+ * for an API result
+ */
+data class InstantScores(
+    val myVote: Int?,
+    val score: Int,
+    val upvotes: Int,
+    val downvotes: Int
+)
 
 data class CommentNodeData(
     val commentView: CommentView,
