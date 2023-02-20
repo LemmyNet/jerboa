@@ -116,7 +116,7 @@ fun PostActivity(
                         modifier = Modifier.padding(padding)
                             .simpleVerticalScrollbar(listState)
                     ) {
-                        item {
+                        item(key = "${postView.post.id}_listing") {
                             PostListing(
                                 postView = postView,
                                 onUpvoteClick = {
@@ -201,7 +201,7 @@ fun PostActivity(
                                 postViewMode = PostViewMode.Card
                             )
                         }
-                        item {
+                        item(key = "${postView.post.id}_is_comment_view") {
                             if (postViewModel.isCommentView()) {
                                 postViewModel.postView.value?.post?.id?.let { postId ->
                                     ShowCommentContextButtons(
