@@ -180,7 +180,7 @@ fun LazyListScope.commentNodeItem(
 
     val showMoreChildren = isExpanded(commentId) && node.children.isNullOrEmpty() && node
         .commentView.counts.child_count > 0 && !isFlat
-    item {
+    item(key = commentId) {
         var viewSource by remember { mutableStateOf(false) }
 
         val backgroundColor = MaterialTheme.colorScheme.background
@@ -279,7 +279,7 @@ fun LazyListScope.commentNodeItem(
     }
 
     if (showMoreChildren) {
-        item {
+        item(key = "${commentId}_children") {
             ShowMoreChildrenNode(node.depth, commentView, onFetchChildrenClick)
         }
     }
