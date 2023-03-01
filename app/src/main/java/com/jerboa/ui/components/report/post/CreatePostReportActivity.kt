@@ -52,11 +52,12 @@ fun CreatePostReportActivity(
                 }
             )
         },
-        content = {
+        content = { padding ->
             CreateReportBody(
                 reason = reason,
                 onReasonChange = { reason = it },
-                account = account
+                account = account,
+                padding = padding
             )
         }
     )

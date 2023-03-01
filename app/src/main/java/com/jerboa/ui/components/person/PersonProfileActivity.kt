@@ -107,6 +107,19 @@ fun PersonProfileActivity(
                             )
                         }
                     },
+                    onReportPersonClick = {
+                        val firstComment = personProfileViewModel.comments.firstOrNull()
+                        val firstPost = personProfileViewModel.posts.firstOrNull()
+                        if (firstComment !== null) {
+                            navController.navigate(
+                                "commentReport/${firstComment.comment.id}"
+                            )
+                        } else if (firstPost !== null) {
+                            navController.navigate(
+                                "postReport/${firstPost.post.id}"
+                            )
+                        }
+                    },
                     navController = navController
                 )
             }
