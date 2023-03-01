@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.report.comment
 
 import android.util.Log
@@ -20,6 +18,7 @@ import com.jerboa.ui.components.report.CreateReportBody
 import com.jerboa.ui.components.report.CreateReportHeader
 import com.jerboa.ui.components.report.CreateReportViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateCommentReportActivity(
     accountViewModel: AccountViewModel,
@@ -51,11 +50,12 @@ fun CreateCommentReportActivity(
                 }
             )
         },
-        content = {
+        content = { padding ->
             CreateReportBody(
                 reason = reason,
                 onReasonChange = { reason = it },
-                account = account
+                account = account,
+                padding = padding
             )
         }
     )

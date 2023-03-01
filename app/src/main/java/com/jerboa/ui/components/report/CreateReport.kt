@@ -3,7 +3,9 @@
 package com.jerboa.ui.components.report
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -65,12 +67,14 @@ fun CreateReportHeader(
 fun CreateReportBody(
     reason: TextFieldValue,
     onReasonChange: (TextFieldValue) -> Unit,
-    account: Account?
+    account: Account?,
+    padding: PaddingValues
 ) {
     val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier.verticalScroll(scrollState)
+            .padding(padding)
     ) {
         MarkdownTextField(
             text = reason,

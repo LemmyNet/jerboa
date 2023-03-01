@@ -125,6 +125,7 @@ fun PersonProfileHeader(
     myProfile: Boolean,
     onClickSortType: (SortType) -> Unit,
     onBlockPersonClick: () -> Unit,
+    onReportPersonClick: () -> Unit,
     selectedSortType: SortType,
     navController: NavController = rememberNavController(),
     scrollBehavior: TopAppBarScrollBehavior
@@ -165,6 +166,10 @@ fun PersonProfileHeader(
             onBlockPersonClick = {
                 showMoreOptions = false
                 onBlockPersonClick()
+            },
+            onReportPersonClick = {
+                showMoreOptions = false
+                onReportPersonClick()
             }
         )
     }
@@ -228,7 +233,8 @@ fun PersonProfileHeaderTitle(
 @Composable
 fun PersonProfileMoreDialog(
     onDismissRequest: () -> Unit,
-    onBlockPersonClick: () -> Unit
+    onBlockPersonClick: () -> Unit,
+    onReportPersonClick: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -238,6 +244,11 @@ fun PersonProfileMoreDialog(
                     text = "Block Person",
                     icon = Icons.Outlined.Block,
                     onClick = onBlockPersonClick
+                )
+                IconAndTextDrawerItem(
+                    text = "Report Person",
+                    icon = Icons.Outlined.Flag,
+                    onClick = onReportPersonClick
                 )
             }
         },
