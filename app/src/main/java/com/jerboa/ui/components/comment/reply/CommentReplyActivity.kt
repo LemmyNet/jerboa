@@ -112,6 +112,17 @@ fun CommentReplyActivity(
                                 },
                                 modifier = Modifier.padding(padding)
                             )
+                        is ReplyItem.MentionReplyItem ->
+                            MentionReply(
+                                personMentionView = replyItem.item,
+                                account = account,
+                                reply = reply,
+                                onReplyChange = { reply = it },
+                                onPersonClick = { personId ->
+                                    navController.navigate(route = "profile/$personId")
+                                },
+                                modifier = Modifier.padding(padding)
+                            )
                     }
                 }
             }

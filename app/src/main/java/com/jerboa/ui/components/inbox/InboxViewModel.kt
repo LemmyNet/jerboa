@@ -23,9 +23,11 @@ import com.jerboa.ui.components.comment.createPrivateMessageRoutine
 import com.jerboa.ui.components.comment.fetchPersonMentionsRoutine
 import com.jerboa.ui.components.comment.fetchRepliesRoutine
 import com.jerboa.ui.components.comment.likeCommentReplyRoutine
+import com.jerboa.ui.components.comment.likeMentionRoutine
 import com.jerboa.ui.components.comment.markCommentReplyAsReadRoutine
 import com.jerboa.ui.components.comment.markPersonMentionAsReadRoutine
 import com.jerboa.ui.components.comment.saveCommentReplyRoutine
+import com.jerboa.ui.components.comment.saveMentionRoutine
 import com.jerboa.ui.components.community.blockCommunityRoutine
 import com.jerboa.ui.components.person.blockPersonRoutine
 import com.jerboa.ui.components.person.fetchPrivateMessagesRoutine
@@ -151,6 +153,36 @@ class InboxViewModel : ViewModel() {
         )
     }
 
+    fun likeMention(
+        personMentionView: PersonMentionView,
+        voteType: VoteType,
+        account: Account,
+        ctx: Context
+    ) {
+        likeMentionRoutine(
+            personMentionView = personMentionView,
+            mentions = mentions,
+            voteType = voteType,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope
+        )
+    }
+
+    fun saveMention(
+        personMentionView: PersonMentionView,
+        account: Account,
+        ctx: Context
+    ) {
+        saveMentionRoutine(
+            personMentionView = personMentionView,
+            mentions = mentions,
+            account = account,
+            ctx = ctx,
+            scope = viewModelScope
+        )
+    }
+
     fun markReplyAsRead(
         commentReplyView: CommentReplyView,
         account: Account,
@@ -165,7 +197,6 @@ class InboxViewModel : ViewModel() {
         )
     }
 
-    // TODO add this
     fun markPersonMentionAsRead(
         personMentionView: PersonMentionView,
         account: Account,

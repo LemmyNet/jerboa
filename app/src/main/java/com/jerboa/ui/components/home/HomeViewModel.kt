@@ -14,6 +14,7 @@ import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.PrivateMessageView
@@ -117,6 +118,12 @@ class HomeViewModel : ViewModel() {
         val inc = incrementFromRead(privateMessageView.private_message.read)
         val newPmCount = unreadCountResponse!!.private_messages + inc
         unreadCountResponse = unreadCountResponse?.copy(private_messages = newPmCount)
+    }
+
+    fun updateUnreads(personMentionView: PersonMentionView) {
+        val inc = incrementFromRead(personMentionView.person_mention.read)
+        val newMentionCount = unreadCountResponse!!.mentions + inc
+        unreadCountResponse = unreadCountResponse?.copy(mentions = newMentionCount)
     }
 
     fun markAllAsRead() {

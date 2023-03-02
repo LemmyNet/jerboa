@@ -90,6 +90,28 @@ fun likeCommentReplyRoutine(
     }
 }
 
+fun likeMentionRoutine(
+    personMentionView: PersonMentionView,
+    mentions: MutableList<PersonMentionView>? = null,
+    voteType: VoteType,
+    account: Account,
+    ctx: Context,
+    scope: CoroutineScope
+) {
+    scope.launch {
+        val updatedCommentView = likeCommentWrapper(
+            personMentionView.comment.id,
+            personMentionView.my_vote,
+            voteType,
+            account,
+            ctx
+        )?.comment_view
+        if (updatedCommentView != null) {
+            findAndUpdatePersonMentionView(mentions, personMentionView, updatedCommentView)
+        }
+    }
+}
+
 fun saveCommentRoutine(
     commentView: MutableState<CommentView?>,
     comments: MutableList<CommentView>? = null,
@@ -134,6 +156,26 @@ fun saveCommentReplyRoutine(
         )?.comment_view
         if (updatedCommentView != null) {
             findAndUpdateCommentReplyView(replies, commentReplyView, updatedCommentView)
+        }
+    }
+}
+
+fun saveMentionRoutine(
+    personMentionView: PersonMentionView,
+    mentions: MutableList<PersonMentionView>? = null,
+    account: Account,
+    ctx: Context,
+    scope: CoroutineScope
+) {
+    scope.launch {
+        val updatedCommentView = saveCommentWrapper(
+            personMentionView.comment.id,
+            personMentionView.saved,
+            account,
+            ctx
+        )?.comment_view
+        if (updatedCommentView != null) {
+            findAndUpdatePersonMentionView(mentions, personMentionView, updatedCommentView)
         }
     }
 }
@@ -314,6 +356,24 @@ fun findAndUpdateCommentReplyView(
     }
     if (foundIndex != -1 && foundIndex != null) {
         replies[foundIndex] = replies[foundIndex].copy(
+            my_vote = updatedCommentView.my_vote,
+            counts = updatedCommentView.counts,
+            saved = updatedCommentView.saved,
+            comment = updatedCommentView.comment
+        )
+    }
+}
+
+fun findAndUpdatePersonMentionView(
+    mentions: MutableList<PersonMentionView>?,
+    personMentionView: PersonMentionView,
+    updatedCommentView: CommentView
+) {
+    val foundIndex = mentions?.indexOfFirst {
+        it.person_mention.id == personMentionView.person_mention.id
+    }
+    if (foundIndex != -1 && foundIndex != null) {
+        mentions[foundIndex] = mentions[foundIndex].copy(
             my_vote = updatedCommentView.my_vote,
             counts = updatedCommentView.counts,
             saved = updatedCommentView.saved,
