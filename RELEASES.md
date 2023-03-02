@@ -1,3 +1,14 @@
+# Jerboa v0.0.28-alpha Release (2023-03-01)
+
+## What's Changed
+
+- Making icons larger, adding node keys by @dessalines in https://github.com/dessalines/jerboa/pull/338
+- Upgrade from kapt to ksp. by @dessalines in https://github.com/dessalines/jerboa/pull/342
+- Add report user by @dessalines in https://github.com/dessalines/jerboa/pull/343
+- Adding comment mentions to inbox. Fixes #339 by @dessalines in https://github.com/dessalines/jerboa/pull/344
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.27...0.0.28
+
 # Jerboa v0.0.27-alpha Release (2023-02-19)
 
 ## What's Changed
