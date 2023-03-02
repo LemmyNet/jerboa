@@ -333,8 +333,31 @@ val sampleCommentReply = CommentReply(
     published = "2022-01-01T09:53:46.904077"
 )
 
+val samplePersonMention = PersonMention(
+    id = 30,
+    recipient_id = 20,
+    comment_id = 42,
+    read = false,
+    published = "2022-01-01T09:53:46.904077"
+)
+
 val sampleCommentReplyView = CommentReplyView(
     comment_reply = sampleCommentReply,
+    comment = sampleReplyComment,
+    creator = samplePersonSafe2,
+    recipient = samplePersonSafe,
+    post = samplePost,
+    community = sampleCommunitySafe,
+    counts = sampleCommentAggregates,
+    creator_banned_from_community = false,
+    subscribed = SubscribedType.NotSubscribed,
+    saved = false,
+    creator_blocked = false,
+    my_vote = null
+)
+
+val samplePersonMentionView = PersonMentionView(
+    person_mention = samplePersonMention,
     comment = sampleReplyComment,
     creator = samplePersonSafe2,
     recipient = samplePersonSafe,

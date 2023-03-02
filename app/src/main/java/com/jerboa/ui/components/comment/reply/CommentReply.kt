@@ -19,10 +19,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.CommentNodeHeader
+import com.jerboa.ui.components.comment.mentionnode.CommentMentionNodeHeader
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeHeader
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.post.PostNodeHeader
@@ -111,6 +113,24 @@ fun RepliedCommentReply(
     }
 }
 
+@Composable
+fun RepliedMentionReply(
+    personMentionView: PersonMentionView,
+    onPersonClick: (personId: Int) -> Unit
+) {
+    Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
+        CommentMentionNodeHeader(
+            personMentionView = personMentionView,
+            onPersonClick = onPersonClick,
+            score = personMentionView.counts.score,
+            myVote = personMentionView.my_vote
+        )
+        SelectionContainer {
+            Text(text = personMentionView.comment.content)
+        }
+    }
+}
+
 @Preview
 @Composable
 fun RepliedCommentPreview() {
@@ -188,6 +208,34 @@ fun CommentReplyReply(
     ) {
         RepliedCommentReply(
             commentReplyView = commentReplyView,
+            onPersonClick = onPersonClick
+        )
+        Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
+        MarkdownTextField(
+            text = reply,
+            onTextChange = onReplyChange,
+            account = account,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun MentionReply(
+    personMentionView: PersonMentionView,
+    reply: TextFieldValue,
+    onReplyChange: (TextFieldValue) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
+    account: Account?,
+    modifier: Modifier = Modifier
+) {
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = modifier.verticalScroll(scrollState)
+    ) {
+        RepliedMentionReply(
+            personMentionView = personMentionView,
             onPersonClick = onPersonClick
         )
         Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))

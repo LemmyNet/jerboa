@@ -21,6 +21,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.comment.replynode.CommentReplyNode
@@ -135,8 +136,7 @@ fun InboxActivity(
 
 enum class InboxTab {
     Replies,
-
-    //    Mentions,
+    Mentions,
     Messages
 }
 
@@ -326,10 +326,144 @@ fun InboxTabs(
                         }
                     }
                 }
+                InboxTab.Mentions.ordinal -> {
+                    val listState = rememberLazyListState()
+                    val loading = inboxViewModel.loading.value &&
+                        inboxViewModel.page.value == 1 &&
+                        inboxViewModel.replies.isNotEmpty()
 
-//                InboxTab.Mentions.ordinal -> {
-//                    // TODO Need to do a whole type of its own here
-//                }
+                    // observer when reached end of list
+                    val endOfListReached by remember {
+                        derivedStateOf {
+                            listState.isScrolledToEnd()
+                        }
+                    }
+
+                    // act when end of list reached
+                    if (endOfListReached) {
+                        LaunchedEffect(Unit) {
+                            account?.also { acct ->
+                                if (inboxViewModel.mentions.size > 0) {
+                                    inboxViewModel.fetchPersonMentions(
+                                        account = acct,
+                                        nextPage = true,
+                                        ctx = ctx
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    SwipeRefresh(
+                        state = rememberSwipeRefreshState(loading),
+                        onRefresh = {
+                            account?.also { acct ->
+                                inboxViewModel.fetchPersonMentions(
+                                    account = acct,
+                                    clear = true,
+                                    ctx = ctx
+                                )
+                            }
+                        }
+                    ) {
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier.fillMaxSize()
+                                .simpleVerticalScrollbar(listState)
+                        ) {
+                            items(
+                                inboxViewModel.mentions,
+                                key = { mention -> mention.person_mention.id }
+                            ) { pmv ->
+                                CommentMentionNode(
+                                    personMentionView = pmv,
+                                    onUpvoteClick = { personMentionView ->
+                                        account?.also { acct ->
+                                            inboxViewModel.likeMention(
+                                                personMentionView = personMentionView,
+                                                voteType = VoteType.Upvote,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                        }
+                                    },
+                                    onDownvoteClick = { personMentionView ->
+                                        account?.also { acct ->
+                                            inboxViewModel.likeMention(
+                                                personMentionView = personMentionView,
+                                                voteType = VoteType.Downvote,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                        }
+                                    },
+                                    onReplyClick = { personMentionView ->
+                                        commentReplyViewModel.initialize(
+                                            ReplyItem
+                                                .MentionReplyItem(personMentionView)
+                                        )
+                                        navController.navigate("commentReply")
+                                    },
+                                    onSaveClick = { personMentionView ->
+                                        account?.also { acct ->
+                                            inboxViewModel.saveMention(
+                                                personMentionView = personMentionView,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                        }
+                                    },
+                                    onMarkAsReadClick = { personMentionView ->
+                                        account?.also { acct ->
+                                            inboxViewModel.markPersonMentionAsRead(
+                                                personMentionView = personMentionView,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                            homeViewModel.updateUnreads(personMentionView)
+                                        }
+                                    },
+                                    onReportClick = { personMentionView ->
+                                        navController.navigate(
+                                            "commentReport/${personMentionView
+                                                .comment
+                                                .id}"
+                                        )
+                                    },
+                                    onLinkClick = { personMentionView ->
+                                        // Go to the parent comment or post instead for context
+                                        val parent = getCommentParentId(personMentionView.comment)
+                                        val route = if (parent != null) {
+                                            "comment/$parent"
+                                        } else {
+                                            "post/${personMentionView.post.id}"
+                                        }
+                                        navController.navigate(route)
+                                    },
+                                    onPersonClick = { personId ->
+                                        navController.navigate(route = "profile/$personId")
+                                    },
+                                    onCommunityClick = { community ->
+                                        navController.navigate(route = "community/${community.id}")
+                                    },
+                                    onBlockCreatorClick = {
+                                        account?.also { acct ->
+                                            inboxViewModel.blockCreator(
+                                                creator = it,
+                                                account = acct,
+                                                ctx = ctx
+                                            )
+                                        }
+                                    },
+                                    onPostClick = { postId ->
+                                        navController.navigate(route = "post/$postId")
+                                    },
+                                    account = account
+                                )
+                            }
+                        }
+                    }
+                }
                 InboxTab.Messages.ordinal -> {
                     val listState = rememberLazyListState()
                     val loading = inboxViewModel.loading.value &&

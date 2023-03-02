@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PostView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.createCommentRoutine
@@ -20,6 +21,7 @@ sealed class ReplyItem {
     class PostItem(val item: PostView) : ReplyItem()
     class CommentItem(val item: CommentView) : ReplyItem()
     class CommentReplyItem(val item: CommentReplyView) : ReplyItem()
+    class MentionReplyItem(val item: PersonMentionView) : ReplyItem()
 }
 
 class CommentReplyViewModel : ViewModel() {
@@ -52,6 +54,10 @@ class CommentReplyViewModel : ViewModel() {
                 reply.item.comment.id
             )
             is ReplyItem.CommentReplyItem -> Pair(
+                reply.item.post.id,
+                reply.item.comment.id
+            )
+            is ReplyItem.MentionReplyItem -> Pair(
                 reply.item.post.id,
                 reply.item.comment.id
             )
