@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.Jerboa" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/darkblue</item>
-        <item name="android:windowBackground">@color/black</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>
