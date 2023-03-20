@@ -119,6 +119,7 @@ fun SettingsForm(
     Column(
         modifier = Modifier
             .padding(padding)
+            .imePadding()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)
     ) {
