@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -127,7 +128,8 @@ fun CreatePostBody(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = padding.calculateTopPadding(), horizontal = MEDIUM_PADDING)
-            .verticalScroll(scrollState),
+            .verticalScroll(scrollState)
+            .imePadding(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
     ) {
         OutlinedTextField(

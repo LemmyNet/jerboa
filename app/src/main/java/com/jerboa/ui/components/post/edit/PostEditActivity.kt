@@ -5,6 +5,7 @@ package com.jerboa.ui.components.post.edit
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
@@ -109,7 +110,9 @@ fun PostEditActivity(
                     }
                 },
                 account = account,
-                modifier = Modifier.padding(padding)
+                modifier = Modifier
+                    .padding(padding)
+                    .imePadding()
             )
         }
     )

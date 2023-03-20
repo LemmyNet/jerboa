@@ -6,8 +6,11 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Save
@@ -89,6 +92,8 @@ fun EditPostBody(
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
 
+    val scrollState = rememberScrollState()
+
     formValid(
         !nameField.hasError &&
             !urlField.hasError
@@ -96,6 +101,8 @@ fun EditPostBody(
 
     Column(
         modifier = modifier
+            .verticalScroll(scrollState)
+            .imePadding()
             .padding(MEDIUM_PADDING)
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)

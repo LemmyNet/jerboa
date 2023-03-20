@@ -5,6 +5,7 @@ package com.jerboa.ui.components.comment.edit
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -73,7 +74,10 @@ fun CommentEdit(
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier.verticalScroll(scrollState).padding(padding)
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .padding(padding)
+            .imePadding()
     ) {
         MarkdownTextField(
             text = content,
