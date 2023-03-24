@@ -2,7 +2,8 @@ pipeline:
   check_formatting:
     image: cimg/android:2023.03.1
     commands:
-      - user=ROOT ./gradlew lintKotlin
+      - ./gradlew clean
+      - ./gradlew lintKotlin
 
   build:
     image: cimg/android:2023.03.1
