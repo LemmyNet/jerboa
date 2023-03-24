@@ -1,3 +1,14 @@
+# Jerboa v0.0.29-alpha Release (2023-03-23)
+
+## What's Changed
+
+- Adding a translucent statusbar. Fixes #347 by @dessalines in https://github.com/dessalines/jerboa/pull/348
+- Upgrading deps by @dessalines in https://github.com/dessalines/jerboa/pull/349
+- Fixing IME padding issues. Fixes #350 by @dessalines in https://github.com/dessalines/jerboa/pull/351
+- Making icon thumbnails smaller. by @dessalines in https://github.com/dessalines/jerboa/pull/353
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.28...0.0.29
+
 # Jerboa v0.0.28-alpha Release (2023-03-01)
 
 ## What's Changed
