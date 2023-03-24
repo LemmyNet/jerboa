@@ -1,9 +1,11 @@
 <div align="center">
 
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/dessalines/jerboa.svg)
+[![status-badge](https://woodpecker.join-lemmy.org/api/badges/dessalines/jerboa/status.svg)](https://woodpecker.join-lemmy.org/dessalines/jerboa)
 [![GitHub issues](https://img.shields.io/github/issues-raw/dessalines/jerboa.svg)](https://github.com/dessalines/jerboa/issues)
 [![License](https://img.shields.io/github/license/dessalines/jerboa.svg)](LICENSE)
 ![GitHub stars](https://img.shields.io/github/stars/dessalines/jerboa?style=social)
+
 </div>
 
 <p align="center">
@@ -30,12 +32,11 @@
   </p>
 </p>
 
-
 ## About Jerboa
 
-_ | _
----|---
-![img_1](https://i.imgur.com/W3lT4nO.jpg)|![img_2](https://i.imgur.com/MrAkd4d.jpg)
+| \_                                        | \_                                        |
+| ----------------------------------------- | ----------------------------------------- |
+| ![img_1](https://i.imgur.com/W3lT4nO.jpg) | ![img_2](https://i.imgur.com/MrAkd4d.jpg) |
 
 Jerboa is a native-android client for Lemmy, built using the native Android Toolkit, Jetpack Compose.
 
