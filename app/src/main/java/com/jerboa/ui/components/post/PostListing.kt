@@ -294,7 +294,7 @@ fun PostTitleAndImageLink(
     Column(
         modifier = Modifier.padding(
             vertical = MEDIUM_PADDING,
-            horizontal = LARGE_PADDING
+            horizontal = MEDIUM_PADDING
         )
 
     ) {
@@ -320,7 +320,7 @@ fun PostTitleAndThumbnail(
     account: Account?
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = LARGE_PADDING)
+        modifier = Modifier.padding(horizontal = MEDIUM_PADDING)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)
@@ -382,7 +382,7 @@ fun PostBody(
                 colors = CARD_COLORS,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
-                    .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
+                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
                     .fillMaxWidth(),
                 content = {
                     if (fullBody) {
@@ -873,7 +873,7 @@ fun PostListingList(
 ) {
     Column(
         modifier = Modifier.padding(
-            horizontal = LARGE_PADDING,
+            horizontal = MEDIUM_PADDING,
             vertical = MEDIUM_PADDING
         )
     ) {
@@ -1074,7 +1074,7 @@ fun PostListingCard(
             onPersonClick = onPersonClick,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
-            modifier = Modifier.padding(horizontal = LARGE_PADDING)
+            modifier = Modifier.padding(horizontal = MEDIUM_PADDING)
         )
 
         //  Title + metadata
@@ -1102,7 +1102,7 @@ fun PostListingCard(
             onBlockCreatorClick = onBlockCreatorClick,
             showReply = showReply,
             account = account,
-            modifier = Modifier.padding(horizontal = LARGE_PADDING)
+            modifier = Modifier.padding(horizontal = MEDIUM_PADDING)
         )
     }
 }
@@ -1120,7 +1120,7 @@ fun MetadataCard(post: Post) {
     OutlinedCard(
         shape = MaterialTheme.shapes.medium,
         modifier = Modifier
-            .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
+            .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
             .fillMaxWidth(),
         content = {
             Column(

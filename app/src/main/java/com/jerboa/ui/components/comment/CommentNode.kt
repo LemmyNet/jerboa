@@ -173,7 +173,7 @@ fun LazyListScope.commentNodeItem(
 
     val offset = calculateCommentOffset(node.depth, 4) // The ones with a border on
     val offset2 = if (node.depth == 0) {
-        LARGE_PADDING
+        MEDIUM_PADDING
     } else {
         XXL_PADDING
     }
@@ -211,7 +211,7 @@ fun LazyListScope.commentNodeItem(
                 Column(
                     modifier = Modifier.padding(
                         start = offset2,
-                        end = LARGE_PADDING
+                        end = MEDIUM_PADDING
                     )
                 ) {
                     if (showPostAndCommunityContext) {
@@ -323,7 +323,7 @@ private fun ShowMoreChildrenNode(
 
     val offset = calculateCommentOffset(newDepth, 4) // The ones with a border on
     val offset2 = if (newDepth == 0) {
-        LARGE_PADDING
+        MEDIUM_PADDING
     } else {
         XXL_PADDING
     }
@@ -343,7 +343,7 @@ private fun ShowMoreChildrenNode(
             modifier = Modifier.border(start = border)
         ) {
             Column(
-                modifier = Modifier.padding(start = offset2, end = LARGE_PADDING)
+                modifier = Modifier.padding(start = offset2, end = MEDIUM_PADDING)
             ) {
                 ShowMoreChildren(
                     commentView = commentView,
