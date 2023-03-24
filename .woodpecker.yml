@@ -2,9 +2,9 @@ pipeline:
   check_formatting:
     image: cimg/android:2023.03.1
     commands:
-      - ./gradlew lintKotlin
+      - user=ROOT ./gradlew lintKotlin
 
   build:
     image: cimg/android:2023.03.1
     commands: 
-       - ./gradlew assembleDebug
+       - user=ROOT ./gradlew assembleDebug
