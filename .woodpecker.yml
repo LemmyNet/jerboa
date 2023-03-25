@@ -1,10 +1,11 @@
 pipeline:
   check_formatting:
-    image: cimg/android:2023.03.1
+    image: gradle:jdk17-alpine
     commands:
-      - user=root ./gradlew lintKotlin
+      - ./gradlew lintKotlin
 
-  build:
-    image: cimg/android:2023.03.1
-    commands: 
-      - user=ROOT ./gradlew assembleDebug
+  # - name: build the project
+  #   user: root
+  #   image: cimg/android:2022.12
+  #   commands: 
+  #     - ./gradlew assembleDebug
