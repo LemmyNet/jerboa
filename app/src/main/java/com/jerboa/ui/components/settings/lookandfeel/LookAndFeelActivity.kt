@@ -90,7 +90,8 @@ fun LookAndFeelActivity(
                     title = {
                         Text(text = "Theme")
                     },
-                    action = {
+                    onItemSelected = { i, _ ->
+                        themeState.value = i
                         updateAppSettings(
                             appSettingsViewModel,
                             fontSizeState,
@@ -112,7 +113,8 @@ fun LookAndFeelActivity(
                     title = {
                         Text(text = "Theme color")
                     },
-                    action = {
+                    onItemSelected = { i, _ ->
+                        themeColorState.value = i
                         updateAppSettings(
                             appSettingsViewModel,
                             fontSizeState,
@@ -134,7 +136,8 @@ fun LookAndFeelActivity(
                     title = {
                         Text(text = "Post View")
                     },
-                    action = {
+                    onItemSelected = { i, _ ->
+                        postViewModeState.value = i
                         updateAppSettings(
                             appSettingsViewModel,
                             fontSizeState,
