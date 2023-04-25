@@ -84,10 +84,7 @@ fun BottomAppBarAll(
 ) {
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
-    BottomAppBar(
-        tonalElevation = 0.dp,
-        modifier = Modifier.height(52.dp)
-    ) {
+    BottomAppBar {
         NavigationBarItem(
             icon = {
                 if (screen == "home") {
