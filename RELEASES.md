@@ -1,3 +1,18 @@
+# Jerboa v0.0.30-alpha Release (2023-04-25)
+
+## What's Changed
+
+- Upgrade deps 11 by @dessalines in https://github.com/dessalines/jerboa/pull/355
+- Adjust the status bar while using the system dark theme to not use dark icons by @russjr08 in https://github.com/dessalines/jerboa/pull/358
+- Upgrading deps. by @dessalines in https://github.com/dessalines/jerboa/pull/359
+- Use default bottom app bar. by @dessalines in https://github.com/dessalines/jerboa/pull/360
+
+## New Contributors
+
+- @russjr08 made their first contribution in https://github.com/dessalines/jerboa/pull/358
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.29...0.0.30
+
 # Jerboa v0.0.29-alpha Release (2023-03-23)
 
 ## What's Changed
