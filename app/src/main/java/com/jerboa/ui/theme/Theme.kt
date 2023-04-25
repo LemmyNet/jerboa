@@ -60,7 +60,7 @@ fun JerboaTheme(
 
     val view = LocalView.current
 
-    if(isSystemInDarkTheme()) {
+    if (isSystemInDarkTheme()) {
         SideEffect {
             val window = (view.context as Activity).window
             val insets = WindowCompat.getInsetsController(window, view)
