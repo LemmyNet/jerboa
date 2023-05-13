@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class CommunityView(
-    var community: Community,
-    var subscribed: SubscribedType /* "Subscribed" | "NotSubscribed" | "Pending" */,
-    var blocked: Boolean,
-    var counts: CommunityAggregates,
+    val community: Community,
+    val subscribed: SubscribedType /* "Subscribed" | "NotSubscribed" | "Pending" */,
+    val blocked: Boolean,
+    val counts: CommunityAggregates,
 )

@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class AddAdmin(
-    var person_id: PersonId,
-    var added: Boolean,
-    var auth: String,
+    val person_id: PersonId,
+    val added: Boolean,
+    val auth: String,
 )

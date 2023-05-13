@@ -1,12 +1,12 @@
 package com.jerboa.datatypes.types
 
 data class CreatePost(
-    var name: String,
-    var community_id: CommunityId,
-    var url: String? = null,
-    var body: String? = null,
-    var honeypot: String? = null,
-    var nsfw: Boolean? = null,
-    var language_id: LanguageId? = null,
-    var auth: String,
+    val name: String,
+    val community_id: CommunityId,
+    val url: String? = null,
+    val body: String? = null,
+    val honeypot: String? = null,
+    val nsfw: Boolean? = null,
+    val language_id: LanguageId? = null,
+    val auth: String,
 )

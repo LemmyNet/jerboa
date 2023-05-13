@@ -1,9 +1,9 @@
 package com.jerboa.datatypes.types
 
 data class PrivateMessageReportView(
-    var private_message_report: PrivateMessageReport,
-    var private_message: PrivateMessage,
-    var private_message_creator: Person,
-    var creator: Person,
-    var resolver: Person? = null,
+    val private_message_report: PrivateMessageReport,
+    val private_message: PrivateMessage,
+    val private_message_creator: Person,
+    val creator: Person,
+    val resolver: Person? = null,
 )

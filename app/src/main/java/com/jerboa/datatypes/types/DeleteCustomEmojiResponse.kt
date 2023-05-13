@@ -1,6 +1,6 @@
 package com.jerboa.datatypes.types
 
 data class DeleteCustomEmojiResponse(
-    var id: CustomEmojiId,
-    var success: Boolean,
+    val id: CustomEmojiId,
+    val success: Boolean,
 )

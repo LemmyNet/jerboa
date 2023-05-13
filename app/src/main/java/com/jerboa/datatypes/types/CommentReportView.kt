@@ -1,14 +1,14 @@
 package com.jerboa.datatypes.types
 
 data class CommentReportView(
-    var comment_report: CommentReport,
-    var comment: Comment,
-    var post: Post,
-    var community: Community,
-    var creator: Person,
-    var comment_creator: Person,
-    var counts: CommentAggregates,
-    var creator_banned_from_community: Boolean,
-    var my_vote: Int? = null,
-    var resolver: Person? = null,
+    val comment_report: CommentReport,
+    val comment: Comment,
+    val post: Post,
+    val community: Community,
+    val creator: Person,
+    val comment_creator: Person,
+    val counts: CommentAggregates,
+    val creator_banned_from_community: Boolean,
+    val my_vote: Int? = null,
+    val resolver: Person? = null,
 )

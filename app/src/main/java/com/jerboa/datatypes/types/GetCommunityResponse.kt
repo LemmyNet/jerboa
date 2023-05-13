@@ -1,10 +1,10 @@
 package com.jerboa.datatypes.types
 
 data class GetCommunityResponse(
-    var community_view: CommunityView,
-    var site: Site? = null,
-    var moderators: Array<CommunityModeratorView>,
-    var online: Int,
-    var discussion_languages: Array<LanguageId>,
-    var default_post_language: LanguageId? = null,
+    val community_view: CommunityView,
+    val site: Site? = null,
+    val moderators: List<CommunityModeratorView>,
+    val online: Int,
+    val discussion_languages: List<LanguageId>,
+    val default_post_language: LanguageId? = null,
 )

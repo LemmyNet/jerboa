@@ -1,9 +1,9 @@
 package com.jerboa.datatypes.types
 
 data class RemoveCommunity(
-    var community_id: CommunityId,
-    var removed: Boolean,
-    var reason: String? = null,
-    var expires: Int? = null,
-    var auth: String,
+    val community_id: CommunityId,
+    val removed: Boolean,
+    val reason: String? = null,
+    val expires: Int? = null,
+    val auth: String,
 )

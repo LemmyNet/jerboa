@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class PasswordChangeAfterReset(
-    var token: String,
-    var password: String,
-    var password_verify: String,
+    val token: String,
+    val password: String,
+    val password_verify: String,
 )

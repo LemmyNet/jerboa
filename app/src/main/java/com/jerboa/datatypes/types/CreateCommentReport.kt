@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class CreateCommentReport(
-    var comment_id: CommentId,
-    var reason: String,
-    var auth: String,
+    val comment_id: CommentId,
+    val reason: String,
+    val auth: String,
 )

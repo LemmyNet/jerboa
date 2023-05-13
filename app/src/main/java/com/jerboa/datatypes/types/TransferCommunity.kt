@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class TransferCommunity(
-    var community_id: CommunityId,
-    var person_id: PersonId,
-    var auth: String,
+    val community_id: CommunityId,
+    val person_id: PersonId,
+    val auth: String,
 )

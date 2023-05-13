@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class ListPrivateMessageReports(
-    var page: Int? = null,
-    var limit: Int? = null,
-    var unresolved_only: Boolean? = null,
-    var auth: String,
+    val page: Int? = null,
+    val limit: Int? = null,
+    val unresolved_only: Boolean? = null,
+    val auth: String,
 )

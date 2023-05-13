@@ -1,15 +1,15 @@
 package com.jerboa.datatypes.types
 
 data class GetComments(
-    var type_: ListingType? /* "All" | "Local" | "Subscribed" */ = null,
-    var sort: CommentSortType? /* "Hot" | "Top" | "New" | "Old" */ = null,
-    var max_depth: Int? = null,
-    var page: Int? = null,
-    var limit: Int? = null,
-    var community_id: CommunityId? = null,
-    var community_name: String? = null,
-    var post_id: PostId? = null,
-    var parent_id: CommentId? = null,
-    var saved_only: Boolean? = null,
-    var auth: String? = null,
+    val type_: ListingType? /* "All" | "Local" | "Subscribed" */ = null,
+    val sort: CommentSortType? /* "Hot" | "Top" | "New" | "Old" */ = null,
+    val max_depth: Int? = null,
+    val page: Int? = null,
+    val limit: Int? = null,
+    val community_id: CommunityId? = null,
+    val community_name: String? = null,
+    val post_id: PostId? = null,
+    val parent_id: CommentId? = null,
+    val saved_only: Boolean? = null,
+    val auth: String? = null,
 )

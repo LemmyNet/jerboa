@@ -1,9 +1,9 @@
 package com.jerboa.datatypes.types
 
 data class EditComment(
-    var comment_id: CommentId,
-    var content: String? = null,
-    var language_id: LanguageId? = null,
-    var form_id: String? = null,
-    var auth: String,
+    val comment_id: CommentId,
+    val content: String? = null,
+    val language_id: LanguageId? = null,
+    val form_id: String? = null,
+    val auth: String,
 )

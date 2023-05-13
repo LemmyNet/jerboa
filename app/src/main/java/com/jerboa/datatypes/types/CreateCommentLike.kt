@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class CreateCommentLike(
-    var comment_id: CommentId,
-    var score: Int,
-    var auth: String,
+    val comment_id: CommentId,
+    val score: Int,
+    val auth: String,
 )

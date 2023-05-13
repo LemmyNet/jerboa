@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class SiteView(
-    var site: Site,
-    var local_site: LocalSite,
-    var local_site_rate_limit: LocalSiteRateLimit,
-    var counts: SiteAggregates,
+    val site: Site,
+    val local_site: LocalSite,
+    val local_site_rate_limit: LocalSiteRateLimit,
+    val counts: SiteAggregates,
 )

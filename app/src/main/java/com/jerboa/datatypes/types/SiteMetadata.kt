@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class SiteMetadata(
-    var title: String? = null,
-    var description: String? = null,
-    var image: String? = null,
-    var embed_video_url: String? = null,
+    val title: String? = null,
+    val description: String? = null,
+    val image: String? = null,
+    val embed_video_url: String? = null,
 )

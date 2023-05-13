@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class BlockCommunity(
-    var community_id: CommunityId,
-    var block: Boolean,
-    var auth: String,
+    val community_id: CommunityId,
+    val block: Boolean,
+    val auth: String,
 )

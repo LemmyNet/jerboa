@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class SavePost(
-    var post_id: PostId,
-    var save: Boolean,
-    var auth: String,
+    val post_id: PostId,
+    val save: Boolean,
+    val auth: String,
 )

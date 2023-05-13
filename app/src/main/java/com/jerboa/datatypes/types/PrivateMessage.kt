@@ -1,14 +1,14 @@
 package com.jerboa.datatypes.types
 
 data class PrivateMessage(
-    var id: PrivateMessageId,
-    var creator_id: PersonId,
-    var recipient_id: PersonId,
-    var content: String,
-    var deleted: Boolean,
-    var read: Boolean,
-    var published: String,
-    var updated: String? = null,
-    var ap_id: String,
-    var local: Boolean,
+    val id: PrivateMessageId,
+    val creator_id: PersonId,
+    val recipient_id: PersonId,
+    val content: String,
+    val deleted: Boolean,
+    val read: Boolean,
+    val published: String,
+    val updated: String? = null,
+    val ap_id: String,
+    val local: Boolean,
 )

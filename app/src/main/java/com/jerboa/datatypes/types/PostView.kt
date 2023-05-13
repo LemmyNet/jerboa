@@ -1,15 +1,15 @@
 package com.jerboa.datatypes.types
 
 data class PostView(
-    var post: Post,
-    var creator: Person,
-    var community: Community,
-    var creator_banned_from_community: Boolean,
-    var counts: PostAggregates,
-    var subscribed: SubscribedType /* "Subscribed" | "NotSubscribed" | "Pending" */,
-    var saved: Boolean,
-    var read: Boolean,
-    var creator_blocked: Boolean,
-    var my_vote: Int? = null,
-    var unread_comments: Int,
+    val post: Post,
+    val creator: Person,
+    val community: Community,
+    val creator_banned_from_community: Boolean,
+    val counts: PostAggregates,
+    val subscribed: SubscribedType /* "Subscribed" | "NotSubscribed" | "Pending" */,
+    val saved: Boolean,
+    val read: Boolean,
+    val creator_blocked: Boolean,
+    val my_vote: Int? = null,
+    val unread_comments: Int,
 )

@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class ModTransferCommunityView(
-    var mod_transfer_community: ModTransferCommunity,
-    var moderator: Person? = null,
-    var community: Community,
-    var modded_person: Person,
+    val mod_transfer_community: ModTransferCommunity,
+    val moderator: Person? = null,
+    val community: Community,
+    val modded_person: Person,
 )

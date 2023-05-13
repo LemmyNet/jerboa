@@ -1,12 +1,12 @@
 package com.jerboa.datatypes.types
 
 data class CustomEmoji(
-    var id: CustomEmojiId,
-    var local_site_id: LocalSiteId,
-    var shortcode: String,
-    var image_url: String,
-    var alt_text: String,
-    var category: String,
-    var published: String,
-    var updated: String? = null,
+    val id: CustomEmojiId,
+    val local_site_id: LocalSiteId,
+    val shortcode: String,
+    val image_url: String,
+    val alt_text: String,
+    val category: String,
+    val published: String,
+    val updated: String? = null,
 )

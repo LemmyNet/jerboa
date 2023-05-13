@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class PurgePost(
-    var post_id: PostId,
-    var reason: String? = null,
-    var auth: String,
+    val post_id: PostId,
+    val reason: String? = null,
+    val auth: String,
 )

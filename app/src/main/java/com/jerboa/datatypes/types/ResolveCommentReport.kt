@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class ResolveCommentReport(
-    var report_id: CommentReportId,
-    var resolved: Boolean,
-    var auth: String,
+    val report_id: CommentReportId,
+    val resolved: Boolean,
+    val auth: String,
 )

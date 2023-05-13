@@ -1,5 +1,5 @@
 package com.jerboa.datatypes.types
 
 data class ListRegistrationApplicationsResponse(
-    var registration_applications: Array<RegistrationApplicationView>,
+    val registration_applications: List<RegistrationApplicationView>,
 )

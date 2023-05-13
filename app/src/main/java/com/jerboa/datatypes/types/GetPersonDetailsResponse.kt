@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class GetPersonDetailsResponse(
-    var person_view: PersonView,
-    var comments: Array<CommentView>,
-    var posts: Array<PostView>,
-    var moderates: Array<CommunityModeratorView>,
+    val person_view: PersonView,
+    val comments: List<CommentView>,
+    val posts: List<PostView>,
+    val moderates: List<CommunityModeratorView>,
 )

@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class DistinguishComment(
-    var comment_id: CommentId,
-    var distinguished: Boolean,
-    var auth: String,
+    val comment_id: CommentId,
+    val distinguished: Boolean,
+    val auth: String,
 )

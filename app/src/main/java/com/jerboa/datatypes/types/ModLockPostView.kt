@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class ModLockPostView(
-    var mod_lock_post: ModLockPost,
-    var moderator: Person? = null,
-    var post: Post,
-    var community: Community,
+    val mod_lock_post: ModLockPost,
+    val moderator: Person? = null,
+    val post: Post,
+    val community: Community,
 )

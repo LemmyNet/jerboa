@@ -1,3 +1,3 @@
 package com.jerboa.datatypes.types
 
-typealias VerifyEmailResponse = Nothing?
+typealias VerifyEmailResponse = Nothing? = null

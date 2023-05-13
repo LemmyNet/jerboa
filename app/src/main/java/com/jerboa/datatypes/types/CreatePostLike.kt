@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class CreatePostLike(
-    var post_id: PostId,
-    var score: Int,
-    var auth: String,
+    val post_id: PostId,
+    val score: Int,
+    val auth: String,
 )

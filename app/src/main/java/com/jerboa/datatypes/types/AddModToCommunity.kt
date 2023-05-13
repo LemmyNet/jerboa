@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class AddModToCommunity(
-    var community_id: CommunityId,
-    var person_id: PersonId,
-    var added: Boolean,
-    var auth: String,
+    val community_id: CommunityId,
+    val person_id: PersonId,
+    val added: Boolean,
+    val auth: String,
 )

@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class ResolvePostReport(
-    var report_id: PostReportId,
-    var resolved: Boolean,
-    var auth: String,
+    val report_id: PostReportId,
+    val resolved: Boolean,
+    val auth: String,
 )

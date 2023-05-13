@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class PrivateMessageView(
-    var private_message: PrivateMessage,
-    var creator: Person,
-    var recipient: Person,
+    val private_message: PrivateMessage,
+    val creator: Person,
+    val recipient: Person,
 )

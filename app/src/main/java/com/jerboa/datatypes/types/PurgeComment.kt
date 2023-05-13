@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class PurgeComment(
-    var comment_id: CommentId,
-    var reason: String? = null,
-    var auth: String,
+    val comment_id: CommentId,
+    val reason: String? = null,
+    val auth: String,
 )

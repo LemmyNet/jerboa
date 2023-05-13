@@ -1,9 +1,9 @@
 package com.jerboa.datatypes.types
 
 data class GetPostResponse(
-    var post_view: PostView,
-    var community_view: CommunityView,
-    var moderators: Array<CommunityModeratorView>,
-    var cross_posts: Array<PostView>,
-    var online: Int,
+    val post_view: PostView,
+    val community_view: CommunityView,
+    val moderators: List<CommunityModeratorView>,
+    val cross_posts: List<PostView>,
+    val online: Int,
 )

@@ -1,9 +1,9 @@
 package com.jerboa.datatypes.types
 
 data class Tagline(
-    var id: Int,
-    var local_site_id: LocalSiteId,
-    var content: String,
-    var published: String,
-    var updated: String? = null,
+    val id: Int,
+    val local_site_id: LocalSiteId,
+    val content: String,
+    val published: String,
+    val updated: String? = null,
 )

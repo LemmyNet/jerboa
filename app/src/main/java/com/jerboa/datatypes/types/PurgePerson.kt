@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class PurgePerson(
-    var person_id: PersonId,
-    var reason: String? = null,
-    var auth: String,
+    val person_id: PersonId,
+    val reason: String? = null,
+    val auth: String,
 )

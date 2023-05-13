@@ -1,9 +1,9 @@
 package com.jerboa.datatypes.types
 
 data class SearchResponse(
-    var type_: SearchType /* "All" | "Comments" | "Posts" | "Communities" | "Users" | "Url" */,
-    var comments: Array<CommentView>,
-    var posts: Array<PostView>,
-    var communities: Array<CommunityView>,
-    var users: Array<PersonView>,
+    val type_: SearchType /* "All" | "Comments" | "Posts" | "Communities" | "Users" | "Url" */,
+    val comments: List<CommentView>,
+    val posts: List<PostView>,
+    val communities: List<CommunityView>,
+    val users: List<PersonView>,
 )

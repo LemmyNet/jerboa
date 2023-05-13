@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class CommentResponse(
-    var comment_view: CommentView,
-    var recipient_ids: Array<LocalUserId>,
-    var form_id: String? = null,
+    val comment_view: CommentView,
+    val recipient_ids: List<LocalUserId>,
+    val form_id: String? = null,
 )

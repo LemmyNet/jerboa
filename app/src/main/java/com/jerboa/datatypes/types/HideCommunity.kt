@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class HideCommunity(
-    var community_id: CommunityId,
-    var hidden: Boolean,
-    var reason: String? = null,
-    var auth: String,
+    val community_id: CommunityId,
+    val hidden: Boolean,
+    val reason: String? = null,
+    val auth: String,
 )

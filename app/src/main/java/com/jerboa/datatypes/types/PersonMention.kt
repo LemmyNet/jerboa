@@ -1,9 +1,9 @@
 package com.jerboa.datatypes.types
 
 data class PersonMention(
-    var id: PersonMentionId,
-    var recipient_id: PersonId,
-    var comment_id: CommentId,
-    var read: Boolean,
-    var published: String,
+    val id: PersonMentionId,
+    val recipient_id: PersonId,
+    val comment_id: CommentId,
+    val read: Boolean,
+    val published: String,
 )

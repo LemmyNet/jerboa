@@ -1,10 +1,10 @@
 package com.jerboa.datatypes.types
 
 data class BanPerson(
-    var person_id: PersonId,
-    var ban: Boolean,
-    var remove_data: Boolean? = null,
-    var reason: String? = null,
-    var expires: Int? = null,
-    var auth: String,
+    val person_id: PersonId,
+    val ban: Boolean,
+    val remove_data: Boolean? = null,
+    val reason: String? = null,
+    val expires: Int? = null,
+    val auth: String,
 )

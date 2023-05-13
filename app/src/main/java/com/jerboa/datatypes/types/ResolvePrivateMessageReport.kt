@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class ResolvePrivateMessageReport(
-    var report_id: PrivateMessageReportId,
-    var resolved: Boolean,
-    var auth: String,
+    val report_id: PrivateMessageReportId,
+    val resolved: Boolean,
+    val auth: String,
 )

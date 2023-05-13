@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class CreatePrivateMessageReport(
-    var private_message_id: PrivateMessageId,
-    var reason: String,
-    var auth: String,
+    val private_message_id: PrivateMessageId,
+    val reason: String,
+    val auth: String,
 )

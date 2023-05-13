@@ -1,10 +1,10 @@
 package com.jerboa.datatypes.types
 
 data class ModFeaturePost(
-    var id: Int,
-    var mod_person_id: PersonId,
-    var post_id: PostId,
-    var featured: Boolean,
-    var when_: String,
-    var is_featured_community: Boolean,
+    val id: Int,
+    val mod_person_id: PersonId,
+    val post_id: PostId,
+    val featured: Boolean,
+    val when_: String,
+    val is_featured_community: Boolean,
 )

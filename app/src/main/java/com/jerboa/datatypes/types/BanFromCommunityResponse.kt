@@ -1,6 +1,6 @@
 package com.jerboa.datatypes.types
 
 data class BanFromCommunityResponse(
-    var person_view: PersonView,
-    var banned: Boolean,
+    val person_view: PersonView,
+    val banned: Boolean,
 )

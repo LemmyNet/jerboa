@@ -1,13 +1,13 @@
 package com.jerboa.datatypes.types
 
 data class GetSiteResponse(
-    var site_view: SiteView,
-    var admins: Array<PersonView>,
-    var online: Int,
-    var version: String,
-    var my_user: MyUserInfo? = null,
-    var all_languages: Array<Language>,
-    var discussion_languages: Array<LanguageId>,
-    var taglines: Array<Tagline>,
-    var custom_emojis: Array<CustomEmojiView>,
+    val site_view: SiteView,
+    val admins: List<PersonView>,
+    val online: Int,
+    val version: String,
+    val my_user: MyUserInfo? = null,
+    val all_languages: List<Language>,
+    val discussion_languages: List<LanguageId>,
+    val taglines: List<Tagline>,
+    val custom_emojis: List<CustomEmojiView>,
 )

@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class RemoveComment(
-    var comment_id: CommentId,
-    var removed: Boolean,
-    var reason: String? = null,
-    var auth: String,
+    val comment_id: CommentId,
+    val removed: Boolean,
+    val reason: String? = null,
+    val auth: String,
 )

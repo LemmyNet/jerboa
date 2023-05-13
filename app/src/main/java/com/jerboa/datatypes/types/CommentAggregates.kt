@@ -1,11 +1,11 @@
 package com.jerboa.datatypes.types
 
 data class CommentAggregates(
-    var id: Int,
-    var comment_id: CommentId,
-    var score: Int,
-    var upvotes: Int,
-    var downvotes: Int,
-    var published: String,
-    var child_count: Int,
+    val id: Int,
+    val comment_id: CommentId,
+    val score: Int,
+    val upvotes: Int,
+    val downvotes: Int,
+    val published: String,
+    val child_count: Int,
 )

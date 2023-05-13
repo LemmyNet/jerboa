@@ -1,10 +1,10 @@
 package com.jerboa.datatypes.types
 
 data class ModRemoveCommentView(
-    var mod_remove_comment: ModRemoveComment,
-    var moderator: Person? = null,
-    var comment: Comment,
-    var commenter: Person,
-    var post: Post,
-    var community: Community,
+    val mod_remove_comment: ModRemoveComment,
+    val moderator: Person? = null,
+    val comment: Comment,
+    val commenter: Person,
+    val post: Post,
+    val community: Community,
 )

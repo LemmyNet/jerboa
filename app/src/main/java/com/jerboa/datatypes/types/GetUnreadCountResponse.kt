@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class GetUnreadCountResponse(
-    var replies: Int,
-    var mentions: Int,
-    var private_messages: Int,
+    val replies: Int,
+    val mentions: Int,
+    val private_messages: Int,
 )

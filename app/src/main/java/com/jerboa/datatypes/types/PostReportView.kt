@@ -1,13 +1,13 @@
 package com.jerboa.datatypes.types
 
 data class PostReportView(
-    var post_report: PostReport,
-    var post: Post,
-    var community: Community,
-    var creator: Person,
-    var post_creator: Person,
-    var creator_banned_from_community: Boolean,
-    var my_vote: Int? = null,
-    var counts: PostAggregates,
-    var resolver: Person? = null,
+    val post_report: PostReport,
+    val post: Post,
+    val community: Community,
+    val creator: Person,
+    val post_creator: Person,
+    val creator_banned_from_community: Boolean,
+    val my_vote: Int? = null,
+    val counts: PostAggregates,
+    val resolver: Person? = null,
 )

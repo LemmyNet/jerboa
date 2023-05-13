@@ -1,11 +1,11 @@
 package com.jerboa.datatypes.types
 
 data class EditPost(
-    var post_id: PostId,
-    var name: String? = null,
-    var url: String? = null,
-    var body: String? = null,
-    var nsfw: Boolean? = null,
-    var language_id: LanguageId? = null,
-    var auth: String,
+    val post_id: PostId,
+    val name: String? = null,
+    val url: String? = null,
+    val body: String? = null,
+    val nsfw: Boolean? = null,
+    val language_id: LanguageId? = null,
+    val auth: String,
 )

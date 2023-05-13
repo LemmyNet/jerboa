@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class ModFeaturePostView(
-    var mod_feature_post: ModFeaturePost,
-    var moderator: Person? = null,
-    var post: Post,
-    var community: Community,
+    val mod_feature_post: ModFeaturePost,
+    val moderator: Person? = null,
+    val post: Post,
+    val community: Community,
 )

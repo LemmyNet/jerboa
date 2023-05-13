@@ -1,8 +1,8 @@
 package com.jerboa.datatypes.types
 
 data class ApproveRegistrationApplication(
-    var id: Int,
-    var approve: Boolean,
-    var deny_reason: String? = null,
-    var auth: String,
+    val id: Int,
+    val approve: Boolean,
+    val deny_reason: String? = null,
+    val auth: String,
 )

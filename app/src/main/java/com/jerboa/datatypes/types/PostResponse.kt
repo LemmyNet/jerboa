@@ -1,5 +1,5 @@
 package com.jerboa.datatypes.types
 
 data class PostResponse(
-    var post_view: PostView,
+    val post_view: PostView,
 )

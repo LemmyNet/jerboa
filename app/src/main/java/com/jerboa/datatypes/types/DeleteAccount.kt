@@ -1,6 +1,6 @@
 package com.jerboa.datatypes.types
 
 data class DeleteAccount(
-    var password: String,
-    var auth: String,
+    val password: String,
+    val auth: String,
 )

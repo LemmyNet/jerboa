@@ -1,13 +1,13 @@
 package com.jerboa.datatypes.types
 
 data class CreateCommunity(
-    var name: String,
-    var title: String,
-    var description: String? = null,
-    var icon: String? = null,
-    var banner: String? = null,
-    var nsfw: Boolean? = null,
-    var posting_restricted_to_mods: Boolean? = null,
-    var discussion_languages: Array<LanguageId>? = null,
-    var auth: String,
+    val name: String,
+    val title: String,
+    val description: String? = null,
+    val icon: String? = null,
+    val banner: String? = null,
+    val nsfw: Boolean? = null,
+    val posting_restricted_to_mods: Boolean? = null,
+    val discussion_languages: List<LanguageId>? = null,
+    val auth: String,
 )

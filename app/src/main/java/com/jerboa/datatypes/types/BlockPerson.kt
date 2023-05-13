@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class BlockPerson(
-    var person_id: PersonId,
-    var block: Boolean,
-    var auth: String,
+    val person_id: PersonId,
+    val block: Boolean,
+    val auth: String,
 )

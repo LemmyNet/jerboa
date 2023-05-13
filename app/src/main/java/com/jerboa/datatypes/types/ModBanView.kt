@@ -1,7 +1,7 @@
 package com.jerboa.datatypes.types
 
 data class ModBanView(
-    var mod_ban: ModBan,
-    var moderator: Person? = null,
-    var banned_person: Person,
+    val mod_ban: ModBan,
+    val moderator: Person? = null,
+    val banned_person: Person,
 )
