@@ -1,0 +1,25 @@
+package com.jerboa.datatypes.types
+
+data class SaveUserSettings(
+    var show_nsfw: Boolean? = null,
+    var show_scores: Boolean? = null,
+    var theme: String? = null,
+    var default_sort_type: SortType? /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" */ = null,
+    var default_listing_type: ListingType? /* "All" | "Local" | "Subscribed" */ = null,
+    var interface_language: String? = null,
+    var avatar: String? = null,
+    var banner: String? = null,
+    var display_name: String? = null,
+    var email: String? = null,
+    var bio: String? = null,
+    var matrix_user_id: String? = null,
+    var show_avatars: Boolean? = null,
+    var send_notifications_to_email: Boolean? = null,
+    var bot_account: Boolean? = null,
+    var show_bot_accounts: Boolean? = null,
+    var show_read_posts: Boolean? = null,
+    var show_new_post_notifs: Boolean? = null,
+    var discussion_languages: Array<LanguageId>? = null,
+    var generate_totp_2fa: Boolean? = null,
+    var auth: String,
+)

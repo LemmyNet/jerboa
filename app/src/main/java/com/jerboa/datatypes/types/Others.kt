@@ -172,6 +172,41 @@ enum class PostFeatureType {
     Community
 }
 
+enum class ModlogActionType {
+    @SerializedName("All")
+    All,
+    @SerializedName("ModRemovePost")
+    ModRemovePost,
+    @SerializedName("ModLockPost")
+    ModLockPost,
+    @SerializedName("ModFeaturePost")
+    ModFeaturePost,
+    @SerializedName("ModRemoveComment")
+    ModRemoveComment,
+    @SerializedName("ModRemoveCommunity")
+    ModRemoveCommunity,
+    @SerializedName("ModBanFromCommunity")
+    ModBanFromCommunity,
+    @SerializedName("ModAddCommunity")
+    ModAddCommunity,
+    @SerializedName("ModTransferCommunity")
+    ModTransferCommunity,
+    @SerializedName("ModAdd")
+    ModAdd,
+    @SerializedName("ModBan")
+    ModBan,
+    @SerializedName("ModHideCommunity")
+    ModHideCommunity,
+    @SerializedName("AdminPurgePerson")
+    AdminPurgePerson,
+    @SerializedName("AdminPurgeCommunity")
+    AdminPurgeCommunity,
+    @SerializedName("AdminPurgePost")
+    AdminPurgePost,
+    @SerializedName("AdminPurgeComment")
+    AdminPurgeComment,
+}
+
 data class PictrsImage(
     val file: String,
     val delete_token: String

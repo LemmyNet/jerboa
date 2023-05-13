@@ -1,0 +1,25 @@
+package com.jerboa.datatypes.types
+
+data class Post(
+    var id: PostId,
+    var name: String,
+    var url: String? = null,
+    var body: String? = null,
+    var creator_id: PersonId,
+    var community_id: CommunityId,
+    var removed: Boolean,
+    var locked: Boolean,
+    var published: String,
+    var updated: String? = null,
+    var deleted: Boolean,
+    var nsfw: Boolean,
+    var embed_title: String? = null,
+    var embed_description: String? = null,
+    var thumbnail_url: String? = null,
+    var ap_id: String,
+    var local: Boolean,
+    var embed_video_url: String? = null,
+    var language_id: LanguageId,
+    var featured_community: Boolean,
+    var featured_local: Boolean,
+)
