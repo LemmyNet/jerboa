@@ -1,3 +1,3 @@
 package com.jerboa.datatypes.types
 
-typealias PasswordResetResponse = Nothing? = null
+typealias PasswordResetResponse = Nothing?

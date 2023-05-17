@@ -102,7 +102,7 @@ fun pink(): Pair<ColorScheme, ColorScheme> {
         inversePrimary = md_theme_light_inversePrimary,
         surfaceTint = md_theme_light_surfaceTint,
         outlineVariant = md_theme_light_outlineVariant,
-        scrim = md_theme_light_scrim
+        scrim = md_theme_light_scrim,
     )
 
     val dark = darkColorScheme(
@@ -134,7 +134,7 @@ fun pink(): Pair<ColorScheme, ColorScheme> {
         inversePrimary = md_theme_dark_inversePrimary,
         surfaceTint = md_theme_dark_surfaceTint,
         outlineVariant = md_theme_dark_outlineVariant,
-        scrim = md_theme_dark_scrim
+        scrim = md_theme_dark_scrim,
     )
     return Pair(light, dark)
 }
@@ -233,7 +233,7 @@ fun green(): Pair<ColorScheme, ColorScheme> {
         inversePrimary = md_theme_light_inversePrimary,
         surfaceTint = md_theme_light_surfaceTint,
         outlineVariant = md_theme_light_outlineVariant,
-        scrim = md_theme_light_scrim
+        scrim = md_theme_light_scrim,
     )
 
     val dark = darkColorScheme(
@@ -265,7 +265,7 @@ fun green(): Pair<ColorScheme, ColorScheme> {
         inversePrimary = md_theme_dark_inversePrimary,
         surfaceTint = md_theme_dark_surfaceTint,
         outlineVariant = md_theme_dark_outlineVariant,
-        scrim = md_theme_dark_scrim
+        scrim = md_theme_dark_scrim,
     )
     return Pair(light, dark)
 }

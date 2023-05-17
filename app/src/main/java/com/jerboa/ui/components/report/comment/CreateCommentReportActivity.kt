@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
+import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
@@ -23,20 +24,24 @@ import com.jerboa.ui.components.report.CreateReportViewModel
 fun CreateCommentReportActivity(
     accountViewModel: AccountViewModel,
     navController: NavController,
-    createReportViewModel: CreateReportViewModel
+    createReportViewModel: CreateReportViewModel,
 ) {
     Log.d("jerboa", "got to create comment report activity")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
+    val loading = when (createReportViewModel.commentReportRes) {
+        ApiState.Loading -> true
+        else -> false
+    }
 
     val focusManager = LocalFocusManager.current
     Scaffold(
         topBar = {
             CreateReportHeader(
                 navController = navController,
-                loading = createReportViewModel.loading.value,
+                loading = loading,
                 onCreateClick = {
                     account?.also { acct ->
                         createReportViewModel.createCommentReport(
@@ -44,10 +49,10 @@ fun CreateCommentReportActivity(
                             ctx = ctx,
                             navController = navController,
                             focusManager = focusManager,
-                            account = acct
+                            account = acct,
                         )
                     }
-                }
+                },
             )
         },
         content = { padding ->
@@ -55,8 +60,8 @@ fun CreateCommentReportActivity(
                 reason = reason,
                 onReasonChange = { reason = it },
                 account = account,
-                padding = padding
+                padding = padding,
             )
-        }
+        },
     )
 }

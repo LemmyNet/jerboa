@@ -1,5 +1,32 @@
 package com.jerboa.datatypes
 
+import com.jerboa.datatypes.types.Comment
+import com.jerboa.datatypes.types.CommentAggregates
+import com.jerboa.datatypes.types.CommentReply
+import com.jerboa.datatypes.types.CommentReplyView
+import com.jerboa.datatypes.types.CommentView
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.CommunityAggregates
+import com.jerboa.datatypes.types.CommunityView
+import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.LocalSite
+import com.jerboa.datatypes.types.LocalSiteRateLimit
+import com.jerboa.datatypes.types.Person
+import com.jerboa.datatypes.types.PersonAggregates
+import com.jerboa.datatypes.types.PersonMention
+import com.jerboa.datatypes.types.PersonMentionView
+import com.jerboa.datatypes.types.PersonView
+import com.jerboa.datatypes.types.Post
+import com.jerboa.datatypes.types.PostAggregates
+import com.jerboa.datatypes.types.PostView
+import com.jerboa.datatypes.types.PrivateMessage
+import com.jerboa.datatypes.types.PrivateMessageView
+import com.jerboa.datatypes.types.RegistrationMode
+import com.jerboa.datatypes.types.Site
+import com.jerboa.datatypes.types.SiteAggregates
+import com.jerboa.datatypes.types.SiteView
+import com.jerboa.datatypes.types.SubscribedType
+
 val samplePost = Post(
     id = 135129,
     name = "In a socialist world, would jobs still have probation periods ?",
@@ -20,7 +47,7 @@ val samplePost = Post(
     embed_video_url = null,
     thumbnail_url = null,
     language_id = 0,
-    ap_id = "https://lemmy.ml/post/135129", local = true
+    ap_id = "https://lemmy.ml/post/135129", local = true,
 )
 
 val sampleLinkPost = Post(
@@ -43,7 +70,7 @@ val sampleLinkPost = Post(
     embed_video_url = null,
     thumbnail_url = "https://lemmy.ml/pictrs/image/08967513-afcb-495a-9116-562a0cb1a44f.jpeg",
     ap_id = "https://lemmy.ml/post/135129", local = true,
-    language_id = 0
+    language_id = 0,
 )
 
 val sampleLinkNoThumbnailPost = Post(
@@ -66,7 +93,7 @@ val sampleLinkNoThumbnailPost = Post(
     embed_video_url = null,
     thumbnail_url = null,
     ap_id = "https://lemmy.ml/post/135129", local = true,
-    language_id = 0
+    language_id = 0,
 )
 
 val sampleImagePost = Post(
@@ -89,10 +116,10 @@ val sampleImagePost = Post(
     embed_video_url = null,
     thumbnail_url = "https://lemmy.ml/pictrs/image/08967513-afcb-495a-9116-562a0cb1a44f.jpeg",
     ap_id = "https://lemmy.ml/post/135129", local = true,
-    language_id = 0
+    language_id = 0,
 )
 
-val samplePersonSafe = PersonSafe(
+val samplePerson = Person(
     id = 33401,
     name = "homeless",
     display_name = "No longer Homeless",
@@ -107,16 +134,14 @@ val samplePersonSafe = PersonSafe(
     local = true,
     banner = null,
     deleted = false,
-    inbox_url = "https://lemmy.ml/u/homeless/inbox",
-    shared_inbox_url = "https://lemmy.ml/inbox",
     matrix_user_id = null,
     admin = false,
     bot_account = false,
     ban_expires = null,
-    instance_id = 0
+    instance_id = 0,
 )
 
-val samplePersonSafe2 = PersonSafe(
+val samplePerson2 = Person(
     id = 33403,
     name = "gary_host_laptop",
     display_name = null,
@@ -129,16 +154,14 @@ val samplePersonSafe2 = PersonSafe(
     local = true,
     banner = null,
     deleted = false,
-    inbox_url = "https://lemmy.ml/u/homeless/inbox",
-    shared_inbox_url = "https://lemmy.ml/inbox",
     matrix_user_id = null,
     admin = false,
     bot_account = false,
     ban_expires = null,
-    instance_id = 0
+    instance_id = 0,
 )
 
-val sampleCommunitySafe = CommunitySafe(
+val sampleCommunity = Community(
     id = 14681,
     name = "socialism",
     title = "Socialism",
@@ -154,7 +177,7 @@ val sampleCommunitySafe = CommunitySafe(
     banner = "https://lemmy.ml/pictrs/image/386rk5OYWS.jpg",
     instance_id = 0,
     hidden = false,
-    posting_restricted_to_mods = false
+    posting_restricted_to_mods = false,
 )
 
 val samplePostAggregates = PostAggregates(
@@ -167,13 +190,14 @@ val samplePostAggregates = PostAggregates(
     featured_local = false,
     featured_community = false,
     newest_comment_time_necro = "2022-01-02T04:02:44.592929",
-    newest_comment_time = "2022-01-02T04:02:44.592929"
+    newest_comment_time = "2022-01-02T04:02:44.592929",
+    published = "2022-01-02T04:02:44.592929",
 )
 
 val samplePostView = PostView(
     post = samplePost,
-    creator = samplePersonSafe,
-    community = sampleCommunitySafe,
+    creator = samplePerson,
+    community = sampleCommunity,
     creator_banned_from_community = false,
     counts = samplePostAggregates,
     subscribed = SubscribedType.NotSubscribed,
@@ -181,13 +205,13 @@ val samplePostView = PostView(
     read = false,
     creator_blocked = false,
     my_vote = null,
-    unread_comments = 0
+    unread_comments = 0,
 )
 
 val sampleLinkPostView = PostView(
     post = sampleLinkPost,
-    creator = samplePersonSafe,
-    community = sampleCommunitySafe,
+    creator = samplePerson,
+    community = sampleCommunity,
     creator_banned_from_community = false,
     counts = samplePostAggregates,
     subscribed = SubscribedType.NotSubscribed,
@@ -195,13 +219,13 @@ val sampleLinkPostView = PostView(
     read = false,
     creator_blocked = false,
     my_vote = null,
-    unread_comments = 0
+    unread_comments = 0,
 )
 
 val sampleLinkNoThumbnailPostView = PostView(
     post = sampleLinkNoThumbnailPost,
-    creator = samplePersonSafe,
-    community = sampleCommunitySafe,
+    creator = samplePerson,
+    community = sampleCommunity,
     creator_banned_from_community = false,
     counts = samplePostAggregates,
     subscribed = SubscribedType.NotSubscribed,
@@ -209,13 +233,13 @@ val sampleLinkNoThumbnailPostView = PostView(
     read = false,
     creator_blocked = false,
     my_vote = null,
-    unread_comments = 0
+    unread_comments = 0,
 )
 
 val sampleImagePostView = PostView(
     post = sampleImagePost,
-    creator = samplePersonSafe,
-    community = sampleCommunitySafe,
+    creator = samplePerson,
+    community = sampleCommunity,
     creator_banned_from_community = false,
     counts = samplePostAggregates,
     subscribed = SubscribedType.NotSubscribed,
@@ -223,7 +247,7 @@ val sampleImagePostView = PostView(
     read = false,
     creator_blocked = false,
     my_vote = null,
-    unread_comments = 0
+    unread_comments = 0,
 )
 
 val sampleComment = Comment(
@@ -242,7 +266,7 @@ val sampleComment = Comment(
     local = false,
     distinguished = false,
     language_id = 0,
-    path = "0.1"
+    path = "0.1",
 )
 
 val sampleReplyComment = Comment(
@@ -258,7 +282,7 @@ val sampleReplyComment = Comment(
     ap_id = "https://midwest.social/comment/24622",
     local = false,
     distinguished = false,
-    language_id = 0
+    language_id = 0,
 )
 
 val sampleSecondReplyComment = Comment(
@@ -274,7 +298,7 @@ val sampleSecondReplyComment = Comment(
     ap_id = "https://midwest.social/comment/24622",
     local = false,
     distinguished = false,
-    language_id = 0
+    language_id = 0,
 )
 
 val sampleCommentAggregates = CommentAggregates(
@@ -283,46 +307,47 @@ val sampleCommentAggregates = CommentAggregates(
     score = 8,
     upvotes = 12,
     downvotes = 4,
-    child_count = 0
+    published = "2022-01-02T04:02:44.592929",
+    child_count = 0,
 )
 
 val sampleCommentView = CommentView(
     comment = sampleComment,
-    creator = samplePersonSafe,
+    creator = samplePerson,
     post = samplePost,
-    community = sampleCommunitySafe,
+    community = sampleCommunity,
     counts = sampleCommentAggregates,
     creator_banned_from_community = false,
     subscribed = SubscribedType.NotSubscribed,
     saved = false,
     creator_blocked = false,
-    my_vote = null
+    my_vote = null,
 )
 
 val sampleSecondReplyCommentView = CommentView(
     comment = sampleSecondReplyComment,
-    creator = samplePersonSafe,
+    creator = samplePerson,
     post = samplePost,
-    community = sampleCommunitySafe,
+    community = sampleCommunity,
     counts = sampleCommentAggregates,
     creator_banned_from_community = false,
     subscribed = SubscribedType.NotSubscribed,
     saved = false,
     creator_blocked = false,
-    my_vote = null
+    my_vote = null,
 )
 
 val sampleReplyCommentView = CommentView(
     comment = sampleReplyComment,
-    creator = samplePersonSafe2,
+    creator = samplePerson2,
     post = samplePost,
-    community = sampleCommunitySafe,
+    community = sampleCommunity,
     counts = sampleCommentAggregates,
     creator_banned_from_community = false,
     subscribed = SubscribedType.NotSubscribed,
     saved = false,
     creator_blocked = false,
-    my_vote = null
+    my_vote = null,
 )
 
 val sampleCommentReply = CommentReply(
@@ -330,7 +355,7 @@ val sampleCommentReply = CommentReply(
     recipient_id = 20,
     comment_id = 42,
     read = false,
-    published = "2022-01-01T09:53:46.904077"
+    published = "2022-01-01T09:53:46.904077",
 )
 
 val samplePersonMention = PersonMention(
@@ -338,41 +363,42 @@ val samplePersonMention = PersonMention(
     recipient_id = 20,
     comment_id = 42,
     read = false,
-    published = "2022-01-01T09:53:46.904077"
+    published = "2022-01-01T09:53:46.904077",
 )
 
 val sampleCommentReplyView = CommentReplyView(
     comment_reply = sampleCommentReply,
     comment = sampleReplyComment,
-    creator = samplePersonSafe2,
-    recipient = samplePersonSafe,
+    creator = samplePerson2,
+    recipient = samplePerson,
     post = samplePost,
-    community = sampleCommunitySafe,
+    community = sampleCommunity,
     counts = sampleCommentAggregates,
     creator_banned_from_community = false,
     subscribed = SubscribedType.NotSubscribed,
     saved = false,
     creator_blocked = false,
-    my_vote = null
+    my_vote = null,
 )
 
 val samplePersonMentionView = PersonMentionView(
     person_mention = samplePersonMention,
     comment = sampleReplyComment,
-    creator = samplePersonSafe2,
-    recipient = samplePersonSafe,
+    creator = samplePerson2,
+    recipient = samplePerson,
     post = samplePost,
-    community = sampleCommunitySafe,
+    community = sampleCommunity,
     counts = sampleCommentAggregates,
     creator_banned_from_community = false,
     subscribed = SubscribedType.NotSubscribed,
     saved = false,
     creator_blocked = false,
-    my_vote = null
+    my_vote = null,
 )
 
 val sampleCommunityAggregates = CommunityAggregates(
     id = 84,
+    published = "2022-01-02T04:02:44.592929",
     community_id = 834,
     subscribers = 52,
     posts = 82,
@@ -380,14 +406,14 @@ val sampleCommunityAggregates = CommunityAggregates(
     users_active_day = 28,
     users_active_week = 98,
     users_active_month = 82,
-    users_active_half_year = 91
+    users_active_half_year = 91,
 )
 
 val sampleCommunityView = CommunityView(
-    community = sampleCommunitySafe,
+    community = sampleCommunity,
     subscribed = SubscribedType.NotSubscribed,
     blocked = false,
-    counts = sampleCommunityAggregates
+    counts = sampleCommunityAggregates,
 )
 
 val samplePersonAggregates = PersonAggregates(
@@ -396,12 +422,12 @@ val samplePersonAggregates = PersonAggregates(
     post_count = 28,
     post_score = 38,
     comment_count = 98,
-    comment_score = 168
+    comment_score = 168,
 )
 
-val samplePersonView = PersonViewSafe(
-    person = samplePersonSafe,
-    counts = samplePersonAggregates
+val samplePersonView = PersonView(
+    person = samplePerson,
+    counts = samplePersonAggregates,
 )
 
 val samplePrivateMessage = PrivateMessage(
@@ -414,13 +440,13 @@ val samplePrivateMessage = PrivateMessage(
     published = "2022-01-07T04:12:26.398434",
     updated = "2022-01-07T03:15:37.360888",
     ap_id = "https://midwest.social/comment/24622",
-    local = false
+    local = false,
 )
 
 val samplePrivateMessageView = PrivateMessageView(
     private_message = samplePrivateMessage,
-    creator = samplePersonSafe,
-    recipient = samplePersonSafe2
+    creator = samplePerson,
+    recipient = samplePerson2,
 )
 
 val sampleSite = Site(
@@ -437,7 +463,7 @@ val sampleSite = Site(
     last_refreshed_at = "2023-01-01",
     instance_id = 0,
     public_key = "bleh",
-    private_key = null
+    private_key = null,
 )
 
 val sampleLocalSite = LocalSite(
@@ -452,7 +478,7 @@ val sampleLocalSite = LocalSite(
     application_email_admins = false,
     captcha_difficulty = "easy",
     captcha_enabled = false,
-    default_post_listing_type = "0",
+    default_post_listing_type = ListingType.All,
     default_theme = "main",
     federation_debug = false,
     federation_enabled = true,
@@ -464,8 +490,8 @@ val sampleLocalSite = LocalSite(
     site_id = 1,
     slur_filter_regex = null,
     updated = null,
-    hide_modlog_mod_names = true
-
+    hide_modlog_mod_names = true,
+    reports_email_admins = false,
 )
 
 val sampleSiteAggregates = SiteAggregates(
@@ -478,12 +504,31 @@ val sampleSiteAggregates = SiteAggregates(
     users_active_day = 21,
     users_active_week = 82,
     users_active_month = 208,
-    users_active_half_year = 689
+    users_active_half_year = 689,
+)
+
+val local_site_rate_limit = LocalSiteRateLimit(
+    id = 1,
+    local_site_id = 2,
+    message = 2,
+    message_per_second = 2,
+    post = 2,
+    post_per_second = 2,
+    register = 2,
+    register_per_second = 2,
+    image = 2,
+    image_per_second = 2,
+    comment = 2,
+    comment_per_second = 2,
+    search = 2,
+    search_per_second = 2,
+    published = "2022-01-02T04:02:44.592929",
+
 )
 
 val sampleSiteView = SiteView(
     site = sampleSite,
     counts = sampleSiteAggregates,
     local_site = sampleLocalSite,
-    taglines = null
+    local_site_rate_limit = local_site_rate_limit,
 )

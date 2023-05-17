@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.settings.account
 
@@ -16,12 +15,13 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountSettingsActivity(
     navController: NavController,
     accountSettingsViewModel: AccountSettingsViewModel,
     accountViewModel: AccountViewModel,
-    siteViewModel: SiteViewModel
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "Got to settings activity")
 
@@ -41,16 +41,15 @@ fun AccountSettingsActivity(
                     onClickSave = { form ->
                         accountSettingsViewModel.saveSettings(
                             form,
-                            ctx,
                             siteViewModel = siteViewModel,
-                            account = account
+                            account = account,
                         )
                     },
                     siteViewModel = siteViewModel,
                     account = account,
-                    padding = padding
+                    padding = padding,
                 )
             }
-        }
+        },
     )
 }

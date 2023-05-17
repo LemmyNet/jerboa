@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.post.create
 
 import android.net.Uri
@@ -24,7 +22,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
+import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
+import com.jerboa.datatypes.types.CreatePost
+import com.jerboa.datatypes.types.GetSiteMetadata
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -33,17 +34,18 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private var fetchSuggestedTitleJob: Job? = null
+private var fetchSiteMetadataJob: Job? = null
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostActivity(
     accountViewModel: AccountViewModel,
     createPostViewModel: CreatePostViewModel,
     navController: NavController,
     communityListViewModel: CommunityListViewModel,
-    _url: String,
-    _body: String,
-    _image: Uri?
+    initialUrl: String,
+    initialBody: String,
+    initialImage: Uri?,
 ) {
     Log.d("jerboa", "got to create post activity")
 
@@ -52,23 +54,23 @@ fun CreatePostActivity(
     val scope = rememberCoroutineScope()
 
     var name by rememberSaveable { mutableStateOf("") }
-    var url by rememberSaveable { mutableStateOf(_url) }
+    var url by rememberSaveable { mutableStateOf(initialUrl) }
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue(
-                _body
-            )
+                initialBody,
+            ),
         )
     }
     var formValid by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(_url) {
-        if (_url.isNotEmpty()) {
-            fetchSuggestedTitleJob?.cancel()
-            fetchSuggestedTitleJob = scope.launch {
+    LaunchedEffect(initialUrl) {
+        if (initialUrl.isNotEmpty()) {
+            fetchSiteMetadataJob?.cancel()
+            fetchSiteMetadataJob = scope.launch {
                 delay(DEBOUNCE_DELAY)
-                if (Patterns.WEB_URL.matcher(_url).matches()) {
-                    createPostViewModel.fetchSuggestedTitle(_url, ctx)
+                if (Patterns.WEB_URL.matcher(initialUrl).matches()) {
+                    createPostViewModel.getSiteMetadata(GetSiteMetadata(initialUrl))
                 }
             }
         }
@@ -76,11 +78,15 @@ fun CreatePostActivity(
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             topBar = {
+                val loading = when (createPostViewModel.createPostRes) {
+                    ApiState.Loading -> true
+                    else -> false
+                }
                 Column {
                     CreatePostHeader(
                         navController = navController,
                         formValid = formValid,
-                        loading = createPostViewModel.loading,
+                        loading = loading,
                         onCreatePostClick = {
                             account?.also { acct ->
                                 communityListViewModel.selectedCommunity?.id?.also {
@@ -89,19 +95,20 @@ fun CreatePostActivity(
                                     val bodyOut = body.text.trim().ifEmpty { null }
                                     val urlOut = url.trim().ifEmpty { null }
                                     createPostViewModel.createPost(
-                                        account = acct,
-                                        ctx = ctx,
-                                        body = bodyOut,
-                                        url = urlOut,
-                                        name = nameOut,
-                                        communityId = it,
-                                        navController = navController
+                                        CreatePost(
+                                            name = nameOut,
+                                            community_id = it,
+                                            url = urlOut,
+                                            body = bodyOut,
+                                            auth = acct.jwt,
+                                        ),
+                                        navController,
                                     )
                                 }
                             }
-                        }
+                        },
                     )
-                    if (createPostViewModel.loading) {
+                    if (loading) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 }
@@ -115,19 +122,19 @@ fun CreatePostActivity(
                     url = url,
                     onUrlChange = { cUrl ->
                         url = cUrl
-                        fetchSuggestedTitleJob?.cancel()
-                        fetchSuggestedTitleJob = scope.launch {
+                        fetchSiteMetadataJob?.cancel()
+                        fetchSiteMetadataJob = scope.launch {
                             delay(DEBOUNCE_DELAY)
                             if (Patterns.WEB_URL.matcher(cUrl).matches()) {
-                                createPostViewModel.fetchSuggestedTitle(cUrl, ctx)
+                                createPostViewModel.getSiteMetadata(GetSiteMetadata(cUrl))
                             }
                         }
                     },
                     navController = navController,
                     community = communityListViewModel.selectedCommunity,
                     formValid = { formValid = it },
-                    suggestedTitle = createPostViewModel.suggestedTitle,
-                    image = _image,
+                    siteMetadataRes = createPostViewModel.siteMetadataRes,
+                    image = initialImage,
                     onPickedImage = { uri ->
                         val imageIs = imageInputStreamFromUri(ctx, uri)
                         scope.launch {
@@ -137,9 +144,9 @@ fun CreatePostActivity(
                         }
                     },
                     account = account,
-                    padding = padding
+                    padding = padding,
                 )
-            }
+            },
         )
     }
 }

@@ -22,7 +22,7 @@ import com.jerboa.db.DEFAULT_FONT_SIZE
 @Composable
 fun JerboaTheme(
     appSettings: AppSettings?,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val themeMode = ThemeMode.values()[appSettings?.theme ?: 0]
     val themeColor = ThemeColor.values()[appSettings?.themeColor ?: 0]
@@ -72,7 +72,7 @@ fun JerboaTheme(
         colorScheme = colors,
         typography = typography,
         shapes = Shapes,
-        content = content
+        content = content,
     )
 }
 
@@ -82,7 +82,7 @@ val colorList = listOf(
     hsl(150f),
     hsl(200f),
     hsl(250f),
-    hsl(300f)
+    hsl(300f),
 )
 
 fun hsl(num: Float): Color {

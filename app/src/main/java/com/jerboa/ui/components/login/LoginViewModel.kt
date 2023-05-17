@@ -10,12 +10,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.api.API
-import com.jerboa.api.fetchPostsWrapper
-import com.jerboa.api.getSiteWrapper
+import com.jerboa.api.ApiState
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.api.Login
+import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.GetSite
+import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.home.HomeViewModel
@@ -25,9 +24,7 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
 
-    var jwt: String by mutableStateOf("")
-        private set
-    var loading: Boolean by mutableStateOf(false)
+    var loading by mutableStateOf(false)
         private set
 
     fun login(
@@ -37,9 +34,10 @@ class LoginViewModel : ViewModel() {
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
         homeViewModel: HomeViewModel,
-        ctx: Context
+        ctx: Context,
     ) {
         val api = API.changeLemmyInstance(instance)
+        var jwt: String
 
         viewModelScope.launch {
             try {
@@ -54,7 +52,7 @@ class LoginViewModel : ViewModel() {
                     Toast.makeText(
                         ctx,
                         msg,
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                     this.cancel()
                     return@launch
@@ -66,53 +64,53 @@ class LoginViewModel : ViewModel() {
                 Toast.makeText(
                     ctx,
                     msg,
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
                 this.cancel()
                 return@launch
             }
 
-            // Refetch the site to get your name and id
+            // Fetch the site to get your name and id
             // Can't do a co-routine within a co-routine
-            siteViewModel.siteRes = getSiteWrapper(auth = jwt, ctx = ctx)
+            siteViewModel.getSite(GetSite(auth = jwt))
 
-            val luv = siteViewModel.siteRes?.my_user!!.local_user_view
-            val account = Account(
-                id = luv.person.id,
-                name = luv.person.name,
-                current = true,
-                instance = instance,
-                jwt = jwt,
-                defaultListingType = luv.local_user.default_listing_type,
-                defaultSortType = luv.local_user.default_sort_type
-            )
+            when (val siteRes = siteViewModel.siteRes) {
+                ApiState.Empty -> TODO()
+                is ApiState.Failure -> TODO()
+                ApiState.Loading -> TODO()
+                is ApiState.Success -> {
+                    val luv = siteRes.data.my_user!!.local_user_view
+                    val account = Account(
+                        id = luv.person.id,
+                        name = luv.person.name,
+                        current = true,
+                        instance = instance,
+                        jwt = jwt,
+                        defaultListingType = luv.local_user.default_listing_type.ordinal,
+                        defaultSortType = luv.local_user.default_sort_type.ordinal,
+                    )
 
-            // Refetch the front page
-            val posts = fetchPostsWrapper(
-                account = account,
-                ctx = ctx,
-                listingType = ListingType.values()[
-                    luv.local_user
-                        .default_listing_type
-                ],
-                sortType = SortType.values()[
-                    luv.local_user
-                        .default_sort_type
-                ],
-                page = 1
-            )
-            homeViewModel.posts.clear()
-            homeViewModel.posts.addAll(posts)
+                    homeViewModel.resetPage()
+                    homeViewModel.getPosts(
+                        GetPosts(
+                            type_ = luv.local_user.default_listing_type,
+                            sort = luv.local_user.default_sort_type,
+                            page = homeViewModel.page,
+                            auth = account.jwt,
+                        ),
+                    )
 
-            // Remove the default account
-            accountViewModel.removeCurrent()
+                    // Remove the default account
+                    accountViewModel.removeCurrent()
 
-            // Save that info in the DB
-            accountViewModel.insert(account)
+                    // Save that info in the DB
+                    accountViewModel.insert(account)
 
-            loading = false
+                    loading = false
 
-            navController.navigate(route = "home")
+                    navController.navigate(route = "home")
+                }
+            }
         }
     }
 }

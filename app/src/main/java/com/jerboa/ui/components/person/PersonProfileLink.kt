@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.person
 
 import androidx.compose.foundation.clickable
@@ -18,30 +16,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.datatypes.samplePerson
+import com.jerboa.datatypes.types.Person
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.theme.SMALL_PADDING
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonName(
-    person: PersonSafe?,
+    person: Person?,
     color: Color = MaterialTheme.colorScheme.tertiary,
-    isPostCreator: Boolean = false
+    isPostCreator: Boolean = false,
 ) {
     val name = person?.let { personNameShown(it) } ?: run { "Anonymous" }
     val style = MaterialTheme.typography.bodyMedium
 
     if (isPostCreator) {
         Badge(
-            containerColor = MaterialTheme.colorScheme.tertiary
+            containerColor = MaterialTheme.colorScheme.tertiary,
         ) {
             Text(
                 text = name,
                 style = style,
                 overflow = TextOverflow.Clip,
-                maxLines = 1
+                maxLines = 1,
             )
         }
     } else {
@@ -50,7 +49,7 @@ fun PersonName(
             color = color,
             style = style,
             overflow = TextOverflow.Clip,
-            maxLines = 1
+            maxLines = 1,
         )
     }
 }
@@ -58,23 +57,23 @@ fun PersonName(
 @Preview
 @Composable
 fun PersonNamePreview() {
-    PersonName(person = samplePersonSafe, isPostCreator = false)
+    PersonName(person = samplePerson, isPostCreator = false)
 }
 
 @Composable
 fun PersonProfileLink(
-    person: PersonSafe,
+    person: Person,
     onClick: (personId: Int) -> Unit,
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
     isModerator: Boolean = false,
     isCommunityBanned: Boolean = false,
-    color: Color = MaterialTheme.colorScheme.tertiary
+    color: Color = MaterialTheme.colorScheme.tertiary,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-        modifier = Modifier.clickable { onClick(person.id) }
+        modifier = Modifier.clickable { onClick(person.id) },
     ) {
         person.avatar?.also {
             CircularIcon(icon = it)
@@ -84,28 +83,28 @@ fun PersonProfileLink(
                 Icon(
                     imageVector = Icons.Outlined.Shield,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colorScheme.tertiary
+                    tint = MaterialTheme.colorScheme.tertiary,
                 )
             }
             if (person.admin) {
                 Icon(
                     imageVector = Icons.Outlined.Shield,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
             if (isCommunityBanned || person.banned) {
                 Icon(
                     imageVector = Icons.Outlined.NoAccounts,
                     contentDescription = "TODO",
-                    tint = Color.Red
+                    tint = Color.Red,
                 )
             }
         }
         PersonName(
             person = person,
             isPostCreator = isPostCreator,
-            color = color
+            color = color,
         )
     }
 }
@@ -114,8 +113,8 @@ fun PersonProfileLink(
 @Composable
 fun PersonProfileLinkPreview() {
     PersonProfileLink(
-        person = samplePersonSafe,
-        onClick = {}
+        person = samplePerson,
+        onClick = {},
     )
 }
 
@@ -123,11 +122,11 @@ fun PersonProfileLinkPreview() {
 @Composable
 fun PersonProfileLinkPreviewTags() {
     PersonProfileLink(
-        person = samplePersonSafe,
+        person = samplePerson,
         isPostCreator = true,
         isCommunityBanned = true,
         isModerator = true,
         showTags = true,
-        onClick = {}
+        onClick = {},
     )
 }

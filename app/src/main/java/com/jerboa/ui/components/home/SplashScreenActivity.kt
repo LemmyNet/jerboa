@@ -24,7 +24,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreenActivity(
-    navController: NavController
+    navController: NavController,
 ) {
     Surface(color = MaterialTheme.colorScheme.background) {
         val startRoute = "home"
@@ -41,8 +41,8 @@ fun SplashScreenActivity(
                     durationMillis = 200,
                     easing = {
                         OvershootInterpolator(4f).getInterpolation(it)
-                    }
-                )
+                    },
+                ),
             )
 
             delay(LAUNCH_DELAY)
@@ -52,12 +52,12 @@ fun SplashScreenActivity(
         // Image
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_jerboa),
                 contentDescription = "Logo",
-                modifier = Modifier.scale(scale.value)
+                modifier = Modifier.scale(scale.value),
             )
         }
     }

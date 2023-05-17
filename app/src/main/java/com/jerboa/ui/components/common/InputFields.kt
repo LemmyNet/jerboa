@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.common
 
@@ -78,6 +77,7 @@ import com.jerboa.ui.theme.muted
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarkdownTextField(
     text: TextFieldValue,
@@ -86,7 +86,7 @@ fun MarkdownTextField(
     modifier: Modifier = Modifier,
     placeholder: String = "",
     focusImmediate: Boolean = true,
-    outlined: Boolean = false
+    outlined: Boolean = false,
 ) {
     val focusRequester = remember { FocusRequester() }
     val imageUploading = rememberSaveable { mutableStateOf(false) }
@@ -102,14 +102,14 @@ fun MarkdownTextField(
             onClickOk = {
                 showCreateLink = false
                 onTextChange(it)
-            }
+            },
         )
     }
 
     if (showPreview) {
         ShowPreviewDialog(
             content = text.text,
-            onDismissRequest = { showPreview = false }
+            onDismissRequest = { showPreview = false },
         )
     }
 
@@ -122,9 +122,9 @@ fun MarkdownTextField(
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text
+                    keyboardType = KeyboardType.Text,
                     // autoCorrect = true,
-                )
+                ),
             )
         } else {
             TextField(
@@ -134,15 +134,15 @@ fun MarkdownTextField(
                 modifier = modifier.focusRequester(focusRequester),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text
+                    keyboardType = KeyboardType.Text,
                     // autoCorrect = true,
                 ),
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = MaterialTheme.colorScheme.onSurface,
                     containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
             )
         }
 
@@ -152,14 +152,14 @@ fun MarkdownTextField(
                 simpleMarkdownSurround(
                     "**",
                     value = text,
-                    onValueChange = onTextChange
+                    onValueChange = onTextChange,
                 )
             },
             onItalicsClick = {
                 simpleMarkdownSurround(
                     "*",
                     value = text,
-                    onValueChange = onTextChange
+                    onValueChange = onTextChange,
                 )
             },
             onQuoteClick = {
@@ -167,7 +167,7 @@ fun MarkdownTextField(
                     "> ",
                     value = text,
                     onValueChange = onTextChange,
-                    surround = false
+                    surround = false,
                 )
             },
             onHeaderClick = {
@@ -175,35 +175,35 @@ fun MarkdownTextField(
                     "# ",
                     value = text,
                     onValueChange = onTextChange,
-                    surround = false
+                    surround = false,
                 )
             },
             onCodeClick = {
                 simpleMarkdownSurround(
                     "`",
                     value = text,
-                    onValueChange = onTextChange
+                    onValueChange = onTextChange,
                 )
             },
             onStrikethroughClick = {
                 simpleMarkdownSurround(
                     "~~",
                     value = text,
-                    onValueChange = onTextChange
+                    onValueChange = onTextChange,
                 )
             },
             onSubscriptClick = {
                 simpleMarkdownSurround(
                     "~",
                     value = text,
-                    onValueChange = onTextChange
+                    onValueChange = onTextChange,
                 )
             },
             onSuperscriptClick = {
                 simpleMarkdownSurround(
                     "^",
                     value = text,
-                    onValueChange = onTextChange
+                    onValueChange = onTextChange,
                 )
             },
             onListClick = {
@@ -211,7 +211,7 @@ fun MarkdownTextField(
                     "- ",
                     value = text,
                     onValueChange = onTextChange,
-                    surround = false
+                    surround = false,
                 )
             },
             onImageClick = {
@@ -222,7 +222,7 @@ fun MarkdownTextField(
             },
             onPreviewClick = {
                 showPreview = true
-            }
+            },
         )
     }
 
@@ -234,11 +234,12 @@ fun MarkdownTextField(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateLinkDialog(
     value: TextFieldValue,
     onClickOk: (TextFieldValue) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     val initialText = value.getSelectedText().text
 
@@ -252,12 +253,12 @@ fun CreateLinkDialog(
                 modifier = Modifier
                     .padding(MEDIUM_PADDING)
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
                 Text(
                     text = "Insert link",
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 OutlinedTextField(
                     value = text,
@@ -265,7 +266,7 @@ fun CreateLinkDialog(
                     label = {
                         Text(text = "Text")
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = link,
@@ -273,17 +274,17 @@ fun CreateLinkDialog(
                     label = {
                         Text(text = "Link")
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         dismissButton = {
             TextButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
             ) {
                 Text(
                     text = "Cancel",
-                    color = MaterialTheme.colorScheme.onBackground.muted
+                    color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
         },
@@ -294,47 +295,47 @@ fun CreateLinkDialog(
                     val out = value.text.replaceRange(
                         value.selection.start,
                         value.selection.end,
-                        replacement
+                        replacement,
                     )
                     val end = value.selection.start + replacement.length
                     val cursor = TextRange(end, end)
                     onClickOk(TextFieldValue(out, cursor))
-                }
+                },
             ) {
                 Text(
-                    text = "OK"
+                    text = "OK",
                 )
             }
-        }
+        },
     )
 }
 
 @Composable
 fun ShowPreviewDialog(
     content: String,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState())
+                modifier = Modifier.verticalScroll(rememberScrollState()),
             ) {
                 MyMarkdownText(
-                    markdown = content
+                    markdown = content,
                 )
             }
         },
         confirmButton = {
             TextButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
             ) {
                 Text(
                     text = "OK",
-                    color = MaterialTheme.colorScheme.onBackground.muted
+                    color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
-        }
+        },
     )
 }
 
@@ -349,7 +350,7 @@ private fun imageUploadLauncher(
     account: Account?,
     onTextChange: (TextFieldValue) -> Unit,
     text: TextFieldValue,
-    imageUploading: MutableState<Boolean>
+    imageUploading: MutableState<Boolean>,
 ): ManagedActivityResultLauncher<String, Uri?> {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -360,7 +361,7 @@ private fun imageUploadLauncher(
     }
 
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = ActivityResultContracts.GetContent(),
     ) { uri: Uri? ->
         imageUri = uri
         Log.d("jerboa", imageUri.toString())
@@ -386,7 +387,7 @@ fun simpleMarkdownSurround(
     markdownChar: String,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
-    surround: Boolean = true
+    surround: Boolean = true,
 ) {
     val out = if (value.selection.start == value.selection.end) {
         var altered = value.text.insert(value.selection.start, markdownChar)
@@ -417,7 +418,7 @@ fun simpleMarkdownSurround(
         } else {
             TextRange(
                 start,
-                end
+                end,
             )
         }
         TextFieldValue(altered, cursor)
@@ -440,124 +441,124 @@ fun MarkdownHelperBar(
     onStrikethroughClick: () -> Unit,
     onSubscriptClick: () -> Unit,
     onSuperscriptClick: () -> Unit,
-    imageUploading: Boolean
+    imageUploading: Boolean,
 ) {
     Row(
-        modifier = Modifier.horizontalScroll(rememberScrollState())
+        modifier = Modifier.horizontalScroll(rememberScrollState()),
     ) {
         IconButton(
-            onClick = onPreviewClick
+            onClick = onPreviewClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.Preview,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
-            onClick = onLinkClick
+            onClick = onLinkClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.Link,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
             onClick = onImageClick,
-            enabled = !imageUploading
+            enabled = !imageUploading,
         ) {
             if (imageUploading) {
                 CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             } else {
                 Icon(
                     imageVector = Icons.Outlined.Image,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colorScheme.onBackground.muted
+                    tint = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
         }
         IconButton(
-            onClick = onBoldClick
+            onClick = onBoldClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatBold,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
-            onClick = onItalicsClick
+            onClick = onItalicsClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatItalic,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
-            onClick = onQuoteClick
+            onClick = onQuoteClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatQuote,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
-            onClick = onListClick
+            onClick = onListClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatListBulleted,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
-            onClick = onHeaderClick
+            onClick = onHeaderClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.Title,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
-            onClick = onCodeClick
+            onClick = onCodeClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.Code,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
-            onClick = onStrikethroughClick
+            onClick = onStrikethroughClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatStrikethrough,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
-            onClick = onSubscriptClick
+            onClick = onSubscriptClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.Subscript,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
         IconButton(
-            onClick = onSuperscriptClick
+            onClick = onSuperscriptClick,
         ) {
             Icon(
                 imageVector = Icons.Outlined.Superscript,
                 contentDescription = "TODO",
-                tint = MaterialTheme.colorScheme.onBackground.muted
+                tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
     }
@@ -568,28 +569,29 @@ fun MyCheckBox(
     checked: Boolean,
     enabled: Boolean = true,
     label: String,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier.padding(SMALL_PADDING),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = label)
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            enabled = enabled
+            enabled = enabled,
         )
     }
 }
 
 // https://stackoverflow.com/a/67111599
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyDropDown(
     suggestions: List<String>,
     onValueChange: (Int) -> Unit,
     initialValue: Int,
-    label: String
+    label: String,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(suggestions[initialValue]) }
@@ -598,7 +600,7 @@ fun MyDropDown(
         expanded = expanded,
         onExpandedChange = {
             expanded = !expanded
-        }
+        },
     ) {
         TextField(
             readOnly = true,
@@ -608,16 +610,16 @@ fun MyDropDown(
             label = { Text(label) },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded
+                    expanded = expanded,
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
         )
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = {
                 expanded = false
-            }
+            },
         ) {
             suggestions.forEach { selectionOption ->
                 DropdownMenuItem(
@@ -628,7 +630,7 @@ fun MyDropDown(
                         selectedText = selectionOption
                         expanded = false
                         onValueChange(suggestions.indexOf(selectedText))
-                    }
+                    },
                 )
             }
         }
@@ -651,34 +653,34 @@ fun TextMarkdownBarPreview() {
         onSubscriptClick = {},
         onSuperscriptClick = {},
         onLinkClick = {},
-        imageUploading = false
+        imageUploading = false,
     )
 }
 
 @Composable
 fun PreviewLines(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = text,
         style = MaterialTheme.typography.bodyMedium,
         maxLines = 5,
         overflow = TextOverflow.Ellipsis,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @Composable
 fun MyMarkdownText(
     markdown: String,
-    color: Color = MaterialTheme.colorScheme.onSurface
+    color: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     MarkdownText(
         markdown = markdown,
         modifier = Modifier.fillMaxSize(),
         color = color,
-        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(MARKDOWN_FONT_MULTIPLIER)
+        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(MARKDOWN_FONT_MULTIPLIER),
 //        style = MaterialTheme.typography.titleLarge,
 //        imageLoader =  LocalImageLoader.current
     )

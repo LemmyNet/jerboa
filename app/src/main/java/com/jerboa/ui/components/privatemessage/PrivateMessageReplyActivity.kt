@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.privatemessage
 
@@ -17,64 +16,58 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
-import com.jerboa.datatypes.api.CreatePrivateMessage
+import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.inbox.InboxViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrivateMessageReplyActivity(
-    inboxViewModel: InboxViewModel,
+    privateMessageReplyViewModel: PrivateMessageReplyViewModel,
     accountViewModel: AccountViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     Log.d("jerboa", "got to private message reply activity")
 
-    val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
 
     val focusManager = LocalFocusManager.current
 
+    val loading = when (privateMessageReplyViewModel.createMessageRes) {
+        ApiState.Loading -> true
+        else -> false
+    }
+
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             topBar = {
                 PrivateMessageReplyHeader(
                     navController = navController,
-                    loading = inboxViewModel.privateMessageReplyLoading.value,
+                    loading = loading,
                     onSendClick = {
-                        account?.also { account ->
-                            inboxViewModel.replyToPrivateMessageView?.also { privateMessageView ->
-                                val recipientId = privateMessageView.creator.id
-                                val form =
-                                    CreatePrivateMessage(
-                                        content = reply.text,
-                                        recipient_id = recipientId,
-                                        auth = account.jwt
-                                    )
-                                inboxViewModel.createPrivateMessage(
-                                    form,
-                                    ctx,
-                                    navController,
-                                    focusManager
-                                )
-                            }
+                        account?.also { acct ->
+                            privateMessageReplyViewModel.createPrivateMessage(
+                                content = reply.text,
+                                account = acct,
+                                navController,
+                                focusManager,
+                            )
                         }
-                    }
+                    },
                 )
             },
             content = { padding ->
-                if (inboxViewModel.privateMessageReplyLoading.value) {
+                if (loading) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 } else {
-                    inboxViewModel.replyToPrivateMessageView?.also { privateMessageView ->
+                    privateMessageReplyViewModel.replyItem?.also { pmv ->
                         PrivateMessageReply(
-                            privateMessageView = privateMessageView,
+                            privateMessageView = pmv,
                             account = account,
                             reply = reply,
                             onReplyChange = { reply = it },
@@ -83,11 +76,11 @@ fun PrivateMessageReplyActivity(
                             },
                             modifier = Modifier
                                 .padding(padding)
-                                .imePadding()
+                                .imePadding(),
                         )
                     }
                 }
-            }
+            },
         )
     }
 }

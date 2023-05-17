@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.prettyTime
 import com.jerboa.prettyTimeShortener
@@ -23,7 +23,7 @@ fun TimeAgo(
     published: String,
     updated: String? = null,
     precedingString: String? = null,
-    includeAgo: Boolean = false
+    includeAgo: Boolean = false,
 ) {
     val publishedPretty = dateStringToPretty(published, includeAgo)
 
@@ -35,7 +35,7 @@ fun TimeAgo(
         Text(
             text = afterPreceding,
             color = MaterialTheme.colorScheme.onBackground.muted,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
 
         updated?.also {
@@ -43,13 +43,13 @@ fun TimeAgo(
 
             DotSpacer(
                 padding = SMALL_PADDING,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
             Text(
                 text = "($updatedPretty)",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.muted,
-                fontStyle = FontStyle.Italic
+                fontStyle = FontStyle.Italic,
             )
         }
     }
@@ -69,7 +69,7 @@ fun dateStringToPretty(dateStr: String, includeAgo: Boolean = false): String {
 @Preview
 @Composable
 fun TimeAgoPreview() {
-    TimeAgo(samplePersonSafe.published, samplePersonSafe.updated)
+    TimeAgo(samplePerson.published, samplePerson.updated)
 }
 
 @Composable
@@ -77,16 +77,16 @@ fun ScoreAndTime(
     score: Int,
     myVote: Int?,
     published: String,
-    updated: String?
+    updated: String?,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = score.toString(),
             color = scoreColor(myVote = myVote),
-            fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3)
+            fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3),
         )
         DotSpacer(0.dp, MaterialTheme.typography.bodyMedium)
         TimeAgo(published = published, updated = updated)
@@ -100,6 +100,6 @@ fun ScoreAndTimePreview() {
         score = 23,
         myVote = -1,
         published = samplePost.published,
-        updated = samplePost.updated
+        updated = samplePost.updated,
     )
 }

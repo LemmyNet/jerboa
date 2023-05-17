@@ -13,10 +13,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
+import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.isModerator
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -30,111 +30,122 @@ fun CommentReplyActivity(
     accountViewModel: AccountViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     Log.d("jerboa", "got to comment reply activity")
 
-    val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue
-            ("")
+            (""),
         )
     }
 
     val focusManager = LocalFocusManager.current
+    val loading = when (commentReplyViewModel.createCommentRes) {
+        ApiState.Loading -> true
+        else -> false
+    }
 
     Scaffold(
         topBar = {
             CommentReplyHeader(
                 navController = navController,
-                loading = commentReplyViewModel.loading.value,
+                loading = loading,
                 onSendClick = {
                     account?.also { acct ->
                         commentReplyViewModel.createComment(
                             content = reply.text,
                             account = acct,
-                            ctx = ctx,
                             navController = navController,
                             focusManager = focusManager,
                             personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel
+                            postViewModel = postViewModel,
                         )
                     }
-                }
+                },
             )
         },
         content = { padding ->
-            if (commentReplyViewModel.loading.value) {
+            if (loading) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             } else {
-                commentReplyViewModel.replyItem?.let { replyItem ->
-                    when (replyItem) {
-                        is ReplyItem.CommentItem ->
-                            CommentReply(
-                                commentView = replyItem.item,
-                                account = account,
-                                reply = reply,
-                                onReplyChange = { reply = it },
-                                onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
-                                },
-                                isModerator = isModerator(
-                                    replyItem.item.creator,
-                                    postViewModel
-                                        .moderators
-                                ),
-                                modifier = Modifier
-                                    .padding(padding)
-                                    .imePadding()
-                            )
-                        is ReplyItem.PostItem -> PostReply(
-                            postView = replyItem.item,
-                            account = account,
-                            reply = reply,
-                            onReplyChange = { reply = it },
-                            onPersonClick = { personId ->
-                                navController.navigate(route = "profile/$personId")
-                            },
-                            isModerator = isModerator(
-                                replyItem.item.creator,
-                                postViewModel
-                                    .moderators
-                            ),
-                            modifier = Modifier
-                                .padding(padding)
-                                .imePadding()
-                        )
-                        is ReplyItem.CommentReplyItem ->
-                            CommentReplyReply(
-                                commentReplyView = replyItem.item,
-                                account = account,
-                                reply = reply,
-                                onReplyChange = { reply = it },
-                                onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
-                                },
-                                modifier = Modifier
-                                    .padding(padding)
-                                    .imePadding()
-                            )
-                        is ReplyItem.MentionReplyItem ->
-                            MentionReply(
-                                personMentionView = replyItem.item,
-                                account = account,
-                                reply = reply,
-                                onReplyChange = { reply = it },
-                                onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
-                                },
-                                modifier = Modifier
-                                    .padding(padding)
-                                    .imePadding()
-                            )
+                when (val postRes = postViewModel.postRes) {
+                    is ApiState.Success -> {
+                        val moderators = postRes.data.moderators
+
+                        commentReplyViewModel.replyItem?.let { replyItem ->
+                            when (replyItem) {
+                                is ReplyItem.CommentItem ->
+                                    CommentReply(
+                                        commentView = replyItem.item,
+                                        account = account,
+                                        reply = reply,
+                                        onReplyChange = { reply = it },
+                                        onPersonClick = { personId ->
+                                            navController.navigate(route = "profile/$personId")
+                                        },
+                                        isModerator = isModerator(
+                                            replyItem.item.creator,
+                                            moderators,
+                                        ),
+                                        modifier = Modifier
+                                            .padding(padding)
+                                            .imePadding(),
+                                    )
+
+                                is ReplyItem.PostItem -> PostReply(
+                                    postView = replyItem.item,
+                                    account = account,
+                                    reply = reply,
+                                    onReplyChange = { reply = it },
+                                    onPersonClick = { personId ->
+                                        navController.navigate(route = "profile/$personId")
+                                    },
+                                    isModerator = isModerator(
+                                        replyItem.item.creator,
+                                        moderators,
+                                    ),
+                                    modifier = Modifier
+                                        .padding(padding)
+                                        .imePadding(),
+                                )
+
+                                is ReplyItem.CommentReplyItem ->
+                                    CommentReplyReply(
+                                        commentReplyView = replyItem.item,
+                                        account = account,
+                                        reply = reply,
+                                        onReplyChange = { reply = it },
+                                        onPersonClick = { personId ->
+                                            navController.navigate(route = "profile/$personId")
+                                        },
+                                        modifier = Modifier
+                                            .padding(padding)
+                                            .imePadding(),
+                                    )
+
+                                is ReplyItem.MentionReplyItem ->
+                                    MentionReply(
+                                        personMentionView = replyItem.item,
+                                        account = account,
+                                        reply = reply,
+                                        onReplyChange = { reply = it },
+                                        onPersonClick = { personId ->
+                                            navController.navigate(route = "profile/$personId")
+                                        },
+                                        modifier = Modifier
+                                            .padding(padding)
+                                            .imePadding(),
+                                    )
+                            }
+                        }
                     }
+
+                    else -> {}
                 }
             }
-        }
+        },
     )
 }

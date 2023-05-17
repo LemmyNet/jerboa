@@ -7,10 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import com.jerboa.CommentNodeData
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.CommunityModeratorView
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.PersonSafe
+import com.jerboa.datatypes.types.CommentView
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.CommunityModeratorView
+import com.jerboa.datatypes.types.Person
 import com.jerboa.db.Account
 
 @Composable
@@ -29,12 +29,12 @@ fun CommentNodes(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
-    showPostAndCommunityContext: Boolean = false
+    showPostAndCommunityContext: Boolean = false,
 ) {
     // Holds the un-expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
@@ -67,7 +67,7 @@ fun CommentNodes(
             onCommentLinkClick = onCommentLinkClick,
             onFetchChildrenClick = onFetchChildrenClick,
             onBlockCreatorClick = onBlockCreatorClick,
-            showPostAndCommunityContext = showPostAndCommunityContext
+            showPostAndCommunityContext = showPostAndCommunityContext,
         )
     }
 }
@@ -88,12 +88,12 @@ fun LazyListScope.commentNodeItems(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
-    showPostAndCommunityContext: Boolean = false
+    showPostAndCommunityContext: Boolean = false,
 ) {
     nodes.forEach { node ->
         commentNodeItem(
@@ -117,7 +117,7 @@ fun LazyListScope.commentNodeItems(
             onCommentLinkClick = onCommentLinkClick,
             onFetchChildrenClick = onFetchChildrenClick,
             onBlockCreatorClick = onBlockCreatorClick,
-            showPostAndCommunityContext = showPostAndCommunityContext
+            showPostAndCommunityContext = showPostAndCommunityContext,
         )
     }
 }

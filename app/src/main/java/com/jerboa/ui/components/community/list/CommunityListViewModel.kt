@@ -1,54 +1,54 @@
 package com.jerboa.ui.components.community.list
 
-import android.content.Context
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jerboa.api.searchWrapper
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.SearchType
-import com.jerboa.datatypes.SortType
-import com.jerboa.db.Account
-import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.api.API
+import com.jerboa.api.ApiState
+import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.Search
+import com.jerboa.datatypes.types.SearchResponse
+import com.jerboa.serializeToMap
 import kotlinx.coroutines.launch
 
 class CommunityListViewModel : ViewModel() {
-    // This can be either CommunityView, or CommunityFollowerView
-    var communityList = mutableStateListOf<Any>()
-        private set
-    var selectedCommunity by mutableStateOf<CommunitySafe?>(null)
-        private set
-    var loading = mutableStateOf(false)
+    var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    fun searchCommunities(account: Account?, ctx: Context?, query: String) {
+    var selectedCommunity: Community? by mutableStateOf(null)
+        private set
+
+    fun searchCommunities(form: Search) {
         viewModelScope.launch {
-            val communities = searchWrapper(
-                account = account,
-                ctx = ctx,
-                sortType = SortType.TopAll,
-                listingType = ListingType.All,
-                query = query,
-                searchType = SearchType.Communities
-            )?.communities
-            communityList.clear()
-            communityList.addAll(communities.orEmpty())
+            searchRes = ApiState.Loading
+            searchRes = apiWrapper(API.getInstance().search(form.serializeToMap()))
         }
     }
 
-    fun selectCommunity(community: CommunitySafe) {
+    fun selectCommunity(community: Community) {
         selectedCommunity = community
     }
 
-    fun setCommunityListFromFollowed(siteViewModel: SiteViewModel) {
-        siteViewModel.siteRes?.my_user?.follows?.also {
-            communityList.clear()
-            communityList.addAll(it)
-//            selectedCommunity = null
-        }
-    }
+//    @Deprecated("Don use")
+    // TODO your follows are communityfollowerview, not a search result
+//    fun setCommunityListFromFollowed(siteViewModel: SiteViewModel) {
+//        siteViewModel.siteRes?.my_user?.follows?.also { communities ->
+//            when (val searchRes = state.searchRes) {
+//                ApiState.Empty -> TODO()
+//                is ApiState.Failure -> TODO()
+//                ApiState.Loading -> TODO()
+//                is ApiState.Success -> {
+//                    val newSearchRes = searchRes.data.copy(communities = communities)
+//
+//                }
+//            }
+//            state = state.copy(searchRes = state.searchRes.copy(ApiState.Success(SearchResponse()))
+//
+//            communityList.clear()
+//            communityList.addAll(it)
+//        }
+//    }
 }

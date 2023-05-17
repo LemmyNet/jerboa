@@ -2,7 +2,7 @@ package com.jerboa.ui.components.community.sidebar
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import com.jerboa.datatypes.CommunityView
+import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.ui.components.common.Sidebar
 
 @Composable
@@ -21,6 +21,6 @@ fun CommunitySidebar(communityView: CommunityView, padding: PaddingValues) {
         usersActiveHalfYear = counts.users_active_half_year,
         postCount = counts.posts,
         commentCount = counts.comments,
-        padding = padding
+        padding = padding,
     )
 }

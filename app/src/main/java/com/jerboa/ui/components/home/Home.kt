@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.home
 
 import androidx.compose.animation.AnimatedVisibility
@@ -62,14 +60,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.Tagline
-import com.jerboa.datatypes.api.GetUnreadCountResponse
-import com.jerboa.datatypes.api.MyUserInfo
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.api.ApiState
+import com.jerboa.datatypes.samplePerson
+import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -88,37 +81,41 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
-import com.jerboa.unreadCountTotal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun Drawer(
+    siteRes: ApiState<GetSiteResponse>,
+    unreadCount: Int,
     navController: NavController = rememberNavController(),
     accountViewModel: AccountViewModel,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
-    myUserInfo: MyUserInfo?,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
-    unreadCounts: GetUnreadCountResponse?
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
+
+    val myUserInfo = when (siteRes) {
+        is ApiState.Success -> siteRes.data.my_user
+        else -> null
+    }
 
     DrawerHeader(
         myPerson = myUserInfo?.local_user_view?.person,
         showAccountAddMode = showAccountAddMode,
-        onClickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode }
+        onClickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode },
     )
     Divider()
     // Drawer items
     DrawerContent(
         accountViewModel = accountViewModel,
-        unreadCounts = unreadCounts,
+        unreadCount = unreadCount,
         myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
         navController = navController,
@@ -129,7 +126,7 @@ fun Drawer(
         onClickProfile = onClickProfile,
         onClickInbox = onClickInbox,
         onClickSaved = onClickSaved,
-        onClickSettings = onClickSettings
+        onClickSettings = onClickSettings,
     )
 }
 
@@ -141,24 +138,24 @@ fun DrawerContent(
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
     myUserInfo: MyUserInfo?,
-    unreadCounts: GetUnreadCountResponse?
+    unreadCount: Int,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
         enter = expandVertically(),
-        exit = shrinkVertically()
+        exit = shrinkVertically(),
     ) {
         DrawerAddAccountMode(
             accountViewModel = accountViewModel,
             navController = navController,
             onSwitchAccountClick = onSwitchAccountClick,
-            onSignOutClick = onSignOutClick
+            onSignOutClick = onSignOutClick,
         )
     }
 
@@ -170,8 +167,8 @@ fun DrawerContent(
             onClickProfile = onClickProfile,
             onClickInbox = onClickInbox,
             onClickSaved = onClickSaved,
-            unreadCounts = unreadCounts,
-            onClickSettings = onClickSettings
+            unreadCount = unreadCount,
+            onClickSettings = onClickSettings,
         )
     }
 }
@@ -184,24 +181,23 @@ fun DrawerItemsMain(
     onClickInbox: () -> Unit,
     onClickSettings: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
-    unreadCounts: GetUnreadCountResponse? = null
+    onCommunityClick: (community: Community) -> Unit,
+    unreadCount: Int,
 ) {
     val listState = rememberLazyListState()
 
-    val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
     val follows = myUserInfo?.follows
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState)
+        modifier = Modifier.simpleVerticalScrollbar(listState),
     ) {
         if (!follows.isNullOrEmpty()) {
             item {
                 IconAndTextDrawerItem(
                     text = "Subscribed",
                     icon = Icons.Outlined.Bookmarks,
-                    onClick = { onClickListingType(ListingType.Subscribed) }
+                    onClick = { onClickListingType(ListingType.Subscribed) },
                 )
             }
         }
@@ -209,14 +205,14 @@ fun DrawerItemsMain(
             IconAndTextDrawerItem(
                 text = "Local",
                 icon = Icons.Outlined.LocationCity,
-                onClick = { onClickListingType(ListingType.Local) }
+                onClick = { onClickListingType(ListingType.Local) },
             )
         }
         item {
             IconAndTextDrawerItem(
                 text = "All",
                 icon = Icons.Outlined.Public,
-                onClick = { onClickListingType(ListingType.All) }
+                onClick = { onClickListingType(ListingType.All) },
             )
         }
         item {
@@ -224,7 +220,7 @@ fun DrawerItemsMain(
                 IconAndTextDrawerItem(
                     text = "Saved",
                     icon = Icons.Outlined.Bookmarks,
-                    onClick = onClickSaved
+                    onClick = onClickSaved,
                 )
             }
         }
@@ -238,7 +234,7 @@ fun DrawerItemsMain(
                 IconAndTextDrawerItem(
                     text = "Profile",
                     icon = Icons.Outlined.Person,
-                    onClick = onClickProfile
+                    onClick = onClickProfile,
                 )
             }
         }
@@ -248,7 +244,7 @@ fun DrawerItemsMain(
                     text = "Inbox",
                     icon = Icons.Outlined.Email,
                     onClick = onClickInbox,
-                    iconBadgeCount = totalUnreads
+                    iconBadgeCount = unreadCount,
                 )
             }
         }
@@ -257,7 +253,7 @@ fun DrawerItemsMain(
                 IconAndTextDrawerItem(
                     text = "Settings",
                     icon = Icons.Outlined.Settings,
-                    onClick = onClickSettings
+                    onClick = onClickSettings,
                 )
             }
         }
@@ -272,16 +268,16 @@ fun DrawerItemsMain(
                 Text(
                     text = "Subscriptions",
                     modifier = Modifier.padding(LARGE_PADDING),
-                    color = MaterialTheme.colorScheme.onBackground.muted
+                    color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
             items(
                 follows,
-                key = { follow -> follow.community.id }
+                key = { follow -> follow.community.id },
             ) { follow ->
                 CommunityLinkLarger(
                     community = follow.community,
-                    onClick = onCommunityClick
+                    onClick = onCommunityClick,
                 )
             }
         }
@@ -298,7 +294,8 @@ fun DrawerItemsMainPreview() {
         onClickInbox = {},
         onCommunityClick = {},
         onClickSaved = {},
-        onClickSettings = {}
+        onClickSettings = {},
+        unreadCount = 2,
     )
 }
 
@@ -307,7 +304,7 @@ fun DrawerAddAccountMode(
     navController: NavController = rememberNavController(),
     accountViewModel: AccountViewModel?,
     onSwitchAccountClick: (account: Account) -> Unit,
-    onSignOutClick: () -> Unit
+    onSignOutClick: () -> Unit,
 ) {
     val accountsWithoutCurrent = accountViewModel?.allAccounts?.value?.toMutableList()
     val currentAccount = accountsWithoutCurrent?.firstOrNull { it.current }
@@ -317,20 +314,20 @@ fun DrawerAddAccountMode(
         IconAndTextDrawerItem(
             text = "Add Account",
             icon = Icons.Outlined.Add,
-            onClick = { navController.navigate(route = "login") }
+            onClick = { navController.navigate(route = "login") },
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
                 text = "Switch to ${it.instance}/${it.name}",
                 icon = Icons.Outlined.Login,
-                onClick = { onSwitchAccountClick(it) }
+                onClick = { onSwitchAccountClick(it) },
             )
         }
         currentAccount?.also {
             IconAndTextDrawerItem(
                 text = "Sign Out",
                 icon = Icons.Outlined.Close,
-                onClick = onSignOutClick
+                onClick = onSignOutClick,
             )
         }
     }
@@ -342,15 +339,15 @@ fun DrawerAddAccountModePreview() {
     DrawerAddAccountMode(
         onSignOutClick = {},
         onSwitchAccountClick = {},
-        accountViewModel = null
+        accountViewModel = null,
     )
 }
 
 @Composable
 fun DrawerHeader(
-    myPerson: PersonSafe?,
+    myPerson: Person?,
     onClickShowAccountAddMode: () -> Unit,
-    showAccountAddMode: Boolean = false
+    showAccountAddMode: Boolean = false,
 ) {
     val sizeMod = Modifier
         .fillMaxWidth()
@@ -358,11 +355,11 @@ fun DrawerHeader(
 
     Box(
         modifier = sizeMod
-            .clickable(onClick = onClickShowAccountAddMode)
+            .clickable(onClick = onClickShowAccountAddMode),
     ) {
         myPerson?.banner?.also {
             PictrsBannerImage(
-                url = it
+                url = it,
             )
         }
         // banner
@@ -370,7 +367,7 @@ fun DrawerHeader(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = sizeMod
-                .padding(XL_PADDING)
+                .padding(XL_PADDING),
         ) {
             AvatarAndAccountName(myPerson)
             Icon(
@@ -379,24 +376,24 @@ fun DrawerHeader(
                 } else {
                     Icons.Outlined.ExpandMore
                 },
-                contentDescription = "TODO"
+                contentDescription = "TODO",
             )
         }
     }
 }
 
 @Composable
-fun AvatarAndAccountName(myPerson: PersonSafe?) {
+fun AvatarAndAccountName(myPerson: Person?) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)
+        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         myPerson?.avatar?.also {
             LargerCircularIcon(icon = it)
         }
         PersonName(
             person = myPerson,
-            color = Color.White
+            color = Color.White,
         )
     }
 }
@@ -405,28 +402,36 @@ fun AvatarAndAccountName(myPerson: PersonSafe?) {
 @Composable
 fun DrawerHeaderPreview() {
     DrawerHeader(
-        myPerson = samplePersonSafe,
-        onClickShowAccountAddMode = {}
+        myPerson = samplePerson,
+        onClickShowAccountAddMode = {},
     )
 }
 
 @Composable
 fun HomeHeaderTitle(
     selectedSortType: SortType,
-    selectedListingType: ListingType
+    selectedListingType: ListingType,
 ) {
     Column {
         Text(
             text = selectedListingType.toString(),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
         )
     }
 }
 
+@Composable
+fun Taglines(
+    taglines: List<Tagline>?,
+) {
+    taglines?.let { Tagline(it) }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeHeader(
     scope: CoroutineScope,
@@ -439,7 +444,7 @@ fun HomeHeader(
     selectedListingType: ListingType,
     selectedPostViewMode: PostViewMode,
     navController: NavController,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -458,7 +463,7 @@ fun HomeHeader(
             onClickSortTopOptions = {
                 showSortOptions = false
                 showTopOptions = !showTopOptions
-            }
+            },
         )
     }
 
@@ -469,7 +474,7 @@ fun HomeHeader(
             onClickSortType = {
                 showTopOptions = false
                 onClickSortType(it)
-            }
+            },
         )
     }
 
@@ -480,7 +485,7 @@ fun HomeHeader(
             onClickListingType = {
                 showListingTypeOptions = false
                 onClickListingType(it)
-            }
+            },
         )
     }
 
@@ -492,7 +497,7 @@ fun HomeHeader(
                 showMoreOptions = false
                 showPostViewModeOptions = !showPostViewModeOptions
             },
-            navController = navController
+            navController = navController,
         )
     }
 
@@ -503,7 +508,7 @@ fun HomeHeader(
             onClickPostViewMode = {
                 showPostViewModeOptions = false
                 onClickPostViewMode(it)
-            }
+            },
         )
     }
     TopAppBar(
@@ -511,7 +516,7 @@ fun HomeHeader(
         title = {
             HomeHeaderTitle(
                 selectedSortType = selectedSortType,
-                selectedListingType = selectedListingType
+                selectedListingType = selectedListingType,
             )
         },
         navigationIcon = {
@@ -522,7 +527,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.Menu,
-                    contentDescription = "Menu"
+                    contentDescription = "Menu",
                 )
             }
         },
@@ -533,7 +538,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.FilterList,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             }
             IconButton(onClick = {
@@ -541,7 +546,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             }
             IconButton(onClick = {
@@ -549,13 +554,14 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.MoreVert,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             }
-        }
+        },
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun HomeHeaderPreview() {
@@ -572,7 +578,7 @@ fun HomeHeaderPreview() {
         selectedListingType = ListingType.All,
         selectedPostViewMode = PostViewMode.Card,
         navController = rememberNavController(),
-        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
     )
 }
 
@@ -581,7 +587,7 @@ fun HomeMoreDialog(
     onDismissRequest: () -> Unit,
     navController: NavController,
     onClickRefresh: () -> Unit,
-    onClickShowPostViewModeDialog: () -> Unit
+    onClickShowPostViewModeDialog: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -593,7 +599,7 @@ fun HomeMoreDialog(
                     onClick = {
                         onDismissRequest()
                         onClickRefresh()
-                    }
+                    },
                 )
                 IconAndTextDrawerItem(
                     text = "Post View Mode",
@@ -601,7 +607,7 @@ fun HomeMoreDialog(
                     onClick = {
                         onDismissRequest()
                         onClickShowPostViewModeDialog()
-                    }
+                    },
                 )
                 IconAndTextDrawerItem(
                     text = "Site Info",
@@ -609,11 +615,11 @@ fun HomeMoreDialog(
                     onClick = {
                         navController.navigate("siteSidebar")
                         onDismissRequest()
-                    }
+                    },
                 )
             }
         },
-        confirmButton = {}
+        confirmButton = {},
     )
 }
 
@@ -621,7 +627,7 @@ fun HomeMoreDialog(
 fun Tagline(taglines: List<Tagline>) {
     val tagline by remember { mutableStateOf(taglines.random()) }
     Column(
-        Modifier.padding(LARGE_PADDING)
+        Modifier.padding(LARGE_PADDING),
     ) {
         MyMarkdownText(markdown = tagline.content)
     }

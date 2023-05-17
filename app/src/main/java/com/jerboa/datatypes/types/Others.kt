@@ -10,8 +10,9 @@ enum class RegistrationMode {
     RequireApplication,
 
     @SerializedName("Open")
-    Open
+    Open,
 }
+
 /**
  * Different sort types used in lemmy.
  */
@@ -77,7 +78,7 @@ enum class SortType {
      * Posts sorted by the newest comments, with no necrobumping. IE a forum sort.
      */
     @SerializedName("NewComments")
-    NewComments
+    NewComments,
 }
 
 /**
@@ -106,7 +107,7 @@ enum class CommentSortType {
      * Comments sorted by old.
      */
     @SerializedName("Old")
-    Old
+    Old,
 }
 
 /**
@@ -121,7 +122,7 @@ enum class ListingType {
     Local,
 
     @SerializedName("Subscribed")
-    Subscribed
+    Subscribed,
 }
 
 /**
@@ -144,7 +145,7 @@ enum class SearchType {
     Users,
 
     @SerializedName("Url")
-    Url
+    Url,
 }
 
 /**
@@ -158,7 +159,7 @@ enum class SubscribedType {
     NotSubscribed,
 
     @SerializedName("Pending")
-    Pending
+    Pending,
 }
 
 /**
@@ -169,50 +170,65 @@ enum class PostFeatureType {
     Local,
 
     @SerializedName("Community")
-    Community
+    Community,
 }
 
 enum class ModlogActionType {
     @SerializedName("All")
     All,
+
     @SerializedName("ModRemovePost")
     ModRemovePost,
+
     @SerializedName("ModLockPost")
     ModLockPost,
+
     @SerializedName("ModFeaturePost")
     ModFeaturePost,
+
     @SerializedName("ModRemoveComment")
     ModRemoveComment,
+
     @SerializedName("ModRemoveCommunity")
     ModRemoveCommunity,
+
     @SerializedName("ModBanFromCommunity")
     ModBanFromCommunity,
+
     @SerializedName("ModAddCommunity")
     ModAddCommunity,
+
     @SerializedName("ModTransferCommunity")
     ModTransferCommunity,
+
     @SerializedName("ModAdd")
     ModAdd,
+
     @SerializedName("ModBan")
     ModBan,
+
     @SerializedName("ModHideCommunity")
     ModHideCommunity,
+
     @SerializedName("AdminPurgePerson")
     AdminPurgePerson,
+
     @SerializedName("AdminPurgeCommunity")
     AdminPurgeCommunity,
+
     @SerializedName("AdminPurgePost")
     AdminPurgePost,
+
     @SerializedName("AdminPurgeComment")
     AdminPurgeComment,
 }
 
 data class PictrsImage(
     val file: String,
-    val delete_token: String
+    val delete_token: String,
 )
 
 data class PictrsImages(
     val msg: String,
-    val files: List<PictrsImage>?
+    val files: List<PictrsImage>?,
 )

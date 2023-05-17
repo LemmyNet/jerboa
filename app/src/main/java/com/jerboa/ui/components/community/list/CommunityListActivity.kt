@@ -18,10 +18,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
+import com.jerboa.api.ApiState
+import com.jerboa.datatypes.types.Search
+import com.jerboa.datatypes.types.SearchType
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.common.ApiEmptyText
+import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.getCurrentAccount
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -29,12 +34,13 @@ import kotlinx.coroutines.launch
 
 private var fetchCommunitiesJob: Job? = null
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityListActivity(
     navController: NavController,
     communityListViewModel: CommunityListViewModel,
     accountViewModel: AccountViewModel,
-    selectMode: Boolean = false
+    selectMode: Boolean = false,
 ) {
     Log.d("jerboa", "got to community list activity")
 
@@ -42,7 +48,6 @@ fun CommunityListActivity(
 
     var search by rememberSaveable { mutableStateOf("") }
 
-    val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
 
     Surface(color = MaterialTheme.colorScheme.background) {
@@ -57,34 +62,43 @@ fun CommunityListActivity(
                         fetchCommunitiesJob = scope.launch {
                             delay(DEBOUNCE_DELAY)
                             communityListViewModel.searchCommunities(
-                                query = search,
-                                account = account,
-                                ctx = ctx
+                                form = Search(
+                                    q = search,
+                                    type_ = SearchType.Communities,
+                                    sort = SortType.TopAll,
+                                    auth = account?.jwt,
+                                ),
                             )
                         }
-                    }
+                    },
                 )
             },
             content = { padding ->
-                if (communityListViewModel.loading.value) {
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                } else {
-                    CommunityListings(
-                        communities = communityListViewModel.communityList,
-                        onClickCommunity = { cs ->
-                            if (selectMode) {
-                                communityListViewModel.selectCommunity(cs)
-                                navController.navigateUp()
-                            } else {
-                                navController.navigate(route = "community/${cs.id}")
-                            }
-                        },
-                        modifier = Modifier
-                            .padding(padding)
-                            .imePadding()
-                    )
+                when (val communitiesRes = communityListViewModel.searchRes) {
+                    ApiState.Empty -> ApiEmptyText()
+                    is ApiState.Failure -> ApiErrorText(communitiesRes.msg)
+                    ApiState.Loading -> {
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    }
+
+                    is ApiState.Success -> {
+                        CommunityListings(
+                            communities = communitiesRes.data.communities,
+                            onClickCommunity = { cs ->
+                                if (selectMode) {
+                                    communityListViewModel.selectCommunity(cs)
+                                    navController.navigateUp()
+                                } else {
+                                    navController.navigate(route = "community/${cs.id}")
+                                }
+                            },
+                            modifier = Modifier
+                                .padding(padding)
+                                .imePadding(),
+                        )
+                    }
                 }
-            }
+            },
         )
     }
 }

@@ -1,32 +1,39 @@
 package com.jerboa.ui.components.settings.account
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jerboa.api.saveUserSettingsWrapper
-import com.jerboa.datatypes.api.SaveUserSettings
+import com.jerboa.api.API
+import com.jerboa.api.ApiState
+import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.types.GetSite
+import com.jerboa.datatypes.types.LoginResponse
+import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.launch
 
 class AccountSettingsViewModel : ViewModel() {
 
-    var loading by mutableStateOf(false)
+    var saveUserSettingsRes: ApiState<LoginResponse> by mutableStateOf(ApiState.Empty)
+        private set
 
     fun saveSettings(
         form: SaveUserSettings,
-        ctx: Context,
         siteViewModel: SiteViewModel,
-        account: Account?
+        account: Account?,
     ) {
         viewModelScope.launch {
-            loading = true
-            saveUserSettingsWrapper(form, ctx)
-            siteViewModel.fetchSite(account?.jwt, ctx)
-            loading = false
+            saveUserSettingsRes = ApiState.Loading
+            saveUserSettingsRes = apiWrapper(API.getInstance().saveUserSettings(form))
+
+            siteViewModel.getSite(
+                GetSite(
+                    auth = account?.jwt,
+                ),
+            )
         }
     }
 }

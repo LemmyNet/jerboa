@@ -9,10 +9,13 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.jerboa.api.createCommentReportWrapper
-import com.jerboa.api.createPostReportWrapper
-import com.jerboa.datatypes.api.CreateCommentReport
-import com.jerboa.datatypes.api.CreatePostReport
+import com.jerboa.api.API
+import com.jerboa.api.ApiState
+import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.types.CommentReportResponse
+import com.jerboa.datatypes.types.CreateCommentReport
+import com.jerboa.datatypes.types.CreatePostReport
+import com.jerboa.datatypes.types.PostReportResponse
 import com.jerboa.db.Account
 import kotlinx.coroutines.launch
 
@@ -21,18 +24,20 @@ class CreateReportViewModel : ViewModel() {
     private var commentId by mutableStateOf<Int?>(null)
     private var postId by mutableStateOf<Int?>(null)
 
-    var loading = mutableStateOf(false)
+    var commentReportRes: ApiState<CommentReportResponse> by mutableStateOf(ApiState.Empty)
+        private set
+    var postReportRes: ApiState<PostReportResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     fun setCommentId(
-        newCommentId: Int
+        newCommentId: Int,
     ) {
         commentId = newCommentId
         postId = null
     }
 
     fun setPostId(
-        newPostId: Int
+        newPostId: Int,
     ) {
         postId = newPostId
         commentId = null
@@ -43,24 +48,33 @@ class CreateReportViewModel : ViewModel() {
         account: Account,
         ctx: Context,
         navController: NavController,
-        focusManager: FocusManager
+        focusManager: FocusManager,
     ) {
         commentId?.also { cId ->
             viewModelScope.launch {
-                loading.value = true
                 val form = CreateCommentReport(
                     comment_id = cId,
                     reason = reason,
-                    auth = account.jwt
+                    auth = account.jwt,
                 )
-                val report = createCommentReportWrapper(form, ctx)?.comment_report_view
-                loading.value = false
 
-                if (report !== null) {
-                    Toast.makeText(ctx, "Report Created", Toast.LENGTH_SHORT).show()
-                    focusManager.clearFocus()
-                    navController.navigateUp()
+                commentReportRes = ApiState.Loading
+                commentReportRes =
+                    apiWrapper(
+                        API.getInstance().createCommentReport(form),
+                    )
+
+                val message = when (val res = commentReportRes) {
+                    is ApiState.Failure -> "Couldn't create report: ${res.msg.message}"
+                    is ApiState.Success -> "Report Created"
+                    else -> {
+                        null
+                    }
                 }
+
+                Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
+                focusManager.clearFocus()
+                navController.navigateUp()
             }
         }
     }
@@ -70,25 +84,33 @@ class CreateReportViewModel : ViewModel() {
         account: Account,
         ctx: Context,
         navController: NavController,
-        focusManager: FocusManager
+        focusManager: FocusManager,
     ) {
         postId?.also { pId ->
             viewModelScope.launch {
-                loading.value = true
                 val form = CreatePostReport(
                     post_id = pId,
                     reason = reason,
-                    auth = account.jwt
+                    auth = account.jwt,
                 )
-                val report = createPostReportWrapper(form, ctx)?.post_report_view
-                loading.value = false
 
-                if (report !== null) {
-                    Toast.makeText(ctx, "Report Created", Toast.LENGTH_SHORT).show()
+                postReportRes = ApiState.Loading
+                postReportRes =
+                    apiWrapper(
+                        API.getInstance().createPostReport(form),
+                    )
 
-                    focusManager.clearFocus()
-                    navController.navigateUp()
+                val message = when (val res = postReportRes) {
+                    is ApiState.Failure -> "Couldn't create report: ${res.msg.message}"
+                    is ApiState.Success -> "Report Created"
+                    else -> {
+                        null
+                    }
                 }
+
+                Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
+                focusManager.clearFocus()
+                navController.navigateUp()
             }
         }
     }

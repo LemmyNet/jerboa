@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.post.create
 
@@ -36,9 +35,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.api.ApiState
+import com.jerboa.datatypes.sampleCommunity
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.GetSiteMetadataResponse
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.ApiEmptyText
+import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
@@ -49,33 +52,35 @@ import com.jerboa.ui.theme.muted
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostHeader(
     navController: NavController = rememberNavController(),
     onCreatePostClick: () -> Unit,
     formValid: Boolean,
-    loading: Boolean
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Create post"
+                text = "Create post",
             )
         },
         actions = {
             IconButton(
                 enabled = formValid && !loading,
-                onClick = onCreatePostClick
+                onClick = onCreatePostClick,
             ) {
                 if (loading) {
+                    // TODO is this color necessary? If not, remove all of them
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 } else {
                     // Todo add are you sure cancel dialog
                     Icon(
                         Icons.Outlined.Add,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 }
             }
@@ -84,18 +89,19 @@ fun CreatePostHeader(
             IconButton(
                 onClick = {
                     navController.popBackStack()
-                }
+                },
             ) {
                 // Todo add are you sure cancel dialog
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Close"
+                    contentDescription = "Close",
                 )
             }
-        }
+        },
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostBody(
     name: String,
@@ -106,12 +112,12 @@ fun CreatePostBody(
     onUrlChange: (url: String) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
     image: Uri? = null,
-    community: CommunitySafe? = null,
+    community: Community? = null,
     navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit,
-    suggestedTitle: String? = null,
     account: Account?,
-    padding: PaddingValues
+    padding: PaddingValues,
+    siteMetadataRes: ApiState<GetSiteMetadataResponse>,
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -119,7 +125,7 @@ fun CreatePostBody(
     formValid(
         !nameField.hasError &&
             !urlField.hasError &&
-            (community !== null)
+            (community !== null),
     )
 
     val scrollState = rememberScrollState()
@@ -130,7 +136,7 @@ fun CreatePostBody(
             .padding(vertical = padding.calculateTopPadding(), horizontal = MEDIUM_PADDING)
             .verticalScroll(scrollState)
             .imePadding(),
-        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         OutlinedTextField(
             value = name,
@@ -140,7 +146,7 @@ fun CreatePostBody(
                 Text(text = nameField.label)
             },
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
         )
         OutlinedTextField(
             label = {
@@ -151,21 +157,29 @@ fun CreatePostBody(
             onValueChange = onUrlChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
         )
-        suggestedTitle?.also {
-            Text(
-                text = "copy suggested title: $it",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground.muted,
-                modifier = Modifier.clickable { onNameChange(it) }
-            )
+        when (siteMetadataRes) {
+            ApiState.Empty -> ApiEmptyText()
+            is ApiState.Failure -> ApiErrorText(siteMetadataRes.msg)
+            ApiState.Loading -> CircularProgressIndicator()
+            is ApiState.Success -> {
+                val title = siteMetadataRes.data.metadata.title
+                title?.also {
+                    Text(
+                        text = "copy suggested title: $title",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onBackground.muted,
+                        modifier = Modifier.clickable { onNameChange(title) },
+                    )
+                }
+            }
         }
         PickImage(
             onPickedImage = onPickedImage,
             image = image,
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.End
+            horizontalAlignment = Alignment.End,
         )
         MarkdownTextField(
             text = body,
@@ -174,7 +188,7 @@ fun CreatePostBody(
             outlined = true,
             account = account,
             focusImmediate = false,
-            placeholder = "Body"
+            placeholder = "Body",
         )
         Box {
             community?.also {
@@ -190,18 +204,18 @@ fun CreatePostBody(
                             CircularIcon(
                                 icon = it,
                                 size = ICON_SIZE,
-                                thumbnailSize = THUMBNAIL_SIZE
+                                thumbnailSize = THUMBNAIL_SIZE,
                             )
                         }
                     },
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.ArrowDropDown,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
                 )
             } ?: run {
                 OutlinedTextField(
@@ -211,7 +225,7 @@ fun CreatePostBody(
                         Text("Community")
                     },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
                 )
             }
             // A box to draw over the textview and override clicks
@@ -221,7 +235,7 @@ fun CreatePostBody(
                     .fillMaxWidth()
                     .clickable {
                         navController.navigate("communityList?select=true")
-                    }
+                    },
             )
         }
     }
@@ -238,10 +252,11 @@ fun CreatePostBodyPreview() {
         url = "",
         onUrlChange = {},
         onPickedImage = {},
-        community = sampleCommunitySafe,
+        community = sampleCommunity,
         formValid = {},
         account = null,
-        padding = PaddingValues()
+        padding = PaddingValues(),
+        siteMetadataRes = ApiState.Empty,
     )
 }
 
@@ -257,8 +272,8 @@ fun CreatePostBodyPreviewNoCommunity() {
         onUrlChange = {},
         onPickedImage = {},
         formValid = {},
-        suggestedTitle = "a title here....",
         account = null,
-        padding = PaddingValues()
+        padding = PaddingValues(),
+        siteMetadataRes = ApiState.Empty,
     )
 }

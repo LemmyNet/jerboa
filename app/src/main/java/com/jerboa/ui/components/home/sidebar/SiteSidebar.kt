@@ -3,8 +3,8 @@ package com.jerboa.ui.components.home.sidebar
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.datatypes.SiteView
 import com.jerboa.datatypes.sampleSiteView
+import com.jerboa.datatypes.types.SiteView
 import com.jerboa.ui.components.common.Sidebar
 
 @Composable
@@ -23,7 +23,7 @@ fun SiteSidebar(siteView: SiteView, padding: PaddingValues) {
         usersActiveWeek = counts.users_active_week,
         usersActiveMonth = counts.users_active_month,
         usersActiveHalfYear = counts.users_active_half_year,
-        padding = padding
+        padding = padding,
     )
 }
 

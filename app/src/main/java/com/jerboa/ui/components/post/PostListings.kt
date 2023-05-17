@@ -18,21 +18,18 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.PostViewMode
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.Tagline
 import com.jerboa.datatypes.samplePostView
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.Person
+import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.home.Tagline
 import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
 fun PostListings(
     posts: List<PostView>,
-    contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
@@ -41,44 +38,36 @@ fun PostListings(
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onBlockCommunityClick: (community: CommunitySafe) -> Unit,
-    onBlockCreatorClick: (person: PersonSafe) -> Unit,
+    onBlockCommunityClick: (community: Community) -> Unit,
+    onBlockCreatorClick: (person: Person) -> Unit,
     onSwipeRefresh: () -> Unit,
+    // TODO check this? It doesn't make sense if you already have the posts
     loading: Boolean = false,
     isScrolledToEnd: () -> Unit,
     account: Account?,
     showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
     listState: LazyListState,
-    taglines: List<Tagline>?,
-    postViewMode: PostViewMode
+    postViewMode: PostViewMode,
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
-        onRefresh = onSwipeRefresh
+        onRefresh = onSwipeRefresh,
     ) {
         LazyColumn(
             state = listState,
             modifier = Modifier
                 .padding(padding)
-                .simpleVerticalScrollbar(listState)
+                .simpleVerticalScrollbar(listState),
         ) {
-            item {
-                taglines?.let { Tagline(it) }
-            }
-            // TODO this should be a .also?
-            item {
-                contentAboveListings()
-            }
-
             // List of items
             items(
                 posts,
                 key = { postView ->
                     postView.post.id
-                }
+                },
             ) { postView ->
                 PostListing(
                     postView = postView,
@@ -98,7 +87,7 @@ fun PostListings(
                     showCommunityName = showCommunityName,
                     fullBody = false,
                     account = account, // TODO can't know with many posts
-                    postViewMode = postViewMode
+                    postViewMode = postViewMode,
                 )
                 Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
             }
@@ -141,7 +130,6 @@ fun PreviewPostListings() {
         isScrolledToEnd = {},
         account = null,
         listState = rememberLazyListState(),
-        taglines = null,
-        postViewMode = PostViewMode.Card
+        postViewMode = PostViewMode.Card,
     )
 }

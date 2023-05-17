@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.post.edit
 
@@ -29,33 +28,34 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPostHeader(
     navController: NavController = rememberNavController(),
     onEditPostClick: () -> Unit,
     formValid: Boolean,
-    loading: Boolean
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Edit Post"
+                text = "Edit Post",
             )
         },
         actions = {
             IconButton(
                 enabled = formValid && !loading,
-                onClick = onEditPostClick
+                onClick = onEditPostClick,
             ) {
                 if (loading) {
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 } else {
                     // Todo add are you sure cancel dialog
                     Icon(
                         Icons.Outlined.Save,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 }
             }
@@ -64,18 +64,19 @@ fun EditPostHeader(
             IconButton(
                 onClick = {
                     navController.popBackStack()
-                }
+                },
             ) {
                 // Todo add are you sure cancel dialog
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Close"
+                    contentDescription = "Close",
                 )
             }
-        }
+        },
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPostBody(
     name: String,
@@ -87,7 +88,7 @@ fun EditPostBody(
     onPickedImage: (image: Uri) -> Unit,
     formValid: (valid: Boolean) -> Unit,
     account: Account?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -96,7 +97,7 @@ fun EditPostBody(
 
     formValid(
         !nameField.hasError &&
-            !urlField.hasError
+            !urlField.hasError,
     )
 
     Column(
@@ -105,7 +106,7 @@ fun EditPostBody(
             .imePadding()
             .padding(MEDIUM_PADDING)
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         OutlinedTextField(
             value = name,
@@ -115,7 +116,7 @@ fun EditPostBody(
                 Text(text = nameField.label)
             },
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
         )
         OutlinedTextField(
             label = {
@@ -126,10 +127,10 @@ fun EditPostBody(
             onValueChange = onUrlChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
         )
         PickImage(
-            onPickedImage = onPickedImage
+            onPickedImage = onPickedImage,
         )
         MarkdownTextField(
             text = body,
@@ -139,7 +140,7 @@ fun EditPostBody(
             outlined = true,
             account = account,
             focusImmediate = false,
-            placeholder = "Body"
+            placeholder = "Body",
         )
     }
 }
@@ -156,6 +157,6 @@ fun EditPostBodyPreview() {
         onNameChange = {},
         onPickedImage = {},
         onUrlChange = {},
-        account = null
+        account = null,
     )
 }

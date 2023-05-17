@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.post.edit
 
@@ -20,7 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
+import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
+import com.jerboa.datatypes.types.EditPost
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -30,6 +31,7 @@ import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostEditActivity(
     accountViewModel: AccountViewModel,
@@ -38,7 +40,7 @@ fun PostEditActivity(
     postViewModel: PostViewModel,
     personProfileViewModel: PersonProfileViewModel,
     communityViewModel: CommunityViewModel,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
 ) {
     Log.d("jerboa", "got to post edit activity")
 
@@ -52,8 +54,8 @@ fun PostEditActivity(
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue(
-                pv?.post?.body.orEmpty()
-            )
+                pv?.post?.body.orEmpty(),
+            ),
         )
     }
     var formValid by rememberSaveable { mutableStateOf(true) }
@@ -61,10 +63,14 @@ fun PostEditActivity(
     Scaffold(
         topBar = {
             Column {
+                val loading = when (postEditViewModel.editPostRes) {
+                    ApiState.Loading -> true
+                    else -> false
+                }
                 EditPostHeader(
                     navController = navController,
                     formValid = formValid,
-                    loading = postEditViewModel.loading,
+                    loading = loading,
                     onEditPostClick = {
                         account?.also { acct ->
                             // Clean up that data
@@ -73,21 +79,23 @@ fun PostEditActivity(
                             val urlOut = url.trim().ifEmpty { null }
 
                             postEditViewModel.editPost(
-                                account = acct,
-                                ctx = ctx,
-                                body = bodyOut,
-                                url = urlOut,
-                                name = nameOut,
+                                form = EditPost(
+                                    post_id = pv!!.post.id,
+                                    name = nameOut,
+                                    url = urlOut,
+                                    body = bodyOut,
+                                    auth = acct.jwt,
+                                ),
                                 navController = navController,
                                 postViewModel = postViewModel,
                                 personProfileViewModel = personProfileViewModel,
                                 communityViewModel = communityViewModel,
-                                homeViewModel = homeViewModel
+                                homeViewModel = homeViewModel,
                             )
                         }
-                    }
+                    },
                 )
-                if (postEditViewModel.loading) {
+                if (loading) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 }
             }
@@ -112,8 +120,8 @@ fun PostEditActivity(
                 account = account,
                 modifier = Modifier
                     .padding(padding)
-                    .imePadding()
+                    .imePadding(),
             )
-        }
+        },
     )
 }
