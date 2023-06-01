@@ -1,11 +1,25 @@
 pipeline:
   check_formatting:
-    image: gradle:jdk17-alpine
+    image: cimg/android:2023.05
     commands:
+      - sudo chown -R circleci:circleci .
       - ./gradlew lintKotlin
 
-  # - name: build the project
-  #   user: root
-  #   image: cimg/android:2022.12
-  #   commands: 
-  #     - ./gradlew assembleDebug
+  prettier_markdown_check:
+    image: tmknom/prettier
+    commands:
+      - prettier -c "*.md" "*.yml"
+
+  build_project:
+    image: cimg/android:2023.05
+    commands:
+      - sudo chown -R circleci:circleci .
+      - ./gradlew assembleDebug
+
+  notify:
+    image: alpine:3
+    commands:
+      - apk add curl
+      - "curl -d'Thumb-Key build ${CI_BUILD_STATUS}: ${CI_BUILD_LINK}' ntfy.sh/thumbkey_ci"
+    when:
+      status: [failure, success]
