@@ -137,12 +137,15 @@ fun MarkdownTextField(
                     keyboardType = KeyboardType.Text,
                     // autoCorrect = true,
                 ),
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    containerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
+                // TODO see how this changed to colors?
+//                colors = TextFieldDefaults.colors(
+//                )
+//                colors = TextFieldDefaults.textFieldColors(
+//                    textColor = MaterialTheme.colorScheme.onSurface,
+//                    containerColor = Color.Transparent,
+//                    focusedIndicatorColor = Color.Transparent,
+//                    unfocusedIndicatorColor = Color.Transparent,
+//                ),
             )
         }
 

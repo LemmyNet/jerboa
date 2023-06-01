@@ -144,6 +144,7 @@ fun newVote(currentVote: Int?, voteType: VoteType): Int {
     }
 }
 
+// TODO get rid of this instant voting mess, just use the comment response, and a loading icon
 fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
     return if (voteType == VoteType.Upvote) {
         when (currentVote) {
