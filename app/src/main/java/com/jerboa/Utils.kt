@@ -50,6 +50,7 @@ import java.io.InputStream
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.log10
 import kotlin.math.pow
 
@@ -332,7 +333,7 @@ fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
     return if (depth == 0) {
         0.dp
     } else {
-        ((depth.minus(1) * multiplier).dp) + SMALL_PADDING
+        (abs((depth.minus(1) * multiplier)).dp + SMALL_PADDING)
     }
 }
 
