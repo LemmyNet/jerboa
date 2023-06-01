@@ -1,3 +1,11 @@
+# Jerboa v0.0.31-alpha Release (2023-06-01)
+
+## What's Changed
+
+- Fix padding bug by @dessalines in https://github.com/dessalines/jerboa/pull/366
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.30...0.0.31
+
 # Jerboa v0.0.30-alpha Release (2023-04-25)
 
 ## What's Changed
