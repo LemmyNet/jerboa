@@ -5,8 +5,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
@@ -23,14 +26,16 @@ fun CommentEditActivity(
     navController: NavController,
     commentEditViewModel: CommentEditViewModel,
     personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel
+    postViewModel: PostViewModel,
 ) {
     Log.d("jerboa", "got to comment edit activity")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    var content by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(commentEditViewModel.commentView.value?.comment?.content.orEmpty())) }
+    var content by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(commentEditViewModel.commentView.value?.comment?.content.orEmpty()))
+    }
 
     val focusManager = LocalFocusManager.current
 
@@ -49,10 +54,10 @@ fun CommentEditActivity(
                                 focusManager = focusManager,
                                 account = acct,
                                 personProfileViewModel = personProfileViewModel,
-                                postViewModel = postViewModel
+                                postViewModel = postViewModel,
                             )
                         }
-                    }
+                    },
                 )
             },
             content = { padding ->
@@ -60,9 +65,9 @@ fun CommentEditActivity(
                     content = content,
                     account = account,
                     onContentChange = { content = it },
-                    padding = padding
+                    padding = padding,
                 )
-            }
+            },
         )
     }
 }

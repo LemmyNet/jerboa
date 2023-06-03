@@ -51,7 +51,7 @@ fun CircularIcon(
     icon: String,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -62,7 +62,7 @@ fun CircularIcon(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = pictureBlurOrRounded(modifier, true, false)
-            .size(size)
+            .size(size),
     )
 }
 
@@ -71,7 +71,7 @@ fun LargerCircularIcon(icon: String) {
     CircularIcon(
         icon = icon,
         size = LARGER_ICON_SIZE,
-        thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE
+        thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
     )
 }
 
@@ -84,7 +84,7 @@ fun CircularIconPreview() {
 fun pictureBlurOrRounded(
     modifier: Modifier = Modifier,
     rounded: Boolean,
-    nsfw: Boolean
+    nsfw: Boolean,
 ): Modifier {
     var modifier_ = modifier
 
@@ -101,7 +101,7 @@ fun pictureBlurOrRounded(
 fun PictrsThumbnailImage(
     thumbnail: String,
     nsfw: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -111,7 +111,7 @@ fun PictrsThumbnailImage(
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = pictureBlurOrRounded(modifier, true, nsfw)
+        modifier = pictureBlurOrRounded(modifier, true, nsfw),
     )
 }
 
@@ -119,7 +119,7 @@ fun PictrsThumbnailImage(
 fun PictrsUrlImage(
     url: String,
     nsfw: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -130,14 +130,14 @@ fun PictrsUrlImage(
         contentDescription = null,
         contentScale = ContentScale.FillWidth,
         modifier = pictureBlurOrRounded(modifier, false, nsfw)
-            .fillMaxWidth()
+            .fillMaxWidth(),
     )
 }
 
 @Composable
 fun PictrsBannerImage(
     url: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -147,7 +147,7 @@ fun PictrsBannerImage(
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.FillWidth,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     )
 }
 
@@ -157,7 +157,7 @@ fun PickImage(
     onPickedImage: (image: Uri) -> Unit,
     image: Uri? = null,
     showImage: Boolean = true,
-    horizontalAlignment: Alignment.Horizontal = Alignment.Start
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
 ) {
     val ctx = LocalContext.current
     var imageUri by remember {
@@ -178,7 +178,7 @@ fun PickImage(
     }
 
     val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
+        ActivityResultContracts.GetContent(),
     ) { uri ->
         imageUri = uri
         bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
@@ -188,14 +188,14 @@ fun PickImage(
     }
     Column(
         modifier = modifier,
-        horizontalAlignment = horizontalAlignment
+        horizontalAlignment = horizontalAlignment,
     ) {
         OutlinedButton(onClick = {
             launcher.launch("image/*")
         }) {
             Text(
                 text = "Upload Image",
-                color = MaterialTheme.colorScheme.onBackground.muted
+                color = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
 
@@ -206,7 +206,7 @@ fun PickImage(
                 bitmap.value?.let { btm ->
                     Image(
                         bitmap = btm.asImageBitmap(),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             }

@@ -23,7 +23,7 @@ fun TimeAgo(
     published: String,
     updated: String? = null,
     precedingString: String? = null,
-    includeAgo: Boolean = false
+    includeAgo: Boolean = false,
 ) {
     val publishedPretty = dateStringToPretty(published, includeAgo)
 
@@ -35,7 +35,7 @@ fun TimeAgo(
         Text(
             text = afterPreceding,
             color = MaterialTheme.colorScheme.onBackground.muted,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
 
         updated?.also {
@@ -43,13 +43,13 @@ fun TimeAgo(
 
             DotSpacer(
                 padding = SMALL_PADDING,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
             Text(
                 text = "($updatedPretty)",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.muted,
-                fontStyle = FontStyle.Italic
+                fontStyle = FontStyle.Italic,
             )
         }
     }
@@ -77,16 +77,16 @@ fun ScoreAndTime(
     score: Int,
     myVote: Int?,
     published: String,
-    updated: String?
+    updated: String?,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = score.toString(),
             color = scoreColor(myVote = myVote),
-            fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3)
+            fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3),
         )
         DotSpacer(0.dp, MaterialTheme.typography.bodyMedium)
         TimeAgo(published = published, updated = updated)
@@ -100,6 +100,6 @@ fun ScoreAndTimePreview() {
         score = 23,
         myVote = -1,
         published = samplePost.published,
-        updated = samplePost.updated
+        updated = samplePost.updated,
     )
 }

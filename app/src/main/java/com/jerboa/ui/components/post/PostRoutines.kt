@@ -29,7 +29,7 @@ fun fetchPostsRoutine(
     changeSortType: SortType? = null,
     account: Account?,
     ctx: Context? = null,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         loading.value = true
@@ -56,7 +56,7 @@ fun fetchPostsRoutine(
             communityIdOrName = communityIdOrName,
             sortType = sortType.value,
             listingType = listingType.value,
-            page = page.value
+            page = page.value,
         )
 
         if (clear) {
@@ -66,7 +66,7 @@ fun fetchPostsRoutine(
         val newPostsDeduped = newPosts.filterNot { pv ->
             posts.map { op -> op.post.id }.contains(
                 pv
-                    .post.id
+                    .post.id,
             )
         }
 
@@ -82,7 +82,7 @@ fun likePostRoutine(
     voteType: VoteType,
     account: Account?,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         account?.also { account ->
@@ -91,7 +91,7 @@ fun likePostRoutine(
                     pv,
                     voteType,
                     account,
-                    ctx
+                    ctx,
                 )?.post_view
                 postView.value = updatedPostView
                 posts?.also {
@@ -107,14 +107,14 @@ fun savePostRoutine(
     posts: MutableList<PostView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         postView.value?.also { pv ->
             val updatedPostView = savePostWrapper(
                 pv,
                 account,
-                ctx
+                ctx,
             )?.post_view
             postView.value = updatedPostView
             posts?.also {
@@ -129,14 +129,14 @@ fun deletePostRoutine(
     posts: MutableList<PostView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         postView.value?.also { pv ->
             val form = DeletePost(
                 post_id = pv.post.id,
                 deleted = !pv.post.deleted,
-                auth = account.jwt
+                auth = account.jwt,
             )
             val deletedPostView = deletePostWrapper(form, ctx)?.post_view
             postView.value = deletedPostView

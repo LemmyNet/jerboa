@@ -56,7 +56,7 @@ fun HomeActivity(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     postEditViewModel: PostEditViewModel,
-    appSettingsViewModel: AppSettingsViewModel
+    appSettingsViewModel: AppSettingsViewModel,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -80,9 +80,9 @@ fun HomeActivity(
                         homeViewModel = homeViewModel,
                         scope = scope,
                         drawerState = drawerState,
-                        ctx = ctx
+                        ctx = ctx,
                     )
-                }
+                },
             )
         },
         content = {
@@ -99,7 +99,7 @@ fun HomeActivity(
                         account = account,
                         ctx = ctx,
                         navController = navController,
-                        scrollBehavior = scrollBehavior
+                        scrollBehavior = scrollBehavior,
                     )
                 },
                 content = { padding ->
@@ -112,7 +112,7 @@ fun HomeActivity(
                         account = account,
                         ctx = ctx,
                         navController = navController,
-                        postListState = postListState
+                        postListState = postListState,
                     )
                 },
                 floatingActionButtonPosition = FabPosition.End,
@@ -124,7 +124,7 @@ fun HomeActivity(
                             } ?: run {
                                 loginFirstToast(ctx)
                             }
-                        }
+                        },
                     ) {
                         Icon(imageVector = Icons.Outlined.Add, contentDescription = "TODO")
                     }
@@ -154,11 +154,11 @@ fun HomeActivity(
                                 loginFirstToast(ctx)
                             }
                         },
-                        navController = navController
+                        navController = navController,
                     )
-                }
+                },
             )
-        }
+        },
     )
 }
 
@@ -172,7 +172,7 @@ fun MainPostListingsContent(
     navController: NavController,
     padding: PaddingValues,
     postListState: LazyListState,
-    appSettingsViewModel: AppSettingsViewModel
+    appSettingsViewModel: AppSettingsViewModel,
 ) {
     PostListings(
         listState = postListState,
@@ -185,7 +185,7 @@ fun MainPostListingsContent(
                 voteType = VoteType.Upvote,
                 postView = postView,
                 account = account,
-                ctx = ctx
+                ctx = ctx,
             )
         },
         onDownvoteClick = { postView ->
@@ -193,7 +193,7 @@ fun MainPostListingsContent(
                 voteType = VoteType.Downvote,
                 postView = postView,
                 account = account,
-                ctx = ctx
+                ctx = ctx,
             )
         },
         onPostClick = { postView ->
@@ -207,7 +207,7 @@ fun MainPostListingsContent(
                 homeViewModel.savePost(
                     postView = postView,
                     account = acct,
-                    ctx = ctx
+                    ctx = ctx,
                 )
             }
         },
@@ -216,7 +216,7 @@ fun MainPostListingsContent(
                 homeViewModel.blockCommunity(
                     community = it,
                     account = acct,
-                    ctx = ctx
+                    ctx = ctx,
                 )
             }
         },
@@ -225,7 +225,7 @@ fun MainPostListingsContent(
                 homeViewModel.blockCreator(
                     creator = it,
                     account = acct,
-                    ctx = ctx
+                    ctx = ctx,
                 )
             }
         },
@@ -238,7 +238,7 @@ fun MainPostListingsContent(
                 homeViewModel.deletePost(
                     postView = postView,
                     account = acct,
-                    ctx = ctx
+                    ctx = ctx,
                 )
             }
         },
@@ -255,7 +255,7 @@ fun MainPostListingsContent(
             homeViewModel.fetchPosts(
                 account = account,
                 clear = true,
-                ctx = ctx
+                ctx = ctx,
             )
         },
         loading = homeViewModel.loading.value &&
@@ -266,11 +266,11 @@ fun MainPostListingsContent(
                 homeViewModel.fetchPosts(
                     account = account,
                     nextPage = true,
-                    ctx = ctx
+                    ctx = ctx,
                 )
             }
         },
-        account = account
+        account = account,
     )
 }
 
@@ -283,7 +283,7 @@ fun MainDrawer(
     homeViewModel: HomeViewModel,
     scope: CoroutineScope,
     ctx: Context,
-    drawerState: DrawerState
+    drawerState: DrawerState,
 ) {
     val accounts = accountViewModel.allAccounts.value
     val account = getCurrentAccount(accountViewModel)
@@ -300,7 +300,7 @@ fun MainDrawer(
             fetchInitialData(
                 account = acct,
                 siteViewModel = siteViewModel,
-                homeViewModel = homeViewModel
+                homeViewModel = homeViewModel,
             )
 
             closeDrawer(scope, drawerState)
@@ -318,7 +318,7 @@ fun MainDrawer(
                     fetchInitialData(
                         account = updatedList.getOrNull(0),
                         siteViewModel = siteViewModel,
-                        homeViewModel = homeViewModel
+                        homeViewModel = homeViewModel,
                     )
 
                     closeDrawer(scope, drawerState)
@@ -330,7 +330,7 @@ fun MainDrawer(
                 account = account,
                 clear = true,
                 changeListingType = listingType,
-                ctx = ctx
+                ctx = ctx,
             )
             closeDrawer(scope, drawerState)
         },
@@ -365,7 +365,7 @@ fun MainDrawer(
                 loginFirstToast(ctx)
             }
             closeDrawer(scope, drawerState)
-        }
+        },
     )
 }
 
@@ -380,7 +380,7 @@ fun MainTopBar(
     account: Account?,
     ctx: Context,
     navController: NavController,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     Column {
         HomeHeader(
@@ -397,7 +397,7 @@ fun MainTopBar(
                     account = account,
                     clear = true,
                     changeSortType = sortType,
-                    ctx = ctx
+                    ctx = ctx,
                 )
             },
             onClickListingType = { listingType ->
@@ -406,7 +406,7 @@ fun MainTopBar(
                     account = account,
                     clear = true,
                     changeListingType = listingType,
-                    ctx = ctx
+                    ctx = ctx,
                 )
             },
             onClickPostViewMode = {
@@ -417,9 +417,9 @@ fun MainTopBar(
                 homeViewModel.fetchPosts(
                     account = account,
                     clear = true,
-                    ctx = ctx
+                    ctx = ctx,
                 )
-            }
+            },
         )
         if (homeViewModel.loading.value) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())

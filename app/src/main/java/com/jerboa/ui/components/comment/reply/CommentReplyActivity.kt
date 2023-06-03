@@ -30,7 +30,7 @@ fun CommentReplyActivity(
     accountViewModel: AccountViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     Log.d("jerboa", "got to comment reply activity")
 
@@ -39,7 +39,7 @@ fun CommentReplyActivity(
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue
-            ("")
+            (""),
         )
     }
 
@@ -59,10 +59,10 @@ fun CommentReplyActivity(
                             navController = navController,
                             focusManager = focusManager,
                             personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel
+                            postViewModel = postViewModel,
                         )
                     }
-                }
+                },
             )
         },
         content = { padding ->
@@ -83,11 +83,11 @@ fun CommentReplyActivity(
                                 isModerator = isModerator(
                                     replyItem.item.creator,
                                     postViewModel
-                                        .moderators
+                                        .moderators,
                                 ),
                                 modifier = Modifier
                                     .padding(padding)
-                                    .imePadding()
+                                    .imePadding(),
                             )
                         is ReplyItem.PostItem -> PostReply(
                             postView = replyItem.item,
@@ -100,11 +100,11 @@ fun CommentReplyActivity(
                             isModerator = isModerator(
                                 replyItem.item.creator,
                                 postViewModel
-                                    .moderators
+                                    .moderators,
                             ),
                             modifier = Modifier
                                 .padding(padding)
-                                .imePadding()
+                                .imePadding(),
                         )
                         is ReplyItem.CommentReplyItem ->
                             CommentReplyReply(
@@ -117,7 +117,7 @@ fun CommentReplyActivity(
                                 },
                                 modifier = Modifier
                                     .padding(padding)
-                                    .imePadding()
+                                    .imePadding(),
                             )
                         is ReplyItem.MentionReplyItem ->
                             MentionReply(
@@ -130,11 +130,11 @@ fun CommentReplyActivity(
                                 },
                                 modifier = Modifier
                                     .padding(padding)
-                                    .imePadding()
+                                    .imePadding(),
                             )
                     }
                 }
             }
-        }
+        },
     )
 }

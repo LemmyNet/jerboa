@@ -4,8 +4,65 @@ import android.content.Context
 import android.util.Log
 import arrow.core.Either
 import com.jerboa.VoteType
-import com.jerboa.datatypes.*
-import com.jerboa.datatypes.api.*
+import com.jerboa.datatypes.CommentReplyView
+import com.jerboa.datatypes.CommunityView
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.PersonMentionView
+import com.jerboa.datatypes.PictrsImages
+import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.PrivateMessageView
+import com.jerboa.datatypes.SearchType
+import com.jerboa.datatypes.SiteMetadata
+import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.SubscribedType
+import com.jerboa.datatypes.api.BlockCommunity
+import com.jerboa.datatypes.api.BlockCommunityResponse
+import com.jerboa.datatypes.api.BlockPerson
+import com.jerboa.datatypes.api.BlockPersonResponse
+import com.jerboa.datatypes.api.CommentReportResponse
+import com.jerboa.datatypes.api.CommentResponse
+import com.jerboa.datatypes.api.CommunityResponse
+import com.jerboa.datatypes.api.CreateComment
+import com.jerboa.datatypes.api.CreateCommentLike
+import com.jerboa.datatypes.api.CreateCommentReport
+import com.jerboa.datatypes.api.CreatePost
+import com.jerboa.datatypes.api.CreatePostLike
+import com.jerboa.datatypes.api.CreatePostReport
+import com.jerboa.datatypes.api.CreatePrivateMessage
+import com.jerboa.datatypes.api.DeleteComment
+import com.jerboa.datatypes.api.DeletePost
+import com.jerboa.datatypes.api.EditComment
+import com.jerboa.datatypes.api.EditPost
+import com.jerboa.datatypes.api.FollowCommunity
+import com.jerboa.datatypes.api.GetCommentsResponse
+import com.jerboa.datatypes.api.GetCommunityResponse
+import com.jerboa.datatypes.api.GetPersonDetailsResponse
+import com.jerboa.datatypes.api.GetPersonMentionsResponse
+import com.jerboa.datatypes.api.GetPostResponse
+import com.jerboa.datatypes.api.GetPosts
+import com.jerboa.datatypes.api.GetPostsResponse
+import com.jerboa.datatypes.api.GetRepliesResponse
+import com.jerboa.datatypes.api.GetSite
+import com.jerboa.datatypes.api.GetSiteMetadata
+import com.jerboa.datatypes.api.GetSiteMetadataResponse
+import com.jerboa.datatypes.api.GetSiteResponse
+import com.jerboa.datatypes.api.GetUnreadCountResponse
+import com.jerboa.datatypes.api.Login
+import com.jerboa.datatypes.api.LoginResponse
+import com.jerboa.datatypes.api.MarkAllAsRead
+import com.jerboa.datatypes.api.MarkCommentReplyAsRead
+import com.jerboa.datatypes.api.MarkPersonMentionAsRead
+import com.jerboa.datatypes.api.MarkPrivateMessageAsRead
+import com.jerboa.datatypes.api.PersonMentionResponse
+import com.jerboa.datatypes.api.PostReportResponse
+import com.jerboa.datatypes.api.PostResponse
+import com.jerboa.datatypes.api.PrivateMessageResponse
+import com.jerboa.datatypes.api.PrivateMessagesResponse
+import com.jerboa.datatypes.api.SaveComment
+import com.jerboa.datatypes.api.SavePost
+import com.jerboa.datatypes.api.SaveUserSettings
+import com.jerboa.datatypes.api.Search
+import com.jerboa.datatypes.api.SearchResponse
 import com.jerboa.db.Account
 import com.jerboa.newVote
 import com.jerboa.serializeToMap
@@ -18,7 +75,15 @@ import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
+import retrofit2.http.QueryMap
+import retrofit2.http.Url
 import java.io.InputStream
 
 const val VERSION = "v3"
@@ -104,8 +169,7 @@ interface API {
      * Get the details for a person.
      */
     @GET("user")
-    suspend fun getPersonDetails(@QueryMap form: Map<String, String>):
-        Response<GetPersonDetailsResponse>
+    suspend fun getPersonDetails(@QueryMap form: Map<String, String>): Response<GetPersonDetailsResponse>
 
     /**
      * Get comment replies.
@@ -117,22 +181,19 @@ interface API {
      * Mark a comment as read.
      */
     @POST("comment/mark_as_read")
-    suspend fun markCommentReplyAsRead(@Body form: MarkCommentReplyAsRead):
-        Response<CommentResponse>
+    suspend fun markCommentReplyAsRead(@Body form: MarkCommentReplyAsRead): Response<CommentResponse>
 
     /**
      * Mark a person mention as read.
      */
     @POST("user/mention/mark_as_read")
-    suspend fun markPersonMentionAsRead(@Body form: MarkPersonMentionAsRead):
-        Response<PersonMentionResponse>
+    suspend fun markPersonMentionAsRead(@Body form: MarkPersonMentionAsRead): Response<PersonMentionResponse>
 
     /**
      * Mark a private message as read.
      */
     @POST("private_message/mark_as_read")
-    suspend fun markPrivateMessageAsRead(@Body form: MarkPrivateMessageAsRead):
-        Response<PrivateMessageResponse>
+    suspend fun markPrivateMessageAsRead(@Body form: MarkPrivateMessageAsRead): Response<PrivateMessageResponse>
 
     /**
      * Mark all replies as read.
@@ -144,29 +205,25 @@ interface API {
      * Get mentions for your user.
      */
     @GET("user/mention")
-    suspend fun getPersonMentions(@QueryMap form: Map<String, String>):
-        Response<GetPersonMentionsResponse>
+    suspend fun getPersonMentions(@QueryMap form: Map<String, String>): Response<GetPersonMentionsResponse>
 
     /**
      * Get / fetch private messages.
      */
     @GET("private_message/list")
-    suspend fun getPrivateMessages(@QueryMap form: Map<String, String>):
-        Response<PrivateMessagesResponse>
+    suspend fun getPrivateMessages(@QueryMap form: Map<String, String>): Response<PrivateMessagesResponse>
 
     /**
      * Create a private message.
      */
     @POST("private_message")
-    suspend fun createPrivateMessage(@Body form: CreatePrivateMessage):
-        Response<PrivateMessageResponse>
+    suspend fun createPrivateMessage(@Body form: CreatePrivateMessage): Response<PrivateMessageResponse>
 
     /**
      * Get your unread counts
      */
     @GET("user/unread_count")
-    suspend fun getUnreadCount(@QueryMap form: Map<String, String>):
-        Response<GetUnreadCountResponse>
+    suspend fun getUnreadCount(@QueryMap form: Map<String, String>): Response<GetUnreadCountResponse>
 
     /**
      * Follow / subscribe to a community.
@@ -202,15 +259,13 @@ interface API {
      * Fetch metadata for any given site.
      */
     @GET("post/site_metadata")
-    suspend fun getSiteMetadata(@QueryMap form: Map<String, String>):
-        Response<GetSiteMetadataResponse>
+    suspend fun getSiteMetadata(@QueryMap form: Map<String, String>): Response<GetSiteMetadataResponse>
 
     /**
      * Report a comment.
      */
     @POST("comment/report")
-    suspend fun createCommentReport(@Body form: CreateCommentReport):
-        Response<CommentReportResponse>
+    suspend fun createCommentReport(@Body form: CreateCommentReport): Response<CommentReportResponse>
 
     /**
      * Report a post.
@@ -244,7 +299,7 @@ interface API {
     suspend fun uploadImage(
         @Url url: String,
         @Header("Cookie") token: String,
-        @Part filePart: MultipartBody.Part
+        @Part filePart: MultipartBody.Part,
     ): Response<PictrsImages>
 
     companion object {
@@ -287,7 +342,7 @@ interface API {
 suspend fun followCommunityWrapper(
     communityView: CommunityView,
     auth: String,
-    ctx: Context?
+    ctx: Context?,
 ): CommunityResponse? {
     var communityRes: CommunityResponse? = null
     val api = API.getInstance()
@@ -298,7 +353,7 @@ suspend fun followCommunityWrapper(
         val form = FollowCommunity(
             community_id = communityView.community.id,
             follow = communityView.subscribed == SubscribedType.NotSubscribed,
-            auth = auth
+            auth = auth,
         )
         communityRes = retrofitErrorHandler(api.followCommunity(form))
     } catch (e: Exception) {
@@ -309,7 +364,7 @@ suspend fun followCommunityWrapper(
 
 suspend fun getSiteWrapper(
     auth: String?,
-    ctx: Context?
+    ctx: Context?,
 ): GetSiteResponse? {
     var siteRes: GetSiteResponse? = null
     val api = API.getInstance()
@@ -327,7 +382,7 @@ suspend fun getSiteWrapper(
 
 suspend fun getSiteMetadataWrapper(
     url: String,
-    ctx: Context?
+    ctx: Context?,
 ): SiteMetadata? {
     var res: SiteMetadata? = null
     val api = API.getInstance()
@@ -349,7 +404,7 @@ suspend fun fetchPostsWrapper(
     communityIdOrName: Either<Int, String>? = null,
     sortType: SortType,
     listingType: ListingType,
-    page: Int
+    page: Int,
 
 ): List<PostView> {
     var posts = listOf<PostView>()
@@ -365,7 +420,7 @@ suspend fun fetchPostsWrapper(
             sort = sortType.toString(),
             type_ = listingType.toString(),
             page = page,
-            auth = account?.jwt
+            auth = account?.jwt,
         )
         posts = retrofitErrorHandler(api.getPosts(form = form.serializeToMap())).posts
     } catch (e: Exception) {
@@ -384,7 +439,7 @@ suspend fun searchWrapper(
     searchType: SearchType,
     page: Int? = null,
     query: String,
-    creatorId: Int? = null
+    creatorId: Int? = null,
 ): SearchResponse? {
     var res: SearchResponse? = null
     val api = API.getInstance()
@@ -398,7 +453,7 @@ suspend fun searchWrapper(
             sort = sortType.toString(),
             listing_type = listingType.toString(),
             page = page,
-            auth = account?.jwt
+            auth = account?.jwt,
         )
         res = retrofitErrorHandler(api.search(form = form.serializeToMap()))
     } catch (e: Exception) {
@@ -414,7 +469,7 @@ suspend fun createPostWrapper(
     communityId: Int,
     body: String?,
     url: String?,
-    name: String
+    name: String,
 ): PostView? {
     var createdPostView: PostView? = null
     val api = API.getInstance()
@@ -425,11 +480,11 @@ suspend fun createPostWrapper(
             community_id = communityId,
             body = body,
             url = url,
-            auth = account.jwt
+            auth = account.jwt,
         )
         Log.d(
             "jerboa",
-            "Creating post: $form"
+            "Creating post: $form",
         )
         createdPostView = retrofitErrorHandler(api.createPost(form)).post_view
     } catch (e: Exception) {
@@ -444,7 +499,7 @@ suspend fun editPostWrapper(
     ctx: Context?,
     body: String?,
     url: String?,
-    name: String
+    name: String,
 ): PostView? {
     var editedPostView: PostView? = null
     val api = API.getInstance()
@@ -455,7 +510,7 @@ suspend fun editPostWrapper(
             name = name,
             body = body,
             url = url,
-            auth = account.jwt
+            auth = account.jwt,
         )
         editedPostView = retrofitErrorHandler(api.editPost(form)).post_view
     } catch (e: Exception) {
@@ -466,7 +521,7 @@ suspend fun editPostWrapper(
 
 suspend fun deletePostWrapper(
     form: DeletePost,
-    ctx: Context
+    ctx: Context,
 ): PostResponse? {
     var deletedPost: PostResponse? = null
     val api = API.getInstance()
@@ -483,7 +538,7 @@ suspend fun likePostWrapper(
     pv: PostView,
     voteType: VoteType,
     account: Account,
-    ctx: Context
+    ctx: Context,
 ): PostResponse? {
     var updatedPost: PostResponse? = null
     val api = API.getInstance()
@@ -492,7 +547,7 @@ suspend fun likePostWrapper(
         val form = CreatePostLike(
             post_id = pv.post.id,
             score = newVote,
-            auth = account.jwt
+            auth = account.jwt,
         )
         updatedPost = retrofitErrorHandler(api.likePost(form))
     } catch (e: Exception) {
@@ -506,7 +561,7 @@ suspend fun likeCommentWrapper(
     myVote: Int?,
     voteType: VoteType,
     account: Account,
-    ctx: Context
+    ctx: Context,
 ): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
@@ -515,7 +570,7 @@ suspend fun likeCommentWrapper(
         val form = CreateCommentLike(
             comment_id = commentId,
             score = newVote,
-            auth = account.jwt
+            auth = account.jwt,
         )
         updatedComment = retrofitErrorHandler(api.likeComment(form))
     } catch (e: Exception) {
@@ -527,7 +582,7 @@ suspend fun likeCommentWrapper(
 suspend fun savePostWrapper(
     pv: PostView,
     account: Account,
-    ctx: Context
+    ctx: Context,
 ): PostResponse? {
     var updatedPost: PostResponse? = null
     val api = API.getInstance()
@@ -535,7 +590,7 @@ suspend fun savePostWrapper(
         val form = SavePost(
             post_id = pv.post.id,
             save = !pv.saved,
-            auth = account.jwt
+            auth = account.jwt,
         )
         updatedPost = retrofitErrorHandler(api.savePost(form))
     } catch (e: Exception) {
@@ -548,7 +603,7 @@ suspend fun saveCommentWrapper(
     commentId: Int,
     saved: Boolean,
     account: Account,
-    ctx: Context
+    ctx: Context,
 ): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
@@ -556,7 +611,7 @@ suspend fun saveCommentWrapper(
         val form = SaveComment(
             comment_id = commentId,
             save = !saved,
-            auth = account.jwt
+            auth = account.jwt,
         )
         updatedComment = retrofitErrorHandler(api.saveComment(form))
     } catch (e: Exception) {
@@ -568,7 +623,7 @@ suspend fun saveCommentWrapper(
 suspend fun markCommentReplyAsReadWrapper(
     crv: CommentReplyView,
     account: Account,
-    ctx: Context
+    ctx: Context,
 ): CommentResponse? {
     var updatedComment: CommentResponse? = null
     val api = API.getInstance()
@@ -576,7 +631,7 @@ suspend fun markCommentReplyAsReadWrapper(
         val form = MarkCommentReplyAsRead(
             comment_reply_id = crv.comment_reply.id,
             read = !crv.comment_reply.read,
-            auth = account.jwt
+            auth = account.jwt,
         )
         updatedComment = retrofitErrorHandler(api.markCommentReplyAsRead(form))
     } catch (e: Exception) {
@@ -588,7 +643,7 @@ suspend fun markCommentReplyAsReadWrapper(
 suspend fun markPersonMentionAsReadWrapper(
     personMentionView: PersonMentionView,
     account: Account,
-    ctx: Context
+    ctx: Context,
 ): PersonMentionResponse? {
     var updatedPm: PersonMentionResponse? = null
     val api = API.getInstance()
@@ -597,7 +652,7 @@ suspend fun markPersonMentionAsReadWrapper(
             person_mention_id = personMentionView.person_mention.id,
             read = !personMentionView.person_mention.read,
             auth = account
-                .jwt
+                .jwt,
         )
         updatedPm = retrofitErrorHandler(api.markPersonMentionAsRead(form))
     } catch (e: Exception) {
@@ -609,7 +664,7 @@ suspend fun markPersonMentionAsReadWrapper(
 suspend fun markPrivateMessageAsReadWrapper(
     pm: PrivateMessageView,
     account: Account,
-    ctx: Context
+    ctx: Context,
 ): PrivateMessageResponse? {
     var updatedPm: PrivateMessageResponse? = null
     val api = API.getInstance()
@@ -618,7 +673,7 @@ suspend fun markPrivateMessageAsReadWrapper(
             private_message_id = pm.private_message.id,
             read = !pm.private_message.read,
             auth = account
-                .jwt
+                .jwt,
         )
         updatedPm = retrofitErrorHandler(api.markPrivateMessageAsRead(form))
     } catch (e: Exception) {
@@ -629,7 +684,7 @@ suspend fun markPrivateMessageAsReadWrapper(
 
 suspend fun createCommentWrapper(
     form: CreateComment,
-    ctx: Context
+    ctx: Context,
 ): CommentResponse? {
     var createdComment: CommentResponse? = null
     val api = API.getInstance()
@@ -644,7 +699,7 @@ suspend fun createCommentWrapper(
 
 suspend fun editCommentWrapper(
     form: EditComment,
-    ctx: Context
+    ctx: Context,
 ): CommentResponse? {
     var editedComment: CommentResponse? = null
     val api = API.getInstance()
@@ -659,7 +714,7 @@ suspend fun editCommentWrapper(
 
 suspend fun deleteCommentWrapper(
     form: DeleteComment,
-    ctx: Context
+    ctx: Context,
 ): CommentResponse? {
     var deletedComment: CommentResponse? = null
     val api = API.getInstance()
@@ -674,7 +729,7 @@ suspend fun deleteCommentWrapper(
 
 suspend fun createPrivateMessageWrapper(
     form: CreatePrivateMessage,
-    ctx: Context
+    ctx: Context,
 ): PrivateMessageResponse? {
     var createdPrivateMessage: PrivateMessageResponse? = null
     val api = API.getInstance()
@@ -689,7 +744,7 @@ suspend fun createPrivateMessageWrapper(
 
 suspend fun createCommentReportWrapper(
     form: CreateCommentReport,
-    ctx: Context
+    ctx: Context,
 ): CommentReportResponse? {
     var createdReport: CommentReportResponse? = null
     val api = API.getInstance()
@@ -704,7 +759,7 @@ suspend fun createCommentReportWrapper(
 
 suspend fun createPostReportWrapper(
     form: CreatePostReport,
-    ctx: Context
+    ctx: Context,
 ): PostReportResponse? {
     var createdReport: PostReportResponse? = null
     val api = API.getInstance()
@@ -719,7 +774,7 @@ suspend fun createPostReportWrapper(
 
 suspend fun blockPersonWrapper(
     form: BlockPerson,
-    ctx: Context
+    ctx: Context,
 ): BlockPersonResponse? {
     var blockPersonRes: BlockPersonResponse? = null
     val api = API.getInstance()
@@ -734,7 +789,7 @@ suspend fun blockPersonWrapper(
 
 suspend fun blockCommunityWrapper(
     form: BlockCommunity,
-    ctx: Context
+    ctx: Context,
 ): BlockCommunityResponse? {
     var blockCommunityRes: BlockCommunityResponse? = null
     val api = API.getInstance()
@@ -749,7 +804,7 @@ suspend fun blockCommunityWrapper(
 
 suspend fun saveUserSettingsWrapper(
     form: SaveUserSettings,
-    ctx: Context
+    ctx: Context,
 ): LoginResponse? {
     var saveUserSettingsResponse: LoginResponse? = null
     val api = API.getInstance()
@@ -770,7 +825,7 @@ suspend fun uploadPictrsImage(account: Account, imageIs: InputStream, ctx: Conte
         val part = MultipartBody.Part.createFormData(
             "images[]",
             "myPic",
-            imageIs.readBytes().toRequestBody()
+            imageIs.readBytes().toRequestBody(),
         )
         val url = "https://${API.currentInstance}/pictrs/image"
         val cookie = "jwt=${account.jwt}"

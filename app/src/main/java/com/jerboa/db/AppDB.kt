@@ -8,7 +8,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Delete
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.Update
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.launch
@@ -26,14 +37,14 @@ data class Account(
     @ColumnInfo(name = "jwt") val jwt: String,
     @ColumnInfo(
         name = "default_listing_type",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val defaultListingType: Int,
     @ColumnInfo(
         name = "default_sort_type",
-        defaultValue = "0"
+        defaultValue = "0",
     )
-    val defaultSortType: Int
+    val defaultSortType: Int,
 )
 
 @Entity
@@ -41,29 +52,29 @@ data class AppSettings(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(
         name = "font_size",
-        defaultValue = DEFAULT_FONT_SIZE.toString() // This is changed to 16
+        defaultValue = DEFAULT_FONT_SIZE.toString(), // This is changed to 16
     )
     val fontSize: Int,
     @ColumnInfo(
         name = "theme",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val theme: Int,
     @ColumnInfo(
         name = "theme_color",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val themeColor: Int,
     @ColumnInfo(
         name = "viewed_changelog",
-        defaultValue = "0"
+        defaultValue = "0",
     )
     val viewedChangelog: Int,
     @ColumnInfo(
         name = "post_view_mode",
-        defaultValue = "0"
+        defaultValue = "0",
     )
-    val postViewMode: Int
+    val postViewMode: Int,
 )
 
 @Dao
@@ -166,11 +177,11 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(
             "alter table account add column default_listing_type INTEGER NOT " +
-                "NULL default 0"
+                "NULL default 0",
         )
         database.execSQL(
             "alter table account add column default_sort_type INTEGER NOT " +
-                "NULL default 0"
+                "NULL default 0",
         )
     }
 }
@@ -186,7 +197,7 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
                     light_theme INTEGER NOT NULL DEFAULT 0,
                     dark_theme INTEGER NOT NULL DEFAULT 0
                 )
-            """
+            """,
         )
     }
 }
@@ -197,7 +208,7 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
             """
                 alter table AppSettings add column viewed_changelog INTEGER NOT NULL 
                 default 0
-            """
+            """,
         )
     }
 }
@@ -217,13 +228,13 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
                     theme_color INTEGER NOT NULL DEFAULT 0,
                     viewed_changelog INTEGER NOT NULL DEFAULT 0
                 )
-            """
+            """,
         )
         database.execSQL(
             """
             INSERT INTO AppSettingsBackup (id, font_size, theme, viewed_changelog)
             select id, font_size, theme, viewed_changelog from AppSettings
-            """
+            """,
         )
         database.execSQL("DROP TABLE AppSettings")
         database.execSQL("ALTER TABLE AppSettingsBackup RENAME to AppSettings")
@@ -245,7 +256,7 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
-            "alter table AppSettings add column post_view_mode INTEGER NOT NULL default 0"
+            "alter table AppSettings add column post_view_mode INTEGER NOT NULL default 0",
         )
     }
 }
@@ -264,7 +275,7 @@ val MIGRATION_8_9 = object : Migration(8, 9) {
                     viewed_changelog INTEGER NOT NULL DEFAULT 0,
                     post_view_mode INTEGER NOT NULL default 0
                 )
-            """
+            """,
         )
         database.execSQL(
             """
@@ -272,7 +283,7 @@ val MIGRATION_8_9 = object : Migration(8, 9) {
             post_view_mode)
             select id, font_size, theme, theme_color, viewed_changelog, post_view_mode from 
             AppSettings
-            """
+            """,
         )
         database.execSQL("DROP TABLE AppSettings")
         database.execSQL("ALTER TABLE AppSettingsBackup RENAME to AppSettings")
@@ -282,7 +293,7 @@ val MIGRATION_8_9 = object : Migration(8, 9) {
 @Database(
     version = 9,
     entities = [Account::class, AppSettings::class],
-    exportSchema = true
+    exportSchema = true,
 )
 abstract class AppDB : RoomDatabase() {
     abstract fun accountDao(): AccountDao
@@ -293,7 +304,7 @@ abstract class AppDB : RoomDatabase() {
         private var INSTANCE: AppDB? = null
 
         fun getDatabase(
-            context: Context
+            context: Context,
         ): AppDB {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
@@ -301,7 +312,7 @@ abstract class AppDB : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDB::class.java,
-                    "jerboa"
+                    "jerboa",
                 )
                     .allowMainThreadQueries()
                     .addMigrations(
@@ -312,7 +323,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_5_6,
                         MIGRATION_6_7,
                         MIGRATION_7_8,
-                        MIGRATION_8_9
+                        MIGRATION_8_9,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
@@ -324,7 +335,7 @@ abstract class AppDB : RoomDatabase() {
                                     CONFLICT_IGNORE, // Ensures it won't overwrite the existing data
                                     ContentValues(2).apply {
                                         put("id", 1)
-                                    }
+                                    },
                                 )
                             }
                         }

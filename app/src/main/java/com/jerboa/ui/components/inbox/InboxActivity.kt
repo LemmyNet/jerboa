@@ -2,12 +2,31 @@ package com.jerboa.ui.components.inbox
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -18,9 +37,14 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.jerboa.*
+import com.jerboa.UnreadOrAll
+import com.jerboa.VoteType
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.getCommentParentId
+import com.jerboa.isScrolledToEnd
+import com.jerboa.loginFirstToast
+import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
@@ -30,6 +54,8 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessage
+import com.jerboa.unreadCountTotal
+import com.jerboa.unreadOrAllFromBool
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -40,7 +66,7 @@ fun InboxActivity(
     inboxViewModel: InboxViewModel,
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
-    commentReplyViewModel: CommentReplyViewModel
+    commentReplyViewModel: CommentReplyViewModel,
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -66,19 +92,19 @@ fun InboxActivity(
                             account = acct,
                             clear = true,
                             changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                         inboxViewModel.fetchPersonMentions(
                             account = acct,
                             clear = true,
                             changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                         inboxViewModel.fetchPrivateMessages(
                             account = acct,
                             clear = true,
                             changeUnreadOnly = unreadOrAll == UnreadOrAll.Unread,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                     }
                 },
@@ -86,11 +112,11 @@ fun InboxActivity(
                     account?.also { acct ->
                         inboxViewModel.markAllAsRead(
                             account = acct,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                         homeViewModel.markAllAsRead()
                     }
-                }
+                },
             )
         },
         content = {
@@ -102,7 +128,7 @@ fun InboxActivity(
                 homeViewModel = homeViewModel,
                 ctx = ctx,
                 account = account,
-                scope = scope
+                scope = scope,
             )
         },
         bottomBar = {
@@ -128,16 +154,16 @@ fun InboxActivity(
                         loginFirstToast(ctx)
                     }
                 },
-                navController = navController
+                navController = navController,
             )
-        }
+        },
     )
 }
 
 enum class InboxTab {
     Replies,
     Mentions,
-    Messages
+    Messages,
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -150,13 +176,13 @@ fun InboxTabs(
     account: Account?,
     scope: CoroutineScope,
     commentReplyViewModel: CommentReplyViewModel,
-    padding: PaddingValues
+    padding: PaddingValues,
 ) {
     val tabTitles = InboxTab.values().map { it.toString() }
     val pagerState = rememberPagerState()
 
     Column(
-        modifier = Modifier.padding(padding)
+        modifier = Modifier.padding(padding),
     ) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
@@ -164,8 +190,8 @@ fun InboxTabs(
                 TabRowDefaults.Indicator(
                     Modifier.pagerTabIndicatorOffset2(
                         pagerState,
-                        tabPositions
-                    )
+                        tabPositions,
+                    ),
                 )
             },
             tabs = {
@@ -177,10 +203,10 @@ fun InboxTabs(
                                 pagerState.animateScrollToPage(index)
                             }
                         },
-                        text = { Text(text = title) }
+                        text = { Text(text = title) },
                     )
                 }
-            }
+            },
         )
         if (inboxViewModel.loading.value) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -189,7 +215,7 @@ fun InboxTabs(
             count = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) { tabIndex ->
             when (tabIndex) {
                 InboxTab.Replies.ordinal -> {
@@ -213,7 +239,7 @@ fun InboxTabs(
                                     inboxViewModel.fetchReplies(
                                         account = acct,
                                         nextPage = true,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                 }
                             }
@@ -227,19 +253,19 @@ fun InboxTabs(
                                 inboxViewModel.fetchReplies(
                                     account = acct,
                                     clear = true,
-                                    ctx = ctx
+                                    ctx = ctx,
                                 )
                             }
-                        }
+                        },
                     ) {
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.fillMaxSize()
-                                .simpleVerticalScrollbar(listState)
+                                .simpleVerticalScrollbar(listState),
                         ) {
                             items(
                                 inboxViewModel.replies,
-                                key = { reply -> reply.comment_reply.id }
+                                key = { reply -> reply.comment_reply.id },
                             ) { crv ->
                                 CommentReplyNode(
                                     commentReplyView = crv,
@@ -249,7 +275,7 @@ fun InboxTabs(
                                                 commentReplyView = commentReplyView,
                                                 voteType = VoteType.Upvote,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                         }
                                     },
@@ -259,14 +285,14 @@ fun InboxTabs(
                                                 commentReplyView = commentView,
                                                 voteType = VoteType.Downvote,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                         }
                                     },
                                     onReplyClick = { commentReplyView ->
                                         commentReplyViewModel.initialize(
                                             ReplyItem
-                                                .CommentReplyItem(commentReplyView)
+                                                .CommentReplyItem(commentReplyView),
                                         )
                                         navController.navigate("commentReply")
                                     },
@@ -275,7 +301,7 @@ fun InboxTabs(
                                             inboxViewModel.saveCommentReply(
                                                 commentReplyView = commentReplyView,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                         }
                                     },
@@ -284,7 +310,7 @@ fun InboxTabs(
                                             inboxViewModel.markReplyAsRead(
                                                 commentReplyView = commentReplyView,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                             homeViewModel.updateUnreads(commentReplyView)
                                         }
@@ -313,14 +339,14 @@ fun InboxTabs(
                                             inboxViewModel.blockCreator(
                                                 creator = it,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                         }
                                     },
                                     onPostClick = { postId ->
                                         navController.navigate(route = "post/$postId")
                                     },
-                                    account = account
+                                    account = account,
                                 )
                             }
                         }
@@ -347,7 +373,7 @@ fun InboxTabs(
                                     inboxViewModel.fetchPersonMentions(
                                         account = acct,
                                         nextPage = true,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                 }
                             }
@@ -361,19 +387,19 @@ fun InboxTabs(
                                 inboxViewModel.fetchPersonMentions(
                                     account = acct,
                                     clear = true,
-                                    ctx = ctx
+                                    ctx = ctx,
                                 )
                             }
-                        }
+                        },
                     ) {
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.fillMaxSize()
-                                .simpleVerticalScrollbar(listState)
+                                .simpleVerticalScrollbar(listState),
                         ) {
                             items(
                                 inboxViewModel.mentions,
-                                key = { mention -> mention.person_mention.id }
+                                key = { mention -> mention.person_mention.id },
                             ) { pmv ->
                                 CommentMentionNode(
                                     personMentionView = pmv,
@@ -383,7 +409,7 @@ fun InboxTabs(
                                                 personMentionView = personMentionView,
                                                 voteType = VoteType.Upvote,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                         }
                                     },
@@ -393,14 +419,14 @@ fun InboxTabs(
                                                 personMentionView = personMentionView,
                                                 voteType = VoteType.Downvote,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                         }
                                     },
                                     onReplyClick = { personMentionView ->
                                         commentReplyViewModel.initialize(
                                             ReplyItem
-                                                .MentionReplyItem(personMentionView)
+                                                .MentionReplyItem(personMentionView),
                                         )
                                         navController.navigate("commentReply")
                                     },
@@ -409,7 +435,7 @@ fun InboxTabs(
                                             inboxViewModel.saveMention(
                                                 personMentionView = personMentionView,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                         }
                                     },
@@ -418,7 +444,7 @@ fun InboxTabs(
                                             inboxViewModel.markPersonMentionAsRead(
                                                 personMentionView = personMentionView,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                             homeViewModel.updateUnreads(personMentionView)
                                         }
@@ -427,7 +453,7 @@ fun InboxTabs(
                                         navController.navigate(
                                             "commentReport/${personMentionView
                                                 .comment
-                                                .id}"
+                                                .id}",
                                         )
                                     },
                                     onLinkClick = { personMentionView ->
@@ -451,14 +477,14 @@ fun InboxTabs(
                                             inboxViewModel.blockCreator(
                                                 creator = it,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                         }
                                     },
                                     onPostClick = { postId ->
                                         navController.navigate(route = "post/$postId")
                                     },
-                                    account = account
+                                    account = account,
                                 )
                             }
                         }
@@ -485,7 +511,7 @@ fun InboxTabs(
                                     inboxViewModel.fetchPrivateMessages(
                                         account = acct,
                                         nextPage = true,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                 }
                             }
@@ -499,19 +525,19 @@ fun InboxTabs(
                                 inboxViewModel.fetchPrivateMessages(
                                     account = acct,
                                     clear = true,
-                                    ctx = ctx
+                                    ctx = ctx,
                                 )
                             }
-                        }
+                        },
                     ) {
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.fillMaxSize()
-                                .simpleVerticalScrollbar(listState)
+                                .simpleVerticalScrollbar(listState),
                         ) {
                             items(
                                 inboxViewModel.messages,
-                                key = { message -> message.private_message.id }
+                                key = { message -> message.private_message.id },
                             ) { message ->
                                 account?.also { acct ->
                                     PrivateMessage(
@@ -526,14 +552,14 @@ fun InboxTabs(
                                             inboxViewModel.markPrivateMessageAsRead(
                                                 privateMessageView = privateMessageView,
                                                 account = acct,
-                                                ctx = ctx
+                                                ctx = ctx,
                                             )
                                             homeViewModel.updateUnreads(privateMessageView)
                                         },
                                         onPersonClick = { personId ->
                                             navController.navigate(route = "profile/$personId")
                                         },
-                                        account = acct
+                                        account = acct,
                                     )
                                 }
                             }

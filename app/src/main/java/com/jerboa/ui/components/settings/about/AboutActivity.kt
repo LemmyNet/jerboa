@@ -7,7 +7,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.AttachMoney
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.NewReleases
+import androidx.compose.material.icons.outlined.TravelExplore
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,7 +44,7 @@ const val mastodonLink = "https://mastodon.social/@LemmyDev"
 
 @Composable
 fun AboutActivity(
-    navController: NavController
+    navController: NavController,
 ) {
     Log.d("jerboa", "Got to About activity")
 
@@ -63,12 +68,12 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.NewReleases,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     onClick = {
                         openLink("$githubUrl/blob/main/RELEASES.md", ctx)
-                    }
+                    },
                 )
                 SettingsDivider()
                 SettingsHeader(text = "Support")
@@ -77,36 +82,36 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.BugReport,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     onClick = {
                         openLink("$githubUrl/issues", ctx)
-                    }
+                    },
                 )
                 SettingsMenuLink(
                     title = { Text("Developer Matrix chatroom") },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Chat,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     onClick = {
                         openLink(jerboaMatrixChat, ctx)
-                    }
+                    },
                 )
                 SettingsMenuLink(
                     title = { Text("Donate to Jerboa development") },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.AttachMoney,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     onClick = {
                         openLink(donateLink, ctx)
-                    }
+                    },
                 )
                 SettingsDivider()
                 SettingsHeader(text = "Social")
@@ -116,24 +121,24 @@ fun AboutActivity(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_jerboa),
                             modifier = Modifier.size(32.dp),
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     onClick = {
                         openLink(jerboaLemmyLink, ctx)
-                    }
+                    },
                 )
                 SettingsMenuLink(
                     title = { Text("Follow on Mastodon") },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.TravelExplore,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     onClick = {
                         openLink(mastodonLink, ctx)
-                    }
+                    },
                 )
                 SettingsDivider()
                 SettingsHeader(text = "Open source")
@@ -143,21 +148,21 @@ fun AboutActivity(
                     subtitle = {
                         Text(
                             "Jerboa is libre open-source software, licensed under " +
-                                "the GNU Affero General Public License v3.0"
+                                "the GNU Affero General Public License v3.0",
                         )
                     },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Code,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     onClick = {
                         openLink(githubUrl, ctx)
-                    }
+                    },
                 )
             }
-        }
+        },
     )
 }
 
@@ -169,12 +174,12 @@ fun SettingsDivider() {
 @Composable
 fun SettingsHeader(
     text: String,
-    color: Color = MaterialTheme.colorScheme.primary
+    color: Color = MaterialTheme.colorScheme.primary,
 ) {
     Text(
         text,
         modifier = Modifier.padding(start = 64.dp),
-        color = color
+        color = color,
     )
 }
 

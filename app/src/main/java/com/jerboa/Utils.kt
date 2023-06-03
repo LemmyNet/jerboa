@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa
 
 import android.app.Activity
@@ -16,7 +14,6 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
@@ -37,7 +34,14 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
 import com.jerboa.api.DEFAULT_INSTANCE
-import com.jerboa.datatypes.* // ktlint-disable no-unused-imports
+import com.jerboa.datatypes.Comment
+import com.jerboa.datatypes.CommentView
+import com.jerboa.datatypes.CommunityModeratorView
+import com.jerboa.datatypes.CommunitySafe
+import com.jerboa.datatypes.ListingType
+import com.jerboa.datatypes.PersonSafe
+import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.HomeViewModel
@@ -51,7 +55,6 @@ import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.abs
-import kotlin.math.log10
 import kotlin.math.pow
 
 val prettyTime = PrettyTime(Locale.getDefault())
@@ -70,7 +73,7 @@ val DEFAULT_LEMMY_INSTANCES = listOf(
     "szmer.info",
     "beehaw.org",
     "feddit.it",
-    "sopuli.xyz"
+    "sopuli.xyz",
 )
 
 // convert a data class to a map
@@ -83,7 +86,7 @@ inline fun <I, reified O> I.convert(): O {
     val json = gson.toJson(this)
     return gson.fromJson(
         json,
-        object : TypeToken<O>() {}.type
+        object : TypeToken<O>() {}.type,
     )
 }
 
@@ -100,32 +103,32 @@ fun loginFirstToast(ctx: Context) {
 
 enum class VoteType {
     Upvote,
-    Downvote
+    Downvote,
 }
 
 fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType): InstantScores {
     val newVote = newVote(
         currentVote = instantScores.myVote,
         voteType =
-        voteType
+        voteType,
     )
     val score = newScore(
         instantScores.score,
         instantScores.myVote,
-        voteType
+        voteType,
     )
     val votes = newVoteCount(
         Pair(instantScores.upvotes, instantScores.downvotes),
         instantScores
             .myVote,
-        voteType
+        voteType,
     )
 
     return InstantScores(
         myVote = newVote,
         upvotes = votes.first,
         downvotes = votes.second,
-        score = score
+        score = score,
     )
 }
 
@@ -209,25 +212,25 @@ data class InstantScores(
     val myVote: Int?,
     val score: Int,
     val upvotes: Int,
-    val downvotes: Int
+    val downvotes: Int,
 )
 
 data class CommentNodeData(
     val commentView: CommentView,
     // Must use a SnapshotStateList and not a MutableList here, otherwise changes in the tree children won't trigger a UI update
     val children: SnapshotStateList<CommentNodeData>?,
-    var depth: Int
+    var depth: Int,
 )
 
 fun commentsToFlatNodes(
-    comments: List<CommentView>
+    comments: List<CommentView>,
 ): List<CommentNodeData> {
     return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }
 }
 
 fun buildCommentsTree(
     comments: List<CommentView>?,
-    parentComment: Boolean
+    parentComment: Boolean,
 ): List<CommentNodeData> {
     val map = LinkedHashMap<Number, CommentNodeData>()
     val firstComment = comments?.firstOrNull()?.comment
@@ -241,7 +244,7 @@ fun buildCommentsTree(
         val node = CommentNodeData(
             commentView = cv,
             children = mutableStateListOf(),
-            depth
+            depth,
         )
         map[cv.comment.id] = node
     }
@@ -271,12 +274,12 @@ fun buildCommentsTree(
 fun insertCommentIntoTree(
     commentTree: MutableList<CommentNodeData>,
     cv: CommentView,
-    parentComment: Boolean
+    parentComment: Boolean,
 ) {
     val nodeData = CommentNodeData(
         commentView = cv,
         children = null,
-        depth = 0
+        depth = 0,
     )
     val parentId = getCommentParentId(cv.comment)
     parentId?.also { cParentId ->
@@ -309,7 +312,7 @@ fun insertCommentIntoTree(
 
 fun findAndUpdateCommentInTree(
     commentTree: SnapshotStateList<CommentNodeData>,
-    cv: CommentView?
+    cv: CommentView?,
 ) {
     cv?.also {
         val foundIndex = commentTree.indexOfFirst {
@@ -401,13 +404,13 @@ fun isImage(url: String): Boolean {
 }
 
 val imageRegex = Regex(
-    pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))"
+    pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",
 )
 
 // Todo is the scope.launch still necessary?
 fun closeDrawer(
     scope: CoroutineScope,
-    drawerState: DrawerState
+    drawerState: DrawerState,
 ) {
     scope.launch {
         drawerState.close()
@@ -445,7 +448,7 @@ fun hostName(url: String): String? {
 
 enum class UnreadOrAll {
     All,
-    Unread
+    Unread,
 }
 
 fun unreadOrAllFromBool(b: Boolean): UnreadOrAll {
@@ -476,7 +479,7 @@ fun Modifier.border(
     start: Border? = null,
     top: Border? = null,
     end: Border? = null,
-    bottom: Border? = null
+    bottom: Border? = null,
 ) =
     drawBehind {
         start?.let {
@@ -496,7 +499,7 @@ fun Modifier.border(
 private fun DrawScope.drawTopBorder(
     border: Border,
     shareStart: Boolean = true,
-    shareEnd: Boolean = true
+    shareEnd: Boolean = true,
 ) {
     val strokeWidthPx = border.strokeWidth.toPx()
     if (strokeWidthPx == 0f) return
@@ -509,14 +512,14 @@ private fun DrawScope.drawTopBorder(
             lineTo(width, 0f)
             close()
         },
-        color = border.color
+        color = border.color,
     )
 }
 
 private fun DrawScope.drawBottomBorder(
     border: Border,
     shareStart: Boolean,
-    shareEnd: Boolean
+    shareEnd: Boolean,
 ) {
     val strokeWidthPx = border.strokeWidth.toPx()
     if (strokeWidthPx == 0f) return
@@ -530,14 +533,14 @@ private fun DrawScope.drawBottomBorder(
             lineTo(width, height)
             close()
         },
-        color = border.color
+        color = border.color,
     )
 }
 
 private fun DrawScope.drawStartBorder(
     border: Border,
     shareTop: Boolean = true,
-    shareBottom: Boolean = true
+    shareBottom: Boolean = true,
 ) {
     val strokeWidthPx = border.strokeWidth.toPx()
     if (strokeWidthPx == 0f) return
@@ -550,14 +553,14 @@ private fun DrawScope.drawStartBorder(
             lineTo(0f, height)
             close()
         },
-        color = border.color
+        color = border.color,
     )
 }
 
 private fun DrawScope.drawEndBorder(
     border: Border,
     shareTop: Boolean = true,
-    shareBottom: Boolean = true
+    shareBottom: Boolean = true,
 ) {
     val strokeWidthPx = border.strokeWidth.toPx()
     if (strokeWidthPx == 0f) return
@@ -571,7 +574,7 @@ private fun DrawScope.drawEndBorder(
             lineTo(width, height)
             close()
         },
-        color = border.color
+        color = border.color,
     )
 }
 
@@ -585,47 +588,47 @@ fun isModerator(person: PersonSafe, moderators: List<CommunityModeratorView>): B
 
 data class InputField(
     val label: String,
-    val hasError: Boolean
+    val hasError: Boolean,
 )
 
 fun validatePostName(
-    name: String
+    name: String,
 ): InputField {
     return if (name.isEmpty()) {
         InputField(
             label = "Title required",
-            hasError = true
+            hasError = true,
         )
     } else if (name.length < 3) {
         InputField(
             label = "Title must be > 3 chars",
-            hasError = true
+            hasError = true,
         )
     } else if (name.length >= MAX_POST_TITLE_LENGTH) {
         InputField(
             label = "Title cannot be > 200 chars",
-            hasError = true
+            hasError = true,
         )
     } else {
         InputField(
             label = "Title",
-            hasError = false
+            hasError = false,
         )
     }
 }
 
 fun validateUrl(
-    url: String
+    url: String,
 ): InputField {
     return if (url.isNotEmpty() && !Patterns.WEB_URL.matcher(url).matches()) {
         InputField(
             label = "Invalid Url",
-            hasError = true
+            hasError = true,
         )
     } else {
         InputField(
             label = "Url",
-            hasError = false
+            hasError = false,
         )
     }
 }
@@ -643,7 +646,7 @@ fun siFormat(num: Int): String {
     return if (formattedNumber.length > 4) {
         formattedNumber.replace(
             "\\.[0-9]+".toRegex(),
-            ""
+            "",
         )
     } else {
         formattedNumber
@@ -653,7 +656,7 @@ fun siFormat(num: Int): String {
 fun fetchInitialData(
     account: Account?,
     siteViewModel: SiteViewModel,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
 ) {
     if (account != null) {
         API.changeLemmyInstance(account.instance)
@@ -662,7 +665,7 @@ fun fetchInitialData(
             account = account,
             changeListingType = ListingType.values()[account.defaultListingType],
             changeSortType = SortType.values()[account.defaultSortType],
-            clear = true
+            clear = true,
         )
         homeViewModel.fetchUnreadCounts(account = account)
     } else {
@@ -672,13 +675,13 @@ fun fetchInitialData(
             account = null,
             clear = true,
             changeListingType = ListingType.Local,
-            changeSortType = SortType.Active
+            changeSortType = SortType.Active,
         )
     }
 
     siteViewModel.fetchSite(
         auth = account?.jwt,
-        ctx = null
+        ctx = null,
     )
 }
 
@@ -698,7 +701,7 @@ fun decodeUriToBitmap(ctx: Context, uri: Uri): Bitmap? {
 
 fun scrollToTop(
     scope: CoroutineScope,
-    listState: LazyListState
+    listState: LazyListState,
 ) {
     scope.launch {
         listState.animateScrollToItem(index = 0)
@@ -715,13 +718,13 @@ fun Context.findActivity(): Activity? = when (this) {
 enum class ThemeMode {
     System,
     Light,
-    Dark
+    Dark,
 }
 
 enum class ThemeColor {
     Dynamic,
     Green,
-    Pink
+    Pink,
 }
 
 enum class PostViewMode(val mode: String) {
@@ -739,14 +742,14 @@ enum class PostViewMode(val mode: String) {
     /**
      * A list view that has no action bar.
      */
-    List("List")
+    List("List"),
 }
 
 @ExperimentalPagerApi
 fun Modifier.pagerTabIndicatorOffset2(
     pagerState: PagerState,
     tabPositions: List<TabPosition>,
-    pageIndexMapping: (Int) -> Int = { it }
+    pageIndexMapping: (Int) -> Int = { it },
 ): Modifier = layout { measurable, constraints ->
     if (tabPositions.isEmpty()) {
         // If there are no pages, nothing to show
@@ -776,13 +779,13 @@ fun Modifier.pagerTabIndicatorOffset2(
                 minWidth = indicatorWidth,
                 maxWidth = indicatorWidth,
                 minHeight = 0,
-                maxHeight = constraints.maxHeight
-            )
+                maxHeight = constraints.maxHeight,
+            ),
         )
         layout(constraints.maxWidth, maxOf(placeable.height, constraints.minHeight)) {
             placeable.placeRelative(
                 indicatorOffset,
-                maxOf(constraints.minHeight - placeable.height, 0)
+                maxOf(constraints.minHeight - placeable.height, 0),
             )
         }
     }

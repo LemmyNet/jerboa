@@ -46,7 +46,7 @@ fun likeCommentRoutine(
     voteType: VoteType,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         commentView.value?.also { cv ->
@@ -55,7 +55,7 @@ fun likeCommentRoutine(
                 cv.my_vote,
                 voteType,
                 account,
-                ctx
+                ctx,
             )?.comment_view
             commentView.value = updatedCommentView
             comments?.also {
@@ -74,7 +74,7 @@ fun likeCommentReplyRoutine(
     voteType: VoteType,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         val updatedCommentView = likeCommentWrapper(
@@ -82,7 +82,7 @@ fun likeCommentReplyRoutine(
             commentReplyView.my_vote,
             voteType,
             account,
-            ctx
+            ctx,
         )?.comment_view
         if (updatedCommentView != null) {
             findAndUpdateCommentReplyView(replies, commentReplyView, updatedCommentView)
@@ -96,7 +96,7 @@ fun likeMentionRoutine(
     voteType: VoteType,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         val updatedCommentView = likeCommentWrapper(
@@ -104,7 +104,7 @@ fun likeMentionRoutine(
             personMentionView.my_vote,
             voteType,
             account,
-            ctx
+            ctx,
         )?.comment_view
         if (updatedCommentView != null) {
             findAndUpdatePersonMentionView(mentions, personMentionView, updatedCommentView)
@@ -118,7 +118,7 @@ fun saveCommentRoutine(
     commentTree: SnapshotStateList<CommentNodeData>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         commentView.value?.also { cv ->
@@ -126,7 +126,7 @@ fun saveCommentRoutine(
                 cv.comment.id,
                 cv.saved,
                 account,
-                ctx
+                ctx,
             )?.comment_view
             commentView.value = updatedCommentView
 
@@ -145,14 +145,14 @@ fun saveCommentReplyRoutine(
     replies: MutableList<CommentReplyView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         val updatedCommentView = saveCommentWrapper(
             commentReplyView.comment.id,
             commentReplyView.saved,
             account,
-            ctx
+            ctx,
         )?.comment_view
         if (updatedCommentView != null) {
             findAndUpdateCommentReplyView(replies, commentReplyView, updatedCommentView)
@@ -165,14 +165,14 @@ fun saveMentionRoutine(
     mentions: MutableList<PersonMentionView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         val updatedCommentView = saveCommentWrapper(
             personMentionView.comment.id,
             personMentionView.saved,
             account,
-            ctx
+            ctx,
         )?.comment_view
         if (updatedCommentView != null) {
             findAndUpdatePersonMentionView(mentions, personMentionView, updatedCommentView)
@@ -185,13 +185,13 @@ fun markCommentReplyAsReadRoutine(
     replies: MutableList<CommentReplyView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         markCommentReplyAsReadWrapper(
             commentReplyView,
             account,
-            ctx
+            ctx,
         )
         val foundIndex = replies?.indexOfFirst {
             it.comment_reply.id == commentReplyView.comment_reply.id
@@ -199,7 +199,7 @@ fun markCommentReplyAsReadRoutine(
         if (foundIndex != -1 && foundIndex != null) {
             val cr = replies[foundIndex].comment_reply
             replies[foundIndex] = replies[foundIndex].copy(
-                comment_reply = cr.copy(read = !cr.read)
+                comment_reply = cr.copy(read = !cr.read),
             )
         }
     }
@@ -210,14 +210,14 @@ fun markPersonMentionAsReadRoutine(
     mentions: MutableList<PersonMentionView>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         personMentionView.value?.also { pmv ->
             val updatedPmv = markPersonMentionAsReadWrapper(
                 pmv,
                 account,
-                ctx
+                ctx,
             )?.person_mention_view
             personMentionView.value = updatedPmv
             mentions?.also {
@@ -238,7 +238,7 @@ fun createCommentRoutine(
     focusManager: FocusManager,
     account: Account,
     postViewModel: PostViewModel,
-    personProfileViewModel: PersonProfileViewModel
+    personProfileViewModel: PersonProfileViewModel,
 ) {
     scope.launch {
         loading.value = true
@@ -246,7 +246,7 @@ fun createCommentRoutine(
             content = content,
             parent_id = commentParentId,
             post_id = postId,
-            auth = account.jwt
+            auth = account.jwt,
         )
         val commentView = createCommentWrapper(form, ctx)?.comment_view
 
@@ -277,7 +277,7 @@ fun editCommentRoutine(
     focusManager: FocusManager,
     account: Account,
     personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel
+    postViewModel: PostViewModel,
 ) {
     scope.launch {
         commentView.value?.also { cv ->
@@ -285,7 +285,7 @@ fun editCommentRoutine(
             val form = EditComment(
                 content = content,
                 comment_id = cv.comment.id,
-                auth = account.jwt
+                auth = account.jwt,
             )
             commentView.value = editCommentWrapper(form, ctx)?.comment_view
             loading.value = false
@@ -306,14 +306,14 @@ fun deleteCommentRoutine(
     commentTree: SnapshotStateList<CommentNodeData>? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         commentView.value?.also { cv ->
             val form = DeleteComment(
                 comment_id = cv.comment.id,
                 deleted = !cv.comment.deleted,
-                auth = account.jwt
+                auth = account.jwt,
             )
             val deletedCommentView = deleteCommentWrapper(form, ctx)?.comment_view
             commentView.value = deletedCommentView
@@ -334,7 +334,7 @@ fun createPrivateMessageRoutine(
     ctx: Context,
     scope: CoroutineScope,
     navController: NavController,
-    focusManager: FocusManager
+    focusManager: FocusManager,
 ) {
     scope.launch {
         loading.value = true
@@ -349,7 +349,7 @@ fun createPrivateMessageRoutine(
 fun findAndUpdateCommentReplyView(
     replies: MutableList<CommentReplyView>?,
     commentReplyView: CommentReplyView,
-    updatedCommentView: CommentView
+    updatedCommentView: CommentView,
 ) {
     val foundIndex = replies?.indexOfFirst {
         it.comment_reply.id == commentReplyView.comment_reply.id
@@ -359,7 +359,7 @@ fun findAndUpdateCommentReplyView(
             my_vote = updatedCommentView.my_vote,
             counts = updatedCommentView.counts,
             saved = updatedCommentView.saved,
-            comment = updatedCommentView.comment
+            comment = updatedCommentView.comment,
         )
     }
 }
@@ -367,7 +367,7 @@ fun findAndUpdateCommentReplyView(
 fun findAndUpdatePersonMentionView(
     mentions: MutableList<PersonMentionView>?,
     personMentionView: PersonMentionView,
-    updatedCommentView: CommentView
+    updatedCommentView: CommentView,
 ) {
     val foundIndex = mentions?.indexOfFirst {
         it.person_mention.id == personMentionView.person_mention.id
@@ -377,14 +377,14 @@ fun findAndUpdatePersonMentionView(
             my_vote = updatedCommentView.my_vote,
             counts = updatedCommentView.counts,
             saved = updatedCommentView.saved,
-            comment = updatedCommentView.comment
+            comment = updatedCommentView.comment,
         )
     }
 }
 
 fun findAndUpdateCommentView(
     comments: MutableList<CommentView>,
-    updatedCommentView: CommentView?
+    updatedCommentView: CommentView?,
 ) {
     updatedCommentView?.also { ucv ->
         val foundIndex = comments.indexOfFirst {
@@ -398,14 +398,14 @@ fun findAndUpdateCommentView(
 
 fun addCommentToMutableList(
     comments: MutableList<CommentView>,
-    newCommentView: CommentView
+    newCommentView: CommentView,
 ) {
     comments.add(0, newCommentView)
 }
 
 fun findAndUpdateMention(
     mentions: MutableList<PersonMentionView>,
-    updatedPersonMentionView: PersonMentionView?
+    updatedPersonMentionView: PersonMentionView?,
 ) {
     updatedPersonMentionView?.also { ucv ->
         val foundIndex = mentions.indexOfFirst {
@@ -429,7 +429,7 @@ fun fetchRepliesRoutine(
     changeSortType: CommentSortType? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         val api = API.getInstance()
@@ -456,11 +456,11 @@ fun fetchRepliesRoutine(
                 sort = sortType.value,
                 page = page.value,
                 unread_only = unreadOnly.value,
-                auth = account.jwt
+                auth = account.jwt,
             )
             Log.d(
                 "jerboa",
-                "Fetching unread replies: $form"
+                "Fetching unread replies: $form",
             )
             val newReplies = retrofitErrorHandler(api.getReplies(form = form.serializeToMap()))
                 .replies
@@ -489,7 +489,7 @@ fun fetchPersonMentionsRoutine(
     changeSortType: CommentSortType? = null,
     account: Account,
     ctx: Context,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     scope.launch {
         val api = API.getInstance()
@@ -516,17 +516,17 @@ fun fetchPersonMentionsRoutine(
                 sort = sortType.value,
                 page = page.value,
                 unread_only = unreadOnly.value,
-                auth = account.jwt
+                auth = account.jwt,
             )
             Log.d(
                 "jerboa",
-                "Fetching unread replies: $form"
+                "Fetching unread replies: $form",
             )
             val newMentions = retrofitErrorHandler(
                 api.getPersonMentions(
                     form = form
-                        .serializeToMap()
-                )
+                        .serializeToMap(),
+                ),
             ).mentions
 
             if (clear) {

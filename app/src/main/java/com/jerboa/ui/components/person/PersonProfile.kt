@@ -10,7 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -48,17 +52,17 @@ import com.jerboa.ui.theme.muted
 @Composable
 fun PersonProfileTopSection(
     personView: PersonViewSafe,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column {
         Box(
             modifier = modifier.fillMaxWidth(),
-            contentAlignment = Alignment.BottomStart
+            contentAlignment = Alignment.BottomStart,
         ) {
             personView.person.banner?.also {
                 PictrsBannerImage(
                     url = it,
-                    modifier = Modifier.height(PROFILE_BANNER_SIZE)
+                    modifier = Modifier.height(PROFILE_BANNER_SIZE),
                 )
             }
             Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -69,23 +73,23 @@ fun PersonProfileTopSection(
         }
         Column(
             modifier = Modifier.padding(MEDIUM_PADDING),
-            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
         ) {
             Text(
                 text = personNameShown(personView.person, true),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
 
             TimeAgo(
                 precedingString = "Joined",
                 includeAgo = true,
-                published = personView.person.published
+                published = personView.person.published,
             )
             CommentsAndPosts(personView)
             personView.person.bio?.also {
                 MyMarkdownText(
                     markdown = it,
-                    color = MaterialTheme.colorScheme.onBackground.muted
+                    color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
         }
@@ -97,12 +101,12 @@ fun CommentsAndPosts(personView: PersonViewSafe) {
     Row {
         Text(
             text = "${personView.counts.post_count} posts",
-            color = MaterialTheme.colorScheme.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
             text = "${personView.counts.comment_count} comments",
-            color = MaterialTheme.colorScheme.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }
 }
@@ -119,6 +123,7 @@ fun PersonProfileTopSectionPreview() {
     PersonProfileTopSection(personView = samplePersonView)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonProfileHeader(
     personName: String,
@@ -128,7 +133,7 @@ fun PersonProfileHeader(
     onReportPersonClick: () -> Unit,
     selectedSortType: SortType,
     navController: NavController = rememberNavController(),
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -145,7 +150,7 @@ fun PersonProfileHeader(
             onClickSortTopOptions = {
                 showSortOptions = false
                 showTopOptions = !showTopOptions
-            }
+            },
         )
     }
 
@@ -156,7 +161,7 @@ fun PersonProfileHeader(
             onClickSortType = {
                 showTopOptions = false
                 onClickSortType(it)
-            }
+            },
         )
     }
 
@@ -170,7 +175,7 @@ fun PersonProfileHeader(
             onReportPersonClick = {
                 showMoreOptions = false
                 onReportPersonClick()
-            }
+            },
         )
     }
 
@@ -179,14 +184,14 @@ fun PersonProfileHeader(
         title = {
             PersonProfileHeaderTitle(
                 personName = personName,
-                selectedSortType = selectedSortType
+                selectedSortType = selectedSortType,
             )
         },
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
         },
@@ -196,7 +201,7 @@ fun PersonProfileHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             }
             if (!myProfile) {
@@ -205,27 +210,27 @@ fun PersonProfileHeader(
                 }) {
                     Icon(
                         Icons.Outlined.MoreVert,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 }
             }
-        }
+        },
     )
 }
 
 @Composable
 fun PersonProfileHeaderTitle(
     personName: String,
-    selectedSortType: SortType
+    selectedSortType: SortType,
 ) {
     Column {
         Text(
             text = personName,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }
@@ -234,7 +239,7 @@ fun PersonProfileHeaderTitle(
 fun PersonProfileMoreDialog(
     onDismissRequest: () -> Unit,
     onBlockPersonClick: () -> Unit,
-    onReportPersonClick: () -> Unit
+    onReportPersonClick: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -243,15 +248,15 @@ fun PersonProfileMoreDialog(
                 IconAndTextDrawerItem(
                     text = "Block Person",
                     icon = Icons.Outlined.Block,
-                    onClick = onBlockPersonClick
+                    onClick = onBlockPersonClick,
                 )
                 IconAndTextDrawerItem(
                     text = "Report Person",
                     icon = Icons.Outlined.Flag,
-                    onClick = onReportPersonClick
+                    onClick = onReportPersonClick,
                 )
             }
         },
-        confirmButton = {}
+        confirmButton = {},
     )
 }

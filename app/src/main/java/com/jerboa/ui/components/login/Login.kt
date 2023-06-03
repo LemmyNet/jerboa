@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.login
 
 import androidx.compose.foundation.layout.Arrangement
@@ -11,10 +9,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -35,7 +47,7 @@ fun MyTextField(
     label: String,
     placeholder: String? = null,
     text: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         value = text,
@@ -46,15 +58,15 @@ fun MyTextField(
         keyboardOptions = KeyboardOptions.Default.copy(
             capitalization = KeyboardCapitalization.None,
             keyboardType = KeyboardType.Text,
-            autoCorrect = false
-        )
+            autoCorrect = false,
+        ),
     )
 }
 
 @Composable
 fun PasswordField(
     password: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
@@ -77,15 +89,16 @@ fun PasswordField(
             }) {
                 Icon(imageVector = image, "")
             }
-        }
+        },
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginForm(
     modifier: Modifier = Modifier,
     loading: Boolean = false,
-    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> }
+    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> },
 ) {
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
@@ -99,7 +112,7 @@ fun LoginForm(
 
     val form = Login(
         username_or_email = username.trim(),
-        password = password.trim()
+        password = password.trim(),
     )
 
     Column(
@@ -107,13 +120,13 @@ fun LoginForm(
             .fillMaxSize()
             .imePadding(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = {
                 expanded = !expanded
-            }
+            },
         ) {
             OutlinedTextField(
                 modifier = Modifier.menuAnchor(),
@@ -123,13 +136,13 @@ fun LoginForm(
                 onValueChange = { instance = it },
                 trailingIcon = {
                     TrailingIcon(expanded = expanded)
-                }
+                },
             )
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = {
                     expanded = false
-                }
+                },
             ) {
                 instanceOptions.forEach { selectionOption ->
                     DropdownMenuItem(
@@ -141,7 +154,7 @@ fun LoginForm(
                             instance = selectionOption
                             expanded = false
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
             }
@@ -149,15 +162,15 @@ fun LoginForm(
         MyTextField(
             label = "Email or Username",
             text = username,
-            onValueChange = { username = it }
+            onValueChange = { username = it },
         )
         PasswordField(
             password = password,
-            onValueChange = { password = it }
+            onValueChange = { password = it },
         )
         Button(
             enabled = isValid && !loading,
-            onClick = { onClickLogin(form, instance) }
+            onClick = { onClickLogin(form, instance) },
         ) {
             if (loading) {
                 CircularProgressIndicator()
@@ -174,15 +187,16 @@ fun LoginFormPreview() {
     LoginForm()
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginHeader(
     navController: NavController = rememberNavController(),
-    accounts: List<Account>? = null
+    accounts: List<Account>? = null,
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Login"
+                text = "Login",
             )
         },
         navigationIcon = {
@@ -190,14 +204,14 @@ fun LoginHeader(
                 enabled = !accounts.isNullOrEmpty(),
                 onClick = {
                     navController.popBackStack()
-                }
+                },
             ) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
-        }
+        },
     )
 }
 
