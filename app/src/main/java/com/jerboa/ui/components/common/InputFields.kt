@@ -605,7 +605,7 @@ fun MyDropDown(
         TextField(
             readOnly = true,
             value = selectedText,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
             onValueChange = { },
             label = { Text(label) },
             trailingIcon = {
