@@ -66,7 +66,7 @@ class PersonProfileViewModel : ViewModel() {
             voteType = voteType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -76,7 +76,7 @@ class PersonProfileViewModel : ViewModel() {
             comments = comments, // TODO should this be here?
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -86,7 +86,7 @@ class PersonProfileViewModel : ViewModel() {
             comments = comments,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -97,7 +97,7 @@ class PersonProfileViewModel : ViewModel() {
         nextPage: Boolean = false,
         changeSortType: SortType? = null,
         changeSavedOnly: Boolean? = null,
-        ctx: Context
+        ctx: Context,
     ) {
         val api = API.getInstance()
 
@@ -106,7 +106,7 @@ class PersonProfileViewModel : ViewModel() {
             try {
                 Log.d(
                     "jerboa",
-                    "Fetching person details: $idOrNameStr"
+                    "Fetching person details: $idOrNameStr",
                 )
 
                 loading.value = true
@@ -135,7 +135,7 @@ class PersonProfileViewModel : ViewModel() {
                     auth = account?.jwt,
                     sort = sortType.value.toString(),
                     page = page.value,
-                    saved_only = savedOnly.value
+                    saved_only = savedOnly.value,
                 )
                 val out = retrofitErrorHandler(api.getPersonDetails(form = form.serializeToMap()))
 
@@ -157,28 +157,28 @@ class PersonProfileViewModel : ViewModel() {
     fun blockCommunity(
         community: CommunitySafe,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         blockCommunityRoutine(
             community = community,
             block = true,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun blockPerson(
         person: PersonSafe,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         blockPersonRoutine(
             person = person,
             block = true,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 }

@@ -60,7 +60,7 @@ class InboxViewModel : ViewModel() {
         clear: Boolean = false,
         changeSortType: CommentSortType? = null,
         changeUnreadOnly: Boolean? = null,
-        ctx: Context
+        ctx: Context,
     ) {
         fetchRepliesRoutine(
             replies = replies,
@@ -74,7 +74,7 @@ class InboxViewModel : ViewModel() {
             changeSortType = changeSortType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -84,7 +84,7 @@ class InboxViewModel : ViewModel() {
         clear: Boolean = false,
         changeSortType: CommentSortType? = null,
         changeUnreadOnly: Boolean? = null,
-        ctx: Context
+        ctx: Context,
     ) {
         fetchPersonMentionsRoutine(
             mentions = mentions,
@@ -98,7 +98,7 @@ class InboxViewModel : ViewModel() {
             changeSortType = changeSortType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -107,7 +107,7 @@ class InboxViewModel : ViewModel() {
         nextPage: Boolean = false,
         clear: Boolean = false,
         changeUnreadOnly: Boolean? = null,
-        ctx: Context
+        ctx: Context,
     ) {
         fetchPrivateMessagesRoutine(
             messages = messages,
@@ -119,7 +119,7 @@ class InboxViewModel : ViewModel() {
             changeUnreadOnly = changeUnreadOnly,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -127,7 +127,7 @@ class InboxViewModel : ViewModel() {
         commentReplyView: CommentReplyView,
         voteType: VoteType,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         likeCommentReplyRoutine(
             commentReplyView = commentReplyView,
@@ -135,21 +135,21 @@ class InboxViewModel : ViewModel() {
             voteType = voteType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun saveCommentReply(
         commentReplyView: CommentReplyView,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         saveCommentReplyRoutine(
             commentReplyView = commentReplyView,
             replies = replies,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -157,7 +157,7 @@ class InboxViewModel : ViewModel() {
         personMentionView: PersonMentionView,
         voteType: VoteType,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         likeMentionRoutine(
             personMentionView = personMentionView,
@@ -165,63 +165,63 @@ class InboxViewModel : ViewModel() {
             voteType = voteType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun saveMention(
         personMentionView: PersonMentionView,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         saveMentionRoutine(
             personMentionView = personMentionView,
             mentions = mentions,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun markReplyAsRead(
         commentReplyView: CommentReplyView,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         markCommentReplyAsReadRoutine(
             commentReplyView = commentReplyView,
             replies = replies,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun markPersonMentionAsRead(
         personMentionView: PersonMentionView,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         markPersonMentionAsReadRoutine(
             personMentionView = mutableStateOf(personMentionView),
             mentions = mentions,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun markPrivateMessageAsRead(
         privateMessageView: PrivateMessageView,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         markPrivateMessageAsReadRoutine(
             privateMessageView = mutableStateOf(privateMessageView),
             messages = messages,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -229,7 +229,7 @@ class InboxViewModel : ViewModel() {
         form: CreatePrivateMessage,
         ctx: Context,
         navController: NavController,
-        focusManager: FocusManager
+        focusManager: FocusManager,
     ) {
         createPrivateMessageRoutine(
             messages = messages,
@@ -238,35 +238,35 @@ class InboxViewModel : ViewModel() {
             ctx = ctx,
             scope = viewModelScope,
             navController = navController,
-            focusManager = focusManager
+            focusManager = focusManager,
         )
     }
 
     fun blockCommunity(
         community: CommunitySafe,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         blockCommunityRoutine(
             community = community,
             block = true,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun blockCreator(
         creator: PersonSafe,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         blockPersonRoutine(
             person = creator,
             block = true,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -275,7 +275,7 @@ class InboxViewModel : ViewModel() {
             val api = API.getInstance()
             try {
                 val form = MarkAllAsRead(
-                    auth = account.jwt
+                    auth = account.jwt,
                 )
                 api.markAllAsRead(form)
             } catch (e: Exception) {

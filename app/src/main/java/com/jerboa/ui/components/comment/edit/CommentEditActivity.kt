@@ -23,7 +23,7 @@ fun CommentEditActivity(
     navController: NavController,
     commentEditViewModel: CommentEditViewModel,
     personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel
+    postViewModel: PostViewModel,
 ) {
     Log.d("jerboa", "got to comment edit activity")
 
@@ -49,10 +49,10 @@ fun CommentEditActivity(
                                 focusManager = focusManager,
                                 account = acct,
                                 personProfileViewModel = personProfileViewModel,
-                                postViewModel = postViewModel
+                                postViewModel = postViewModel,
                             )
                         }
-                    }
+                    },
                 )
             },
             content = { padding ->
@@ -60,9 +60,9 @@ fun CommentEditActivity(
                     content = content,
                     account = account,
                     onContentChange = { content = it },
-                    padding = padding
+                    padding = padding,
                 )
-            }
+            },
         )
     }
 }

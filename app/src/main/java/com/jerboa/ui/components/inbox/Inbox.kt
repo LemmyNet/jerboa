@@ -31,7 +31,7 @@ fun InboxHeader(
     onClickUnreadOrAll: (UnreadOrAll) -> Unit,
     onClickMarkAllAsRead: () -> Unit,
     unreadCount: Int? = null,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showUnreadOrAllOptions by remember { mutableStateOf(false) }
 
@@ -42,7 +42,7 @@ fun InboxHeader(
             onClickUnreadOrAll = {
                 showUnreadOrAllOptions = false
                 onClickUnreadOrAll(it)
-            }
+            },
         )
     }
 
@@ -51,14 +51,14 @@ fun InboxHeader(
         title = {
             InboxHeaderTitle(
                 unreadCount = unreadCount,
-                selectedUnreadOrAll = selectedUnreadOrAll
+                selectedUnreadOrAll = selectedUnreadOrAll,
             )
         },
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
         },
@@ -68,16 +68,16 @@ fun InboxHeader(
             }) {
                 Icon(
                     Icons.Outlined.FilterList,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             }
             IconButton(onClick = onClickMarkAllAsRead) {
                 Icon(
                     Icons.Outlined.DoneAll,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             }
-        }
+        },
     )
 }
 
@@ -90,11 +90,11 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
     Column {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
         )
         Text(
             text = selectedUnreadOrAll.toString(),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }

@@ -24,7 +24,7 @@ class AccountSettingsViewModel(
         form: SaveUserSettings,
         ctx: Context,
         siteViewModel: SiteViewModel,
-        account: Account?
+        account: Account?,
     ) {
         viewModelScope.launch {
             loading = true

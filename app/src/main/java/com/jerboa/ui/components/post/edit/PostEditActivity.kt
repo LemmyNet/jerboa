@@ -38,7 +38,7 @@ fun PostEditActivity(
     postViewModel: PostViewModel,
     personProfileViewModel: PersonProfileViewModel,
     communityViewModel: CommunityViewModel,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
 ) {
     Log.d("jerboa", "got to post edit activity")
 
@@ -52,8 +52,8 @@ fun PostEditActivity(
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue(
-                pv?.post?.body.orEmpty()
-            )
+                pv?.post?.body.orEmpty(),
+            ),
         )
     }
     var formValid by rememberSaveable { mutableStateOf(true) }
@@ -82,10 +82,10 @@ fun PostEditActivity(
                                 postViewModel = postViewModel,
                                 personProfileViewModel = personProfileViewModel,
                                 communityViewModel = communityViewModel,
-                                homeViewModel = homeViewModel
+                                homeViewModel = homeViewModel,
                             )
                         }
-                    }
+                    },
                 )
                 if (postEditViewModel.loading) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -112,8 +112,8 @@ fun PostEditActivity(
                 account = account,
                 modifier = Modifier
                     .padding(padding)
-                    .imePadding()
+                    .imePadding(),
             )
-        }
+        },
     )
 }
