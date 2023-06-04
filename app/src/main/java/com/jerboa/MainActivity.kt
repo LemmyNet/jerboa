@@ -378,6 +378,7 @@ class MainActivity : ComponentActivity() {
 
                         InboxActivity(
                             navController = navController,
+                            appSettingsViewModel = appSettingsViewModel,
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,

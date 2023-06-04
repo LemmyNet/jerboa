@@ -21,6 +21,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
@@ -37,6 +38,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun InboxActivity(
     navController: NavController,
+    appSettingsViewModel: AppSettingsViewModel,
     inboxViewModel: InboxViewModel,
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
@@ -107,6 +109,7 @@ fun InboxActivity(
         },
         bottomBar = {
             BottomAppBarAll(
+                appSettings = appSettingsViewModel.appSettings.value,
                 screen = "inbox",
                 unreadCounts = homeViewModel.unreadCountResponse,
                 onClickProfile = {
