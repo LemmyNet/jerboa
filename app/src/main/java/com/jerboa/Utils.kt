@@ -714,8 +714,10 @@ fun Context.findActivity(): Activity? = when (this) {
 
 enum class ThemeMode {
     System,
+    SystemBlack,
     Light,
-    Dark
+    Dark,
+    Black
 }
 
 enum class ThemeColor {

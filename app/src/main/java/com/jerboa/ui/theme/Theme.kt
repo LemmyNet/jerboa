@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
@@ -44,16 +45,28 @@ fun JerboaTheme(
         ThemeColor.Pink -> pink()
     }
 
+    fun makeBlack(darkTheme: ColorScheme): ColorScheme {
+        return darkTheme.copy(
+            background=Color(0xFF000000),
+            surface=Color(0xFF000000))
+    }
+
     val systemTheme = if (!isSystemInDarkTheme()) {
         colorPair.first
     } else {
-        colorPair.second
+        if (themeMode == ThemeMode.SystemBlack) {
+            makeBlack(colorPair.second)
+        } else {
+            colorPair.second
+        }
     }
 
     val colors = when (themeMode) {
         ThemeMode.System -> systemTheme
+        ThemeMode.SystemBlack -> systemTheme
         ThemeMode.Light -> colorPair.first
         ThemeMode.Dark -> colorPair.second
+        ThemeMode.Black -> makeBlack(colorPair.second)
     }
 
     val typography = generateTypography(fontSize)
