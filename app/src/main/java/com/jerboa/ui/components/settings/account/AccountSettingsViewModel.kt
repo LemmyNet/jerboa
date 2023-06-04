@@ -15,7 +15,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.launch
 
 class AccountSettingsViewModel(
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
 ) : ViewModel() {
 
     var loading by mutableStateOf(false)
@@ -39,7 +39,7 @@ class AccountSettingsViewModel(
     private suspend fun maybeUpdateAccountSettings(account: Account, form: SaveUserSettings) {
         val newAccount = account.copy(
             defaultListingType = form.default_listing_type ?: account.defaultListingType,
-            defaultSortType = form.default_sort_type ?: account.defaultSortType
+            defaultSortType = form.default_sort_type ?: account.defaultSortType,
         )
         if (newAccount != account) {
             accountRepository.update(newAccount)
@@ -47,7 +47,7 @@ class AccountSettingsViewModel(
     }
 }
 class AccountSettingsViewModelFactory(
-    private val repository: AccountRepository
+    private val repository: AccountRepository,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AccountSettingsViewModel::class.java)) {
