@@ -77,6 +77,9 @@ interface AccountDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE, entity = Account::class)
     suspend fun insert(account: Account)
 
+    @Update(entity = Account::class)
+    suspend fun update(account: Account)
+
     @Query("UPDATE account set current = 0 where current = 1")
     suspend fun removeCurrent()
 
@@ -120,6 +123,11 @@ class AccountRepository(private val accountDao: AccountDao) {
     @WorkerThread
     suspend fun insert(account: Account) {
         accountDao.insert(account)
+    }
+
+    @WorkerThread
+    suspend fun update(account: Account) {
+        accountDao.update(account)
     }
 
     @WorkerThread

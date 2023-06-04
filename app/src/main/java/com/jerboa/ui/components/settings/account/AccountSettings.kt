@@ -77,23 +77,33 @@ fun SettingsForm(
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
-    var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty())) }
+    var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty()))
+    }
     var email by rememberSaveable { mutableStateOf(luv?.local_user?.email.orEmpty()) }
     var matrixUserId by rememberSaveable { mutableStateOf(luv?.person?.matrix_user_id.orEmpty()) }
     val theme by rememberSaveable { mutableStateOf(luv?.local_user?.theme.orEmpty()) }
-    val interfaceLang by rememberSaveable { mutableStateOf(luv?.local_user?.interface_language.orEmpty()) }
+    val interfaceLang by rememberSaveable {
+        mutableStateOf(luv?.local_user?.interface_language.orEmpty())
+    }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
     var defaultSortType by rememberSaveable { mutableStateOf(luv?.local_user?.default_sort_type) }
-    var defaultListingType by rememberSaveable { mutableStateOf(luv?.local_user?.default_listing_type) }
+    var defaultListingType by rememberSaveable {
+        mutableStateOf(luv?.local_user?.default_listing_type)
+    }
     var showAvatars by rememberSaveable { mutableStateOf(luv?.local_user?.show_avatars) }
     var showNsfw by rememberSaveable { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
     var showScores by rememberSaveable { mutableStateOf(luv?.local_user?.show_scores) }
     var showBotAccount by rememberSaveable { mutableStateOf(luv?.local_user?.show_bot_accounts) }
     var botAccount by rememberSaveable { mutableStateOf(luv?.person?.bot_account) }
     var showReadPosts by rememberSaveable { mutableStateOf(luv?.local_user?.show_read_posts) }
-    var showNewPostNotifs by rememberSaveable { mutableStateOf(luv?.local_user?.show_new_post_notifs) }
-    var sendNotificationsToEmail by rememberSaveable { mutableStateOf(luv?.local_user?.send_notifications_to_email) }
+    var showNewPostNotifs by rememberSaveable {
+        mutableStateOf(luv?.local_user?.show_new_post_notifs)
+    }
+    var sendNotificationsToEmail by rememberSaveable {
+        mutableStateOf(luv?.local_user?.send_notifications_to_email)
+    }
     val form = SaveUserSettings(
         display_name = displayName,
         bio = bio.text,
@@ -180,7 +190,6 @@ fun SettingsForm(
                 }
             }, showImage = false)
         }
-        // Todo Update AppDb to save new sort and listing_type settings.
         MyDropDown(
             suggestions = listOf("All", "Local", "Subscribed"),
             onValueChange = { defaultListingType = it },
