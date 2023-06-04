@@ -57,7 +57,8 @@ fun PostListings(
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
-        onRefresh = onSwipeRefresh
+        onRefresh = onSwipeRefresh,
+        indicatorPadding = padding
     ) {
         LazyColumn(
             state = listState,
