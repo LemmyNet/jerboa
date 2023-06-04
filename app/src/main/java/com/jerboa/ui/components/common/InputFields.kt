@@ -586,6 +586,7 @@ fun MyCheckBox(
 }
 
 // https://stackoverflow.com/a/67111599
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyDropDown(
     suggestions: List<String>,
@@ -605,7 +606,9 @@ fun MyDropDown(
         TextField(
             readOnly = true,
             value = selectedText,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
             onValueChange = { },
             label = { Text(label) },
             trailingIcon = {
