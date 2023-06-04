@@ -723,7 +723,8 @@ enum class ThemeMode {
 enum class ThemeColor {
     Dynamic,
     Green,
-    Pink
+    Pink,
+    Blue
 }
 
 enum class PostViewMode(val mode: String) {
