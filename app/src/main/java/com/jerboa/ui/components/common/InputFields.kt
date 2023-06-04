@@ -674,11 +674,13 @@ fun PreviewLines(
 @Composable
 fun MyMarkdownText(
     markdown: String,
-    color: Color = MaterialTheme.colorScheme.onSurface
+    color: Color = MaterialTheme.colorScheme.onSurface,
+    onClick: () -> Unit = {}
 ) {
     MarkdownText(
         markdown = markdown,
         modifier = Modifier.fillMaxSize(),
+        onClick = onClick,
         color = color,
         fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(MARKDOWN_FONT_MULTIPLIER)
 //        style = MaterialTheme.typography.titleLarge,

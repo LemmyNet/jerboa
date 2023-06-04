@@ -86,7 +86,7 @@ fun CommentNodeHeader(
     score: Int,
     myVote: Int?,
     isModerator: Boolean,
-    onLongClick: () -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -99,7 +99,7 @@ fun CommentNodeHeader(
         isPostCreator = isPostCreator(commentView),
         isModerator = isModerator,
         isCommunityBanned = commentView.creator_banned_from_community,
-        onLongClick = onLongClick
+        onClick = onClick
     )
 }
 
@@ -118,7 +118,8 @@ fun CommentNodeHeaderPreview() {
 @Composable
 fun CommentBody(
     comment: Comment,
-    viewSource: Boolean
+    viewSource: Boolean,
+    onClick: () -> Unit = {}
 ) {
     val content = if (comment.removed) {
         "*Removed*"
@@ -131,11 +132,15 @@ fun CommentBody(
     if (viewSource) {
         SelectionContainer {
             Text(
-                text = comment.content
+                text = comment.content,
+                modifier = Modifier.clickable { onClick() }
             )
         }
     } else {
-        MyMarkdownText(markdown = content)
+        MyMarkdownText(
+            markdown = content,
+            onClick = onClick
+        )
     }
 }
 
@@ -228,7 +233,7 @@ fun LazyListScope.commentNodeItem(
                         score = instantScores.value.score,
                         myVote = instantScores.value.myVote,
                         isModerator = isModerator(commentView.creator, moderators),
-                        onLongClick = {
+                        onClick = {
                             toggleExpanded(commentId)
                         }
                     )
@@ -240,7 +245,10 @@ fun LazyListScope.commentNodeItem(
                         Column {
                             CommentBody(
                                 comment = commentView.comment,
-                                viewSource = viewSource
+                                viewSource = viewSource,
+                                onClick = {
+                                    toggleExpanded(commentId)
+                                }
                             )
                             CommentFooterLine(
                                 commentView = commentView,
