@@ -16,9 +16,6 @@ plugins {
 
 subprojects {
   apply plugin: "org.jmailen.kotlinter" // Version should be inherited from parent
-  kotlinter {
-      disabledRules = ["no-wildcard-imports"]
-  }
 }
 
 task clean(type: Delete) {
