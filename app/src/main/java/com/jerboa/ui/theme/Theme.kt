@@ -42,6 +42,7 @@ fun JerboaTheme(
         ThemeColor.Dynamic -> dynamicPair
         ThemeColor.Green -> green()
         ThemeColor.Pink -> pink()
+        ThemeColor.Blue -> blue()
     }
 
     val systemTheme = if (!isSystemInDarkTheme()) {
