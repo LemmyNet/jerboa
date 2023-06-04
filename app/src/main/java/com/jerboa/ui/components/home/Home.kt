@@ -229,9 +229,7 @@ fun DrawerItemsMain(
             }
         }
         item {
-            myUserInfo?.also {
-                Divider()
-            }
+            Divider()
         }
         item {
             myUserInfo?.also {
@@ -253,13 +251,11 @@ fun DrawerItemsMain(
             }
         }
         item {
-            myUserInfo?.also {
-                IconAndTextDrawerItem(
-                    text = "Settings",
-                    icon = Icons.Outlined.Settings,
-                    onClick = onClickSettings
-                )
-            }
+            IconAndTextDrawerItem(
+                text = "Settings",
+                icon = Icons.Outlined.Settings,
+                onClick = onClickSettings
+            )
         }
         item {
             myUserInfo?.also {
