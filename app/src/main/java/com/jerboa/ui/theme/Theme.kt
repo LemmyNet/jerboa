@@ -3,8 +3,8 @@ package com.jerboa.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
@@ -23,7 +23,7 @@ import com.jerboa.db.DEFAULT_FONT_SIZE
 @Composable
 fun JerboaTheme(
     appSettings: AppSettings?,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val themeMode = ThemeMode.values()[appSettings?.theme ?: 0]
     val themeColor = ThemeColor.values()[appSettings?.themeColor ?: 0]
@@ -48,8 +48,9 @@ fun JerboaTheme(
 
     fun makeBlack(darkTheme: ColorScheme): ColorScheme {
         return darkTheme.copy(
-            background=Color(0xFF000000),
-            surface=Color(0xFF000000))
+            background = Color(0xFF000000),
+            surface = Color(0xFF000000),
+        )
     }
 
     val systemTheme = if (!isSystemInDarkTheme()) {
@@ -86,7 +87,7 @@ fun JerboaTheme(
         colorScheme = colors,
         typography = typography,
         shapes = Shapes,
-        content = content
+        content = content,
     )
 }
 
@@ -96,7 +97,7 @@ val colorList = listOf(
     hsl(150f),
     hsl(200f),
     hsl(250f),
-    hsl(300f)
+    hsl(300f),
 )
 
 fun hsl(num: Float): Color {

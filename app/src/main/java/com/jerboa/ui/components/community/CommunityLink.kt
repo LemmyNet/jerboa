@@ -35,7 +35,7 @@ fun CommunityName(
     community: CommunitySafe,
     color: Color = MaterialTheme.colorScheme.primary,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = communityNameShown(community),
@@ -43,7 +43,7 @@ fun CommunityName(
         color = color,
         modifier = modifier,
         overflow = TextOverflow.Clip,
-        maxLines = 1
+        maxLines = 1,
     )
 }
 
@@ -63,18 +63,18 @@ fun CommunityLink(
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    onClick: (community: CommunitySafe) -> Unit
+    onClick: (community: CommunitySafe) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing),
-        modifier = modifier.clickable { onClick(community) }
+        modifier = modifier.clickable { onClick(community) },
     ) {
         community.icon?.let {
             CircularIcon(
                 icon = it,
                 size = size,
-                thumbnailSize = thumbnailSize
+                thumbnailSize = thumbnailSize,
             )
         }
         Column {
@@ -82,7 +82,7 @@ fun CommunityLink(
             usersPerMonth?.also {
                 Text(
                     text = "$usersPerMonth users / month",
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }
@@ -92,7 +92,7 @@ fun CommunityLink(
 @Composable
 fun CommunityLinkLarger(
     community: CommunitySafe,
-    onClick: (community: CommunitySafe) -> Unit
+    onClick: (community: CommunitySafe) -> Unit,
 ) {
     CommunityLink(
         community = community,
@@ -104,14 +104,14 @@ fun CommunityLinkLarger(
         modifier = Modifier
             .padding(LARGE_PADDING)
             .fillMaxWidth(),
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
 @Composable
 fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
-    onClick: (community: CommunitySafe) -> Unit
+    onClick: (community: CommunitySafe) -> Unit,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -124,7 +124,7 @@ fun CommunityLinkLargerWithUserCount(
             .padding(LARGE_PADDING)
             .fillMaxWidth(),
         style = MaterialTheme.typography.titleLarge,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -133,7 +133,7 @@ fun CommunityLinkLargerWithUserCount(
 fun CommunityLinkPreview() {
     CommunityLink(
         community = sampleCommunitySafe,
-        onClick = {}
+        onClick = {},
     )
 }
 
@@ -142,6 +142,6 @@ fun CommunityLinkPreview() {
 fun CommunityLinkWithUsersPreview() {
     CommunityLinkLargerWithUserCount(
         communityView = sampleCommunityView,
-        onClick = {}
+        onClick = {},
     )
 }

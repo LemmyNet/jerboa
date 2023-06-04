@@ -11,7 +11,7 @@ import com.jerboa.datatypes.PrivateMessageView
 
 data class Login(
     val username_or_email: String,
-    val password: String
+    val password: String,
 )
 
 /**
@@ -28,19 +28,19 @@ data class Register(
     val captcha_uuid: String?,
     val captcha_answer: String?,
     val honeypot: String?,
-    val answer: String?
+    val answer: String?,
 )
 
 // data class GetCaptcha ()
 
 data class GetCaptchaResponse(
-    val ok: CaptchaResponse?
+    val ok: CaptchaResponse?,
 )
 
 data class CaptchaResponse(
     val png: String,
     val wav: String?,
-    val uuid: String
+    val uuid: String,
 )
 
 data class SaveUserSettings(
@@ -63,14 +63,14 @@ data class SaveUserSettings(
     val show_read_posts: Boolean?,
     val show_new_post_notifs: Boolean?,
     val discussion_languages: List<Int>?,
-    val auth: String
+    val auth: String,
 )
 
 data class ChangePassword(
     val new_password: String,
     val new_password_verify: String,
     val old_password: String,
-    val auth: String
+    val auth: String,
 )
 
 /**
@@ -79,7 +79,7 @@ data class ChangePassword(
 data class LoginResponse(
     val jwt: String?,
     val verify_email_sent: Boolean,
-    val registration_created: Boolean
+    val registration_created: Boolean,
 )
 
 data class GetPersonDetails(
@@ -90,36 +90,36 @@ data class GetPersonDetails(
     val limit: Int? = null,
     val community_id: Int? = null,
     val saved_only: Boolean? = null,
-    val auth: String? = null
+    val auth: String? = null,
 )
 
 data class GetPersonDetailsResponse(
     val person_view: PersonViewSafe,
     val comments: List<CommentView>,
     val posts: List<PostView>,
-    val moderates: List<CommunityModeratorView>
+    val moderates: List<CommunityModeratorView>,
 )
 
 data class GetRepliesResponse(
-    val replies: List<CommentReplyView>
+    val replies: List<CommentReplyView>,
 )
 
 data class GetPersonMentionsResponse(
-    val mentions: List<PersonMentionView>
+    val mentions: List<PersonMentionView>,
 )
 
 data class MarkAllAsRead(
-    val auth: String
+    val auth: String,
 )
 
 data class AddAdmin(
     val person_id: Int,
     val added: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class AddAdminResponse(
-    val admins: List<PersonViewSafe>
+    val admins: List<PersonViewSafe>,
 )
 
 data class BanPerson(
@@ -128,12 +128,12 @@ data class BanPerson(
     val remove_data: Boolean,
     val reason: String?,
     val expires: Int,
-    val auth: String?
+    val auth: String?,
 )
 
 data class BanPersonResponse(
     val person_view: PersonViewSafe,
-    val banned: Boolean
+    val banned: Boolean,
 )
 
 data class GetReplies(
@@ -141,7 +141,7 @@ data class GetReplies(
     val page: Int? = null,
     val limit: Int? = null,
     val unread_only: Boolean? = null,
-    val auth: String
+    val auth: String,
 )
 
 data class GetPersonMentions(
@@ -149,48 +149,48 @@ data class GetPersonMentions(
     val page: Int? = null,
     val limit: Int? = null,
     val unread_only: Boolean? = null,
-    val auth: String
+    val auth: String,
 )
 
 data class MarkPersonMentionAsRead(
     val person_mention_id: Int,
     val read: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class MarkCommentReplyAsRead(
     val comment_reply_id: Int,
     val read: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class CommentReplyResponse(
-    val comment_reply_view: CommentReplyView
+    val comment_reply_view: CommentReplyView,
 )
 
 data class PersonMentionResponse(
-    val person_mention_view: PersonMentionView
+    val person_mention_view: PersonMentionView,
 )
 
 data class DeleteAccount(
     val password: String,
-    val auth: String
+    val auth: String,
 )
 
 data class PasswordReset(
-    val email: String
+    val email: String,
 )
 
 data class VerifyEmail(
-    val token: String
+    val token: String,
 )
 
 data class GetBannedPersons(
-    val auth: String
+    val auth: String,
 )
 
 data class BannedPersonsResponse(
-    val banned: List<PersonViewSafe>
+    val banned: List<PersonViewSafe>,
 )
 
 // data class PasswordResetResponse ()
@@ -198,77 +198,77 @@ data class BannedPersonsResponse(
 data class PasswordChange(
     val token: String,
     val password: String,
-    val password_verify: String
+    val password_verify: String,
 )
 
 data class CreatePrivateMessage(
     val content: String,
     val recipient_id: Int,
-    val auth: String
+    val auth: String,
 )
 
 data class EditPrivateMessage(
     val private_message_id: Int,
     val content: String,
-    val auth: String
+    val auth: String,
 )
 
 data class DeletePrivateMessage(
     val private_message_id: Int,
     val deleted: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class MarkPrivateMessageAsRead(
     val private_message_id: Int,
     val read: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class GetPrivateMessages(
     val unread_only: Boolean? = null,
     val page: Int? = null,
     val limit: Int? = null,
-    val auth: String
+    val auth: String,
 )
 
 data class PrivateMessagesResponse(
-    val private_messages: List<PrivateMessageView>
+    val private_messages: List<PrivateMessageView>,
 )
 
 data class PrivateMessageResponse(
-    val private_message_view: PrivateMessageView
+    val private_message_view: PrivateMessageView,
 )
 
 data class GetReportCount(
     val community_id: Int,
-    val auth: String?
+    val auth: String?,
 )
 
 data class GetReportCountResponse(
     val community_id: Int,
     val comment_reports: Int?,
     val post_reports: Int,
-    val private_message_reports: Int?
+    val private_message_reports: Int?,
 )
 
 data class GetUnreadCount(
-    val auth: String
+    val auth: String,
 )
 
 data class GetUnreadCountResponse(
     val replies: Int,
     val mentions: Int,
-    val private_messages: Int
+    val private_messages: Int,
 )
 
 data class BlockPerson(
     val person_id: Int,
     val block: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class BlockPersonResponse(
     val person_view: PersonViewSafe,
-    val blocked: Boolean
+    val blocked: Boolean,
 )

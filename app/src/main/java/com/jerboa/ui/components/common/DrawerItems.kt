@@ -29,7 +29,7 @@ fun IconAndTextDrawerItem(
     iconBadgeCount: Int? = null,
     onClick: () -> Unit,
     more: Boolean = false,
-    highlight: Boolean = false
+    highlight: Boolean = false,
 ) {
     val spacingMod = Modifier
         .padding(LARGE_PADDING)
@@ -45,8 +45,8 @@ fun IconAndTextDrawerItem(
                     MaterialTheme.colorScheme.onBackground.copy(alpha = .1f)
                 } else {
                     Color.Transparent
-                }
-            )
+                },
+            ),
     ) {
         Row {
             icon?.also { ico ->
@@ -54,12 +54,12 @@ fun IconAndTextDrawerItem(
                     iconBadgeCount = iconBadgeCount,
                     modifier = spacingMod.size(DRAWER_ITEM_SPACING),
                     icon = ico,
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
             Text(
                 text = text,
-                modifier = spacingMod
+                modifier = spacingMod,
             )
         }
         if (more) {
@@ -67,7 +67,7 @@ fun IconAndTextDrawerItem(
                 imageVector = Icons.Outlined.ArrowRight,
                 contentDescription = "TODO",
                 tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
         }
     }
@@ -78,7 +78,7 @@ fun IconAndTextDrawerItem(
 fun IconAndTextDrawerItemPreview() {
     IconAndTextDrawerItem(
         text = "A test item",
-        onClick = {}
+        onClick = {},
     )
 }
 
@@ -88,6 +88,6 @@ fun IconAndTextDrawerItemWithMorePreview() {
     IconAndTextDrawerItem(
         text = "A test item",
         onClick = {},
-        more = true
+        more = true,
     )
 }

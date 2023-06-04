@@ -21,6 +21,6 @@ fun CommunitySidebar(communityView: CommunityView, padding: PaddingValues) {
         usersActiveHalfYear = counts.users_active_half_year,
         postCount = counts.posts,
         commentCount = counts.comments,
-        padding = padding
+        padding = padding,
     )
 }

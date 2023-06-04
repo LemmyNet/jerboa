@@ -25,14 +25,14 @@ class CreateReportViewModel : ViewModel() {
         private set
 
     fun setCommentId(
-        newCommentId: Int
+        newCommentId: Int,
     ) {
         commentId = newCommentId
         postId = null
     }
 
     fun setPostId(
-        newPostId: Int
+        newPostId: Int,
     ) {
         postId = newPostId
         commentId = null
@@ -43,7 +43,7 @@ class CreateReportViewModel : ViewModel() {
         account: Account,
         ctx: Context,
         navController: NavController,
-        focusManager: FocusManager
+        focusManager: FocusManager,
     ) {
         commentId?.also { cId ->
             viewModelScope.launch {
@@ -51,7 +51,7 @@ class CreateReportViewModel : ViewModel() {
                 val form = CreateCommentReport(
                     comment_id = cId,
                     reason = reason,
-                    auth = account.jwt
+                    auth = account.jwt,
                 )
                 val report = createCommentReportWrapper(form, ctx)?.comment_report_view
                 loading.value = false
@@ -70,7 +70,7 @@ class CreateReportViewModel : ViewModel() {
         account: Account,
         ctx: Context,
         navController: NavController,
-        focusManager: FocusManager
+        focusManager: FocusManager,
     ) {
         postId?.also { pId ->
             viewModelScope.launch {
@@ -78,7 +78,7 @@ class CreateReportViewModel : ViewModel() {
                 val form = CreatePostReport(
                     post_id = pId,
                     reason = reason,
-                    auth = account.jwt
+                    auth = account.jwt,
                 )
                 val report = createPostReportWrapper(form, ctx)?.post_report_view
                 loading.value = false

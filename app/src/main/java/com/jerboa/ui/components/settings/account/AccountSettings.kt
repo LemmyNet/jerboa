@@ -32,10 +32,10 @@ import kotlinx.coroutines.launch
 fun SettingsTextField(
     label: String,
     text: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(SMALL_PADDING)
+        modifier = Modifier.padding(SMALL_PADDING),
     ) {
         Text(text = label)
         OutlinedTextField(
@@ -46,8 +46,8 @@ fun SettingsTextField(
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.None,
                 keyboardType = KeyboardType.Text,
-                autoCorrect = false
-            )
+                autoCorrect = false,
+            ),
         )
     }
 }
@@ -55,7 +55,7 @@ fun SettingsTextField(
 @Composable
 fun ImageWithClose(
     onClick: () -> Unit,
-    composable: @Composable () -> Unit
+    composable: @Composable () -> Unit,
 ) {
     Box(contentAlignment = Alignment.TopEnd) {
         composable()
@@ -71,29 +71,39 @@ fun SettingsForm(
     siteViewModel: SiteViewModel,
     account: Account?,
     onClickSave: (form: SaveUserSettings) -> Unit,
-    padding: PaddingValues
+    padding: PaddingValues,
 ) {
     val luv = siteViewModel.siteRes?.my_user?.local_user_view
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
-    var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty())) }
+    var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty()))
+    }
     var email by rememberSaveable { mutableStateOf(luv?.local_user?.email.orEmpty()) }
     var matrixUserId by rememberSaveable { mutableStateOf(luv?.person?.matrix_user_id.orEmpty()) }
     val theme by rememberSaveable { mutableStateOf(luv?.local_user?.theme.orEmpty()) }
-    val interfaceLang by rememberSaveable { mutableStateOf(luv?.local_user?.interface_language.orEmpty()) }
+    val interfaceLang by rememberSaveable {
+        mutableStateOf(luv?.local_user?.interface_language.orEmpty())
+    }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
     var defaultSortType by rememberSaveable { mutableStateOf(luv?.local_user?.default_sort_type) }
-    var defaultListingType by rememberSaveable { mutableStateOf(luv?.local_user?.default_listing_type) }
+    var defaultListingType by rememberSaveable {
+        mutableStateOf(luv?.local_user?.default_listing_type)
+    }
     var showAvatars by rememberSaveable { mutableStateOf(luv?.local_user?.show_avatars) }
     var showNsfw by rememberSaveable { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
     var showScores by rememberSaveable { mutableStateOf(luv?.local_user?.show_scores) }
     var showBotAccount by rememberSaveable { mutableStateOf(luv?.local_user?.show_bot_accounts) }
     var botAccount by rememberSaveable { mutableStateOf(luv?.person?.bot_account) }
     var showReadPosts by rememberSaveable { mutableStateOf(luv?.local_user?.show_read_posts) }
-    var showNewPostNotifs by rememberSaveable { mutableStateOf(luv?.local_user?.show_new_post_notifs) }
-    var sendNotificationsToEmail by rememberSaveable { mutableStateOf(luv?.local_user?.send_notifications_to_email) }
+    var showNewPostNotifs by rememberSaveable {
+        mutableStateOf(luv?.local_user?.show_new_post_notifs)
+    }
+    var sendNotificationsToEmail by rememberSaveable {
+        mutableStateOf(luv?.local_user?.send_notifications_to_email)
+    }
     val form = SaveUserSettings(
         display_name = displayName,
         bio = bio.text,
@@ -114,19 +124,19 @@ fun SettingsForm(
         show_read_posts = showReadPosts,
         theme = theme,
         show_scores = showScores,
-        discussion_languages = null
+        discussion_languages = null,
     )
     Column(
         modifier = Modifier
             .padding(padding)
             .imePadding()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)
+        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         SettingsTextField(
             label = "Display Name",
             text = displayName,
-            onValueChange = { displayName = it }
+            onValueChange = { displayName = it },
         )
         Column {
             Text("Bio")
@@ -136,19 +146,19 @@ fun SettingsForm(
                 account = account,
                 outlined = true,
                 focusImmediate = false,
-                modifier = Modifier.fillMaxWidth().padding(SMALL_PADDING)
+                modifier = Modifier.fillMaxWidth().padding(SMALL_PADDING),
             )
         }
 
         SettingsTextField(
             label = "Email",
             text = email,
-            onValueChange = { email = it }
+            onValueChange = { email = it },
         )
         SettingsTextField(
             label = "Matrix User",
             text = matrixUserId,
-            onValueChange = { matrixUserId = it }
+            onValueChange = { matrixUserId = it },
         )
         Text(text = "Avatar")
         if (avatar.isNotEmpty()) {
@@ -180,12 +190,11 @@ fun SettingsForm(
                 }
             }, showImage = false)
         }
-        // Todo Update AppDb to save new sort and listing_type settings.
         MyDropDown(
             suggestions = listOf("All", "Local", "Subscribed"),
             onValueChange = { defaultListingType = it },
             defaultListingType ?: 0,
-            label = "Default Listing Type"
+            label = "Default Listing Type",
         )
         MyDropDown(
             suggestions = listOf(
@@ -198,59 +207,59 @@ fun SettingsForm(
                 "TopYear",
                 "TopAll",
                 "MostComments",
-                "NewComments"
+                "NewComments",
             ),
             onValueChange = { defaultSortType = it },
             defaultSortType ?: 0,
-            label = "Default Sort Type"
+            label = "Default Sort Type",
         )
 
         MyCheckBox(
             checked = showNsfw,
             label = "Show NSFW",
-            onCheckedChange = { showNsfw = it }
+            onCheckedChange = { showNsfw = it },
         )
         MyCheckBox(
             checked = showAvatars == true,
             label = "Show Avatars",
-            onCheckedChange = { showAvatars = it }
+            onCheckedChange = { showAvatars = it },
         )
         MyCheckBox(
             checked = showReadPosts == true,
             label = "Show Read Posts",
-            onCheckedChange = { showReadPosts = it }
+            onCheckedChange = { showReadPosts = it },
         )
         MyCheckBox(
             checked = botAccount == true,
             label = "Bot Account",
-            onCheckedChange = { botAccount = it }
+            onCheckedChange = { botAccount = it },
         )
         MyCheckBox(
             checked = showBotAccount == true,
             label = "Show Bot Accounts",
-            onCheckedChange = { showBotAccount = it }
+            onCheckedChange = { showBotAccount = it },
         )
         MyCheckBox(
             checked = showScores == true,
             label = "Show Scores",
-            onCheckedChange = { showScores = it }
+            onCheckedChange = { showScores = it },
         )
         MyCheckBox(
             checked = showNewPostNotifs == true,
             label = "Show Notifications for New Posts",
-            onCheckedChange = { showNewPostNotifs = it }
+            onCheckedChange = { showNewPostNotifs = it },
         )
         MyCheckBox(
             enabled = email.isNotEmpty(),
             checked = sendNotificationsToEmail == true,
             label = "Send Notifications to Email",
-            onCheckedChange = { sendNotificationsToEmail = it }
+            onCheckedChange = { sendNotificationsToEmail = it },
         )
         // Todo: Remove this
         Button(
             enabled = !accountSettingsViewModel.loading,
             onClick = { onClickSave(form) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(text = "Save Settings")
         }

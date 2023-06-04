@@ -25,7 +25,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 @Composable
 fun SettingsActivity(
     navController: NavController,
-    accountViewModel: AccountViewModel
+    accountViewModel: AccountViewModel,
 ) {
     Log.d("jerboa", "Got to settings activity")
 
@@ -44,10 +44,10 @@ fun SettingsActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
-                    onClick = { navController.navigate("lookAndFeel") }
+                    onClick = { navController.navigate("lookAndFeel") },
                 )
                 account?.also { acct ->
                     SettingsMenuLink(
@@ -55,10 +55,10 @@ fun SettingsActivity(
                         icon = {
                             Icon(
                                 imageVector = Icons.Outlined.ManageAccounts,
-                                contentDescription = "TODO"
+                                contentDescription = "TODO",
                             )
                         },
-                        onClick = { navController.navigate("accountSettings") }
+                        onClick = { navController.navigate("accountSettings") },
                     )
                 }
                 SettingsMenuLink(
@@ -66,12 +66,12 @@ fun SettingsActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Info,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
-                    onClick = { navController.navigate("about") }
+                    onClick = { navController.navigate("about") },
                 )
             }
-        }
+        },
     )
 }

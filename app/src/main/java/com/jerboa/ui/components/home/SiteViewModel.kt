@@ -18,13 +18,13 @@ class SiteViewModel : ViewModel() {
 
     fun fetchSite(
         auth: String?,
-        ctx: Context?
+        ctx: Context?,
     ) {
         viewModelScope.launch {
             loading = true
             siteRes = getSiteWrapper(
                 auth = auth,
-                ctx = ctx
+                ctx = ctx,
             )
             loading = false
         }
