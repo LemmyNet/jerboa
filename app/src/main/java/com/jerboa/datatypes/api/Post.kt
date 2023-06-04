@@ -17,24 +17,24 @@ data class CreatePost(
     val language_id: Int? = null,
     val community_id: Int,
     val honeypot: String? = null,
-    val auth: String
+    val auth: String,
 )
 
 data class PostResponse(
-    val post_view: PostView
+    val post_view: PostView,
 )
 
 data class GetPost(
     val id: Int? = null,
     val comment_id: Int? = null,
-    val auth: String?
+    val auth: String?,
 )
 
 data class GetPostResponse(
     val post_view: PostView,
     val community_view: CommunityView,
     val moderators: List<CommunityModeratorView>,
-    val online: Int
+    val online: Int,
 )
 
 data class GetPosts(
@@ -46,17 +46,17 @@ data class GetPosts(
     val community_name: String? = null,
     val saved_only: Boolean? = null,
     val language_id: Int? = null,
-    val auth: String? = null
+    val auth: String? = null,
 )
 
 data class GetPostsResponse(
-    val posts: List<PostView>
+    val posts: List<PostView>,
 )
 
 data class CreatePostLike(
     val post_id: Int,
     val score: Int,
-    val auth: String
+    val auth: String,
 )
 
 data class EditPost(
@@ -65,13 +65,13 @@ data class EditPost(
     val url: String?,
     val body: String?,
     val nsfw: Boolean? = null,
-    val auth: String
+    val auth: String,
 )
 
 data class DeletePost(
     val post_id: Int,
     val deleted: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 /**
@@ -81,7 +81,7 @@ data class RemovePost(
     val post_id: Int,
     val removed: Boolean,
     val reason: String,
-    val auth: String?
+    val auth: String?,
 )
 
 /**
@@ -90,7 +90,7 @@ data class RemovePost(
 data class LockPost(
     val post_id: Int,
     val locked: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 /**
@@ -100,29 +100,29 @@ data class FeaturePost(
     val post_id: Int,
     val featured: Boolean,
     val feature_type: PostFeatureType,
-    val auth: String
+    val auth: String,
 )
 
 data class SavePost(
     val post_id: Int,
     val save: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class CreatePostReport(
     val post_id: Int,
     val reason: String,
-    val auth: String
+    val auth: String,
 )
 
 data class PostReportResponse(
-    val post_report_view: PostReportView
+    val post_report_view: PostReportView,
 )
 
 data class ResolvePostReport(
     val report_id: Int,
     val resolved: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class ListPostReports(
@@ -130,17 +130,17 @@ data class ListPostReports(
     val limit: Int?,
     val community_id: Int,
     val unresolved_only: Boolean,
-    val auth: String?
+    val auth: String?,
 )
 
 data class ListPostReportsResponse(
-    val post_reports: List<PostReportView>
+    val post_reports: List<PostReportView>,
 )
 
 data class GetSiteMetadata(
-    val url: String
+    val url: String,
 )
 
 data class GetSiteMetadataResponse(
-    val metadata: SiteMetadata
+    val metadata: SiteMetadata,
 )

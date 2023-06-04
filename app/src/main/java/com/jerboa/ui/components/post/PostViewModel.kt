@@ -57,7 +57,7 @@ class PostViewModel : ViewModel() {
         id: Either<PostId, CommentId>,
         clear: Boolean = false,
         account: Account?,
-        ctx: Context
+        ctx: Context,
     ) {
         val api = API.getInstance()
 
@@ -68,7 +68,7 @@ class PostViewModel : ViewModel() {
             try {
                 Log.d(
                     "jerboa",
-                    "Fetching post: $id"
+                    "Fetching post: $id",
                 )
 
                 if (clear) {
@@ -91,22 +91,22 @@ class PostViewModel : ViewModel() {
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         post_id = it,
-                        auth = account?.jwt
+                        auth = account?.jwt,
                     )
                 }, {
                     GetComments(
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         parent_id = it,
-                        auth = account?.jwt
+                        auth = account?.jwt,
                     )
                 })
 
                 val commentsOut = retrofitErrorHandler(
                     api.getComments(
                         commentsForm
-                            .serializeToMap()
-                    )
+                            .serializeToMap(),
+                    ),
                 )
                 comments.clear()
                 comments.addAll(commentsOut.comments)
@@ -130,7 +130,7 @@ class PostViewModel : ViewModel() {
     fun fetchMoreChildren(
         commentView: CommentView,
         account: Account?,
-        ctx: Context
+        ctx: Context,
     ) {
         val api = API.getInstance()
         val commentId = commentView.comment.id
@@ -139,19 +139,19 @@ class PostViewModel : ViewModel() {
             try {
                 Log.d(
                     "jerboa",
-                    "Fetching more children for comment: $commentId"
+                    "Fetching more children for comment: $commentId",
                 )
                 val commentsForm = GetComments(
                     parent_id = commentView.comment.id,
                     max_depth = COMMENTS_DEPTH_MAX,
                     type_ = ListingType.All,
-                    auth = account?.jwt
+                    auth = account?.jwt,
                 )
                 val commentsOut = retrofitErrorHandler(
                     api.getComments(
                         commentsForm
-                            .serializeToMap()
-                    )
+                            .serializeToMap(),
+                    ),
                 )
 
                 // Remove the first comment, since it is a parent
@@ -174,7 +174,7 @@ class PostViewModel : ViewModel() {
         commentView: CommentView,
         voteType: VoteType,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         likeCommentRoutine(
             commentView = mutableStateOf(commentView),
@@ -182,7 +182,7 @@ class PostViewModel : ViewModel() {
             commentTree = commentTree,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -192,13 +192,13 @@ class PostViewModel : ViewModel() {
             commentTree = commentTree,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun savePost(
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         savePostRoutine(postView = postView, account = account, ctx = ctx, scope = viewModelScope)
     }
@@ -208,27 +208,27 @@ class PostViewModel : ViewModel() {
             postView = postView,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun saveComment(
         commentView: CommentView,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         saveCommentRoutine(
             commentView = mutableStateOf(commentView),
             commentTree = commentTree,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun blockCommunity(
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         postView.value?.community?.also {
             blockCommunityRoutine(
@@ -236,7 +236,7 @@ class PostViewModel : ViewModel() {
                 block = true,
                 account = account,
                 ctx = ctx,
-                scope = viewModelScope
+                scope = viewModelScope,
             )
         }
     }
@@ -244,14 +244,14 @@ class PostViewModel : ViewModel() {
     fun blockCreator(
         creator: PersonSafe,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         blockPersonRoutine(
             person = creator,
             block = true,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -261,7 +261,7 @@ class PostViewModel : ViewModel() {
             voteType = voteType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 }

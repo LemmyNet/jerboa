@@ -27,20 +27,20 @@ import com.jerboa.ui.theme.*
 fun CommunityTopSection(
     communityView: CommunityView,
     modifier: Modifier = Modifier,
-    onClickFollowCommunity: (communityView: CommunityView) -> Unit
+    onClickFollowCommunity: (communityView: CommunityView) -> Unit,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             modifier = modifier
                 .fillMaxWidth(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             communityView.community.banner?.also {
                 PictrsBannerImage(
                     url = it,
-                    modifier = Modifier.height(DRAWER_BANNER_SIZE)
+                    modifier = Modifier.height(DRAWER_BANNER_SIZE),
                 )
             }
             communityView.community.icon?.also {
@@ -50,29 +50,29 @@ fun CommunityTopSection(
         Column(
             modifier = Modifier.padding(MEDIUM_PADDING),
             verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = communityView.community.title,
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
             Row {
                 Text(
                     text = "${communityView.counts.users_active_month} users / month",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground.muted
+                    color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
             Row {
                 when (communityView.subscribed) {
                     SubscribedType.Subscribed -> {
                         OutlinedButton(
-                            onClick = { onClickFollowCommunity(communityView) }
+                            onClick = { onClickFollowCommunity(communityView) },
                         ) {
                             Text("Joined")
                             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -80,13 +80,13 @@ fun CommunityTopSection(
                                 imageVector = Icons.Outlined.CheckCircle,
                                 contentDescription = "TODO",
                                 modifier = Modifier
-                                    .height(ACTION_BAR_ICON_SIZE)
+                                    .height(ACTION_BAR_ICON_SIZE),
                             )
                         }
                     }
                     SubscribedType.NotSubscribed -> {
                         Button(
-                            onClick = { onClickFollowCommunity(communityView) }
+                            onClick = { onClickFollowCommunity(communityView) },
                         ) {
                             Text("Subscribe")
                         }
@@ -94,7 +94,7 @@ fun CommunityTopSection(
 
                     SubscribedType.Pending -> {
                         Button(
-                            onClick = { onClickFollowCommunity(communityView) }
+                            onClick = { onClickFollowCommunity(communityView) },
                         ) {
                             Text("Pending")
                         }
@@ -110,7 +110,7 @@ fun CommunityTopSection(
 fun CommunityTopSectionPreview() {
     CommunityTopSection(
         communityView = sampleCommunityView,
-        onClickFollowCommunity = {}
+        onClickFollowCommunity = {},
     )
 }
 
@@ -122,7 +122,7 @@ fun CommunityHeader(
     onClickRefresh: () -> Unit,
     selectedSortType: SortType,
     navController: NavController = rememberNavController(),
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -139,7 +139,7 @@ fun CommunityHeader(
             onClickSortTopOptions = {
                 showSortOptions = false
                 showTopOptions = !showTopOptions
-            }
+            },
         )
     }
 
@@ -150,7 +150,7 @@ fun CommunityHeader(
             onClickSortType = {
                 showTopOptions = false
                 onClickSortType(it)
-            }
+            },
         )
     }
 
@@ -162,7 +162,7 @@ fun CommunityHeader(
                 showMoreOptions = false
                 onBlockCommunityClick()
             },
-            navController = navController
+            navController = navController,
         )
     }
 
@@ -171,14 +171,14 @@ fun CommunityHeader(
         title = {
             CommunityHeaderTitle(
                 communityName = communityName,
-                selectedSortType = selectedSortType
+                selectedSortType = selectedSortType,
             )
         },
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
         },
@@ -188,7 +188,7 @@ fun CommunityHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             }
             IconButton(onClick = {
@@ -196,26 +196,26 @@ fun CommunityHeader(
             }) {
                 Icon(
                     Icons.Outlined.MoreVert,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             }
-        }
+        },
     )
 }
 
 @Composable
 fun CommunityHeaderTitle(
     communityName: String,
-    selectedSortType: SortType
+    selectedSortType: SortType,
 ) {
     Column {
         Text(
             text = communityName,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
         )
         Text(
             text = selectedSortType.toString(),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
         )
     }
 }
@@ -225,7 +225,7 @@ fun CommunityMoreDialog(
     onDismissRequest: () -> Unit,
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
-    navController: NavController
+    navController: NavController,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -237,7 +237,7 @@ fun CommunityMoreDialog(
                     onClick = {
                         onDismissRequest()
                         onClickRefresh()
-                    }
+                    },
                 )
                 IconAndTextDrawerItem(
                     text = "Community Info",
@@ -245,15 +245,15 @@ fun CommunityMoreDialog(
                     onClick = {
                         navController.navigate("communitySidebar")
                         onDismissRequest()
-                    }
+                    },
                 )
                 IconAndTextDrawerItem(
                     text = "Block Community",
                     icon = Icons.Outlined.Block,
-                    onClick = onBlockCommunityClick
+                    onClick = onBlockCommunityClick,
                 )
             }
         },
-        confirmButton = {}
+        confirmButton = {},
     )
 }

@@ -28,20 +28,20 @@ import com.jerboa.ui.theme.SMALL_PADDING
 fun PersonName(
     person: PersonSafe?,
     color: Color = MaterialTheme.colorScheme.tertiary,
-    isPostCreator: Boolean = false
+    isPostCreator: Boolean = false,
 ) {
     val name = person?.let { personNameShown(it) } ?: run { "Anonymous" }
     val style = MaterialTheme.typography.bodyMedium
 
     if (isPostCreator) {
         Badge(
-            containerColor = MaterialTheme.colorScheme.tertiary
+            containerColor = MaterialTheme.colorScheme.tertiary,
         ) {
             Text(
                 text = name,
                 style = style,
                 overflow = TextOverflow.Clip,
-                maxLines = 1
+                maxLines = 1,
             )
         }
     } else {
@@ -50,7 +50,7 @@ fun PersonName(
             color = color,
             style = style,
             overflow = TextOverflow.Clip,
-            maxLines = 1
+            maxLines = 1,
         )
     }
 }
@@ -69,12 +69,12 @@ fun PersonProfileLink(
     isPostCreator: Boolean = false,
     isModerator: Boolean = false,
     isCommunityBanned: Boolean = false,
-    color: Color = MaterialTheme.colorScheme.tertiary
+    color: Color = MaterialTheme.colorScheme.tertiary,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-        modifier = Modifier.clickable { onClick(person.id) }
+        modifier = Modifier.clickable { onClick(person.id) },
     ) {
         person.avatar?.also {
             CircularIcon(icon = it)
@@ -84,28 +84,28 @@ fun PersonProfileLink(
                 Icon(
                     imageVector = Icons.Outlined.Shield,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colorScheme.tertiary
+                    tint = MaterialTheme.colorScheme.tertiary,
                 )
             }
             if (person.admin) {
                 Icon(
                     imageVector = Icons.Outlined.Shield,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
             if (isCommunityBanned || person.banned) {
                 Icon(
                     imageVector = Icons.Outlined.NoAccounts,
                     contentDescription = "TODO",
-                    tint = Color.Red
+                    tint = Color.Red,
                 )
             }
         }
         PersonName(
             person = person,
             isPostCreator = isPostCreator,
-            color = color
+            color = color,
         )
     }
 }
@@ -115,7 +115,7 @@ fun PersonProfileLink(
 fun PersonProfileLinkPreview() {
     PersonProfileLink(
         person = samplePersonSafe,
-        onClick = {}
+        onClick = {},
     )
 }
 
@@ -128,6 +128,6 @@ fun PersonProfileLinkPreviewTags() {
         isCommunityBanned = true,
         isModerator = true,
         showTags = true,
-        onClick = {}
+        onClick = {},
     )
 }

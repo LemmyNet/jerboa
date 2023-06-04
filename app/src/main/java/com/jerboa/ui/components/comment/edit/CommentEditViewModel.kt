@@ -20,7 +20,7 @@ class CommentEditViewModel : ViewModel() {
         private set
 
     fun initialize(
-        newCommentView: CommentView
+        newCommentView: CommentView,
     ) {
         commentView.value = newCommentView
     }
@@ -32,7 +32,7 @@ class CommentEditViewModel : ViewModel() {
         focusManager: FocusManager,
         account: Account,
         personProfileViewModel: PersonProfileViewModel,
-        postViewModel: PostViewModel
+        postViewModel: PostViewModel,
     ) {
         editCommentRoutine(
             commentView = commentView,
@@ -44,7 +44,7 @@ class CommentEditViewModel : ViewModel() {
             focusManager = focusManager,
             account = account,
             personProfileViewModel = personProfileViewModel,
-            postViewModel = postViewModel
+            postViewModel = postViewModel,
         )
     }
 }

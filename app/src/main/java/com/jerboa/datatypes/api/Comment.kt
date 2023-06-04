@@ -15,7 +15,7 @@ data class CreateComment(
      * An optional front end ID, to tell which is comment is coming back.
      */
     val form_id: String? = null,
-    val auth: String
+    val auth: String,
 )
 
 data class EditComment(
@@ -30,7 +30,7 @@ data class EditComment(
      * An optional front end ID, to tell which is comment is coming back.
      */
     val form_id: String? = null,
-    val auth: String
+    val auth: String,
 )
 
 /**
@@ -39,7 +39,7 @@ data class EditComment(
 data class DeleteComment(
     val comment_id: Int,
     val deleted: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 /**
@@ -49,13 +49,13 @@ data class RemoveComment(
     val comment_id: Int,
     val removed: Boolean,
     val reason: String,
-    val auth: String?
+    val auth: String?,
 )
 
 data class SaveComment(
     val comment_id: Int,
     val save: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class CommentResponse(
@@ -64,13 +64,13 @@ data class CommentResponse(
     /**
      val * An optional front end ID, to tell which is comment is coming back.
      */
-    val form_id: String?
+    val form_id: String?,
 )
 
 data class CreateCommentLike(
     val comment_id: Int,
     val score: Int,
-    val auth: String
+    val auth: String,
 )
 
 /**
@@ -96,21 +96,21 @@ data class GetComments(
     val post_id: Int? = null,
     val parent_id: Int? = null,
     val saved_only: Boolean? = null,
-    val auth: String?
+    val auth: String?,
 )
 
 data class GetCommentsResponse(
-    val comments: List<CommentView>
+    val comments: List<CommentView>,
 )
 
 data class CreateCommentReport(
     val comment_id: Int,
     val reason: String,
-    val auth: String
+    val auth: String,
 )
 
 data class CommentReportResponse(
-    val comment_report_view: CommentReportView
+    val comment_report_view: CommentReportView,
 )
 
 data class ResolveCommentReport(
@@ -119,7 +119,7 @@ data class ResolveCommentReport(
      * Either resolve or unresolve a report.
      */
     val resolved: Boolean,
-    val auth: String
+    val auth: String,
 )
 
 data class ListCommentReports(
@@ -134,9 +134,9 @@ data class ListCommentReports(
      * Only shows the unresolved reports.
      */
     val unresolved_only: Boolean,
-    val auth: String?
+    val auth: String?,
 )
 
 data class ListCommentReportsResponse(
-    val comment_reports: List<CommentReportView>
+    val comment_reports: List<CommentReportView>,
 )

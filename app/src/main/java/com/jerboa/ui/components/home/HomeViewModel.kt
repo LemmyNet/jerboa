@@ -52,7 +52,7 @@ class HomeViewModel : ViewModel() {
         clear: Boolean = false,
         changeListingType: ListingType? = null,
         changeSortType: SortType? = null,
-        ctx: Context? = null
+        ctx: Context? = null,
     ) {
         fetchPostsRoutine(
             posts = posts,
@@ -66,7 +66,7 @@ class HomeViewModel : ViewModel() {
             changeSortType = changeSortType,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
@@ -84,23 +84,23 @@ class HomeViewModel : ViewModel() {
 
     fun fetchUnreadCounts(
         account: Account,
-        ctx: Context? = null
+        ctx: Context? = null,
     ) {
         viewModelScope.launch {
             try {
                 val api = API.getInstance()
                 val form = GetUnreadCount(
-                    auth = account.jwt
+                    auth = account.jwt,
                 )
                 Log.d(
                     "jerboa",
-                    "Fetching unread counts: $form"
+                    "Fetching unread counts: $form",
                 )
                 unreadCountResponse = retrofitErrorHandler(
                     api.getUnreadCount(
                         form = form
-                            .serializeToMap()
-                    )
+                            .serializeToMap(),
+                    ),
                 )
             } catch (e: Exception) {
                 toastException(ctx = ctx, error = e)
@@ -130,35 +130,35 @@ class HomeViewModel : ViewModel() {
         unreadCountResponse = unreadCountResponse?.copy(
             replies = 0,
             private_messages = 0,
-            mentions = 0
+            mentions = 0,
         )
     }
 
     fun blockCommunity(
         community: CommunitySafe,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         blockCommunityRoutine(
             community = community,
             block = true,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 
     fun blockCreator(
         creator: PersonSafe,
         account: Account,
-        ctx: Context
+        ctx: Context,
     ) {
         blockPersonRoutine(
             person = creator,
             block = true,
             account = account,
             ctx = ctx,
-            scope = viewModelScope
+            scope = viewModelScope,
         )
     }
 }

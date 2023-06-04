@@ -13,7 +13,7 @@ import com.jerboa.ui.components.home.sidebar.SiteSidebar
 @Composable
 fun SiteSidebarActivity(
     siteViewModel: SiteViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     Log.d("jerboa", "got to site sidebar activity")
 
@@ -23,13 +23,13 @@ fun SiteSidebarActivity(
         topBar = {
             SimpleTopAppBar(
                 text = title,
-                navController = navController
+                navController = navController,
             )
         },
         content = { padding ->
             siteViewModel.siteRes?.site_view?.also { siteView ->
                 SiteSidebar(siteView = siteView, padding = padding)
             }
-        }
+        },
     )
 }

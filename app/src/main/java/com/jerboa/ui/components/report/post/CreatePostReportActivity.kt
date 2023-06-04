@@ -24,7 +24,7 @@ import com.jerboa.ui.components.report.CreateReportViewModel
 fun CreatePostReportActivity(
     accountViewModel: AccountViewModel,
     navController: NavController,
-    createReportViewModel: CreateReportViewModel
+    createReportViewModel: CreateReportViewModel,
 ) {
     Log.d("jerboa", "got to create post report activity")
 
@@ -46,10 +46,10 @@ fun CreatePostReportActivity(
                             ctx = ctx,
                             navController = navController,
                             focusManager = focusManager,
-                            account = acct
+                            account = acct,
                         )
                     }
-                }
+                },
             )
         },
         content = { padding ->
@@ -57,8 +57,8 @@ fun CreatePostReportActivity(
                 reason = reason,
                 onReasonChange = { reason = it },
                 account = account,
-                padding = padding
+                padding = padding,
             )
-        }
+        },
     )
 }

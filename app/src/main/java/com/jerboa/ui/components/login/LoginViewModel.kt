@@ -37,7 +37,7 @@ class LoginViewModel : ViewModel() {
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
         homeViewModel: HomeViewModel,
-        ctx: Context
+        ctx: Context,
     ) {
         val api = API.changeLemmyInstance(instance)
 
@@ -54,7 +54,7 @@ class LoginViewModel : ViewModel() {
                     Toast.makeText(
                         ctx,
                         msg,
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                     this.cancel()
                     return@launch
@@ -66,7 +66,7 @@ class LoginViewModel : ViewModel() {
                 Toast.makeText(
                     ctx,
                     msg,
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
                 this.cancel()
                 return@launch
@@ -84,7 +84,7 @@ class LoginViewModel : ViewModel() {
                 instance = instance,
                 jwt = jwt,
                 defaultListingType = luv.local_user.default_listing_type,
-                defaultSortType = luv.local_user.default_sort_type
+                defaultSortType = luv.local_user.default_sort_type,
             )
 
             // Refetch the front page
@@ -93,13 +93,13 @@ class LoginViewModel : ViewModel() {
                 ctx = ctx,
                 listingType = ListingType.values()[
                     luv.local_user
-                        .default_listing_type
+                        .default_listing_type,
                 ],
                 sortType = SortType.values()[
                     luv.local_user
-                        .default_sort_type
+                        .default_sort_type,
                 ],
-                page = 1
+                page = 1,
             )
             homeViewModel.posts.clear()
             homeViewModel.posts.addAll(posts)

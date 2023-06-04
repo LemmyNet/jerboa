@@ -24,27 +24,27 @@ import com.jerboa.ui.components.common.MarkdownTextField
 fun CommentEditHeader(
     navController: NavController = rememberNavController(),
     onSaveClick: () -> Unit,
-    loading: Boolean
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Edit"
+                text = "Edit",
             )
         },
         actions = {
             IconButton(
                 onClick = onSaveClick,
-                enabled = !loading
+                enabled = !loading,
             ) {
                 if (loading) {
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Save,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 }
             }
@@ -53,14 +53,14 @@ fun CommentEditHeader(
             IconButton(
                 onClick = {
                     navController.popBackStack()
-                }
+                },
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
-        }
+        },
     )
 }
 
@@ -69,7 +69,7 @@ fun CommentEdit(
     content: TextFieldValue,
     onContentChange: (TextFieldValue) -> Unit,
     account: Account?,
-    padding: PaddingValues
+    padding: PaddingValues,
 ) {
     val scrollState = rememberScrollState()
 
@@ -77,14 +77,14 @@ fun CommentEdit(
         modifier = Modifier
             .verticalScroll(scrollState)
             .padding(padding)
-            .imePadding()
+            .imePadding(),
     ) {
         MarkdownTextField(
             text = content,
             onTextChange = onContentChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your comment"
+            placeholder = "Type your comment",
         )
     }
 }

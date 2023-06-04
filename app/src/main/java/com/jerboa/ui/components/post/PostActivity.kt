@@ -49,7 +49,7 @@ fun PostActivity(
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -59,7 +59,7 @@ fun PostActivity(
 
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = postViewModel.loading && postViewModel
-            .postView.value !== null
+            .postView.value !== null,
     )
 
     // Holds expanded comment ids
@@ -80,7 +80,7 @@ fun PostActivity(
                     "Comments",
                     navController = navController,
                     scrollBehavior =
-                    scrollBehavior
+                    scrollBehavior,
                 )
                 if (postViewModel.loading) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -105,16 +105,16 @@ fun PostActivity(
                         postViewModel.fetchPost(
                             id = it,
                             account = account,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                     }
-                }
+                },
             ) {
                 postViewModel.postView.value?.also { postView ->
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.padding(padding)
-                            .simpleVerticalScrollbar(listState)
+                            .simpleVerticalScrollbar(listState),
                     ) {
                         item(key = "${postView.post.id}_listing") {
                             PostListing(
@@ -123,7 +123,7 @@ fun PostActivity(
                                     postViewModel.likePost(
                                         voteType = VoteType.Upvote,
                                         account = account,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                     // TODO will need to pass in postlistingsviewmodel
                                     // for the Home page to also be updated
@@ -132,7 +132,7 @@ fun PostActivity(
                                     postViewModel.likePost(
                                         voteType = VoteType.Downvote,
                                         account = account,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                 },
                                 onReplyClick = { postView ->
@@ -147,7 +147,7 @@ fun PostActivity(
                                     account?.also { acct ->
                                         postViewModel.savePost(
                                             account = acct,
-                                            ctx = ctx
+                                            ctx = ctx,
                                         )
                                     }
                                 },
@@ -162,7 +162,7 @@ fun PostActivity(
                                     account?.also { acct ->
                                         postViewModel.deletePost(
                                             account = acct,
-                                            ctx = ctx
+                                            ctx = ctx,
                                         )
                                     }
                                 },
@@ -176,7 +176,7 @@ fun PostActivity(
                                     account?.also { acct ->
                                         postViewModel.blockCommunity(
                                             account = acct,
-                                            ctx = ctx
+                                            ctx = ctx,
                                         )
                                     }
                                 },
@@ -185,7 +185,7 @@ fun PostActivity(
                                         postViewModel.blockCreator(
                                             creator = it,
                                             account = acct,
-                                            ctx = ctx
+                                            ctx = ctx,
                                         )
                                     }
                                 },
@@ -193,12 +193,12 @@ fun PostActivity(
                                 isModerator = isModerator(
                                     postView.creator,
                                     postViewModel
-                                        .moderators
+                                        .moderators,
                                 ),
                                 showCommunityName = true,
                                 fullBody = true,
                                 account = account,
-                                postViewMode = PostViewMode.Card
+                                postViewMode = PostViewMode.Card,
                             )
                         }
                         item(key = "${postView.post.id}_is_comment_view") {
@@ -213,7 +213,7 @@ fun PostActivity(
                                         },
                                         onCommentClick = { commentId ->
                                             navController.navigate("comment/$commentId")
-                                        }
+                                        },
                                     )
                                 }
                             }
@@ -236,7 +236,7 @@ fun PostActivity(
                                         commentView = commentView,
                                         voteType = VoteType.Upvote,
                                         account = acct,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                 }
                             },
@@ -246,7 +246,7 @@ fun PostActivity(
                                         commentView = commentView,
                                         voteType = VoteType.Downvote,
                                         account = acct,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                 }
                             },
@@ -259,7 +259,7 @@ fun PostActivity(
                                     postViewModel.saveComment(
                                         commentView = commentView,
                                         account = acct,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                 }
                             },
@@ -275,14 +275,14 @@ fun PostActivity(
                                     postViewModel.deleteComment(
                                         commentView = commentView,
                                         account = acct,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                 }
                             },
                             onReportClick = { commentView ->
                                 navController.navigate(
                                     "commentReport/${commentView.comment
-                                        .id}"
+                                        .id}",
                                 )
                             },
                             onCommentLinkClick = { commentView ->
@@ -292,7 +292,7 @@ fun PostActivity(
                                 postViewModel.fetchMoreChildren(
                                     commentView = it,
                                     account = account,
-                                    ctx = ctx
+                                    ctx = ctx,
 
                                 )
                             },
@@ -301,7 +301,7 @@ fun PostActivity(
                                     postViewModel.blockCreator(
                                         creator = it,
                                         account = acct,
-                                        ctx = ctx
+                                        ctx = ctx,
                                     )
                                 }
                             },
@@ -310,11 +310,11 @@ fun PostActivity(
                             },
                             onPostClick = {}, // Do nothing
                             account = account,
-                            moderators = postViewModel.moderators
+                            moderators = postViewModel.moderators,
                         )
                     }
                 }
             }
-        }
+        },
     )
 }
