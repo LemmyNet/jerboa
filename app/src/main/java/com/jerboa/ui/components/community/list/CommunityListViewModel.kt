@@ -33,7 +33,7 @@ class CommunityListViewModel : ViewModel() {
                 sortType = SortType.TopAll,
                 listingType = ListingType.All,
                 query = query,
-                searchType = SearchType.Communities
+                searchType = SearchType.Communities,
             )?.communities
             communityList.clear()
             communityList.addAll(communities.orEmpty())

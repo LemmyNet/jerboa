@@ -30,7 +30,7 @@ import com.jerboa.ui.components.inbox.InboxViewModel
 fun PrivateMessageReplyActivity(
     inboxViewModel: InboxViewModel,
     accountViewModel: AccountViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     Log.d("jerboa", "got to private message reply activity")
 
@@ -55,17 +55,17 @@ fun PrivateMessageReplyActivity(
                                     CreatePrivateMessage(
                                         content = reply.text,
                                         recipient_id = recipientId,
-                                        auth = account.jwt
+                                        auth = account.jwt,
                                     )
                                 inboxViewModel.createPrivateMessage(
                                     form,
                                     ctx,
                                     navController,
-                                    focusManager
+                                    focusManager,
                                 )
                             }
                         }
-                    }
+                    },
                 )
             },
             content = { padding ->
@@ -83,11 +83,11 @@ fun PrivateMessageReplyActivity(
                             },
                             modifier = Modifier
                                 .padding(padding)
-                                .imePadding()
+                                .imePadding(),
                         )
                     }
                 }
-            }
+            },
         )
     }
 }

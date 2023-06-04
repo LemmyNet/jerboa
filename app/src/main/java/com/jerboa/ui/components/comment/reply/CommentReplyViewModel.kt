@@ -32,7 +32,7 @@ class CommentReplyViewModel : ViewModel() {
         private set
 
     fun initialize(
-        newReplyItem: ReplyItem
+        newReplyItem: ReplyItem,
     ) {
         replyItem = newReplyItem
     }
@@ -44,22 +44,22 @@ class CommentReplyViewModel : ViewModel() {
         navController: NavController,
         focusManager: FocusManager,
         personProfileViewModel: PersonProfileViewModel,
-        postViewModel: PostViewModel
+        postViewModel: PostViewModel,
     ) {
         val reply = replyItem!! // This should have been initialized
         val (postId, commentParentId) = when (reply) {
             is ReplyItem.PostItem -> Pair(reply.item.post.id, null)
             is ReplyItem.CommentItem -> Pair(
                 reply.item.post.id,
-                reply.item.comment.id
+                reply.item.comment.id,
             )
             is ReplyItem.CommentReplyItem -> Pair(
                 reply.item.post.id,
-                reply.item.comment.id
+                reply.item.comment.id,
             )
             is ReplyItem.MentionReplyItem -> Pair(
                 reply.item.post.id,
-                reply.item.comment.id
+                reply.item.comment.id,
             )
         }
 
@@ -74,7 +74,7 @@ class CommentReplyViewModel : ViewModel() {
             navController = navController,
             focusManager = focusManager,
             personProfileViewModel = personProfileViewModel,
-            postViewModel = postViewModel
+            postViewModel = postViewModel,
         )
     }
 }

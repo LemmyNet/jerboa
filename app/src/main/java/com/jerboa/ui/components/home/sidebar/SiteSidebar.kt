@@ -23,7 +23,7 @@ fun SiteSidebar(siteView: SiteView, padding: PaddingValues) {
         usersActiveWeek = counts.users_active_week,
         usersActiveMonth = counts.users_active_month,
         usersActiveHalfYear = counts.users_active_half_year,
-        padding = padding
+        padding = padding,
     )
 }
 

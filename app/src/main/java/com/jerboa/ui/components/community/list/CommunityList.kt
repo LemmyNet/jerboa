@@ -36,23 +36,23 @@ import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
 fun CommunityListHeader(
     navController: NavController = rememberNavController(),
     search: String,
-    onSearchChange: (search: String) -> Unit
+    onSearchChange: (search: String) -> Unit,
 ) {
     TopAppBar(
         title = {
             CommunityTopBarSearchView(
                 search = search,
-                onSearchChange = onSearchChange
+                onSearchChange = onSearchChange,
             )
         },
         actions = {
             IconButton(
                 onClick = { // TODO
-                }
+                },
             ) {
                 Icon(
                     imageVector = Icons.Outlined.MoreVert,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             }
         },
@@ -60,14 +60,14 @@ fun CommunityListHeader(
             IconButton(
                 onClick = {
                     navController.popBackStack()
-                }
+                },
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
-        }
+        },
     )
 }
 
@@ -75,13 +75,13 @@ fun CommunityListHeader(
 fun CommunityListings(
     communities: List<Any>,
     onClickCommunity: (community: CommunitySafe) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
 
     LazyColumn(
         state = listState,
-        modifier = modifier.simpleVerticalScrollbar(listState)
+        modifier = modifier.simpleVerticalScrollbar(listState),
     ) {
         items(
             communities,
@@ -114,18 +114,18 @@ fun CommunityListings(
                         0
                     }
                 }
-            }
+            },
 
         ) { item ->
             if (item is CommunityFollowerView) {
                 CommunityLinkLarger(
                     community = item.community,
-                    onClick = onClickCommunity
+                    onClick = onClickCommunity,
                 )
             } else if (item is CommunityView) {
                 CommunityLinkLargerWithUserCount(
                     communityView = item,
-                    onClick = onClickCommunity
+                    onClick = onClickCommunity,
                 )
             }
         }
@@ -138,14 +138,14 @@ fun CommunityListingsPreview() {
     val communities = listOf(sampleCommunityView, sampleCommunityView)
     CommunityListings(
         communities = communities,
-        onClickCommunity = {}
+        onClickCommunity = {},
     )
 }
 
 @Composable
 fun CommunityTopBarSearchView(
     search: String,
-    onSearchChange: (search: String) -> Unit
+    onSearchChange: (search: String) -> Unit,
 ) {
     TextField(
         value = search,
@@ -159,11 +159,11 @@ fun CommunityTopBarSearchView(
         trailingIcon = {
             if (search.isNotEmpty()) {
                 IconButton(
-                    onClick = { onSearchChange("") }
+                    onClick = { onSearchChange("") },
                 ) {
                     Icon(
                         Icons.Outlined.Close,
-                        contentDescription = ""
+                        contentDescription = "",
                     )
                 }
             }
@@ -173,9 +173,9 @@ fun CommunityTopBarSearchView(
             containerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
+            disabledIndicatorColor = Color.Transparent,
         ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
     )
 }
 
@@ -184,6 +184,6 @@ fun CommunityTopBarSearchView(
 fun SearchViewPreview() {
     CommunityTopBarSearchView(
         search = "",
-        onSearchChange = {}
+        onSearchChange = {},
     )
 }

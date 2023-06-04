@@ -48,7 +48,7 @@ fun CommunityActivity(
     accountViewModel: AccountViewModel,
     homeViewModel: HomeViewModel,
     postEditViewModel: PostEditViewModel,
-    appSettingsViewModel: AppSettingsViewModel
+    appSettingsViewModel: AppSettingsViewModel,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -75,7 +75,7 @@ fun CommunityActivity(
                                 communityIdOrName = Either.Left(com.id),
                                 account = account,
                                 clear = true,
-                                ctx = ctx
+                                ctx = ctx,
                             )
                         },
                         onClickSortType = { sortType ->
@@ -85,18 +85,18 @@ fun CommunityActivity(
                                 account = account,
                                 clear = true,
                                 changeSortType = sortType,
-                                ctx = ctx
+                                ctx = ctx,
                             )
                         },
                         onBlockCommunityClick = {
                             account?.also { acct ->
                                 communityViewModel.blockCommunity(
                                     account = acct,
-                                    ctx = ctx
+                                    ctx = ctx,
                                 )
                             }
                         },
-                        navController = navController
+                        navController = navController,
                     )
                 }
                 if (communityViewModel.loading.value) {
@@ -115,9 +115,9 @@ fun CommunityActivity(
                                 communityViewModel.followCommunity(
                                     cv = cfv,
                                     account = account,
-                                    ctx = ctx
+                                    ctx = ctx,
                                 )
-                            }
+                            },
                         )
                     }
                 },
@@ -126,7 +126,7 @@ fun CommunityActivity(
                         voteType = VoteType.Upvote,
                         postView = postView,
                         account = account,
-                        ctx = ctx
+                        ctx = ctx,
                     )
                 },
                 onDownvoteClick = { postView ->
@@ -134,7 +134,7 @@ fun CommunityActivity(
                         voteType = VoteType.Downvote,
                         postView = postView,
                         account = account,
-                        ctx = ctx
+                        ctx = ctx,
                     )
                 },
                 onPostClick = { postView ->
@@ -148,7 +148,7 @@ fun CommunityActivity(
                         communityViewModel.savePost(
                             postView = postView,
                             account = acct,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                     }
                 },
@@ -161,7 +161,7 @@ fun CommunityActivity(
                         communityViewModel.deletePost(
                             postView = postView,
                             account = acct,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                     }
                 },
@@ -178,7 +178,7 @@ fun CommunityActivity(
                     account?.also { acct ->
                         communityViewModel.blockCommunity(
                             account = acct,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                     }
                 },
@@ -187,7 +187,7 @@ fun CommunityActivity(
                         communityViewModel.blockCreator(
                             creator = it,
                             account = acct,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                     }
                 },
@@ -195,11 +195,11 @@ fun CommunityActivity(
                     communityViewModel.fetchPosts(
                         communityIdOrName = Either.Left(
                             communityViewModel.communityView!!
-                                .community.id
+                                .community.id,
                         ),
                         account = account,
                         clear = true,
-                        ctx = ctx
+                        ctx = ctx,
                     )
                 },
                 loading = communityViewModel.loading.value &&
@@ -210,11 +210,11 @@ fun CommunityActivity(
                         communityViewModel.fetchPosts(
                             communityIdOrName = Either.Left(
                                 communityViewModel.communityView!!
-                                    .community.id
+                                    .community.id,
                             ),
                             account = account,
                             nextPage = true,
-                            ctx = ctx
+                            ctx = ctx,
                         )
                     }
                 },
@@ -223,7 +223,7 @@ fun CommunityActivity(
                 padding = it,
                 listState = postListState,
                 taglines = null,
-                postViewMode = getPostViewMode(appSettingsViewModel)
+                postViewMode = getPostViewMode(appSettingsViewModel),
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -238,7 +238,7 @@ fun CommunityActivity(
                     } ?: run {
                         loginFirstToast(ctx)
                     }
-                }
+                },
             ) {
                 Icon(imageVector = Icons.Outlined.Add, contentDescription = "TODO")
             }
@@ -268,8 +268,8 @@ fun CommunityActivity(
                         loginFirstToast(ctx)
                     }
                 },
-                navController = navController
+                navController = navController,
             )
-        }
+        },
     )
 }
