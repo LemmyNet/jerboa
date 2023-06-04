@@ -359,11 +359,7 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onClickSettings = {
-            account.also {
-                navController.navigate(route = "settings")
-            } ?: run {
-                loginFirstToast(ctx)
-            }
+            navController.navigate(route = "settings")
             closeDrawer(scope, drawerState)
         }
     )
