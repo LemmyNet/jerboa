@@ -109,17 +109,17 @@ fun PostHeaderLine(
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     modifier: Modifier = Modifier,
-    showCommunityName: Boolean = true
+    showCommunityName: Boolean = true,
 ) {
     val community = postView.community
     Column(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 if (showCommunityName) {
                     community.icon?.let {
@@ -127,7 +127,7 @@ fun PostHeaderLine(
                             icon = it,
                             size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
-                            thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE
+                            thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
                         )
                     }
                 }
@@ -135,12 +135,12 @@ fun PostHeaderLine(
                     if (showCommunityName) {
                         CommunityName(
                             community = postView.community,
-                            modifier = Modifier.clickable { onCommunityClick(community) }
+                            modifier = Modifier.clickable { onCommunityClick(community) },
                         )
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)
+                        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
                     ) {
                         PersonProfileLink(
                             person = postView.creator,
@@ -149,7 +149,7 @@ fun PostHeaderLine(
                             isPostCreator = false, // Set this to false, we already know this
                             isModerator = isModerator,
                             isCommunityBanned = postView.creator_banned_from_community,
-                            color = MaterialTheme.colorScheme.onSurface.muted
+                            color = MaterialTheme.colorScheme.onSurface.muted,
                         )
                         if (postView.post.featured_local) {
                             DotSpacer(0.dp)
@@ -157,7 +157,7 @@ fun PostHeaderLine(
                                 imageVector = Icons.Outlined.PushPin,
                                 contentDescription = "TODO",
                                 tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(ACTION_BAR_ICON_SIZE)
+                                modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
                             )
                         }
                         if (postView.post.featured_community) {
@@ -166,7 +166,7 @@ fun PostHeaderLine(
                                 imageVector = Icons.Outlined.PushPin,
                                 contentDescription = "TODO",
                                 tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier.size(ACTION_BAR_ICON_SIZE)
+                                modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
                             )
                         }
                         if (postView.post.locked) {
@@ -175,7 +175,7 @@ fun PostHeaderLine(
                                 imageVector = Icons.Outlined.CommentsDisabled,
                                 contentDescription = "TODO",
                                 tint = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.size(ACTION_BAR_ICON_SIZE)
+                                modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
                             )
                         }
                     }
@@ -185,7 +185,7 @@ fun PostHeaderLine(
                 score = score,
                 myVote = myVote,
                 published = postView.post.published,
-                updated = postView.post.updated
+                updated = postView.post.updated,
             )
         }
         Row {
@@ -193,7 +193,7 @@ fun PostHeaderLine(
                 Icon(
                     imageVector = Icons.Outlined.Delete,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colorScheme.error
+                    tint = MaterialTheme.colorScheme.error,
                 )
                 DotSpacer(0.dp)
             }
@@ -211,7 +211,7 @@ fun PostHeaderLinePreview() {
         score = 10,
         isModerator = false,
         onCommunityClick = {},
-        onPersonClick = {}
+        onPersonClick = {},
     )
 }
 
@@ -221,7 +221,7 @@ fun PostNodeHeader(
     myVote: Int?,
     score: Int,
     onPersonClick: (personId: Int) -> Unit,
-    isModerator: Boolean
+    isModerator: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = postView.creator,
@@ -233,7 +233,7 @@ fun PostNodeHeader(
         onPersonClick = onPersonClick,
         isPostCreator = true,
         isModerator = isModerator,
-        isCommunityBanned = postView.creator_banned_from_community
+        isCommunityBanned = postView.creator_banned_from_community,
     )
 }
 
@@ -242,27 +242,27 @@ fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
     onPostLinkClick: (url: String) -> Unit,
-    account: Account?
+    account: Account?,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
             postView = postView,
-            onPostLinkClick = onPostLinkClick
+            onPostLinkClick = onPostLinkClick,
         )
     } else {
         PostTitleAndThumbnail(
             postView = postView,
             onPostLinkClick = onPostLinkClick,
-            account = account
+            account = account,
         )
     }
 }
 
 @Composable
 fun PostName(
-    postView: PostView
+    postView: PostView,
 ) {
     var color = if (postView.post.featured_local) {
         MaterialTheme.colorScheme.primary
@@ -279,14 +279,14 @@ fun PostName(
     Text(
         text = postView.post.name,
         style = MaterialTheme.typography.titleLarge,
-        color = color
+        color = color,
     )
 }
 
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit
+    onPostLinkClick: (url: String) -> Unit,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -294,13 +294,13 @@ fun PostTitleAndImageLink(
     Column(
         modifier = Modifier.padding(
             vertical = MEDIUM_PADDING,
-            horizontal = MEDIUM_PADDING
-        )
+            horizontal = MEDIUM_PADDING,
+        ),
 
     ) {
         // Title of the post
         PostName(
-            postView = postView
+            postView = postView,
         )
     }
 
@@ -309,7 +309,7 @@ fun PostTitleAndImageLink(
     PictrsUrlImage(
         url = url,
         nsfw = nsfwCheck(postView),
-        modifier = postLinkPicMod
+        modifier = postLinkPicMod,
     )
 }
 
@@ -317,18 +317,18 @@ fun PostTitleAndImageLink(
 fun PostTitleAndThumbnail(
     postView: PostView,
     onPostLinkClick: (url: String) -> Unit,
-    account: Account?
+    account: Account?,
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = MEDIUM_PADDING)
+        modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)
+            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         ) {
             // Title of the post
             Column(
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 PostName(postView = postView)
                 postView.post.url?.also { postUrl ->
@@ -338,7 +338,7 @@ fun PostTitleAndThumbnail(
                             Text(
                                 text = it,
                                 color = MaterialTheme.colorScheme.onBackground.muted,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                         }
                     }
@@ -355,17 +355,17 @@ fun PostBody(
     fullBody: Boolean,
     expandedImage: Boolean,
     onPostLinkClick: (rl: String) -> Unit,
-    account: Account?
+    account: Account?,
 ) {
     val post = postView.post
     Column(
-        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         PostTitleBlock(
             postView = postView,
             expandedImage = expandedImage,
             onPostLinkClick = onPostLinkClick,
-            account = account
+            account = account,
         )
 
         // The metadata card
@@ -388,20 +388,20 @@ fun PostBody(
                     if (fullBody) {
                         Column(
                             modifier = Modifier
-                                .padding(MEDIUM_PADDING)
+                                .padding(MEDIUM_PADDING),
                         ) {
                             MyMarkdownText(
-                                markdown = text
+                                markdown = text,
                             )
                         }
                     } else {
                         PreviewLines(
                             text = text,
                             modifier = Modifier
-                                .padding(MEDIUM_PADDING)
+                                .padding(MEDIUM_PADDING),
                         )
                     }
-                }
+                },
             )
         }
     }
@@ -415,7 +415,7 @@ fun PreviewStoryTitleAndMetadata() {
         onPostLinkClick = {},
         fullBody = false,
         expandedImage = false,
-        account = null
+        account = null,
     )
 }
 
@@ -435,7 +435,7 @@ fun PostFooterLine(
     onBlockCommunityClick: (community: CommunitySafe) -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
-    account: Account?
+    account: Account?,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -467,7 +467,7 @@ fun PostFooterLine(
                 showMoreOptions = false
                 onBlockCreatorClick(postView.creator)
             },
-            isCreator = account?.id == postView.creator.id
+            isCreator = account?.id == postView.creator.id,
         )
     }
 
@@ -476,15 +476,15 @@ fun PostFooterLine(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = SMALL_PADDING)
+            .padding(bottom = SMALL_PADDING),
     ) {
         CommentCount(
             comments = postView.counts.comments,
             unreadCount = postView.unread_comments,
-            account = account
+            account = account,
         )
         Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
+            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
         ) {
             VoteGeneric(
                 myVote = instantScores.myVote,
@@ -493,7 +493,7 @@ fun PostFooterLine(
                 type = VoteType.Upvote,
                 showNumber = (instantScores.downvotes != 0),
                 onVoteClick = onUpvoteClick,
-                account = account
+                account = account,
             )
             VoteGeneric(
                 myVote = instantScores.myVote,
@@ -501,7 +501,7 @@ fun PostFooterLine(
                 item = postView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
-                account = account
+                account = account,
             )
             ActionBarButton(
                 icon = if (postView.saved) {
@@ -515,19 +515,19 @@ fun PostFooterLine(
                 } else {
                     MaterialTheme.colorScheme.onBackground.muted
                 },
-                account = account
+                account = account,
             )
             if (showReply) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
                     onClick = { onReplyClick(postView) },
-                    account = account
+                    account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
                 account = account,
-                onClick = { showMoreOptions = !showMoreOptions }
+                onClick = { showMoreOptions = !showMoreOptions },
             )
         }
     }
@@ -537,22 +537,22 @@ fun PostFooterLine(
 fun CommentCount(
     comments: Int,
     unreadCount: Int,
-    account: Account?
+    account: Account?,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         ActionBarButton(
             icon = Icons.Outlined.ChatBubbleOutline,
             text = "$comments comments",
             noClick = true,
             account = account,
-            onClick = {} // This is handled by the whole button click
+            onClick = {}, // This is handled by the whole button click
         )
         CommentNewCount(
             comments = comments,
             unreadCount = unreadCount,
-            spacing = SMALL_PADDING
+            spacing = SMALL_PADDING,
         )
     }
 }
@@ -562,7 +562,7 @@ fun CommentNewCount(
     comments: Int,
     unreadCount: Int,
     style: TextStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
-    spacing: Dp = 0.dp
+    spacing: Dp = 0.dp,
 ) {
     val unread = if (unreadCount == 0 || comments == unreadCount) {
         null
@@ -575,7 +575,7 @@ fun CommentNewCount(
         Text(
             text = "( $unread new )",
             style = style,
-            color = MaterialTheme.colorScheme.onSurface.muted
+            color = MaterialTheme.colorScheme.onSurface.muted,
         )
     }
 }
@@ -595,7 +595,7 @@ fun PostFooterLinePreview() {
             myVote = postView.my_vote,
             score = postView.counts.score,
             upvotes = postView.counts.upvotes,
-            downvotes = postView.counts.downvotes
+            downvotes = postView.counts.downvotes,
         )
     PostFooterLine(
         postView = postView,
@@ -610,7 +610,7 @@ fun PostFooterLinePreview() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCreatorClick = {},
-        onBlockCommunityClick = {}
+        onBlockCommunityClick = {},
     )
 }
 
@@ -635,7 +635,7 @@ fun PreviewPostListingCard() {
         isModerator = true,
         fullBody = false,
         account = null,
-        postViewMode = PostViewMode.Card
+        postViewMode = PostViewMode.Card,
     )
 }
 
@@ -660,7 +660,7 @@ fun PreviewLinkPostListing() {
         isModerator = false,
         fullBody = false,
         account = null,
-        postViewMode = PostViewMode.Card
+        postViewMode = PostViewMode.Card,
     )
 }
 
@@ -685,7 +685,7 @@ fun PreviewImagePostListingCard() {
         isModerator = false,
         fullBody = false,
         account = null,
-        postViewMode = PostViewMode.Card
+        postViewMode = PostViewMode.Card,
     )
 }
 
@@ -710,7 +710,7 @@ fun PreviewImagePostListingSmallCard() {
         isModerator = false,
         fullBody = false,
         account = null,
-        postViewMode = PostViewMode.SmallCard
+        postViewMode = PostViewMode.SmallCard,
     )
 }
 
@@ -735,7 +735,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         isModerator = true,
         fullBody = false,
         account = null,
-        postViewMode = PostViewMode.Card
+        postViewMode = PostViewMode.Card,
     )
 }
 
@@ -760,7 +760,7 @@ fun PostListing(
     showCommunityName: Boolean = true,
     fullBody: Boolean,
     account: Account?,
-    postViewMode: PostViewMode
+    postViewMode: PostViewMode,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -769,8 +769,8 @@ fun PostListing(
                 myVote = postView.my_vote,
                 score = postView.counts.score,
                 upvotes = postView.counts.upvotes,
-                downvotes = postView.counts.downvotes
-            )
+                downvotes = postView.counts.downvotes,
+            ),
         )
     }
 
@@ -781,14 +781,14 @@ fun PostListing(
             onUpvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
-                    voteType = VoteType.Upvote
+                    voteType = VoteType.Upvote,
                 )
                 onUpvoteClick(it)
             },
             onDownvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
-                    voteType = VoteType.Downvote
+                    voteType = VoteType.Downvote,
                 )
                 onDownvoteClick(it)
             },
@@ -808,7 +808,7 @@ fun PostListing(
             showCommunityName = showCommunityName,
             fullBody = fullBody,
             account = account,
-            expandedImage = true
+            expandedImage = true,
         )
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
@@ -816,14 +816,14 @@ fun PostListing(
             onUpvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
-                    voteType = VoteType.Upvote
+                    voteType = VoteType.Upvote,
                 )
                 onUpvoteClick(it)
             },
             onDownvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
-                    voteType = VoteType.Downvote
+                    voteType = VoteType.Downvote,
                 )
                 onDownvoteClick(it)
             },
@@ -843,7 +843,7 @@ fun PostListing(
             showCommunityName = showCommunityName,
             account = account,
             fullBody = false,
-            expandedImage = false
+            expandedImage = false,
         )
         PostViewMode.List -> PostListingList(
             postView = postView,
@@ -854,7 +854,7 @@ fun PostListing(
             onPersonClick = onPersonClick,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
-            account = account
+            account = account,
         )
     }
 }
@@ -869,37 +869,37 @@ fun PostListingList(
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
-    account: Account?
+    account: Account?,
 ) {
     Column(
         modifier = Modifier.padding(
             horizontal = MEDIUM_PADDING,
-            vertical = MEDIUM_PADDING
-        )
+            vertical = MEDIUM_PADDING,
+        ),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(
-                SMALL_PADDING
-            )
+                SMALL_PADDING,
+            ),
         ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .clickable { onPostClick(postView) },
 
-                verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)
+                verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
                 PostName(postView = postView)
                 FlowRow(
                     mainAxisAlignment = FlowMainAxisAlignment.Start,
                     mainAxisSpacing = SMALL_PADDING,
-                    crossAxisAlignment = FlowCrossAxisAlignment.Center
+                    crossAxisAlignment = FlowCrossAxisAlignment.Center,
                 ) {
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,
-                            onClick = onCommunityClick
+                            onClick = onCommunityClick,
                         )
                         DotSpacer(0.dp)
                     }
@@ -907,7 +907,7 @@ fun PostListingList(
                         person = postView.creator,
                         isModerator = isModerator,
                         onClick = onPersonClick,
-                        color = MaterialTheme.colorScheme.onSurface.muted
+                        color = MaterialTheme.colorScheme.onSurface.muted,
                     )
                     DotSpacer(0.dp)
                     postView.post.url?.also { postUrl ->
@@ -917,7 +917,7 @@ fun PostListingList(
                                 Text(
                                     text = it,
                                     color = MaterialTheme.colorScheme.onBackground.muted,
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style = MaterialTheme.typography.bodyMedium,
                                 )
                                 DotSpacer(0.dp)
                             }
@@ -927,23 +927,23 @@ fun PostListingList(
                 }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = instantScores.score.toString(),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = scoreColor(myVote = instantScores.myVote)
+                        color = scoreColor(myVote = instantScores.myVote),
                     )
                     DotSpacer(0.dp)
                     Text(
                         text = "${postView.counts.comments} comments",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground.muted
+                        color = MaterialTheme.colorScheme.onBackground.muted,
                     )
                     CommentNewCount(
                         comments = postView.counts.comments,
                         unreadCount = postView.unread_comments,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }
@@ -955,7 +955,7 @@ fun PostListingList(
 @Composable
 private fun ThumbnailTile(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit
+    onPostLinkClick: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
         val postLinkPicMod = Modifier
@@ -966,22 +966,22 @@ private fun ThumbnailTile(
             PictrsThumbnailImage(
                 thumbnail = thumbnail,
                 nsfw = nsfwCheck(postView),
-                modifier = postLinkPicMod
+                modifier = postLinkPicMod,
             )
         } ?: run {
             Card(
                 colors = CARD_COLORS,
                 modifier = postLinkPicMod,
-                shape = MaterialTheme.shapes.large
+                shape = MaterialTheme.shapes.large,
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Link,
                         contentDescription = "TODO",
-                        modifier = Modifier.size(LINK_ICON_SIZE)
+                        modifier = Modifier.size(LINK_ICON_SIZE),
                     )
                 }
             }
@@ -998,7 +998,7 @@ fun PostListingListPreview() {
             myVote = postView.my_vote,
             score = postView.counts.score,
             upvotes = postView.counts.upvotes,
-            downvotes = postView.counts.downvotes
+            downvotes = postView.counts.downvotes,
         )
     PostListingList(
         postView = postView,
@@ -1008,7 +1008,7 @@ fun PostListingListPreview() {
         onCommunityClick = {},
         onPersonClick = {},
         isModerator = false,
-        account = null
+        account = null,
     )
 }
 
@@ -1021,7 +1021,7 @@ fun PostListingListWithThumbPreview() {
             myVote = postView.my_vote,
             score = postView.counts.score,
             upvotes = postView.counts.upvotes,
-            downvotes = postView.counts.downvotes
+            downvotes = postView.counts.downvotes,
         )
     PostListingList(
         postView = postView,
@@ -1031,7 +1031,7 @@ fun PostListingListWithThumbPreview() {
         onCommunityClick = {},
         onPersonClick = {},
         isModerator = false,
-        account = null
+        account = null,
     )
 }
 
@@ -1057,13 +1057,13 @@ fun PostListingCard(
     showCommunityName: Boolean = true,
     fullBody: Boolean,
     account: Account?,
-    expandedImage: Boolean
+    expandedImage: Boolean,
 ) {
     Column(
         modifier = Modifier
             .padding(vertical = MEDIUM_PADDING)
             .clickable { onPostClick(postView) },
-        verticalArrangement = Arrangement.spacedBy(LARGE_PADDING)
+        verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
     ) {
         // Header
         PostHeaderLine(
@@ -1074,7 +1074,7 @@ fun PostListingCard(
             onPersonClick = onPersonClick,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
-            modifier = Modifier.padding(horizontal = MEDIUM_PADDING)
+            modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
         )
 
         //  Title + metadata
@@ -1083,7 +1083,7 @@ fun PostListingCard(
             onPostLinkClick = onPostLinkClick,
             fullBody = fullBody,
             expandedImage = expandedImage,
-            account = account
+            account = account,
         )
 
         // Footer bar
@@ -1102,7 +1102,7 @@ fun PostListingCard(
             onBlockCreatorClick = onBlockCreatorClick,
             showReply = showReply,
             account = account,
-            modifier = Modifier.padding(horizontal = MEDIUM_PADDING)
+            modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
         )
     }
 }
@@ -1124,11 +1124,11 @@ fun MetadataCard(post: Post) {
             .fillMaxWidth(),
         content = {
             Column(
-                modifier = Modifier.padding(MEDIUM_PADDING)
+                modifier = Modifier.padding(MEDIUM_PADDING),
             ) {
                 Text(
                     text = post.embed_title!!,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
                 post.embed_description?.also {
                     Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
@@ -1136,7 +1136,7 @@ fun MetadataCard(post: Post) {
                     MyMarkdownText(markdown = it)
                 }
             }
-        }
+        },
     )
 }
 
@@ -1150,7 +1150,7 @@ fun PostOptionsDialog(
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
     onBlockCommunityClick: () -> Unit,
-    isCreator: Boolean
+    isCreator: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
@@ -1164,7 +1164,7 @@ fun PostOptionsDialog(
                     icon = Icons.Outlined.Forum,
                     onClick = {
                         onCommunityClick()
-                    }
+                    },
                 )
                 postView.post.url?.also {
                     IconAndTextDrawerItem(
@@ -1174,7 +1174,7 @@ fun PostOptionsDialog(
                             localClipboardManager.setText(AnnotatedString(it))
                             Toast.makeText(ctx, "Link Copied", Toast.LENGTH_SHORT).show()
                             onDismissRequest()
-                        }
+                        },
                     )
                 }
                 IconAndTextDrawerItem(
@@ -1185,49 +1185,49 @@ fun PostOptionsDialog(
                         localClipboardManager.setText(AnnotatedString(permalink))
                         Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
                         onDismissRequest()
-                    }
+                    },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = "Report Post",
                         icon = Icons.Outlined.Flag,
-                        onClick = onReportClick
+                        onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
                         text = "Block ${postView.creator.name}",
                         icon = Icons.Outlined.Block,
-                        onClick = onBlockCreatorClick
+                        onClick = onBlockCreatorClick,
                     )
                     IconAndTextDrawerItem(
                         text = "Block ${postView.community.name}",
                         icon = Icons.Outlined.Block,
-                        onClick = onBlockCommunityClick
+                        onClick = onBlockCommunityClick,
                     )
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(
                         text = "Edit",
                         icon = Icons.Outlined.Edit,
-                        onClick = onEditPostClick
+                        onClick = onEditPostClick,
                     )
                     val deleted = postView.post.deleted
                     if (deleted) {
                         IconAndTextDrawerItem(
                             text = "Restore",
                             icon = Icons.Outlined.Restore,
-                            onClick = onDeletePostClick
+                            onClick = onDeletePostClick,
                         )
                     } else {
                         IconAndTextDrawerItem(
                             text = "Delete",
                             icon = Icons.Outlined.Delete,
-                            onClick = onDeletePostClick
+                            onClick = onDeletePostClick,
                         )
                     }
                 }
             }
         },
-        confirmButton = {}
+        confirmButton = {},
     )
 }
 
@@ -1243,6 +1243,6 @@ fun PostOptionsDialogPreview() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCommunityClick = {},
-        onBlockCreatorClick = {}
+        onBlockCreatorClick = {},
     )
 }

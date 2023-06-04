@@ -35,7 +35,7 @@ fun MyTextField(
     label: String,
     placeholder: String? = null,
     text: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         value = text,
@@ -46,15 +46,15 @@ fun MyTextField(
         keyboardOptions = KeyboardOptions.Default.copy(
             capitalization = KeyboardCapitalization.None,
             keyboardType = KeyboardType.Text,
-            autoCorrect = false
-        )
+            autoCorrect = false,
+        ),
     )
 }
 
 @Composable
 fun PasswordField(
     password: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
@@ -77,7 +77,7 @@ fun PasswordField(
             }) {
                 Icon(imageVector = image, "")
             }
-        }
+        },
     )
 }
 
@@ -85,7 +85,7 @@ fun PasswordField(
 fun LoginForm(
     modifier: Modifier = Modifier,
     loading: Boolean = false,
-    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> }
+    onClickLogin: (form: Login, instance: String) -> Unit = { _: Login, _: String -> },
 ) {
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
@@ -99,7 +99,7 @@ fun LoginForm(
 
     val form = Login(
         username_or_email = username.trim(),
-        password = password.trim()
+        password = password.trim(),
     )
 
     Column(
@@ -107,13 +107,13 @@ fun LoginForm(
             .fillMaxSize()
             .imePadding(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = {
                 expanded = !expanded
-            }
+            },
         ) {
             OutlinedTextField(
                 modifier = Modifier.menuAnchor(),
@@ -123,13 +123,13 @@ fun LoginForm(
                 onValueChange = { instance = it },
                 trailingIcon = {
                     TrailingIcon(expanded = expanded)
-                }
+                },
             )
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = {
                     expanded = false
-                }
+                },
             ) {
                 instanceOptions.forEach { selectionOption ->
                     DropdownMenuItem(
@@ -141,7 +141,7 @@ fun LoginForm(
                             instance = selectionOption
                             expanded = false
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
             }
@@ -149,15 +149,15 @@ fun LoginForm(
         MyTextField(
             label = "Email or Username",
             text = username,
-            onValueChange = { username = it }
+            onValueChange = { username = it },
         )
         PasswordField(
             password = password,
-            onValueChange = { password = it }
+            onValueChange = { password = it },
         )
         Button(
             enabled = isValid && !loading,
-            onClick = { onClickLogin(form, instance) }
+            onClick = { onClickLogin(form, instance) },
         ) {
             if (loading) {
                 CircularProgressIndicator()
@@ -177,12 +177,12 @@ fun LoginFormPreview() {
 @Composable
 fun LoginHeader(
     navController: NavController = rememberNavController(),
-    accounts: List<Account>? = null
+    accounts: List<Account>? = null,
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Login"
+                text = "Login",
             )
         },
         navigationIcon = {
@@ -190,14 +190,14 @@ fun LoginHeader(
                 enabled = !accounts.isNullOrEmpty(),
                 onClick = {
                     navController.popBackStack()
-                }
+                },
             ) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
-        }
+        },
     )
 }
 

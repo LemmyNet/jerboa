@@ -24,27 +24,27 @@ import com.jerboa.ui.components.common.MarkdownTextField
 fun CreateReportHeader(
     navController: NavController = rememberNavController(),
     onCreateClick: () -> Unit,
-    loading: Boolean
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Report"
+                text = "Report",
             )
         },
         actions = {
             IconButton(
                 onClick = onCreateClick,
-                enabled = !loading
+                enabled = !loading,
             ) {
                 if (loading) {
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Send,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 }
             }
@@ -53,14 +53,14 @@ fun CreateReportHeader(
             IconButton(
                 onClick = {
                     navController.popBackStack()
-                }
+                },
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
-        }
+        },
     )
 }
 
@@ -69,21 +69,21 @@ fun CreateReportBody(
     reason: TextFieldValue,
     onReasonChange: (TextFieldValue) -> Unit,
     account: Account?,
-    padding: PaddingValues
+    padding: PaddingValues,
 ) {
     val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier.verticalScroll(scrollState)
             .padding(padding)
-            .imePadding()
+            .imePadding(),
     ) {
         MarkdownTextField(
             text = reason,
             onTextChange = onReasonChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your reason"
+            placeholder = "Type your reason",
         )
     }
 }

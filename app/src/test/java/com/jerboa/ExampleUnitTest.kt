@@ -43,7 +43,7 @@ class ExampleUnitTest {
             null,
             null,
             null,
-            null
+            null,
         )
         val out = api.getPosts(form.serializeToMap()).body()!!
         println(out.posts[0])
@@ -55,7 +55,7 @@ class ExampleUnitTest {
         val api = API.getInstance()
         val form = GetPost(
             id = 139549,
-            auth = null
+            auth = null,
         )
         val out = api.getPost(form.serializeToMap()).body()!!
         println(out.comments)

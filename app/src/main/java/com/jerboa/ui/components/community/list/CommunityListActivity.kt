@@ -34,7 +34,7 @@ fun CommunityListActivity(
     navController: NavController,
     communityListViewModel: CommunityListViewModel,
     accountViewModel: AccountViewModel,
-    selectMode: Boolean = false
+    selectMode: Boolean = false,
 ) {
     Log.d("jerboa", "got to community list activity")
 
@@ -59,10 +59,10 @@ fun CommunityListActivity(
                             communityListViewModel.searchCommunities(
                                 query = search,
                                 account = account,
-                                ctx = ctx
+                                ctx = ctx,
                             )
                         }
-                    }
+                    },
                 )
             },
             content = { padding ->
@@ -81,10 +81,10 @@ fun CommunityListActivity(
                         },
                         modifier = Modifier
                             .padding(padding)
-                            .imePadding()
+                            .imePadding(),
                     )
                 }
-            }
+            },
         )
     }
 }

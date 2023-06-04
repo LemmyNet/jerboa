@@ -43,7 +43,7 @@ fun CreatePostActivity(
     communityListViewModel: CommunityListViewModel,
     _url: String,
     _body: String,
-    _image: Uri?
+    _image: Uri?,
 ) {
     Log.d("jerboa", "got to create post activity")
 
@@ -56,8 +56,8 @@ fun CreatePostActivity(
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue(
-                _body
-            )
+                _body,
+            ),
         )
     }
     var formValid by rememberSaveable { mutableStateOf(false) }
@@ -95,11 +95,11 @@ fun CreatePostActivity(
                                         url = urlOut,
                                         name = nameOut,
                                         communityId = it,
-                                        navController = navController
+                                        navController = navController,
                                     )
                                 }
                             }
-                        }
+                        },
                     )
                     if (createPostViewModel.loading) {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -137,9 +137,9 @@ fun CreatePostActivity(
                         }
                     },
                     account = account,
-                    padding = padding
+                    padding = padding,
                 )
-            }
+            },
         )
     }
 }

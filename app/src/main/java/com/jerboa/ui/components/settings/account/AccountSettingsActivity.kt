@@ -21,7 +21,7 @@ fun AccountSettingsActivity(
     navController: NavController,
     accountSettingsViewModel: AccountSettingsViewModel,
     accountViewModel: AccountViewModel,
-    siteViewModel: SiteViewModel
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "Got to settings activity")
 
@@ -43,14 +43,14 @@ fun AccountSettingsActivity(
                             form,
                             ctx,
                             siteViewModel = siteViewModel,
-                            account = account
+                            account = account,
                         )
                     },
                     siteViewModel = siteViewModel,
                     account = account,
-                    padding = padding
+                    padding = padding,
                 )
             }
-        }
+        },
     )
 }

@@ -53,23 +53,23 @@ import com.jerboa.unreadCountTotal
 fun SimpleTopAppBar(
     text: String,
     navController: NavController,
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
             Text(
-                text = text
+                text = text,
             )
         },
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
-        }
+        },
     )
 }
 
@@ -80,7 +80,7 @@ fun BottomAppBarAll(
     unreadCounts: GetUnreadCountResponse? = null,
     onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit
+    onClickInbox: () -> Unit,
 ) {
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
@@ -91,32 +91,32 @@ fun BottomAppBarAll(
                     Icon(
                         imageVector = Icons.Filled.Home,
                         tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Home,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 }
             },
             selected = false,
             onClick = {
                 navController.navigate("home")
-            }
+            },
         )
 
         NavigationBarItem(
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.List,
-                    contentDescription = "TODO"
+                    contentDescription = "TODO",
                 )
             },
             onClick = {
                 navController.navigate("communityList")
             },
-            selected = screen == "communityList"
+            selected = screen == "communityList",
         )
         NavigationBarItem(
             icon = {
@@ -124,19 +124,19 @@ fun BottomAppBarAll(
                     InboxIconAndBadge(
                         iconBadgeCount = totalUnreads,
                         icon = Icons.Filled.Email,
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 } else {
                     InboxIconAndBadge(
                         iconBadgeCount = totalUnreads,
-                        icon = Icons.Outlined.Email
+                        icon = Icons.Outlined.Email,
                     )
                 }
             },
             onClick = {
                 onClickInbox()
             },
-            selected = false
+            selected = false,
         )
         NavigationBarItem(
             icon = {
@@ -144,19 +144,19 @@ fun BottomAppBarAll(
                     Icon(
                         imageVector = Icons.Filled.Bookmarks,
                         tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Bookmarks,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 }
             },
             onClick = {
                 onClickSaved()
             },
-            selected = false
+            selected = false,
         )
         NavigationBarItem(
             icon = {
@@ -164,17 +164,17 @@ fun BottomAppBarAll(
                     Icon(
                         imageVector = Icons.Filled.Person,
                         tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Person,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 }
             },
             onClick = onClickProfile,
-            selected = false
+            selected = false,
         )
     }
 }
@@ -186,7 +186,7 @@ fun BottomAppBarAllPreview() {
         onClickInbox = {},
         onClickProfile = {},
         onClickSaved = {},
-        screen = "home"
+        screen = "home",
     )
 }
 
@@ -203,7 +203,7 @@ fun CommentOrPostNodeHeader(
     isPostCreator: Boolean,
     isModerator: Boolean,
     isCommunityBanned: Boolean,
-    onLongClick: () -> Unit = {}
+    onLongClick: () -> Unit = {},
 ) {
     FlowRow(
         mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
@@ -212,22 +212,22 @@ fun CommentOrPostNodeHeader(
             .fillMaxWidth()
             .padding(
                 top = LARGE_PADDING,
-                bottom = MEDIUM_PADDING
+                bottom = MEDIUM_PADDING,
             )
             .combinedClickable(
                 onLongClick = onLongClick,
-                onClick = {}
-            )
+                onClick = {},
+            ),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (deleted) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
                     contentDescription = "TODO",
-                    tint = MaterialTheme.colorScheme.error
+                    tint = MaterialTheme.colorScheme.error,
                 )
                 DotSpacer(style = MaterialTheme.typography.bodyMedium)
             }
@@ -238,7 +238,7 @@ fun CommentOrPostNodeHeader(
                 showTags = true,
                 isPostCreator = isPostCreator,
                 isModerator = isModerator,
-                isCommunityBanned = isCommunityBanned
+                isCommunityBanned = isCommunityBanned,
             )
         }
         ScoreAndTime(score = score, myVote = myVote, published = published, updated = updated)
@@ -258,7 +258,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onPersonClick = {},
         isPostCreator = true,
         isModerator = true,
-        isCommunityBanned = false
+        isCommunityBanned = false,
     )
 }
 
@@ -269,7 +269,7 @@ fun ActionBarButton(
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
-    account: Account?
+    account: Account?,
 ) {
     val ctx = LocalContext.current
 //    Button(
@@ -298,19 +298,19 @@ fun ActionBarButton(
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = barMod
+        modifier = barMod,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = "TODO",
-            tint = contentColor
+            tint = contentColor,
         )
         text?.also {
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text(
                 text = text,
                 color = contentColor,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }
@@ -319,13 +319,13 @@ fun ActionBarButton(
 @Composable
 fun DotSpacer(
     padding: Dp = SMALL_PADDING,
-    style: TextStyle = MaterialTheme.typography.bodyMedium
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     Text(
         text = "·",
         style = style,
         color = MaterialTheme.colorScheme.onBackground.muted,
-        modifier = Modifier.padding(horizontal = padding)
+        modifier = Modifier.padding(horizontal = padding),
     )
 }
 
@@ -343,7 +343,7 @@ fun InboxIconAndBadge(
     iconBadgeCount: Int?,
     icon: ImageVector,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current
+    tint: Color = LocalContentColor.current,
 ) {
     if (iconBadgeCount !== null && iconBadgeCount > 0) {
         BadgedBox(
@@ -352,25 +352,25 @@ fun InboxIconAndBadge(
                 Badge(
                     content = {
                         Text(
-                            text = iconBadgeCount.toString()
+                            text = iconBadgeCount.toString(),
                         )
-                    }
+                    },
                 )
             },
             content = {
                 Icon(
                     imageVector = icon,
                     contentDescription = "TODO",
-                    tint = tint
+                    tint = tint,
                 )
-            }
+            },
         )
     } else {
         Icon(
             imageVector = icon,
             contentDescription = "TODO",
             tint = tint,
-            modifier = modifier
+            modifier = modifier,
         )
     }
 }
@@ -388,7 +388,7 @@ fun Sidebar(
     usersActiveWeek: Int,
     usersActiveMonth: Int,
     usersActiveHalfYear: Int,
-    padding: PaddingValues
+    padding: PaddingValues,
 ) {
     val listState = rememberLazyListState()
 
@@ -396,17 +396,17 @@ fun Sidebar(
         state = listState,
         modifier = Modifier.padding(padding)
             .simpleVerticalScrollbar(listState),
-        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         item {
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.BottomStart
+                contentAlignment = Alignment.BottomStart,
             ) {
                 banner?.also {
                     PictrsBannerImage(
                         url = it,
-                        modifier = Modifier.height(PROFILE_BANNER_SIZE)
+                        modifier = Modifier.height(PROFILE_BANNER_SIZE),
                     )
                 }
                 Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -419,18 +419,18 @@ fun Sidebar(
         item {
             Column(
                 modifier = Modifier.padding(MEDIUM_PADDING),
-                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)
+                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
                 title?.also {
                     Text(
                         text = it,
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 }
                 TimeAgo(
                     precedingString = "Created",
                     includeAgo = true,
-                    published = published
+                    published = published,
                 )
                 CommentsAndPosts(
                     usersActiveDay = usersActiveDay,
@@ -438,7 +438,7 @@ fun Sidebar(
                     usersActiveMonth = usersActiveMonth,
                     usersActiveHalfYear = usersActiveHalfYear,
                     postCount = postCount,
-                    commentCount = commentCount
+                    commentCount = commentCount,
                 )
             }
         }
@@ -448,11 +448,11 @@ fun Sidebar(
         item {
             content?.also {
                 Column(
-                    modifier = Modifier.padding(MEDIUM_PADDING)
+                    modifier = Modifier.padding(MEDIUM_PADDING),
                 ) {
                     MyMarkdownText(
                         markdown = it,
-                        color = MaterialTheme.colorScheme.onBackground.muted
+                        color = MaterialTheme.colorScheme.onBackground.muted,
                     )
                 }
             }
@@ -467,37 +467,37 @@ fun CommentsAndPosts(
     usersActiveMonth: Int,
     usersActiveHalfYear: Int,
     postCount: Int,
-    commentCount: Int
+    commentCount: Int,
 ) {
     FlowRow {
         Text(
             text = "${siFormat(usersActiveDay)} users / day",
-            color = MaterialTheme.colorScheme.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
             text = "${siFormat(usersActiveWeek)} users / week",
-            color = MaterialTheme.colorScheme.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
             text = "${siFormat(usersActiveMonth)} users / month",
-            color = MaterialTheme.colorScheme.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
             text = "${siFormat(usersActiveHalfYear)} users / 6 months",
-            color = MaterialTheme.colorScheme.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
             text = "${siFormat(postCount)} posts",
-            color = MaterialTheme.colorScheme.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
             text = "${siFormat(commentCount)} comments",
-            color = MaterialTheme.colorScheme.onBackground.muted
+            color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }
 }
@@ -506,7 +506,7 @@ fun CommentsAndPosts(
 @Composable
 fun Modifier.simpleVerticalScrollbar(
     state: LazyListState,
-    width: Dp = 4.dp
+    width: Dp = 4.dp,
 ): Modifier {
     val targetAlpha = if (state.isScrollInProgress) 0.5f else 0f
     val duration = if (state.isScrollInProgress) 150 else 500
@@ -514,7 +514,7 @@ fun Modifier.simpleVerticalScrollbar(
 
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
-        animationSpec = tween(durationMillis = duration)
+        animationSpec = tween(durationMillis = duration),
     )
 
     return drawWithContent {
@@ -533,7 +533,7 @@ fun Modifier.simpleVerticalScrollbar(
                 color = color,
                 topLeft = Offset(this.size.width - width.toPx(), scrollbarOffsetY),
                 size = Size(width.toPx(), scrollbarHeight),
-                alpha = alpha
+                alpha = alpha,
             )
         }
     }

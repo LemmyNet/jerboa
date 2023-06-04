@@ -53,18 +53,18 @@ fun PostListings(
     padding: PaddingValues = PaddingValues(0.dp),
     listState: LazyListState,
     taglines: List<Tagline>?,
-    postViewMode: PostViewMode
+    postViewMode: PostViewMode,
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
         onRefresh = onSwipeRefresh,
-        indicatorPadding = padding
+        indicatorPadding = padding,
     ) {
         LazyColumn(
             state = listState,
             modifier = Modifier
                 .padding(padding)
-                .simpleVerticalScrollbar(listState)
+                .simpleVerticalScrollbar(listState),
         ) {
             item {
                 taglines?.let { Tagline(it) }
@@ -79,7 +79,7 @@ fun PostListings(
                 posts,
                 key = { postView ->
                     postView.post.id
-                }
+                },
             ) { postView ->
                 PostListing(
                     postView = postView,
@@ -99,7 +99,7 @@ fun PostListings(
                     showCommunityName = showCommunityName,
                     fullBody = false,
                     account = account, // TODO can't know with many posts
-                    postViewMode = postViewMode
+                    postViewMode = postViewMode,
                 )
                 Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
             }
@@ -143,6 +143,6 @@ fun PreviewPostListings() {
         account = null,
         listState = rememberLazyListState(),
         taglines = null,
-        postViewMode = PostViewMode.Card
+        postViewMode = PostViewMode.Card,
     )
 }

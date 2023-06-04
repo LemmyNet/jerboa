@@ -13,7 +13,7 @@ import com.jerboa.ui.components.community.CommunityViewModel
 @Composable
 fun CommunitySidebarActivity(
     communityViewModel: CommunityViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     Log.d("jerboa", "got to community sidebar activity")
 
@@ -23,13 +23,13 @@ fun CommunitySidebarActivity(
         topBar = {
             SimpleTopAppBar(
                 text = title,
-                navController = navController
+                navController = navController,
             )
         },
         content = { padding ->
             communityViewModel.communityView?.also { communityView ->
                 CommunitySidebar(communityView = communityView, padding = padding)
             }
-        }
+        },
     )
 }
