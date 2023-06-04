@@ -115,7 +115,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = "splashScreen"
+                    startDestination = "home"
                 ) {
                     composable(
                         route = "login",
@@ -129,11 +129,6 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             homeViewModel = homeViewModel
-                        )
-                    }
-                    composable(route = "splashScreen") {
-                        SplashScreenActivity(
-                            navController = navController
                         )
                     }
                     composable(
