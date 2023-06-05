@@ -1,3 +1,34 @@
+# Jerboa v0.0.32-alpha Release (2023-06-05)
+
+## What's Changed
+
+- Adding more CI commands. by @dessalines in https://github.com/dessalines/jerboa/pull/367
+- Show settings in sidebar even when user is not logged in by @twizmwazin in https://github.com/dessalines/jerboa/pull/375
+- Added Blue theme color by @a1studmuffin in https://github.com/dessalines/jerboa/pull/392
+- Roll back AGP to `8.0.2` by @oscarnylander in https://github.com/dessalines/jerboa/pull/404
+- Fixing CI ntfy.sh notification link. by @dessalines in https://github.com/dessalines/jerboa/pull/406
+- Remove Splash Screen by @oscarnylander in https://github.com/dessalines/jerboa/pull/383
+- Add padding to SwipeRefresh for PostListings (for #400) by @russjr08 in https://github.com/dessalines/jerboa/pull/408
+- Ktlint 2 by @dessalines in https://github.com/dessalines/jerboa/pull/409
+- Add `.editorconfig` by @oscarnylander in https://github.com/dessalines/jerboa/pull/405
+- Save listing and sort type-preferences in app DB by @oscarnylander in https://github.com/dessalines/jerboa/pull/407
+- Added Black and System Black theme modes, fixes https://github.com/dessalines/jerboa/issues/376 by @a1studmuffin in https://github.com/dessalines/jerboa/pull/393
+- Fix dropdowns on Account Settings-screen not working by @oscarnylander in https://github.com/dessalines/jerboa/pull/387
+- Collapse comments by @dessalines in https://github.com/dessalines/jerboa/pull/419
+- Collapse comments by tapping directly on the comment body by @a1studmuffin in https://github.com/dessalines/jerboa/pull/398
+- Fix navigating to other instance communities and users by @Anna-log7 in https://github.com/dessalines/jerboa/pull/413
+- Add option to disable showing the bottom navigation bar by @twizmwazin in https://github.com/dessalines/jerboa/pull/412
+- Fixed showNavBar issue. by @dessalines in https://github.com/dessalines/jerboa/pull/420
+
+## New Contributors
+
+- @twizmwazin made their first contribution in https://github.com/dessalines/jerboa/pull/375
+- @a1studmuffin made their first contribution in https://github.com/dessalines/jerboa/pull/392
+- @oscarnylander made their first contribution in https://github.com/dessalines/jerboa/pull/404
+- @Anna-log7 made their first contribution in https://github.com/dessalines/jerboa/pull/413
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.31...0.0.32
+
 # Jerboa v0.0.31-alpha Release (2023-06-01)
 
 ## What's Changed
