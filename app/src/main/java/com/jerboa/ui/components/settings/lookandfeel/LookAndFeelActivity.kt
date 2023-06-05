@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.alorma.compose.settings.storage.base.SettingValueState
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberFloatSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
@@ -51,6 +50,20 @@ fun LookAndFeelActivity(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    fun updateAppSettings() {
+        appSettingsViewModel.update(
+            AppSettings(
+                id = 1,
+                viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
+                theme = themeState.value,
+                themeColor = themeColorState.value,
+                fontSize = fontSizeState.value.toInt(),
+                postViewMode = postViewModeState.value,
+                showBottomNav = showBottomNavState.value,
+            ),
+        )
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -71,16 +84,7 @@ fun LookAndFeelActivity(
                     title = {
                         Text(text = "Font size: ${fontSizeState.value.toInt()}")
                     },
-                    onValueChangeFinished = {
-                        updateAppSettings(
-                            appSettingsViewModel,
-                            fontSizeState,
-                            themeState,
-                            themeColorState,
-                            postViewModeState,
-                            showBottomNavState,
-                        )
-                    },
+                    onValueChangeFinished = { updateAppSettings() },
                 )
                 SettingsList(
                     state = themeState,
@@ -96,14 +100,7 @@ fun LookAndFeelActivity(
                     },
                     onItemSelected = { i, _ ->
                         themeState.value = i
-                        updateAppSettings(
-                            appSettingsViewModel,
-                            fontSizeState,
-                            themeState,
-                            themeColorState,
-                            postViewModeState,
-                            showBottomNavState,
-                        )
+                        updateAppSettings()
                     },
                 )
                 SettingsList(
@@ -120,14 +117,7 @@ fun LookAndFeelActivity(
                     },
                     onItemSelected = { i, _ ->
                         themeColorState.value = i
-                        updateAppSettings(
-                            appSettingsViewModel,
-                            fontSizeState,
-                            themeState,
-                            themeColorState,
-                            postViewModeState,
-                            showBottomNavState,
-                        )
+                        updateAppSettings()
                     },
                 )
                 SettingsList(
@@ -144,14 +134,7 @@ fun LookAndFeelActivity(
                     },
                     onItemSelected = { i, _ ->
                         postViewModeState.value = i
-                        updateAppSettings(
-                            appSettingsViewModel,
-                            fontSizeState,
-                            themeState,
-                            themeColorState,
-                            postViewModeState,
-                            showBottomNavState,
-                        )
+                        updateAppSettings()
                     },
                 )
                 SettingsCheckbox(
@@ -159,39 +142,9 @@ fun LookAndFeelActivity(
                     title = {
                         Text(text = "Show navigation bar")
                     },
-                    onCheckedChange = {
-                        updateAppSettings(
-                            appSettingsViewModel,
-                            fontSizeState,
-                            themeState,
-                            themeColorState,
-                            postViewModeState,
-                            showBottomNavState,
-                        )
-                    },
+                    onCheckedChange = { updateAppSettings() },
                 )
             }
         },
-    )
-}
-
-private fun updateAppSettings(
-    appSettingsViewModel: AppSettingsViewModel,
-    fontSizeState: SettingValueState<Float>,
-    themeState: SettingValueState<Int>,
-    themeColorState: SettingValueState<Int>,
-    postViewModeState: SettingValueState<Int>,
-    showBottomNav: SettingValueState<Boolean>,
-) {
-    appSettingsViewModel.update(
-        AppSettings(
-            id = 1,
-            fontSize = fontSizeState.value.toInt(),
-            theme = themeState.value,
-            themeColor = themeColorState.value,
-            viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
-            postViewMode = postViewModeState.value,
-            showBottomNav = showBottomNav.value,
-        ),
     )
 }
