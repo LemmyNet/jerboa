@@ -18,7 +18,7 @@ fun <T> VoteGeneric(
     type: VoteType,
     onVoteClick: (item: T) -> Unit,
     showNumber: Boolean = true,
-    account: Account?
+    account: Account?,
 ) {
     val iconAndColor = when (type) {
         VoteType.Upvote -> upvoteIconAndColor(myVote = myVote)
@@ -39,7 +39,7 @@ fun <T> VoteGeneric(
         contentColor = iconAndColor.second,
         icon = iconAndColor.first,
         text = votesStr,
-        account = account
+        account = account,
     )
 }
 
@@ -48,12 +48,12 @@ fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
     return when (myVote) {
         1 -> Pair(
             ImageVector.vectorResource(id = R.drawable.up_filled),
-            scoreColor(myVote = myVote)
+            scoreColor(myVote = myVote),
         )
         else -> Pair(
             ImageVector.vectorResource(id = R.drawable.up_outline),
             MaterialTheme
-                .colorScheme.onBackground.muted
+                .colorScheme.onBackground.muted,
         )
     }
 }
@@ -63,12 +63,12 @@ fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
     return when (myVote) {
         -1 -> Pair(
             ImageVector.vectorResource(id = R.drawable.down_filled),
-            scoreColor(myVote = myVote)
+            scoreColor(myVote = myVote),
         )
         else -> Pair(
             ImageVector.vectorResource(id = R.drawable.down_outline),
             MaterialTheme
-                .colorScheme.onBackground.muted
+                .colorScheme.onBackground.muted,
         )
     }
 }

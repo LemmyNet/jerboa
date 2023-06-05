@@ -60,6 +60,7 @@ import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 
@@ -84,7 +85,9 @@ class MainActivity : ComponentActivity() {
     private val commentEditViewModel by viewModels<CommentEditViewModel>()
     private val postEditViewModel by viewModels<PostEditViewModel>()
     private val createReportViewModel by viewModels<CreateReportViewModel>()
-    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>()
+    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>() {
+        AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
+    }
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).accountRepository)
     }
@@ -103,7 +106,7 @@ class MainActivity : ComponentActivity() {
             val appSettings by appSettingsViewModel.appSettings.observeAsState()
 
             JerboaTheme(
-                appSettings = appSettings
+                appSettings = appSettings,
             ) {
                 val navController = rememberNavController()
                 val ctx = LocalContext.current
@@ -112,29 +115,24 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = "splashScreen"
+                    startDestination = "home",
                 ) {
                     composable(
                         route = "login",
                         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
                             navDeepLink { uriPattern = "$instance/login" }
-                        }
+                        },
                     ) {
                         LoginActivity(
                             navController = navController,
                             loginViewModel = loginViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            homeViewModel = homeViewModel
-                        )
-                    }
-                    composable(route = "splashScreen") {
-                        SplashScreenActivity(
-                            navController = navController
+                            homeViewModel = homeViewModel,
                         )
                     }
                     composable(
-                        route = "home"
+                        route = "home",
                     ) {
                         HomeActivity(
                             navController = navController,
@@ -142,7 +140,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
-                            appSettingsViewModel = appSettingsViewModel
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
                     composable(
@@ -150,8 +148,8 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(
                             navArgument("id") {
                                 type = NavType.IntType
-                            }
-                        )
+                            },
+                        ),
                     ) {
                         LaunchedEffect(Unit) {
                             val communityId = it.arguments?.getInt("id")!!
@@ -159,14 +157,14 @@ class MainActivity : ComponentActivity() {
 
                             communityViewModel.fetchCommunity(
                                 idOrName = idOrName,
-                                auth = account?.jwt
+                                auth = account?.jwt,
                             )
 
                             communityViewModel.fetchPosts(
                                 communityIdOrName = idOrName,
                                 account = account,
                                 clear = true,
-                                ctx = ctx
+                                ctx = ctx,
                             )
                         }
 
@@ -177,7 +175,7 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             postEditViewModel = postEditViewModel,
                             communityListViewModel = communityListViewModel,
-                            appSettingsViewModel = appSettingsViewModel
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
                     // Only necessary for community deeplinks
@@ -189,8 +187,8 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(
                             navArgument("name") {
                                 type = NavType.StringType
-                            }
-                        )
+                            },
+                        ),
                     ) {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
@@ -198,14 +196,14 @@ class MainActivity : ComponentActivity() {
 
                             communityViewModel.fetchCommunity(
                                 idOrName = idOrName,
-                                auth = account?.jwt
+                                auth = account?.jwt,
                             )
 
                             communityViewModel.fetchPosts(
                                 communityIdOrName = idOrName,
                                 account = account,
                                 clear = true,
-                                ctx = ctx
+                                ctx = ctx,
                             )
                         }
 
@@ -216,7 +214,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
                             postEditViewModel = postEditViewModel,
-                            appSettingsViewModel = appSettingsViewModel
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
                     composable(
@@ -228,8 +226,8 @@ class MainActivity : ComponentActivity() {
                             navArgument("saved") {
                                 defaultValue = false
                                 type = NavType.BoolType
-                            }
-                        )
+                            },
+                        ),
                     ) {
                         val savedMode = it.arguments?.getBoolean("saved")!!
 
@@ -242,7 +240,7 @@ class MainActivity : ComponentActivity() {
                                 account = account,
                                 clear = true,
                                 ctx = ctx,
-                                changeSavedOnly = savedMode
+                                changeSavedOnly = savedMode,
                             )
                         }
 
@@ -255,7 +253,7 @@ class MainActivity : ComponentActivity() {
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
-                            appSettingsViewModel = appSettingsViewModel
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
                     // Necessary for deep links
@@ -267,8 +265,8 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(
                             navArgument("name") {
                                 type = NavType.StringType
-                            }
-                        )
+                            },
+                        ),
                     ) {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
@@ -278,7 +276,7 @@ class MainActivity : ComponentActivity() {
                                 idOrName = idOrName,
                                 account = account,
                                 clear = true,
-                                ctx = ctx
+                                ctx = ctx,
                             )
                         }
 
@@ -291,7 +289,7 @@ class MainActivity : ComponentActivity() {
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
-                            appSettingsViewModel = appSettingsViewModel
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
                     composable(
@@ -300,8 +298,8 @@ class MainActivity : ComponentActivity() {
                             navArgument("select") {
                                 defaultValue = false
                                 type = NavType.BoolType
-                            }
-                        )
+                            },
+                        ),
                     ) {
                         // Whenever navigating here, reset the list with your followed communities
                         communityListViewModel.setCommunityListFromFollowed(siteViewModel)
@@ -310,15 +308,15 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             accountViewModel = accountViewModel,
                             communityListViewModel = communityListViewModel,
-                            selectMode = it.arguments?.getBoolean("select")!!
+                            selectMode = it.arguments?.getBoolean("select")!!,
                         )
                     }
                     composable(
                         route = "createPost",
                         deepLinks = listOf(
                             navDeepLink { mimeType = "text/plain" },
-                            navDeepLink { mimeType = "image/*" }
-                        )
+                            navDeepLink { mimeType = "image/*" },
+                        ),
                     ) {
                         val activity = ctx.findActivity()
                         val text = activity?.intent?.getStringExtra(Intent.EXTRA_TEXT) ?: ""
@@ -326,7 +324,7 @@ class MainActivity : ComponentActivity() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                 activity?.intent?.getParcelableExtra(
                                     Intent.EXTRA_STREAM,
-                                    Uri::class.java
+                                    Uri::class.java,
                                 )
                             } else {
                                 @Suppress("DEPRECATION")
@@ -348,7 +346,7 @@ class MainActivity : ComponentActivity() {
                             communityListViewModel = communityListViewModel,
                             _url = url,
                             _body = body,
-                            _image = image
+                            _image = image,
                         )
                         activity?.intent?.replaceExtras(Bundle())
                     }
@@ -356,24 +354,24 @@ class MainActivity : ComponentActivity() {
                         route = "inbox",
                         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
                             navDeepLink { uriPattern = "$instance/inbox" }
-                        }
+                        },
                     ) {
                         if (account != null) {
                             LaunchedEffect(Unit) {
                                 inboxViewModel.fetchReplies(
                                     account = account,
                                     clear = true,
-                                    ctx = ctx
+                                    ctx = ctx,
                                 )
                                 inboxViewModel.fetchPersonMentions(
                                     account = account,
                                     clear = true,
-                                    ctx = ctx
+                                    ctx = ctx,
                                 )
                                 inboxViewModel.fetchPrivateMessages(
                                     account = account,
                                     clear = true,
-                                    ctx = ctx
+                                    ctx = ctx,
                                 )
                             }
                         }
@@ -383,7 +381,7 @@ class MainActivity : ComponentActivity() {
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
-                            commentReplyViewModel = commentReplyViewModel
+                            commentReplyViewModel = commentReplyViewModel,
                         )
                     }
                     composable(
@@ -394,8 +392,8 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(
                             navArgument("id") {
                                 type = NavType.IntType
-                            }
-                        )
+                            },
+                        ),
                     ) {
                         LaunchedEffect(Unit) {
                             val postId = it.arguments?.getInt("id")!!
@@ -403,7 +401,7 @@ class MainActivity : ComponentActivity() {
                                 id = Either.Left(postId),
                                 account = account,
                                 clear = true,
-                                ctx = ctx
+                                ctx = ctx,
                             )
                         }
                         PostActivity(
@@ -412,7 +410,7 @@ class MainActivity : ComponentActivity() {
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
-                            navController = navController
+                            navController = navController,
                         )
                     }
                     composable(
@@ -423,8 +421,8 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(
                             navArgument("id") {
                                 type = NavType.IntType
-                            }
-                        )
+                            },
+                        ),
                     ) {
                         LaunchedEffect(Unit) {
                             val commentId = it.arguments?.getInt("id")!!
@@ -432,7 +430,7 @@ class MainActivity : ComponentActivity() {
                                 id = Either.Right(commentId),
                                 account = account,
                                 clear = true,
-                                ctx = ctx
+                                ctx = ctx,
                             )
                         }
                         PostActivity(
@@ -441,49 +439,49 @@ class MainActivity : ComponentActivity() {
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
-                            navController = navController
+                            navController = navController,
                         )
                     }
                     composable(
-                        route = "commentReply"
+                        route = "commentReply",
                     ) {
                         CommentReplyActivity(
                             commentReplyViewModel = commentReplyViewModel,
                             postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
-                            navController = navController
+                            navController = navController,
                         )
                     }
                     composable(
-                        route = "siteSidebar"
+                        route = "siteSidebar",
                     ) {
                         SiteSidebarActivity(
                             siteViewModel = siteViewModel,
-                            navController = navController
+                            navController = navController,
                         )
                     }
                     composable(
-                        route = "communitySidebar"
+                        route = "communitySidebar",
                     ) {
                         CommunitySidebarActivity(
                             communityViewModel = communityViewModel,
-                            navController = navController
+                            navController = navController,
                         )
                     }
                     composable(
-                        route = "commentEdit"
+                        route = "commentEdit",
                     ) {
                         CommentEditActivity(
                             commentEditViewModel = commentEditViewModel,
                             accountViewModel = accountViewModel,
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel
+                            postViewModel = postViewModel,
                         )
                     }
                     composable(
-                        route = "postEdit"
+                        route = "postEdit",
                     ) {
                         PostEditActivity(
                             postEditViewModel = postEditViewModel,
@@ -492,16 +490,16 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
                             postViewModel = postViewModel,
-                            homeViewModel = homeViewModel
+                            homeViewModel = homeViewModel,
                         )
                     }
                     composable(
-                        route = "privateMessageReply"
+                        route = "privateMessageReply",
                     ) {
                         PrivateMessageReplyActivity(
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
-                            navController = navController
+                            navController = navController,
                         )
                     }
                     composable(
@@ -509,14 +507,14 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(
                             navArgument("id") {
                                 type = NavType.IntType
-                            }
-                        )
+                            },
+                        ),
                     ) {
                         createReportViewModel.setCommentId(it.arguments?.getInt("id")!!)
                         CreateCommentReportActivity(
                             createReportViewModel = createReportViewModel,
                             accountViewModel = accountViewModel,
-                            navController = navController
+                            navController = navController,
                         )
                     }
                     composable(
@@ -524,50 +522,50 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(
                             navArgument("id") {
                                 type = NavType.IntType
-                            }
-                        )
+                            },
+                        ),
                     ) {
                         createReportViewModel.setPostId(it.arguments?.getInt("id")!!)
                         CreatePostReportActivity(
                             createReportViewModel = createReportViewModel,
                             accountViewModel = accountViewModel,
-                            navController = navController
+                            navController = navController,
                         )
                     }
                     composable(
-                        route = "settings"
+                        route = "settings",
                     ) {
                         SettingsActivity(
                             navController = navController,
-                            accountViewModel = accountViewModel
+                            accountViewModel = accountViewModel,
                         )
                     }
                     composable(
-                        route = "lookAndFeel"
+                        route = "lookAndFeel",
                     ) {
                         LookAndFeelActivity(
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
                     composable(
                         route = "accountSettings",
                         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
                             navDeepLink { uriPattern = "$instance/settings" }
-                        }
+                        },
                     ) {
                         AccountSettingsActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            accountSettingsViewModel = accountSettingsViewModel
+                            accountSettingsViewModel = accountSettingsViewModel,
                         )
                     }
                     composable(
-                        route = "about"
+                        route = "about",
                     ) {
                         AboutActivity(
-                            navController = navController
+                            navController = navController,
                         )
                     }
                 }

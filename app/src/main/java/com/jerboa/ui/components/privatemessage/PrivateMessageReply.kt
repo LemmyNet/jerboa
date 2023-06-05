@@ -28,27 +28,27 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 fun PrivateMessageReplyHeader(
     navController: NavController = rememberNavController(),
     onSendClick: () -> Unit,
-    loading: Boolean
+    loading: Boolean,
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Reply"
+                text = "Reply",
             )
         },
         actions = {
             IconButton(
                 onClick = onSendClick,
-                enabled = !loading
+                enabled = !loading,
             ) {
                 if (loading) {
                     CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Send,
-                        contentDescription = "TODO"
+                        contentDescription = "TODO",
                     )
                 }
             }
@@ -57,27 +57,27 @@ fun PrivateMessageReplyHeader(
             IconButton(
                 onClick = {
                     navController.popBackStack()
-                }
+                },
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
-        }
+        },
     )
 }
 
 @Composable
 fun RepliedPrivateMessage(
     privateMessageView: PrivateMessageView,
-    onPersonClick: (personId: Int) -> Unit
+    onPersonClick: (personId: Int) -> Unit,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PrivateMessageHeader(
             privateMessageView = privateMessageView,
             onPersonClick = onPersonClick,
-            myPersonId = privateMessageView.recipient.id
+            myPersonId = privateMessageView.recipient.id,
         )
         SelectionContainer {
             Text(text = privateMessageView.private_message.content)
@@ -90,7 +90,7 @@ fun RepliedPrivateMessage(
 fun RepliedPrivateMessagePreview() {
     RepliedPrivateMessage(
         privateMessageView = samplePrivateMessageView,
-        onPersonClick = {}
+        onPersonClick = {},
     )
 }
 
@@ -101,16 +101,16 @@ fun PrivateMessageReply(
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     account: Account?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = modifier.verticalScroll(scrollState)
+        modifier = modifier.verticalScroll(scrollState),
     ) {
         RepliedPrivateMessage(
             privateMessageView = privateMessageView,
-            onPersonClick = onPersonClick
+            onPersonClick = onPersonClick,
         )
         Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
@@ -118,7 +118,7 @@ fun PrivateMessageReply(
             onTextChange = onReplyChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your message"
+            placeholder = "Type your message",
         )
     }
 }

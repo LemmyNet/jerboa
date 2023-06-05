@@ -56,7 +56,7 @@ fun CommentReplyNodeHeader(
     onPersonClick: (personId: Int) -> Unit,
     score: Int,
     myVote: Int?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
@@ -69,7 +69,7 @@ fun CommentReplyNodeHeader(
         isPostCreator = false,
         isModerator = false,
         isCommunityBanned = commentReplyView.creator_banned_from_community,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -81,7 +81,7 @@ fun CommentReplyNodeHeaderPreview() {
         score = 23,
         myVote = 26,
         onPersonClick = {},
-        onClick = {}
+        onClick = {},
     )
 }
 
@@ -100,7 +100,7 @@ fun CommentReplyNodeFooterLine(
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
-    account: Account?
+    account: Account?,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -120,7 +120,7 @@ fun CommentReplyNodeFooterLine(
                 showMoreOptions = false
                 onBlockCreatorClick(commentReplyView.creator)
             },
-            isCreator = account?.id == commentReplyView.creator.id
+            isCreator = account?.id == commentReplyView.creator.id,
         )
     }
 
@@ -128,10 +128,10 @@ fun CommentReplyNodeFooterLine(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING)
+            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING)
+            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
         ) {
             VoteGeneric(
                 myVote = myVote,
@@ -140,7 +140,7 @@ fun CommentReplyNodeFooterLine(
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 showNumber = (downvotes != 0),
-                account = account
+                account = account,
             )
             VoteGeneric(
                 myVote = myVote,
@@ -148,12 +148,12 @@ fun CommentReplyNodeFooterLine(
                 item = commentReplyView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
-                account = account
+                account = account,
             )
             ActionBarButton(
                 icon = Icons.Outlined.Link,
                 onClick = { onCommentLinkClick(commentReplyView) },
-                account = account
+                account = account,
             )
             ActionBarButton(
                 icon = if (commentReplyView.comment_reply.read) {
@@ -167,7 +167,7 @@ fun CommentReplyNodeFooterLine(
                 } else {
                     MaterialTheme.colorScheme.onBackground.muted
                 },
-                account = account
+                account = account,
             )
             ActionBarButton(
                 icon = if (commentReplyView.saved) { Icons.Filled.Bookmark } else {
@@ -179,20 +179,20 @@ fun CommentReplyNodeFooterLine(
                 } else {
                     MaterialTheme.colorScheme.onBackground.muted
                 },
-                account = account
+                account = account,
             )
             // Don't let you respond to your own comment.
             if (commentReplyView.creator.id != account?.id) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
                     onClick = { onReplyClick(commentReplyView) },
-                    account = account
+                    account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
                 account = account,
-                onClick = { showMoreOptions = !showMoreOptions }
+                onClick = { showMoreOptions = !showMoreOptions },
             )
         }
     }
@@ -205,7 +205,7 @@ fun CommentReplyNodeOptionsDialog(
     onViewSourceClick: () -> Unit,
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
-    isCreator: Boolean
+    isCreator: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
@@ -217,7 +217,7 @@ fun CommentReplyNodeOptionsDialog(
                 IconAndTextDrawerItem(
                     text = "View Source",
                     icon = Icons.Outlined.Description,
-                    onClick = onViewSourceClick
+                    onClick = onViewSourceClick,
                 )
                 IconAndTextDrawerItem(
                     text = "Copy Permalink",
@@ -227,23 +227,23 @@ fun CommentReplyNodeOptionsDialog(
                         localClipboardManager.setText(AnnotatedString(permalink))
                         Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
                         onDismissRequest()
-                    }
+                    },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = "Report Comment",
                         icon = Icons.Outlined.Flag,
-                        onClick = onReportClick
+                        onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
                         text = "Block ${commentReplyView.creator.name}",
                         icon = Icons.Outlined.Block,
-                        onClick = onBlockCreatorClick
+                        onClick = onBlockCreatorClick,
                     )
                 }
             }
         },
-        confirmButton = {}
+        confirmButton = {},
     )
 }
 
@@ -261,7 +261,7 @@ fun CommentReplyNode(
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
-    account: Account?
+    account: Account?,
 ) {
     // These are necessary for instant comment voting
     val score = commentReplyView.counts.score
@@ -273,14 +273,14 @@ fun CommentReplyNode(
     var isExpanded by remember { mutableStateOf(true) }
 
     Column(
-        modifier = Modifier.padding(horizontal = LARGE_PADDING)
+        modifier = Modifier.padding(horizontal = LARGE_PADDING),
     ) {
         Divider()
         PostAndCommunityContextHeader(
             post = commentReplyView.post,
             community = commentReplyView.community,
             onCommunityClick = onCommunityClick,
-            onPostClick = onPostClick
+            onPostClick = onPostClick,
         )
         CommentReplyNodeHeader(
             commentReplyView = commentReplyView,
@@ -289,18 +289,18 @@ fun CommentReplyNode(
             myVote = myVote,
             onClick = {
                 isExpanded = !isExpanded
-            }
+            },
         )
         AnimatedVisibility(
             visible = isExpanded,
             enter = expandVertically(),
-            exit = shrinkVertically()
+            exit = shrinkVertically(),
         ) {
             Column {
                 CommentBody(
                     comment = commentReplyView.comment,
                     viewSource = viewSource,
-                    onClick = {}
+                    onClick = {},
                 )
                 CommentReplyNodeFooterLine(
                     commentReplyView = commentReplyView,
@@ -322,7 +322,7 @@ fun CommentReplyNode(
                     myVote = myVote,
                     upvotes = upvotes,
                     downvotes = downvotes,
-                    account = account
+                    account = account,
                 )
             }
         }

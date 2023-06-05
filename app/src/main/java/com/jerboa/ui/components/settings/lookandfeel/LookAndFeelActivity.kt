@@ -33,7 +33,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 @Composable
 fun LookAndFeelActivity(
     navController: NavController,
-    appSettingsViewModel: AppSettingsViewModel
+    appSettingsViewModel: AppSettingsViewModel,
 ) {
     Log.d("jerboa", "Got to lookAndFeel activity")
 
@@ -42,7 +42,7 @@ fun LookAndFeelActivity(
     val themeColorState = rememberIntSettingState(settings?.themeColor ?: 0)
     val fontSizeState = rememberFloatSettingState(
         settings?.fontSize?.toFloat()
-            ?: DEFAULT_FONT_SIZE.toFloat()
+            ?: DEFAULT_FONT_SIZE.toFloat(),
     )
     val postViewModeState = rememberIntSettingState(settings?.postViewMode ?: 0)
 
@@ -62,7 +62,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.FormatSize,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     title = {
@@ -74,9 +74,9 @@ fun LookAndFeelActivity(
                             fontSizeState,
                             themeState,
                             themeColorState,
-                            postViewModeState
+                            postViewModeState,
                         )
-                    }
+                    },
                 )
                 SettingsList(
                     state = themeState,
@@ -84,7 +84,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     title = {
@@ -97,9 +97,9 @@ fun LookAndFeelActivity(
                             fontSizeState,
                             themeState,
                             themeColorState,
-                            postViewModeState
+                            postViewModeState,
                         )
-                    }
+                    },
                 )
                 SettingsList(
                     state = themeColorState,
@@ -107,7 +107,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Colorize,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     title = {
@@ -120,9 +120,9 @@ fun LookAndFeelActivity(
                             fontSizeState,
                             themeState,
                             themeColorState,
-                            postViewModeState
+                            postViewModeState,
                         )
-                    }
+                    },
                 )
                 SettingsList(
                     state = postViewModeState,
@@ -130,7 +130,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.ViewList,
-                            contentDescription = "TODO"
+                            contentDescription = "TODO",
                         )
                     },
                     title = {
@@ -143,12 +143,12 @@ fun LookAndFeelActivity(
                             fontSizeState,
                             themeState,
                             themeColorState,
-                            postViewModeState
+                            postViewModeState,
                         )
-                    }
+                    },
                 )
             }
-        }
+        },
     )
 }
 
@@ -157,7 +157,7 @@ private fun updateAppSettings(
     fontSizeState: SettingValueState<Float>,
     themeState: SettingValueState<Int>,
     themeColorState: SettingValueState<Int>,
-    postViewModeState: SettingValueState<Int>
+    postViewModeState: SettingValueState<Int>,
 ) {
     appSettingsViewModel.update(
         AppSettings(
@@ -166,7 +166,7 @@ private fun updateAppSettings(
             theme = themeState.value,
             themeColor = themeColorState.value,
             viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
-            postViewMode = postViewModeState.value
-        )
+            postViewMode = postViewModeState.value,
+        ),
     )
 }
