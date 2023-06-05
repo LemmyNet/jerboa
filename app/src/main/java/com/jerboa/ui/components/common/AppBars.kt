@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.common
 
 import android.annotation.SuppressLint
@@ -43,13 +41,13 @@ import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.Account
-import com.jerboa.db.AppSettings
 import com.jerboa.loginFirstToast
 import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import com.jerboa.unreadCountTotal
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
@@ -77,16 +75,16 @@ fun SimpleTopAppBar(
 @Composable
 fun BottomAppBarAll(
     navController: NavController = rememberNavController(),
-    appSettings: AppSettings? = null,
     screen: String,
     unreadCounts: GetUnreadCountResponse? = null,
+    showBottomNav: Boolean? = true,
     onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
 ) {
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
-    if (appSettings?.showBottomNav != false) {
+    if (showBottomNav == true) {
         BottomAppBar {
             NavigationBarItem(
                 icon = {
@@ -191,6 +189,7 @@ fun BottomAppBarAllPreview() {
         onClickProfile = {},
         onClickSaved = {},
         screen = "home",
+        showBottomNav = true,
     )
 }
 
@@ -343,6 +342,7 @@ fun scoreColor(myVote: Int?): Color {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxIconAndBadge(
     iconBadgeCount: Int?,

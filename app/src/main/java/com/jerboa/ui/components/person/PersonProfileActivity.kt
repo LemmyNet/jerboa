@@ -142,7 +142,7 @@ fun PersonProfileActivity(
         },
         bottomBar = {
             BottomAppBarAll(
-                appSettings = appSettingsViewModel.appSettings.value,
+                showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
                 screen = bottomAppBarScreen,
                 unreadCounts = homeViewModel.unreadCountResponse,
                 onClickProfile = {
