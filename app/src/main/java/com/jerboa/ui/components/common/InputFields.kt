@@ -11,7 +11,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -71,11 +70,9 @@ import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
-import com.jerboa.ui.theme.MARKDOWN_FONT_MULTIPLIER
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 
 @Composable
@@ -679,17 +676,10 @@ fun PreviewLines(
 fun MyMarkdownText(
     markdown: String,
     color: Color = MaterialTheme.colorScheme.onSurface,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null,
 ) {
-    MarkdownText(
-        markdown = markdown,
-        modifier = Modifier.fillMaxSize(),
-        onClick = onClick,
-        color = color,
-        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(MARKDOWN_FONT_MULTIPLIER),
-//        style = MaterialTheme.typography.titleLarge,
-//        imageLoader =  LocalImageLoader.current
-    )
+    MarkdownHelper.CreateMarkdownView(markdown = markdown, color = color, onClick = onClick, onLongClick = onLongClick)
 }
 
 fun String.insert(index: Int, string: String): String {

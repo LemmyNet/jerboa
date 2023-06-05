@@ -66,9 +66,11 @@ android {
 dependencies {
     implementation 'com.github.alorma:compose-settings-ui-m3:0.27.0'
 
-    implementation 'com.github.jeziellago:compose-markdown:0.3.1'
-
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
+
+    // Markdown support
+    implementation 'io.noties.markwon:core:4.6.2'
+    implementation 'io.noties.markwon:image:4.6.2'
 
     // Accompanist
     implementation 'com.google.accompanist:accompanist-pager:0.30.1'

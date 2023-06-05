@@ -33,6 +33,7 @@ import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
@@ -100,6 +101,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        MarkdownHelper.init(this)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val accountSync = getCurrentAccountSync(accountViewModel)
