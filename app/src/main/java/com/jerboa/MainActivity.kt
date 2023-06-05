@@ -180,19 +180,23 @@ class MainActivity : ComponentActivity() {
                     }
                     // Only necessary for community deeplinks
                     composable(
-                        route = "c/{name}",
-                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                            navDeepLink { uriPattern = "$instance/c/{name}" }
-                        },
+                        route = "{instance}/c/{name}",
+                        deepLinks = listOf(
+                            navDeepLink { uriPattern = "{instance}/c/{name}" },
+                        ),
                         arguments = listOf(
                             navArgument("name") {
+                                type = NavType.StringType
+                            },
+                            navArgument("instance") {
                                 type = NavType.StringType
                             },
                         ),
                     ) {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
-                            val idOrName = Either.Right(name)
+                            val instance = it.arguments?.getString("instance")!!
+                            val idOrName = Either.Right("$name@$instance")
 
                             communityViewModel.fetchCommunity(
                                 idOrName = idOrName,
@@ -258,19 +262,23 @@ class MainActivity : ComponentActivity() {
                     }
                     // Necessary for deep links
                     composable(
-                        route = "u/{name}",
-                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                            navDeepLink { uriPattern = "$instance/u/{name}" }
-                        },
+                        route = "{instance}/u/{name}",
+                        deepLinks = listOf(
+                            navDeepLink { uriPattern = "{instance}/u/{name}" },
+                        ),
                         arguments = listOf(
                             navArgument("name") {
+                                type = NavType.StringType
+                            },
+                            navArgument("instance") {
                                 type = NavType.StringType
                             },
                         ),
                     ) {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
-                            val idOrName = Either.Right(name)
+                            val instance = it.arguments?.getString("instance")!!
+                            val idOrName = Either.Right("$name@$instance")
 
                             personProfileViewModel.fetchPersonDetails(
                                 idOrName = idOrName,

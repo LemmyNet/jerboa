@@ -56,7 +56,7 @@ fun CommentMentionNodeHeader(
     onPersonClick: (personId: Int) -> Unit,
     score: Int,
     myVote: Int?,
-    onLongClick: () -> Unit = {},
+    onClick: () -> Unit,
 ) {
     CommentOrPostNodeHeader(
         creator = personMentionView.creator,
@@ -69,7 +69,7 @@ fun CommentMentionNodeHeader(
         isPostCreator = false,
         isModerator = false,
         isCommunityBanned = personMentionView.creator_banned_from_community,
-        onLongClick = onLongClick,
+        onClick = onClick,
     )
 }
 
@@ -81,6 +81,7 @@ fun CommentMentionNodeHeaderPreview() {
         score = 23,
         myVote = 26,
         onPersonClick = {},
+        onClick = {},
     )
 }
 
@@ -286,7 +287,7 @@ fun CommentMentionNode(
             onPersonClick = onPersonClick,
             score = score,
             myVote = myVote,
-            onLongClick = {
+            onClick = {
                 isExpanded = !isExpanded
             },
         )
@@ -299,6 +300,7 @@ fun CommentMentionNode(
                 CommentBody(
                     comment = personMentionView.comment,
                     viewSource = viewSource,
+                    onClick = {},
                 )
                 CommentMentionNodeFooterLine(
                     personMentionView = personMentionView,

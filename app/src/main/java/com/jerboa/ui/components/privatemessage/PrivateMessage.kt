@@ -85,7 +85,10 @@ fun PrivateMessageViewPreview() {
 
 @Composable
 fun PrivateMessageBody(privateMessageView: PrivateMessageView) {
-    MyMarkdownText(markdown = privateMessageView.private_message.content)
+    MyMarkdownText(
+        markdown = privateMessageView.private_message.content,
+        onClick = {},
+    )
 }
 
 @Composable
