@@ -203,7 +203,7 @@ fun CommentOrPostNodeHeader(
     isPostCreator: Boolean,
     isModerator: Boolean,
     isCommunityBanned: Boolean,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
     FlowRow(
         mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
@@ -258,7 +258,8 @@ fun CommentOrPostNodeHeaderPreview() {
         onPersonClick = {},
         isPostCreator = true,
         isModerator = true,
-        isCommunityBanned = false
+        isCommunityBanned = false,
+        onClick = {}
     )
 }
 
@@ -452,7 +453,8 @@ fun Sidebar(
                 ) {
                     MyMarkdownText(
                         markdown = it,
-                        color = MaterialTheme.colorScheme.onBackground.muted
+                        color = MaterialTheme.colorScheme.onBackground.muted,
+                        onClick = {}
                     )
                 }
             }

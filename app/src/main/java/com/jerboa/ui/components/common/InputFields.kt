@@ -323,7 +323,8 @@ fun ShowPreviewDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 MyMarkdownText(
-                    markdown = content
+                    markdown = content,
+                    onClick = {}
                 )
             }
         },
@@ -675,7 +676,7 @@ fun PreviewLines(
 fun MyMarkdownText(
     markdown: String,
     color: Color = MaterialTheme.colorScheme.onSurface,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
     MarkdownText(
         markdown = markdown,

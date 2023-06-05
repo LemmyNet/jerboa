@@ -87,7 +87,8 @@ fun RepliedComment(
             onPersonClick = onPersonClick,
             score = commentView.counts.score,
             myVote = commentView.my_vote,
-            isModerator = isModerator
+            isModerator = isModerator,
+            onClick = {}
         )
         SelectionContainer {
             Text(text = commentView.comment.content)
@@ -105,7 +106,8 @@ fun RepliedCommentReply(
             commentReplyView = commentReplyView,
             onPersonClick = onPersonClick,
             score = commentReplyView.counts.score,
-            myVote = commentReplyView.my_vote
+            myVote = commentReplyView.my_vote,
+            onClick = {}
         )
         SelectionContainer {
             Text(text = commentReplyView.comment.content)
@@ -123,7 +125,8 @@ fun RepliedMentionReply(
             personMentionView = personMentionView,
             onPersonClick = onPersonClick,
             score = personMentionView.counts.score,
-            myVote = personMentionView.my_vote
+            myVote = personMentionView.my_vote,
+            onClick = {}
         )
         SelectionContainer {
             Text(text = personMentionView.comment.content)

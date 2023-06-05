@@ -86,7 +86,7 @@ fun CommentNodeHeader(
     score: Int,
     myVote: Int?,
     isModerator: Boolean,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -111,7 +111,8 @@ fun CommentNodeHeaderPreview() {
         score = 23,
         myVote = 26,
         isModerator = false,
-        onPersonClick = {}
+        onPersonClick = {},
+        onClick = {}
     )
 }
 
@@ -119,7 +120,7 @@ fun CommentNodeHeaderPreview() {
 fun CommentBody(
     comment: Comment,
     viewSource: Boolean,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
     val content = if (comment.removed) {
         "*Removed*"
@@ -147,7 +148,11 @@ fun CommentBody(
 @Preview
 @Composable
 fun CommentBodyPreview() {
-    CommentBody(comment = sampleCommentView.comment, viewSource = false)
+    CommentBody(
+        comment = sampleCommentView.comment,
+        viewSource = false,
+        onClick = {}
+    )
 }
 
 fun LazyListScope.commentNodeItem(

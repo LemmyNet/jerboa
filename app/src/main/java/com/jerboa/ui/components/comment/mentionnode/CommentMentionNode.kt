@@ -56,7 +56,7 @@ fun CommentMentionNodeHeader(
     onPersonClick: (personId: Int) -> Unit,
     score: Int,
     myVote: Int?,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
     CommentOrPostNodeHeader(
         creator = personMentionView.creator,
@@ -80,7 +80,8 @@ fun CommentMentionNodeHeaderPreview() {
         personMentionView = samplePersonMentionView,
         score = 23,
         myVote = 26,
-        onPersonClick = {}
+        onPersonClick = {},
+        onClick = {}
     )
 }
 
@@ -298,7 +299,8 @@ fun CommentMentionNode(
             Column {
                 CommentBody(
                     comment = personMentionView.comment,
-                    viewSource = viewSource
+                    viewSource = viewSource,
+                    onClick = {}
                 )
                 CommentMentionNodeFooterLine(
                     personMentionView = personMentionView,

@@ -56,7 +56,7 @@ fun CommentReplyNodeHeader(
     onPersonClick: (personId: Int) -> Unit,
     score: Int,
     myVote: Int?,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
@@ -80,7 +80,8 @@ fun CommentReplyNodeHeaderPreview() {
         commentReplyView = sampleCommentReplyView,
         score = 23,
         myVote = 26,
-        onPersonClick = {}
+        onPersonClick = {},
+        onClick = {}
     )
 }
 
@@ -298,7 +299,8 @@ fun CommentReplyNode(
             Column {
                 CommentBody(
                     comment = commentReplyView.comment,
-                    viewSource = viewSource
+                    viewSource = viewSource,
+                    onClick = {}
                 )
                 CommentReplyNodeFooterLine(
                     commentReplyView = commentReplyView,
