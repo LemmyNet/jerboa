@@ -124,6 +124,7 @@ fun LoginForm(
                 trailingIcon = {
                     TrailingIcon(expanded = expanded)
                 },
+                keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri)
             )
             ExposedDropdownMenu(
                 expanded = expanded,
