@@ -619,6 +619,9 @@ fun Tagline(taglines: List<Tagline>) {
     Column(
         Modifier.padding(LARGE_PADDING),
     ) {
-        MyMarkdownText(markdown = tagline.content)
+        MyMarkdownText(
+            markdown = tagline.content,
+            onClick = {},
+        )
     }
 }

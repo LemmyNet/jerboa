@@ -86,6 +86,7 @@ fun PersonProfileTopSection(
                 MyMarkdownText(
                     markdown = it,
                     color = MaterialTheme.colorScheme.onBackground.muted,
+                    onClick = {},
                 )
             }
         }

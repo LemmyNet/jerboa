@@ -86,7 +86,7 @@ fun CommentNodeHeader(
     score: Int,
     myVote: Int?,
     isModerator: Boolean,
-    onLongClick: () -> Unit = {},
+    onClick: () -> Unit,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -99,7 +99,7 @@ fun CommentNodeHeader(
         isPostCreator = isPostCreator(commentView),
         isModerator = isModerator,
         isCommunityBanned = commentView.creator_banned_from_community,
-        onLongClick = onLongClick,
+        onClick = onClick,
     )
 }
 
@@ -112,6 +112,7 @@ fun CommentNodeHeaderPreview() {
         myVote = 26,
         isModerator = false,
         onPersonClick = {},
+        onClick = {},
     )
 }
 
@@ -119,6 +120,7 @@ fun CommentNodeHeaderPreview() {
 fun CommentBody(
     comment: Comment,
     viewSource: Boolean,
+    onClick: () -> Unit,
 ) {
     val content = if (comment.removed) {
         "*Removed*"
@@ -132,17 +134,25 @@ fun CommentBody(
         SelectionContainer {
             Text(
                 text = comment.content,
+                modifier = Modifier.clickable { onClick() },
             )
         }
     } else {
-        MyMarkdownText(markdown = content)
+        MyMarkdownText(
+            markdown = content,
+            onClick = onClick,
+        )
     }
 }
 
 @Preview
 @Composable
 fun CommentBodyPreview() {
-    CommentBody(comment = sampleCommentView.comment, viewSource = false)
+    CommentBody(
+        comment = sampleCommentView.comment,
+        viewSource = false,
+        onClick = {},
+    )
 }
 
 fun LazyListScope.commentNodeItem(
@@ -228,7 +238,7 @@ fun LazyListScope.commentNodeItem(
                         score = instantScores.value.score,
                         myVote = instantScores.value.myVote,
                         isModerator = isModerator(commentView.creator, moderators),
-                        onLongClick = {
+                        onClick = {
                             toggleExpanded(commentId)
                         },
                     )
@@ -241,6 +251,9 @@ fun LazyListScope.commentNodeItem(
                             CommentBody(
                                 comment = commentView.comment,
                                 viewSource = viewSource,
+                                onClick = {
+                                    toggleExpanded(commentId)
+                                },
                             )
                             CommentFooterLine(
                                 commentView = commentView,

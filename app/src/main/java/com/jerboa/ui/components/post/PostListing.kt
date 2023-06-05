@@ -234,6 +234,7 @@ fun PostNodeHeader(
         isPostCreator = true,
         isModerator = isModerator,
         isCommunityBanned = postView.creator_banned_from_community,
+        onClick = {},
     )
 }
 
@@ -392,6 +393,7 @@ fun PostBody(
                         ) {
                             MyMarkdownText(
                                 markdown = text,
+                                onClick = {},
                             )
                         }
                     } else {
@@ -1133,7 +1135,10 @@ fun MetadataCard(post: Post) {
                 post.embed_description?.also {
                     Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
                     // This is actually html, but markdown can render it
-                    MyMarkdownText(markdown = it)
+                    MyMarkdownText(
+                        markdown = it,
+                        onClick = {},
+                    )
                 }
             }
         },
