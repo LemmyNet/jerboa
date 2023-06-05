@@ -27,6 +27,7 @@ import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,6 +50,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -250,7 +253,6 @@ fun PostTitleBlock(
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
             postView = postView,
-            onPostLinkClick = onPostLinkClick,
         )
     } else {
         PostTitleAndThumbnail(
@@ -287,7 +289,6 @@ fun PostName(
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -305,8 +306,23 @@ fun PostTitleAndImageLink(
         )
     }
 
+    var showImageDialog by remember { mutableStateOf(false) }
+
+    if (showImageDialog) {
+        Dialog(
+            onDismissRequest = { showImageDialog = false },
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = false
+            )
+        ) {
+            ImageActivity(url)
+        }
+    }
+
     val postLinkPicMod = Modifier
-        .clickable { onPostLinkClick(url) }
+        .clickable { showImageDialog = true }
     PictrsUrlImage(
         url = url,
         nsfw = nsfwCheck(postView),
