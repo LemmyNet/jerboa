@@ -131,7 +131,7 @@ fun HomeActivity(
                 },
                 bottomBar = {
                     BottomAppBarAll(
-                        appSettings = appSettingsViewModel.appSettings.value,
+                        showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
                         screen = "home",
                         unreadCounts = homeViewModel.unreadCountResponse,
                         onClickProfile = {
