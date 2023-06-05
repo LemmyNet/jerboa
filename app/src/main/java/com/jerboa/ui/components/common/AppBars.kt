@@ -43,6 +43,7 @@ import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.Account
+import com.jerboa.db.AppSettings
 import com.jerboa.loginFirstToast
 import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
@@ -76,6 +77,7 @@ fun SimpleTopAppBar(
 @Composable
 fun BottomAppBarAll(
     navController: NavController = rememberNavController(),
+    appSettings: AppSettings? = null,
     screen: String,
     unreadCounts: GetUnreadCountResponse? = null,
     onClickSaved: () -> Unit,
@@ -84,98 +86,100 @@ fun BottomAppBarAll(
 ) {
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
-    BottomAppBar {
-        NavigationBarItem(
-            icon = {
-                if (screen == "home") {
-                    Icon(
-                        imageVector = Icons.Filled.Home,
-                        tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = "TODO",
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.Home,
-                        contentDescription = "TODO",
-                    )
-                }
-            },
-            selected = false,
-            onClick = {
-                navController.navigate("home")
-            },
-        )
+    if (appSettings?.showBottomNav != false) {
+        BottomAppBar {
+            NavigationBarItem(
+                icon = {
+                    if (screen == "home") {
+                        Icon(
+                            imageVector = Icons.Filled.Home,
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = "TODO",
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Outlined.Home,
+                            contentDescription = "TODO",
+                        )
+                    }
+                },
+                selected = false,
+                onClick = {
+                    navController.navigate("home")
+                },
+            )
 
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.List,
-                    contentDescription = "TODO",
-                )
-            },
-            onClick = {
-                navController.navigate("communityList")
-            },
-            selected = screen == "communityList",
-        )
-        NavigationBarItem(
-            icon = {
-                if (screen == "inbox") {
-                    InboxIconAndBadge(
-                        iconBadgeCount = totalUnreads,
-                        icon = Icons.Filled.Email,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                } else {
-                    InboxIconAndBadge(
-                        iconBadgeCount = totalUnreads,
-                        icon = Icons.Outlined.Email,
-                    )
-                }
-            },
-            onClick = {
-                onClickInbox()
-            },
-            selected = false,
-        )
-        NavigationBarItem(
-            icon = {
-                if (screen == "saved") {
+            NavigationBarItem(
+                icon = {
                     Icon(
-                        imageVector = Icons.Filled.Bookmarks,
-                        tint = MaterialTheme.colorScheme.primary,
+                        imageVector = Icons.Outlined.List,
                         contentDescription = "TODO",
                     )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.Bookmarks,
-                        contentDescription = "TODO",
-                    )
-                }
-            },
-            onClick = {
-                onClickSaved()
-            },
-            selected = false,
-        )
-        NavigationBarItem(
-            icon = {
-                if (screen == "profile") {
-                    Icon(
-                        imageVector = Icons.Filled.Person,
-                        tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = "TODO",
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.Person,
-                        contentDescription = "TODO",
-                    )
-                }
-            },
-            onClick = onClickProfile,
-            selected = false,
-        )
+                },
+                onClick = {
+                    navController.navigate("communityList")
+                },
+                selected = screen == "communityList",
+            )
+            NavigationBarItem(
+                icon = {
+                    if (screen == "inbox") {
+                        InboxIconAndBadge(
+                            iconBadgeCount = totalUnreads,
+                            icon = Icons.Filled.Email,
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    } else {
+                        InboxIconAndBadge(
+                            iconBadgeCount = totalUnreads,
+                            icon = Icons.Outlined.Email,
+                        )
+                    }
+                },
+                onClick = {
+                    onClickInbox()
+                },
+                selected = false,
+            )
+            NavigationBarItem(
+                icon = {
+                    if (screen == "saved") {
+                        Icon(
+                            imageVector = Icons.Filled.Bookmarks,
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = "TODO",
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Outlined.Bookmarks,
+                            contentDescription = "TODO",
+                        )
+                    }
+                },
+                onClick = {
+                    onClickSaved()
+                },
+                selected = false,
+            )
+            NavigationBarItem(
+                icon = {
+                    if (screen == "profile") {
+                        Icon(
+                            imageVector = Icons.Filled.Person,
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = "TODO",
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = "TODO",
+                        )
+                    }
+                },
+                onClick = onClickProfile,
+                selected = false,
+            )
+        }
     }
 }
 

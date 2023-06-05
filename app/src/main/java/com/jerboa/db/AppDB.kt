@@ -64,6 +64,11 @@ data class AppSettings(
         defaultValue = "0",
     )
     val postViewMode: Int,
+    @ColumnInfo(
+        name = "show_bottom_nav",
+        defaultValue = "1",
+    )
+    val showBottomNav: Boolean,
 )
 
 @Dao
@@ -287,8 +292,18 @@ val MIGRATION_8_9 = object : Migration(8, 9) {
     }
 }
 
+val MIGRATION_9_10 = object : Migration(9, 10) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Add show_bottom_nav column
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column show_bottom_nav INTEGER NOT NULL default 1",
+        )
+    }
+}
+
 @Database(
-    version = 9,
+    version = 10,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -321,6 +336,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_6_7,
                         MIGRATION_7_8,
                         MIGRATION_8_9,
+                        MIGRATION_9_10,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

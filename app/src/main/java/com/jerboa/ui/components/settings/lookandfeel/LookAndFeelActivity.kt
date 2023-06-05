@@ -17,8 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.alorma.compose.settings.storage.base.SettingValueState
+import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberFloatSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
+import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsSlider
 import com.jerboa.PostViewMode
@@ -45,6 +47,7 @@ fun LookAndFeelActivity(
             ?: DEFAULT_FONT_SIZE.toFloat(),
     )
     val postViewModeState = rememberIntSettingState(settings?.postViewMode ?: 0)
+    val showBottomNavState = rememberBooleanSettingState(settings?.showBottomNav ?: true)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -75,6 +78,7 @@ fun LookAndFeelActivity(
                             themeState,
                             themeColorState,
                             postViewModeState,
+                            showBottomNavState,
                         )
                     },
                 )
@@ -98,6 +102,7 @@ fun LookAndFeelActivity(
                             themeState,
                             themeColorState,
                             postViewModeState,
+                            showBottomNavState,
                         )
                     },
                 )
@@ -121,6 +126,7 @@ fun LookAndFeelActivity(
                             themeState,
                             themeColorState,
                             postViewModeState,
+                            showBottomNavState,
                         )
                     },
                 )
@@ -144,6 +150,23 @@ fun LookAndFeelActivity(
                             themeState,
                             themeColorState,
                             postViewModeState,
+                            showBottomNavState,
+                        )
+                    },
+                )
+                SettingsCheckbox(
+                    state = showBottomNavState,
+                    title = {
+                        Text(text = "Show navigation bar")
+                    },
+                    onCheckedChange = {
+                        updateAppSettings(
+                            appSettingsViewModel,
+                            fontSizeState,
+                            themeState,
+                            themeColorState,
+                            postViewModeState,
+                            showBottomNavState,
                         )
                     },
                 )
@@ -158,6 +181,7 @@ private fun updateAppSettings(
     themeState: SettingValueState<Int>,
     themeColorState: SettingValueState<Int>,
     postViewModeState: SettingValueState<Int>,
+    showBottomNav: SettingValueState<Boolean>,
 ) {
     appSettingsViewModel.update(
         AppSettings(
@@ -167,6 +191,7 @@ private fun updateAppSettings(
             themeColor = themeColorState.value,
             viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
             postViewMode = postViewModeState.value,
+            showBottomNav = showBottomNav.value,
         ),
     )
 }
