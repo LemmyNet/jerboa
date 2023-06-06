@@ -35,7 +35,7 @@ fun CommentNodes(
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
     showPostAndCommunityContext: Boolean = false,
-    showCollapsedCommentContent: Boolean = false,
+    showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
 ) {
     // Holds the un-expanded comment ids
@@ -98,7 +98,7 @@ fun LazyListScope.commentNodeItems(
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
     showPostAndCommunityContext: Boolean = false,
-    showCollapsedCommentContent: Boolean = false,
+    showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
 ) {
     nodes.forEach { node ->

@@ -184,7 +184,7 @@ fun LazyListScope.commentNodeItem(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
-    showCollapsedCommentContent: Boolean = false,
+    showCollapsedCommentContent: Boolean,
     showPostAndCommunityContext: Boolean = false,
     account: Account?,
     isCollapsedByParent: Boolean,
@@ -343,6 +343,7 @@ fun LazyListScope.commentNodeItem(
             account = account,
             moderators = moderators,
             isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
+            showCollapsedCommentContent = showCollapsedCommentContent,
         )
     }
 }
@@ -567,6 +568,7 @@ fun CommentNodesPreview() {
         moderators = listOf(),
         listState = rememberLazyListState(),
         isCollapsedByParent = false,
+        showCollapsedCommentContent = false,
     )
 }
 
