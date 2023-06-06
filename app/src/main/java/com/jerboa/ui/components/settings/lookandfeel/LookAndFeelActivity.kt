@@ -47,6 +47,8 @@ fun LookAndFeelActivity(
     )
     val postViewModeState = rememberIntSettingState(settings?.postViewMode ?: 0)
     val showBottomNavState = rememberBooleanSettingState(settings?.showBottomNav ?: true)
+    val showCollapsedCommentContentState =
+        rememberBooleanSettingState(settings?.showCollapsedCommentContent ?: false)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -60,6 +62,7 @@ fun LookAndFeelActivity(
                 fontSize = fontSizeState.value.toInt(),
                 postViewMode = postViewModeState.value,
                 showBottomNav = showBottomNavState.value,
+                showCollapsedCommentContent = showCollapsedCommentContentState.value,
             ),
         )
     }
@@ -141,6 +144,13 @@ fun LookAndFeelActivity(
                     state = showBottomNavState,
                     title = {
                         Text(text = "Show navigation bar")
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = showCollapsedCommentContentState,
+                    title = {
+                        Text(text = "Show content for collapsed comments")
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

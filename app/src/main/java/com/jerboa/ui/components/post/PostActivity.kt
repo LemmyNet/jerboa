@@ -50,6 +50,7 @@ fun PostActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     navController: NavController,
+    showCollapsedCommentContent: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -311,6 +312,7 @@ fun PostActivity(
                             onPostClick = {}, // Do nothing
                             account = account,
                             moderators = postViewModel.moderators,
+                            showCollapsedCommentContent = showCollapsedCommentContent,
                         )
                     }
                 }

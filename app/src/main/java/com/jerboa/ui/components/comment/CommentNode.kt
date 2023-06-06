@@ -178,6 +178,7 @@ fun LazyListScope.commentNodeItem(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
+    showCollapsedCommentContent: Boolean = false,
     showPostAndCommunityContext: Boolean = false,
     account: Account?,
 ) {
@@ -246,7 +247,7 @@ fun LazyListScope.commentNodeItem(
                         },
                     )
                     AnimatedVisibility(
-                        visible = isExpanded(commentId),
+                        visible = isExpanded(commentId) || showCollapsedCommentContent,
                         enter = expandVertically(),
                         exit = shrinkVertically(),
                     ) {
