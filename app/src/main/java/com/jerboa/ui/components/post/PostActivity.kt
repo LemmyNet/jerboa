@@ -313,6 +313,7 @@ fun PostActivity(
                             account = account,
                             moderators = postViewModel.moderators,
                             showCollapsedCommentContent = showCollapsedCommentContent,
+                            isCollapsedByParent = false,
                         )
                     }
                 }

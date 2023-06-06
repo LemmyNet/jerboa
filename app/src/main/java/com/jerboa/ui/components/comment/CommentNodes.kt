@@ -36,6 +36,7 @@ fun CommentNodes(
     moderators: List<CommunityModeratorView>,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean = false,
+    isCollapsedByParent: Boolean,
 ) {
     // Holds the un-expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
@@ -70,6 +71,7 @@ fun CommentNodes(
             onBlockCreatorClick = onBlockCreatorClick,
             showPostAndCommunityContext = showPostAndCommunityContext,
             showCollapsedCommentContent = showCollapsedCommentContent,
+            isCollapsedByParent = isCollapsedByParent,
         )
     }
 }
@@ -97,6 +99,7 @@ fun LazyListScope.commentNodeItems(
     moderators: List<CommunityModeratorView>,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean = false,
+    isCollapsedByParent: Boolean,
 ) {
     nodes.forEach { node ->
         commentNodeItem(
@@ -122,6 +125,7 @@ fun LazyListScope.commentNodeItems(
             onBlockCreatorClick = onBlockCreatorClick,
             showPostAndCommunityContext = showPostAndCommunityContext,
             showCollapsedCommentContent = showCollapsedCommentContent,
+            isCollapsedByParent = isCollapsedByParent,
         )
     }
 }
