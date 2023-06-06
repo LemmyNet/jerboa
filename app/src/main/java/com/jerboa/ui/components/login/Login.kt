@@ -126,7 +126,7 @@ fun LoginForm(
                 trailingIcon = {
                     TrailingIcon(expanded = expanded)
                 },
-                keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri)
+                keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -161,7 +161,7 @@ fun LoginForm(
         Button(
             enabled = isValid && !loading,
             onClick = { onClickLogin(form, instance) },
-            modifier = Modifier.padding(top = 10.dp)
+            modifier = Modifier.padding(top = 10.dp),
         ) {
             if (loading) {
                 CircularProgressIndicator()
