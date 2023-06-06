@@ -4,7 +4,10 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -282,6 +285,9 @@ fun LazyListScope.commentNodeItem(
                                 onReportClick = onReportClick,
                                 onCommentLinkClick = onCommentLinkClick,
                                 onBlockCreatorClick = onBlockCreatorClick,
+                                onClick = {
+                                    toggleExpanded(commentId)
+                                },
                                 account = account,
                             )
                         }
@@ -405,6 +411,7 @@ fun PostAndCommunityContextHeaderPreview() {
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
@@ -419,6 +426,7 @@ fun CommentFooterLine(
     onReportClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onClick: () -> Unit,
     account: Account?,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -459,7 +467,12 @@ fun CommentFooterLine(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING)
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick,
+            ),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
