@@ -9,13 +9,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -46,13 +48,14 @@ val backColorTranslucent = Color.Black.copy(alpha = 0.4f)
 const val backFadeTime = 300
 
 @Composable
-fun ImageActivity(url: String) {
+fun ImageActivity(url: String, onBackRequest: () -> Unit) {
     @Composable
-    fun BarIcon(icon: ImageVector, name: String, onTap: () -> Unit) {
+    fun BarIcon(icon: ImageVector, name: String, modifier: Modifier = Modifier, onTap: () -> Unit) {
         Box(
             Modifier
                 .size(40.dp)
-                .clickable(onClick = onTap)) {
+                .clickable(onClick = onTap)
+                .then(modifier)) {
             Icon(
                 modifier = Modifier.align(Alignment.Center),
                 imageVector = icon,
@@ -79,9 +82,16 @@ fun ImageActivity(url: String) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .alpha(topBarAlpha.value),
-            horizontalArrangement = Arrangement.End,
+                .alpha(topBarAlpha.value)
+                .padding(horizontal = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
+            BarIcon(icon = Icons.Filled.ArrowBack, name = "Back") {
+                onBackRequest()
+            }
+
+            Spacer(Modifier.weight(1f))
+
             BarIcon(icon = Icons.Outlined.Download, name = "Download") {
                 coroutineScope.launch {
                     val request = ImageRequest.Builder(context)
@@ -121,5 +131,5 @@ fun ImageViewer(url: String, onTap: (() -> Unit)?) {
 @Composable
 @Preview
 fun ImageActivityPreview() {
-    ImageActivity(url = "")
+    ImageActivity(url = "", onBackRequest = { })
 }

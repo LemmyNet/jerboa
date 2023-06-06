@@ -316,7 +316,7 @@ fun PostTitleAndImageLink(
                 usePlatformDefaultWidth = false
             )
         ) {
-            ImageActivity(url)
+            ImageActivity(url, onBackRequest = { showImageDialog = false })
         }
     }
 
