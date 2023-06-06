@@ -124,7 +124,7 @@ fun ScoreAndTimePreview() {
 @Composable
 fun CollapsedIndicator(visible: Boolean, descendants: Int) {
     AnimatedVisibility(
-        visible = visible,
+        visible = visible && descendants > 0,
         enter = fadeIn(),
         exit = fadeOut(),
     ) {
