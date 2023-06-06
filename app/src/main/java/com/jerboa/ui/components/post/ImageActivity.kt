@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Toast
@@ -94,23 +95,7 @@ fun ImageActivity(url: String, onBackRequest: () -> Unit) {
 
             BarIcon(icon = Icons.Outlined.Download, name = "Download") {
                 coroutineScope.launch {
-                    val request = ImageRequest.Builder(context)
-                        .data(url)
-                        .crossfade(true)
-                        .target(
-                            onSuccess = {
-                                val fileName = Uri.parse(url).pathSegments.last()
-                                saveBitmap(context, it.toBitmap(), Bitmap.CompressFormat.WEBP, "image/webp", fileName)
-
-                                Toast.makeText(context, "Saved image", Toast.LENGTH_SHORT).show()
-                            },
-                            onError = {
-                                Toast.makeText(context, "Failed to save image", Toast.LENGTH_SHORT).show()
-                            }
-                        )
-                        .build()
-
-                    context.imageLoader.execute(request)
+                    SaveImage(url, context)
                 }
             }
         }
@@ -126,6 +111,26 @@ fun ImageViewer(url: String, onTap: (() -> Unit)?) {
             .fillMaxSize()
             .zoomable(rememberZoomState())
     )
+}
+
+suspend fun SaveImage(url: String, context: Context) {
+    val request = ImageRequest.Builder(context)
+        .data(url)
+        .crossfade(true)
+        .target(
+            onSuccess = {
+                val fileName = Uri.parse(url).pathSegments.last()
+                saveBitmap(context, it.toBitmap(), Bitmap.CompressFormat.WEBP, "image/webp", fileName)
+
+                Toast.makeText(context, "Saved image", Toast.LENGTH_SHORT).show()
+            },
+            onError = {
+                Toast.makeText(context, "Failed to save image", Toast.LENGTH_SHORT).show()
+            }
+        )
+        .build()
+
+    context.imageLoader.execute(request)
 }
 
 @Composable
