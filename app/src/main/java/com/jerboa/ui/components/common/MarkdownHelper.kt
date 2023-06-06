@@ -115,6 +115,7 @@ object MarkdownHelper {
             setTextColor(textColor.toArgb())
             setMaxLines(maxLines)
             setTextSize(TypedValue.COMPLEX_UNIT_DIP, mergedStyle.fontSize.value)
+            width = maxWidth
 
             viewId?.let { id = viewId }
             textAlign?.let { align ->
