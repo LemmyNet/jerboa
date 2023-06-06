@@ -89,6 +89,8 @@ fun CommentNodeHeader(
     score: Int,
     myVote: Int?,
     isModerator: Boolean,
+    collapsedCommentsCount: Int,
+    isExpanded: Boolean,
     onClick: () -> Unit,
 ) {
     CommentOrPostNodeHeader(
@@ -102,6 +104,8 @@ fun CommentNodeHeader(
         isPostCreator = isPostCreator(commentView),
         isModerator = isModerator,
         isCommunityBanned = commentView.creator_banned_from_community,
+        collapsedCommentsCount = collapsedCommentsCount,
+        isExpanded = isExpanded,
         onClick = onClick,
     )
 }
@@ -116,6 +120,8 @@ fun CommentNodeHeaderPreview() {
         isModerator = false,
         onPersonClick = {},
         onClick = {},
+        collapsedCommentsCount = 5,
+        isExpanded = false,
     )
 }
 
@@ -245,6 +251,8 @@ fun LazyListScope.commentNodeItem(
                         onClick = {
                             toggleExpanded(commentId)
                         },
+                        collapsedCommentsCount = getDecendentsCount(node),
+                        isExpanded = isExpanded(commentId),
                     )
                     AnimatedVisibility(
                         visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -718,4 +726,13 @@ fun ShowCommentContextButtonsPreview() {
         onPostClick = {},
         onCommentClick = {},
     )
+}
+
+fun getDecendentsCount(commentNode: CommentNodeData): Int {
+    var count = 0
+    commentNode.children?.forEach {
+        count += 1
+        count += getDecendentsCount(it)
+    }
+    return count
 }
