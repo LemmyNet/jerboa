@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.common
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,6 +29,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -87,6 +90,17 @@ fun BottomAppBarAll(
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
     if (showBottomNav == true) {
+        val window = (LocalContext.current as Activity).window
+        val colorScheme = MaterialTheme.colorScheme
+
+        DisposableEffect(Unit) {
+            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+
+            onDispose {
+                window.navigationBarColor = colorScheme.background.toArgb()
+            }
+        }
+
         BottomAppBar {
             NavigationBarItem(
                 icon = {
