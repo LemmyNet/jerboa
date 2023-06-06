@@ -820,10 +820,12 @@ fun nsfwCheck(postView: PostView): Boolean {
 
 @Throws(IOException::class)
 fun saveBitmap(
-    context: Context, bitmap: Bitmap, format: Bitmap.CompressFormat,
-    mimeType: String, displayName: String
+    context: Context,
+    bitmap: Bitmap,
+    format: Bitmap.CompressFormat,
+    mimeType: String,
+    displayName: String,
 ): Uri {
-
     val values = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
         put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
@@ -838,14 +840,13 @@ fun saveBitmap(
             ?: throw IOException("Failed to create new MediaStore record.")
 
         resolver.openOutputStream(uri)?.use {
-            if (!bitmap.compress(format, 95, it))
+            if (!bitmap.compress(format, 95, it)) {
                 throw IOException("Failed to save bitmap.")
+            }
         } ?: throw IOException("Failed to open output stream.")
 
         return uri
-
     } catch (e: IOException) {
-
         uri?.let { orphanUri ->
             // Don't leave an orphan entry in the MediaStore
             resolver.delete(orphanUri, null, null)

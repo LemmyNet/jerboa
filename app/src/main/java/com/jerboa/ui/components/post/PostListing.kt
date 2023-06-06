@@ -313,8 +313,8 @@ fun PostTitleAndImageLink(
             properties = DialogProperties(
                 dismissOnBackPress = true,
                 dismissOnClickOutside = false,
-                usePlatformDefaultWidth = false
-            )
+                usePlatformDefaultWidth = false,
+            ),
         ) {
             ImageActivity(url, onBackRequest = { showImageDialog = false })
         }

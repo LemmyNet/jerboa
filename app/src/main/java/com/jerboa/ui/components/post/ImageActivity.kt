@@ -56,7 +56,8 @@ fun ImageActivity(url: String, onBackRequest: () -> Unit) {
             Modifier
                 .size(40.dp)
                 .clickable(onClick = onTap)
-                .then(modifier)) {
+                .then(modifier),
+        ) {
             Icon(
                 modifier = Modifier.align(Alignment.Center),
                 imageVector = icon,
@@ -68,11 +69,14 @@ fun ImageActivity(url: String, onBackRequest: () -> Unit) {
 
     var showTopBar by remember { mutableStateOf(true) }
 
-    val topBarAlpha = animateFloatAsState(if (showTopBar) 1f else 0f, animationSpec = tween(
-        backFadeTime
-    ))
-    val backgroundColor = animateColorAsState(if (showTopBar) backColorTranslucent else backColor,
-                                        animationSpec = tween(backFadeTime))
+    val topBarAlpha = animateFloatAsState(
+        targetValue = if (showTopBar) 1f else 0f,
+        animationSpec = tween(backFadeTime),
+    )
+    val backgroundColor = animateColorAsState(
+        targetValue = if (showTopBar) backColorTranslucent else backColor,
+        animationSpec = tween(backFadeTime),
+    )
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -109,7 +113,7 @@ fun ImageViewer(url: String, onTap: (() -> Unit)?) {
         contentDescription = null,
         modifier = Modifier
             .fillMaxSize()
-            .zoomable(rememberZoomState())
+            .zoomable(rememberZoomState()),
     )
 }
 
@@ -126,7 +130,7 @@ suspend fun SaveImage(url: String, context: Context) {
             },
             onError = {
                 Toast.makeText(context, "Failed to save image", Toast.LENGTH_SHORT).show()
-            }
+            },
         )
         .build()
 
