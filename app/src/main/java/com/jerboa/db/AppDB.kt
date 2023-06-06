@@ -312,7 +312,7 @@ val MIGRATION_10_11 = object : Migration(10, 11) {
         // Add show_bottom_nav column
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
-            "ALTER TABLE AppSettings add column show_collapsed_comment_content INTEGER NOT NULL default 1",
+            "ALTER TABLE AppSettings add column show_collapsed_comment_content INTEGER NOT NULL default 0",
         )
     }
 }
