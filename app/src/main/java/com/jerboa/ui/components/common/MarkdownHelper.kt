@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.common
 
 import android.content.Context
-import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -19,41 +18,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
-import io.noties.markwon.AbstractMarkwonPlugin
+import coil.ImageLoader
+import com.jerboa.R
 import io.noties.markwon.Markwon
-import io.noties.markwon.MarkwonConfiguration
-import io.noties.markwon.image.AsyncDrawable
-import io.noties.markwon.image.ImageSize
-import io.noties.markwon.image.ImageSizeResolverDef
-import io.noties.markwon.image.ImagesPlugin
+import io.noties.markwon.image.coil.CoilImagesPlugin
 
 object MarkdownHelper {
     private var markwon: Markwon? = null
 
     fun init(context: Context) {
-        markwon = Markwon.builder(context)
-            .usePlugin(object : AbstractMarkwonPlugin() {
-                override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                    builder.imageSizeResolver(FitWidthImageSizeResolver())
-                }
-            })
-            .usePlugin(ImagesPlugin.create())
+        val loader = ImageLoader.Builder(context)
+            .crossfade(true)
+            .placeholder(R.drawable.ic_launcher_foreground)
             .build()
-    }
 
-    private class FitWidthImageSizeResolver : ImageSizeResolverDef() {
-        override fun resolveImageSize(drawable: AsyncDrawable): Rect {
-            return resolveImageSize(
-                ImageSize(
-                    ImageSize.Dimension(100F, UNIT_PERCENT),
-                    null,
-                ),
-
-                drawable.result.bounds,
-                drawable.lastKnownCanvasWidth,
-                drawable.lastKnowTextSize,
-            )
-        }
+        markwon = Markwon.builder(context)
+            .usePlugin(CoilImagesPlugin.create(context, loader))
+            .build()
     }
 
     @Composable

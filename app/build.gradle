@@ -70,7 +70,7 @@ dependencies {
 
     // Markdown support
     implementation 'io.noties.markwon:core:4.6.2'
-    implementation 'io.noties.markwon:image:4.6.2'
+    implementation 'io.noties.markwon:image-coil:4.6.2'
 
     // Accompanist
     implementation 'com.google.accompanist:accompanist-pager:0.30.1'
