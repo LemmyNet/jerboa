@@ -160,9 +160,10 @@ fun LoginForm(
                 }
             }
         }
+
         MyTextField(
             modifier = Modifier
-                .background(if (wasAutofilled) Color(0xFFFFFDE7) else Color.Transparent)
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
                 .onAutofill(AutofillType.Username, AutofillType.EmailAddress) {
                     username = it
                     wasAutofilled = true
@@ -173,7 +174,7 @@ fun LoginForm(
         )
         PasswordField(
             modifier = Modifier
-                .background(if (wasAutofilled) Color(0xFFFFFDE7) else Color.Transparent)
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
                 .onAutofill(AutofillType.Password) {
                     password = it
                     wasAutofilled = true
