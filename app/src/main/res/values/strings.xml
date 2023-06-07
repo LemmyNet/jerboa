@@ -178,4 +178,7 @@
     <string name="settings_activity_look_and_feel">Look and feel</string>
     <string name="settings_activity_account_settings">%1$s settings</string>
     <string name="settings_activity_about">About</string>
+    <string name="community_blocked">%1$s Blocked</string>
+    <string name="comment_mention_node_permalink_copied">Permalink Copied</string>
+    <string name="person_routines_blocked">%1$s Blocked</string>
 </resources>

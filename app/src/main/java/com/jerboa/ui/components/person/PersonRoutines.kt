@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
+import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.blockPersonWrapper
 import com.jerboa.api.markPrivateMessageAsReadWrapper
@@ -121,6 +122,7 @@ fun blockPersonRoutine(
     scope.launch {
         val form = BlockPerson(person.id, block, account.jwt)
         blockPersonWrapper(form, ctx)
-        Toast.makeText(ctx, "${person.name} Blocked", Toast.LENGTH_SHORT).show() // TODO localization
+        Toast.makeText(ctx,
+            ctx.getString(R.string.person_routines_blocked, person.name), Toast.LENGTH_SHORT).show()
     }
 }

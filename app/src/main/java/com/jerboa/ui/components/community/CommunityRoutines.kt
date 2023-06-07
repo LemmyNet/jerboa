@@ -2,6 +2,7 @@ package com.jerboa.ui.components.community
 
 import android.content.Context
 import android.widget.Toast
+import com.jerboa.R
 import com.jerboa.api.blockCommunityWrapper
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.api.BlockCommunity
@@ -19,6 +20,7 @@ fun blockCommunityRoutine(
     scope.launch {
         val form = BlockCommunity(community.id, block, account.jwt)
         blockCommunityWrapper(form, ctx)
-        Toast.makeText(ctx, "${community.name} Blocked", Toast.LENGTH_SHORT).show() // TODO localization
+        Toast.makeText(ctx,
+            ctx.getString(R.string.community_blocked, community.name), Toast.LENGTH_SHORT).show()
     }
 }
