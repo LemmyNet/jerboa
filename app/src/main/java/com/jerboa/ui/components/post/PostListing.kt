@@ -78,7 +78,7 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
-import com.jerboa.ui.components.common.ImageActivity
+import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
@@ -309,16 +309,7 @@ fun PostTitleAndImageLink(
     var showImageDialog by remember { mutableStateOf(false) }
 
     if (showImageDialog) {
-        Dialog(
-            onDismissRequest = { showImageDialog = false },
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = false,
-                usePlatformDefaultWidth = false,
-            ),
-        ) {
-            ImageActivity(url, onBackRequest = { showImageDialog = false })
-        }
+        ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
     }
 
     val postLinkPicMod = Modifier

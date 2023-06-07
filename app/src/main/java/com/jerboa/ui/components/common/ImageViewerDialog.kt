@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.graphics.drawable.toBitmap
 import coil.compose.rememberAsyncImagePainter
 import coil.imageLoader
@@ -49,7 +51,7 @@ val backColorTranslucent = Color.Black.copy(alpha = 0.4f)
 const val backFadeTime = 300
 
 @Composable
-fun ImageActivity(url: String, onBackRequest: () -> Unit) {
+fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
     @Composable
     fun BarIcon(icon: ImageVector, name: String, modifier: Modifier = Modifier, onTap: () -> Unit) {
         Box(
@@ -81,31 +83,40 @@ fun ImageActivity(url: String, onBackRequest: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    Box(Modifier.background(backgroundColor.value)) {
-        Image(
-            painter = rememberAsyncImagePainter(url),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .zoomable(rememberZoomState()),
-        )
+    Dialog(
+        onDismissRequest = onBackRequest,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false,
+        ),
+    ) {
+        Box(Modifier.background(backgroundColor.value)) {
+            Image(
+                painter = rememberAsyncImagePainter(url),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zoomable(rememberZoomState()),
+            )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(topBarAlpha.value)
-                .padding(horizontal = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            BarIcon(icon = Icons.Filled.ArrowBack, name = "Back") {
-                onBackRequest()
-            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(topBarAlpha.value)
+                    .padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                BarIcon(icon = Icons.Filled.ArrowBack, name = "Back") {
+                    onBackRequest()
+                }
 
-            Spacer(Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
 
-            BarIcon(icon = Icons.Outlined.Download, name = "Download") {
-                coroutineScope.launch {
-                    SaveImage(url, context)
+                BarIcon(icon = Icons.Outlined.Download, name = "Download") {
+                    coroutineScope.launch {
+                        SaveImage(url, context)
+                    }
                 }
             }
         }
@@ -135,5 +146,5 @@ suspend fun SaveImage(url: String, context: Context) {
 @Composable
 @Preview
 fun ImageActivityPreview() {
-    ImageActivity(url = "", onBackRequest = { })
+    ImageViewerDialog(url = "", onBackRequest = { })
 }
