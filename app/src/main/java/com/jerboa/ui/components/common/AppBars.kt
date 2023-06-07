@@ -294,6 +294,7 @@ fun ActionBarButton(
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
     account: Account?,
+    requiresAccount: Boolean = true,
 ) {
     val ctx = LocalContext.current
 //    Button(
@@ -313,7 +314,7 @@ fun ActionBarButton(
         Modifier
     } else {
         Modifier.clickable(onClick = {
-            if (account !== null) {
+            if (!requiresAccount || account !== null) {
                 onClick()
             } else {
                 loginFirstToast(ctx)
