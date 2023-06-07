@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.post
+package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.graphics.Bitmap
