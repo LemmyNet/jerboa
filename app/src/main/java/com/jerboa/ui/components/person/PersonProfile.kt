@@ -57,7 +57,7 @@ fun PersonProfileTopSection(
     if (showImage != null) {
         ImageViewerDialog(
             url = showImage!!,
-            onBackRequest = { showImage = null }
+            onBackRequest = { showImage = null },
         )
     }
 
