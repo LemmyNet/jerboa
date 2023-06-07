@@ -676,10 +676,15 @@ fun PreviewLines(
 fun MyMarkdownText(
     markdown: String,
     color: Color = MaterialTheme.colorScheme.onSurface,
-    onClick: (() -> Unit)? = null,
+    onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
 ) {
-    MarkdownHelper.CreateMarkdownView(markdown = markdown, color = color, onClick = onClick, onLongClick = onLongClick)
+    MarkdownHelper.CreateMarkdownView(
+        markdown = markdown,
+        color = color,
+        onClick = onClick,
+        onLongClick = onLongClick,
+    )
 }
 
 fun String.insert(index: Int, string: String): String {
