@@ -235,6 +235,7 @@ fun PostNodeHeader(
         isModerator = isModerator,
         isCommunityBanned = postView.creator_banned_from_community,
         onClick = {},
+        onLongCLick = {},
     )
 }
 

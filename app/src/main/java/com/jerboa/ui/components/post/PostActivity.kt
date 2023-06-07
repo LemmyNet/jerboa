@@ -3,6 +3,7 @@
 package com.jerboa.ui.components.post
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
+import com.jerboa.loginFirstToast
 import com.jerboa.openLink
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
@@ -51,6 +53,7 @@ fun PostActivity(
     postEditViewModel: PostEditViewModel,
     navController: NavController,
     showCollapsedCommentContent: Boolean,
+    showActionBarByDefault: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -65,6 +68,7 @@ fun PostActivity(
 
     // Holds expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
+    val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
 
     val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -230,6 +234,13 @@ fun PostActivity(
                                     unExpandedComments.add(commentId)
                                 }
                             },
+                            toggleActionBar = { commentId ->
+                                if (commentsWithToggledActionBar.contains(commentId)) {
+                                    commentsWithToggledActionBar.remove(commentId)
+                                } else {
+                                    commentsWithToggledActionBar.add(commentId)
+                                }
+                            },
                             onMarkAsReadClick = {},
                             onUpvoteClick = { commentView ->
                                 account?.also { acct ->
@@ -314,6 +325,9 @@ fun PostActivity(
                             moderators = postViewModel.moderators,
                             showCollapsedCommentContent = showCollapsedCommentContent,
                             isCollapsedByParent = false,
+                            showActionBar = { commentId ->
+                                showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
+                             },
                         )
                     }
                 }
