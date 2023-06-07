@@ -530,6 +530,7 @@ fun PostFooterLine(
                 icon = Icons.Outlined.MoreVert,
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
+                requiresAccount = false,
             )
         }
     }
