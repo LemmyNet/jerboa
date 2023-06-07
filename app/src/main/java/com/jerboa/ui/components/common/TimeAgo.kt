@@ -138,7 +138,7 @@ fun CollapsedIndicator(visible: Boolean, descendants: Int) {
                 Text(
                     text = "+$descendants",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSecondary,
                 )
             }
         }
