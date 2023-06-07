@@ -82,7 +82,13 @@ fun ImageActivity(url: String, onBackRequest: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
 
     Box(Modifier.background(backgroundColor.value)) {
-        ImageViewer(url, onTap = { showTopBar = !showTopBar })
+        Image(
+            painter = rememberAsyncImagePainter(url),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .zoomable(rememberZoomState()),
+        )
 
         Row(
             modifier = Modifier
@@ -104,17 +110,6 @@ fun ImageActivity(url: String, onBackRequest: () -> Unit) {
             }
         }
     }
-}
-
-@Composable
-fun ImageViewer(url: String, onTap: (() -> Unit)?) {
-    Image(
-        painter = rememberAsyncImagePainter(url),
-        contentDescription = null,
-        modifier = Modifier
-            .fillMaxSize()
-            .zoomable(rememberZoomState()),
-    )
 }
 
 suspend fun SaveImage(url: String, context: Context) {
