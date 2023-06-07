@@ -195,9 +195,10 @@ fun SettingsForm(
             }, showImage = false)
         }
         MyDropDown(
-            suggestions = listOf(stringResource(R.string.account_settings_all),
+            suggestions = listOf(
+                stringResource(R.string.account_settings_all),
                 stringResource(R.string.account_settings_local),
-                stringResource(R.string.account_settings_subscribed)
+                stringResource(R.string.account_settings_subscribed),
             ),
             onValueChange = { defaultListingType = it },
             defaultListingType ?: 0,

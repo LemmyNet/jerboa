@@ -942,7 +942,7 @@ fun PostListingList(
                     Text(
                         text = stringResource(
                             R.string.post_listing_comments_count,
-                            postView.counts.comments
+                            postView.counts.comments,
                         ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.muted,
@@ -1172,7 +1172,7 @@ fun PostOptionsDialog(
                 IconAndTextDrawerItem(
                     text = stringResource(
                         R.string.post_listing_go_to,
-                        communityNameShown(postView.community)
+                        communityNameShown(postView.community),
                     ),
                     icon = Icons.Outlined.Forum,
                     onClick = {

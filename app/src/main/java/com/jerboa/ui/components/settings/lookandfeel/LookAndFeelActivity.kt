@@ -84,10 +84,12 @@ fun LookAndFeelActivity(
                         )
                     },
                     title = {
-                        Text(text = stringResource(
-                            R.string.look_and_feel_font_size,
-                            fontSizeState.value.toInt()
-                        ))
+                        Text(
+                            text = stringResource(
+                                R.string.look_and_feel_font_size,
+                                fontSizeState.value.toInt(),
+                            ),
+                        )
                     },
                     onValueChangeFinished = { updateAppSettings() },
                 )

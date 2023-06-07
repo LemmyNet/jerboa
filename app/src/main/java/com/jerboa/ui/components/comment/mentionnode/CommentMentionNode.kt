@@ -227,7 +227,7 @@ fun CommentReplyNodeOptionsDialog(
                     onClick = {
                         val permalink = personMentionView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show() //TODO localization
+                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show() // TODO localization
                         onDismissRequest()
                     },
                 )
@@ -240,7 +240,7 @@ fun CommentReplyNodeOptionsDialog(
                     IconAndTextDrawerItem(
                         text = stringResource(
                             R.string.comment_mention_node_block,
-                            personMentionView.creator.name
+                            personMentionView.creator.name,
                         ),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,

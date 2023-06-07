@@ -53,11 +53,14 @@ fun SettingsActivity(
                 )
                 account?.also { acct ->
                     SettingsMenuLink(
-                        title = { Text(
-                            stringResource(
-                                R.string.settings_activity_account_settings,
-                                acct.name
-                            )) },
+                        title = {
+                            Text(
+                                stringResource(
+                                    R.string.settings_activity_account_settings,
+                                    acct.name,
+                                ),
+                            )
+                        },
                         icon = {
                             Icon(
                                 imageVector = Icons.Outlined.ManageAccounts,

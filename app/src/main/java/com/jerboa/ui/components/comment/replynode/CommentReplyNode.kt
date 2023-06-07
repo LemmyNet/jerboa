@@ -240,7 +240,7 @@ fun CommentReplyNodeOptionsDialog(
                     IconAndTextDrawerItem(
                         text = stringResource(
                             R.string.comment_reply_node_block,
-                            commentReplyView.creator.name
+                            commentReplyView.creator.name,
                         ),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,

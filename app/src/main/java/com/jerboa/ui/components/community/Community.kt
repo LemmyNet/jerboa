@@ -67,7 +67,7 @@ fun CommunityTopSection(
                 Text(
                     text = stringResource(
                         R.string.community_users_month,
-                        communityView.counts.users_active_month
+                        communityView.counts.users_active_month,
                     ),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground.muted,

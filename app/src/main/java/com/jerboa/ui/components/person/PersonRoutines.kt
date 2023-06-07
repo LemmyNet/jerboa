@@ -121,6 +121,6 @@ fun blockPersonRoutine(
     scope.launch {
         val form = BlockPerson(person.id, block, account.jwt)
         blockPersonWrapper(form, ctx)
-        Toast.makeText(ctx, "${person.name} Blocked", Toast.LENGTH_SHORT).show() //TODO localization
+        Toast.makeText(ctx, "${person.name} Blocked", Toast.LENGTH_SHORT).show() // TODO localization
     }
 }

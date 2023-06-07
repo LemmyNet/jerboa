@@ -177,5 +177,5 @@
     <string name="settings_activity_settings">Einstellungen</string>
     <string name="settings_activity_look_and_feel">Look and feel</string>
     <string name="settings_activity_account_settings">%1$s Einstellungen</string>
-    <string name="settings_activity_about">About</string>
+    <string name="settings_activity_about">Über</string>
 </resources>
