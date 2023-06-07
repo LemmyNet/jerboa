@@ -257,7 +257,7 @@ fun LazyListScope.commentNodeItem(
                             onClick = {
                                 toggleExpanded(commentId)
                             },
-                            collapsedCommentsCount = getDecendentsCount(node),
+                            collapsedCommentsCount = node.commentView.counts.child_count,
                             isExpanded = isExpanded(commentId),
                         )
                         AnimatedVisibility(
@@ -315,7 +315,7 @@ fun LazyListScope.commentNodeItem(
 
     if (showMoreChildren) {
         item(key = "${commentId}_children") {
-            ShowMoreChildrenNode(node.depth, commentView, onFetchChildrenClick)
+            ShowMoreChildrenNode(node.depth, commentView, onFetchChildrenClick, isCollapsedByParent || !isExpanded(commentId))
         }
     }
 
@@ -353,6 +353,7 @@ private fun ShowMoreChildrenNode(
     depth: Int,
     commentView: CommentView,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
+    isCollapsedByParent: Boolean
 ) {
     val newDepth = depth + 1
 
@@ -367,23 +368,29 @@ private fun ShowMoreChildrenNode(
     val borderColor = calculateBorderColor(backgroundColor, newDepth)
     val border = Border(SMALL_PADDING, borderColor)
 
-    Column(
-        modifier = Modifier
-            .padding(
-                start = offset,
-            ),
+    AnimatedVisibility(
+        visible = !isCollapsedByParent,
+        enter = expandVertically(),
+        exit = shrinkVertically(),
     ) {
-        Divider()
         Column(
-            modifier = Modifier.border(start = border),
+            modifier = Modifier
+                .padding(
+                    start = offset,
+                ),
         ) {
+            Divider()
             Column(
-                modifier = Modifier.padding(start = offset2, end = MEDIUM_PADDING),
+                modifier = Modifier.border(start = border),
             ) {
-                ShowMoreChildren(
-                    commentView = commentView,
-                    onFetchChildrenClick = onFetchChildrenClick,
-                )
+                Column(
+                    modifier = Modifier.padding(start = offset2, end = MEDIUM_PADDING),
+                ) {
+                    ShowMoreChildren(
+                        commentView = commentView,
+                        onFetchChildrenClick = onFetchChildrenClick,
+                    )
+                }
             }
         }
     }
@@ -735,13 +742,4 @@ fun ShowCommentContextButtonsPreview() {
         onPostClick = {},
         onCommentClick = {},
     )
-}
-
-fun getDecendentsCount(commentNode: CommentNodeData): Int {
-    var count = 0
-    commentNode.children?.forEach {
-        count += 1
-        count += getDecendentsCount(it)
-    }
-    return count
 }
