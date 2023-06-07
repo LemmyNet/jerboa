@@ -225,6 +225,8 @@ fun CommentOrPostNodeHeader(
     isModerator: Boolean,
     isCommunityBanned: Boolean,
     onClick: () -> Unit,
+    isExpanded: Boolean = true,
+    collapsedCommentsCount: Int = 0,
 ) {
     FlowRow(
         mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
@@ -264,7 +266,14 @@ fun CommentOrPostNodeHeader(
                 isCommunityBanned = isCommunityBanned,
             )
         }
-        ScoreAndTime(score = score, myVote = myVote, published = published, updated = updated)
+        ScoreAndTime(
+            score = score,
+            myVote = myVote,
+            published = published,
+            updated = updated,
+            isExpanded = isExpanded,
+            collapsedCommentsCount = collapsedCommentsCount,
+        )
     }
 }
 
