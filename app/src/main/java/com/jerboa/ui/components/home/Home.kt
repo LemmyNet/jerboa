@@ -58,10 +58,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
+import com.jerboa.R
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PersonSafe
@@ -199,7 +201,7 @@ fun DrawerItemsMain(
         if (!follows.isNullOrEmpty()) {
             item {
                 IconAndTextDrawerItem(
-                    text = "Subscribed",
+                    text = stringResource(R.string.home_subscribed),
                     icon = Icons.Outlined.Bookmarks,
                     onClick = { onClickListingType(ListingType.Subscribed) },
                 )
@@ -207,14 +209,14 @@ fun DrawerItemsMain(
         }
         item {
             IconAndTextDrawerItem(
-                text = "Local",
+                text = stringResource(R.string.home_local),
                 icon = Icons.Outlined.LocationCity,
                 onClick = { onClickListingType(ListingType.Local) },
             )
         }
         item {
             IconAndTextDrawerItem(
-                text = "All",
+                text = stringResource(R.string.home_all),
                 icon = Icons.Outlined.Public,
                 onClick = { onClickListingType(ListingType.All) },
             )
@@ -222,7 +224,7 @@ fun DrawerItemsMain(
         item {
             myUserInfo?.also {
                 IconAndTextDrawerItem(
-                    text = "Saved",
+                    text = stringResource(R.string.home_saved),
                     icon = Icons.Outlined.Bookmarks,
                     onClick = onClickSaved,
                 )
@@ -234,7 +236,7 @@ fun DrawerItemsMain(
         item {
             myUserInfo?.also {
                 IconAndTextDrawerItem(
-                    text = "Profile",
+                    text = stringResource(R.string.home_profile),
                     icon = Icons.Outlined.Person,
                     onClick = onClickProfile,
                 )
@@ -243,7 +245,7 @@ fun DrawerItemsMain(
         item {
             myUserInfo?.also {
                 IconAndTextDrawerItem(
-                    text = "Inbox",
+                    text = stringResource(R.string.home_inbox),
                     icon = Icons.Outlined.Email,
                     onClick = onClickInbox,
                     iconBadgeCount = totalUnreads,
@@ -252,7 +254,7 @@ fun DrawerItemsMain(
         }
         item {
             IconAndTextDrawerItem(
-                text = "Settings",
+                text = stringResource(R.string.home_settings),
                 icon = Icons.Outlined.Settings,
                 onClick = onClickSettings,
             )
@@ -266,7 +268,7 @@ fun DrawerItemsMain(
         follows?.also { follows ->
             item {
                 Text(
-                    text = "Subscriptions",
+                    text = stringResource(R.string.home_subscriptions),
                     modifier = Modifier.padding(LARGE_PADDING),
                     color = MaterialTheme.colorScheme.onBackground.muted,
                 )
@@ -311,20 +313,20 @@ fun DrawerAddAccountMode(
 
     Column {
         IconAndTextDrawerItem(
-            text = "Add Account",
+            text = stringResource(R.string.home_add_account),
             icon = Icons.Outlined.Add,
             onClick = { navController.navigate(route = "login") },
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
-                text = "Switch to ${it.instance}/${it.name}",
+                text = stringResource(R.string.home_switch_to, it.instance, it.name),
                 icon = Icons.Outlined.Login,
                 onClick = { onSwitchAccountClick(it) },
             )
         }
         currentAccount?.also {
             IconAndTextDrawerItem(
-                text = "Sign Out",
+                text = stringResource(R.string.home_sign_out),
                 icon = Icons.Outlined.Close,
                 onClick = onSignOutClick,
             )
@@ -518,7 +520,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.Menu,
-                    contentDescription = "Menu",
+                    contentDescription = stringResource(R.string.home_menu),
                 )
             }
         },
@@ -584,7 +586,7 @@ fun HomeMoreDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Refresh",
+                    text = stringResource(R.string.home_refresh),
                     icon = Icons.Outlined.Refresh,
                     onClick = {
                         onDismissRequest()
@@ -592,7 +594,7 @@ fun HomeMoreDialog(
                     },
                 )
                 IconAndTextDrawerItem(
-                    text = "Post View Mode",
+                    text = stringResource(R.string.home_post_view_mode),
                     icon = Icons.Outlined.ViewAgenda,
                     onClick = {
                         onDismissRequest()
@@ -600,7 +602,7 @@ fun HomeMoreDialog(
                     },
                 )
                 IconAndTextDrawerItem(
-                    text = "Site Info",
+                    text = stringResource(R.string.home_site_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
                         navController.navigate("siteSidebar")

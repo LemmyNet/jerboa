@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
+import com.jerboa.R
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
 
@@ -64,7 +66,7 @@ fun PasswordField(
         value = password,
         onValueChange = onValueChange,
         singleLine = true,
-        label = { Text(text = "Password") },
+        label = { Text(text = stringResource(R.string.login_password)) },
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
@@ -119,8 +121,8 @@ fun LoginForm(
         ) {
             OutlinedTextField(
                 modifier = Modifier.menuAnchor(),
-                label = { Text("Instance") },
-                placeholder = { Text("ex: lemmy.ml") },
+                label = { Text(stringResource(R.string.login_instance)) },
+                placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
                 value = instance,
                 onValueChange = { instance = it },
                 trailingIcon = {
@@ -150,7 +152,7 @@ fun LoginForm(
             }
         }
         MyTextField(
-            label = "Email or Username",
+            label = stringResource(R.string.login_email_or_username),
             text = username,
             onValueChange = { username = it },
         )
@@ -186,7 +188,7 @@ fun LoginHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Login",
+                text = stringResource(R.string.login_login),
             )
         },
         navigationIcon = {
@@ -198,7 +200,7 @@ fun LoginHeader(
             ) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.login_back),
                 )
             }
         },

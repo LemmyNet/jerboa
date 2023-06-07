@@ -30,12 +30,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.sampleCommunitySafe
 import com.jerboa.db.Account
@@ -59,7 +61,7 @@ fun CreatePostHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Create post",
+                text = stringResource(R.string.create_post_create_post),
             )
         },
         actions = {
@@ -89,7 +91,7 @@ fun CreatePostHeader(
                 // Todo add are you sure cancel dialog
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Close",
+                    contentDescription = stringResource(R.string.create_post_close),
                 )
             }
         },
@@ -155,7 +157,7 @@ fun CreatePostBody(
         )
         suggestedTitle?.also {
             Text(
-                text = "copy suggested title: $it",
+                text = stringResource(R.string.create_post_copy_suggested_title, it),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground.muted,
                 modifier = Modifier.clickable { onNameChange(it) },
@@ -183,7 +185,7 @@ fun CreatePostBody(
                     readOnly = true,
                     onValueChange = {}, // TODO what?
                     label = {
-                        Text("Community")
+                        Text(stringResource(R.string.create_post_community))
                     },
                     leadingIcon = {
                         community.icon?.let {
@@ -208,7 +210,7 @@ fun CreatePostBody(
                     value = "",
                     onValueChange = {}, // TODO what?
                     label = {
-                        Text("Community")
+                        Text(stringResource(R.string.create_post_community))
                     },
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -257,7 +259,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         onUrlChange = {},
         onPickedImage = {},
         formValid = {},
-        suggestedTitle = "a title here....",
+        suggestedTitle = stringResource(R.string.create_post_a_title_here),
         account = null,
         padding = PaddingValues(),
     )

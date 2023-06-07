@@ -302,8 +302,15 @@ val MIGRATION_9_10 = object : Migration(9, 10) {
     }
 }
 
+val MIGRATION_10_11 = object : Migration(10, 11) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Add show_bottom_nav column
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+    }
+}
+
 @Database(
-    version = 10,
+    version = 11,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -337,6 +344,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_7_8,
                         MIGRATION_8_9,
                         MIGRATION_9_10,
+                        MIGRATION_10_11,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

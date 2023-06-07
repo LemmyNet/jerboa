@@ -19,6 +19,6 @@ fun blockCommunityRoutine(
     scope.launch {
         val form = BlockCommunity(community.id, block, account.jwt)
         blockCommunityWrapper(form, ctx)
-        Toast.makeText(ctx, "${community.name} Blocked", Toast.LENGTH_SHORT).show()
+        Toast.makeText(ctx, "${community.name} Blocked", Toast.LENGTH_SHORT).show() //TODO localization
     }
 }

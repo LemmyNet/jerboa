@@ -60,6 +60,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -67,6 +68,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
@@ -257,7 +259,7 @@ fun CreateLinkDialog(
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
                 Text(
-                    text = "Insert link",
+                    text = stringResource(R.string.input_fields_insert_link),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -265,7 +267,7 @@ fun CreateLinkDialog(
                     value = text,
                     onValueChange = { text = it },
                     label = {
-                        Text(text = "Text")
+                        Text(text = stringResource(R.string.input_fields_text))
                     },
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -273,7 +275,7 @@ fun CreateLinkDialog(
                     value = link,
                     onValueChange = { link = it },
                     label = {
-                        Text(text = "Link")
+                        Text(text = stringResource(R.string.input_fields_link))
                     },
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -284,7 +286,7 @@ fun CreateLinkDialog(
                 onClick = onDismissRequest,
             ) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.input_fields_cancel),
                     color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
@@ -304,7 +306,7 @@ fun CreateLinkDialog(
                 },
             ) {
                 Text(
-                    text = "OK",
+                    text = stringResource(R.string.input_fields_ok),
                 )
             }
         },
@@ -333,7 +335,7 @@ fun ShowPreviewDialog(
                 onClick = onDismissRequest,
             ) {
                 Text(
-                    text = "OK",
+                    text = stringResource(R.string.input_fields_ok),
                     color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }

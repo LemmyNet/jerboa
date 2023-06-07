@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -53,13 +54,13 @@ fun AboutActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = "About", navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.settings_about_about), navController = navController)
         },
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
                 SettingsMenuLink(
-                    title = { Text("What's New") },
-                    subtitle = { Text("Version $version") },
+                    title = { Text(stringResource(R.string.settings_about_what_s_new)) },
+                    subtitle = { Text(stringResource(R.string.settings_about_version, version)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.NewReleases,
@@ -71,9 +72,9 @@ fun AboutActivity(
                     },
                 )
                 SettingsDivider()
-                SettingsHeader(text = "Support")
+                SettingsHeader(text = stringResource(R.string.settings_about_support))
                 SettingsMenuLink(
-                    title = { Text("Issue tracker") },
+                    title = { Text(stringResource(R.string.settings_about_issue_tracker)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.BugReport,
@@ -85,7 +86,7 @@ fun AboutActivity(
                     },
                 )
                 SettingsMenuLink(
-                    title = { Text("Developer Matrix chatroom") },
+                    title = { Text(stringResource(R.string.settings_about_developer_matrix_chatroom)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Chat,
@@ -97,7 +98,7 @@ fun AboutActivity(
                     },
                 )
                 SettingsMenuLink(
-                    title = { Text("Donate to Jerboa development") },
+                    title = { Text(stringResource(R.string.settings_about_donate_to_jerboa_development)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.AttachMoney,
@@ -111,7 +112,7 @@ fun AboutActivity(
                 SettingsDivider()
                 SettingsHeader(text = "Social")
                 SettingsMenuLink(
-                    title = { Text("Join c/jerboa") },
+                    title = { Text(stringResource(R.string.settings_about_join_c_jerboa)) },
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_jerboa),
@@ -124,7 +125,7 @@ fun AboutActivity(
                     },
                 )
                 SettingsMenuLink(
-                    title = { Text("Follow on Mastodon") },
+                    title = { Text(stringResource(R.string.settings_about_follow_on_mastodon)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.TravelExplore,
@@ -136,14 +137,14 @@ fun AboutActivity(
                     },
                 )
                 SettingsDivider()
-                SettingsHeader(text = "Open source")
+                SettingsHeader(text = stringResource(R.string.settings_about_open_source))
                 SettingsMenuLink(
                     modifier = Modifier.padding(top = 20.dp),
-                    title = { Text("Source code") },
+                    title = { Text(stringResource(R.string.settings_about_source_code)) },
                     subtitle = {
                         Text(
-                            "Jerboa is libre open-source software, licensed under " +
-                                "the GNU Affero General Public License v3.0",
+                            stringResource(R.string.settings_about_source_code_subtitle_part1) +
+                                stringResource(R.string.settings_about_source_code_subtitle_part2),
                         )
                     },
                     icon = {

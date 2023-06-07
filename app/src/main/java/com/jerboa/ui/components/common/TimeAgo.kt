@@ -6,9 +6,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jerboa.R
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.datatypes.samplePost
 import com.jerboa.prettyTime
@@ -28,7 +30,7 @@ fun TimeAgo(
     val publishedPretty = dateStringToPretty(published, includeAgo)
 
     val afterPreceding = precedingString?.let {
-        "$it $publishedPretty ago"
+        stringResource(R.string.time_ago_ago, it, publishedPretty)
     } ?: run { publishedPretty }
 
     Row {

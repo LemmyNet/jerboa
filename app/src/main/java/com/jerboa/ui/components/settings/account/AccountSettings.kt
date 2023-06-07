@@ -14,10 +14,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.api.SaveUserSettings
 import com.jerboa.db.Account
@@ -60,7 +62,7 @@ fun ImageWithClose(
     Box(contentAlignment = Alignment.TopEnd) {
         composable()
         IconButton(onClick = onClick) {
-            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Remove Current Avatar")
+            Icon(imageVector = Icons.Outlined.Close, contentDescription = stringResource(R.string.account_settings_remove_current_avatar))
         }
     }
 }
@@ -134,33 +136,35 @@ fun SettingsForm(
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         SettingsTextField(
-            label = "Display Name",
+            label = stringResource(R.string.account_settings_display_name),
             text = displayName,
             onValueChange = { displayName = it },
         )
         Column {
-            Text("Bio")
+            Text(stringResource(R.string.account_settings_bio))
             MarkdownTextField(
                 text = bio,
                 onTextChange = { bio = it },
                 account = account,
                 outlined = true,
                 focusImmediate = false,
-                modifier = Modifier.fillMaxWidth().padding(SMALL_PADDING),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(SMALL_PADDING),
             )
         }
 
         SettingsTextField(
-            label = "Email",
+            label = stringResource(R.string.account_settings_email),
             text = email,
             onValueChange = { email = it },
         )
         SettingsTextField(
-            label = "Matrix User",
+            label = stringResource(R.string.account_settings_matrix_user),
             text = matrixUserId,
             onValueChange = { matrixUserId = it },
         )
-        Text(text = "Avatar")
+        Text(text = stringResource(R.string.account_settings_avatar))
         if (avatar.isNotEmpty()) {
             ImageWithClose(onClick = { avatar = "" }) {
                 LargerCircularIcon(icon = avatar)
@@ -175,7 +179,7 @@ fun SettingsForm(
                 }
             }, showImage = false)
         }
-        Text(text = "Banner")
+        Text(text = stringResource(R.string.account_settings_banner))
         if (banner.isNotEmpty()) {
             ImageWithClose(onClick = { banner = "" }) {
                 PictrsBannerImage(url = banner)
@@ -191,68 +195,71 @@ fun SettingsForm(
             }, showImage = false)
         }
         MyDropDown(
-            suggestions = listOf("All", "Local", "Subscribed"),
+            suggestions = listOf(stringResource(R.string.account_settings_all),
+                stringResource(R.string.account_settings_local),
+                stringResource(R.string.account_settings_subscribed)
+            ),
             onValueChange = { defaultListingType = it },
             defaultListingType ?: 0,
-            label = "Default Listing Type",
+            label = stringResource(R.string.account_settings_default_listing_type),
         )
         MyDropDown(
             suggestions = listOf(
-                "Active",
-                "Hot",
-                "New",
-                "TopDay",
-                "TopWeek",
-                "TopMonth",
-                "TopYear",
-                "TopAll",
-                "MostComments",
-                "NewComments",
+                stringResource(R.string.account_settings_active),
+                stringResource(R.string.account_settings_hot),
+                stringResource(R.string.account_settings_new),
+                stringResource(R.string.account_settings_topday),
+                stringResource(R.string.account_settings_topweek),
+                stringResource(R.string.account_settings_topmonth),
+                stringResource(R.string.account_settings_topyear),
+                stringResource(R.string.account_settings_topall),
+                stringResource(R.string.account_settings_mostcomments),
+                stringResource(R.string.account_settings_newcomments),
             ),
             onValueChange = { defaultSortType = it },
-            defaultSortType ?: 0,
-            label = "Default Sort Type",
+            initialValue = defaultSortType ?: 0,
+            label = stringResource(R.string.account_settings_default_sort_type),
         )
 
         MyCheckBox(
             checked = showNsfw,
-            label = "Show NSFW",
+            label = stringResource(R.string.account_settings_show_nsfw),
             onCheckedChange = { showNsfw = it },
         )
         MyCheckBox(
             checked = showAvatars == true,
-            label = "Show Avatars",
+            label = stringResource(R.string.account_settings_show_avatars),
             onCheckedChange = { showAvatars = it },
         )
         MyCheckBox(
             checked = showReadPosts == true,
-            label = "Show Read Posts",
+            label = stringResource(R.string.account_settings_show_read_posts),
             onCheckedChange = { showReadPosts = it },
         )
         MyCheckBox(
             checked = botAccount == true,
-            label = "Bot Account",
+            label = stringResource(R.string.account_settings_bot_account),
             onCheckedChange = { botAccount = it },
         )
         MyCheckBox(
             checked = showBotAccount == true,
-            label = "Show Bot Accounts",
+            label = stringResource(R.string.account_settings_show_bot_accounts),
             onCheckedChange = { showBotAccount = it },
         )
         MyCheckBox(
             checked = showScores == true,
-            label = "Show Scores",
+            label = stringResource(R.string.account_settings_show_scores),
             onCheckedChange = { showScores = it },
         )
         MyCheckBox(
             checked = showNewPostNotifs == true,
-            label = "Show Notifications for New Posts",
+            label = stringResource(R.string.account_settings_show_notifications_for_new_posts),
             onCheckedChange = { showNewPostNotifs = it },
         )
         MyCheckBox(
             enabled = email.isNotEmpty(),
             checked = sendNotificationsToEmail == true,
-            label = "Send Notifications to Email",
+            label = stringResource(R.string.account_settings_send_notifications_to_email),
             onCheckedChange = { sendNotificationsToEmail = it },
         )
         // Todo: Remove this
@@ -261,7 +268,7 @@ fun SettingsForm(
             onClick = { onClickSave(form) },
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(text = "Save Settings")
+            Text(text = stringResource(R.string.account_settings_save_settings))
         }
     }
 }
