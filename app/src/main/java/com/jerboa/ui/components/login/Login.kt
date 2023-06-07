@@ -2,10 +2,12 @@
 
 package com.jerboa.ui.components.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -16,22 +18,28 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
+import com.jerboa.onAutofill
 
 val BANNED_INSTANCES = listOf("wolfballs.com")
 
 @Composable
 fun MyTextField(
+    modifier: Modifier = Modifier,
     label: String,
     placeholder: String? = null,
     text: String,
@@ -48,17 +56,20 @@ fun MyTextField(
             keyboardType = KeyboardType.Text,
             autoCorrect = false,
         ),
+        modifier = modifier,
     )
 }
 
 @Composable
 fun PasswordField(
+    modifier: Modifier = Modifier,
     password: String,
     onValueChange: (String) -> Unit,
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
+        modifier = modifier,
         value = password,
         onValueChange = onValueChange,
         singleLine = true,
@@ -81,6 +92,7 @@ fun PasswordField(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginForm(
     modifier: Modifier = Modifier,
@@ -92,6 +104,7 @@ fun LoginForm(
     var password by rememberSaveable { mutableStateOf("") }
     val instanceOptions = DEFAULT_LEMMY_INSTANCES
     var expanded by remember { mutableStateOf(false) }
+    var wasAutofilled by remember { mutableStateOf(false) }
 
     val isValid =
         instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty() &&
@@ -124,6 +137,7 @@ fun LoginForm(
                 trailingIcon = {
                     TrailingIcon(expanded = expanded)
                 },
+                keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
             )
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -146,18 +160,32 @@ fun LoginForm(
                 }
             }
         }
+
         MyTextField(
+            modifier = Modifier
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(AutofillType.Username, AutofillType.EmailAddress) {
+                    username = it
+                    wasAutofilled = true
+                },
             label = "Email or Username",
             text = username,
             onValueChange = { username = it },
         )
         PasswordField(
+            modifier = Modifier
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(AutofillType.Password) {
+                    password = it
+                    wasAutofilled = true
+                },
             password = password,
             onValueChange = { password = it },
         )
         Button(
             enabled = isValid && !loading,
             onClick = { onClickLogin(form, instance) },
+            modifier = Modifier.padding(top = 10.dp),
         ) {
             if (loading) {
                 CircularProgressIndicator()

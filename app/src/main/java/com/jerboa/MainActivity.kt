@@ -426,6 +426,7 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
+                            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                         )
                     }
                     composable(
@@ -455,6 +456,7 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
+                            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                         )
                     }
                     composable(

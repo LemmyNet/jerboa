@@ -8,8 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.sp
@@ -75,13 +75,21 @@ fun JerboaTheme(
 
     val view = LocalView.current
 
-    if (isSystemInDarkTheme()) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            val insets = WindowCompat.getInsetsController(window, view)
-            insets.isAppearanceLightStatusBars = false
-        }
+    val window = (view.context as Activity).window
+    val insets = WindowCompat.getInsetsController(window, view)
+
+    val isLight = when (themeMode) {
+        ThemeMode.Black, ThemeMode.Dark -> false
+        ThemeMode.System, ThemeMode.SystemBlack -> !isSystemInDarkTheme()
+        else -> true
     }
+
+    window.statusBarColor = colors.background.toArgb()
+    // The navigation bar color is also set on BottomAppBarAll
+    window.navigationBarColor = colors.background.toArgb()
+
+    insets.isAppearanceLightStatusBars = isLight
+    insets.isAppearanceLightNavigationBars = isLight
 
     MaterialTheme(
         colorScheme = colors,
