@@ -122,7 +122,10 @@ fun blockPersonRoutine(
     scope.launch {
         val form = BlockPerson(person.id, block, account.jwt)
         blockPersonWrapper(form, ctx)
-        Toast.makeText(ctx,
-            ctx.getString(R.string.person_routines_blocked, person.name), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            ctx,
+            ctx.getString(R.string.person_routines_blocked, person.name),
+            Toast.LENGTH_SHORT,
+        ).show()
     }
 }

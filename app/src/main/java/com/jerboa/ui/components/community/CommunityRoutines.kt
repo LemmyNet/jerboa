@@ -20,7 +20,10 @@ fun blockCommunityRoutine(
     scope.launch {
         val form = BlockCommunity(community.id, block, account.jwt)
         blockCommunityWrapper(form, ctx)
-        Toast.makeText(ctx,
-            ctx.getString(R.string.community_blocked, community.name), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            ctx,
+            ctx.getString(R.string.community_blocked, community.name),
+            Toast.LENGTH_SHORT,
+        ).show()
     }
 }
