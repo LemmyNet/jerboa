@@ -1,9 +1,6 @@
 package com.jerboa.ui.components.comment
 
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -188,8 +185,10 @@ fun LazyListScope.commentNodeItem(
         XXL_PADDING
     }
 
-    val showMoreChildren = isExpanded(commentId) && node.children.isNullOrEmpty() && node
-        .commentView.counts.child_count > 0 && !isFlat
+    val needsToFetchMoreChildren = isExpanded(commentId) && node.children.isNullOrEmpty() && node.commentView.counts.child_count > 0
+    val childrenAreCollapsed = !isExpanded(commentId) && !node.children.isNullOrEmpty()
+    val showMoreChildren = (childrenAreCollapsed || needsToFetchMoreChildren) && !isFlat
+
     item(key = commentId) {
         var viewSource by remember { mutableStateOf(false) }
 
@@ -242,49 +241,43 @@ fun LazyListScope.commentNodeItem(
                             toggleExpanded(commentId)
                         },
                     )
-                    AnimatedVisibility(
-                        visible = isExpanded(commentId),
-                        enter = expandVertically(),
-                        exit = shrinkVertically(),
-                    ) {
-                        Column {
-                            CommentBody(
-                                comment = commentView.comment,
-                                viewSource = viewSource,
-                                onClick = {
-                                    toggleExpanded(commentId)
-                                },
-                            )
-                            CommentFooterLine(
-                                commentView = commentView,
-                                instantScores = instantScores.value,
-                                onUpvoteClick = {
-                                    instantScores.value = calculateNewInstantScores(
-                                        instantScores.value,
-                                        voteType = VoteType.Upvote,
-                                    )
-                                    onUpvoteClick(it)
-                                },
-                                onDownvoteClick = {
-                                    instantScores.value = calculateNewInstantScores(
-                                        instantScores.value,
-                                        voteType = VoteType.Downvote,
-                                    )
-                                    onDownvoteClick(it)
-                                },
-                                onViewSourceClick = {
-                                    viewSource = !viewSource
-                                },
-                                onEditCommentClick = onEditCommentClick,
-                                onDeleteCommentClick = onDeleteCommentClick,
-                                onReplyClick = onReplyClick,
-                                onSaveClick = onSaveClick,
-                                onReportClick = onReportClick,
-                                onCommentLinkClick = onCommentLinkClick,
-                                onBlockCreatorClick = onBlockCreatorClick,
-                                account = account,
-                            )
-                        }
+                    Column {
+                        CommentBody(
+                            comment = commentView.comment,
+                            viewSource = viewSource,
+                            onClick = {
+                                toggleExpanded(commentId)
+                            },
+                        )
+                        CommentFooterLine(
+                            commentView = commentView,
+                            instantScores = instantScores.value,
+                            onUpvoteClick = {
+                                instantScores.value = calculateNewInstantScores(
+                                    instantScores.value,
+                                    voteType = VoteType.Upvote,
+                                )
+                                onUpvoteClick(it)
+                            },
+                            onDownvoteClick = {
+                                instantScores.value = calculateNewInstantScores(
+                                    instantScores.value,
+                                    voteType = VoteType.Downvote,
+                                )
+                                onDownvoteClick(it)
+                            },
+                            onViewSourceClick = {
+                                viewSource = !viewSource
+                            },
+                            onEditCommentClick = onEditCommentClick,
+                            onDeleteCommentClick = onDeleteCommentClick,
+                            onReplyClick = onReplyClick,
+                            onSaveClick = onSaveClick,
+                            onReportClick = onReportClick,
+                            onCommentLinkClick = onCommentLinkClick,
+                            onBlockCreatorClick = onBlockCreatorClick,
+                            account = account,
+                        )
                     }
                 }
             }
@@ -293,7 +286,17 @@ fun LazyListScope.commentNodeItem(
 
     if (showMoreChildren) {
         item(key = "${commentId}_children") {
-            ShowMoreChildrenNode(node.depth, commentView, onFetchChildrenClick)
+            ShowMoreChildrenNode(
+                depth = node.depth,
+                commentView = commentView,
+                onFetchChildrenClick = {
+                    if (needsToFetchMoreChildren) {
+                        onFetchChildrenClick(commentView)
+                    } else if (childrenAreCollapsed) {
+                        toggleExpanded(commentId)
+                    }
+                },
+            )
         }
     }
 
