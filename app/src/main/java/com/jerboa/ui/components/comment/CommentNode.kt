@@ -293,6 +293,7 @@ fun LazyListScope.commentNodeItem(
                                         toggleActionBar(commentId)
                                     },
                                 )
+                                Spacer(modifier = Modifier.height(MEDIUM_PADDING))
                                 AnimatedVisibility(
                                     visible = showActionBar(commentId),
                                     enter = expandVertically(),
@@ -333,14 +334,6 @@ fun LazyListScope.commentNodeItem(
                                         },
                                         account = account,
                                     )
-                                }
-                                // Padding that shows only when the action bar is collapsed
-                                AnimatedVisibility(
-                                    visible = !showActionBar(commentId),
-                                    enter = expandVertically(),
-                                    exit = shrinkVertically(),
-                                ) {
-                                    Spacer(modifier = Modifier.height(MEDIUM_PADDING))
                                 }
                             }
                         }
