@@ -514,8 +514,10 @@ fun UserTabs(
                                 }
                             },
                             showPostAndCommunityContext = true,
+                            showCollapsedCommentContent = true,
                             account = account,
                             moderators = listOf(),
+                            isCollapsedByParent = false,
                         )
                     }
                 }
