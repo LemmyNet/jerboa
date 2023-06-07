@@ -827,7 +827,7 @@ fun nsfwCheck(postView: PostView): Boolean {
 fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> Unit): Modifier = composed {
     val autofillNode = AutofillNode(
         autofillTypes = autofillType.toList(),
-        onFill = onFill
+        onFill = onFill,
     )
     LocalAutofillTree.current += autofillNode
 
