@@ -223,6 +223,8 @@ fun CommentOrPostNodeHeader(
     isModerator: Boolean,
     isCommunityBanned: Boolean,
     onClick: () -> Unit,
+    isExpanded: Boolean = true,
+    collapsedCommentsCount: Int = 0,
 ) {
     FlowRow(
         mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
@@ -262,7 +264,14 @@ fun CommentOrPostNodeHeader(
                 isCommunityBanned = isCommunityBanned,
             )
         }
-        ScoreAndTime(score = score, myVote = myVote, published = published, updated = updated)
+        ScoreAndTime(
+            score = score,
+            myVote = myVote,
+            published = published,
+            updated = updated,
+            isExpanded = isExpanded,
+            collapsedCommentsCount = collapsedCommentsCount,
+        )
     }
 }
 
@@ -292,6 +301,7 @@ fun ActionBarButton(
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
     account: Account?,
+    requiresAccount: Boolean = true,
 ) {
     val ctx = LocalContext.current
 //    Button(
@@ -311,7 +321,7 @@ fun ActionBarButton(
         Modifier
     } else {
         Modifier.clickable(onClick = {
-            if (account !== null) {
+            if (!requiresAccount || account !== null) {
                 onClick()
             } else {
                 loginFirstToast(ctx)
@@ -417,7 +427,8 @@ fun Sidebar(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.padding(padding)
+        modifier = Modifier
+            .padding(padding)
             .simpleVerticalScrollbar(listState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {

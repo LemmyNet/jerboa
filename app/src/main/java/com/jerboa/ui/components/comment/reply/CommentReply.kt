@@ -88,6 +88,8 @@ fun RepliedComment(
             score = commentView.counts.score,
             myVote = commentView.my_vote,
             isModerator = isModerator,
+            collapsedCommentsCount = 0,
+            isExpanded = true,
             onClick = {},
         )
         SelectionContainer {
