@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.Badge
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -44,7 +42,7 @@ fun PersonName(
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(4.dp))
-                .background(MaterialTheme.colorScheme.tertiary)
+                .background(MaterialTheme.colorScheme.tertiary),
         ) {
             Text(
                 text = name,
@@ -53,10 +51,9 @@ fun PersonName(
                 maxLines = 1,
                 color = MaterialTheme.colorScheme.onTertiary,
                 modifier = Modifier
-                    .padding(6.dp, 0.dp)
+                    .padding(6.dp, 0.dp),
             )
         }
-
     } else {
         Text(
             text = name,
