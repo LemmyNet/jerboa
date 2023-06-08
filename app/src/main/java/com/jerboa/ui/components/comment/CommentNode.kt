@@ -11,7 +11,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -92,6 +94,7 @@ fun CommentNodeHeader(
     collapsedCommentsCount: Int,
     isExpanded: Boolean,
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -107,6 +110,7 @@ fun CommentNodeHeader(
         collapsedCommentsCount = collapsedCommentsCount,
         isExpanded = isExpanded,
         onClick = onClick,
+        onLongCLick = onLongClick,
     )
 }
 
@@ -120,16 +124,19 @@ fun CommentNodeHeaderPreview() {
         isModerator = false,
         onPersonClick = {},
         onClick = {},
+        onLongClick = {},
         collapsedCommentsCount = 5,
         isExpanded = false,
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentBody(
     comment: Comment,
     viewSource: Boolean,
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
 ) {
     val content = if (comment.removed) {
         "*Removed*"
@@ -143,13 +150,17 @@ fun CommentBody(
         SelectionContainer {
             Text(
                 text = comment.content,
-                modifier = Modifier.clickable { onClick() },
+                modifier = Modifier.combinedClickable(
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                ),
             )
         }
     } else {
         MyMarkdownText(
             markdown = content,
             onClick = onClick,
+            onLongClick = onLongClick,
         )
     }
 }
@@ -161,6 +172,7 @@ fun CommentBodyPreview() {
         comment = sampleCommentView.comment,
         viewSource = false,
         onClick = {},
+        onLongClick = {},
     )
 }
 
@@ -169,6 +181,7 @@ fun LazyListScope.commentNodeItem(
     isFlat: Boolean,
     isExpanded: (commentId: Int) -> Boolean,
     toggleExpanded: (commentId: Int) -> Unit,
+    toggleActionBar: (commentId: Int) -> Unit,
     moderators: List<CommunityModeratorView>,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
@@ -188,6 +201,7 @@ fun LazyListScope.commentNodeItem(
     showPostAndCommunityContext: Boolean = false,
     account: Account?,
     isCollapsedByParent: Boolean,
+    showActionBar: (commentId: Int) -> Boolean,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -257,6 +271,9 @@ fun LazyListScope.commentNodeItem(
                             onClick = {
                                 toggleExpanded(commentId)
                             },
+                            onLongClick = {
+                                toggleActionBar(commentId)
+                            },
                             collapsedCommentsCount = node.commentView.counts.child_count,
                             isExpanded = isExpanded(commentId),
                         )
@@ -272,39 +289,52 @@ fun LazyListScope.commentNodeItem(
                                     onClick = {
                                         toggleExpanded(commentId)
                                     },
+                                    onLongClick = {
+                                        toggleActionBar(commentId)
+                                    },
                                 )
-                                CommentFooterLine(
-                                    commentView = commentView,
-                                    instantScores = instantScores.value,
-                                    onUpvoteClick = {
-                                        instantScores.value = calculateNewInstantScores(
-                                            instantScores.value,
-                                            voteType = VoteType.Upvote,
-                                        )
-                                        onUpvoteClick(it)
-                                    },
-                                    onDownvoteClick = {
-                                        instantScores.value = calculateNewInstantScores(
-                                            instantScores.value,
-                                            voteType = VoteType.Downvote,
-                                        )
-                                        onDownvoteClick(it)
-                                    },
-                                    onViewSourceClick = {
-                                        viewSource = !viewSource
-                                    },
-                                    onEditCommentClick = onEditCommentClick,
-                                    onDeleteCommentClick = onDeleteCommentClick,
-                                    onReplyClick = onReplyClick,
-                                    onSaveClick = onSaveClick,
-                                    onReportClick = onReportClick,
-                                    onCommentLinkClick = onCommentLinkClick,
-                                    onBlockCreatorClick = onBlockCreatorClick,
-                                    onClick = {
-                                        toggleExpanded(commentId)
-                                    },
-                                    account = account,
-                                )
+                                Spacer(modifier = Modifier.height(MEDIUM_PADDING))
+                                AnimatedVisibility(
+                                    visible = showActionBar(commentId),
+                                    enter = expandVertically(),
+                                    exit = shrinkVertically(),
+                                ) {
+                                    CommentFooterLine(
+                                        commentView = commentView,
+                                        instantScores = instantScores.value,
+                                        onUpvoteClick = {
+                                            instantScores.value = calculateNewInstantScores(
+                                                instantScores.value,
+                                                voteType = VoteType.Upvote,
+                                            )
+                                            onUpvoteClick(it)
+                                        },
+                                        onDownvoteClick = {
+                                            instantScores.value = calculateNewInstantScores(
+                                                instantScores.value,
+                                                voteType = VoteType.Downvote,
+                                            )
+                                            onDownvoteClick(it)
+                                        },
+                                        onViewSourceClick = {
+                                            viewSource = !viewSource
+                                        },
+                                        onEditCommentClick = onEditCommentClick,
+                                        onDeleteCommentClick = onDeleteCommentClick,
+                                        onReplyClick = onReplyClick,
+                                        onSaveClick = onSaveClick,
+                                        onReportClick = onReportClick,
+                                        onCommentLinkClick = onCommentLinkClick,
+                                        onBlockCreatorClick = onBlockCreatorClick,
+                                        onClick = {
+                                            toggleExpanded(commentId)
+                                        },
+                                        onLongClick = {
+                                            toggleActionBar(commentId)
+                                        },
+                                        account = account,
+                                    )
+                                }
                             }
                         }
                     }
@@ -324,6 +354,7 @@ fun LazyListScope.commentNodeItem(
             nodes = nodes,
             isFlat = isFlat,
             toggleExpanded = toggleExpanded,
+            toggleActionBar = toggleActionBar,
             isExpanded = isExpanded,
             onUpvoteClick = onUpvoteClick,
             onDownvoteClick = onDownvoteClick,
@@ -344,6 +375,7 @@ fun LazyListScope.commentNodeItem(
             moderators = moderators,
             isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
             showCollapsedCommentContent = showCollapsedCommentContent,
+            showActionBar = showActionBar,
         )
     }
 }
@@ -450,6 +482,7 @@ fun CommentFooterLine(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
     account: Account?,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -495,6 +528,7 @@ fun CommentFooterLine(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick,
+                onLongClick = onLongClick,
             ),
     ) {
         Row(
@@ -577,6 +611,7 @@ fun CommentNodesPreview() {
         listState = rememberLazyListState(),
         isCollapsedByParent = false,
         showCollapsedCommentContent = false,
+        showActionBarByDefault = true,
     )
 }
 
