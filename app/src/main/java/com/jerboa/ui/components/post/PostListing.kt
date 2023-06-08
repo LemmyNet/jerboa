@@ -1,6 +1,6 @@
 package com.jerboa.ui.components.post
 
-avatarimport android.widget.Toast
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
