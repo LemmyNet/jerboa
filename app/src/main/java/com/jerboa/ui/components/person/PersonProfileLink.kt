@@ -2,9 +2,14 @@
 
 package com.jerboa.ui.components.person
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.Badge
@@ -15,9 +20,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.personNameShown
@@ -34,16 +41,22 @@ fun PersonName(
     val style = MaterialTheme.typography.bodyMedium
 
     if (isPostCreator) {
-        Badge(
-            containerColor = MaterialTheme.colorScheme.tertiary,
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.tertiary)
         ) {
             Text(
                 text = name,
                 style = style,
                 overflow = TextOverflow.Clip,
                 maxLines = 1,
+                color = MaterialTheme.colorScheme.onTertiary,
+                modifier = Modifier
+                    .padding(6.dp, 0.dp)
             )
         }
+
     } else {
         Text(
             text = name,
