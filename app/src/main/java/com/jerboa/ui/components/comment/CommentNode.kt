@@ -274,7 +274,7 @@ fun LazyListScope.commentNodeItem(
                             onLongClick = {
                                 toggleActionBar(commentId)
                             },
-                            collapsedCommentsCount = getDecendentsCount(node),
+                            collapsedCommentsCount = node.commentView.counts.child_count,
                             isExpanded = isExpanded(commentId),
                         )
                         AnimatedVisibility(
