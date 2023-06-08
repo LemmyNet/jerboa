@@ -27,6 +27,7 @@ import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
+import com.jerboa.ui.components.common.TextBadge
 import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
@@ -39,21 +40,13 @@ fun PersonName(
     val style = MaterialTheme.typography.bodyMedium
 
     if (isPostCreator) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(4.dp))
-                .background(MaterialTheme.colorScheme.tertiary),
-        ) {
-            Text(
-                text = name,
-                style = style,
-                overflow = TextOverflow.Clip,
-                maxLines = 1,
-                color = MaterialTheme.colorScheme.onTertiary,
-                modifier = Modifier
-                    .padding(6.dp, 0.dp),
-            )
-        }
+        TextBadge(
+            text = name,
+            backgroundColor = MaterialTheme.colorScheme.tertiary,
+            textColor = MaterialTheme.colorScheme.onTertiary,
+            containerRadius = 4.0f,
+            style = style
+        )
     } else {
         Text(
             text = name,
