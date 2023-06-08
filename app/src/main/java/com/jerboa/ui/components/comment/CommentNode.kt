@@ -416,7 +416,7 @@ fun PostAndCommunityContextHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = "in ", color = MaterialTheme.colorScheme.onBackground.muted)
+            Text(text = stringResource(R.string.comment_node_in), color = MaterialTheme.colorScheme.onBackground.muted)
             CommunityLink(
                 community = community,
                 onClick = onCommunityClick,
@@ -617,7 +617,8 @@ fun CommentOptionsDialog(
                     onClick = {
                         val permalink = commentView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(ctx,
+                            ctx.getString(R.string.comment_node_permalink_copied), Toast.LENGTH_SHORT).show()
                         onDismissRequest()
                     },
                 )
@@ -628,7 +629,7 @@ fun CommentOptionsDialog(
                         onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${commentView.creator.name}",
+                        text = stringResource(R.string.comment_node_block, commentView.creator.name),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,
                     )

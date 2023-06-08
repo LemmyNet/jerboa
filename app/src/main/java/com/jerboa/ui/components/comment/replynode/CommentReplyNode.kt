@@ -223,12 +223,13 @@ fun CommentReplyNodeOptionsDialog(
                     onClick = onViewSourceClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Copy Permalink",
+                    text = stringResource(R.string.comment_reply_node_copy_permalink),
                     icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = "${commentReplyView.comment.ap_id}"
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(ctx,
+                            ctx.getString(R.string.comment_reply_node_permalink_copied), Toast.LENGTH_SHORT).show()
                         onDismissRequest()
                     },
                 )

@@ -157,7 +157,7 @@ fun LookAndFeelActivity(
                 SettingsCheckbox(
                     state = showCollapsedCommentContentState,
                     title = {
-                        Text(text = "Show content for collapsed comments")
+                        Text(text = stringResource(R.string.look_and_feel_activity_show_content_for_collapsed_comments))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

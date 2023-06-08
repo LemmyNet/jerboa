@@ -187,4 +187,12 @@
     <string name="create_report_view_model_report_created">Meldung erstellt</string>
     <string name="about_social">Sozial</string>
     <string name="app_bars_dot_spacer">·</string>
+    <string name="comment_node_in">"in "</string>
+    <string name="look_and_feel_activity_show_content_for_collapsed_comments">Zeige Inhalt für eingeklappte Kommentare</string>
+    <string name="comment_node_permalink_copied">Permalink kopiert</string>
+    <string name="comment_reply_node_permalink_copied">Permalink kopiert</string>
+    <string name="post_listing_link_copied">Link kopiert</string>
+    <string name="post_listing_permalink_copied">Permalink kopiert</string>
+    <string name="comment_node_block">Blockiere %1$s</string>
+    <string name="comment_reply_node_copy_permalink">Kopiere Permalink</string>
 </resources>

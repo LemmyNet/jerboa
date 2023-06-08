@@ -187,4 +187,12 @@
     <string name="create_report_view_model_report_created">Report Created</string>
     <string name="about_social">Social</string>
     <string name="app_bars_dot_spacer">·</string>
+    <string name="comment_node_in">"in "</string>
+    <string name="look_and_feel_activity_show_content_for_collapsed_comments">Show content for collapsed comments</string>
+    <string name="comment_node_permalink_copied">Permalink Copied</string>
+    <string name="comment_reply_node_permalink_copied">Permalink Copied</string>
+    <string name="post_listing_link_copied">Link Copied</string>
+    <string name="post_listing_permalink_copied">Permalink Copied</string>
+    <string name="comment_node_block">Block %1$s</string>
+    <string name="comment_reply_node_copy_permalink">Copy Permalink</string>
 </resources>
