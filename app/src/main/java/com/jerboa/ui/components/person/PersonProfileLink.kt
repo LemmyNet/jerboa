@@ -40,13 +40,7 @@ fun PersonName(
     val style = MaterialTheme.typography.bodyMedium
 
     if (isPostCreator) {
-        TextBadge(
-            text = name,
-            backgroundColor = MaterialTheme.colorScheme.tertiary,
-            textColor = MaterialTheme.colorScheme.onTertiary,
-            containerRadius = 4.0f,
-            style = style
-        )
+        TextBadge(text = name, textStyle = style)
     } else {
         Text(
             text = name,

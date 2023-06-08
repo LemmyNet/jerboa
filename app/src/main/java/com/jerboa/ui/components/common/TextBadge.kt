@@ -2,6 +2,7 @@ package com.jerboa.ui.components.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -18,24 +19,26 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TextBadge(
     text: String,
-    backgroundColor: Color,
-    textColor: Color,
-    containerRadius: Float,
-    style: TextStyle
+    verticalTextPadding: Float = 0f,
+    horizontalTextPadding: Float = 6f,
+    textColor: Color = MaterialTheme.colorScheme.onTertiary,
+    textStyle: TextStyle,
+    containerColor: Color = MaterialTheme.colorScheme.tertiary,
+    containerRadius: Float = 4f,
 ) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(containerRadius.dp))
-            .background(backgroundColor),
+            .background(containerColor),
     ) {
         Text(
             text = text,
-            style = style,
+            style = textStyle,
             overflow = TextOverflow.Clip,
             maxLines = 1,
             color = textColor,
             modifier = Modifier
-                .padding(6.dp, 0.dp),
+                .padding(horizontalTextPadding.dp, verticalTextPadding.dp),
         )
     }
 }
