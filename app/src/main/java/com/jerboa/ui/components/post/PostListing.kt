@@ -1187,8 +1187,11 @@ fun PostOptionsDialog(
                         icon = Icons.Outlined.Link,
                         onClick = {
                             localClipboardManager.setText(AnnotatedString(it))
-                            Toast.makeText(ctx,
-                                ctx.getString(R.string.post_listing_link_copied), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                ctx,
+                                ctx.getString(R.string.post_listing_link_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
                             onDismissRequest()
                         },
                     )
@@ -1199,8 +1202,11 @@ fun PostOptionsDialog(
                     onClick = {
                         val permalink = postView.post.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx,
-                            ctx.getString(R.string.post_listing_permalink_copied), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.post_listing_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )
