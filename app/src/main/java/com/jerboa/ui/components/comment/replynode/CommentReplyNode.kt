@@ -59,6 +59,7 @@ fun CommentReplyNodeHeader(
     score: Int,
     myVote: Int?,
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
@@ -72,6 +73,7 @@ fun CommentReplyNodeHeader(
         isModerator = false,
         isCommunityBanned = commentReplyView.creator_banned_from_community,
         onClick = onClick,
+        onLongCLick = onLongClick,
     )
 }
 
@@ -84,6 +86,7 @@ fun CommentReplyNodeHeaderPreview() {
         myVote = 26,
         onPersonClick = {},
         onClick = {},
+        onLongClick = {},
     )
 }
 
@@ -278,6 +281,7 @@ fun CommentReplyNode(
 
     var viewSource by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(true) }
+    var isActionBarExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.padding(horizontal = LARGE_PADDING),
@@ -297,6 +301,9 @@ fun CommentReplyNode(
             onClick = {
                 isExpanded = !isExpanded
             },
+            onLongClick = {
+                isActionBarExpanded = !isActionBarExpanded
+            },
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -308,29 +315,36 @@ fun CommentReplyNode(
                     comment = commentReplyView.comment,
                     viewSource = viewSource,
                     onClick = {},
+                    onLongClick = {},
                 )
-                CommentReplyNodeFooterLine(
-                    commentReplyView = commentReplyView,
-                    onUpvoteClick = {
-                        onUpvoteClick(it)
-                    },
-                    onDownvoteClick = {
-                        onDownvoteClick(it)
-                    },
-                    onViewSourceClick = {
-                        viewSource = !viewSource
-                    },
-                    onReplyClick = onReplyClick,
-                    onSaveClick = onSaveClick,
-                    onMarkAsReadClick = onMarkAsReadClick,
-                    onReportClick = onReportClick,
-                    onCommentLinkClick = onCommentLinkClick,
-                    onBlockCreatorClick = onBlockCreatorClick,
-                    myVote = myVote,
-                    upvotes = upvotes,
-                    downvotes = downvotes,
-                    account = account,
-                )
+                AnimatedVisibility(
+                    visible = isActionBarExpanded,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
+                    CommentReplyNodeFooterLine(
+                        commentReplyView = commentReplyView,
+                        onUpvoteClick = {
+                            onUpvoteClick(it)
+                        },
+                        onDownvoteClick = {
+                            onDownvoteClick(it)
+                        },
+                        onViewSourceClick = {
+                            viewSource = !viewSource
+                        },
+                        onReplyClick = onReplyClick,
+                        onSaveClick = onSaveClick,
+                        onMarkAsReadClick = onMarkAsReadClick,
+                        onReportClick = onReportClick,
+                        onCommentLinkClick = onCommentLinkClick,
+                        onBlockCreatorClick = onBlockCreatorClick,
+                        myVote = myVote,
+                        upvotes = upvotes,
+                        downvotes = downvotes,
+                        account = account,
+                    )
+                }
             }
         }
     }

@@ -53,6 +53,7 @@ fun PostActivity(
     postEditViewModel: PostEditViewModel,
     navController: NavController,
     showCollapsedCommentContent: Boolean,
+    showActionBarByDefault: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -67,6 +68,7 @@ fun PostActivity(
 
     // Holds expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
+    val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
 
     val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -233,6 +235,13 @@ fun PostActivity(
                                     unExpandedComments.add(commentId)
                                 }
                             },
+                            toggleActionBar = { commentId ->
+                                if (commentsWithToggledActionBar.contains(commentId)) {
+                                    commentsWithToggledActionBar.remove(commentId)
+                                } else {
+                                    commentsWithToggledActionBar.add(commentId)
+                                }
+                            },
                             onMarkAsReadClick = {},
                             onUpvoteClick = { commentView ->
                                 account?.also { acct ->
@@ -317,6 +326,9 @@ fun PostActivity(
                             moderators = postViewModel.moderators,
                             showCollapsedCommentContent = showCollapsedCommentContent,
                             isCollapsedByParent = false,
+                            showActionBar = { commentId ->
+                                showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
+                            },
                         )
                     }
                 }

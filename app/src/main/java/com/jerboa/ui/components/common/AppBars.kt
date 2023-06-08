@@ -225,6 +225,7 @@ fun CommentOrPostNodeHeader(
     isModerator: Boolean,
     isCommunityBanned: Boolean,
     onClick: () -> Unit,
+    onLongCLick: () -> Unit,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Int = 0,
 ) {
@@ -240,7 +241,7 @@ fun CommentOrPostNodeHeader(
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onLongClick = {},
+                onLongClick = onLongCLick,
                 onClick = onClick,
             ),
     ) {
@@ -292,6 +293,7 @@ fun CommentOrPostNodeHeaderPreview() {
         isModerator = true,
         isCommunityBanned = false,
         onClick = {},
+        onLongCLick = {},
     )
 }
 

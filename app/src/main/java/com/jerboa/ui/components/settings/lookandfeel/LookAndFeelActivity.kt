@@ -51,6 +51,9 @@ fun LookAndFeelActivity(
     val showBottomNavState = rememberBooleanSettingState(settings?.showBottomNav ?: true)
     val showCollapsedCommentContentState =
         rememberBooleanSettingState(settings?.showCollapsedCommentContent ?: false)
+    val showCommentActionBarByDefaultState = rememberBooleanSettingState(
+        settings?.showCommentActionBarByDefault ?: true,
+    )
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -65,6 +68,7 @@ fun LookAndFeelActivity(
                 postViewMode = postViewModeState.value,
                 showBottomNav = showBottomNavState.value,
                 showCollapsedCommentContent = showCollapsedCommentContentState.value,
+                showCommentActionBarByDefault = showCommentActionBarByDefaultState.value,
             ),
         )
     }
@@ -158,6 +162,13 @@ fun LookAndFeelActivity(
                     state = showCollapsedCommentContentState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_activity_show_content_for_collapsed_comments))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = showCommentActionBarByDefaultState,
+                    title = {
+                        Text(text = "Show action bar by default for comments")
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

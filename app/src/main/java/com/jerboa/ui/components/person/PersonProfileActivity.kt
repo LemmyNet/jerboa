@@ -50,6 +50,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonProfileActivity(
     savedMode: Boolean,
@@ -521,6 +522,7 @@ fun UserTabs(
                             account = account,
                             moderators = listOf(),
                             isCollapsedByParent = false,
+                            showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
                         )
                     }
                 }
