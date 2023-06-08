@@ -6,7 +6,6 @@ import androidx.compose.ui.unit.TextUnit
 const val FONT_LARGE_MULTIPLIER = 1.3
 const val FONT_MEDIUM_MULTIPLIER = 0.8
 const val FONT_SMALL_MULTIPLIER = 0.7
-const val MARKDOWN_FONT_MULTIPLIER = 1.2
 
 // Set of Material typography styles to start with
 fun generateTypography(baseFontSize: TextUnit): Typography {
