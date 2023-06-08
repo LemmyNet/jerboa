@@ -1,8 +1,8 @@
 package com.jerboa.ui.components.common
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -38,14 +38,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.graphics.drawable.toBitmap
 import coil.compose.rememberAsyncImagePainter
-import coil.imageLoader
-import coil.request.ImageRequest
 import com.jerboa.saveBitmap
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
+import java.net.URL
 
 const val backFadeTime = 300
 
@@ -129,23 +129,20 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
 }
 
 suspend fun SaveImage(url: String, context: Context) {
-    val request = ImageRequest.Builder(context)
-        .data(url)
-        .crossfade(true)
-        .target(
-            onSuccess = {
-                val fileName = Uri.parse(url).pathSegments.last()
-                saveBitmap(context, it.toBitmap(), Bitmap.CompressFormat.WEBP, "image/webp", fileName)
+    Toast.makeText(context, "Saving image...", Toast.LENGTH_SHORT).show()
 
-                Toast.makeText(context, "Saved image", Toast.LENGTH_SHORT).show()
-            },
-            onError = {
-                Toast.makeText(context, "Failed to save image", Toast.LENGTH_SHORT).show()
-            },
-        )
-        .build()
+    val fileName = Uri.parse(url).pathSegments.last()
 
-    context.imageLoader.execute(request)
+    val extension = MimeTypeMap.getFileExtensionFromUrl(url)
+    val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+
+    withContext(Dispatchers.IO) {
+        URL(url).openStream().use {
+            saveBitmap(context, it, mimeType, fileName)
+        }
+    }
+
+    Toast.makeText(context, "Saved image", Toast.LENGTH_SHORT).show()
 }
 
 @Composable

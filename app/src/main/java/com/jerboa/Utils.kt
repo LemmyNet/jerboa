@@ -829,9 +829,8 @@ fun nsfwCheck(postView: PostView): Boolean {
 @Throws(IOException::class)
 fun saveBitmap(
     context: Context,
-    bitmap: Bitmap,
-    format: Bitmap.CompressFormat,
-    mimeType: String,
+    inputStream: InputStream,
+    mimeType: String?,
     displayName: String,
 ): Uri {
     val values = ContentValues().apply {
@@ -848,9 +847,7 @@ fun saveBitmap(
             ?: throw IOException("Failed to create new MediaStore record.")
 
         resolver.openOutputStream(uri)?.use {
-            if (!bitmap.compress(format, 95, it)) {
-                throw IOException("Failed to save bitmap.")
-            }
+            inputStream.copyTo(it)
         } ?: throw IOException("Failed to open output stream.")
 
         return uri
