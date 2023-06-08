@@ -112,7 +112,7 @@ fun LoginForm(
 
     val form = Login(
         username_or_email = username.trim(),
-        password = password.trim(),
+        password = password.take(60),
     )
 
     Column(
