@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,8 +47,6 @@ import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 
-val backColor = Color.Black
-val backColorTranslucent = Color.Black.copy(alpha = 0.4f)
 const val backFadeTime = 300
 
 @Composable
@@ -68,6 +67,9 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
             )
         }
     }
+
+    val backColor = MaterialTheme.colorScheme.scrim
+    val backColorTranslucent = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
 
     var showTopBar by remember { mutableStateOf(true) }
 
