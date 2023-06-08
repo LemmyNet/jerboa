@@ -79,6 +79,7 @@ val DEFAULT_LEMMY_INSTANCES = listOf(
     "beehaw.org",
     "feddit.it",
     "sopuli.xyz",
+    "slrpnk.net",
 )
 
 // convert a data class to a map
