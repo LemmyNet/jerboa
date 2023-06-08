@@ -356,7 +356,7 @@ fun DotSpacer(
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     Text(
-        text = "·",
+        text = stringResource(R.string.app_bars_dot_spacer),
         style = style,
         color = MaterialTheme.colorScheme.onBackground.muted,
         modifier = Modifier.padding(horizontal = padding),

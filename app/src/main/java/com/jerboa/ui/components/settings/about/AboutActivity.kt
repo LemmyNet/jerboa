@@ -110,7 +110,7 @@ fun AboutActivity(
                     },
                 )
                 SettingsDivider()
-                SettingsHeader(text = "Social")
+                SettingsHeader(text = stringResource(R.string.about_social))
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_join_c_jerboa)) },
                     icon = {

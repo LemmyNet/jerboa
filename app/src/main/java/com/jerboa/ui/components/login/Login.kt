@@ -192,7 +192,7 @@ fun LoginForm(
             if (loading) {
                 CircularProgressIndicator()
             } else {
-                Text("Login")
+                Text(stringResource(R.string.login_login))
             }
         }
     }

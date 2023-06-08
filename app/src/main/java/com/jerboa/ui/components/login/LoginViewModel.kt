@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.fetchPostsWrapper
 import com.jerboa.api.getSiteWrapper
@@ -49,7 +50,10 @@ class LoginViewModel : ViewModel() {
                     // to be checked,
                 } catch (e: java.net.UnknownHostException) {
                     loading = false
-                    val msg = "$instance is not a Lemmy Instance"
+                    val msg = ctx.getString(
+                        R.string.login_view_model_is_not_a_lemmy_instance,
+                        instance,
+                    )
                     Log.e("login", e.toString())
                     Toast.makeText(
                         ctx,
@@ -61,7 +65,7 @@ class LoginViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 loading = false
-                val msg = "Incorrect Login"
+                val msg = ctx.getString(R.string.login_view_model_incorrect_login)
                 Log.e("login", e.toString())
                 Toast.makeText(
                     ctx,
