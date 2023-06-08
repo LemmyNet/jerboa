@@ -83,7 +83,7 @@ fun CommentNodes(
             isCollapsedByParent = isCollapsedByParent,
             showActionBar = { commentId ->
                 showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
-            }
+            },
         )
     }
 }

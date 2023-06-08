@@ -153,7 +153,7 @@ fun CommentBody(
                 modifier = Modifier.combinedClickable(
                     onClick = onClick,
                     onLongClick = onLongClick,
-                )
+                ),
             )
         }
     } else {
