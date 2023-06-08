@@ -28,6 +28,7 @@ import com.jerboa.ThemeMode
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.DEFAULT_FONT_SIZE
+import com.jerboa.db.DEFAULT_OP_COMMENT_BADGE_RADIUS
 import com.jerboa.ui.components.common.SimpleTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +50,10 @@ fun LookAndFeelActivity(
     val showBottomNavState = rememberBooleanSettingState(settings?.showBottomNav ?: true)
     val showCollapsedCommentContentState =
         rememberBooleanSettingState(settings?.showCollapsedCommentContent ?: false)
-
+    val opCommentBadgeRadiusState = rememberFloatSettingState(
+        settings?.opCommentBadgeRadius?.toFloat()
+            ?: DEFAULT_OP_COMMENT_BADGE_RADIUS.toFloat(),
+    )
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun updateAppSettings() {
@@ -63,6 +67,7 @@ fun LookAndFeelActivity(
                 postViewMode = postViewModeState.value,
                 showBottomNav = showBottomNavState.value,
                 showCollapsedCommentContent = showCollapsedCommentContentState.value,
+                opCommentBadgeRadius = opCommentBadgeRadiusState.value.toInt(),
             ),
         )
     }
@@ -153,6 +158,20 @@ fun LookAndFeelActivity(
                         Text(text = "Show content for collapsed comments")
                     },
                     onCheckedChange = { updateAppSettings() },
+                )
+                SettingsSlider(
+                    valueRange = 0f..20f,
+                    state = opCommentBadgeRadiusState,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.FormatSize,
+                            contentDescription = "TODO",
+                        )
+                    },
+                    title = {
+                        Text(text = "OP comment badge radius: ${opCommentBadgeRadiusState.value.toInt()}")
+                    },
+                    onValueChangeFinished = { updateAppSettings() },
                 )
             }
         },

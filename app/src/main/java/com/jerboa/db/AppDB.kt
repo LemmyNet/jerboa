@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 const val DEFAULT_FONT_SIZE = 16
+const val DEFAULT_OP_COMMENT_BADGE_RADIUS = 4
 const val UPDATE_APP_CHANGELOG_UNVIEWED = "UPDATE AppSettings SET viewed_changelog = 0"
 
 @Entity
@@ -74,6 +75,11 @@ data class AppSettings(
         defaultValue = "0",
     )
     val showCollapsedCommentContent: Boolean,
+    @ColumnInfo(
+        name = "op_comment_badge_radius",
+        defaultValue = DEFAULT_OP_COMMENT_BADGE_RADIUS.toString(),
+    )
+    val opCommentBadgeRadius: Int
 )
 
 @Dao
