@@ -313,8 +313,12 @@ fun LazyListScope.commentNodeItem(
         }
     }
 
-    if (showMoreChildren) {
-        item(key = "${commentId}_children") {
+    item(key = "${commentId}_show_more_children") {
+        AnimatedVisibility(
+            visible = showMoreChildren,
+            enter = expandVertically(),
+            exit = shrinkVertically(),
+        ) {
             ShowMoreChildrenNode(node.depth, commentView, onFetchChildrenClick, isCollapsedByParent || !isExpanded(commentId))
         }
     }
