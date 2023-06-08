@@ -97,7 +97,10 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .zoomable(rememberZoomState()),
+                    .zoomable(
+                        zoomState = rememberZoomState(),
+                        onTap = { showTopBar = !showTopBar },
+                    ),
             )
 
             Row(
