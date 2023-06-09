@@ -119,4 +119,5 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.4.3'
     debugImplementation 'androidx.compose.ui:ui-tooling:1.4.3'
     debugImplementation 'androidx.compose.ui:ui-test-manifest:1.4.3'
+    implementation "net.engawapg.lib:zoomable:1.4.3"
 }

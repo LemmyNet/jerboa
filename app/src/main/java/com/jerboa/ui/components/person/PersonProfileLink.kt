@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.Badge
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +21,7 @@ import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
+import com.jerboa.ui.components.common.TextBadge
 import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
@@ -34,16 +34,7 @@ fun PersonName(
     val style = MaterialTheme.typography.bodyMedium
 
     if (isPostCreator) {
-        Badge(
-            containerColor = MaterialTheme.colorScheme.tertiary,
-        ) {
-            Text(
-                text = name,
-                style = style,
-                overflow = TextOverflow.Clip,
-                maxLines = 1,
-            )
-        }
+        TextBadge(text = name, textStyle = style)
     } else {
         Text(
             text = name,

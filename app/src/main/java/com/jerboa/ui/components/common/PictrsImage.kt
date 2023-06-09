@@ -68,8 +68,9 @@ fun CircularIcon(
 }
 
 @Composable
-fun LargerCircularIcon(icon: String) {
+fun LargerCircularIcon(modifier: Modifier = Modifier, icon: String) {
     CircularIcon(
+        modifier = modifier,
         icon = icon,
         size = LARGER_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
