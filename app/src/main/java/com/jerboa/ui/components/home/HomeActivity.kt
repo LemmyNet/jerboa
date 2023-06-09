@@ -64,7 +64,7 @@ fun HomeActivity(
     val postListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
 
