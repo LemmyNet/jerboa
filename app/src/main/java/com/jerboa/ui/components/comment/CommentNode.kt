@@ -47,11 +47,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.Border
 import com.jerboa.CommentNodeData
 import com.jerboa.InstantScores
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.border
 import com.jerboa.buildCommentsTree
@@ -139,9 +141,9 @@ fun CommentBody(
     onLongClick: () -> Unit,
 ) {
     val content = if (comment.removed) {
-        "*Removed*"
+        stringResource(R.string.comment_body_removed)
     } else if (comment.deleted) {
-        "*Deleted*"
+        stringResource(R.string.comment_body_deleted)
     } else {
         comment.content
     }
@@ -450,7 +452,7 @@ fun PostAndCommunityContextHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = "in ", color = MaterialTheme.colorScheme.onBackground.muted)
+            Text(text = stringResource(R.string.comment_node_in), color = MaterialTheme.colorScheme.onBackground.muted)
             CommunityLink(
                 community = community,
                 onClick = onCommunityClick,
@@ -639,53 +641,57 @@ fun CommentOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Goto Comment",
+                    text = stringResource(R.string.comment_node_goto_comment),
                     icon = Icons.Outlined.Link,
                     onClick = onCommentLinkClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "View Source",
+                    text = stringResource(R.string.comment_node_view_source),
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Copy Permalink",
+                    text = stringResource(R.string.comment_node_copy_permalink),
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
                         val permalink = commentView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_node_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Report Comment",
+                        text = stringResource(R.string.comment_node_report_comment),
                         icon = Icons.Outlined.Flag,
                         onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${commentView.creator.name}",
+                        text = stringResource(R.string.comment_node_block, commentView.creator.name),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,
                     )
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Edit",
+                        text = stringResource(R.string.comment_node_edit),
                         icon = Icons.Outlined.Edit,
                         onClick = onEditCommentClick,
                     )
                     val deleted = commentView.comment.deleted
                     if (deleted) {
                         IconAndTextDrawerItem(
-                            text = "Restore",
+                            text = stringResource(R.string.comment_node_restore),
                             icon = Icons.Outlined.Restore,
                             onClick = onDeleteCommentClick,
                         )
                     } else {
                         IconAndTextDrawerItem(
-                            text = "Delete",
+                            text = stringResource(R.string.comment_node_delete),
                             icon = Icons.Outlined.Delete,
                             onClick = onDeleteCommentClick,
                         )
@@ -720,7 +726,7 @@ fun ShowMoreChildren(
 ) {
     TextButton(
         content = {
-            Text("${commentView.counts.child_count} more replies")
+            Text(stringResource(R.string.comment_node_more_replies, commentView.counts.child_count))
         },
         onClick = { onFetchChildrenClick(commentView) },
     )
@@ -757,14 +763,14 @@ fun ShowCommentContextButtons(
     ) {
         OutlinedButton(
             content = {
-                Text("View Post")
+                Text(stringResource(R.string.comment_node_view_post))
             },
             onClick = { onPostClick(postId) },
         )
         if (showContextButton && commentParentId != null) {
             OutlinedButton(
                 content = {
-                    Text("View Context")
+                    Text(stringResource(R.string.comment_node_view_context))
                 },
                 onClick = { onCommentClick(commentParentId) },
             )

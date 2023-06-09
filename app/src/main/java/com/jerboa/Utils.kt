@@ -82,6 +82,7 @@ val DEFAULT_LEMMY_INSTANCES = listOf(
     "beehaw.org",
     "feddit.it",
     "sopuli.xyz",
+    "slrpnk.net",
 )
 
 // convert a data class to a map
@@ -106,7 +107,7 @@ fun toastException(ctx: Context?, error: Exception) {
 }
 
 fun loginFirstToast(ctx: Context) {
-    Toast.makeText(ctx, "Login first", Toast.LENGTH_SHORT).show()
+    Toast.makeText(ctx, ctx.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
 
 enum class VoteType {

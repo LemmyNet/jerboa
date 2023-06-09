@@ -9,6 +9,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.api.createCommentReportWrapper
 import com.jerboa.api.createPostReportWrapper
 import com.jerboa.datatypes.api.CreateCommentReport
@@ -57,7 +58,11 @@ class CreateReportViewModel : ViewModel() {
                 loading.value = false
 
                 if (report !== null) {
-                    Toast.makeText(ctx, "Report Created", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        ctx,
+                        ctx.getString(R.string.create_report_view_model_report_created),
+                        Toast.LENGTH_SHORT,
+                    ).show()
                     focusManager.clearFocus()
                     navController.navigateUp()
                 }
@@ -84,7 +89,7 @@ class CreateReportViewModel : ViewModel() {
                 loading.value = false
 
                 if (report !== null) {
-                    Toast.makeText(ctx, "Report Created", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(ctx, ctx.getString(R.string.create_report_view_model_report_created), Toast.LENGTH_SHORT).show()
 
                     focusManager.clearFocus()
                     navController.navigateUp()

@@ -14,7 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
@@ -39,10 +41,10 @@ fun PrivateMessageHeader(
 
     if (isCreator(myPersonId, privateMessageView)) {
         otherPerson = privateMessageView.recipient
-        fromOrTo = "to "
+        fromOrTo = stringResource(R.string.private_message_to)
     } else {
         otherPerson = privateMessageView.creator
-        fromOrTo = "from "
+        fromOrTo = stringResource(R.string.private_message_from)
     }
 
     Row(
