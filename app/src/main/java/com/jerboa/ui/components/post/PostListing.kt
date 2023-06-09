@@ -76,6 +76,7 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
+import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
@@ -235,6 +236,7 @@ fun PostNodeHeader(
         isModerator = isModerator,
         isCommunityBanned = postView.creator_banned_from_community,
         onClick = {},
+        onLongCLick = {},
     )
 }
 
@@ -250,7 +252,6 @@ fun PostTitleBlock(
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
             postView = postView,
-            onPostLinkClick = onPostLinkClick,
         )
     } else {
         PostTitleAndThumbnail(
@@ -287,7 +288,6 @@ fun PostName(
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -305,8 +305,14 @@ fun PostTitleAndImageLink(
         )
     }
 
+    var showImageDialog by remember { mutableStateOf(false) }
+
+    if (showImageDialog) {
+        ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
+    }
+
     val postLinkPicMod = Modifier
-        .clickable { onPostLinkClick(url) }
+        .clickable { showImageDialog = true }
     PictrsUrlImage(
         url = url,
         nsfw = nsfwCheck(postView),

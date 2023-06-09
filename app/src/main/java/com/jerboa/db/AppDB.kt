@@ -74,6 +74,11 @@ data class AppSettings(
         defaultValue = "0",
     )
     val showCollapsedCommentContent: Boolean,
+    @ColumnInfo(
+        name = "show_comment_action_bar_by_default",
+        defaultValue = "1",
+    )
+    val showCommentActionBarByDefault: Boolean,
 )
 
 @Dao
@@ -313,6 +318,9 @@ val MIGRATION_10_11 = object : Migration(10, 11) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
             "ALTER TABLE AppSettings add column show_collapsed_comment_content INTEGER NOT NULL default 0",
+        )
+        database.execSQL(
+            "ALTER TABLE AppSettings add column show_comment_action_bar_by_default INTEGER NOT NULL default 1",
         )
     }
 }
