@@ -327,6 +327,12 @@ val MIGRATION_10_11 = object : Migration(10, 11) {
         database.execSQL(
             "ALTER TABLE AppSettings add column show_comment_action_bar_by_default INTEGER NOT NULL default 1",
         )
+    }
+}
+
+val MIGRATION_11_12 = object : Migration(11, 12) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
             "ALTER TABLE AppSettings add column show_voting_arrows_in_list_view INTEGER NOT NULL default 1",
         )
@@ -334,7 +340,7 @@ val MIGRATION_10_11 = object : Migration(10, 11) {
 }
 
 @Database(
-    version = 11,
+    version = 12,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -369,6 +375,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_8_9,
                         MIGRATION_9_10,
                         MIGRATION_10_11,
+                        MIGRATION_11_12,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
