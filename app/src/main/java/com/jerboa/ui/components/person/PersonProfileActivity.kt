@@ -60,6 +60,7 @@ fun PersonProfileActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -139,6 +140,7 @@ fun PersonProfileActivity(
                 commentReplyViewModel = commentReplyViewModel,
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
+                showVotingArrowsInListView = showVotingArrowsInListView,
             )
         },
         bottomBar = {
@@ -192,6 +194,7 @@ fun UserTabs(
     postEditViewModel: PostEditViewModel,
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -387,6 +390,7 @@ fun UserTabs(
                         listState = postListState,
                         taglines = null,
                         postViewMode = getPostViewMode(appSettingsViewModel),
+                        showVotingArrowsInListView = showVotingArrowsInListView,
                     )
                 }
                 UserTab.Comments.ordinal -> {

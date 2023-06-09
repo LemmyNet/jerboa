@@ -647,6 +647,7 @@ fun PreviewPostListingCard() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.Card,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -672,6 +673,7 @@ fun PreviewLinkPostListing() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.Card,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -697,6 +699,7 @@ fun PreviewImagePostListingCard() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.Card,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -722,6 +725,7 @@ fun PreviewImagePostListingSmallCard() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.SmallCard,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -747,6 +751,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.Card,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -772,6 +777,7 @@ fun PostListing(
     fullBody: Boolean,
     account: Account?,
     postViewMode: PostViewMode,
+    showVotingArrowsInListView: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -880,6 +886,7 @@ fun PostListing(
             isModerator = isModerator,
             showCommunityName = showCommunityName,
             account = account,
+            showVotingArrowsInListView = showVotingArrowsInListView,
         )
     }
 }
@@ -943,6 +950,7 @@ fun PostListingList(
     isModerator: Boolean,
     showCommunityName: Boolean = true,
     account: Account?,
+    showVotingArrowsInListView: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(
@@ -956,13 +964,15 @@ fun PostListingList(
                 SMALL_PADDING,
             ),
         ) {
-            PostVotingTile(
-                postView = postView,
-                instantScores = instantScores,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (showVotingArrowsInListView) {
+                PostVotingTile(
+                    postView = postView,
+                    instantScores = instantScores,
+                    onUpvoteClick = onUpvoteClick,
+                    onDownvoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -1009,6 +1019,14 @@ fun PostListingList(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    if (!showVotingArrowsInListView) {
+                        Text(
+                            text = instantScores.score.toString(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = scoreColor(myVote = instantScores.myVote),
+                        )
+                        DotSpacer(0.dp)
+                    }
                     Text(
                         text = "${postView.counts.comments} comments",
                         style = MaterialTheme.typography.bodyMedium,
@@ -1085,6 +1103,7 @@ fun PostListingListPreview() {
         onPersonClick = {},
         isModerator = false,
         account = null,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -1110,6 +1129,7 @@ fun PostListingListWithThumbPreview() {
         onPersonClick = {},
         isModerator = false,
         account = null,
+        showVotingArrowsInListView = true,
     )
 }
 

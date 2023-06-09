@@ -147,6 +147,7 @@ class MainActivity : ComponentActivity() {
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     composable(
@@ -182,6 +183,7 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             communityListViewModel = communityListViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     // Only necessary for community deeplinks
@@ -225,6 +227,7 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     composable(
@@ -264,6 +267,7 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     // Necessary for deep links
@@ -304,6 +308,7 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     composable(
@@ -428,6 +433,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: false,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     composable(
@@ -459,6 +465,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     composable(
