@@ -2,6 +2,7 @@
 
 package com.jerboa.ui.components.person
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import com.jerboa.datatypes.samplePersonView
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
+import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -52,6 +54,15 @@ fun PersonProfileTopSection(
     personView: PersonViewSafe,
     modifier: Modifier = Modifier,
 ) {
+    var showImage by remember { mutableStateOf<String?>(null) }
+
+    if (showImage != null) {
+        ImageViewerDialog(
+            url = showImage!!,
+            onBackRequest = { showImage = null },
+        )
+    }
+
     Column {
         Box(
             modifier = modifier.fillMaxWidth(),
@@ -60,12 +71,21 @@ fun PersonProfileTopSection(
             personView.person.banner?.also {
                 PictrsBannerImage(
                     url = it,
-                    modifier = Modifier.height(PROFILE_BANNER_SIZE),
+                    modifier = Modifier
+                        .height(PROFILE_BANNER_SIZE)
+                        .clickable {
+                            showImage = personView.person.banner
+                        },
                 )
             }
             Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
                 personView.person.avatar?.also {
-                    LargerCircularIcon(icon = it)
+                    LargerCircularIcon(
+                        icon = it,
+                        modifier = Modifier.clickable {
+                            showImage = personView.person.avatar
+                        },
+                    )
                 }
             }
         }
