@@ -109,6 +109,8 @@ fun HomeActivity(
                             scrollBehavior = scrollBehavior,
                         )
 
+                        // The Scaffold passes some top padding for some reason,
+                        // so we need to set it to zero.
                         val paddingNoTop = remember {
                             derivedStateOf {
                                 PaddingValues(
