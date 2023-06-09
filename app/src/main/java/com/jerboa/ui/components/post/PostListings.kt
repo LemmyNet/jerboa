@@ -1,10 +1,10 @@
 package com.jerboa.ui.components.post
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
@@ -28,6 +28,8 @@ import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.Tagline
 import com.jerboa.ui.theme.SMALL_PADDING
+
+const val listingChunkSize = 10
 
 @Composable
 fun PostListings(
@@ -55,6 +57,13 @@ fun PostListings(
     taglines: List<Tagline>?,
     postViewMode: PostViewMode,
 ) {
+    val remainingCount by remember {
+        derivedStateOf { posts.size % listingChunkSize }
+    }
+    val chunkCount by remember {
+        derivedStateOf { posts.size.floorDiv(listingChunkSize) + if (remainingCount > 0) 1 else 0 }
+    }
+
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
         onRefresh = onSwipeRefresh,
@@ -74,34 +83,39 @@ fun PostListings(
                 contentAboveListings()
             }
 
-            // List of items
-            items(
-                posts,
-                key = { postView ->
-                    postView.post.id
-                },
-            ) { postView ->
-                PostListing(
-                    postView = postView,
-                    onUpvoteClick = onUpvoteClick,
-                    onDownvoteClick = onDownvoteClick,
-                    onPostClick = onPostClick,
-                    onPostLinkClick = onPostLinkClick,
-                    onSaveClick = onSaveClick,
-                    onCommunityClick = onCommunityClick,
-                    onEditPostClick = onEditPostClick,
-                    onDeletePostClick = onDeletePostClick,
-                    onReportClick = onReportClick,
-                    onPersonClick = onPersonClick,
-                    onBlockCommunityClick = onBlockCommunityClick,
-                    onBlockCreatorClick = onBlockCreatorClick,
-                    isModerator = false,
-                    showCommunityName = showCommunityName,
-                    fullBody = false,
-                    account = account, // TODO can't know with many posts
-                    postViewMode = postViewMode,
-                )
-                Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
+            for (chunkIdx in 0 until chunkCount) {
+                item {
+                    Column {
+                        val count =
+                            if (chunkIdx < chunkCount - 1) listingChunkSize else remainingCount
+
+                        for (i in 0 until count) {
+                            val index = (chunkIdx * listingChunkSize) + i
+
+                            PostListing(
+                                postView = posts[index],
+                                onUpvoteClick = onUpvoteClick,
+                                onDownvoteClick = onDownvoteClick,
+                                onPostClick = onPostClick,
+                                onPostLinkClick = onPostLinkClick,
+                                onSaveClick = onSaveClick,
+                                onCommunityClick = onCommunityClick,
+                                onEditPostClick = onEditPostClick,
+                                onDeletePostClick = onDeletePostClick,
+                                onReportClick = onReportClick,
+                                onPersonClick = onPersonClick,
+                                onBlockCommunityClick = onBlockCommunityClick,
+                                onBlockCreatorClick = onBlockCreatorClick,
+                                isModerator = false,
+                                showCommunityName = showCommunityName,
+                                fullBody = false,
+                                account = account, // TODO can't know with many posts
+                                postViewMode = postViewMode,
+                            )
+                            Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
+                        }
+                    }
+                }
             }
         }
     }
