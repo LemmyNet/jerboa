@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -26,11 +28,14 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.closeDrawer
@@ -67,6 +72,7 @@ fun HomeActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
+    var layoutDirection = LocalLayoutDirection.current
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -89,31 +95,43 @@ fun HomeActivity(
             Scaffold(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 snackbarHost = { SnackbarHost(snackbarHostState) },
-                topBar = {
-                    MainTopBar(
-                        scope = scope,
-                        postListState = postListState,
-                        drawerState = drawerState,
-                        homeViewModel = homeViewModel,
-                        appSettingsViewModel = appSettingsViewModel,
-                        account = account,
-                        ctx = ctx,
-                        navController = navController,
-                        scrollBehavior = scrollBehavior,
-                    )
-                },
                 content = { padding ->
-                    MainPostListingsContent(
-                        padding = padding,
-                        homeViewModel = homeViewModel,
-                        siteViewModel = siteViewModel,
-                        postEditViewModel = postEditViewModel,
-                        appSettingsViewModel = appSettingsViewModel,
-                        account = account,
-                        ctx = ctx,
-                        navController = navController,
-                        postListState = postListState,
-                    )
+                    Column {
+                        MainTopBar(
+                            scope = scope,
+                            postListState = postListState,
+                            drawerState = drawerState,
+                            homeViewModel = homeViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            account = account,
+                            ctx = ctx,
+                            navController = navController,
+                            scrollBehavior = scrollBehavior,
+                        )
+
+                        val paddingNoTop = remember {
+                            derivedStateOf {
+                                PaddingValues(
+                                    padding.calculateStartPadding(layoutDirection),
+                                    0.dp,
+                                    padding.calculateEndPadding(layoutDirection),
+                                    padding.calculateBottomPadding(),
+                                )
+                            }
+                        }
+
+                        MainPostListingsContent(
+                            padding = paddingNoTop.value,
+                            homeViewModel = homeViewModel,
+                            siteViewModel = siteViewModel,
+                            postEditViewModel = postEditViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            account = account,
+                            ctx = ctx,
+                            navController = navController,
+                            postListState = postListState,
+                        )
+                    }
                 },
                 floatingActionButtonPosition = FabPosition.End,
                 floatingActionButton = {
