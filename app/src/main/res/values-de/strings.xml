@@ -171,8 +171,16 @@
     <string name="look_and_feel_look_and_feel">Look and feel</string>
     <string name="look_and_feel_font_size">Schriftgröße: %1$s</string>
     <string name="look_and_feel_theme">Theme</string>
+    <string name="look_and_feel_theme_system">System</string>
+    <string name="look_and_feel_theme_system_black">System Black</string>
+    <string name="look_and_feel_theme_light">Light</string>
+    <string name="look_and_feel_theme_dark">Dark</string>
+    <string name="look_and_feel_theme_black">Black</string>
     <string name="look_and_feel_theme_color">Theme color</string>
     <string name="look_and_feel_post_view">Beitragssansicht</string>
+    <string name="look_and_feel_post_view_card">Card</string>
+    <string name="look_and_feel_post_view_small_card">Small Card</string>
+    <string name="look_and_feel_post_view_list">List</string>
     <string name="look_and_feel_show_navigation_bar">Zeige Navigationsleiste</string>
     <string name="settings_activity_settings">Einstellungen</string>
     <string name="settings_activity_look_and_feel">Look and feel</string>
