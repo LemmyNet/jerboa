@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.VoteType
@@ -160,6 +161,16 @@ class HomeViewModel : ViewModel() {
             ctx = ctx,
             scope = viewModelScope,
         )
+    }
+
+    //update the listing type when a user selects all/local/subscribed from a menu source
+    //so we can default to that when the app reopens
+    fun updateListingType(listingType: String, ctx: Context) {
+        this.listingType.value = ListingType.valueOf(listingType)
+        val prefs = ctx.getSharedPreferences("SHARED_PREFS", Context.MODE_PRIVATE)
+        prefs.edit {
+            putString("DEFAULT_LISTING_TYPE", listingType)
+        }
     }
 }
 

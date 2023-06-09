@@ -1,7 +1,9 @@
 package com.jerboa
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -66,6 +68,7 @@ import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
+import kotlinx.coroutines.runBlocking
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -103,6 +106,14 @@ class MainActivity : ComponentActivity() {
 
         MarkdownHelper.init(this)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+         val sharedPreferences = getSharedPreferences("SHARED_PREFS", Context.MODE_PRIVATE)
+
+        runBlocking {
+            val listingType = sharedPreferences.getString("DEFAULT_LISTING_TYPE", null)
+            if (listingType != null) {
+                homeViewModel.updateListingType(listingType, applicationContext)
+            }
+        }
 
         val accountSync = getCurrentAccountSync(accountViewModel)
         fetchInitialData(accountSync, siteViewModel, homeViewModel)

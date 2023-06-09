@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.jerboa.VoteType
 import com.jerboa.closeDrawer
+import com.jerboa.datatypes.ListingType
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
@@ -333,6 +334,7 @@ fun MainDrawer(
                 changeListingType = listingType,
                 ctx = ctx,
             )
+            homeViewModel.updateListingType(listingType.name, ctx)
             closeDrawer(scope, drawerState)
         },
         onCommunityClick = { community ->
@@ -398,6 +400,7 @@ fun MainTopBar(
                 )
             },
             onClickListingType = { listingType ->
+                homeViewModel.updateListingType(listingType.name, ctx)
                 scrollToTop(scope, postListState)
                 homeViewModel.fetchPosts(
                     account = account,

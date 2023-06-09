@@ -672,7 +672,7 @@ fun fetchInitialData(
 
         homeViewModel.fetchPosts(
             account = account,
-            changeListingType = ListingType.values()[account.defaultListingType],
+            changeListingType = homeViewModel.listingType.value,
             changeSortType = SortType.values()[account.defaultSortType],
             clear = true,
         )
@@ -683,7 +683,7 @@ fun fetchInitialData(
         homeViewModel.fetchPosts(
             account = null,
             clear = true,
-            changeListingType = ListingType.Local,
+            changeListingType = homeViewModel.listingType.value,
             changeSortType = SortType.Active,
         )
     }
