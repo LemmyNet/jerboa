@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,7 @@ import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -857,6 +860,20 @@ fun PostListing(
         PostViewMode.List -> PostListingList(
             postView = postView,
             instantScores = instantScores.value,
+            onUpvoteClick = {
+                instantScores.value = calculateNewInstantScores(
+                    instantScores.value,
+                    voteType = VoteType.Upvote,
+                )
+                onUpvoteClick(it)
+            },
+            onDownvoteClick = {
+                instantScores.value = calculateNewInstantScores(
+                    instantScores.value,
+                    voteType = VoteType.Downvote,
+                )
+                onDownvoteClick(it)
+            },
             onPostClick = onPostClick,
             onPostLinkClick = onPostLinkClick,
             onCommunityClick = onCommunityClick,
@@ -869,9 +886,57 @@ fun PostListing(
 }
 
 @Composable
+fun PostVotingTile(
+    postView: PostView,
+    instantScores: InstantScores,
+    onUpvoteClick: (postView: PostView) -> Unit,
+    onDownvoteClick: (postView: PostView) -> Unit,
+    account: Account?,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(end = MEDIUM_PADDING)
+    ) {
+        VoteGeneric(
+            myVote = instantScores.myVote,
+            votes = instantScores.upvotes,
+            item = postView,
+            type = VoteType.Upvote,
+            showNumber = false,
+            onVoteClick = onUpvoteClick,
+            account = account,
+        )
+        Text(
+            text = instantScores.score.toString(),
+            style = MaterialTheme.typography.bodyMedium,
+            color = scoreColor(myVote = instantScores.myVote),
+        )
+        // invisible Text below aligns width of PostVotingTiles
+        Text(
+            text = "00000",
+            modifier = Modifier.height(0.dp),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        VoteGeneric(
+            myVote = instantScores.myVote,
+            votes = instantScores.downvotes,
+            item = postView,
+            type = VoteType.Downvote,
+            showNumber = false,
+            onVoteClick = onDownvoteClick,
+            account = account,
+        )
+    }
+}
+
+@Composable
 fun PostListingList(
     postView: PostView,
     instantScores: InstantScores,
+    onUpvoteClick: (postView: PostView) -> Unit,
+    onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     onPostLinkClick: (url: String) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
@@ -892,6 +957,13 @@ fun PostListingList(
                 SMALL_PADDING,
             ),
         ) {
+            PostVotingTile(
+                postView = postView,
+                instantScores = instantScores,
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
+                account = account,
+            )
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -938,12 +1010,6 @@ fun PostListingList(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = instantScores.score.toString(),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = scoreColor(myVote = instantScores.myVote),
-                    )
-                    DotSpacer(0.dp)
                     Text(
                         text = "${postView.counts.comments} comments",
                         style = MaterialTheme.typography.bodyMedium,
@@ -1012,6 +1078,8 @@ fun PostListingListPreview() {
     PostListingList(
         postView = postView,
         instantScores = instantScores,
+        onUpvoteClick = {},
+        onDownvoteClick = {},
         onPostClick = {},
         onPostLinkClick = {},
         onCommunityClick = {},
@@ -1035,6 +1103,8 @@ fun PostListingListWithThumbPreview() {
     PostListingList(
         postView = postView,
         instantScores = instantScores,
+        onUpvoteClick = {},
+        onDownvoteClick = {},
         onPostClick = {},
         onPostLinkClick = {},
         onCommunityClick = {},
