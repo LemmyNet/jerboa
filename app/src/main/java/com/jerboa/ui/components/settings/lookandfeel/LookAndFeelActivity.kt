@@ -95,7 +95,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = themeState,
-                    items = ThemeMode.values().map { it.name },
+                    items = ThemeMode.values().map { it.mode },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
