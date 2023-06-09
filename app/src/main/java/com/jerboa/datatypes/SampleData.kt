@@ -137,7 +137,6 @@ val samplePersonSafe2 = PersonSafe(
     ban_expires = null,
     instance_id = 0,
 )
-
 val sampleCommunitySafe = CommunitySafe(
     id = 14681,
     name = "socialism",
@@ -156,7 +155,24 @@ val sampleCommunitySafe = CommunitySafe(
     hidden = false,
     posting_restricted_to_mods = false,
 )
-
+val sampleCommunityNoBannerSafe = CommunitySafe(
+    id = 14681,
+    name = "socialism",
+    title = "Socialism",
+    description = "This is the r/socialism community",
+    removed = false,
+    published = "2019-04-30T13:28:35.965035",
+    updated = "2021-01-25T16:27:15.804739",
+    deleted = false,
+    nsfw = false,
+    actor_id = "https://lemmy.ml/c/socialism",
+    local = true,
+    icon = "https://lemmy.ml/pictrs/image/QtiqDmp9XY.png",
+    banner = null,
+    instance_id = 0,
+    hidden = false,
+    posting_restricted_to_mods = false,
+)
 val samplePostAggregates = PostAggregates(
     id = 56195,
     post_id = 135129,
@@ -386,6 +402,27 @@ val sampleCommunityAggregates = CommunityAggregates(
 val sampleCommunityView = CommunityView(
     community = sampleCommunitySafe,
     subscribed = SubscribedType.NotSubscribed,
+    blocked = false,
+    counts = sampleCommunityAggregates,
+)
+
+val sampleCommunityNoBannerView = CommunityView(
+    community = sampleCommunityNoBannerSafe,
+    subscribed = SubscribedType.NotSubscribed,
+    blocked = false,
+    counts = sampleCommunityAggregates,
+)
+
+val sampleCommunityViewSubscribed = CommunityView(
+    community = sampleCommunitySafe,
+    subscribed = SubscribedType.Subscribed,
+    blocked = false,
+    counts = sampleCommunityAggregates,
+)
+
+val sampleCommunityNoBannerViewSubscribed = CommunityView(
+    community = sampleCommunityNoBannerSafe,
+    subscribed = SubscribedType.Subscribed,
     blocked = false,
     counts = sampleCommunityAggregates,
 )

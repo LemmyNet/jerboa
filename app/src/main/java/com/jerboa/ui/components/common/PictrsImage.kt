@@ -139,6 +139,7 @@ fun PictrsUrlImage(
 fun PictrsBannerImage(
     url: String,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -146,7 +147,7 @@ fun PictrsBannerImage(
             .crossfade(true)
             .build(),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
-        contentDescription = null,
+        contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
         modifier = modifier.fillMaxWidth(),
     )

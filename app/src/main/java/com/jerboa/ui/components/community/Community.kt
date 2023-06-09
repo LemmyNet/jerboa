@@ -3,6 +3,8 @@
 package com.jerboa.ui.components.community
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -15,7 +17,10 @@ import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.SubscribedType
+import com.jerboa.datatypes.sampleCommunityNoBannerView
+import com.jerboa.datatypes.sampleCommunityNoBannerViewSubscribed
 import com.jerboa.datatypes.sampleCommunityView
+import com.jerboa.datatypes.sampleCommunityViewSubscribed
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -29,46 +34,44 @@ fun CommunityTopSection(
     modifier: Modifier = Modifier,
     onClickFollowCommunity: (communityView: CommunityView) -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .verticalScroll(scrollState),
     ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center,
-        ) {
-            communityView.community.banner?.also {
-                PictrsBannerImage(
-                    url = it,
-                    modifier = Modifier.height(DRAWER_BANNER_SIZE),
-                )
-            }
-            communityView.community.icon?.also {
-                LargerCircularIcon(icon = it)
-            }
-        }
-        Column(
-            modifier = Modifier.padding(MEDIUM_PADDING),
-            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = communityView.community.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-            Row {
-                Text(
-                    text = "${communityView.counts.users_active_month} users / month",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground.muted,
-                )
-            }
-            Row {
+        LargeTopAppBar(
+            title = {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+
+                ) {
+                    communityView.community.banner?.also { bannerUrl ->
+                        PictrsBannerImage(
+                            url = bannerUrl,
+                            modifier = Modifier.height(DRAWER_BANNER_SIZE),
+                            contentDescription = "Banner image for ${communityView.community.title}",
+                        )
+                    } ?: Text(
+                        text = communityView.community.title,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    communityView.community.icon?.also { icon ->
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(start = SMALL_PADDING, bottom = SMALL_PADDING),
+                        ) {
+                            LargerCircularIcon(icon = icon)
+                        }
+                    }
+                }
+            },
+            scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+            actions = {
                 when (communityView.subscribed) {
                     SubscribedType.Subscribed -> {
                         OutlinedButton(
@@ -84,6 +87,7 @@ fun CommunityTopSection(
                             )
                         }
                     }
+
                     SubscribedType.NotSubscribed -> {
                         Button(
                             onClick = { onClickFollowCommunity(communityView) },
@@ -100,6 +104,20 @@ fun CommunityTopSection(
                         }
                     }
                 }
+            },
+        )
+
+        Column(
+            modifier = Modifier.padding(MEDIUM_PADDING),
+            verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Row {
+                Text(
+                    text = "${communityView.counts.users_active_month} users / month",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground.muted,
+                )
             }
         }
     }
@@ -110,6 +128,33 @@ fun CommunityTopSection(
 fun CommunityTopSectionPreview() {
     CommunityTopSection(
         communityView = sampleCommunityView,
+        onClickFollowCommunity = {},
+    )
+}
+
+@Preview
+@Composable
+fun CommunityTopSectionNoBannerPreview() {
+    CommunityTopSection(
+        communityView = sampleCommunityNoBannerView,
+        onClickFollowCommunity = {},
+    )
+}
+
+@Preview
+@Composable
+fun CommunitySubscribedTopSectionPreview() {
+    CommunityTopSection(
+        communityView = sampleCommunityViewSubscribed,
+        onClickFollowCommunity = {},
+    )
+}
+
+@Preview
+@Composable
+fun CommunitySubscribedTopSectionNoBannerPreview() {
+    CommunityTopSection(
+        communityView = sampleCommunityNoBannerViewSubscribed,
         onClickFollowCommunity = {},
     )
 }
