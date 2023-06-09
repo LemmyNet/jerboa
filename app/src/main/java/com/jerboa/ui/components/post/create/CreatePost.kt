@@ -61,7 +61,7 @@ fun CreatePostHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Create post",
+                text = stringResource(R.string.create_post_create_post),
             )
         },
         actions = {
@@ -91,7 +91,7 @@ fun CreatePostHeader(
                 // Todo add are you sure cancel dialog
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.goBack),
+                    contentDescription = stringResource(R.string.create_post_close),
                 )
             }
         },
@@ -157,7 +157,7 @@ fun CreatePostBody(
         )
         suggestedTitle?.also {
             Text(
-                text = "copy suggested title: $it",
+                text = stringResource(R.string.create_post_copy_suggested_title, it),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground.muted,
                 modifier = Modifier.clickable { onNameChange(it) },
@@ -185,7 +185,7 @@ fun CreatePostBody(
                     readOnly = true,
                     onValueChange = {}, // TODO what?
                     label = {
-                        Text("Community")
+                        Text(stringResource(R.string.create_post_community))
                     },
                     leadingIcon = {
                         community.icon?.let {
@@ -211,7 +211,7 @@ fun CreatePostBody(
                     value = "",
                     onValueChange = {}, // TODO what?
                     label = {
-                        Text("Community")
+                        Text(stringResource(R.string.create_post_community))
                     },
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -260,7 +260,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         onUrlChange = {},
         onPickedImage = {},
         formValid = {},
-        suggestedTitle = "a title here....",
+        suggestedTitle = stringResource(R.string.create_post_a_title_here),
         account = null,
         padding = PaddingValues(),
     )

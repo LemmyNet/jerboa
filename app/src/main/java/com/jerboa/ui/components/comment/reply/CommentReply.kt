@@ -42,7 +42,7 @@ fun CommentReplyHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Reply",
+                text = stringResource(R.string.comment_reply_reply),
             )
         },
         actions = {
@@ -70,7 +70,7 @@ fun CommentReplyHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.goBack),
+                    contentDescription = stringResource(R.string.comment_reply_back),
                 )
             }
         },
@@ -284,7 +284,7 @@ fun PostReply(
             onTextChange = onReplyChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your comment",
+            placeholder = stringResource(R.string.comment_reply_type_your_comment),
         )
     }
 }

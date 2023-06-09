@@ -66,7 +66,7 @@ fun CommunityListHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.goBack),
+                    contentDescription = stringResource(R.string.community_list_back),
                 )
             }
         },
@@ -154,7 +154,7 @@ fun CommunityTopBarSearchView(
         onValueChange = onSearchChange,
         textStyle = MaterialTheme.typography.bodyLarge,
         placeholder = {
-            Text("Search...")
+            Text(stringResource(R.string.community_list_search))
         },
         modifier = Modifier
             .fillMaxWidth(),

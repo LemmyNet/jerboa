@@ -101,7 +101,7 @@ fun PersonProfileTopSection(
             )
 
             TimeAgo(
-                precedingString = "Joined",
+                precedingString = stringResource(R.string.person_profile_joined),
                 includeAgo = true,
                 published = personView.person.published,
             )
@@ -121,12 +121,12 @@ fun PersonProfileTopSection(
 fun CommentsAndPosts(personView: PersonViewSafe) {
     Row {
         Text(
-            text = "${personView.counts.post_count} posts",
+            text = stringResource(R.string.person_profile_posts, personView.counts.post_count),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${personView.counts.comment_count} comments",
+            text = stringResource(R.string.person_profile_comments, personView.counts.comment_count),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }
@@ -211,7 +211,7 @@ fun PersonProfileHeader(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.goBack),
+                    contentDescription = stringResource(R.string.person_profile_back),
                 )
             }
         },
@@ -266,12 +266,12 @@ fun PersonProfileMoreDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Block Person",
+                    text = stringResource(R.string.person_profile_block_person),
                     icon = Icons.Outlined.Block,
                     onClick = onBlockPersonClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Report Person",
+                    text = stringResource(R.string.person_profile_report_person),
                     icon = Icons.Outlined.Flag,
                     onClick = onReportPersonClick,
                 )

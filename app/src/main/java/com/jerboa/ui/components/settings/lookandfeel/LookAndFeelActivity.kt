@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
@@ -23,6 +24,7 @@ import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsSlider
 import com.jerboa.PostViewMode
+import com.jerboa.R
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.AppSettings
@@ -74,7 +76,7 @@ fun LookAndFeelActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = "Look and feel", navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), navController = navController)
         },
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
@@ -89,7 +91,12 @@ fun LookAndFeelActivity(
                         )
                     },
                     title = {
-                        Text(text = "Font size: ${fontSizeState.value.toInt()}")
+                        Text(
+                            text = stringResource(
+                                R.string.look_and_feel_font_size,
+                                fontSizeState.value.toInt(),
+                            ),
+                        )
                     },
                     onValueChangeFinished = { updateAppSettings() },
                 )
@@ -103,7 +110,7 @@ fun LookAndFeelActivity(
                         )
                     },
                     title = {
-                        Text(text = "Theme")
+                        Text(text = stringResource(R.string.look_and_feel_theme))
                     },
                     onItemSelected = { i, _ ->
                         themeState.value = i
@@ -120,7 +127,7 @@ fun LookAndFeelActivity(
                         )
                     },
                     title = {
-                        Text(text = "Theme color")
+                        Text(text = stringResource(R.string.look_and_feel_theme_color))
                     },
                     onItemSelected = { i, _ ->
                         themeColorState.value = i
@@ -137,7 +144,7 @@ fun LookAndFeelActivity(
                         )
                     },
                     title = {
-                        Text(text = "Post View")
+                        Text(text = stringResource(R.string.look_and_feel_post_view))
                     },
                     onItemSelected = { i, _ ->
                         postViewModeState.value = i
@@ -147,14 +154,14 @@ fun LookAndFeelActivity(
                 SettingsCheckbox(
                     state = showBottomNavState,
                     title = {
-                        Text(text = "Show navigation bar")
+                        Text(text = stringResource(R.string.look_and_feel_show_navigation_bar))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
                     state = showCollapsedCommentContentState,
                     title = {
-                        Text(text = "Show content for collapsed comments")
+                        Text(text = stringResource(R.string.look_and_feel_activity_show_content_for_collapsed_comments))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

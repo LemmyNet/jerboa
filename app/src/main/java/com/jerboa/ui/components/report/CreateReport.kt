@@ -31,7 +31,7 @@ fun CreateReportHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Report",
+                text = stringResource(R.string.create_report_report),
             )
         },
         actions = {
@@ -59,7 +59,7 @@ fun CreateReportHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.goBack),
+                    contentDescription = stringResource(R.string.create_report_back),
                 )
             }
         },
@@ -76,7 +76,8 @@ fun CreateReportBody(
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier.verticalScroll(scrollState)
+        modifier = Modifier
+            .verticalScroll(scrollState)
             .padding(padding)
             .imePadding(),
     ) {
@@ -85,7 +86,7 @@ fun CreateReportBody(
             onTextChange = onReasonChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your reason",
+            placeholder = stringResource(R.string.create_report_type_your_reason),
         )
     }
 }

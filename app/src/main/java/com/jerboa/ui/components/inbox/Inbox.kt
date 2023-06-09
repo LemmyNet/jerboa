@@ -60,7 +60,7 @@ fun InboxHeader(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.goBack),
+                    contentDescription = stringResource(R.string.inbox_back),
                 )
             }
         },
@@ -85,7 +85,7 @@ fun InboxHeader(
 
 @Composable
 fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null) {
-    var title = "Inbox"
+    var title = stringResource(R.string.inbox_inbox)
     if (unreadCount != null && unreadCount > 0) {
         title = "$title ($unreadCount)"
     }

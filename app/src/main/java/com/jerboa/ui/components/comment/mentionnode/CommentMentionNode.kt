@@ -236,28 +236,35 @@ fun CommentReplyNodeOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "View Source",
+                    text = stringResource(R.string.comment_mention_node_view_source),
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Copy Permalink",
+                    text = stringResource(R.string.comment_mention_node_copy_permalink),
                     icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = personMentionView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_mention_node_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Report Comment",
+                        text = stringResource(R.string.comment_mention_node_report_comment),
                         icon = Icons.Outlined.Flag,
                         onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${personMentionView.creator.name}",
+                        text = stringResource(
+                            R.string.comment_mention_node_block,
+                            personMentionView.creator.name,
+                        ),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,
                     )

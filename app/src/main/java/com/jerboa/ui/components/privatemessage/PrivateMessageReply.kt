@@ -35,7 +35,7 @@ fun PrivateMessageReplyHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Reply",
+                text = stringResource(R.string.private_message_reply_reply),
             )
         },
         actions = {
@@ -63,7 +63,7 @@ fun PrivateMessageReplyHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.private_message_reply_back),
                 )
             }
         },
@@ -120,7 +120,7 @@ fun PrivateMessageReply(
             onTextChange = onReplyChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your message",
+            placeholder = stringResource(R.string.private_message_reply_type_your_message_placeholder),
         )
     }
 }

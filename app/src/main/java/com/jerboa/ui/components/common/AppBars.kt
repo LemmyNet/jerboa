@@ -364,7 +364,7 @@ fun DotSpacer(
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     Text(
-        text = "·",
+        text = stringResource(R.string.app_bars_dot_spacer),
         style = style,
         color = MaterialTheme.colorScheme.onBackground.muted,
         modifier = Modifier.padding(horizontal = padding),
@@ -473,7 +473,7 @@ fun Sidebar(
                     )
                 }
                 TimeAgo(
-                    precedingString = "Created",
+                    precedingString = stringResource(R.string.AppBars_created),
                     includeAgo = true,
                     published = published,
                 )
@@ -517,32 +517,32 @@ fun CommentsAndPosts(
 ) {
     FlowRow {
         Text(
-            text = "${siFormat(usersActiveDay)} users / day",
+            text = stringResource(R.string.AppBars_users_day, siFormat(usersActiveDay)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(usersActiveWeek)} users / week",
+            text = stringResource(R.string.AppBars_users_week, siFormat(usersActiveWeek)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(usersActiveMonth)} users / month",
+            text = stringResource(R.string.AppBars_users_month, siFormat(usersActiveMonth)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(usersActiveHalfYear)} users / 6 months",
+            text = stringResource(R.string.AppBars_users_6_months, siFormat(usersActiveHalfYear)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(postCount)} posts",
+            text = stringResource(R.string.AppBars_posts, siFormat(postCount)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(commentCount)} comments",
+            text = stringResource(R.string.AppBars_comments, siFormat(commentCount)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }

@@ -256,7 +256,7 @@ fun CreateLinkDialog(
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
                 Text(
-                    text = "Insert link",
+                    text = stringResource(R.string.input_fields_insert_link),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -264,7 +264,7 @@ fun CreateLinkDialog(
                     value = text,
                     onValueChange = { text = it },
                     label = {
-                        Text(text = "Text")
+                        Text(text = stringResource(R.string.input_fields_text))
                     },
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -272,7 +272,7 @@ fun CreateLinkDialog(
                     value = link,
                     onValueChange = { link = it },
                     label = {
-                        Text(text = "Link")
+                        Text(text = stringResource(R.string.input_fields_link))
                     },
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -283,7 +283,7 @@ fun CreateLinkDialog(
                 onClick = onDismissRequest,
             ) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.input_fields_cancel),
                     color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
@@ -303,7 +303,7 @@ fun CreateLinkDialog(
                 },
             ) {
                 Text(
-                    text = "OK",
+                    text = stringResource(R.string.input_fields_ok),
                 )
             }
         },
@@ -332,7 +332,7 @@ fun ShowPreviewDialog(
                 onClick = onDismissRequest,
             ) {
                 Text(
-                    text = "OK",
+                    text = stringResource(R.string.input_fields_ok),
                     color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }

@@ -31,7 +31,7 @@ fun CommentEditHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Edit",
+                text = stringResource(R.string.comment_edit_edit),
             )
         },
         actions = {
@@ -59,7 +59,7 @@ fun CommentEditHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.goBack),
+                    contentDescription = stringResource(R.string.comment_edit_back),
                 )
             }
         },
@@ -86,7 +86,7 @@ fun CommentEdit(
             onTextChange = onContentChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your comment",
+            placeholder = stringResource(R.string.comment_edit_type_your_comment),
         )
     }
 }

@@ -65,7 +65,10 @@ fun CommunityTopSection(
             }
             Row {
                 Text(
-                    text = "${communityView.counts.users_active_month} users / month",
+                    text = stringResource(
+                        R.string.community_users_month,
+                        communityView.counts.users_active_month,
+                    ),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground.muted,
                 )
@@ -76,7 +79,7 @@ fun CommunityTopSection(
                         OutlinedButton(
                             onClick = { onClickFollowCommunity(communityView) },
                         ) {
-                            Text("Joined")
+                            Text(stringResource(R.string.community_joined))
                             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                             Icon(
                                 imageVector = Icons.Outlined.CheckCircle,
@@ -90,7 +93,7 @@ fun CommunityTopSection(
                         Button(
                             onClick = { onClickFollowCommunity(communityView) },
                         ) {
-                            Text("Subscribe")
+                            Text(stringResource(R.string.community_subscribe))
                         }
                     }
 
@@ -98,7 +101,7 @@ fun CommunityTopSection(
                         Button(
                             onClick = { onClickFollowCommunity(communityView) },
                         ) {
-                            Text("Pending")
+                            Text(stringResource(R.string.community_pending))
                         }
                     }
                 }
@@ -180,7 +183,7 @@ fun CommunityHeader(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.goBack),
+                    contentDescription = stringResource(R.string.community_back),
                 )
             }
         },
@@ -234,7 +237,7 @@ fun CommunityMoreDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Refresh",
+                    text = stringResource(R.string.community_refresh),
                     icon = Icons.Outlined.Refresh,
                     onClick = {
                         onDismissRequest()
@@ -242,7 +245,7 @@ fun CommunityMoreDialog(
                     },
                 )
                 IconAndTextDrawerItem(
-                    text = "Community Info",
+                    text = stringResource(R.string.community_community_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
                         navController.navigate("communitySidebar")
@@ -250,7 +253,7 @@ fun CommunityMoreDialog(
                     },
                 )
                 IconAndTextDrawerItem(
-                    text = "Block Community",
+                    text = stringResource(R.string.community_block_community),
                     icon = Icons.Outlined.Block,
                     onClick = onBlockCommunityClick,
                 )

@@ -41,10 +41,10 @@ fun PrivateMessageHeader(
 
     if (isCreator(myPersonId, privateMessageView)) {
         otherPerson = privateMessageView.recipient
-        fromOrTo = "to "
+        fromOrTo = stringResource(R.string.private_message_to)
     } else {
         otherPerson = privateMessageView.creator
-        fromOrTo = "from "
+        fromOrTo = stringResource(R.string.private_message_from)
     }
 
     Row(

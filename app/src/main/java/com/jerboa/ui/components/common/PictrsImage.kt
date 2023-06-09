@@ -202,7 +202,7 @@ fun PickImage(
             launcher.launch("image/*")
         }) {
             Text(
-                text = "Upload Image",
+                text = stringResource(R.string.pictrs_image_upload_image),
                 color = MaterialTheme.colorScheme.onBackground.muted,
             )
         }

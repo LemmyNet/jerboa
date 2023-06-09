@@ -41,7 +41,7 @@ fun EditPostHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Edit Post",
+                text = stringResource(R.string.post_edit_edit_post),
             )
         },
         actions = {
@@ -71,7 +71,7 @@ fun EditPostHeader(
                 // Todo add are you sure cancel dialog
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.goBack),
+                    contentDescription = stringResource(R.string.post_edit_close),
                 )
             }
         },
@@ -141,7 +141,7 @@ fun EditPostBody(
             outlined = true,
             account = account,
             focusImmediate = false,
-            placeholder = "Body",
+            placeholder = stringResource(R.string.post_edit_body_placeholder),
         )
     }
 }
