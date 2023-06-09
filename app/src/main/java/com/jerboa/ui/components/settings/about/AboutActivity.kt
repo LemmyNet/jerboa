@@ -41,6 +41,7 @@ const val mastodonLink = "https://mastodon.social/@LemmyDev"
 @Composable
 fun AboutActivity(
     navController: NavController,
+    useCustomTabs: Boolean,
 ) {
     Log.d("jerboa", "Got to About activity")
 
@@ -68,7 +69,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", ctx)
+                        openLink("$githubUrl/blob/main/RELEASES.md", ctx, useCustomTabs)
                     },
                 )
                 SettingsDivider()
@@ -82,7 +83,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/issues", ctx)
+                        openLink("$githubUrl/issues", ctx, useCustomTabs)
                     },
                 )
                 SettingsMenuLink(
@@ -94,7 +95,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaMatrixChat, ctx)
+                        openLink(jerboaMatrixChat, ctx, useCustomTabs)
                     },
                 )
                 SettingsMenuLink(
@@ -106,7 +107,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(donateLink, ctx)
+                        openLink(donateLink, ctx, useCustomTabs)
                     },
                 )
                 SettingsDivider()
@@ -121,7 +122,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaLemmyLink, ctx)
+                        openLink(jerboaLemmyLink, ctx, useCustomTabs)
                     },
                 )
                 SettingsMenuLink(
@@ -133,7 +134,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(mastodonLink, ctx)
+                        openLink(mastodonLink, ctx, useCustomTabs)
                     },
                 )
                 SettingsDivider()
@@ -154,7 +155,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(githubUrl, ctx)
+                        openLink(githubUrl, ctx, useCustomTabs)
                     },
                 )
             }
@@ -182,5 +183,5 @@ fun SettingsHeader(
 @Preview
 @Composable
 fun AboutPreview() {
-    AboutActivity(navController = rememberNavController())
+    AboutActivity(navController = rememberNavController(), useCustomTabs = false)
 }
