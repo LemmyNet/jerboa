@@ -43,6 +43,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityActivity(
     navController: NavController,

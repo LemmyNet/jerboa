@@ -2,10 +2,16 @@ package com.jerboa.ui.components.inbox
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,11 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
@@ -146,7 +147,7 @@ enum class InboxTab {
     Messages,
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun InboxTabs(
     navController: NavController,
@@ -193,7 +194,7 @@ fun InboxTabs(
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
         HorizontalPager(
-            count = tabTitles.size,
+            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),
@@ -226,22 +227,26 @@ fun InboxTabs(
                             }
                         }
                     }
-
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
-                        onRefresh = {
-                            account?.also { acct ->
-                                inboxViewModel.fetchReplies(
-                                    account = acct,
-                                    clear = true,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
+                    Box(
+                        modifier = Modifier.pullRefresh(
+                            state = rememberPullRefreshState(
+                                refreshing = loading,
+                                onRefresh = {
+                                    account?.also { acct ->
+                                        inboxViewModel.fetchReplies(
+                                            account = acct,
+                                            clear = true,
+                                            ctx = ctx,
+                                        )
+                                    }
+                                },
+                            ),
+                        ),
                     ) {
                         LazyColumn(
                             state = listState,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
                                 .simpleVerticalScrollbar(listState),
                         ) {
                             items(
@@ -361,22 +366,26 @@ fun InboxTabs(
                             }
                         }
                     }
-
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
-                        onRefresh = {
-                            account?.also { acct ->
-                                inboxViewModel.fetchPersonMentions(
-                                    account = acct,
-                                    clear = true,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
+                    Box(
+                        modifier = Modifier.pullRefresh(
+                            state = rememberPullRefreshState(
+                                loading,
+                                onRefresh = {
+                                    account?.also { acct ->
+                                        inboxViewModel.fetchPersonMentions(
+                                            account = acct,
+                                            clear = true,
+                                            ctx = ctx,
+                                        )
+                                    }
+                                },
+                            ),
+                        ),
                     ) {
                         LazyColumn(
                             state = listState,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
                                 .simpleVerticalScrollbar(listState),
                         ) {
                             items(
@@ -500,22 +509,26 @@ fun InboxTabs(
                             }
                         }
                     }
-
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
-                        onRefresh = {
-                            account?.also { acct ->
-                                inboxViewModel.fetchPrivateMessages(
-                                    account = acct,
-                                    clear = true,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
+                    Box(
+                        modifier = Modifier.pullRefresh(
+                            state = rememberPullRefreshState(
+                                loading,
+                                onRefresh = {
+                                    account?.also { acct ->
+                                        inboxViewModel.fetchPrivateMessages(
+                                            account = acct,
+                                            clear = true,
+                                            ctx = ctx,
+                                        )
+                                    }
+                                },
+                            ),
+                        ),
                     ) {
                         LazyColumn(
                             state = listState,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
                                 .simpleVerticalScrollbar(listState),
                         ) {
                             items(

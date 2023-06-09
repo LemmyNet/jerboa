@@ -1,11 +1,15 @@
 package com.jerboa.ui.components.post
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,8 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
@@ -30,6 +32,7 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.Tagline
 import com.jerboa.ui.theme.SMALL_PADDING
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PostListings(
     posts: List<PostView>,
@@ -59,10 +62,13 @@ fun PostListings(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
 ) {
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(loading),
-        onRefresh = onSwipeRefresh,
-        indicatorPadding = padding,
+    Box(
+        modifier = Modifier.pullRefresh(
+            state = rememberPullRefreshState(
+                refreshing = loading,
+                onRefresh = onSwipeRefresh,
+            ),
+        ),
     ) {
         LazyColumn(
             state = listState,
