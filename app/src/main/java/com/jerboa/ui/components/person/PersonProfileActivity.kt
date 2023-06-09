@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -22,6 +23,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
@@ -247,7 +249,8 @@ fun UserTabs(
 
                     LazyColumn(
                         state = listState,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
                             .simpleVerticalScrollbar(listState),
                     ) {
                         item {
@@ -261,7 +264,7 @@ fun UserTabs(
                             if (moderates.isNotEmpty()) {
                                 item {
                                     Text(
-                                        text = "Moderates",
+                                        text = stringResource(R.string.person_profile_activity_moderates),
                                         style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.padding(MEDIUM_PADDING),
                                     )

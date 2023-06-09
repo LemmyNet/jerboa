@@ -21,11 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.PostViewMode
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCommentParentId
@@ -80,7 +82,7 @@ fun PostActivity(
         topBar = {
             Column {
                 SimpleTopAppBar(
-                    "Comments",
+                    stringResource(R.string.post_activity_comments),
                     navController = navController,
                     scrollBehavior =
                     scrollBehavior,
@@ -116,7 +118,8 @@ fun PostActivity(
                 postViewModel.postView.value?.also { postView ->
                     LazyColumn(
                         state = listState,
-                        modifier = Modifier.padding(padding)
+                        modifier = Modifier
+                            .padding(padding)
                             .simpleVerticalScrollbar(listState),
                     ) {
                         item(key = "${postView.post.id}_listing") {

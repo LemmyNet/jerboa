@@ -31,8 +31,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommunitySafe
@@ -219,28 +221,35 @@ fun CommentReplyNodeOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "View Source",
+                    text = stringResource(R.string.comment_reply_node_view_source),
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Copy Permalink",
+                    text = stringResource(R.string.comment_reply_node_copy_permalink),
                     icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = "${commentReplyView.comment.ap_id}"
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_reply_node_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Report Comment",
+                        text = stringResource(R.string.comment_reply_node_report_comment),
                         icon = Icons.Outlined.Flag,
                         onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${commentReplyView.creator.name}",
+                        text = stringResource(
+                            R.string.comment_reply_node_block,
+                            commentReplyView.creator.name,
+                        ),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,
                     )

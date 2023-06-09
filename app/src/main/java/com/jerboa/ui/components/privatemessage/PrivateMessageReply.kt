@@ -13,10 +13,12 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.db.Account
@@ -33,7 +35,7 @@ fun PrivateMessageReplyHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Reply",
+                text = stringResource(R.string.private_message_reply_reply),
             )
         },
         actions = {
@@ -61,7 +63,7 @@ fun PrivateMessageReplyHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.private_message_reply_back),
                 )
             }
         },
@@ -118,7 +120,7 @@ fun PrivateMessageReply(
             onTextChange = onReplyChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your message",
+            placeholder = stringResource(R.string.private_message_reply_type_your_message_placeholder),
         )
     }
 }
