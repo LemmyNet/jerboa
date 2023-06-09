@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -41,6 +42,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.jerboa.R
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.samplePersonSafe
@@ -90,14 +92,17 @@ fun BottomAppBarAll(
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
     if (showBottomNav == true) {
-        val window = (LocalContext.current as Activity).window
-        val colorScheme = MaterialTheme.colorScheme
+        // Check for preview mode
+        if (LocalContext.current is Activity) {
+            val window = (LocalContext.current as Activity).window
+            val colorScheme = MaterialTheme.colorScheme
 
-        DisposableEffect(Unit) {
-            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+            DisposableEffect(Unit) {
+                window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
 
-            onDispose {
-                window.navigationBarColor = colorScheme.background.toArgb()
+                onDispose {
+                    window.navigationBarColor = colorScheme.background.toArgb()
+                }
             }
         }
 
@@ -108,12 +113,12 @@ fun BottomAppBarAll(
                         Icon(
                             imageVector = Icons.Filled.Home,
                             tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_home),
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Outlined.Home,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_home),
                         )
                     }
                 },
@@ -127,7 +132,7 @@ fun BottomAppBarAll(
                 icon = {
                     Icon(
                         imageVector = Icons.Outlined.List,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.bottomBar_communityList),
                     )
                 },
                 onClick = {
@@ -141,12 +146,14 @@ fun BottomAppBarAll(
                         InboxIconAndBadge(
                             iconBadgeCount = totalUnreads,
                             icon = Icons.Filled.Email,
+                            contentDescription = stringResource(R.string.bottomBar_inbox),
                             tint = MaterialTheme.colorScheme.primary,
                         )
                     } else {
                         InboxIconAndBadge(
                             iconBadgeCount = totalUnreads,
                             icon = Icons.Outlined.Email,
+                            contentDescription = stringResource(R.string.bottomBar_inbox),
                         )
                     }
                 },
@@ -161,12 +168,12 @@ fun BottomAppBarAll(
                         Icon(
                             imageVector = Icons.Filled.Bookmarks,
                             tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_bookmarks),
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Outlined.Bookmarks,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_bookmarks),
                         )
                     }
                 },
@@ -181,12 +188,12 @@ fun BottomAppBarAll(
                         Icon(
                             imageVector = Icons.Filled.Person,
                             tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_profile),
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Outlined.Person,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_profile),
                         )
                     }
                 },
@@ -250,7 +257,7 @@ fun CommentOrPostNodeHeader(
             if (deleted) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.commentOrPostHeader_deleted),
                     tint = MaterialTheme.colorScheme.error,
                 )
                 DotSpacer(style = MaterialTheme.typography.bodyMedium)
@@ -299,6 +306,7 @@ fun CommentOrPostNodeHeaderPreview() {
 fun ActionBarButton(
     onClick: () -> Unit,
     icon: ImageVector,
+    contentDescription: String?,
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
@@ -336,7 +344,7 @@ fun ActionBarButton(
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = "TODO",
+            contentDescription = contentDescription,
             tint = contentColor,
         )
         text?.also {
@@ -377,6 +385,7 @@ fun scoreColor(myVote: Int?): Color {
 fun InboxIconAndBadge(
     iconBadgeCount: Int?,
     icon: ImageVector,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current,
 ) {
@@ -395,7 +404,7 @@ fun InboxIconAndBadge(
             content = {
                 Icon(
                     imageVector = icon,
-                    contentDescription = "TODO",
+                    contentDescription = contentDescription,
                     tint = tint,
                 )
             },
@@ -403,7 +412,7 @@ fun InboxIconAndBadge(
     } else {
         Icon(
             imageVector = icon,
-            contentDescription = "TODO",
+            contentDescription = contentDescription,
             tint = tint,
             modifier = modifier,
         )

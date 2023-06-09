@@ -20,10 +20,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.datatypes.CommunityFollowerView
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.CommunityView
@@ -52,7 +54,7 @@ fun CommunityListHeader(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.moreOptions),
                 )
             }
         },
@@ -64,7 +66,7 @@ fun CommunityListHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.goBack),
                 )
             }
         },

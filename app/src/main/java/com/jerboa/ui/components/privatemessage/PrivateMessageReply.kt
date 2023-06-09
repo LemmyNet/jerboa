@@ -13,10 +13,12 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.db.Account
@@ -48,7 +50,7 @@ fun PrivateMessageReplyHeader(
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Send,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.form_submit),
                     )
                 }
             }

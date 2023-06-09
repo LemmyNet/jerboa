@@ -73,6 +73,7 @@ fun CommunityLink(
         community.icon?.let {
             CircularIcon(
                 icon = it,
+                contentDescription = null,
                 size = size,
                 thumbnailSize = thumbnailSize,
             )

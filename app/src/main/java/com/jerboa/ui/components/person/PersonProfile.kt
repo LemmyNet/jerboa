@@ -27,9 +27,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.datatypes.PersonViewSafe
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.samplePersonView
@@ -69,6 +71,7 @@ fun PersonProfileTopSection(
             personView.person.banner?.also {
                 PictrsBannerImage(
                     url = it,
+                    contentDescription = stringResource(R.string.personProfile_viewBanner),
                     modifier = Modifier
                         .height(PROFILE_BANNER_SIZE)
                         .clickable {
@@ -80,6 +83,7 @@ fun PersonProfileTopSection(
                 personView.person.avatar?.also {
                     LargerCircularIcon(
                         icon = it,
+                        contentDescription = stringResource(R.string.personProfile_viewAvatar),
                         modifier = Modifier.clickable {
                             showImage = personView.person.avatar
                         },
@@ -207,7 +211,7 @@ fun PersonProfileHeader(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.goBack),
                 )
             }
         },
@@ -217,7 +221,7 @@ fun PersonProfileHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.selectSort),
                 )
             }
             if (!myProfile) {
@@ -226,7 +230,7 @@ fun PersonProfileHeader(
                 }) {
                     Icon(
                         Icons.Outlined.MoreVert,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.moreOptions),
                     )
                 }
             }

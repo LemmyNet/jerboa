@@ -58,10 +58,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
+import com.jerboa.R
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.PersonSafe
@@ -375,7 +377,11 @@ fun DrawerHeader(
                 } else {
                     Icons.Outlined.ExpandMore
                 },
-                contentDescription = "TODO",
+                contentDescription = if (showAccountAddMode) {
+                    stringResource(R.string.moreOptions)
+                } else {
+                    stringResource(R.string.lessOptions)
+                },
             )
         }
     }
@@ -518,7 +524,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.Menu,
-                    contentDescription = "Menu",
+                    contentDescription = stringResource(R.string.homeHeader_showDrawer),
                 )
             }
         },
@@ -529,7 +535,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.FilterList,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.homeHeader_filter),
                 )
             }
             IconButton(onClick = {
@@ -537,7 +543,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.selectSort),
                 )
             }
             IconButton(onClick = {
@@ -545,7 +551,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.moreOptions),
                 )
             }
         },

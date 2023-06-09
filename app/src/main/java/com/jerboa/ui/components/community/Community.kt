@@ -9,9 +9,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.SubscribedType
@@ -78,7 +80,7 @@ fun CommunityTopSection(
                             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                             Icon(
                                 imageVector = Icons.Outlined.CheckCircle,
-                                contentDescription = "TODO",
+                                contentDescription = null,
                                 modifier = Modifier
                                     .height(ACTION_BAR_ICON_SIZE),
                             )
@@ -178,7 +180,7 @@ fun CommunityHeader(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.goBack),
                 )
             }
         },
@@ -188,7 +190,7 @@ fun CommunityHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.community_sortBy),
                 )
             }
             IconButton(onClick = {
@@ -196,7 +198,7 @@ fun CommunityHeader(
             }) {
                 Icon(
                     Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.moreOptions),
                 )
             }
         },

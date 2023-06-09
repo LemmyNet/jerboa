@@ -14,7 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
@@ -147,6 +149,11 @@ fun PrivateMessageFooterLine(
                     } else {
                         Icons.Outlined.MarkChatUnread
                     },
+                    contentDescription = if (privateMessageView.private_message.read) {
+                        stringResource(R.string.markUnread)
+                    } else {
+                        stringResource(R.string.markRead)
+                    },
                     onClick = { onMarkAsReadClick(privateMessageView) },
                     contentColor = if (privateMessageView.private_message.read) {
                         MaterialTheme.colorScheme.primary
@@ -157,6 +164,7 @@ fun PrivateMessageFooterLine(
                 )
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.privateMessage_reply),
                     onClick = { onReplyClick(privateMessageView) },
                     account = account,
                 )

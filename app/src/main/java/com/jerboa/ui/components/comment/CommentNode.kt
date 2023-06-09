@@ -47,11 +47,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.Border
 import com.jerboa.CommentNodeData
 import com.jerboa.InstantScores
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.border
 import com.jerboa.buildCommentsTree
@@ -559,6 +561,11 @@ fun CommentFooterLine(
                 icon = if (commentView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
                 },
+                contentDescription = if (commentView.saved) {
+                    stringResource(R.string.removeBookmark)
+                } else {
+                    stringResource(R.string.addBookmark)
+                },
                 onClick = { onSaveClick(commentView) },
                 contentColor = if (commentView.saved) {
                     MaterialTheme.colorScheme.primary
@@ -571,12 +578,14 @@ fun CommentFooterLine(
             if (commentView.creator.id != account?.id) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(commentView) },
                     account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
+                contentDescription = stringResource(R.string.moreOptions),
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
                 requiresAccount = false,

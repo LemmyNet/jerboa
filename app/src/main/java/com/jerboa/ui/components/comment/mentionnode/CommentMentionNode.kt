@@ -31,8 +31,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonMentionView
@@ -155,6 +157,7 @@ fun CommentMentionNodeFooterLine(
             )
             ActionBarButton(
                 icon = Icons.Outlined.Link,
+                contentDescription = stringResource(R.string.commentMention_link),
                 onClick = { onLinkClick(personMentionView) },
                 account = account,
             )
@@ -163,6 +166,11 @@ fun CommentMentionNodeFooterLine(
                     Icons.Outlined.MarkChatRead
                 } else {
                     Icons.Outlined.MarkChatUnread
+                },
+                contentDescription = if (personMentionView.person_mention.read) {
+                    stringResource(R.string.markUnread)
+                } else {
+                    stringResource(R.string.markRead)
                 },
                 onClick = { onMarkAsReadClick(personMentionView) },
                 contentColor = if (personMentionView.person_mention.read) {
@@ -173,8 +181,15 @@ fun CommentMentionNodeFooterLine(
                 account = account,
             )
             ActionBarButton(
-                icon = if (personMentionView.saved) { Icons.Filled.Bookmark } else {
+                icon = if (personMentionView.saved) {
+                    Icons.Filled.Bookmark
+                } else {
                     Icons.Outlined.BookmarkBorder
+                },
+                contentDescription = if (personMentionView.saved) {
+                    stringResource(R.string.comment_unsave)
+                } else {
+                    stringResource(R.string.comment_save)
                 },
                 onClick = { onSaveClick(personMentionView) },
                 contentColor = if (personMentionView.saved) {
@@ -188,12 +203,14 @@ fun CommentMentionNodeFooterLine(
             if (personMentionView.creator.id != account?.id) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(personMentionView) },
                     account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
+                contentDescription = stringResource(R.string.moreOptions),
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
                 requiresAccount = false,

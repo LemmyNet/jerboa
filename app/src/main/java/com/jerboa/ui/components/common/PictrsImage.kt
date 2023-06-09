@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,7 @@ import com.jerboa.ui.theme.muted
 @Composable
 fun CircularIcon(
     icon: String,
+    contentDescription: String?,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     modifier: Modifier = Modifier,
@@ -59,7 +61,7 @@ fun CircularIcon(
             .crossfade(true)
             .build(),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
-        contentDescription = null,
+        contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier = pictureBlurOrRounded(modifier, true, false)
             .size(size),
@@ -67,10 +69,11 @@ fun CircularIcon(
 }
 
 @Composable
-fun LargerCircularIcon(modifier: Modifier = Modifier, icon: String) {
+fun LargerCircularIcon(modifier: Modifier = Modifier, icon: String, contentDescription: String? = null) {
     CircularIcon(
         modifier = modifier,
         icon = icon,
+        contentDescription = contentDescription,
         size = LARGER_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
     )
@@ -79,7 +82,10 @@ fun LargerCircularIcon(modifier: Modifier = Modifier, icon: String) {
 @Preview
 @Composable
 fun CircularIconPreview() {
-    CircularIcon(icon = sampleCommunitySafe.icon!!)
+    CircularIcon(
+        icon = sampleCommunitySafe.icon!!,
+        contentDescription = "",
+    )
 }
 
 fun pictureBlurOrRounded(
@@ -139,6 +145,7 @@ fun PictrsUrlImage(
 fun PictrsBannerImage(
     url: String,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -146,7 +153,7 @@ fun PictrsBannerImage(
             .crossfade(true)
             .build(),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
-        contentDescription = null,
+        contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
         modifier = modifier.fillMaxWidth(),
     )
@@ -207,7 +214,7 @@ fun PickImage(
                 bitmap.value?.let { btm ->
                     Image(
                         bitmap = btm.asImageBitmap(),
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.pickImage_imagePreview),
                     )
                 }
             }

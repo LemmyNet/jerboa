@@ -59,6 +59,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -66,6 +67,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
@@ -450,7 +452,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Preview,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_preview),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -459,7 +461,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Link,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertLink),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -474,7 +476,7 @@ fun MarkdownHelperBar(
             } else {
                 Icon(
                     imageVector = Icons.Outlined.Image,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.markdownHelper_insertImage),
                     tint = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
@@ -484,7 +486,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatBold,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatBold),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -493,7 +495,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatItalic,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatItalic),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -502,7 +504,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatQuote,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertQuote),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -511,7 +513,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatListBulleted,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertList),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -520,7 +522,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Title,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertHeader),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -529,7 +531,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Code,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertCode),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -538,7 +540,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatStrikethrough,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatStrikethrough),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -547,7 +549,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Subscript,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatSubscript),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -556,7 +558,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Superscript,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatSuperscript),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }

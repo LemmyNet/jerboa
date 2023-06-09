@@ -31,7 +31,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.closeDrawer
 import com.jerboa.db.Account
@@ -126,7 +128,10 @@ fun HomeActivity(
                             }
                         },
                     ) {
-                        Icon(imageVector = Icons.Outlined.Add, contentDescription = "TODO")
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = stringResource(R.string.floating_createPost),
+                        )
                     }
                 },
                 bottomBar = {
