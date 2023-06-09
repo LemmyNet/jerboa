@@ -79,7 +79,7 @@ data class AppSettings(
         name = "op_comment_badge_radius",
         defaultValue = DEFAULT_OP_COMMENT_BADGE_RADIUS.toString(),
     )
-    val opCommentBadgeRadius: Int,
+    val opCommentBadgeRadius: Int
 )
 
 @Dao
