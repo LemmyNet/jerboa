@@ -109,10 +109,8 @@ class MainActivity : ComponentActivity() {
          val sharedPreferences = getSharedPreferences("SHARED_PREFS", Context.MODE_PRIVATE)
 
         runBlocking {
-            val listingType = sharedPreferences.getString("DEFAULT_LISTING_TYPE", null)
-            if (listingType != null) {
-                homeViewModel.updateListingType(listingType, applicationContext)
-            }
+            val listingType = sharedPreferences.getString("DEFAULT_LISTING_TYPE", "All")
+            homeViewModel.updateListingType(listingType!!, applicationContext)
         }
 
         val accountSync = getCurrentAccountSync(accountViewModel)
