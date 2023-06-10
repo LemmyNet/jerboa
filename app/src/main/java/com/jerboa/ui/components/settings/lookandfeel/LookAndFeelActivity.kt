@@ -183,6 +183,7 @@ fun LookAndFeelActivity(
                     title = {
                         Text(text = "Show voting arrows in list view")
                     },
+                    onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
                     state = useCustomTabsState,
