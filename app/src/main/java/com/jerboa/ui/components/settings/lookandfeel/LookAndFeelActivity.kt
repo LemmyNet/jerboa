@@ -27,12 +27,10 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
-import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.DEFAULT_FONT_SIZE
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,10 +59,9 @@ fun LookAndFeelActivity(
     val showVotingArrowsInListViewState = rememberBooleanSettingState(
         settings?.showVotingArrowsInListView ?: true,
     )
-    val blurNsfw = rememberBooleanSettingState(
+    val blurNSFW = rememberBooleanSettingState(
         settings?.blurNSFW ?: true,
     )
-
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -81,7 +78,7 @@ fun LookAndFeelActivity(
                 showCollapsedCommentContent = showCollapsedCommentContentState.value,
                 showCommentActionBarByDefault = showCommentActionBarByDefaultState.value,
                 showVotingArrowsInListView = showVotingArrowsInListViewState.value,
-                blurNSFW = blurNsfw.value,
+                blurNSFW = blurNSFW.value,
             ),
         )
     }
@@ -194,11 +191,11 @@ fun LookAndFeelActivity(
                 )
                 if (siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_nsfw == true) {
                     SettingsCheckbox(
-                        state = blurNsfw,
+                        state = blurNSFW,
                         title = {
                             Text(text = "Blur NSFW content")
                         },
-                        onCheckedChange = { updateAppSettings() }
+                        onCheckedChange = { updateAppSettings() },
                     )
                 }
             }

@@ -41,6 +41,16 @@ fun SettingsActivity(
         },
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
+                SettingsMenuLink(
+                    title = { Text(stringResource(R.string.settings_activity_look_and_feel)) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Palette,
+                            contentDescription = "TODO",
+                        )
+                    },
+                    onClick = { navController.navigate("lookAndFeel") },
+                )
                 account?.also { acct ->
                     SettingsMenuLink(
                         title = {
@@ -60,16 +70,6 @@ fun SettingsActivity(
                         onClick = { navController.navigate("accountSettings") },
                     )
                 }
-                SettingsMenuLink(
-                    title = { Text(stringResource(R.string.settings_activity_look_and_feel)) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Palette,
-                            contentDescription = "TODO",
-                        )
-                    },
-                    onClick = { navController.navigate("lookAndFeel") },
-                )
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_activity_about)) },
                     icon = {

@@ -424,6 +424,7 @@ fun HomeHeaderTitle(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeHeader(
     scope: CoroutineScope,

@@ -57,9 +57,9 @@ fun HomeActivity(
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     postEditViewModel: PostEditViewModel,
-    appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     appSettings: AppSettings?,
+    appSettingsViewModel: AppSettingsViewModel,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -280,7 +280,7 @@ fun MainPostListingsContent(
         },
         account = account,
         showVotingArrowsInListView = showVotingArrowsInListView,
-        appSettings = appSettings,
+        blur_setting = appSettings?.blurNSFW ?: true,
     )
 }
 

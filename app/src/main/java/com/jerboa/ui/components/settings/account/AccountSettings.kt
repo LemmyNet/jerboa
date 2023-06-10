@@ -19,7 +19,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.api.SaveUserSettings

@@ -69,7 +69,7 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
     }
 
     val backColor = MaterialTheme.colorScheme.scrim
-    val backColorTranslucent = MaterialTheme.colorScheme.scrim.copy(alpha = 1f)
+    val backColorTranslucent = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
 
     var showTopBar by remember { mutableStateOf(true) }
 

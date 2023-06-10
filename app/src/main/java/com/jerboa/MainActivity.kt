@@ -185,7 +185,7 @@ class MainActivity : ComponentActivity() {
                             communityListViewModel = communityListViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            appSettings = appSettings,
+                            blur_setting = appSettings?.blurNSFW ?: true,
                         )
                     }
                     // Only necessary for community deeplinks
@@ -230,7 +230,7 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            appSettings = appSettings,
+                            blur_setting = appSettings?.blurNSFW ?: true,
                         )
                     }
                     composable(
@@ -271,7 +271,7 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            appSettings = appSettings,
+                            blur_setting = appSettings?.blurNSFW ?: true,
                         )
                     }
                     // Necessary for deep links
@@ -313,7 +313,7 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            appSettings = appSettings,
+                            blur_setting = appSettings?.blurNSFW ?: true,
                         )
                     }
                     composable(
@@ -439,7 +439,7 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: false,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            appSettings = appSettings,
+                            blur_setting = appSettings?.blurNSFW ?: true,
                         )
                     }
                     composable(
@@ -472,7 +472,7 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            appSettings = appSettings,
+                            blur_setting = appSettings?.blurNSFW ?: true,
                         )
                     }
                     composable(

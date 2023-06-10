@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jerboa.db.AppSettings
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
 import com.jerboa.ui.theme.LARGE_PADDING
 
@@ -71,6 +73,28 @@ fun IconAndTextDrawerItem(
             )
         }
     }
+}
+
+fun UpdateSettings(
+    appSettingsViewModel: AppSettingsViewModel,
+    appSettings: AppSettings?,
+): ((Boolean) -> Unit)? {
+    appSettingsViewModel.update(
+        AppSettings(
+            id = 1,
+            viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
+            theme = appSettings?.theme!!,
+            themeColor = appSettings.themeColor,
+            fontSize = appSettings.fontSize,
+            postViewMode = appSettings.postViewMode,
+            showBottomNav = appSettings.showBottomNav,
+            showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+            showCommentActionBarByDefault = appSettings.showCommentActionBarByDefault,
+            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+            blurNSFW = !appSettings.blurNSFW,
+        ),
+    )
+    return null
 }
 
 @Preview
