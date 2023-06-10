@@ -20,8 +20,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
 import coil.ImageLoader
 import com.jerboa.R
+import com.jerboa.openLink
+import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
+import io.noties.markwon.MarkwonConfiguration
 import io.noties.markwon.image.coil.CoilImagesPlugin
+import io.noties.markwon.linkify.LinkifyPlugin
 
 object MarkdownHelper {
     private var markwon: Markwon? = null
@@ -34,6 +38,14 @@ object MarkdownHelper {
 
         markwon = Markwon.builder(context)
             .usePlugin(CoilImagesPlugin.create(context, loader))
+            .usePlugin(LinkifyPlugin.create())
+            .usePlugin(object : AbstractMarkwonPlugin() {
+                override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+                    builder.linkResolver { view, link ->
+                        link?.let { openLink(link, view.context) }
+                    }
+                }
+            })
             .build()
     }
 
