@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -78,6 +80,7 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
+import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
@@ -237,6 +240,7 @@ fun PostNodeHeader(
         isModerator = isModerator,
         isCommunityBanned = postView.creator_banned_from_community,
         onClick = {},
+        onLongCLick = {},
     )
 }
 
@@ -252,7 +256,6 @@ fun PostTitleBlock(
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
             postView = postView,
-            onPostLinkClick = onPostLinkClick,
         )
     } else {
         PostTitleAndThumbnail(
@@ -289,7 +292,6 @@ fun PostName(
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -307,8 +309,14 @@ fun PostTitleAndImageLink(
         )
     }
 
+    var showImageDialog by remember { mutableStateOf(false) }
+
+    if (showImageDialog) {
+        ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
+    }
+
     val postLinkPicMod = Modifier
-        .clickable { onPostLinkClick(url) }
+        .clickable { showImageDialog = true }
     PictrsUrlImage(
         url = url,
         nsfw = nsfwCheck(postView),
@@ -641,6 +649,7 @@ fun PreviewPostListingCard() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.Card,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -666,6 +675,7 @@ fun PreviewLinkPostListing() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.Card,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -691,6 +701,7 @@ fun PreviewImagePostListingCard() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.Card,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -716,6 +727,7 @@ fun PreviewImagePostListingSmallCard() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.SmallCard,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -741,6 +753,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         fullBody = false,
         account = null,
         postViewMode = PostViewMode.Card,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -766,6 +779,7 @@ fun PostListing(
     fullBody: Boolean,
     account: Account?,
     postViewMode: PostViewMode,
+    showVotingArrowsInListView: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -853,12 +867,73 @@ fun PostListing(
         PostViewMode.List -> PostListingList(
             postView = postView,
             instantScores = instantScores.value,
+            onUpvoteClick = {
+                instantScores.value = calculateNewInstantScores(
+                    instantScores.value,
+                    voteType = VoteType.Upvote,
+                )
+                onUpvoteClick(it)
+            },
+            onDownvoteClick = {
+                instantScores.value = calculateNewInstantScores(
+                    instantScores.value,
+                    voteType = VoteType.Downvote,
+                )
+                onDownvoteClick(it)
+            },
             onPostClick = onPostClick,
             onPostLinkClick = onPostLinkClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
+            account = account,
+            showVotingArrowsInListView = showVotingArrowsInListView,
+        )
+    }
+}
+
+@Composable
+fun PostVotingTile(
+    postView: PostView,
+    instantScores: InstantScores,
+    onUpvoteClick: (postView: PostView) -> Unit,
+    onDownvoteClick: (postView: PostView) -> Unit,
+    account: Account?,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(end = MEDIUM_PADDING),
+    ) {
+        VoteGeneric(
+            myVote = instantScores.myVote,
+            votes = instantScores.upvotes,
+            item = postView,
+            type = VoteType.Upvote,
+            showNumber = false,
+            onVoteClick = onUpvoteClick,
+            account = account,
+        )
+        Text(
+            text = instantScores.score.toString(),
+            style = MaterialTheme.typography.bodyMedium,
+            color = scoreColor(myVote = instantScores.myVote),
+        )
+        // invisible Text below aligns width of PostVotingTiles
+        Text(
+            text = "00000",
+            modifier = Modifier.height(0.dp),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        VoteGeneric(
+            myVote = instantScores.myVote,
+            votes = instantScores.downvotes,
+            item = postView,
+            type = VoteType.Downvote,
+            showNumber = false,
+            onVoteClick = onDownvoteClick,
             account = account,
         )
     }
@@ -868,6 +943,8 @@ fun PostListing(
 fun PostListingList(
     postView: PostView,
     instantScores: InstantScores,
+    onUpvoteClick: (postView: PostView) -> Unit,
+    onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     onPostLinkClick: (url: String) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
@@ -875,6 +952,7 @@ fun PostListingList(
     isModerator: Boolean,
     showCommunityName: Boolean = true,
     account: Account?,
+    showVotingArrowsInListView: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(
@@ -888,6 +966,15 @@ fun PostListingList(
                 SMALL_PADDING,
             ),
         ) {
+            if (showVotingArrowsInListView) {
+                PostVotingTile(
+                    postView = postView,
+                    instantScores = instantScores,
+                    onUpvoteClick = onUpvoteClick,
+                    onDownvoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -934,12 +1021,14 @@ fun PostListingList(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = instantScores.score.toString(),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = scoreColor(myVote = instantScores.myVote),
-                    )
-                    DotSpacer(0.dp)
+                    if (!showVotingArrowsInListView) {
+                        Text(
+                            text = instantScores.score.toString(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = scoreColor(myVote = instantScores.myVote),
+                        )
+                        DotSpacer(0.dp)
+                    }
                     Text(
                         text = stringResource(
                             R.string.post_listing_comments_count,
@@ -1011,12 +1100,15 @@ fun PostListingListPreview() {
     PostListingList(
         postView = postView,
         instantScores = instantScores,
+        onUpvoteClick = {},
+        onDownvoteClick = {},
         onPostClick = {},
         onPostLinkClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         isModerator = false,
         account = null,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -1034,12 +1126,15 @@ fun PostListingListWithThumbPreview() {
     PostListingList(
         postView = postView,
         instantScores = instantScores,
+        onUpvoteClick = {},
+        onDownvoteClick = {},
         onPostClick = {},
         onPostLinkClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         isModerator = false,
         account = null,
+        showVotingArrowsInListView = true,
     )
 }
 
@@ -1186,7 +1281,11 @@ fun PostOptionsDialog(
                         icon = Icons.Outlined.Link,
                         onClick = {
                             localClipboardManager.setText(AnnotatedString(it))
-                            Toast.makeText(ctx, "Link Copied", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                ctx,
+                                ctx.getString(R.string.post_listing_link_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
                             onDismissRequest()
                         },
                     )
@@ -1197,7 +1296,11 @@ fun PostOptionsDialog(
                     onClick = {
                         val permalink = postView.post.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.post_listing_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )

@@ -93,6 +93,7 @@ fun RepliedComment(
             collapsedCommentsCount = 0,
             isExpanded = true,
             onClick = {},
+            onLongClick = {},
         )
         SelectionContainer {
             Text(text = commentView.comment.content)
@@ -112,6 +113,7 @@ fun RepliedCommentReply(
             score = commentReplyView.counts.score,
             myVote = commentReplyView.my_vote,
             onClick = {},
+            onLongClick = {},
         )
         SelectionContainer {
             Text(text = commentReplyView.comment.content)
@@ -131,6 +133,7 @@ fun RepliedMentionReply(
             score = personMentionView.counts.score,
             myVote = personMentionView.my_vote,
             onClick = {},
+            onLongClick = {},
         )
         SelectionContainer {
             Text(text = personMentionView.comment.content)

@@ -3,6 +3,7 @@
 package com.jerboa
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -10,10 +11,12 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,6 +58,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
+import java.io.IOException
 import java.io.InputStream
 import java.net.URL
 import java.text.DecimalFormat
@@ -79,6 +83,7 @@ val DEFAULT_LEMMY_INSTANCES = listOf(
     "beehaw.org",
     "feddit.it",
     "sopuli.xyz",
+    "slrpnk.net",
 )
 
 // convert a data class to a map
@@ -363,9 +368,15 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
-fun openLink(url: String, ctx: Context) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    ctx.startActivity(intent)
+fun openLink(url: String, ctx: Context, useCustomTab: Boolean) {
+    if (useCustomTab) {
+        val intent = CustomTabsIntent.Builder()
+            .build()
+        intent.launchUrl(ctx, Uri.parse(url))
+    } else {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        ctx.startActivity(intent)
+    }
 }
 
 fun prettyTimeShortener(timeString: String): String {
@@ -720,12 +731,12 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-enum class ThemeMode {
-    System,
-    SystemBlack,
-    Light,
-    Dark,
-    Black,
+enum class ThemeMode(val mode: Int) {
+    System(R.string.look_and_feel_theme_system),
+    SystemBlack(R.string.look_and_feel_theme_system_black),
+    Light(R.string.look_and_feel_theme_light),
+    Dark(R.string.look_and_feel_theme_dark),
+    Black(R.string.look_and_feel_theme_black),
 }
 
 enum class ThemeColor {
@@ -735,22 +746,22 @@ enum class ThemeColor {
     Blue,
 }
 
-enum class PostViewMode(val mode: String) {
+enum class PostViewMode(val mode: Int) {
     /**
      * The full size post view card. For image posts, this expands them to their full height. For
      * link posts, the thumbnail is shown to the right of the title.
      */
-    Card("Card"),
+    Card(R.string.look_and_feel_post_view_card),
 
     /**
      * The same as regular card, except image posts only show a thumbnail image.
      */
-    SmallCard("Small Card"),
+    SmallCard(R.string.look_and_feel_post_view_small_card),
 
     /**
      * A list view that has no action bar.
      */
-    List("List"),
+    List(R.string.look_and_feel_post_view_list),
 }
 
 @ExperimentalPagerApi
@@ -821,6 +832,41 @@ fun getDepthFromComment(comment: Comment?): Int? {
 // TODO add a check for your account, view nsfw
 fun nsfwCheck(postView: PostView): Boolean {
     return postView.post.nsfw || postView.community.nsfw
+}
+
+@Throws(IOException::class)
+fun saveBitmap(
+    context: Context,
+    inputStream: InputStream,
+    mimeType: String?,
+    displayName: String,
+): Uri {
+    val values = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+        put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Jerboa")
+    }
+
+    val resolver = context.contentResolver
+    var uri: Uri? = null
+
+    try {
+        uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            ?: throw IOException("Failed to create new MediaStore record.")
+
+        resolver.openOutputStream(uri)?.use {
+            inputStream.copyTo(it)
+        } ?: throw IOException("Failed to open output stream.")
+
+        return uri
+    } catch (e: IOException) {
+        uri?.let { orphanUri ->
+            // Don't leave an orphan entry in the MediaStore
+            resolver.delete(orphanUri, null, null)
+        }
+
+        throw e
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

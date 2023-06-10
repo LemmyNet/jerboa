@@ -49,6 +49,7 @@ fun CommunityActivity(
     homeViewModel: HomeViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -141,7 +142,7 @@ fun CommunityActivity(
                     navController.navigate(route = "post/${postView.post.id}")
                 },
                 onPostLinkClick = { url ->
-                    openLink(url, ctx)
+                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                 },
                 onSaveClick = { postView ->
                     account?.also { acct ->
@@ -224,6 +225,7 @@ fun CommunityActivity(
                 listState = postListState,
                 taglines = null,
                 postViewMode = getPostViewMode(appSettingsViewModel),
+                showVotingArrowsInListView = showVotingArrowsInListView,
             )
         },
         floatingActionButtonPosition = FabPosition.End,

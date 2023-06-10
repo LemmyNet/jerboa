@@ -50,6 +50,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonProfileActivity(
     savedMode: Boolean,
@@ -61,6 +62,7 @@ fun PersonProfileActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -140,6 +142,7 @@ fun PersonProfileActivity(
                 commentReplyViewModel = commentReplyViewModel,
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
+                showVotingArrowsInListView = showVotingArrowsInListView,
             )
         },
         bottomBar = {
@@ -193,6 +196,7 @@ fun UserTabs(
     postEditViewModel: PostEditViewModel,
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -307,7 +311,7 @@ fun UserTabs(
                             navController.navigate(route = "post/${postView.post.id}")
                         },
                         onPostLinkClick = { url ->
-                            openLink(url, ctx)
+                            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                         },
                         onSaveClick = { postView ->
                             account?.also { acct ->
@@ -389,6 +393,7 @@ fun UserTabs(
                         listState = postListState,
                         taglines = null,
                         postViewMode = getPostViewMode(appSettingsViewModel),
+                        showVotingArrowsInListView = showVotingArrowsInListView,
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -521,6 +526,7 @@ fun UserTabs(
                             account = account,
                             moderators = listOf(),
                             isCollapsedByParent = false,
+                            showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
                         )
                     }
                 }

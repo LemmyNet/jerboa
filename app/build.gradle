@@ -66,9 +66,12 @@ android {
 dependencies {
     implementation 'com.github.alorma:compose-settings-ui-m3:0.27.0'
 
-    implementation 'com.github.jeziellago:compose-markdown:0.3.1'
-
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
+
+    // Markdown support
+    implementation 'io.noties.markwon:core:4.6.2'
+    implementation 'io.noties.markwon:image-coil:4.6.2'
+    implementation 'io.noties.markwon:linkify:4.6.2'
 
     // Accompanist
     implementation 'com.google.accompanist:accompanist-pager:0.30.1'
@@ -117,4 +120,6 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.4.3'
     debugImplementation 'androidx.compose.ui:ui-tooling:1.4.3'
     debugImplementation 'androidx.compose.ui:ui-test-manifest:1.4.3'
+    implementation "net.engawapg.lib:zoomable:1.4.3"
+    implementation 'androidx.browser:browser:1.5.0'
 }
