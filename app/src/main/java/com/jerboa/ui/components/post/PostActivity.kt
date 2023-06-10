@@ -30,6 +30,7 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
@@ -52,8 +53,10 @@ fun PostActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     navController: NavController,
+    appSettingsViewModel: AppSettingsViewModel,
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -147,7 +150,7 @@ fun PostActivity(
                                 },
                                 onPostClick = {},
                                 onPostLinkClick = { url ->
-                                    openLink(url, ctx)
+                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                                 },
                                 onSaveClick = {
                                     account?.also { acct ->
@@ -205,6 +208,7 @@ fun PostActivity(
                                 fullBody = true,
                                 account = account,
                                 postViewMode = PostViewMode.Card,
+                                showVotingArrowsInListView = showVotingArrowsInListView,
                             )
                         }
                         item(key = "${postView.post.id}_is_comment_view") {

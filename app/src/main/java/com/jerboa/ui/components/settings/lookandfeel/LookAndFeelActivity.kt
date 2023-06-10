@@ -54,6 +54,10 @@ fun LookAndFeelActivity(
     val showCommentActionBarByDefaultState = rememberBooleanSettingState(
         settings?.showCommentActionBarByDefault ?: true,
     )
+    val showVotingArrowsInListViewState = rememberBooleanSettingState(
+        settings?.showVotingArrowsInListView ?: true,
+    )
+    val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -69,6 +73,8 @@ fun LookAndFeelActivity(
                 showBottomNav = showBottomNavState.value,
                 showCollapsedCommentContent = showCollapsedCommentContentState.value,
                 showCommentActionBarByDefault = showCommentActionBarByDefaultState.value,
+                showVotingArrowsInListView = showVotingArrowsInListViewState.value,
+                useCustomTabs = useCustomTabsState.value,
             ),
         )
     }
@@ -102,7 +108,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = themeState,
-                    items = ThemeMode.values().map { it.name },
+                    items = ThemeMode.values().map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
@@ -136,7 +142,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = postViewModeState,
-                    items = PostViewMode.values().map { it.mode },
+                    items = PostViewMode.values().map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.ViewList,
@@ -169,6 +175,20 @@ fun LookAndFeelActivity(
                     state = showCommentActionBarByDefaultState,
                     title = {
                         Text(text = "Show action bar by default for comments")
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = showVotingArrowsInListViewState,
+                    title = {
+                        Text(text = "Show voting arrows in list view")
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = useCustomTabsState,
+                    title = {
+                        Text(text = stringResource(id = R.string.look_and_feel_use_custom_tabs))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

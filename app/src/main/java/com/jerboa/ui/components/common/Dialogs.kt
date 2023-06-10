@@ -243,7 +243,7 @@ fun PostViewModeDialog(
             Column {
                 PostViewMode.values().map {
                     IconAndTextDrawerItem(
-                        text = it.mode,
+                        text = stringResource(it.mode),
                         onClick = { onClickPostViewMode(it) },
                         highlight = (selectedPostViewMode == it),
                     )

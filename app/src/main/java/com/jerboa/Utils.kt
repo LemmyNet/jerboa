@@ -16,6 +16,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -367,9 +368,15 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
-fun openLink(url: String, ctx: Context) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    ctx.startActivity(intent)
+fun openLink(url: String, ctx: Context, useCustomTab: Boolean) {
+    if (useCustomTab) {
+        val intent = CustomTabsIntent.Builder()
+            .build()
+        intent.launchUrl(ctx, Uri.parse(url))
+    } else {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        ctx.startActivity(intent)
+    }
 }
 
 fun prettyTimeShortener(timeString: String): String {
@@ -724,12 +731,12 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-enum class ThemeMode {
-    System,
-    SystemBlack,
-    Light,
-    Dark,
-    Black,
+enum class ThemeMode(val mode: Int) {
+    System(R.string.look_and_feel_theme_system),
+    SystemBlack(R.string.look_and_feel_theme_system_black),
+    Light(R.string.look_and_feel_theme_light),
+    Dark(R.string.look_and_feel_theme_dark),
+    Black(R.string.look_and_feel_theme_black),
 }
 
 enum class ThemeColor {
@@ -739,22 +746,22 @@ enum class ThemeColor {
     Blue,
 }
 
-enum class PostViewMode(val mode: String) {
+enum class PostViewMode(val mode: Int) {
     /**
      * The full size post view card. For image posts, this expands them to their full height. For
      * link posts, the thumbnail is shown to the right of the title.
      */
-    Card("Card"),
+    Card(R.string.look_and_feel_post_view_card),
 
     /**
      * The same as regular card, except image posts only show a thumbnail image.
      */
-    SmallCard("Small Card"),
+    SmallCard(R.string.look_and_feel_post_view_small_card),
 
     /**
      * A list view that has no action bar.
      */
-    List("List"),
+    List(R.string.look_and_feel_post_view_list),
 }
 
 @ExperimentalPagerApi

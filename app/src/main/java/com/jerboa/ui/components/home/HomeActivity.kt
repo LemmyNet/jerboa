@@ -58,6 +58,7 @@ fun HomeActivity(
     siteViewModel: SiteViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -114,6 +115,7 @@ fun HomeActivity(
                         ctx = ctx,
                         navController = navController,
                         postListState = postListState,
+                        showVotingArrowsInListView = showVotingArrowsInListView,
                     )
                 },
                 floatingActionButtonPosition = FabPosition.End,
@@ -175,6 +177,7 @@ fun MainPostListingsContent(
     padding: PaddingValues,
     postListState: LazyListState,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     PostListings(
         listState = postListState,
@@ -202,7 +205,7 @@ fun MainPostListingsContent(
             navController.navigate(route = "post/${postView.post.id}")
         },
         onPostLinkClick = { url ->
-            openLink(url, ctx)
+            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
         },
         onSaveClick = { postView ->
             account?.also { acct ->
@@ -273,6 +276,7 @@ fun MainPostListingsContent(
             }
         },
         account = account,
+        showVotingArrowsInListView = showVotingArrowsInListView,
     )
 }
 
@@ -295,6 +299,7 @@ fun MainDrawer(
         unreadCounts = homeViewModel.unreadCountResponse,
         accountViewModel = accountViewModel,
         navController = navController,
+        isOpen = drawerState.isOpen,
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
             accountViewModel.setCurrent(acct.id)

@@ -62,6 +62,7 @@ fun PersonProfileActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -141,6 +142,7 @@ fun PersonProfileActivity(
                 commentReplyViewModel = commentReplyViewModel,
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
+                showVotingArrowsInListView = showVotingArrowsInListView,
             )
         },
         bottomBar = {
@@ -194,6 +196,7 @@ fun UserTabs(
     postEditViewModel: PostEditViewModel,
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -308,7 +311,7 @@ fun UserTabs(
                             navController.navigate(route = "post/${postView.post.id}")
                         },
                         onPostLinkClick = { url ->
-                            openLink(url, ctx)
+                            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                         },
                         onSaveClick = { postView ->
                             account?.also { acct ->
@@ -390,6 +393,7 @@ fun UserTabs(
                         listState = postListState,
                         taglines = null,
                         postViewMode = getPostViewMode(appSettingsViewModel),
+                        showVotingArrowsInListView = showVotingArrowsInListView,
                     )
                 }
                 UserTab.Comments.ordinal -> {
