@@ -57,6 +57,7 @@ fun HomeActivity(
     siteViewModel: SiteViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -113,6 +114,7 @@ fun HomeActivity(
                         ctx = ctx,
                         navController = navController,
                         postListState = postListState,
+                        showVotingArrowsInListView = showVotingArrowsInListView,
                     )
                 },
                 floatingActionButtonPosition = FabPosition.End,
@@ -174,6 +176,7 @@ fun MainPostListingsContent(
     padding: PaddingValues,
     postListState: LazyListState,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     PostListings(
         listState = postListState,
@@ -272,6 +275,7 @@ fun MainPostListingsContent(
             }
         },
         account = account,
+        showVotingArrowsInListView = showVotingArrowsInListView,
     )
 }
 

@@ -49,6 +49,7 @@ fun CommunityActivity(
     homeViewModel: HomeViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -224,6 +225,7 @@ fun CommunityActivity(
                 listState = postListState,
                 taglines = null,
                 postViewMode = getPostViewMode(appSettingsViewModel),
+                showVotingArrowsInListView = showVotingArrowsInListView,
             )
         },
         floatingActionButtonPosition = FabPosition.End,

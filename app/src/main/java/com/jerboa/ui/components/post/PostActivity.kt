@@ -54,6 +54,7 @@ fun PostActivity(
     navController: NavController,
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -205,6 +206,7 @@ fun PostActivity(
                                 fullBody = true,
                                 account = account,
                                 postViewMode = PostViewMode.Card,
+                                showVotingArrowsInListView = showVotingArrowsInListView,
                             )
                         }
                         item(key = "${postView.post.id}_is_comment_view") {
