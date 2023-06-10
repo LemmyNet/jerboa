@@ -135,7 +135,10 @@ fun LoginForm(
                 label = { Text(stringResource(R.string.login_instance)) },
                 placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
                 value = instance,
-                onValueChange = { instance = it },
+                onValueChange = {
+                    instance = it
+                    expanded = true
+                },
                 trailingIcon = {
                     TrailingIcon(expanded = expanded)
                 },
@@ -147,7 +150,7 @@ fun LoginForm(
                     expanded = false
                 },
             ) {
-                instanceOptions.forEach { selectionOption ->
+                instanceOptions.filter { instance.isEmpty() || it.contains(instance) }.forEach { selectionOption ->
                     DropdownMenuItem(
                         modifier = Modifier.exposedDropdownSize(),
                         text = {
