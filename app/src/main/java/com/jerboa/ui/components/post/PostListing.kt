@@ -66,10 +66,12 @@ import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.Post
 import com.jerboa.datatypes.PostView
+import com.jerboa.datatypes.SiteView
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
+import com.jerboa.datatypes.sampleSiteView
 import com.jerboa.db.Account
 import com.jerboa.hostName
 import com.jerboa.isImage
@@ -448,8 +450,10 @@ fun PostFooterLine(
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
     account: Account?,
+    siteView: SiteView,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
+    var localSite = siteView.local_site;
 
     if (showMoreOptions) {
         PostOptionsDialog(
@@ -507,14 +511,16 @@ fun PostFooterLine(
                 onVoteClick = onUpvoteClick,
                 account = account,
             )
-            VoteGeneric(
-                myVote = instantScores.myVote,
-                votes = instantScores.downvotes,
-                item = postView,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (localSite.enable_downvotes) {
+                VoteGeneric(
+                    myVote = instantScores.myVote,
+                    votes = instantScores.downvotes,
+                    item = postView,
+                    type = VoteType.Downvote,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = if (postView.saved) {
                     Icons.Filled.Bookmark
@@ -624,6 +630,7 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
+        siteView = sampleSiteView,
     )
 }
 
@@ -650,6 +657,7 @@ fun PreviewPostListingCard() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        siteView = sampleSiteView,
     )
 }
 
@@ -676,6 +684,7 @@ fun PreviewLinkPostListing() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        siteView = sampleSiteView,
     )
 }
 
@@ -702,6 +711,7 @@ fun PreviewImagePostListingCard() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        siteView = sampleSiteView,
     )
 }
 
@@ -728,6 +738,7 @@ fun PreviewImagePostListingSmallCard() {
         account = null,
         postViewMode = PostViewMode.SmallCard,
         showVotingArrowsInListView = true,
+        siteView = sampleSiteView,
     )
 }
 
@@ -754,6 +765,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        siteView = sampleSiteView,
     )
 }
 
@@ -780,6 +792,7 @@ fun PostListing(
     account: Account?,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
+    siteView: SiteView,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -828,6 +841,7 @@ fun PostListing(
             fullBody = fullBody,
             account = account,
             expandedImage = true,
+            siteView = siteView,
         )
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
@@ -863,6 +877,7 @@ fun PostListing(
             account = account,
             fullBody = false,
             expandedImage = false,
+            siteView = siteView,
         )
         PostViewMode.List -> PostListingList(
             postView = postView,
@@ -1161,6 +1176,7 @@ fun PostListingCard(
     fullBody: Boolean,
     account: Account?,
     expandedImage: Boolean,
+    siteView: SiteView,
 ) {
     Column(
         modifier = Modifier
@@ -1206,6 +1222,7 @@ fun PostListingCard(
             showReply = showReply,
             account = account,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+            siteView = siteView,
         )
     }
 }

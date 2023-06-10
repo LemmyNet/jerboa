@@ -43,11 +43,13 @@ import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
+    siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
@@ -119,75 +121,212 @@ fun PostActivity(
                 },
             ) {
                 postViewModel.postView.value?.also { postView ->
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier
-                            .padding(padding)
-                            .simpleVerticalScrollbar(listState),
-                    ) {
-                        item(key = "${postView.post.id}_listing") {
-                            PostListing(
-                                postView = postView,
-                                onUpvoteClick = {
-                                    postViewModel.likePost(
-                                        voteType = VoteType.Upvote,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
-                                    // TODO will need to pass in postlistingsviewmodel
-                                    // for the Home page to also be updated
+                    siteViewModel.siteRes?.site_view?.also { siteView ->
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier
+                                .padding(padding)
+                                .simpleVerticalScrollbar(listState),
+                        ) {
+                            item(key = "${postView.post.id}_listing") {
+                                PostListing(
+                                    postView = postView,
+                                    onUpvoteClick = {
+                                        postViewModel.likePost(
+                                            voteType = VoteType.Upvote,
+                                            account = account,
+                                            ctx = ctx,
+                                        )
+                                        // TODO will need to pass in postlistingsviewmodel
+                                        // for the Home page to also be updated
+                                    },
+                                    onDownvoteClick = {
+                                        postViewModel.likePost(
+                                            voteType = VoteType.Downvote,
+                                            account = account,
+                                            ctx = ctx,
+                                        )
+                                    },
+                                    onReplyClick = { postView ->
+                                        commentReplyViewModel.initialize(ReplyItem.PostItem(postView))
+                                        navController.navigate("commentReply")
+                                    },
+                                    onPostClick = {},
+                                    onPostLinkClick = { url ->
+                                        openLink(
+                                            url,
+                                            ctx,
+                                            appSettingsViewModel.appSettings.value?.useCustomTabs
+                                                ?: true
+                                        )
+                                    },
+                                    onSaveClick = {
+                                        account?.also { acct ->
+                                            postViewModel.savePost(
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    onCommunityClick = { community ->
+                                        navController.navigate(route = "community/${community.id}")
+                                    },
+                                    onEditPostClick = { postView ->
+                                        postEditViewModel.initialize(postView)
+                                        navController.navigate("postEdit")
+                                    },
+                                    onDeletePostClick = {
+                                        account?.also { acct ->
+                                            postViewModel.deletePost(
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    onReportClick = { postView ->
+                                        navController.navigate("postReport/${postView.post.id}")
+                                    },
+                                    onPersonClick = { personId ->
+                                        navController.navigate(route = "profile/$personId")
+                                    },
+                                    onBlockCommunityClick = {
+                                        account?.also { acct ->
+                                            postViewModel.blockCommunity(
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    onBlockCreatorClick = {
+                                        account?.also { acct ->
+                                            postViewModel.blockCreator(
+                                                creator = it,
+                                                account = acct,
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    showReply = true, // Do nothing
+                                    isModerator = isModerator(
+                                        postView.creator,
+                                        postViewModel
+                                            .moderators,
+                                    ),
+                                    showCommunityName = true,
+                                    fullBody = true,
+                                    account = account,
+                                    postViewMode = PostViewMode.Card,
+                                    showVotingArrowsInListView = showVotingArrowsInListView,
+                                    siteView = siteView,
+                                )
+                            }
+                            item(key = "${postView.post.id}_is_comment_view") {
+                                if (postViewModel.isCommentView()) {
+                                    postViewModel.postView.value?.post?.id?.let { postId ->
+                                        ShowCommentContextButtons(
+                                            postId,
+                                            commentParentId = commentParentId,
+                                            showContextButton = showContextButton,
+                                            onPostClick = { id ->
+                                                navController.navigate("post/$id")
+                                            },
+                                            onCommentClick = { commentId ->
+                                                navController.navigate("comment/$commentId")
+                                            },
+                                        )
+                                    }
+                                }
+                            }
+                            commentNodeItems(
+                                nodes = postViewModel.commentTree,
+                                isFlat = false,
+                                isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
+                                toggleExpanded = { commentId ->
+                                    if (unExpandedComments.contains(commentId)) {
+                                        unExpandedComments.remove(commentId)
+                                    } else {
+                                        unExpandedComments.add(commentId)
+                                    }
                                 },
-                                onDownvoteClick = {
-                                    postViewModel.likePost(
-                                        voteType = VoteType.Downvote,
-                                        account = account,
-                                        ctx = ctx,
-                                    )
+                                toggleActionBar = { commentId ->
+                                    if (commentsWithToggledActionBar.contains(commentId)) {
+                                        commentsWithToggledActionBar.remove(commentId)
+                                    } else {
+                                        commentsWithToggledActionBar.add(commentId)
+                                    }
                                 },
-                                onReplyClick = { postView ->
-                                    commentReplyViewModel.initialize(ReplyItem.PostItem(postView))
+                                onMarkAsReadClick = {},
+                                onUpvoteClick = { commentView ->
+                                    account?.also { acct ->
+                                        postViewModel.likeComment(
+                                            commentView = commentView,
+                                            voteType = VoteType.Upvote,
+                                            account = acct,
+                                            ctx = ctx,
+                                        )
+                                    }
+                                },
+                                onDownvoteClick = { commentView ->
+                                    account?.also { acct ->
+                                        postViewModel.likeComment(
+                                            commentView = commentView,
+                                            voteType = VoteType.Downvote,
+                                            account = acct,
+                                            ctx = ctx,
+                                        )
+                                    }
+                                },
+                                onReplyClick = { commentView ->
+                                    commentReplyViewModel.initialize(
+                                        ReplyItem.CommentItem(
+                                            commentView
+                                        )
+                                    )
                                     navController.navigate("commentReply")
                                 },
-                                onPostClick = {},
-                                onPostLinkClick = { url ->
-                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
-                                },
-                                onSaveClick = {
+                                onSaveClick = { commentView ->
                                     account?.also { acct ->
-                                        postViewModel.savePost(
+                                        postViewModel.saveComment(
+                                            commentView = commentView,
                                             account = acct,
                                             ctx = ctx,
                                         )
                                     }
-                                },
-                                onCommunityClick = { community ->
-                                    navController.navigate(route = "community/${community.id}")
-                                },
-                                onEditPostClick = { postView ->
-                                    postEditViewModel.initialize(postView)
-                                    navController.navigate("postEdit")
-                                },
-                                onDeletePostClick = {
-                                    account?.also { acct ->
-                                        postViewModel.deletePost(
-                                            account = acct,
-                                            ctx = ctx,
-                                        )
-                                    }
-                                },
-                                onReportClick = { postView ->
-                                    navController.navigate("postReport/${postView.post.id}")
                                 },
                                 onPersonClick = { personId ->
                                     navController.navigate(route = "profile/$personId")
                                 },
-                                onBlockCommunityClick = {
+                                onEditCommentClick = { commentView ->
+                                    commentEditViewModel.initialize(commentView)
+                                    navController.navigate("commentEdit")
+                                },
+                                onDeleteCommentClick = { commentView ->
                                     account?.also { acct ->
-                                        postViewModel.blockCommunity(
+                                        postViewModel.deleteComment(
+                                            commentView = commentView,
                                             account = acct,
                                             ctx = ctx,
                                         )
                                     }
+                                },
+                                onReportClick = { commentView ->
+                                    navController.navigate(
+                                        "commentReport/${
+                                            commentView.comment
+                                                .id
+                                        }",
+                                    )
+                                },
+                                onCommentLinkClick = { commentView ->
+                                    navController.navigate("comment/${commentView.comment.id}")
+                                },
+                                onFetchChildrenClick = {
+                                    postViewModel.fetchMoreChildren(
+                                        commentView = it,
+                                        account = account,
+                                        ctx = ctx,
+
+                                        )
                                 },
                                 onBlockCreatorClick = {
                                     account?.also { acct ->
@@ -198,142 +337,22 @@ fun PostActivity(
                                         )
                                     }
                                 },
-                                showReply = true, // Do nothing
-                                isModerator = isModerator(
-                                    postView.creator,
-                                    postViewModel
-                                        .moderators,
-                                ),
-                                showCommunityName = true,
-                                fullBody = true,
+                                onCommunityClick = { community ->
+                                    navController.navigate(route = "community/${community.id}")
+                                },
+                                onPostClick = {}, // Do nothing
                                 account = account,
-                                postViewMode = PostViewMode.Card,
-                                showVotingArrowsInListView = showVotingArrowsInListView,
+                                moderators = postViewModel.moderators,
+                                showCollapsedCommentContent = showCollapsedCommentContent,
+                                isCollapsedByParent = false,
+                                showActionBar = { commentId ->
+                                    showActionBarByDefault xor commentsWithToggledActionBar.contains(
+                                        commentId
+                                    )
+                                },
+                                siteView = siteView,
                             )
                         }
-                        item(key = "${postView.post.id}_is_comment_view") {
-                            if (postViewModel.isCommentView()) {
-                                postViewModel.postView.value?.post?.id?.let { postId ->
-                                    ShowCommentContextButtons(
-                                        postId,
-                                        commentParentId = commentParentId,
-                                        showContextButton = showContextButton,
-                                        onPostClick = { id ->
-                                            navController.navigate("post/$id")
-                                        },
-                                        onCommentClick = { commentId ->
-                                            navController.navigate("comment/$commentId")
-                                        },
-                                    )
-                                }
-                            }
-                        }
-                        commentNodeItems(
-                            nodes = postViewModel.commentTree,
-                            isFlat = false,
-                            isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
-                            toggleExpanded = { commentId ->
-                                if (unExpandedComments.contains(commentId)) {
-                                    unExpandedComments.remove(commentId)
-                                } else {
-                                    unExpandedComments.add(commentId)
-                                }
-                            },
-                            toggleActionBar = { commentId ->
-                                if (commentsWithToggledActionBar.contains(commentId)) {
-                                    commentsWithToggledActionBar.remove(commentId)
-                                } else {
-                                    commentsWithToggledActionBar.add(commentId)
-                                }
-                            },
-                            onMarkAsReadClick = {},
-                            onUpvoteClick = { commentView ->
-                                account?.also { acct ->
-                                    postViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Upvote,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            onDownvoteClick = { commentView ->
-                                account?.also { acct ->
-                                    postViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Downvote,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            onReplyClick = { commentView ->
-                                commentReplyViewModel.initialize(ReplyItem.CommentItem(commentView))
-                                navController.navigate("commentReply")
-                            },
-                            onSaveClick = { commentView ->
-                                account?.also { acct ->
-                                    postViewModel.saveComment(
-                                        commentView = commentView,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            onPersonClick = { personId ->
-                                navController.navigate(route = "profile/$personId")
-                            },
-                            onEditCommentClick = { commentView ->
-                                commentEditViewModel.initialize(commentView)
-                                navController.navigate("commentEdit")
-                            },
-                            onDeleteCommentClick = { commentView ->
-                                account?.also { acct ->
-                                    postViewModel.deleteComment(
-                                        commentView = commentView,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            onReportClick = { commentView ->
-                                navController.navigate(
-                                    "commentReport/${commentView.comment
-                                        .id}",
-                                )
-                            },
-                            onCommentLinkClick = { commentView ->
-                                navController.navigate("comment/${commentView.comment.id}")
-                            },
-                            onFetchChildrenClick = {
-                                postViewModel.fetchMoreChildren(
-                                    commentView = it,
-                                    account = account,
-                                    ctx = ctx,
-
-                                )
-                            },
-                            onBlockCreatorClick = {
-                                account?.also { acct ->
-                                    postViewModel.blockCreator(
-                                        creator = it,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            onCommunityClick = { community ->
-                                navController.navigate(route = "community/${community.id}")
-                            },
-                            onPostClick = {}, // Do nothing
-                            account = account,
-                            moderators = postViewModel.moderators,
-                            showCollapsedCommentContent = showCollapsedCommentContent,
-                            isCollapsedByParent = false,
-                            showActionBar = { commentId ->
-                                showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
-                            },
-                        )
                     }
                 }
             }

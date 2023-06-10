@@ -178,105 +178,108 @@ fun MainPostListingsContent(
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
 ) {
-    PostListings(
-        listState = postListState,
-        padding = padding,
-        posts = homeViewModel.posts,
-        taglines = siteViewModel.siteRes?.taglines,
-        postViewMode = getPostViewMode(appSettingsViewModel),
-        onUpvoteClick = { postView ->
-            homeViewModel.likePost(
-                voteType = VoteType.Upvote,
-                postView = postView,
-                account = account,
-                ctx = ctx,
-            )
-        },
-        onDownvoteClick = { postView ->
-            homeViewModel.likePost(
-                voteType = VoteType.Downvote,
-                postView = postView,
-                account = account,
-                ctx = ctx,
-            )
-        },
-        onPostClick = { postView ->
-            navController.navigate(route = "post/${postView.post.id}")
-        },
-        onPostLinkClick = { url ->
-            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
-        },
-        onSaveClick = { postView ->
-            account?.also { acct ->
-                homeViewModel.savePost(
+    siteViewModel.siteRes?.site_view?.also { siteView ->
+        PostListings(
+            listState = postListState,
+            padding = padding,
+            posts = homeViewModel.posts,
+            taglines = siteViewModel.siteRes?.taglines,
+            postViewMode = getPostViewMode(appSettingsViewModel),
+            onUpvoteClick = { postView ->
+                homeViewModel.likePost(
+                    voteType = VoteType.Upvote,
                     postView = postView,
-                    account = acct,
+                    account = account,
                     ctx = ctx,
                 )
-            }
-        },
-        onBlockCommunityClick = {
-            account?.also { acct ->
-                homeViewModel.blockCommunity(
-                    community = it,
-                    account = acct,
-                    ctx = ctx,
-                )
-            }
-        },
-        onBlockCreatorClick = {
-            account?.also { acct ->
-                homeViewModel.blockCreator(
-                    creator = it,
-                    account = acct,
-                    ctx = ctx,
-                )
-            }
-        },
-        onEditPostClick = { postView ->
-            postEditViewModel.initialize(postView)
-            navController.navigate("postEdit")
-        },
-        onDeletePostClick = { postView ->
-            account?.also { acct ->
-                homeViewModel.deletePost(
+            },
+            onDownvoteClick = { postView ->
+                homeViewModel.likePost(
+                    voteType = VoteType.Downvote,
                     postView = postView,
-                    account = acct,
+                    account = account,
                     ctx = ctx,
                 )
-            }
-        },
-        onReportClick = { postView ->
-            navController.navigate("postReport/${postView.post.id}")
-        },
-        onCommunityClick = { community ->
-            navController.navigate(route = "community/${community.id}")
-        },
-        onPersonClick = { personId ->
-            navController.navigate(route = "profile/$personId")
-        },
-        onSwipeRefresh = {
-            homeViewModel.fetchPosts(
-                account = account,
-                clear = true,
-                ctx = ctx,
-            )
-        },
-        loading = homeViewModel.loading.value &&
-            homeViewModel.page.value == 1 &&
-            homeViewModel.posts.isNotEmpty(),
-        isScrolledToEnd = {
-            if (homeViewModel.posts.size > 0) {
+            },
+            onPostClick = { postView ->
+                navController.navigate(route = "post/${postView.post.id}")
+            },
+            onPostLinkClick = { url ->
+                openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
+            },
+            onSaveClick = { postView ->
+                account?.also { acct ->
+                    homeViewModel.savePost(
+                        postView = postView,
+                        account = acct,
+                        ctx = ctx,
+                    )
+                }
+            },
+            onBlockCommunityClick = {
+                account?.also { acct ->
+                    homeViewModel.blockCommunity(
+                        community = it,
+                        account = acct,
+                        ctx = ctx,
+                    )
+                }
+            },
+            onBlockCreatorClick = {
+                account?.also { acct ->
+                    homeViewModel.blockCreator(
+                        creator = it,
+                        account = acct,
+                        ctx = ctx,
+                    )
+                }
+            },
+            onEditPostClick = { postView ->
+                postEditViewModel.initialize(postView)
+                navController.navigate("postEdit")
+            },
+            onDeletePostClick = { postView ->
+                account?.also { acct ->
+                    homeViewModel.deletePost(
+                        postView = postView,
+                        account = acct,
+                        ctx = ctx,
+                    )
+                }
+            },
+            onReportClick = { postView ->
+                navController.navigate("postReport/${postView.post.id}")
+            },
+            onCommunityClick = { community ->
+                navController.navigate(route = "community/${community.id}")
+            },
+            onPersonClick = { personId ->
+                navController.navigate(route = "profile/$personId")
+            },
+            onSwipeRefresh = {
                 homeViewModel.fetchPosts(
                     account = account,
-                    nextPage = true,
+                    clear = true,
                     ctx = ctx,
                 )
-            }
-        },
-        account = account,
-        showVotingArrowsInListView = showVotingArrowsInListView,
-    )
+            },
+            loading = homeViewModel.loading.value &&
+                homeViewModel.page.value == 1 &&
+                homeViewModel.posts.isNotEmpty(),
+            isScrolledToEnd = {
+                if (homeViewModel.posts.size > 0) {
+                    homeViewModel.fetchPosts(
+                        account = account,
+                        nextPage = true,
+                        ctx = ctx,
+                    )
+                }
+            },
+            account = account,
+            showVotingArrowsInListView = showVotingArrowsInListView,
+            siteView = siteView,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

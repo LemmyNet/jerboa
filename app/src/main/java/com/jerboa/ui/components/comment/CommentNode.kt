@@ -65,11 +65,13 @@ import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.Post
+import com.jerboa.datatypes.SiteView
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunitySafe
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
+import com.jerboa.datatypes.sampleSiteView
 import com.jerboa.db.Account
 import com.jerboa.isModerator
 import com.jerboa.isPostCreator
@@ -204,6 +206,7 @@ fun LazyListScope.commentNodeItem(
     account: Account?,
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: Int) -> Boolean,
+    siteView: SiteView
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -335,6 +338,7 @@ fun LazyListScope.commentNodeItem(
                                             toggleActionBar(commentId)
                                         },
                                         account = account,
+                                        siteView = siteView,
                                     )
                                 }
                             }
@@ -382,6 +386,7 @@ fun LazyListScope.commentNodeItem(
             isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
             showCollapsedCommentContent = showCollapsedCommentContent,
             showActionBar = showActionBar,
+            siteView = siteView,
         )
     }
 }
@@ -476,6 +481,7 @@ fun PostAndCommunityContextHeaderPreview() {
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
+    siteView: SiteView,
     instantScores: InstantScores,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
@@ -492,6 +498,7 @@ fun CommentFooterLine(
     account: Account?,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
+    var localSite = siteView.local_site;
 
     if (showMoreOptions) {
         CommentOptionsDialog(
@@ -549,14 +556,16 @@ fun CommentFooterLine(
                 showNumber = (instantScores.downvotes != 0),
                 account = account,
             )
-            VoteGeneric(
-                myVote = instantScores.myVote,
-                votes = instantScores.downvotes,
-                item = commentView,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (localSite.enable_downvotes) {
+                VoteGeneric(
+                    myVote = instantScores.myVote,
+                    votes = instantScores.downvotes,
+                    item = commentView,
+                    type = VoteType.Downvote,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = if (commentView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
@@ -618,6 +627,7 @@ fun CommentNodesPreview() {
         isCollapsedByParent = false,
         showCollapsedCommentContent = false,
         showActionBarByDefault = true,
+        siteView = sampleSiteView,
     )
 }
 

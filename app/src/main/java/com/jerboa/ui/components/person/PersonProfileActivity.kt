@@ -26,6 +26,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.commentsToFlatNodes
+import com.jerboa.datatypes.SiteView
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
@@ -44,6 +45,7 @@ import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -63,6 +65,7 @@ fun PersonProfileActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -129,21 +132,24 @@ fun PersonProfileActivity(
             }
         },
         content = {
-            UserTabs(
-                savedMode = savedMode,
-                padding = it,
-                navController = navController,
-                personProfileViewModel = personProfileViewModel,
-                ctx = ctx,
-                account = account,
-                scope = scope,
-                postListState = postListState,
-                commentEditViewModel = commentEditViewModel,
-                commentReplyViewModel = commentReplyViewModel,
-                postEditViewModel = postEditViewModel,
-                appSettingsViewModel = appSettingsViewModel,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-            )
+            siteViewModel.siteRes?.site_view?.also { siteView ->
+                UserTabs(
+                    savedMode = savedMode,
+                    padding = it,
+                    navController = navController,
+                    personProfileViewModel = personProfileViewModel,
+                    ctx = ctx,
+                    account = account,
+                    scope = scope,
+                    postListState = postListState,
+                    commentEditViewModel = commentEditViewModel,
+                    commentReplyViewModel = commentReplyViewModel,
+                    postEditViewModel = postEditViewModel,
+                    appSettingsViewModel = appSettingsViewModel,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
+                    siteView = siteView,
+                )
+            }
         },
         bottomBar = {
             BottomAppBarAll(
@@ -197,6 +203,7 @@ fun UserTabs(
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    siteView: SiteView,
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -394,6 +401,7 @@ fun UserTabs(
                         taglines = null,
                         postViewMode = getPostViewMode(appSettingsViewModel),
                         showVotingArrowsInListView = showVotingArrowsInListView,
+                        siteView = siteView,
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -527,6 +535,7 @@ fun UserTabs(
                             moderators = listOf(),
                             isCollapsedByParent = false,
                             showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
+                            siteView = siteView,
                         )
                     }
                 }
