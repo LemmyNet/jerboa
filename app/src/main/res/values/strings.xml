@@ -251,4 +251,5 @@
     <string name="postListing_reply">Reply to post</string>
     <string name="privateMessage_reply">Reply to message</string>
     <string name="voteToggle">Toggle vote</string>
+    <string name="topAppBar_back">Back</string>
 </resources>

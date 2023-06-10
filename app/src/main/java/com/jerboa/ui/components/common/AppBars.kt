@@ -72,7 +72,7 @@ fun SimpleTopAppBar(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }
         },
