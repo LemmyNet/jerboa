@@ -148,7 +148,7 @@ fun CommunityActivity(
                         openLink(
                             url,
                             ctx,
-                            appSettingsViewModel.appSettings.value?.useCustomTabs ?: true
+                            appSettingsViewModel.appSettings.value?.useCustomTabs ?: true,
                         )
                     },
                     onSaveClick = { postView ->

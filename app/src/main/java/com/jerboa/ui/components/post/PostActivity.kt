@@ -157,7 +157,7 @@ fun PostActivity(
                                             url,
                                             ctx,
                                             appSettingsViewModel.appSettings.value?.useCustomTabs
-                                                ?: true
+                                                ?: true,
                                         )
                                     },
                                     onSaveClick = {
@@ -279,8 +279,8 @@ fun PostActivity(
                                 onReplyClick = { commentView ->
                                     commentReplyViewModel.initialize(
                                         ReplyItem.CommentItem(
-                                            commentView
-                                        )
+                                            commentView,
+                                        ),
                                     )
                                     navController.navigate("commentReply")
                                 },
@@ -325,8 +325,7 @@ fun PostActivity(
                                         commentView = it,
                                         account = account,
                                         ctx = ctx,
-
-                                        )
+                                    )
                                 },
                                 onBlockCreatorClick = {
                                     account?.also { acct ->
@@ -347,7 +346,7 @@ fun PostActivity(
                                 isCollapsedByParent = false,
                                 showActionBar = { commentId ->
                                     showActionBarByDefault xor commentsWithToggledActionBar.contains(
-                                        commentId
+                                        commentId,
                                     )
                                 },
                                 siteView = siteView,

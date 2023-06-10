@@ -453,7 +453,7 @@ fun PostFooterLine(
     siteView: SiteView,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
-    var localSite = siteView.local_site;
+    var localSite = siteView.local_site
 
     if (showMoreOptions) {
         PostOptionsDialog(

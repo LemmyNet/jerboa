@@ -146,7 +146,7 @@ fun LazyListScope.commentNodeItems(
             showCollapsedCommentContent = showCollapsedCommentContent,
             isCollapsedByParent = isCollapsedByParent,
             showActionBar = showActionBar,
-            siteView = siteView
+            siteView = siteView,
         )
     }
 }

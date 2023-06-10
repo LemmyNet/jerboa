@@ -206,7 +206,7 @@ fun LazyListScope.commentNodeItem(
     account: Account?,
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: Int) -> Boolean,
-    siteView: SiteView
+    siteView: SiteView,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -498,7 +498,7 @@ fun CommentFooterLine(
     account: Account?,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
-    var localSite = siteView.local_site;
+    var localSite = siteView.local_site
 
     if (showMoreOptions) {
         CommentOptionsDialog(
