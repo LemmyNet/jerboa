@@ -17,11 +17,13 @@ import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
@@ -39,7 +41,7 @@ fun EditPostHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Edit Post",
+                text = stringResource(R.string.post_edit_edit_post),
             )
         },
         actions = {
@@ -69,7 +71,7 @@ fun EditPostHeader(
                 // Todo add are you sure cancel dialog
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Close",
+                    contentDescription = stringResource(R.string.post_edit_close),
                 )
             }
         },
@@ -139,7 +141,7 @@ fun EditPostBody(
             outlined = true,
             account = account,
             focusImmediate = false,
-            placeholder = "Body",
+            placeholder = stringResource(R.string.post_edit_body_placeholder),
         )
     }
 }

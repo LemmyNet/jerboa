@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -57,6 +58,7 @@ import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.InstantScores
 import com.jerboa.PostViewMode
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.communityNameShown
@@ -555,7 +557,7 @@ fun CommentCount(
     ) {
         ActionBarButton(
             icon = Icons.Outlined.ChatBubbleOutline,
-            text = "$comments comments",
+            text = stringResource(R.string.post_listing_comments, comments),
             noClick = true,
             account = account,
             onClick = {}, // This is handled by the whole button click
@@ -584,7 +586,7 @@ fun CommentNewCount(
         Spacer(Modifier.padding(horizontal = spacing))
 
         Text(
-            text = "( $unread new )",
+            text = stringResource(R.string.post_listing_new, unread),
             style = style,
             color = MaterialTheme.colorScheme.onSurface.muted,
         )
@@ -1028,7 +1030,10 @@ fun PostListingList(
                         DotSpacer(0.dp)
                     }
                     Text(
-                        text = "${postView.counts.comments} comments",
+                        text = stringResource(
+                            R.string.post_listing_comments_count,
+                            postView.counts.comments,
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.muted,
                     )
@@ -1261,7 +1266,10 @@ fun PostOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Go to ${communityNameShown(postView.community)}",
+                    text = stringResource(
+                        R.string.post_listing_go_to,
+                        communityNameShown(postView.community),
+                    ),
                     icon = Icons.Outlined.Forum,
                     onClick = {
                         onCommunityClick()
@@ -1269,58 +1277,66 @@ fun PostOptionsDialog(
                 )
                 postView.post.url?.also {
                     IconAndTextDrawerItem(
-                        text = "Copy link",
+                        text = stringResource(R.string.post_listing_copy_link),
                         icon = Icons.Outlined.Link,
                         onClick = {
                             localClipboardManager.setText(AnnotatedString(it))
-                            Toast.makeText(ctx, "Link Copied", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                ctx,
+                                ctx.getString(R.string.post_listing_link_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
                             onDismissRequest()
                         },
                     )
                 }
                 IconAndTextDrawerItem(
-                    text = "Copy Permalink",
+                    text = stringResource(R.string.post_listing_copy_permalink),
                     icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = postView.post.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.post_listing_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Report Post",
+                        text = stringResource(R.string.post_listing_report_post),
                         icon = Icons.Outlined.Flag,
                         onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${postView.creator.name}",
+                        text = stringResource(R.string.post_listing_block, postView.creator.name),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${postView.community.name}",
+                        text = stringResource(R.string.post_listing_block, postView.community.name),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCommunityClick,
                     )
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Edit",
+                        text = stringResource(R.string.post_listing_edit),
                         icon = Icons.Outlined.Edit,
                         onClick = onEditPostClick,
                     )
                     val deleted = postView.post.deleted
                     if (deleted) {
                         IconAndTextDrawerItem(
-                            text = "Restore",
+                            text = stringResource(R.string.post_listing_restore),
                             icon = Icons.Outlined.Restore,
                             onClick = onDeletePostClick,
                         )
                     } else {
                         IconAndTextDrawerItem(
-                            text = "Delete",
+                            text = stringResource(R.string.post_listing_delete),
                             icon = Icons.Outlined.Delete,
                             onClick = onDeletePostClick,
                         )

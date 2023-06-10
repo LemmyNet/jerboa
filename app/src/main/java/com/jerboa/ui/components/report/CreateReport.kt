@@ -14,9 +14,11 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 
@@ -29,7 +31,7 @@ fun CreateReportHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Report",
+                text = stringResource(R.string.create_report_report),
             )
         },
         actions = {
@@ -57,7 +59,7 @@ fun CreateReportHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.create_report_back),
                 )
             }
         },
@@ -74,7 +76,8 @@ fun CreateReportBody(
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier.verticalScroll(scrollState)
+        modifier = Modifier
+            .verticalScroll(scrollState)
             .padding(padding)
             .imePadding(),
     ) {
@@ -83,7 +86,7 @@ fun CreateReportBody(
             onTextChange = onReasonChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your reason",
+            placeholder = stringResource(R.string.create_report_type_your_reason),
         )
     }
 }
