@@ -298,6 +298,7 @@ fun MainDrawer(
         unreadCounts = homeViewModel.unreadCountResponse,
         accountViewModel = accountViewModel,
         navController = navController,
+        isOpen = drawerState.isOpen,
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
             accountViewModel.setCurrent(acct.id)
