@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MarkdownHelper.init(this)
+        MarkdownHelper.init(this, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val accountSync = getCurrentAccountSync(accountViewModel)
@@ -431,6 +431,7 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
+                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: false,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -463,6 +464,7 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
+                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -592,6 +594,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         AboutActivity(
                             navController = navController,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
                         )
                     }
                 }

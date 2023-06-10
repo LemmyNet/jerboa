@@ -142,7 +142,7 @@ fun CommunityActivity(
                     navController.navigate(route = "post/${postView.post.id}")
                 },
                 onPostLinkClick = { url ->
-                    openLink(url, ctx)
+                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                 },
                 onSaveClick = { postView ->
                     account?.also { acct ->
