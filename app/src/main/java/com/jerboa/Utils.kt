@@ -16,6 +16,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -367,9 +368,15 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
-fun openLink(url: String, ctx: Context) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    ctx.startActivity(intent)
+fun openLink(url: String, ctx: Context, useCustomTab: Boolean) {
+    if (useCustomTab) {
+        val intent = CustomTabsIntent.Builder()
+            .build()
+        intent.launchUrl(ctx, Uri.parse(url))
+    } else {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        ctx.startActivity(intent)
+    }
 }
 
 fun prettyTimeShortener(timeString: String): String {
