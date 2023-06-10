@@ -86,14 +86,14 @@ fun CircularIconPreview() {
 fun pictureBlurOrRounded(
     modifier: Modifier = Modifier,
     rounded: Boolean,
-    nsfw: Boolean,
+    blur: Boolean,
 ): Modifier {
     var modifier_ = modifier
 
     if (rounded) {
         modifier_ = modifier_.clip(RoundedCornerShape(12f))
     }
-    if (nsfw) {
+    if (blur) {
         modifier_ = modifier_.blur(radius = 20.dp)
     }
     return modifier_
@@ -102,7 +102,7 @@ fun pictureBlurOrRounded(
 @Composable
 fun PictrsThumbnailImage(
     thumbnail: String,
-    nsfw: Boolean,
+    blur: Boolean,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
@@ -113,14 +113,14 @@ fun PictrsThumbnailImage(
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = pictureBlurOrRounded(modifier, true, nsfw),
+        modifier = pictureBlurOrRounded(modifier, true, blur),
     )
 }
 
 @Composable
 fun PictrsUrlImage(
     url: String,
-    nsfw: Boolean,
+    blur: Boolean,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
@@ -131,7 +131,7 @@ fun PictrsUrlImage(
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.FillWidth,
-        modifier = pictureBlurOrRounded(modifier, false, nsfw)
+        modifier = pictureBlurOrRounded(modifier, false, blur)
             .fillMaxWidth(),
     )
 }

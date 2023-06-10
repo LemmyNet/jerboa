@@ -382,8 +382,8 @@ fun prettyTimeShortener(timeString: String): String {
                 .replace(Regex("hours?"), "h")
                 .replace(Regex("days?"), "d")
                 .replace(Regex("weeks?"), "w")
-                .replace(Regex("months?"), "M")
-                .replace(Regex("years?"), "Y")
+                .replace(Regex("months?"), "mo")
+                .replace(Regex("years?"), "y")
                 .filter { !it.isWhitespace() }
         }
     } else {

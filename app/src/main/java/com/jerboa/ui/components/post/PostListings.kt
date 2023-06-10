@@ -24,6 +24,7 @@ import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.Tagline
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
+import com.jerboa.db.AppSettings
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.Tagline
@@ -55,6 +56,7 @@ fun PostListings(
     taglines: List<Tagline>?,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
+    appSettings: AppSettings?,
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
@@ -102,6 +104,7 @@ fun PostListings(
                     account = account, // TODO can't know with many posts
                     postViewMode = postViewMode,
                     showVotingArrowsInListView = showVotingArrowsInListView,
+                    appSettings = appSettings,
                 )
                 Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
             }
@@ -123,29 +126,29 @@ fun PostListings(
     }
 }
 
-@Preview
-@Composable
-fun PreviewPostListings() {
-    PostListings(
-        posts = listOf(samplePostView, samplePostView),
-        onUpvoteClick = {},
-        onDownvoteClick = {},
-        onPostClick = {},
-        onPostLinkClick = {},
-        onSaveClick = {},
-        onEditPostClick = {},
-        onDeletePostClick = {},
-        onReportClick = {},
-        onCommunityClick = {},
-        onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
-        onSwipeRefresh = {},
-        isScrolledToEnd = {},
-        account = null,
-        listState = rememberLazyListState(),
-        taglines = null,
-        postViewMode = PostViewMode.Card,
-        showVotingArrowsInListView = true,
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewPostListings() {
+//    PostListings(
+//        posts = listOf(samplePostView, samplePostView),
+//        onUpvoteClick = {},
+//        onDownvoteClick = {},
+//        onPostClick = {},
+//        onPostLinkClick = {},
+//        onSaveClick = {},
+//        onEditPostClick = {},
+//        onDeletePostClick = {},
+//        onReportClick = {},
+//        onCommunityClick = {},
+//        onPersonClick = {},
+//        onBlockCommunityClick = {},
+//        onBlockCreatorClick = {},
+//        onSwipeRefresh = {},
+//        isScrolledToEnd = {},
+//        account = null,
+//        listState = rememberLazyListState(),
+//        taglines = null,
+//        postViewMode = PostViewMode.Card,
+//        showVotingArrowsInListView = true,
+//    )
+//}

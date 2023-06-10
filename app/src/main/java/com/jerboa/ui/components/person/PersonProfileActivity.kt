@@ -28,6 +28,7 @@ import com.jerboa.VoteType
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
@@ -63,6 +64,7 @@ fun PersonProfileActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    appSettings: AppSettings?,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -143,6 +145,7 @@ fun PersonProfileActivity(
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 showVotingArrowsInListView = showVotingArrowsInListView,
+                appSettings = appSettings,
             )
         },
         bottomBar = {
@@ -197,6 +200,7 @@ fun UserTabs(
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    appSettings: AppSettings?,
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -394,6 +398,7 @@ fun UserTabs(
                         taglines = null,
                         postViewMode = getPostViewMode(appSettingsViewModel),
                         showVotingArrowsInListView = showVotingArrowsInListView,
+                        appSettings = appSettings,
                     )
                 }
                 UserTab.Comments.ordinal -> {

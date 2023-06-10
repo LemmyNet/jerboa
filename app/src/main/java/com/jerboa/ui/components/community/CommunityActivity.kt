@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import arrow.core.Either
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
@@ -50,6 +51,7 @@ fun CommunityActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    appSettings: AppSettings?
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -226,6 +228,7 @@ fun CommunityActivity(
                 taglines = null,
                 postViewMode = getPostViewMode(appSettingsViewModel),
                 showVotingArrowsInListView = showVotingArrowsInListView,
+                appSettings = appSettings,
             )
         },
         floatingActionButtonPosition = FabPosition.End,

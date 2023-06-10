@@ -30,6 +30,7 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettings
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
@@ -55,6 +56,7 @@ fun PostActivity(
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
     showVotingArrowsInListView: Boolean,
+    appSettings: AppSettings?,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -207,6 +209,7 @@ fun PostActivity(
                                 account = account,
                                 postViewMode = PostViewMode.Card,
                                 showVotingArrowsInListView = showVotingArrowsInListView,
+                                appSettings = appSettings,
                             )
                         }
                         item(key = "${postView.post.id}_is_comment_view") {

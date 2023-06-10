@@ -36,6 +36,7 @@ import com.jerboa.VoteType
 import com.jerboa.closeDrawer
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.fetchInitialData
 import com.jerboa.loginFirstToast
@@ -58,6 +59,7 @@ fun HomeActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    appSettings: AppSettings?,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -115,6 +117,7 @@ fun HomeActivity(
                         navController = navController,
                         postListState = postListState,
                         showVotingArrowsInListView = showVotingArrowsInListView,
+                        appSettings = appSettings,
                     )
                 },
                 floatingActionButtonPosition = FabPosition.End,
@@ -177,6 +180,7 @@ fun MainPostListingsContent(
     postListState: LazyListState,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    appSettings: AppSettings?,
 ) {
     PostListings(
         listState = postListState,
@@ -276,6 +280,7 @@ fun MainPostListingsContent(
         },
         account = account,
         showVotingArrowsInListView = showVotingArrowsInListView,
+        appSettings = appSettings,
     )
 }
 

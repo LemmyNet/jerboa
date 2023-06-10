@@ -71,6 +71,7 @@ import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
+import com.jerboa.db.AppSettings
 import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
@@ -250,18 +251,21 @@ fun PostTitleBlock(
     expandedImage: Boolean,
     onPostLinkClick: (url: String) -> Unit,
     account: Account?,
+    appSettings: AppSettings?,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
             postView = postView,
+            appSettings = appSettings,
         )
     } else {
         PostTitleAndThumbnail(
             postView = postView,
             onPostLinkClick = onPostLinkClick,
             account = account,
+            appSettings = appSettings,
         )
     }
 }
@@ -292,6 +296,7 @@ fun PostName(
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
+    appSettings: AppSettings?,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -319,7 +324,7 @@ fun PostTitleAndImageLink(
         .clickable { showImageDialog = true }
     PictrsUrlImage(
         url = url,
-        nsfw = nsfwCheck(postView),
+        blur = nsfwCheck(postView) && appSettings?.blurNSFW!!,
         modifier = postLinkPicMod,
     )
 }
@@ -329,6 +334,7 @@ fun PostTitleAndThumbnail(
     postView: PostView,
     onPostLinkClick: (url: String) -> Unit,
     account: Account?,
+    appSettings: AppSettings?,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -355,7 +361,9 @@ fun PostTitleAndThumbnail(
                     }
                 }
             }
-            ThumbnailTile(postView = postView, onPostLinkClick = onPostLinkClick)
+            ThumbnailTile(postView = postView,
+                onPostLinkClick = onPostLinkClick,
+                appSettings = appSettings)
         }
     }
 }
@@ -367,6 +375,7 @@ fun PostBody(
     expandedImage: Boolean,
     onPostLinkClick: (rl: String) -> Unit,
     account: Account?,
+    appSettings: AppSettings?,
 ) {
     val post = postView.post
     Column(
@@ -377,6 +386,7 @@ fun PostBody(
             expandedImage = expandedImage,
             onPostLinkClick = onPostLinkClick,
             account = account,
+            appSettings = appSettings,
         )
 
         // The metadata card
@@ -419,17 +429,17 @@ fun PostBody(
     }
 }
 
-@Preview
-@Composable
-fun PreviewStoryTitleAndMetadata() {
-    PostBody(
-        postView = samplePostView,
-        onPostLinkClick = {},
-        fullBody = false,
-        expandedImage = false,
-        account = null,
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewStoryTitleAndMetadata() {
+//    PostBody(
+//        postView = samplePostView,
+//        onPostLinkClick = {},
+//        fullBody = false,
+//        expandedImage = false,
+//        account = null,
+//    )
+//}
 
 @Composable
 fun PostFooterLine(
@@ -627,135 +637,135 @@ fun PostFooterLinePreview() {
     )
 }
 
-@Preview
-@Composable
-fun PreviewPostListingCard() {
-    PostListing(
-        postView = samplePostView,
-        onUpvoteClick = {},
-        onDownvoteClick = {},
-        onReplyClick = {},
-        onPostClick = {},
-        onPostLinkClick = {},
-        onSaveClick = {},
-        onCommunityClick = {},
-        onEditPostClick = {},
-        onDeletePostClick = {},
-        onReportClick = {},
-        onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
-        isModerator = true,
-        fullBody = false,
-        account = null,
-        postViewMode = PostViewMode.Card,
-        showVotingArrowsInListView = true,
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewPostListingCard() {
+//    PostListing(
+//        postView = samplePostView,
+//        onUpvoteClick = {},
+//        onDownvoteClick = {},
+//        onReplyClick = {},
+//        onPostClick = {},
+//        onPostLinkClick = {},
+//        onSaveClick = {},
+//        onCommunityClick = {},
+//        onEditPostClick = {},
+//        onDeletePostClick = {},
+//        onReportClick = {},
+//        onPersonClick = {},
+//        onBlockCommunityClick = {},
+//        onBlockCreatorClick = {},
+//        isModerator = true,
+//        fullBody = false,
+//        account = null,
+//        postViewMode = PostViewMode.Card,
+//        showVotingArrowsInListView = true,
+//    )
+//}
 
-@Preview
-@Composable
-fun PreviewLinkPostListing() {
-    PostListing(
-        postView = sampleLinkPostView,
-        onUpvoteClick = {},
-        onDownvoteClick = {},
-        onReplyClick = {},
-        onPostClick = {},
-        onPostLinkClick = {},
-        onSaveClick = {},
-        onCommunityClick = {},
-        onEditPostClick = {},
-        onDeletePostClick = {},
-        onReportClick = {},
-        onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
-        isModerator = false,
-        fullBody = false,
-        account = null,
-        postViewMode = PostViewMode.Card,
-        showVotingArrowsInListView = true,
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewLinkPostListing() {
+//    PostListing(
+//        postView = sampleLinkPostView,
+//        onUpvoteClick = {},
+//        onDownvoteClick = {},
+//        onReplyClick = {},
+//        onPostClick = {},
+//        onPostLinkClick = {},
+//        onSaveClick = {},
+//        onCommunityClick = {},
+//        onEditPostClick = {},
+//        onDeletePostClick = {},
+//        onReportClick = {},
+//        onPersonClick = {},
+//        onBlockCommunityClick = {},
+//        onBlockCreatorClick = {},
+//        isModerator = false,
+//        fullBody = false,
+//        account = null,
+//        postViewMode = PostViewMode.Card,
+//        showVotingArrowsInListView = true,
+//    )
+//}
 
-@Preview
-@Composable
-fun PreviewImagePostListingCard() {
-    PostListing(
-        postView = sampleImagePostView,
-        onUpvoteClick = {},
-        onDownvoteClick = {},
-        onReplyClick = {},
-        onPostClick = {},
-        onPostLinkClick = {},
-        onSaveClick = {},
-        onCommunityClick = {},
-        onEditPostClick = {},
-        onDeletePostClick = {},
-        onReportClick = {},
-        onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
-        isModerator = false,
-        fullBody = false,
-        account = null,
-        postViewMode = PostViewMode.Card,
-        showVotingArrowsInListView = true,
-    )
-}
-
-@Preview
-@Composable
-fun PreviewImagePostListingSmallCard() {
-    PostListing(
-        postView = sampleImagePostView,
-        onUpvoteClick = {},
-        onDownvoteClick = {},
-        onReplyClick = {},
-        onPostClick = {},
-        onPostLinkClick = {},
-        onSaveClick = {},
-        onCommunityClick = {},
-        onEditPostClick = {},
-        onDeletePostClick = {},
-        onReportClick = {},
-        onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
-        isModerator = false,
-        fullBody = false,
-        account = null,
-        postViewMode = PostViewMode.SmallCard,
-        showVotingArrowsInListView = true,
-    )
-}
-
-@Preview
-@Composable
-fun PreviewLinkNoThumbnailPostListing() {
-    PostListing(
-        postView = sampleLinkNoThumbnailPostView,
-        onUpvoteClick = {},
-        onDownvoteClick = {},
-        onReplyClick = {},
-        onPostClick = {},
-        onPostLinkClick = {},
-        onSaveClick = {},
-        onCommunityClick = {},
-        onEditPostClick = {},
-        onDeletePostClick = {},
-        onReportClick = {},
-        onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
-        isModerator = true,
-        fullBody = false,
-        account = null,
-        postViewMode = PostViewMode.Card,
-        showVotingArrowsInListView = true,
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewImagePostListingCard() {
+//    PostListing(
+//        postView = sampleImagePostView,
+//        onUpvoteClick = {},
+//        onDownvoteClick = {},
+//        onReplyClick = {},
+//        onPostClick = {},
+//        onPostLinkClick = {},
+//        onSaveClick = {},
+//        onCommunityClick = {},
+//        onEditPostClick = {},
+//        onDeletePostClick = {},
+//        onReportClick = {},
+//        onPersonClick = {},
+//        onBlockCommunityClick = {},
+//        onBlockCreatorClick = {},
+//        isModerator = false,
+//        fullBody = false,
+//        account = null,
+//        postViewMode = PostViewMode.Card,
+//        showVotingArrowsInListView = true,
+//    )
+//}
+//
+//@Preview
+//@Composable
+//fun PreviewImagePostListingSmallCard() {
+//    PostListing(
+//        postView = sampleImagePostView,
+//        onUpvoteClick = {},
+//        onDownvoteClick = {},
+//        onReplyClick = {},
+//        onPostClick = {},
+//        onPostLinkClick = {},
+//        onSaveClick = {},
+//        onCommunityClick = {},
+//        onEditPostClick = {},
+//        onDeletePostClick = {},
+//        onReportClick = {},
+//        onPersonClick = {},
+//        onBlockCommunityClick = {},
+//        onBlockCreatorClick = {},
+//        isModerator = false,
+//        fullBody = false,
+//        account = null,
+//        postViewMode = PostViewMode.SmallCard,
+//        showVotingArrowsInListView = true,
+//    )
+//}
+//
+//@Preview
+//@Composable
+//fun PreviewLinkNoThumbnailPostListing() {
+//    PostListing(
+//        postView = sampleLinkNoThumbnailPostView,
+//        onUpvoteClick = {},
+//        onDownvoteClick = {},
+//        onReplyClick = {},
+//        onPostClick = {},
+//        onPostLinkClick = {},
+//        onSaveClick = {},
+//        onCommunityClick = {},
+//        onEditPostClick = {},
+//        onDeletePostClick = {},
+//        onReportClick = {},
+//        onPersonClick = {},
+//        onBlockCommunityClick = {},
+//        onBlockCreatorClick = {},
+//        isModerator = true,
+//        fullBody = false,
+//        account = null,
+//        postViewMode = PostViewMode.Card,
+//        showVotingArrowsInListView = true,
+//    )
+//}
 
 @Composable
 fun PostListing(
@@ -780,6 +790,7 @@ fun PostListing(
     account: Account?,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
+    appSettings: AppSettings?,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -828,6 +839,7 @@ fun PostListing(
             fullBody = fullBody,
             account = account,
             expandedImage = true,
+            appSettings = appSettings,
         )
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
@@ -863,6 +875,7 @@ fun PostListing(
             account = account,
             fullBody = false,
             expandedImage = false,
+            appSettings = appSettings,
         )
         PostViewMode.List -> PostListingList(
             postView = postView,
@@ -889,6 +902,7 @@ fun PostListing(
             showCommunityName = showCommunityName,
             account = account,
             showVotingArrowsInListView = showVotingArrowsInListView,
+            appSettings = appSettings,
         )
     }
 }
@@ -953,6 +967,7 @@ fun PostListingList(
     showCommunityName: Boolean = true,
     account: Account?,
     showVotingArrowsInListView: Boolean,
+    appSettings: AppSettings?,
 ) {
     Column(
         modifier = Modifier.padding(
@@ -1044,7 +1059,9 @@ fun PostListingList(
                     )
                 }
             }
-            ThumbnailTile(postView, onPostLinkClick)
+            ThumbnailTile(postView,
+                onPostLinkClick,
+                appSettings = appSettings)
         }
     }
 }
@@ -1053,6 +1070,7 @@ fun PostListingList(
 private fun ThumbnailTile(
     postView: PostView,
     onPostLinkClick: (url: String) -> Unit,
+    appSettings: AppSettings?,
 ) {
     postView.post.url?.also { url ->
         val postLinkPicMod = Modifier
@@ -1062,7 +1080,7 @@ private fun ThumbnailTile(
         postView.post.thumbnail_url?.also { thumbnail ->
             PictrsThumbnailImage(
                 thumbnail = thumbnail,
-                nsfw = nsfwCheck(postView),
+                blur = nsfwCheck(postView) && appSettings?.blurNSFW!!,
                 modifier = postLinkPicMod,
             )
         } ?: run {
@@ -1086,57 +1104,57 @@ private fun ThumbnailTile(
     }
 }
 
-@Preview
-@Composable
-fun PostListingListPreview() {
-    val postView = samplePostView
-    val instantScores =
-        InstantScores(
-            myVote = postView.my_vote,
-            score = postView.counts.score,
-            upvotes = postView.counts.upvotes,
-            downvotes = postView.counts.downvotes,
-        )
-    PostListingList(
-        postView = postView,
-        instantScores = instantScores,
-        onUpvoteClick = {},
-        onDownvoteClick = {},
-        onPostClick = {},
-        onPostLinkClick = {},
-        onCommunityClick = {},
-        onPersonClick = {},
-        isModerator = false,
-        account = null,
-        showVotingArrowsInListView = true,
-    )
-}
+//@Preview
+//@Composable
+//fun PostListingListPreview() {
+//    val postView = samplePostView
+//    val instantScores =
+//        InstantScores(
+//            myVote = postView.my_vote,
+//            score = postView.counts.score,
+//            upvotes = postView.counts.upvotes,
+//            downvotes = postView.counts.downvotes,
+//        )
+//    PostListingList(
+//        postView = postView,
+//        instantScores = instantScores,
+//        onUpvoteClick = {},
+//        onDownvoteClick = {},
+//        onPostClick = {},
+//        onPostLinkClick = {},
+//        onCommunityClick = {},
+//        onPersonClick = {},
+//        isModerator = false,
+//        account = null,
+//        showVotingArrowsInListView = true,
+//    )
+//}
 
-@Preview
-@Composable
-fun PostListingListWithThumbPreview() {
-    val postView = sampleImagePostView
-    val instantScores =
-        InstantScores(
-            myVote = postView.my_vote,
-            score = postView.counts.score,
-            upvotes = postView.counts.upvotes,
-            downvotes = postView.counts.downvotes,
-        )
-    PostListingList(
-        postView = postView,
-        instantScores = instantScores,
-        onUpvoteClick = {},
-        onDownvoteClick = {},
-        onPostClick = {},
-        onPostLinkClick = {},
-        onCommunityClick = {},
-        onPersonClick = {},
-        isModerator = false,
-        account = null,
-        showVotingArrowsInListView = true,
-    )
-}
+//@Preview
+//@Composable
+//fun PostListingListWithThumbPreview() {
+//    val postView = sampleImagePostView
+//    val instantScores =
+//        InstantScores(
+//            myVote = postView.my_vote,
+//            score = postView.counts.score,
+//            upvotes = postView.counts.upvotes,
+//            downvotes = postView.counts.downvotes,
+//        )
+//    PostListingList(
+//        postView = postView,
+//        instantScores = instantScores,
+//        onUpvoteClick = {},
+//        onDownvoteClick = {},
+//        onPostClick = {},
+//        onPostLinkClick = {},
+//        onCommunityClick = {},
+//        onPersonClick = {},
+//        isModerator = false,
+//        account = null,
+//        showVotingArrowsInListView = true,
+//    )
+//}
 
 @Composable
 fun PostListingCard(
@@ -1161,6 +1179,7 @@ fun PostListingCard(
     fullBody: Boolean,
     account: Account?,
     expandedImage: Boolean,
+    appSettings: AppSettings?,
 ) {
     Column(
         modifier = Modifier
@@ -1187,6 +1206,7 @@ fun PostListingCard(
             fullBody = fullBody,
             expandedImage = expandedImage,
             account = account,
+            appSettings = appSettings,
         )
 
         // Footer bar
