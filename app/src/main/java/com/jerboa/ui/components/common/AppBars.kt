@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -127,15 +128,24 @@ fun BottomAppBarAll(
 
             NavigationBarItem(
                 icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.List,
-                        contentDescription = "TODO",
-                    )
+                    if (screen == "communityList") {
+                        Icon(
+                            imageVector = Icons.Filled.List,
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = "TODO",
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Outlined.List,
+                            contentDescription = "TODO",
+                        )
+                    }
                 },
                 onClick = {
                     navController.navigate("communityList")
                 },
-                selected = screen == "communityList",
+                // selected = screen == "communityList",
+                selected = false,
             )
             NavigationBarItem(
                 icon = {
