@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MarkdownHelper.init(this)
+        MarkdownHelper.init(this, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val accountSync = getCurrentAccountSync(accountViewModel)
