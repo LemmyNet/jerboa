@@ -724,12 +724,12 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-enum class ThemeMode {
-    System,
-    SystemBlack,
-    Light,
-    Dark,
-    Black,
+enum class ThemeMode(val mode: Int) {
+    System(R.string.look_and_feel_theme_system),
+    SystemBlack(R.string.look_and_feel_theme_system_black),
+    Light(R.string.look_and_feel_theme_light),
+    Dark(R.string.look_and_feel_theme_dark),
+    Black(R.string.look_and_feel_theme_black),
 }
 
 enum class ThemeColor {
@@ -739,22 +739,22 @@ enum class ThemeColor {
     Blue,
 }
 
-enum class PostViewMode(val mode: String) {
+enum class PostViewMode(val mode: Int) {
     /**
      * The full size post view card. For image posts, this expands them to their full height. For
      * link posts, the thumbnail is shown to the right of the title.
      */
-    Card("Card"),
+    Card(R.string.look_and_feel_post_view_card),
 
     /**
      * The same as regular card, except image posts only show a thumbnail image.
      */
-    SmallCard("Small Card"),
+    SmallCard(R.string.look_and_feel_post_view_small_card),
 
     /**
      * A list view that has no action bar.
      */
-    List("List"),
+    List(R.string.look_and_feel_post_view_list),
 }
 
 @ExperimentalPagerApi

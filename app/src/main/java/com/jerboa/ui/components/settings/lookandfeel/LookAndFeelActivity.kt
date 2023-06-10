@@ -102,7 +102,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = themeState,
-                    items = ThemeMode.values().map { it.name },
+                    items = ThemeMode.values().map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
@@ -136,7 +136,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = postViewModeState,
-                    items = PostViewMode.values().map { it.mode },
+                    items = PostViewMode.values().map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.ViewList,
