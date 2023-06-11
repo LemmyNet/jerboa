@@ -26,7 +26,6 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.commentsToFlatNodes
-import com.jerboa.datatypes.SiteView
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
