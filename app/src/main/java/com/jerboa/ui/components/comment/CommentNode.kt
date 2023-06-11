@@ -76,6 +76,7 @@ import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
+import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityLink
@@ -569,14 +570,11 @@ fun CommentFooterLine(
                 },
                 account = account,
             )
-            // Don't let you respond to your own comment.
-            if (commentView.creator.id != account?.id) {
-                ActionBarButton(
-                    icon = Icons.Outlined.Textsms,
-                    onClick = { onReplyClick(commentView) },
-                    account = account,
-                )
-            }
+            ActionBarButton(
+                icon = Icons.Outlined.Textsms,
+                onClick = { onReplyClick(commentView) },
+                account = account,
+            )
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
                 account = account,
@@ -590,6 +588,7 @@ fun CommentFooterLine(
 @Preview
 @Composable
 fun CommentNodesPreview() {
+    MarkdownHelper.init(LocalContext.current, true)
     val comments = listOf(
         sampleSecondReplyCommentView,
         sampleCommentView,

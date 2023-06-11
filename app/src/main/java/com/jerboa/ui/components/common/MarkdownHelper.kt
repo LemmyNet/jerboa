@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.common
 
 import android.content.Context
+import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -20,6 +21,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
 import coil.ImageLoader
 import com.jerboa.R
+import com.jerboa.convertSpToPx
 import com.jerboa.openLink
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
@@ -30,7 +32,7 @@ import io.noties.markwon.linkify.LinkifyPlugin
 object MarkdownHelper {
     private var markwon: Markwon? = null
 
-    fun init(context: Context) {
+    fun init(context: Context, useCustomTabs: Boolean) {
         val loader = ImageLoader.Builder(context)
             .crossfade(true)
             .placeholder(R.drawable.ic_launcher_foreground)
@@ -42,7 +44,7 @@ object MarkdownHelper {
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { view, link ->
-                        link?.let { openLink(link, view.context) }
+                        link?.let { openLink(link, view.context, useCustomTabs) }
                     }
                 }
             })
@@ -107,7 +109,10 @@ object MarkdownHelper {
             onLongClick?.let { setOnLongClickListener { onLongClick(); true } }
             setTextColor(textColor.toArgb())
             setMaxLines(maxLines)
-            setTextSize(TypedValue.COMPLEX_UNIT_DIP, mergedStyle.fontSize.value)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                setLineHeight(convertSpToPx(mergedStyle.lineHeight, context))
+            }
             width = maxWidth
 
             viewId?.let { id = viewId }

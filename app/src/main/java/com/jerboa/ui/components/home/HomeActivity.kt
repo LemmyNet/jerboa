@@ -208,7 +208,7 @@ fun MainPostListingsContent(
             navController.navigate(route = "post/${postView.post.id}")
         },
         onPostLinkClick = { url ->
-            openLink(url, ctx)
+            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
         },
         onSaveClick = { postView ->
             account?.also { acct ->
@@ -303,6 +303,7 @@ fun MainDrawer(
         unreadCounts = homeViewModel.unreadCountResponse,
         accountViewModel = accountViewModel,
         navController = navController,
+        isOpen = drawerState.isOpen,
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
             accountViewModel.setCurrent(acct.id)

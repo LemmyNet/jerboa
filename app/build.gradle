@@ -12,8 +12,8 @@ android {
         namespace "com.jerboa"
         minSdk 26
         targetSdk 33
-        versionCode 32
-        versionName "0.0.32"
+        versionCode 33
+        versionName "0.0.33"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -121,4 +121,5 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling:1.4.3'
     debugImplementation 'androidx.compose.ui:ui-test-manifest:1.4.3'
     implementation "net.engawapg.lib:zoomable:1.4.3"
+    implementation 'androidx.browser:browser:1.5.0'
 }

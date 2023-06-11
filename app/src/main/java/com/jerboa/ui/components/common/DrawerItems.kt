@@ -92,6 +92,7 @@ fun UpdateSettings(
             showCommentActionBarByDefault = appSettings.showCommentActionBarByDefault,
             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
             blurNSFW = !appSettings.blurNSFW,
+            useCustomTabs = appSettings.useCustomTabs,
         ),
     )
     return null

@@ -59,9 +59,12 @@ fun LookAndFeelActivity(
     val showVotingArrowsInListViewState = rememberBooleanSettingState(
         settings?.showVotingArrowsInListView ?: true,
     )
+
     val blurNSFW = rememberBooleanSettingState(
         settings?.blurNSFW ?: true,
     )
+
+    val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -79,6 +82,7 @@ fun LookAndFeelActivity(
                 showCommentActionBarByDefault = showCommentActionBarByDefaultState.value,
                 showVotingArrowsInListView = showVotingArrowsInListViewState.value,
                 blurNSFW = blurNSFW.value,
+                useCustomTabs = useCustomTabsState.value,
             ),
         )
     }
@@ -189,6 +193,15 @@ fun LookAndFeelActivity(
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
+
+                SettingsCheckbox(
+                    state = useCustomTabsState,
+                    title = {
+                        Text(text = stringResource(id = R.string.look_and_feel_use_custom_tabs))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+
                 if (siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_nsfw == true) {
                     SettingsCheckbox(
                         state = blurNSFW,
