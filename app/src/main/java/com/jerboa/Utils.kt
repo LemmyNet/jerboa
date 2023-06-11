@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalAutofill
 import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -75,15 +76,20 @@ const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
 
 val DEFAULT_LEMMY_INSTANCES = listOf(
-    "lemmy.ml",
-    "lemmygrad.ml",
-    "mujico.org",
-    "feddit.de",
-    "szmer.info",
     "beehaw.org",
+    "feddit.de",
     "feddit.it",
-    "sopuli.xyz",
+    "lemmy.ca",
+    "lemmy.ml",
+    "lemmy.one",
+    "lemmy.world",
+    "lemmygrad.ml",
+    "midwest.social",
+    "mujico.org",
+    "sh.itjust.works",
     "slrpnk.net",
+    "sopuli.xyz",
+    "szmer.info",
 )
 
 // convert a data class to a map
@@ -892,4 +898,11 @@ fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> U
                 }
             }
         }
+}
+
+/**
+ * Converts a scalable pixel (sp) to an actual pixel (px)
+ */
+fun convertSpToPx(sp: TextUnit, context: Context): Int {
+    return (sp.value * context.resources.displayMetrics.scaledDensity).toInt()
 }

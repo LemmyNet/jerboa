@@ -344,7 +344,7 @@ val MIGRATION_11_12 = object : Migration(11, 12) {
     }
 }
 
-val MIGRATION_12_13 = object : Migration(11, 12) {
+val MIGRATION_12_13 = object : Migration(12, 13) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
@@ -354,7 +354,7 @@ val MIGRATION_12_13 = object : Migration(11, 12) {
 }
 
 @Database(
-    version = 12,
+    version = 13,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
