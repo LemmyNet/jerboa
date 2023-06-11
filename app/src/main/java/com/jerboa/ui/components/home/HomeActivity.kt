@@ -368,6 +368,10 @@ fun MainDrawer(
             navController.navigate(route = "settings")
             closeDrawer(scope, drawerState)
         },
+        onClickCommunities = {
+            navController.navigate(route = "communityList")
+            closeDrawer(scope, drawerState)
+        },
     )
 }
 

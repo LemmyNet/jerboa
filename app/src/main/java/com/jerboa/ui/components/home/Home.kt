@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Login
 import androidx.compose.material.icons.outlined.Menu
@@ -106,6 +107,7 @@ fun Drawer(
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
+    onClickCommunities: () -> Unit,
     unreadCounts: GetUnreadCountResponse?,
     isOpen: Boolean,
 ) {
@@ -134,6 +136,7 @@ fun Drawer(
         onClickInbox = onClickInbox,
         onClickSaved = onClickSaved,
         onClickSettings = onClickSettings,
+        onClickCommunities = onClickCommunities,
     )
 }
 
@@ -150,6 +153,7 @@ fun DrawerContent(
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
+    onClickCommunities: () -> Unit,
     myUserInfo: MyUserInfo?,
     unreadCounts: GetUnreadCountResponse?,
 ) {
@@ -176,6 +180,7 @@ fun DrawerContent(
             onClickSaved = onClickSaved,
             unreadCounts = unreadCounts,
             onClickSettings = onClickSettings,
+            onClickCommunities = onClickCommunities,
         )
     }
 }
@@ -187,6 +192,7 @@ fun DrawerItemsMain(
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
     onClickSettings: () -> Unit,
+    onClickCommunities: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     unreadCounts: GetUnreadCountResponse? = null,
@@ -231,6 +237,13 @@ fun DrawerItemsMain(
                     onClick = onClickSaved,
                 )
             }
+        }
+        item {
+            IconAndTextDrawerItem(
+                text = stringResource(R.string.home_communities),
+                icon = Icons.Outlined.List,
+                onClick = onClickCommunities,
+            )
         }
         item {
             Divider()
@@ -299,6 +312,7 @@ fun DrawerItemsMainPreview() {
         onCommunityClick = {},
         onClickSaved = {},
         onClickSettings = {},
+        onClickCommunities = {},
     )
 }
 
