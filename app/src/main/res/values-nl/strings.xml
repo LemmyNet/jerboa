@@ -150,6 +150,7 @@
     <string name="account_settings_active">Actief</string>
     <string name="account_settings_hot">Populair</string>
     <string name="account_settings_new">Nieuw</string>
+    <string name="account_settings_old">Oud</string>
     <string name="account_settings_topday">Top van de dag</string>
     <string name="account_settings_topweek">Top van de week</string>
     <string name="account_settings_topmonth">Top van de maand</string>

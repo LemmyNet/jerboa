@@ -150,6 +150,7 @@
     <string name="account_settings_active">Aktiv</string>
     <string name="account_settings_hot">Heiß</string>
     <string name="account_settings_new">Neu</string>
+    <string name="account_settings_old">Alt</string>
     <string name="account_settings_topday">Top des Tages</string>
     <string name="account_settings_topweek">Top der Woche</string>
     <string name="account_settings_topmonth">Top des Monats</string>
