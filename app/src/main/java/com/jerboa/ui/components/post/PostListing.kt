@@ -992,6 +992,7 @@ fun PostListingList(
                         CommunityLink(
                             community = postView.community,
                             onClick = onCommunityClick,
+                            showDefaultIcon = false,
                         )
                         DotSpacer(0.dp)
                     }

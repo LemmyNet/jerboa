@@ -284,6 +284,7 @@ fun UserTabs(
                                     onClick = { community ->
                                         navController.navigate(route = "community/${community.id}")
                                     },
+                                    showDefaultIcon = true,
                                 )
                             }
                         }

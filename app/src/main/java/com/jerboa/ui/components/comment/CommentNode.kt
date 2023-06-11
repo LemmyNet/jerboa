@@ -457,6 +457,7 @@ fun PostAndCommunityContextHeader(
             CommunityLink(
                 community = community,
                 onClick = onCommunityClick,
+                showDefaultIcon = false,
             )
         }
     }
