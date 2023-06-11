@@ -306,8 +306,7 @@ fun PostActivity(
                                 )
                             },
                             onCommentLinkClick = { commentView ->
-                                navController.navigate("comment/${commentView.comment.id}",
-                                )
+                                navController.navigate("comment/${commentView.comment.id}")
                             },
                             onFetchChildrenClick = {
                                 postViewModel.fetchMoreChildren(
