@@ -21,8 +21,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
 import coil.ImageLoader
 import com.jerboa.R
-import com.jerboa.openLink
 import com.jerboa.convertSpToPx
+import com.jerboa.openLink
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
