@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalAutofill
 import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -897,4 +898,11 @@ fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> U
                 }
             }
         }
+}
+
+/**
+ * Converts a scalable pixel (sp) to an actual pixel (px)
+ */
+fun convertSpToPx(sp: TextUnit, context: Context): Int {
+    return (sp.value * context.resources.displayMetrics.scaledDensity).toInt()
 }
