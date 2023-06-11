@@ -35,6 +35,14 @@ android {
             systemImageSource = "aosp"
         }
     }
+
+    buildTypes {
+        benchmark {
+            debuggable false
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ["release"]
+        }
+    }
 }
 
 // This is the configuration block for the Baseline Profile plugin.
@@ -48,5 +56,5 @@ dependencies {
     implementation 'androidx.test.ext:junit:1.1.5'
     implementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    implementation 'androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha13'
+    implementation 'androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha15'
 }

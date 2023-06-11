@@ -2,6 +2,14 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        // Need newer a newer version of R8 that includes the DEX layout optimizations
+        maven {
+            url 'https://storage.googleapis.com/r8-releases/raw/main'
+        }
+    }
+    dependencies {
+        // https://r8.googlesource.com/r8/+log/refs/heads/main
+        classpath "com.android.tools:r8:66e67edd1d03a4640218e8185cad9fe67df41b10"
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
