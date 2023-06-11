@@ -21,10 +21,9 @@ import com.jerboa.PostViewMode
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.SiteView
 import com.jerboa.datatypes.Tagline
+import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.datatypes.sampleSiteView
 import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -57,7 +56,7 @@ fun PostListings(
     taglines: List<Tagline>?,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
-    siteView: SiteView,
+    enableDownVotes: Boolean,
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
@@ -105,7 +104,7 @@ fun PostListings(
                     account = account, // TODO can't know with many posts
                     postViewMode = postViewMode,
                     showVotingArrowsInListView = showVotingArrowsInListView,
-                    siteView = siteView,
+                    enableDownVotes = enableDownVotes,
                 )
                 Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
             }
@@ -131,7 +130,7 @@ fun PostListings(
 @Composable
 fun PreviewPostListings() {
     PostListings(
-        posts = listOf(samplePostView, samplePostView),
+        posts = listOf(samplePostView, sampleLinkPostView),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
@@ -151,6 +150,6 @@ fun PreviewPostListings() {
         taglines = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
-        siteView = sampleSiteView,
+        enableDownVotes = true,
     )
 }

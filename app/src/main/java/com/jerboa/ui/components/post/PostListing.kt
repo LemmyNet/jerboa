@@ -66,12 +66,10 @@ import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.Post
 import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.SiteView
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
-import com.jerboa.datatypes.sampleSiteView
 import com.jerboa.db.Account
 import com.jerboa.hostName
 import com.jerboa.isImage
@@ -450,10 +448,9 @@ fun PostFooterLine(
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
     account: Account?,
-    siteView: SiteView,
+    enableDownVotes: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
-    var localSite = siteView.local_site
 
     if (showMoreOptions) {
         PostOptionsDialog(
@@ -511,7 +508,7 @@ fun PostFooterLine(
                 onVoteClick = onUpvoteClick,
                 account = account,
             )
-            if (localSite.enable_downvotes) {
+            if (enableDownVotes) {
                 VoteGeneric(
                     myVote = instantScores.myVote,
                     votes = instantScores.downvotes,
@@ -630,7 +627,7 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
-        siteView = sampleSiteView,
+        enableDownVotes = true,
     )
 }
 
@@ -657,7 +654,7 @@ fun PreviewPostListingCard() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
-        siteView = sampleSiteView,
+        enableDownVotes = true,
     )
 }
 
@@ -684,7 +681,7 @@ fun PreviewLinkPostListing() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
-        siteView = sampleSiteView,
+        enableDownVotes = true,
     )
 }
 
@@ -711,7 +708,7 @@ fun PreviewImagePostListingCard() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
-        siteView = sampleSiteView,
+        enableDownVotes = true,
     )
 }
 
@@ -738,7 +735,7 @@ fun PreviewImagePostListingSmallCard() {
         account = null,
         postViewMode = PostViewMode.SmallCard,
         showVotingArrowsInListView = true,
-        siteView = sampleSiteView,
+        enableDownVotes = true,
     )
 }
 
@@ -765,7 +762,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
-        siteView = sampleSiteView,
+        enableDownVotes = true,
     )
 }
 
@@ -792,7 +789,7 @@ fun PostListing(
     account: Account?,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
-    siteView: SiteView,
+    enableDownVotes: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -841,7 +838,7 @@ fun PostListing(
             fullBody = fullBody,
             account = account,
             expandedImage = true,
-            siteView = siteView,
+            enableDownVotes = enableDownVotes,
         )
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
@@ -877,7 +874,7 @@ fun PostListing(
             account = account,
             fullBody = false,
             expandedImage = false,
-            siteView = siteView,
+            enableDownVotes = enableDownVotes,
         )
         PostViewMode.List -> PostListingList(
             postView = postView,
@@ -1176,7 +1173,7 @@ fun PostListingCard(
     fullBody: Boolean,
     account: Account?,
     expandedImage: Boolean,
-    siteView: SiteView,
+    enableDownVotes: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1222,7 +1219,7 @@ fun PostListingCard(
             showReply = showReply,
             account = account,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
-            siteView = siteView,
+            enableDownVotes = enableDownVotes,
         )
     }
 }

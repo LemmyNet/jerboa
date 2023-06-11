@@ -132,24 +132,22 @@ fun PersonProfileActivity(
             }
         },
         content = {
-            siteViewModel.siteRes?.site_view?.also { siteView ->
-                UserTabs(
-                    savedMode = savedMode,
-                    padding = it,
-                    navController = navController,
-                    personProfileViewModel = personProfileViewModel,
-                    ctx = ctx,
-                    account = account,
-                    scope = scope,
-                    postListState = postListState,
-                    commentEditViewModel = commentEditViewModel,
-                    commentReplyViewModel = commentReplyViewModel,
-                    postEditViewModel = postEditViewModel,
-                    appSettingsViewModel = appSettingsViewModel,
-                    showVotingArrowsInListView = showVotingArrowsInListView,
-                    siteView = siteView,
-                )
-            }
+            UserTabs(
+                savedMode = savedMode,
+                padding = it,
+                navController = navController,
+                personProfileViewModel = personProfileViewModel,
+                ctx = ctx,
+                account = account,
+                scope = scope,
+                postListState = postListState,
+                commentEditViewModel = commentEditViewModel,
+                commentReplyViewModel = commentReplyViewModel,
+                postEditViewModel = postEditViewModel,
+                appSettingsViewModel = appSettingsViewModel,
+                showVotingArrowsInListView = showVotingArrowsInListView,
+                enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+            )
         },
         bottomBar = {
             BottomAppBarAll(
@@ -203,7 +201,7 @@ fun UserTabs(
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
-    siteView: SiteView,
+    enableDownVotes: Boolean,
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -401,7 +399,7 @@ fun UserTabs(
                         taglines = null,
                         postViewMode = getPostViewMode(appSettingsViewModel),
                         showVotingArrowsInListView = showVotingArrowsInListView,
-                        siteView = siteView,
+                        enableDownVotes = enableDownVotes,
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -535,7 +533,7 @@ fun UserTabs(
                             moderators = listOf(),
                             isCollapsedByParent = false,
                             showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
-                            siteView = siteView,
+                            enableDownVotes = enableDownVotes,
                         )
                     }
                 }

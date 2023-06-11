@@ -11,7 +11,6 @@ import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.SiteView
 import com.jerboa.db.Account
 
 @Composable
@@ -39,7 +38,7 @@ fun CommentNodes(
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
     showActionBarByDefault: Boolean,
-    siteView: SiteView,
+    enableDownVotes: Boolean,
 ) {
     // Holds the un-expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
@@ -86,7 +85,7 @@ fun CommentNodes(
             showActionBar = { commentId ->
                 showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
             },
-            siteView = siteView,
+            enableDownVotes = enableDownVotes,
         )
     }
 }
@@ -117,7 +116,7 @@ fun LazyListScope.commentNodeItems(
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: Int) -> Boolean,
-    siteView: SiteView,
+    enableDownVotes: Boolean,
 ) {
     nodes.forEach { node ->
         commentNodeItem(
@@ -146,7 +145,7 @@ fun LazyListScope.commentNodeItems(
             showCollapsedCommentContent = showCollapsedCommentContent,
             isCollapsedByParent = isCollapsedByParent,
             showActionBar = showActionBar,
-            siteView = siteView,
+            enableDownVotes = enableDownVotes,
         )
     }
 }
