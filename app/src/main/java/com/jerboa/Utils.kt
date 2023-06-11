@@ -49,7 +49,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
 import com.jerboa.api.DEFAULT_INSTANCE
-import com.jerboa.datatypes.* // ktlint-disable no-unused-imports
+import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.HomeViewModel
@@ -73,18 +73,6 @@ val gson = Gson()
 const val LAUNCH_DELAY = 300L
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
-
-val DEFAULT_LEMMY_INSTANCES = listOf(
-    "lemmy.ml",
-    "lemmygrad.ml",
-    "mujico.org",
-    "feddit.de",
-    "szmer.info",
-    "beehaw.org",
-    "feddit.it",
-    "sopuli.xyz",
-    "slrpnk.net",
-)
 
 // convert a data class to a map
 fun <T> T.serializeToMap(): Map<String, String> {
