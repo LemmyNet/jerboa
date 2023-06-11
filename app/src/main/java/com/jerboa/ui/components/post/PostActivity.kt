@@ -153,12 +153,8 @@ fun PostActivity(
                                 },
                                 onPostClick = {},
                                 onPostLinkClick = { url ->
-                                    openLink(
-                                        url,
-                                        ctx,
-                                        appSettingsViewModel.appSettings.value?.useCustomTabs
-                                            ?: true,
-                                    )
+                                    openLink(url, ctx,
+                                        appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                                 },
                                 onSaveClick = {
                                     account?.also { acct ->
@@ -277,11 +273,7 @@ fun PostActivity(
                                 }
                             },
                             onReplyClick = { commentView ->
-                                commentReplyViewModel.initialize(
-                                    ReplyItem.CommentItem(
-                                        commentView,
-                                    ),
-                                )
+                                commentReplyViewModel.initialize(ReplyItem.CommentItem(commentView))
                                 navController.navigate("commentReply")
                             },
                             onSaveClick = { commentView ->
@@ -318,7 +310,9 @@ fun PostActivity(
                                 )
                             },
                             onCommentLinkClick = { commentView ->
-                                navController.navigate("comment/${commentView.comment.id}")
+                                navController.navigate("comment/${commentView.comment
+                                    .id}",
+                                )
                             },
                             onFetchChildrenClick = {
                                 postViewModel.fetchMoreChildren(
@@ -345,9 +339,8 @@ fun PostActivity(
                             showCollapsedCommentContent = showCollapsedCommentContent,
                             isCollapsedByParent = false,
                             showActionBar = { commentId ->
-                                showActionBarByDefault xor commentsWithToggledActionBar.contains(
-                                    commentId,
-                                )
+                                showActionBarByDefault xor
+                                    commentsWithToggledActionBar.contains(commentId)
                             },
                             enableDownVotes = enableDownVotes,
                         )
