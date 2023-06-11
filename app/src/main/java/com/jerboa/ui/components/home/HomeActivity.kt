@@ -276,6 +276,7 @@ fun MainPostListingsContent(
         },
         account = account,
         showVotingArrowsInListView = showVotingArrowsInListView,
+        enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
     )
 }
 
