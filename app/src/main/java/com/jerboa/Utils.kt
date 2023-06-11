@@ -895,6 +895,9 @@ fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> U
         }
 }
 
-fun spToPx(sp: TextUnit, context: Context): Int {
+/**
+ * Converts a scalable pixel (sp) to an actual pixel (px)
+ */
+fun convertSpToPx(sp: TextUnit, context: Context): Int {
     return (sp.value * context.resources.displayMetrics.scaledDensity).toInt()
 }

@@ -22,7 +22,7 @@ import androidx.core.content.res.ResourcesCompat
 import coil.ImageLoader
 import com.jerboa.R
 import com.jerboa.openLink
-import com.jerboa.spToPx
+import com.jerboa.convertSpToPx
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
@@ -111,7 +111,7 @@ object MarkdownHelper {
             setMaxLines(maxLines)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                setLineHeight(spToPx(mergedStyle.lineHeight, context))
+                setLineHeight(convertSpToPx(mergedStyle.lineHeight, context))
             }
             width = maxWidth
 
