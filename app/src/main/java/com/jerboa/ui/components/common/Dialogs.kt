@@ -26,8 +26,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -264,6 +268,7 @@ fun ListingTypeOptionsDialogPreview() {
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
     val changelogViewed = appSettingsViewModel.appSettings.observeAsState().value?.viewedChangelog
@@ -298,7 +303,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                             whatsChangedDialogOpen.value = false
                             appSettingsViewModel.markChangelogViewed()
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().testTag("jerboa:changelogbtn"),
                     ) {
                         Text(stringResource(R.string.dialogs_done))
                     }
@@ -307,6 +312,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                     whatsChangedDialogOpen.value = false
                     appSettingsViewModel.markChangelogViewed()
                 },
+                modifier = Modifier.semantics { testTagsAsResourceId = true }
             )
 
             scope.launch(Dispatchers.IO) {
