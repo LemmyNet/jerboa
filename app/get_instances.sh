@@ -24,11 +24,10 @@ BODY="{
 }"
 
 FILTER='
-	  [.data.plat.nodes[]]                         # Select lemmy nodes
+	  .data.plat.nodes                             # Select lemmy nodes
 	| sort_by(.agg.aggregate.avg.users_monthly)    # Sort by their average monthly users
 	| reverse                                      # Reverse to sort descending
-	| [limit(10;.[])]                              # Take the first few items
-	| .[]
+	| limit(10;.[])                                # Take the first few items
 	| "    \"" + .name + "\","                     # Wrap in quotes and comma
 '
 
