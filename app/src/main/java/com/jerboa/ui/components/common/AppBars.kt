@@ -120,7 +120,7 @@ fun BottomAppBarAll(
                         )
                     }
                 },
-                selected = false,
+                selected = screen == "home",
                 onClick = {
                     navController.navigate("home")
                 },
@@ -144,7 +144,7 @@ fun BottomAppBarAll(
                 onClick = {
                     navController.navigate("communityList")
                 },
-                selected = false,
+                selected = screen == "communityList",
             )
             NavigationBarItem(
                 icon = {
@@ -164,7 +164,7 @@ fun BottomAppBarAll(
                 onClick = {
                     onClickInbox()
                 },
-                selected = false,
+                selected = screen == "inbox",
             )
             NavigationBarItem(
                 icon = {
@@ -184,7 +184,7 @@ fun BottomAppBarAll(
                 onClick = {
                     onClickSaved()
                 },
-                selected = false,
+                selected = screen == "saved",
             )
             NavigationBarItem(
                 icon = {
@@ -202,7 +202,7 @@ fun BottomAppBarAll(
                     }
                 },
                 onClick = onClickProfile,
-                selected = false,
+                selected = screen == "saved",
             )
         }
     }
