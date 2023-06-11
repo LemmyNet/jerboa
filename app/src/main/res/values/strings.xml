@@ -72,6 +72,7 @@
     <string name="home_profile">Profile</string>
     <string name="home_inbox">Inbox</string>
     <string name="home_settings">Settings</string>
+    <string name="home_blur_nsfw">Blur NSFW Content</string>
     <string name="home_subscriptions">Subscriptions</string>
     <string name="home_add_account">Add Account</string>
     <string name="home_switch_to">Switch to %1$s/%2$s</string>
@@ -183,6 +184,8 @@
     <string name="look_and_feel_post_view_list">List</string>
     <string name="look_and_feel_show_navigation_bar">Show navigation bar</string>
     <string name="look_and_feel_use_custom_tabs">Use custom tabs</string>
+    <string name="look_and_feel_blur_nsfw">Blur NSFW Content</string>
+    <string name="look_and_feel_blur_nsfw_quick_option">Blur NSFW Quick Option</string>
     <string name="settings_activity_settings">Settings</string>
     <string name="settings_activity_look_and_feel">Look and feel</string>
     <string name="settings_activity_account_settings">%1$s settings</string>

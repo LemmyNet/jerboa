@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowRight
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
@@ -74,28 +76,59 @@ fun IconAndTextDrawerItem(
         }
     }
 }
+@Composable
+fun IconAndTextAndCheckboxDrawerItem(
+    text: String,
+    icon: ImageVector? = null,
+    iconBadgeCount: Int? = null,
+    highlight: Boolean = false,
+    checked: Boolean,
+    onChecked: (Boolean) -> Unit,
+) {
+    val spacingMod = Modifier
+        .padding(LARGE_PADDING)
 
-fun UpdateSettings(
-    appSettingsViewModel: AppSettingsViewModel,
-    appSettings: AppSettings?,
-): ((Boolean) -> Unit)? {
-    appSettingsViewModel.update(
-        AppSettings(
-            id = 1,
-            viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
-            theme = appSettings?.theme!!,
-            themeColor = appSettings.themeColor,
-            fontSize = appSettings.fontSize,
-            postViewMode = appSettings.postViewMode,
-            showBottomNav = appSettings.showBottomNav,
-            showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
-            showCommentActionBarByDefault = appSettings.showCommentActionBarByDefault,
-            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-            blurNSFW = !appSettings.blurNSFW,
-            useCustomTabs = appSettings.useCustomTabs,
-        ),
-    )
-    return null
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {
+                onChecked(true)
+            })
+            .background(
+                color = if (highlight) {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = .1f)
+                } else {
+                    Color.Transparent
+                },
+            ),
+    ) {
+        Row {
+            icon?.also { ico ->
+                InboxIconAndBadge(
+                    iconBadgeCount = iconBadgeCount,
+                    modifier = spacingMod.size(DRAWER_ITEM_SPACING),
+                    icon = ico,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            Text(
+                text = text,
+                modifier = spacingMod,
+            )
+        }
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onChecked,
+        )
+    }
+}
+
+@Preview
+@Composable
+fun IconAndTextAndCheckboxDrawerItemPreview() {
+    IconAndTextAndCheckboxDrawerItem(text = "test", onChecked = {}, checked = false)
 }
 
 @Preview

@@ -23,7 +23,10 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.Filter
 import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material.icons.outlined.FilterListOff
+import androidx.compose.material.icons.outlined.ImageNotSupported
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Login
@@ -73,6 +76,7 @@ import com.jerboa.datatypes.api.MyUserInfo
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.common.IconAndTextAndCheckboxDrawerItem
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
@@ -108,6 +112,9 @@ fun Drawer(
     onClickSettings: () -> Unit,
     unreadCounts: GetUnreadCountResponse?,
     isOpen: Boolean,
+    blurNSFWQuickOption: Boolean?,
+    blurNSFWChecked: Boolean,
+    onCheckedBlurNSFW: (Boolean) -> Unit
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -134,6 +141,9 @@ fun Drawer(
         onClickInbox = onClickInbox,
         onClickSaved = onClickSaved,
         onClickSettings = onClickSettings,
+        blurNSFWChecked = blurNSFWChecked,
+        blurNSFWQuickOption = blurNSFWQuickOption,
+        onCheckedBlurNSFW = onCheckedBlurNSFW
     )
 }
 
@@ -152,6 +162,9 @@ fun DrawerContent(
     onClickSettings: () -> Unit,
     myUserInfo: MyUserInfo?,
     unreadCounts: GetUnreadCountResponse?,
+    blurNSFWQuickOption: Boolean?,
+    blurNSFWChecked: Boolean,
+    onCheckedBlurNSFW: (Boolean) -> Unit
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
@@ -176,6 +189,9 @@ fun DrawerContent(
             onClickSaved = onClickSaved,
             unreadCounts = unreadCounts,
             onClickSettings = onClickSettings,
+            blurNSFWQuickOption = blurNSFWQuickOption,
+            blurNSFWChecked = blurNSFWChecked,
+            onCheckedBlurNSFW = onCheckedBlurNSFW,
         )
     }
 }
@@ -190,6 +206,9 @@ fun DrawerItemsMain(
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     unreadCounts: GetUnreadCountResponse? = null,
+    blurNSFWQuickOption: Boolean?,
+    blurNSFWChecked: Boolean,
+    onCheckedBlurNSFW: (Boolean) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
@@ -261,6 +280,17 @@ fun DrawerItemsMain(
                 onClick = onClickSettings,
             )
         }
+        if (blurNSFWQuickOption == true) (
+            item {
+                IconAndTextAndCheckboxDrawerItem(
+                    icon = Icons.Outlined.ImageNotSupported,
+                    text = stringResource(R.string.home_blur_nsfw),
+                    checked = blurNSFWChecked,
+                    onChecked = onCheckedBlurNSFW,
+                )
+            }
+        )
+
         item {
             myUserInfo?.also {
                 Divider()
@@ -299,6 +329,9 @@ fun DrawerItemsMainPreview() {
         onCommunityClick = {},
         onClickSaved = {},
         onClickSettings = {},
+        blurNSFWQuickOption = true,
+        blurNSFWChecked = false,
+        onCheckedBlurNSFW = {}
     )
 }
 

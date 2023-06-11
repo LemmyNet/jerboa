@@ -84,6 +84,29 @@ fun HomeActivity(
                         scope = scope,
                         drawerState = drawerState,
                         ctx = ctx,
+                        blurNSFWChecked = appSettings?.blurNSFW ?: true,
+                        blurNSFWQuickOption = appSettings?.blurNSFWQuickOption,
+                        onCheckedBlurNSFW = {
+                            if (appSettings != null) {
+                                appSettingsViewModel.update(
+                                    AppSettings(
+                                        id = 1,
+                                        viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
+                                        theme = appSettings.theme,
+                                        themeColor = appSettings.themeColor,
+                                        fontSize = appSettings.fontSize,
+                                        postViewMode = appSettings.postViewMode,
+                                        showBottomNav = appSettings.showBottomNav,
+                                        showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+                                        showCommentActionBarByDefault = appSettings.showCommentActionBarByDefault,
+                                        showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                                        blurNSFW = !appSettings.blurNSFW,
+                                        useCustomTabs = appSettings.useCustomTabs,
+                                        blurNSFWQuickOption = appSettings.blurNSFWQuickOption
+                                    )
+                                )
+                            }
+                        }
                     )
                 },
             )
@@ -294,6 +317,9 @@ fun MainDrawer(
     scope: CoroutineScope,
     ctx: Context,
     drawerState: DrawerState,
+    blurNSFWChecked: Boolean,
+    blurNSFWQuickOption: Boolean?,
+    onCheckedBlurNSFW: (Boolean) -> Unit,
 ) {
     val accounts = accountViewModel.allAccounts.value
     val account = getCurrentAccount(accountViewModel)
@@ -373,6 +399,9 @@ fun MainDrawer(
             navController.navigate(route = "settings")
             closeDrawer(scope, drawerState)
         },
+        blurNSFWChecked = blurNSFWChecked,
+        blurNSFWQuickOption = blurNSFWQuickOption,
+        onCheckedBlurNSFW = onCheckedBlurNSFW,
     )
 }
 

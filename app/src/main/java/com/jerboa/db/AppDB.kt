@@ -96,6 +96,12 @@ data class AppSettings(
     )
     val useCustomTabs: Boolean,
 
+    @ColumnInfo(
+        name = "blur_nsfw_quick_option",
+        defaultValue = "0",
+    )
+    val blurNSFWQuickOption: Boolean,
+
 )
 
 @Dao
@@ -369,6 +375,15 @@ val MIGRATION_13_14 = object : Migration(13, 14) {
     }
 }
 
+val MIGRATION_14_15 = object : Migration(12, 13) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column blur_nsfw_quick_option INTEGER NOT NULL default 0",
+        )
+    }
+}
+
 @Database(
     version = 13,
     entities = [Account::class, AppSettings::class],
@@ -408,6 +423,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_11_12,
                         MIGRATION_12_13,
                         MIGRATION_13_14,
+                        MIGRATION_14_15,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

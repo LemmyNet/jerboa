@@ -64,6 +64,10 @@ fun LookAndFeelActivity(
         settings?.blurNSFW ?: true,
     )
 
+    val blurNSFWQuickOption = rememberBooleanSettingState(
+        settings?.blurNSFWQuickOption ?: false,
+    )
+
     val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -83,6 +87,7 @@ fun LookAndFeelActivity(
                 showVotingArrowsInListView = showVotingArrowsInListViewState.value,
                 blurNSFW = blurNSFW.value,
                 useCustomTabs = useCustomTabsState.value,
+                blurNSFWQuickOption = blurNSFWQuickOption.value,
             ),
         )
     }
@@ -206,9 +211,19 @@ fun LookAndFeelActivity(
                     SettingsCheckbox(
                         state = blurNSFW,
                         title = {
-                            Text(text = "Blur NSFW content")
+                            Text(stringResource(id = R.string.look_and_feel_blur_nsfw))
                         },
                         onCheckedChange = { updateAppSettings() },
+                    )
+                }
+
+                if (siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_nsfw == true) {
+                    SettingsCheckbox(
+                        state = blurNSFWQuickOption,
+                        title = {
+                            Text(stringResource(id = R.string.look_and_feel_blur_nsfw_quick_option))
+                        },
+                        onCheckedChange = { updateAppSettings() }
                     )
                 }
             }
