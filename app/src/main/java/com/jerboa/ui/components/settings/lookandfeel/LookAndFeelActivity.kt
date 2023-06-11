@@ -3,6 +3,8 @@ package com.jerboa.ui.components.settings.lookandfeel
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +62,8 @@ fun LookAndFeelActivity(
     val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
 
     val snackbarHostState = remember { SnackbarHostState() }
+	
+    val scrollState = rememberScrollState()
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
@@ -85,7 +89,11 @@ fun LookAndFeelActivity(
             SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), navController = navController)
         },
         content = { padding ->
-            Column(modifier = Modifier.padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .padding(padding),
+            ) {
                 SettingsSlider(
                     modifier = Modifier.padding(top = 10.dp),
                     valueRange = 8f..48f,
