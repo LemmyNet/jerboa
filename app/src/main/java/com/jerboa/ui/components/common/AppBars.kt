@@ -144,7 +144,6 @@ fun BottomAppBarAll(
                 onClick = {
                     navController.navigate("communityList")
                 },
-                // selected = screen == "communityList",
                 selected = false,
             )
             NavigationBarItem(
