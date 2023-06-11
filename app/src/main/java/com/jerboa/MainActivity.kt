@@ -253,7 +253,8 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel.fetchPersonDetails(
                                 idOrName = idOrName,
                                 account = account,
-                                clear = true,
+                                clearPersonDetails = true,
+                                clearPostsAndComments = true,
                                 ctx = ctx,
                                 changeSavedOnly = savedMode,
                             )
@@ -296,7 +297,8 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel.fetchPersonDetails(
                                 idOrName = idOrName,
                                 account = account,
-                                clear = true,
+                                clearPersonDetails = true,
+                                clearPostsAndComments = true,
                                 ctx = ctx,
                             )
                         }

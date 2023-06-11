@@ -98,7 +98,8 @@ fun PersonProfileActivity(
                                     .person.id,
                             ),
                             account = account,
-                            clear = true,
+                            clearPersonDetails = false,
+                            clearPostsAndComments = true,
                             changeSortType = sortType,
                             changeSavedOnly = savedMode,
                             ctx = ctx,
@@ -371,7 +372,8 @@ fun UserTabs(
                                 personProfileViewModel.fetchPersonDetails(
                                     idOrName = Either.Left(it),
                                     account = account,
-                                    clear = true,
+                                    clearPersonDetails = false,
+                                    clearPostsAndComments = true,
                                     changeSavedOnly = savedMode,
                                     ctx = ctx,
                                 )
@@ -386,6 +388,8 @@ fun UserTabs(
                                     personProfileViewModel.fetchPersonDetails(
                                         idOrName = Either.Left(it),
                                         account = account,
+                                        clearPersonDetails = false,
+                                        clearPostsAndComments = false,
                                         nextPage = true,
                                         changeSavedOnly = savedMode,
                                         ctx = ctx,
@@ -424,6 +428,8 @@ fun UserTabs(
                                     personProfileViewModel.fetchPersonDetails(
                                         idOrName = Either.Left(it),
                                         account = account,
+                                        clearPersonDetails = false,
+                                        clearPostsAndComments = false,
                                         nextPage = true,
                                         changeSavedOnly = savedMode,
                                         ctx = ctx,
@@ -440,7 +446,8 @@ fun UserTabs(
                                 personProfileViewModel.fetchPersonDetails(
                                     idOrName = Either.Left(it),
                                     account = account,
-                                    clear = true,
+                                    clearPersonDetails = false,
+                                    clearPostsAndComments = true,
                                     changeSavedOnly = savedMode,
                                     ctx = ctx,
                                 )
