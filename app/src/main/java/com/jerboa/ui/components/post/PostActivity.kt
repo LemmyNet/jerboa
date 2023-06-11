@@ -153,8 +153,7 @@ fun PostActivity(
                                 },
                                 onPostClick = {},
                                 onPostLinkClick = { url ->
-                                    openLink(url, ctx,
-                                        appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
+                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                                 },
                                 onSaveClick = {
                                     account?.also { acct ->
@@ -303,10 +302,7 @@ fun PostActivity(
                             },
                             onReportClick = { commentView ->
                                 navController.navigate(
-                                    "commentReport/${
-                                        commentView.comment
-                                            .id
-                                    }",
+                                    "commentReport/${commentView.comment.id}",
                                 )
                             },
                             onCommentLinkClick = { commentView ->
@@ -339,8 +335,7 @@ fun PostActivity(
                             showCollapsedCommentContent = showCollapsedCommentContent,
                             isCollapsedByParent = false,
                             showActionBar = { commentId ->
-                                showActionBarByDefault xor
-                                    commentsWithToggledActionBar.contains(commentId)
+                                showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                             },
                             enableDownVotes = enableDownVotes,
                         )
