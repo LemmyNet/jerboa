@@ -63,7 +63,7 @@ fun LookAndFeelActivity(
 
     val snackbarHostState = remember { SnackbarHostState() }
 	
-	val scrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
@@ -89,9 +89,11 @@ fun LookAndFeelActivity(
             SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), navController = navController)
         },
         content = { padding ->
-            Column(modifier = Modifier
-				.verticalScroll(scrollState)
-				.padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .padding(padding),
+            ) {
                 SettingsSlider(
                     modifier = Modifier.padding(top = 10.dp),
                     valueRange = 8f..48f,
