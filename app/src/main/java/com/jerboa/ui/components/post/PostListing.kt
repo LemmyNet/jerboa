@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Textsms
@@ -443,6 +444,7 @@ fun PostFooterLine(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
     onBlockCreatorClick: (person: PersonSafe) -> Unit,
     onBlockCommunityClick: (community: CommunitySafe) -> Unit,
     modifier: Modifier = Modifier,
@@ -466,6 +468,10 @@ fun PostFooterLine(
             onCommunityClick = {
                 showMoreOptions = false
                 onCommunityClick(postView.community)
+            },
+            onPersonClick = {
+                showMoreOptions = false
+                onPersonClick(postView.creator.id)
             },
             onReportClick = {
                 showMoreOptions = false
@@ -616,6 +622,7 @@ fun PostFooterLinePreview() {
         account = null,
         onReportClick = {},
         onCommunityClick = {},
+        onPersonClick = {},
         onUpvoteClick = {},
         onSaveClick = {},
         onReplyClick = {},
@@ -1198,6 +1205,7 @@ fun PostListingCard(
             onSaveClick = onSaveClick,
             onReplyClick = onReplyClick,
             onCommunityClick = onCommunityClick,
+            onPersonClick = onPersonClick,
             onEditPostClick = onEditPostClick,
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
@@ -1251,6 +1259,7 @@ fun PostOptionsDialog(
     postView: PostView,
     onDismissRequest: () -> Unit,
     onCommunityClick: () -> Unit,
+    onPersonClick: () -> Unit,
     onEditPostClick: () -> Unit,
     onDeletePostClick: () -> Unit,
     onReportClick: () -> Unit,
@@ -1273,6 +1282,16 @@ fun PostOptionsDialog(
                     icon = Icons.Outlined.Forum,
                     onClick = {
                         onCommunityClick()
+                    },
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(
+                        R.string.post_listing_go_to,
+                        postView.creator.name,
+                    ),
+                    icon = Icons.Outlined.Person,
+                    onClick = {
+                        onPersonClick()
                     },
                 )
                 postView.post.url?.also {
@@ -1356,6 +1375,7 @@ fun PostOptionsDialogPreview() {
         isCreator = true,
         onReportClick = {},
         onCommunityClick = {},
+        onPersonClick = {},
         onDismissRequest = {},
         onEditPostClick = {},
         onDeletePostClick = {},
