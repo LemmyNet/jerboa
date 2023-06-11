@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -22,6 +23,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
@@ -48,6 +50,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonProfileActivity(
     savedMode: Boolean,
@@ -59,6 +62,7 @@ fun PersonProfileActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -138,6 +142,7 @@ fun PersonProfileActivity(
                 commentReplyViewModel = commentReplyViewModel,
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
+                showVotingArrowsInListView = showVotingArrowsInListView,
             )
         },
         bottomBar = {
@@ -191,6 +196,7 @@ fun UserTabs(
     postEditViewModel: PostEditViewModel,
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -246,7 +252,8 @@ fun UserTabs(
 
                     LazyColumn(
                         state = listState,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
                             .simpleVerticalScrollbar(listState),
                     ) {
                         item {
@@ -260,7 +267,7 @@ fun UserTabs(
                             if (moderates.isNotEmpty()) {
                                 item {
                                     Text(
-                                        text = "Moderates",
+                                        text = stringResource(R.string.person_profile_activity_moderates),
                                         style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.padding(MEDIUM_PADDING),
                                     )
@@ -304,7 +311,7 @@ fun UserTabs(
                             navController.navigate(route = "post/${postView.post.id}")
                         },
                         onPostLinkClick = { url ->
-                            openLink(url, ctx)
+                            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                         },
                         onSaveClick = { postView ->
                             account?.also { acct ->
@@ -386,6 +393,7 @@ fun UserTabs(
                         listState = postListState,
                         taglines = null,
                         postViewMode = getPostViewMode(appSettingsViewModel),
+                        showVotingArrowsInListView = showVotingArrowsInListView,
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -514,8 +522,11 @@ fun UserTabs(
                                 }
                             },
                             showPostAndCommunityContext = true,
+                            showCollapsedCommentContent = true,
                             account = account,
                             moderators = listOf(),
+                            isCollapsedByParent = false,
+                            showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
                         )
                     }
                 }

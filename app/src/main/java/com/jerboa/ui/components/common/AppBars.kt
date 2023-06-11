@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -41,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.jerboa.R
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.samplePersonSafe
@@ -125,15 +128,23 @@ fun BottomAppBarAll(
 
             NavigationBarItem(
                 icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.List,
-                        contentDescription = "TODO",
-                    )
+                    if (screen == "communityList") {
+                        Icon(
+                            imageVector = Icons.Filled.List,
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = "TODO",
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Outlined.List,
+                            contentDescription = "TODO",
+                        )
+                    }
                 },
                 onClick = {
                     navController.navigate("communityList")
                 },
-                selected = screen == "communityList",
+                selected = false,
             )
             NavigationBarItem(
                 icon = {
@@ -223,6 +234,9 @@ fun CommentOrPostNodeHeader(
     isModerator: Boolean,
     isCommunityBanned: Boolean,
     onClick: () -> Unit,
+    onLongCLick: () -> Unit,
+    isExpanded: Boolean = true,
+    collapsedCommentsCount: Int = 0,
 ) {
     FlowRow(
         mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
@@ -236,7 +250,7 @@ fun CommentOrPostNodeHeader(
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onLongClick = {},
+                onLongClick = onLongCLick,
                 onClick = onClick,
             ),
     ) {
@@ -262,7 +276,14 @@ fun CommentOrPostNodeHeader(
                 isCommunityBanned = isCommunityBanned,
             )
         }
-        ScoreAndTime(score = score, myVote = myVote, published = published, updated = updated)
+        ScoreAndTime(
+            score = score,
+            myVote = myVote,
+            published = published,
+            updated = updated,
+            isExpanded = isExpanded,
+            collapsedCommentsCount = collapsedCommentsCount,
+        )
     }
 }
 
@@ -281,6 +302,7 @@ fun CommentOrPostNodeHeaderPreview() {
         isModerator = true,
         isCommunityBanned = false,
         onClick = {},
+        onLongCLick = {},
     )
 }
 
@@ -292,6 +314,7 @@ fun ActionBarButton(
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
     account: Account?,
+    requiresAccount: Boolean = true,
 ) {
     val ctx = LocalContext.current
 //    Button(
@@ -311,7 +334,7 @@ fun ActionBarButton(
         Modifier
     } else {
         Modifier.clickable(onClick = {
-            if (account !== null) {
+            if (!requiresAccount || account !== null) {
                 onClick()
             } else {
                 loginFirstToast(ctx)
@@ -344,7 +367,7 @@ fun DotSpacer(
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     Text(
-        text = "·",
+        text = stringResource(R.string.app_bars_dot_spacer),
         style = style,
         color = MaterialTheme.colorScheme.onBackground.muted,
         modifier = Modifier.padding(horizontal = padding),
@@ -417,7 +440,8 @@ fun Sidebar(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.padding(padding)
+        modifier = Modifier
+            .padding(padding)
             .simpleVerticalScrollbar(listState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
@@ -451,7 +475,7 @@ fun Sidebar(
                     )
                 }
                 TimeAgo(
-                    precedingString = "Created",
+                    precedingString = stringResource(R.string.AppBars_created),
                     includeAgo = true,
                     published = published,
                 )
@@ -495,32 +519,32 @@ fun CommentsAndPosts(
 ) {
     FlowRow {
         Text(
-            text = "${siFormat(usersActiveDay)} users / day",
+            text = stringResource(R.string.AppBars_users_day, siFormat(usersActiveDay)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(usersActiveWeek)} users / week",
+            text = stringResource(R.string.AppBars_users_week, siFormat(usersActiveWeek)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(usersActiveMonth)} users / month",
+            text = stringResource(R.string.AppBars_users_month, siFormat(usersActiveMonth)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(usersActiveHalfYear)} users / 6 months",
+            text = stringResource(R.string.AppBars_users_6_months, siFormat(usersActiveHalfYear)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(postCount)} posts",
+            text = stringResource(R.string.AppBars_posts, siFormat(postCount)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(commentCount)} comments",
+            text = stringResource(R.string.AppBars_comments, siFormat(commentCount)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }

@@ -1,14 +1,28 @@
 package com.jerboa.ui.components.common
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jerboa.R
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.datatypes.samplePost
 import com.jerboa.prettyTime
@@ -28,7 +42,7 @@ fun TimeAgo(
     val publishedPretty = dateStringToPretty(published, includeAgo)
 
     val afterPreceding = precedingString?.let {
-        "$it $publishedPretty ago"
+        stringResource(R.string.time_ago_ago, it, publishedPretty)
     } ?: run { publishedPretty }
 
     Row {
@@ -78,11 +92,15 @@ fun ScoreAndTime(
     myVote: Int?,
     published: String,
     updated: String?,
+    isExpanded: Boolean = true,
+    collapsedCommentsCount: Int = 0,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        CollapsedIndicator(visible = !isExpanded, descendants = collapsedCommentsCount)
+        Spacer(modifier = Modifier.padding(end = SMALL_PADDING))
         Text(
             text = score.toString(),
             color = scoreColor(myVote = myVote),
@@ -102,4 +120,34 @@ fun ScoreAndTimePreview() {
         published = samplePost.published,
         updated = samplePost.updated,
     )
+}
+
+@Composable
+fun CollapsedIndicator(visible: Boolean, descendants: Int) {
+    AnimatedVisibility(
+        visible = visible && descendants > 0,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(MaterialTheme.colorScheme.secondary)
+                    .padding(horizontal = SMALL_PADDING),
+            ) {
+                Text(
+                    text = "+$descendants",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun CollapsedIndicatorPreview() {
+    CollapsedIndicator(visible = true, descendants = 23)
 }

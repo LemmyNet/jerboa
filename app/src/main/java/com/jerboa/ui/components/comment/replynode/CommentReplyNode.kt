@@ -31,8 +31,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommunitySafe
@@ -57,6 +59,7 @@ fun CommentReplyNodeHeader(
     score: Int,
     myVote: Int?,
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
@@ -70,6 +73,7 @@ fun CommentReplyNodeHeader(
         isModerator = false,
         isCommunityBanned = commentReplyView.creator_banned_from_community,
         onClick = onClick,
+        onLongCLick = onLongClick,
     )
 }
 
@@ -82,6 +86,7 @@ fun CommentReplyNodeHeaderPreview() {
         myVote = 26,
         onPersonClick = {},
         onClick = {},
+        onLongClick = {},
     )
 }
 
@@ -193,6 +198,7 @@ fun CommentReplyNodeFooterLine(
                 icon = Icons.Outlined.MoreVert,
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
+                requiresAccount = false,
             )
         }
     }
@@ -215,28 +221,35 @@ fun CommentReplyNodeOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "View Source",
+                    text = stringResource(R.string.comment_reply_node_view_source),
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Copy Permalink",
+                    text = stringResource(R.string.comment_reply_node_copy_permalink),
                     icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = "${commentReplyView.comment.ap_id}"
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_reply_node_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Report Comment",
+                        text = stringResource(R.string.comment_reply_node_report_comment),
                         icon = Icons.Outlined.Flag,
                         onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${commentReplyView.creator.name}",
+                        text = stringResource(
+                            R.string.comment_reply_node_block,
+                            commentReplyView.creator.name,
+                        ),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,
                     )
@@ -271,6 +284,7 @@ fun CommentReplyNode(
 
     var viewSource by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(true) }
+    var isActionBarExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.padding(horizontal = LARGE_PADDING),
@@ -290,6 +304,9 @@ fun CommentReplyNode(
             onClick = {
                 isExpanded = !isExpanded
             },
+            onLongClick = {
+                isActionBarExpanded = !isActionBarExpanded
+            },
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -301,29 +318,36 @@ fun CommentReplyNode(
                     comment = commentReplyView.comment,
                     viewSource = viewSource,
                     onClick = {},
+                    onLongClick = {},
                 )
-                CommentReplyNodeFooterLine(
-                    commentReplyView = commentReplyView,
-                    onUpvoteClick = {
-                        onUpvoteClick(it)
-                    },
-                    onDownvoteClick = {
-                        onDownvoteClick(it)
-                    },
-                    onViewSourceClick = {
-                        viewSource = !viewSource
-                    },
-                    onReplyClick = onReplyClick,
-                    onSaveClick = onSaveClick,
-                    onMarkAsReadClick = onMarkAsReadClick,
-                    onReportClick = onReportClick,
-                    onCommentLinkClick = onCommentLinkClick,
-                    onBlockCreatorClick = onBlockCreatorClick,
-                    myVote = myVote,
-                    upvotes = upvotes,
-                    downvotes = downvotes,
-                    account = account,
-                )
+                AnimatedVisibility(
+                    visible = isActionBarExpanded,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
+                    CommentReplyNodeFooterLine(
+                        commentReplyView = commentReplyView,
+                        onUpvoteClick = {
+                            onUpvoteClick(it)
+                        },
+                        onDownvoteClick = {
+                            onDownvoteClick(it)
+                        },
+                        onViewSourceClick = {
+                            viewSource = !viewSource
+                        },
+                        onReplyClick = onReplyClick,
+                        onSaveClick = onSaveClick,
+                        onMarkAsReadClick = onMarkAsReadClick,
+                        onReportClick = onReportClick,
+                        onCommentLinkClick = onCommentLinkClick,
+                        onBlockCreatorClick = onBlockCreatorClick,
+                        myVote = myVote,
+                        upvotes = upvotes,
+                        downvotes = downvotes,
+                        account = account,
+                    )
+                }
             }
         }
     }

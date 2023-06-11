@@ -13,10 +13,12 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.PersonMentionView
@@ -40,7 +42,7 @@ fun CommentReplyHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Reply",
+                text = stringResource(R.string.comment_reply_reply),
             )
         },
         actions = {
@@ -68,7 +70,7 @@ fun CommentReplyHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.comment_reply_back),
                 )
             }
         },
@@ -88,7 +90,10 @@ fun RepliedComment(
             score = commentView.counts.score,
             myVote = commentView.my_vote,
             isModerator = isModerator,
+            collapsedCommentsCount = 0,
+            isExpanded = true,
             onClick = {},
+            onLongClick = {},
         )
         SelectionContainer {
             Text(text = commentView.comment.content)
@@ -108,6 +113,7 @@ fun RepliedCommentReply(
             score = commentReplyView.counts.score,
             myVote = commentReplyView.my_vote,
             onClick = {},
+            onLongClick = {},
         )
         SelectionContainer {
             Text(text = commentReplyView.comment.content)
@@ -127,6 +133,7 @@ fun RepliedMentionReply(
             score = personMentionView.counts.score,
             myVote = personMentionView.my_vote,
             onClick = {},
+            onLongClick = {},
         )
         SelectionContainer {
             Text(text = personMentionView.comment.content)
@@ -277,7 +284,7 @@ fun PostReply(
             onTextChange = onReplyChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your comment",
+            placeholder = stringResource(R.string.comment_reply_type_your_comment),
         )
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -40,6 +41,7 @@ const val mastodonLink = "https://mastodon.social/@LemmyDev"
 @Composable
 fun AboutActivity(
     navController: NavController,
+    useCustomTabs: Boolean,
 ) {
     Log.d("jerboa", "Got to About activity")
 
@@ -53,13 +55,13 @@ fun AboutActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = "About", navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.settings_about_about), navController = navController)
         },
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
                 SettingsMenuLink(
-                    title = { Text("What's New") },
-                    subtitle = { Text("Version $version") },
+                    title = { Text(stringResource(R.string.settings_about_what_s_new)) },
+                    subtitle = { Text(stringResource(R.string.settings_about_version, version)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.NewReleases,
@@ -67,13 +69,13 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", ctx)
+                        openLink("$githubUrl/blob/main/RELEASES.md", ctx, useCustomTabs)
                     },
                 )
                 SettingsDivider()
-                SettingsHeader(text = "Support")
+                SettingsHeader(text = stringResource(R.string.settings_about_support))
                 SettingsMenuLink(
-                    title = { Text("Issue tracker") },
+                    title = { Text(stringResource(R.string.settings_about_issue_tracker)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.BugReport,
@@ -81,11 +83,11 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/issues", ctx)
+                        openLink("$githubUrl/issues", ctx, useCustomTabs)
                     },
                 )
                 SettingsMenuLink(
-                    title = { Text("Developer Matrix chatroom") },
+                    title = { Text(stringResource(R.string.settings_about_developer_matrix_chatroom)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Chat,
@@ -93,11 +95,11 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaMatrixChat, ctx)
+                        openLink(jerboaMatrixChat, ctx, useCustomTabs)
                     },
                 )
                 SettingsMenuLink(
-                    title = { Text("Donate to Jerboa development") },
+                    title = { Text(stringResource(R.string.settings_about_donate_to_jerboa_development)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.AttachMoney,
@@ -105,13 +107,13 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(donateLink, ctx)
+                        openLink(donateLink, ctx, useCustomTabs)
                     },
                 )
                 SettingsDivider()
-                SettingsHeader(text = "Social")
+                SettingsHeader(text = stringResource(R.string.about_social))
                 SettingsMenuLink(
-                    title = { Text("Join c/jerboa") },
+                    title = { Text(stringResource(R.string.settings_about_join_c_jerboa)) },
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_jerboa),
@@ -120,11 +122,11 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaLemmyLink, ctx)
+                        openLink(jerboaLemmyLink, ctx, useCustomTabs)
                     },
                 )
                 SettingsMenuLink(
-                    title = { Text("Follow on Mastodon") },
+                    title = { Text(stringResource(R.string.settings_about_follow_on_mastodon)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.TravelExplore,
@@ -132,18 +134,18 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(mastodonLink, ctx)
+                        openLink(mastodonLink, ctx, useCustomTabs)
                     },
                 )
                 SettingsDivider()
-                SettingsHeader(text = "Open source")
+                SettingsHeader(text = stringResource(R.string.settings_about_open_source))
                 SettingsMenuLink(
                     modifier = Modifier.padding(top = 20.dp),
-                    title = { Text("Source code") },
+                    title = { Text(stringResource(R.string.settings_about_source_code)) },
                     subtitle = {
                         Text(
-                            "Jerboa is libre open-source software, licensed under " +
-                                "the GNU Affero General Public License v3.0",
+                            stringResource(R.string.settings_about_source_code_subtitle_part1) +
+                                stringResource(R.string.settings_about_source_code_subtitle_part2),
                         )
                     },
                     icon = {
@@ -153,7 +155,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(githubUrl, ctx)
+                        openLink(githubUrl, ctx, useCustomTabs)
                     },
                 )
             }
@@ -181,5 +183,5 @@ fun SettingsHeader(
 @Preview
 @Composable
 fun AboutPreview() {
-    AboutActivity(navController = rememberNavController())
+    AboutActivity(navController = rememberNavController(), useCustomTabs = false)
 }

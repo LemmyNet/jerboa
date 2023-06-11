@@ -54,6 +54,7 @@ fun PostListings(
     listState: LazyListState,
     taglines: List<Tagline>?,
     postViewMode: PostViewMode,
+    showVotingArrowsInListView: Boolean,
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
@@ -100,6 +101,7 @@ fun PostListings(
                     fullBody = false,
                     account = account, // TODO can't know with many posts
                     postViewMode = postViewMode,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
                 )
                 Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
             }
@@ -144,5 +146,6 @@ fun PreviewPostListings() {
         listState = rememberLazyListState(),
         taglines = null,
         postViewMode = PostViewMode.Card,
+        showVotingArrowsInListView = true,
     )
 }

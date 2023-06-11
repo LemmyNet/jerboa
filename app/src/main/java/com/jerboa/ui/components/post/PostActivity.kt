@@ -21,13 +21,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.PostViewMode
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
@@ -50,6 +53,10 @@ fun PostActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     navController: NavController,
+    appSettingsViewModel: AppSettingsViewModel,
+    showCollapsedCommentContent: Boolean,
+    showActionBarByDefault: Boolean,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -64,6 +71,7 @@ fun PostActivity(
 
     // Holds expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
+    val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
 
     val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -77,7 +85,7 @@ fun PostActivity(
         topBar = {
             Column {
                 SimpleTopAppBar(
-                    "Comments",
+                    stringResource(R.string.post_activity_comments),
                     navController = navController,
                     scrollBehavior =
                     scrollBehavior,
@@ -113,7 +121,8 @@ fun PostActivity(
                 postViewModel.postView.value?.also { postView ->
                     LazyColumn(
                         state = listState,
-                        modifier = Modifier.padding(padding)
+                        modifier = Modifier
+                            .padding(padding)
                             .simpleVerticalScrollbar(listState),
                     ) {
                         item(key = "${postView.post.id}_listing") {
@@ -141,7 +150,7 @@ fun PostActivity(
                                 },
                                 onPostClick = {},
                                 onPostLinkClick = { url ->
-                                    openLink(url, ctx)
+                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                                 },
                                 onSaveClick = {
                                     account?.also { acct ->
@@ -199,6 +208,7 @@ fun PostActivity(
                                 fullBody = true,
                                 account = account,
                                 postViewMode = PostViewMode.Card,
+                                showVotingArrowsInListView = showVotingArrowsInListView,
                             )
                         }
                         item(key = "${postView.post.id}_is_comment_view") {
@@ -227,6 +237,13 @@ fun PostActivity(
                                     unExpandedComments.remove(commentId)
                                 } else {
                                     unExpandedComments.add(commentId)
+                                }
+                            },
+                            toggleActionBar = { commentId ->
+                                if (commentsWithToggledActionBar.contains(commentId)) {
+                                    commentsWithToggledActionBar.remove(commentId)
+                                } else {
+                                    commentsWithToggledActionBar.add(commentId)
                                 }
                             },
                             onMarkAsReadClick = {},
@@ -311,6 +328,11 @@ fun PostActivity(
                             onPostClick = {}, // Do nothing
                             account = account,
                             moderators = postViewModel.moderators,
+                            showCollapsedCommentContent = showCollapsedCommentContent,
+                            isCollapsedByParent = false,
+                            showActionBar = { commentId ->
+                                showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
+                            },
                         )
                     }
                 }

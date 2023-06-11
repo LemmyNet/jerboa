@@ -69,6 +69,26 @@ data class AppSettings(
         defaultValue = "1",
     )
     val showBottomNav: Boolean,
+    @ColumnInfo(
+        name = "show_collapsed_comment_content",
+        defaultValue = "0",
+    )
+    val showCollapsedCommentContent: Boolean,
+    @ColumnInfo(
+        name = "show_comment_action_bar_by_default",
+        defaultValue = "1",
+    )
+    val showCommentActionBarByDefault: Boolean,
+    @ColumnInfo(
+        name = "show_voting_arrows_in_list_view",
+        defaultValue = "1",
+    )
+    val showVotingArrowsInListView: Boolean,
+    @ColumnInfo(
+        name = "use_custom_tabs",
+        defaultValue = "1",
+    )
+    val useCustomTabs: Boolean,
 )
 
 @Dao
@@ -302,8 +322,39 @@ val MIGRATION_9_10 = object : Migration(9, 10) {
     }
 }
 
+val MIGRATION_10_11 = object : Migration(10, 11) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Add show_bottom_nav column
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column show_collapsed_comment_content INTEGER NOT NULL default 0",
+        )
+        database.execSQL(
+            "ALTER TABLE AppSettings add column show_comment_action_bar_by_default INTEGER NOT NULL default 1",
+        )
+    }
+}
+
+val MIGRATION_11_12 = object : Migration(11, 12) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column show_voting_arrows_in_list_view INTEGER NOT NULL default 1",
+        )
+    }
+}
+
+val MIGRATION_12_13 = object : Migration(12, 13) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column use_custom_tabs INTEGER NOT NULL default 1",
+        )
+    }
+}
+
 @Database(
-    version = 10,
+    version = 13,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -337,6 +388,9 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_7_8,
                         MIGRATION_8_9,
                         MIGRATION_9_10,
+                        MIGRATION_10_11,
+                        MIGRATION_11_12,
+                        MIGRATION_12_13,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

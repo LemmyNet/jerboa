@@ -2,6 +2,7 @@
 
 package com.jerboa.ui.components.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +18,11 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,13 +32,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
+import com.jerboa.R
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
+import com.jerboa.onAutofill
 
 val BANNED_INSTANCES = listOf("wolfballs.com")
 
 @Composable
 fun MyTextField(
+    modifier: Modifier = Modifier,
     label: String,
     placeholder: String? = null,
     text: String,
@@ -50,21 +58,24 @@ fun MyTextField(
             keyboardType = KeyboardType.Text,
             autoCorrect = false,
         ),
+        modifier = modifier,
     )
 }
 
 @Composable
 fun PasswordField(
+    modifier: Modifier = Modifier,
     password: String,
     onValueChange: (String) -> Unit,
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
+        modifier = modifier,
         value = password,
         onValueChange = onValueChange,
         singleLine = true,
-        label = { Text(text = "Password") },
+        label = { Text(text = stringResource(R.string.login_password)) },
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
@@ -83,6 +94,7 @@ fun PasswordField(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginForm(
     modifier: Modifier = Modifier,
@@ -92,8 +104,8 @@ fun LoginForm(
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    val instanceOptions = DEFAULT_LEMMY_INSTANCES
     var expanded by remember { mutableStateOf(false) }
+    var wasAutofilled by remember { mutableStateOf(false) }
 
     val isValid =
         instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty() &&
@@ -101,7 +113,7 @@ fun LoginForm(
 
     val form = Login(
         username_or_email = username.trim(),
-        password = password.trim(),
+        password = password.take(60),
     )
 
     Column(
@@ -119,15 +131,19 @@ fun LoginForm(
         ) {
             OutlinedTextField(
                 modifier = Modifier.menuAnchor(),
-                label = { Text("Instance") },
-                placeholder = { Text("ex: lemmy.ml") },
+                label = { Text(stringResource(R.string.login_instance)) },
+                placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
                 value = instance,
-                onValueChange = { instance = it },
+                onValueChange = {
+                    instance = it
+                    expanded = true
+                },
                 trailingIcon = {
                     TrailingIcon(expanded = expanded)
                 },
                 keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
             )
+            val instanceOptions = DEFAULT_LEMMY_INSTANCES.filter { instance.isEmpty() || it.contains(instance) }
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = {
@@ -149,12 +165,25 @@ fun LoginForm(
                 }
             }
         }
+
         MyTextField(
-            label = "Email or Username",
+            modifier = Modifier
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(AutofillType.Username, AutofillType.EmailAddress) {
+                    username = it
+                    wasAutofilled = true
+                },
+            label = stringResource(R.string.login_email_or_username),
             text = username,
             onValueChange = { username = it },
         )
         PasswordField(
+            modifier = Modifier
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(AutofillType.Password) {
+                    password = it
+                    wasAutofilled = true
+                },
             password = password,
             onValueChange = { password = it },
         )
@@ -166,7 +195,7 @@ fun LoginForm(
             if (loading) {
                 CircularProgressIndicator()
             } else {
-                Text("Login")
+                Text(stringResource(R.string.login_login))
             }
         }
     }
@@ -186,7 +215,7 @@ fun LoginHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Login",
+                text = stringResource(R.string.login_login),
             )
         },
         navigationIcon = {
@@ -198,7 +227,7 @@ fun LoginHeader(
             ) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.login_back),
                 )
             }
         },

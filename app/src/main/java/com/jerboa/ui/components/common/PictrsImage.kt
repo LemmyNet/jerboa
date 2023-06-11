@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -67,8 +68,9 @@ fun CircularIcon(
 }
 
 @Composable
-fun LargerCircularIcon(icon: String) {
+fun LargerCircularIcon(modifier: Modifier = Modifier, icon: String) {
     CircularIcon(
+        modifier = modifier,
         icon = icon,
         size = LARGER_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
@@ -194,7 +196,7 @@ fun PickImage(
             launcher.launch("image/*")
         }) {
             Text(
-                text = "Upload Image",
+                text = stringResource(R.string.pictrs_image_upload_image),
                 color = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
