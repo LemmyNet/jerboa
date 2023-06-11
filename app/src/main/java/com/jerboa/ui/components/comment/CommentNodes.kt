@@ -38,6 +38,7 @@ fun CommentNodes(
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
     showActionBarByDefault: Boolean,
+    enableDownVotes: Boolean,
 ) {
     // Holds the un-expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
@@ -84,6 +85,7 @@ fun CommentNodes(
             showActionBar = { commentId ->
                 showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
             },
+            enableDownVotes = enableDownVotes,
         )
     }
 }
@@ -114,6 +116,7 @@ fun LazyListScope.commentNodeItems(
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: Int) -> Boolean,
+    enableDownVotes: Boolean,
 ) {
     nodes.forEach { node ->
         commentNodeItem(
@@ -142,6 +145,7 @@ fun LazyListScope.commentNodeItems(
             showCollapsedCommentContent = showCollapsedCommentContent,
             isCollapsedByParent = isCollapsedByParent,
             showActionBar = showActionBar,
+            enableDownVotes = enableDownVotes,
         )
     }
 }
