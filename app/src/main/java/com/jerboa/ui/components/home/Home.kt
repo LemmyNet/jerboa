@@ -23,9 +23,7 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
-import androidx.compose.material.icons.outlined.Filter
 import androidx.compose.material.icons.outlined.FilterList
-import androidx.compose.material.icons.outlined.FilterListOff
 import androidx.compose.material.icons.outlined.ImageNotSupported
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationCity
@@ -114,7 +112,7 @@ fun Drawer(
     isOpen: Boolean,
     blurNSFWQuickOption: Boolean?,
     blurNSFWChecked: Boolean,
-    onCheckedBlurNSFW: (Boolean) -> Unit
+    onCheckedBlurNSFW: (Boolean) -> Unit,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -143,7 +141,7 @@ fun Drawer(
         onClickSettings = onClickSettings,
         blurNSFWChecked = blurNSFWChecked,
         blurNSFWQuickOption = blurNSFWQuickOption,
-        onCheckedBlurNSFW = onCheckedBlurNSFW
+        onCheckedBlurNSFW = onCheckedBlurNSFW,
     )
 }
 
@@ -164,7 +162,7 @@ fun DrawerContent(
     unreadCounts: GetUnreadCountResponse?,
     blurNSFWQuickOption: Boolean?,
     blurNSFWChecked: Boolean,
-    onCheckedBlurNSFW: (Boolean) -> Unit
+    onCheckedBlurNSFW: (Boolean) -> Unit,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
@@ -280,16 +278,18 @@ fun DrawerItemsMain(
                 onClick = onClickSettings,
             )
         }
-        if (blurNSFWQuickOption == true) (
-            item {
-                IconAndTextAndCheckboxDrawerItem(
-                    icon = Icons.Outlined.ImageNotSupported,
-                    text = stringResource(R.string.home_blur_nsfw),
-                    checked = blurNSFWChecked,
-                    onChecked = onCheckedBlurNSFW,
+        if (blurNSFWQuickOption == true) {
+            (
+                item {
+                    IconAndTextAndCheckboxDrawerItem(
+                        icon = Icons.Outlined.ImageNotSupported,
+                        text = stringResource(R.string.home_blur_nsfw),
+                        checked = blurNSFWChecked,
+                        onChecked = onCheckedBlurNSFW,
+                    )
+                }
                 )
-            }
-        )
+        }
 
         item {
             myUserInfo?.also {
@@ -331,7 +331,7 @@ fun DrawerItemsMainPreview() {
         onClickSettings = {},
         blurNSFWQuickOption = true,
         blurNSFWChecked = false,
-        onCheckedBlurNSFW = {}
+        onCheckedBlurNSFW = {},
     )
 }
 

@@ -26,7 +26,6 @@ import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
 import com.jerboa.db.AppDB
-import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsRepository
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.AppSettingsViewModelFactory
@@ -149,7 +148,7 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            appSettings = appSettings
+                            appSettings = appSettings,
                         )
                     }
                     composable(

@@ -20,9 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alorma.compose.settings.ui.SettingsCheckbox
-import com.jerboa.db.AppSettings
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
 import com.jerboa.ui.theme.LARGE_PADDING
 
@@ -76,6 +73,7 @@ fun IconAndTextDrawerItem(
         }
     }
 }
+
 @Composable
 fun IconAndTextAndCheckboxDrawerItem(
     text: String,

@@ -223,7 +223,7 @@ fun LookAndFeelActivity(
                         title = {
                             Text(stringResource(id = R.string.look_and_feel_blur_nsfw_quick_option))
                         },
-                        onCheckedChange = { updateAppSettings() }
+                        onCheckedChange = { updateAppSettings() },
                     )
                 }
             }

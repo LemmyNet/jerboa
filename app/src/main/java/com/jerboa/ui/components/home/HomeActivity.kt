@@ -102,11 +102,11 @@ fun HomeActivity(
                                         showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                                         blurNSFW = !appSettings.blurNSFW,
                                         useCustomTabs = appSettings.useCustomTabs,
-                                        blurNSFWQuickOption = appSettings.blurNSFWQuickOption
-                                    )
+                                        blurNSFWQuickOption = appSettings.blurNSFWQuickOption,
+                                    ),
                                 )
                             }
-                        }
+                        },
                     )
                 },
             )
