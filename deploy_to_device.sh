@@ -1,9 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 set -e
-
-port=$1
-
-# Get port
 
 # Build and push
 ./gradlew installDebug
