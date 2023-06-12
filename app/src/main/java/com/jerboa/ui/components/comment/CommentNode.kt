@@ -576,6 +576,11 @@ fun CommentFooterLine(
                 icon = if (commentView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
                 },
+                contentDescription = if (commentView.saved) {
+                    stringResource(R.string.removeBookmark)
+                } else {
+                    stringResource(R.string.addBookmark)
+                },
                 onClick = { onSaveClick(commentView) },
                 contentColor = if (commentView.saved) {
                     MaterialTheme.colorScheme.primary
@@ -587,10 +592,12 @@ fun CommentFooterLine(
             ActionBarButton(
                 icon = Icons.Outlined.Textsms,
                 onClick = { onReplyClick(commentView) },
+                contentDescription = stringResource(R.string.commentFooter_reply),
                 account = account,
             )
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
+                contentDescription = stringResource(R.string.moreOptions),
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
                 requiresAccount = false,

@@ -77,7 +77,7 @@ fun CreatePostHeader(
                     // Todo add are you sure cancel dialog
                     Icon(
                         Icons.Outlined.Add,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.form_submit),
                     )
                 }
             }
@@ -191,6 +191,7 @@ fun CreatePostBody(
                         community.icon?.let {
                             CircularIcon(
                                 icon = it,
+                                contentDescription = stringResource(R.string.community_icon),
                                 size = ICON_SIZE,
                                 thumbnailSize = THUMBNAIL_SIZE,
                             )
@@ -199,7 +200,7 @@ fun CreatePostBody(
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.ArrowDropDown,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.createPost_selectCommunity),
                         )
                     },
                     modifier = Modifier

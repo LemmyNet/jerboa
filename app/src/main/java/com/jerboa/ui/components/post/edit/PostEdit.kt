@@ -57,7 +57,7 @@ fun EditPostHeader(
                     // Todo add are you sure cancel dialog
                     Icon(
                         Icons.Outlined.Save,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.form_submit),
                     )
                 }
             }

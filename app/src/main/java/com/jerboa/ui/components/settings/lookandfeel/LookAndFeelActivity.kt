@@ -101,7 +101,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.FormatSize,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     title = {
@@ -120,7 +120,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     title = {
@@ -137,7 +137,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Colorize,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     title = {
@@ -154,7 +154,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.ViewList,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     title = {

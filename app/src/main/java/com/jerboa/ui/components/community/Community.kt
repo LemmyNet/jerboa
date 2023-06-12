@@ -83,7 +83,7 @@ fun CommunityTopSection(
                             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                             Icon(
                                 imageVector = Icons.Outlined.CheckCircle,
-                                contentDescription = "TODO",
+                                contentDescription = null,
                                 modifier = Modifier
                                     .height(ACTION_BAR_ICON_SIZE),
                             )
@@ -193,7 +193,7 @@ fun CommunityHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.community_sortBy),
                 )
             }
             IconButton(onClick = {
@@ -201,7 +201,7 @@ fun CommunityHeader(
             }) {
                 Icon(
                     Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.moreOptions),
                 )
             }
         },
