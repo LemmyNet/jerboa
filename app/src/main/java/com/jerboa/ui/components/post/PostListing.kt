@@ -448,6 +448,7 @@ fun PostFooterLine(
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
     account: Account?,
+    enableDownVotes: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -507,14 +508,16 @@ fun PostFooterLine(
                 onVoteClick = onUpvoteClick,
                 account = account,
             )
-            VoteGeneric(
-                myVote = instantScores.myVote,
-                votes = instantScores.downvotes,
-                item = postView,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (enableDownVotes) {
+                VoteGeneric(
+                    myVote = instantScores.myVote,
+                    votes = instantScores.downvotes,
+                    item = postView,
+                    type = VoteType.Downvote,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = if (postView.saved) {
                     Icons.Filled.Bookmark
@@ -624,6 +627,7 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
+        enableDownVotes = true,
     )
 }
 
@@ -650,6 +654,7 @@ fun PreviewPostListingCard() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -676,6 +681,7 @@ fun PreviewLinkPostListing() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -702,6 +708,7 @@ fun PreviewImagePostListingCard() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -728,6 +735,7 @@ fun PreviewImagePostListingSmallCard() {
         account = null,
         postViewMode = PostViewMode.SmallCard,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -754,6 +762,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -780,6 +789,7 @@ fun PostListing(
     account: Account?,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
+    enableDownVotes: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -828,6 +838,7 @@ fun PostListing(
             fullBody = fullBody,
             account = account,
             expandedImage = true,
+            enableDownVotes = enableDownVotes,
         )
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
@@ -863,6 +874,7 @@ fun PostListing(
             account = account,
             fullBody = false,
             expandedImage = false,
+            enableDownVotes = enableDownVotes,
         )
         PostViewMode.List -> PostListingList(
             postView = postView,
@@ -992,6 +1004,7 @@ fun PostListingList(
                         CommunityLink(
                             community = postView.community,
                             onClick = onCommunityClick,
+                            showDefaultIcon = false,
                         )
                         DotSpacer(0.dp)
                     }
@@ -1161,6 +1174,7 @@ fun PostListingCard(
     fullBody: Boolean,
     account: Account?,
     expandedImage: Boolean,
+    enableDownVotes: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1206,6 +1220,7 @@ fun PostListingCard(
             showReply = showReply,
             account = account,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+            enableDownVotes = enableDownVotes,
         )
     }
 }

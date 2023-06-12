@@ -205,6 +205,7 @@ fun LazyListScope.commentNodeItem(
     account: Account?,
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: Int) -> Boolean,
+    enableDownVotes: Boolean,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -336,6 +337,7 @@ fun LazyListScope.commentNodeItem(
                                             toggleActionBar(commentId)
                                         },
                                         account = account,
+                                        enableDownVotes = enableDownVotes,
                                     )
                                 }
                             }
@@ -383,6 +385,7 @@ fun LazyListScope.commentNodeItem(
             isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
             showCollapsedCommentContent = showCollapsedCommentContent,
             showActionBar = showActionBar,
+            enableDownVotes = enableDownVotes,
         )
     }
 }
@@ -457,6 +460,7 @@ fun PostAndCommunityContextHeader(
             CommunityLink(
                 community = community,
                 onClick = onCommunityClick,
+                showDefaultIcon = false,
             )
         }
     }
@@ -477,6 +481,7 @@ fun PostAndCommunityContextHeaderPreview() {
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
+    enableDownVotes: Boolean,
     instantScores: InstantScores,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
@@ -550,14 +555,16 @@ fun CommentFooterLine(
                 showNumber = (instantScores.downvotes != 0),
                 account = account,
             )
-            VoteGeneric(
-                myVote = instantScores.myVote,
-                votes = instantScores.downvotes,
-                item = commentView,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (enableDownVotes) {
+                VoteGeneric(
+                    myVote = instantScores.myVote,
+                    votes = instantScores.downvotes,
+                    item = commentView,
+                    type = VoteType.Downvote,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = if (commentView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
@@ -617,6 +624,7 @@ fun CommentNodesPreview() {
         isCollapsedByParent = false,
         showCollapsedCommentContent = false,
         showActionBarByDefault = true,
+        enableDownVotes = true,
     )
 }
 
