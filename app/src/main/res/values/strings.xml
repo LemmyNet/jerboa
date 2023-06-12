@@ -208,4 +208,18 @@
     <string name="post_listing_permalink_copied">Permalink Copied</string>
     <string name="comment_node_block">Block %1$s</string>
     <string name="comment_reply_node_copy_permalink">Copy Permalink</string>
+    <string name="person_profile_activity_about">About</string>
+    <string name="person_profile_activity_posts">Posts</string>
+    <string name="person_profile_activity_comments">Comments</string>
+    <string name="sorttype_active">Active</string>
+    <string name="sorttype_hot">Hot</string>
+    <string name="sorttype_new">New</string>
+    <string name="sorttype_old">Old</string>
+    <string name="sorttype_topday">TopDay</string>
+    <string name="sorttype_topweek">TopWeek</string>
+    <string name="sorttype_topmonth">TopMonth</string>
+    <string name="sorttype_topyear">TopYear</string>
+    <string name="sorttype_topall">TopAll</string>
+    <string name="sorttype_mostcomments">MostComments</string>
+    <string name="sorttype_newcomments">NewComments</string>
 </resources>

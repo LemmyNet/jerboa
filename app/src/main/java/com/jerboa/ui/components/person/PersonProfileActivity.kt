@@ -3,6 +3,7 @@
 package com.jerboa.ui.components.person
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +30,7 @@ import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
@@ -204,9 +206,12 @@ fun UserTabs(
     enableDownVotes: Boolean,
 ) {
     val tabTitles = if (savedMode) {
-        listOf(UserTab.Posts.name, UserTab.Comments.name)
+        listOf(
+            getLocalizedStringForUserTab(ctx, UserTab.Posts),
+            getLocalizedStringForUserTab(ctx, UserTab.Comments)
+        )
     } else {
-        UserTab.values().map { it.toString() }
+        UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
     }
     val pagerState = rememberPagerState()
 

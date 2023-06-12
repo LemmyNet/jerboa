@@ -186,6 +186,7 @@
     <string name="look_and_feel_post_view_small_card">Small Card</string>
     <string name="look_and_feel_post_view_list">List</string>
     <string name="look_and_feel_show_navigation_bar">Zeige Navigationsleiste</string>
+    <string name="look_and_feel_use_custom_tabs">Angepasste Tabs nutzen</string>
     <string name="settings_activity_settings">Einstellungen</string>
     <string name="settings_activity_look_and_feel">Look and feel</string>
     <string name="settings_activity_account_settings">%1$s Einstellungen</string>
@@ -207,4 +208,18 @@
     <string name="post_listing_permalink_copied">Permalink kopiert</string>
     <string name="comment_node_block">Blockiere %1$s</string>
     <string name="comment_reply_node_copy_permalink">Kopiere Permalink</string>
+    <string name="person_profile_activity_about">Über</string>
+    <string name="person_profile_activity_posts">Beiträge</string>
+    <string name="person_profile_activity_comments">Kommentare</string>
+    <string name="sorttype_active">Aktiv</string>
+    <string name="sorttype_hot">Heiß</string>
+    <string name="sorttype_new">Neu</string>
+    <string name="sorttype_old">Alt</string>
+    <string name="sorttype_topday">Top des Tages</string>
+    <string name="sorttype_topweek">Top der Woche</string>
+    <string name="sorttype_topmonth">Top des Monats</string>
+    <string name="sorttype_topyear">Top des Jahres</string>
+    <string name="sorttype_topall">Top über alles</string>
+    <string name="sorttype_mostcomments">Meiste Kommentare</string>
+    <string name="sorttype_newcomments">Neue Kommentare</string>
 </resources>
