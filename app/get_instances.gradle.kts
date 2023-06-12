@@ -97,7 +97,7 @@ val DEFAULT_LEMMY_INSTANCES = arrayOf(
         for (n in nodes) {
             outFile.appendText("    \"${n.first}\", // ${n.second!!.toInt()} monthly users\n")
         }
-        
+
         outFile.appendText(")\n")
     }
 }
