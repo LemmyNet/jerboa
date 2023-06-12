@@ -699,6 +699,7 @@ fun fetchInitialData(
             changeListingType = ListingType.Local,
             changeSortType = SortType.Active,
         )
+        homeViewModel.fetchUnreadCounts()
     }
 
     siteViewModel.fetchSite(

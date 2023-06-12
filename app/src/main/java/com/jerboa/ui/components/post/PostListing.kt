@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Textsms
@@ -443,11 +444,13 @@ fun PostFooterLine(
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
     onBlockCreatorClick: (person: PersonSafe) -> Unit,
     onBlockCommunityClick: (community: CommunitySafe) -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
     account: Account?,
+    enableDownVotes: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -466,6 +469,10 @@ fun PostFooterLine(
             onCommunityClick = {
                 showMoreOptions = false
                 onCommunityClick(postView.community)
+            },
+            onPersonClick = {
+                showMoreOptions = false
+                onPersonClick(postView.creator.id)
             },
             onReportClick = {
                 showMoreOptions = false
@@ -507,14 +514,16 @@ fun PostFooterLine(
                 onVoteClick = onUpvoteClick,
                 account = account,
             )
-            VoteGeneric(
-                myVote = instantScores.myVote,
-                votes = instantScores.downvotes,
-                item = postView,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (enableDownVotes) {
+                VoteGeneric(
+                    myVote = instantScores.myVote,
+                    votes = instantScores.downvotes,
+                    item = postView,
+                    type = VoteType.Downvote,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = if (postView.saved) {
                     Icons.Filled.Bookmark
@@ -616,6 +625,7 @@ fun PostFooterLinePreview() {
         account = null,
         onReportClick = {},
         onCommunityClick = {},
+        onPersonClick = {},
         onUpvoteClick = {},
         onSaveClick = {},
         onReplyClick = {},
@@ -624,6 +634,7 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
+        enableDownVotes = true,
     )
 }
 
@@ -650,6 +661,7 @@ fun PreviewPostListingCard() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -676,6 +688,7 @@ fun PreviewLinkPostListing() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -702,6 +715,7 @@ fun PreviewImagePostListingCard() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -728,6 +742,7 @@ fun PreviewImagePostListingSmallCard() {
         account = null,
         postViewMode = PostViewMode.SmallCard,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -754,6 +769,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         account = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
     )
 }
 
@@ -780,6 +796,7 @@ fun PostListing(
     account: Account?,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
+    enableDownVotes: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -828,6 +845,7 @@ fun PostListing(
             fullBody = fullBody,
             account = account,
             expandedImage = true,
+            enableDownVotes = enableDownVotes,
         )
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
@@ -863,6 +881,7 @@ fun PostListing(
             account = account,
             fullBody = false,
             expandedImage = false,
+            enableDownVotes = enableDownVotes,
         )
         PostViewMode.List -> PostListingList(
             postView = postView,
@@ -992,6 +1011,7 @@ fun PostListingList(
                         CommunityLink(
                             community = postView.community,
                             onClick = onCommunityClick,
+                            showDefaultIcon = false,
                         )
                         DotSpacer(0.dp)
                     }
@@ -1161,6 +1181,7 @@ fun PostListingCard(
     fullBody: Boolean,
     account: Account?,
     expandedImage: Boolean,
+    enableDownVotes: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1198,6 +1219,7 @@ fun PostListingCard(
             onSaveClick = onSaveClick,
             onReplyClick = onReplyClick,
             onCommunityClick = onCommunityClick,
+            onPersonClick = onPersonClick,
             onEditPostClick = onEditPostClick,
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
@@ -1206,6 +1228,7 @@ fun PostListingCard(
             showReply = showReply,
             account = account,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+            enableDownVotes = enableDownVotes,
         )
     }
 }
@@ -1251,6 +1274,7 @@ fun PostOptionsDialog(
     postView: PostView,
     onDismissRequest: () -> Unit,
     onCommunityClick: () -> Unit,
+    onPersonClick: () -> Unit,
     onEditPostClick: () -> Unit,
     onDeletePostClick: () -> Unit,
     onReportClick: () -> Unit,
@@ -1273,6 +1297,16 @@ fun PostOptionsDialog(
                     icon = Icons.Outlined.Forum,
                     onClick = {
                         onCommunityClick()
+                    },
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(
+                        R.string.post_listing_go_to,
+                        postView.creator.name,
+                    ),
+                    icon = Icons.Outlined.Person,
+                    onClick = {
+                        onPersonClick()
                     },
                 )
                 postView.post.url?.also {
@@ -1356,6 +1390,7 @@ fun PostOptionsDialogPreview() {
         isCreator = true,
         onReportClick = {},
         onCommunityClick = {},
+        onPersonClick = {},
         onDismissRequest = {},
         onEditPostClick = {},
         onDeletePostClick = {},
