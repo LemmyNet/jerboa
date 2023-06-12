@@ -80,8 +80,8 @@ fun PersonProfileTopSection(
                 )
             }
             Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
-                personView.person.avatar?.also {
-                    if (showAvatar) {
+                if (showAvatar) {
+                    personView.person.avatar?.also {
                         LargerCircularIcon(
                             icon = it,
                             modifier = Modifier.clickable {

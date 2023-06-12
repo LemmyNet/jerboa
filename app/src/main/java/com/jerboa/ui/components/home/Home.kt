@@ -394,8 +394,8 @@ fun AvatarAndAccountName(myPerson: PersonSafe?, showAvatar: Boolean) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
-        myPerson?.avatar?.also {
-            if (showAvatar) {
+        if (showAvatar) {
+            myPerson?.avatar?.also {
                 LargerCircularIcon(icon = it)
             }
         }
