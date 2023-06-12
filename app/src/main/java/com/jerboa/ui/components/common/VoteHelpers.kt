@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -38,6 +39,7 @@ fun <T> VoteGeneric(
         onClick = { onVoteClick(item) },
         contentColor = iconAndColor.second,
         icon = iconAndColor.first,
+        contentDescription = stringResource(R.string.voteToggle),
         text = votesStr,
         account = account,
     )

@@ -149,6 +149,11 @@ fun PrivateMessageFooterLine(
                     } else {
                         Icons.Outlined.MarkChatUnread
                     },
+                    contentDescription = if (privateMessageView.private_message.read) {
+                        stringResource(R.string.markUnread)
+                    } else {
+                        stringResource(R.string.markRead)
+                    },
                     onClick = { onMarkAsReadClick(privateMessageView) },
                     contentColor = if (privateMessageView.private_message.read) {
                         MaterialTheme.colorScheme.primary
@@ -159,6 +164,7 @@ fun PrivateMessageFooterLine(
                 )
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.privateMessage_reply),
                     onClick = { onReplyClick(privateMessageView) },
                     account = account,
                 )

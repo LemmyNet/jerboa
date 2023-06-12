@@ -131,6 +131,7 @@ fun PostHeaderLine(
                     community.icon?.let {
                         CircularIcon(
                             icon = it,
+                            contentDescription = stringResource(R.string.postListing_goToCommunity),
                             size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
                             thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
@@ -161,7 +162,7 @@ fun PostHeaderLine(
                             DotSpacer(0.dp)
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
-                                contentDescription = "TODO",
+                                contentDescription = stringResource(R.string.postListing_featuredLocal),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
                             )
@@ -170,7 +171,7 @@ fun PostHeaderLine(
                             DotSpacer(0.dp)
                             Icon(
                                 imageVector = Icons.Outlined.PushPin,
-                                contentDescription = "TODO",
+                                contentDescription = stringResource(R.string.postListing_featuredCommunity),
                                 tint = MaterialTheme.colorScheme.secondary,
                                 modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
                             )
@@ -179,7 +180,7 @@ fun PostHeaderLine(
                             DotSpacer(0.dp)
                             Icon(
                                 imageVector = Icons.Outlined.CommentsDisabled,
-                                contentDescription = "TODO",
+                                contentDescription = stringResource(R.string.postListing_locked),
                                 tint = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
                             )
@@ -198,7 +199,7 @@ fun PostHeaderLine(
             if (postView.post.deleted) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.postListing_deleted),
                     tint = MaterialTheme.colorScheme.error,
                 )
                 DotSpacer(0.dp)
@@ -530,6 +531,11 @@ fun PostFooterLine(
                 } else {
                     Icons.Outlined.BookmarkBorder
                 },
+                contentDescription = if (postView.saved) {
+                    stringResource(R.string.removeBookmark)
+                } else {
+                    stringResource(R.string.addBookmark)
+                },
                 onClick = { onSaveClick(postView) },
                 contentColor = if (postView.saved) {
                     MaterialTheme.colorScheme.primary
@@ -541,12 +547,14 @@ fun PostFooterLine(
             if (showReply) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.postListing_reply),
                     onClick = { onReplyClick(postView) },
                     account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
+                contentDescription = stringResource(R.string.moreOptions),
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
                 requiresAccount = false,
@@ -566,6 +574,7 @@ fun CommentCount(
     ) {
         ActionBarButton(
             icon = Icons.Outlined.ChatBubbleOutline,
+            contentDescription = null,
             text = stringResource(R.string.post_listing_comments, comments),
             noClick = true,
             account = account,
@@ -1097,7 +1106,7 @@ private fun ThumbnailTile(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Link,
-                        contentDescription = "TODO",
+                        contentDescription = null,
                         modifier = Modifier.size(LINK_ICON_SIZE),
                     )
                 }
