@@ -46,7 +46,7 @@ fun SettingsActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = { navController.navigate("lookAndFeel") },
@@ -64,7 +64,7 @@ fun SettingsActivity(
                         icon = {
                             Icon(
                                 imageVector = Icons.Outlined.ManageAccounts,
-                                contentDescription = "TODO",
+                                contentDescription = null,
                             )
                         },
                         onClick = { navController.navigate("accountSettings") },
@@ -75,7 +75,7 @@ fun SettingsActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Info,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = { navController.navigate("about") },
