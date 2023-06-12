@@ -3,7 +3,6 @@
 package com.jerboa.ui.components.person
 
 import android.content.Context
-import android.content.res.Resources
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -208,7 +207,7 @@ fun UserTabs(
     val tabTitles = if (savedMode) {
         listOf(
             getLocalizedStringForUserTab(ctx, UserTab.Posts),
-            getLocalizedStringForUserTab(ctx, UserTab.Comments)
+            getLocalizedStringForUserTab(ctx, UserTab.Comments),
         )
     } else {
         UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }

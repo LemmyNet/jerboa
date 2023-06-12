@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.lerp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
 import com.jerboa.api.DEFAULT_INSTANCE
@@ -915,8 +914,8 @@ fun convertSpToPx(sp: TextUnit, context: Context): Int {
  */
 
 fun getLocalizedSortingTypeName(context: Context, sortingType: SortType): String {
-    val returnString = when(sortingType){
-        SortType.Active ->  context.getString(R.string.sorttype_active)
+    val returnString = when (sortingType) {
+        SortType.Active -> context.getString(R.string.sorttype_active)
         SortType.Hot -> context.getString(R.string.sorttype_hot)
         SortType.New -> context.getString(R.string.sorttype_new)
         SortType.Old -> context.getString(R.string.sorttype_old)
@@ -932,8 +931,8 @@ fun getLocalizedSortingTypeName(context: Context, sortingType: SortType): String
     return returnString
 }
 
-fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String{
-    val returnString = when(tab){
+fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
+    val returnString = when (tab) {
         UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
         UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
         UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
