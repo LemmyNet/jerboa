@@ -30,6 +30,7 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
@@ -42,18 +43,22 @@ import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
+    siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     navController: NavController,
+    appSettingsViewModel: AppSettingsViewModel,
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -77,6 +82,7 @@ fun PostActivity(
     val depth = getDepthFromComment(firstComment)
     val commentParentId = getCommentParentId(firstComment)
     val showContextButton = depth != null && depth > 0
+    val enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -147,7 +153,7 @@ fun PostActivity(
                                 },
                                 onPostClick = {},
                                 onPostLinkClick = { url ->
-                                    openLink(url, ctx)
+                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
                                 },
                                 onSaveClick = {
                                     account?.also { acct ->
@@ -205,6 +211,8 @@ fun PostActivity(
                                 fullBody = true,
                                 account = account,
                                 postViewMode = PostViewMode.Card,
+                                showVotingArrowsInListView = showVotingArrowsInListView,
+                                enableDownVotes = enableDownVotes,
                             )
                         }
                         item(key = "${postView.post.id}_is_comment_view") {
@@ -294,8 +302,7 @@ fun PostActivity(
                             },
                             onReportClick = { commentView ->
                                 navController.navigate(
-                                    "commentReport/${commentView.comment
-                                        .id}",
+                                    "commentReport/${commentView.comment.id}",
                                 )
                             },
                             onCommentLinkClick = { commentView ->
@@ -306,7 +313,6 @@ fun PostActivity(
                                     commentView = it,
                                     account = account,
                                     ctx = ctx,
-
                                 )
                             },
                             onBlockCreatorClick = {
@@ -329,6 +335,7 @@ fun PostActivity(
                             showActionBar = { commentId ->
                                 showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                             },
+                            enableDownVotes = enableDownVotes,
                         )
                     }
                 }

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Jerboa for Lemmy</string>
     <string name="comment_node_goto_comment">Goto Comment</string>
+    <string name="comment_node_go_to">Go to %1$s</string>
     <string name="comment_node_view_source">View Source</string>
     <string name="comment_node_copy_permalink">Copy Permalink</string>
     <string name="comment_node_report_comment">Report Comment</string>
@@ -15,6 +16,7 @@
     <string name="comment_edit_edit">Edit</string>
     <string name="comment_edit_type_your_comment">Type your comment</string>
     <string name="comment_edit_back">Back</string>
+    <string name="comment_mention_node_go_to">Go to %1$s</string>
     <string name="comment_mention_node_view_source">View Source</string>
     <string name="comment_mention_node_copy_permalink">Copy Permalink</string>
     <string name="comment_mention_node_report_comment">Report Comment</string>
@@ -22,6 +24,7 @@
     <string name="comment_reply_reply">Reply</string>
     <string name="comment_reply_back">Back</string>
     <string name="comment_reply_type_your_comment">Type your comment</string>
+    <string name="comment_reply_node_go_to">Go to %1$s</string>
     <string name="comment_reply_node_view_source">View Source</string>
     <string name="comment_reply_node_report_comment">Report Comment</string>
     <string name="comment_reply_node_block">Block %1$s</string>
@@ -151,6 +154,7 @@
     <string name="account_settings_active">Active</string>
     <string name="account_settings_hot">Hot</string>
     <string name="account_settings_new">New</string>
+    <string name="account_settings_old">Old</string>
     <string name="account_settings_topday">TopDay</string>
     <string name="account_settings_topweek">TopWeek</string>
     <string name="account_settings_topmonth">TopMonth</string>
@@ -172,9 +176,18 @@
     <string name="look_and_feel_look_and_feel">Look and feel</string>
     <string name="look_and_feel_font_size">Font size: %1$s</string>
     <string name="look_and_feel_theme">Theme</string>
+    <string name="look_and_feel_theme_system">System</string>
+    <string name="look_and_feel_theme_system_black">System Black</string>
+    <string name="look_and_feel_theme_light">Light</string>
+    <string name="look_and_feel_theme_dark">Dark</string>
+    <string name="look_and_feel_theme_black">Black</string>
     <string name="look_and_feel_theme_color">Theme color</string>
     <string name="look_and_feel_post_view">Post View</string>
+    <string name="look_and_feel_post_view_card">Card</string>
+    <string name="look_and_feel_post_view_small_card">Small Card</string>
+    <string name="look_and_feel_post_view_list">List</string>
     <string name="look_and_feel_show_navigation_bar">Show navigation bar</string>
+    <string name="look_and_feel_use_custom_tabs">Use custom tabs</string>
     <string name="settings_activity_settings">Settings</string>
     <string name="settings_activity_look_and_feel">Look and feel</string>
     <string name="settings_activity_account_settings">%1$s settings</string>

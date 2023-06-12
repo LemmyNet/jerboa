@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MarkdownHelper.init(this)
+        MarkdownHelper.init(this, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val accountSync = getCurrentAccountSync(accountViewModel)
@@ -147,6 +147,7 @@ class MainActivity : ComponentActivity() {
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     composable(
@@ -182,6 +183,8 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             communityListViewModel = communityListViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     // Only necessary for community deeplinks
@@ -225,6 +228,8 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -248,7 +253,8 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel.fetchPersonDetails(
                                 idOrName = idOrName,
                                 account = account,
-                                clear = true,
+                                clearPersonDetails = true,
+                                clearPostsAndComments = true,
                                 ctx = ctx,
                                 changeSavedOnly = savedMode,
                             )
@@ -264,6 +270,8 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     // Necessary for deep links
@@ -289,7 +297,8 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel.fetchPersonDetails(
                                 idOrName = idOrName,
                                 account = account,
-                                clear = true,
+                                clearPersonDetails = true,
+                                clearPostsAndComments = true,
                                 ctx = ctx,
                             )
                         }
@@ -304,6 +313,8 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -321,6 +332,8 @@ class MainActivity : ComponentActivity() {
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
+                            homeViewModel = homeViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
                             communityListViewModel = communityListViewModel,
                             selectMode = it.arguments?.getBoolean("select")!!,
                         )
@@ -426,8 +439,11 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
+                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: false,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -457,8 +473,11 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
+                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -585,6 +604,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         AboutActivity(
                             navController = navController,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
                         )
                     }
                 }

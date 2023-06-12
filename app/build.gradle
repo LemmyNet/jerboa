@@ -12,8 +12,8 @@ android {
         namespace "com.jerboa"
         minSdk 26
         targetSdk 33
-        versionCode 32
-        versionName "0.0.32"
+        versionCode 33
+        versionName "0.0.33"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -46,6 +46,11 @@ android {
                 signingConfig signingConfigs.release
             }
         }
+
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix ' (DEBUG)'
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -71,6 +76,7 @@ dependencies {
     // Markdown support
     implementation 'io.noties.markwon:core:4.6.2'
     implementation 'io.noties.markwon:image-coil:4.6.2'
+    implementation 'io.noties.markwon:linkify:4.6.2'
 
     // Accompanist
     implementation 'com.google.accompanist:accompanist-pager:0.30.1'
@@ -120,4 +126,5 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling:1.4.3'
     debugImplementation 'androidx.compose.ui:ui-test-manifest:1.4.3'
     implementation "net.engawapg.lib:zoomable:1.4.3"
+    implementation 'androidx.browser:browser:1.5.0'
 }

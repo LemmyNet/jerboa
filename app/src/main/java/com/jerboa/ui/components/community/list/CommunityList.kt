@@ -123,11 +123,13 @@ fun CommunityListings(
                 CommunityLinkLarger(
                     community = item.community,
                     onClick = onClickCommunity,
+                    showDefaultIcon = true,
                 )
             } else if (item is CommunityView) {
                 CommunityLinkLargerWithUserCount(
                     communityView = item,
                     onClick = onClickCommunity,
+                    showDefaultIcon = true,
                 )
             }
         }

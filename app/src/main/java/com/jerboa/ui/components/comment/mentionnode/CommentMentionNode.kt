@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
@@ -98,6 +99,7 @@ fun CommentMentionNodeFooterLine(
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
     onSaveClick: (personMentionView: PersonMentionView) -> Unit,
     onMarkAsReadClick: (personMentionView: PersonMentionView) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
@@ -113,6 +115,10 @@ fun CommentMentionNodeFooterLine(
         CommentReplyNodeOptionsDialog(
             personMentionView = personMentionView,
             onDismissRequest = { showMoreOptions = false },
+            onPersonClick = {
+                showMoreOptions = false
+                onPersonClick(personMentionView.creator.id)
+            },
             onViewSourceClick = {
                 showMoreOptions = false
                 onViewSourceClick()
@@ -223,6 +229,7 @@ fun CommentMentionNodeFooterLine(
 fun CommentReplyNodeOptionsDialog(
     personMentionView: PersonMentionView,
     onDismissRequest: () -> Unit,
+    onPersonClick: () -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
@@ -235,6 +242,14 @@ fun CommentReplyNodeOptionsDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
+                IconAndTextDrawerItem(
+                    text = stringResource(
+                        R.string.comment_mention_node_go_to,
+                        personMentionView.creator.name,
+                    ),
+                    icon = Icons.Outlined.Person,
+                    onClick = onPersonClick,
+                )
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.comment_mention_node_view_source),
                     icon = Icons.Outlined.Description,
@@ -348,6 +363,7 @@ fun CommentMentionNode(
                         onDownvoteClick = {
                             onDownvoteClick(it)
                         },
+                        onPersonClick = onPersonClick,
                         onViewSourceClick = {
                             viewSource = !viewSource
                         },

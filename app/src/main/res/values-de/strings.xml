@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Jerboa für Lemmy</string>
     <string name="comment_node_goto_comment">Zum Kommentar</string>
+    <string name="comment_node_go_to">Gehe zu %1$s</string>
     <string name="comment_node_view_source">Quelle anzeigen</string>
     <string name="comment_node_copy_permalink">Permalink kopieren</string>
     <string name="comment_node_report_comment">Kommentar melden</string>
@@ -15,6 +16,7 @@
     <string name="comment_edit_edit">Bearbeiten</string>
     <string name="comment_edit_type_your_comment">Schreibe deinen Kommentar</string>
     <string name="comment_edit_back">Zurück</string>
+    <string name="comment_mention_node_go_to">Gehe zu %1$s</string>
     <string name="comment_mention_node_view_source">Quelle anzeigen</string>
     <string name="comment_mention_node_copy_permalink">Permalink kopieren</string>
     <string name="comment_mention_node_report_comment">Kommentar melden</string>
@@ -22,6 +24,7 @@
     <string name="comment_reply_reply">Antworten</string>
     <string name="comment_reply_back">Zurück</string>
     <string name="comment_reply_type_your_comment">Schreibe deinen Kommentar</string>
+    <string name="comment_reply_node_go_to">Gehe zu %1$s</string>
     <string name="comment_reply_node_view_source">Quelle anzeigen</string>
     <string name="comment_reply_node_report_comment">Kommentar melden</string>
     <string name="comment_reply_node_block">"Blockiere %1$s "</string>
@@ -150,6 +153,7 @@
     <string name="account_settings_active">Aktiv</string>
     <string name="account_settings_hot">Heiß</string>
     <string name="account_settings_new">Neu</string>
+    <string name="account_settings_old">Alt</string>
     <string name="account_settings_topday">Top des Tages</string>
     <string name="account_settings_topweek">Top der Woche</string>
     <string name="account_settings_topmonth">Top des Monats</string>
@@ -171,8 +175,16 @@
     <string name="look_and_feel_look_and_feel">Look and feel</string>
     <string name="look_and_feel_font_size">Schriftgröße: %1$s</string>
     <string name="look_and_feel_theme">Theme</string>
+    <string name="look_and_feel_theme_system">System</string>
+    <string name="look_and_feel_theme_system_black">System Black</string>
+    <string name="look_and_feel_theme_light">Light</string>
+    <string name="look_and_feel_theme_dark">Dark</string>
+    <string name="look_and_feel_theme_black">Black</string>
     <string name="look_and_feel_theme_color">Theme color</string>
     <string name="look_and_feel_post_view">Beitragssansicht</string>
+    <string name="look_and_feel_post_view_card">Card</string>
+    <string name="look_and_feel_post_view_small_card">Small Card</string>
+    <string name="look_and_feel_post_view_list">List</string>
     <string name="look_and_feel_show_navigation_bar">Zeige Navigationsleiste</string>
     <string name="settings_activity_settings">Einstellungen</string>
     <string name="settings_activity_look_and_feel">Look and feel</string>

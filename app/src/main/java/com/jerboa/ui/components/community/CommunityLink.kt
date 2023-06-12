@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,6 +70,7 @@ fun CommunityLink(
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     onClick: (community: CommunitySafe) -> Unit,
+    showDefaultIcon: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -79,6 +84,14 @@ fun CommunityLink(
                 size = size,
                 thumbnailSize = thumbnailSize,
             )
+        } ?: run {
+            if (showDefaultIcon) {
+                Icon(
+                    imageVector = Icons.Outlined.Forum,
+                    contentDescription = "TODO",
+                    modifier = Modifier.size(size),
+                )
+            }
         }
         Column {
             CommunityName(community = community, color = color, style = style)
@@ -96,6 +109,7 @@ fun CommunityLink(
 fun CommunityLinkLarger(
     community: CommunitySafe,
     onClick: (community: CommunitySafe) -> Unit,
+    showDefaultIcon: Boolean,
 ) {
     CommunityLink(
         community = community,
@@ -108,6 +122,7 @@ fun CommunityLinkLarger(
             .padding(LARGE_PADDING)
             .fillMaxWidth(),
         onClick = onClick,
+        showDefaultIcon = showDefaultIcon,
     )
 }
 
@@ -115,6 +130,7 @@ fun CommunityLinkLarger(
 fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: CommunitySafe) -> Unit,
+    showDefaultIcon: Boolean,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -128,6 +144,7 @@ fun CommunityLinkLargerWithUserCount(
             .fillMaxWidth(),
         style = MaterialTheme.typography.titleLarge,
         onClick = onClick,
+        showDefaultIcon = showDefaultIcon,
     )
 }
 
@@ -137,6 +154,7 @@ fun CommunityLinkPreview() {
     CommunityLink(
         community = sampleCommunitySafe,
         onClick = {},
+        showDefaultIcon = true,
     )
 }
 
@@ -146,5 +164,6 @@ fun CommunityLinkWithUsersPreview() {
     CommunityLinkLargerWithUserCount(
         communityView = sampleCommunityView,
         onClick = {},
+        showDefaultIcon = true,
     )
 }
