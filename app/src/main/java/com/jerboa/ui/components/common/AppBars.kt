@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -104,21 +105,19 @@ fun BottomAppBarAll(
             }
         }
 
-        BottomAppBar {
+        NavigationBar {
             NavigationBarItem(
                 icon = {
-                    if (screen == "home") {
-                        Icon(
-                            imageVector = Icons.Filled.Home,
-                            tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.Home,
-                            contentDescription = "TODO",
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        contentDescription = "Home",
+                    )
+                },
+                label = {
+                    Text(
+                        text = "Home",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                 },
                 selected = screen == "home",
                 onClick = {
@@ -128,81 +127,73 @@ fun BottomAppBarAll(
 
             NavigationBarItem(
                 icon = {
-                    if (screen == "communityList") {
-                        Icon(
-                            imageVector = Icons.Filled.List,
-                            tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.List,
-                            contentDescription = "TODO",
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Search",
+                    )
                 },
+                label = {
+                    Text(
+                        text = "Search",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                selected = screen == "communityList",
                 onClick = {
                     navController.navigate("communityList")
                 },
-                selected = screen == "communityList",
             )
             NavigationBarItem(
                 icon = {
-                    if (screen == "inbox") {
-                        InboxIconAndBadge(
-                            iconBadgeCount = totalUnreads,
-                            icon = Icons.Filled.Email,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                    } else {
-                        InboxIconAndBadge(
-                            iconBadgeCount = totalUnreads,
-                            icon = Icons.Outlined.Email,
-                        )
-                    }
+                    InboxIconAndBadge(
+                        iconBadgeCount = totalUnreads,
+                        icon = Icons.Outlined.Email,
+                    )
                 },
+                label = {
+                    Text(
+                        text = "Inbox",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                selected = screen == "inbox",
                 onClick = {
                     onClickInbox()
                 },
-                selected = screen == "inbox",
             )
             NavigationBarItem(
                 icon = {
-                    if (screen == "saved") {
-                        Icon(
-                            imageVector = Icons.Filled.Bookmarks,
-                            tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.Bookmarks,
-                            contentDescription = "TODO",
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Outlined.Bookmarks,
+                        contentDescription = "Saved",
+                    )
                 },
+                label = {
+                    Text(
+                        text = "Saved",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                selected = screen == "saved",
                 onClick = {
                     onClickSaved()
                 },
-                selected = screen == "saved",
             )
             NavigationBarItem(
                 icon = {
-                    if (screen == "profile") {
-                        Icon(
-                            imageVector = Icons.Filled.Person,
-                            tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.Person,
-                            contentDescription = "TODO",
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Outlined.Person,
+                        contentDescription = "Profile",
+                    )
                 },
-                onClick = onClickProfile,
+                label = {
+                    Text(
+                        text = "Profile",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
                 selected = screen == "saved",
+                onClick = onClickProfile,
             )
         }
     }
