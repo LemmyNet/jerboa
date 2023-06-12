@@ -8,6 +8,8 @@ import androidx.test.filters.LargeTest
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Until
 import com.jerboa.actions.closeChangeLogIfOpen
+import com.jerboa.actions.doTypicalUserJourney
+import com.jerboa.actions.scrollThroughPostsShort
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +49,8 @@ class BaselineProfileGenerator {
             startActivityAndWait()
             closeChangeLogIfOpen()
             device.wait(Until.hasObject(By.res("jerboa:posts")), 10000)
-            // TODO full user journey
+            scrollThroughPostsShort()
+            doTypicalUserJourney()
         }
     }
 }

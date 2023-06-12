@@ -11,23 +11,28 @@ android {
     compileSdk 33
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = '17'
+        freeCompilerArgs = ['-Xjvm-default=all-compatibility', '-opt-in=kotlin.RequiresOptIn']
     }
 
     defaultConfig {
         minSdk 26
         targetSdk 33
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     targetProjectPath = ":app"
+    // Enable the benchmark to run separately from the app process
+    experimentalProperties["android.experimental.self-instrumenting"] = true
 
+    // Baselines profiles needs to generated on a rooted phone
+    // Use this plugin to setup and tear down a rooted phone
     testOptions.managedDevices.devices {
         pixel6Api31(ManagedVirtualDevice) {
             device = "Pixel 6"
@@ -38,7 +43,7 @@ android {
 
     buildTypes {
         benchmark {
-            debuggable false
+            debuggable true
             signingConfig signingConfigs.debug
             matchingFallbacks = ["release"]
         }
@@ -51,6 +56,14 @@ baselineProfile {
     managedDevices += "pixel6Api31"
     useConnectedDevices = false
 }
+
+
+//androidComponents {
+//    beforeVariants(selector().all()) {
+//        // enable only the benchmark buildType, since we only want to measure close to release performance
+//        it.enable = it.buildType == "benchmark"
+//    }
+//}
 
 dependencies {
     implementation 'androidx.test.ext:junit:1.1.5'

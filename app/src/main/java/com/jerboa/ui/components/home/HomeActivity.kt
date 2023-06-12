@@ -165,7 +165,7 @@ fun HomeActivity(
                 },
             )
         },
-        modifier = Modifier.semantics { testTagsAsResourceId = true }
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
     )
 }
 

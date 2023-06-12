@@ -312,7 +312,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                     whatsChangedDialogOpen.value = false
                     appSettingsViewModel.markChangelogViewed()
                 },
-                modifier = Modifier.semantics { testTagsAsResourceId = true }
+                modifier = Modifier.semantics { testTagsAsResourceId = true },
             )
 
             scope.launch(Dispatchers.IO) {

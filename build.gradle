@@ -3,6 +3,7 @@ buildscript {
         google()
         mavenCentral()
         // Need newer a newer version of R8 that includes the DEX layout optimizations
+        // Can be removed once the R8 shipped on maven includes them
         maven {
             url 'https://storage.googleapis.com/r8-releases/raw/main'
         }

@@ -18,10 +18,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -45,6 +49,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
@@ -81,7 +86,8 @@ fun PostActivity(
     val commentParentId = getCommentParentId(firstComment)
     val showContextButton = depth != null && depth > 0
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true },
         topBar = {
             Column {
                 SimpleTopAppBar(
@@ -91,7 +97,7 @@ fun PostActivity(
                     scrollBehavior,
                 )
                 if (postViewModel.loading) {
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().testTag("jerboa:loading"))
                 }
             }
         },
@@ -123,7 +129,8 @@ fun PostActivity(
                         state = listState,
                         modifier = Modifier
                             .padding(padding)
-                            .simpleVerticalScrollbar(listState),
+                            .simpleVerticalScrollbar(listState)
+                            .testTag("jerboa:comments"),
                     ) {
                         item(key = "${postView.post.id}_listing") {
                             PostListing(
