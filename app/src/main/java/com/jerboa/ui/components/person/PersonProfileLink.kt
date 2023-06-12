@@ -68,7 +68,7 @@ fun PersonProfileLink(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier = Modifier.clickable { onClick(person.id) },
     ) {
-        if(showAvatar) {
+        if (showAvatar) {
             person.avatar?.also {
                 CircularIcon(icon = it)
             }

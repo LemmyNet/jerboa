@@ -395,7 +395,7 @@ fun AvatarAndAccountName(myPerson: PersonSafe?, showAvatar: Boolean) {
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         myPerson?.avatar?.also {
-            if(showAvatar) {
+            if (showAvatar) {
                 LargerCircularIcon(icon = it)
             }
         }
