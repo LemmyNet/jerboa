@@ -83,28 +83,32 @@ class HomeViewModel : ViewModel() {
     }
 
     fun fetchUnreadCounts(
-        account: Account,
+        account: Account? = null,
         ctx: Context? = null,
     ) {
-        viewModelScope.launch {
-            try {
-                val api = API.getInstance()
-                val form = GetUnreadCount(
-                    auth = account.jwt,
-                )
-                Log.d(
-                    "jerboa",
-                    "Fetching unread counts: $form",
-                )
-                unreadCountResponse = retrofitErrorHandler(
-                    api.getUnreadCount(
-                        form = form
-                            .serializeToMap(),
-                    ),
-                )
-            } catch (e: Exception) {
-                toastException(ctx = ctx, error = e)
+        account?.let {
+            viewModelScope.launch {
+                try {
+                    val api = API.getInstance()
+                    val form = GetUnreadCount(
+                        auth = account.jwt,
+                    )
+                    Log.d(
+                        "jerboa",
+                        "Fetching unread counts: $form",
+                    )
+                    unreadCountResponse = retrofitErrorHandler(
+                        api.getUnreadCount(
+                            form = form
+                                .serializeToMap(),
+                        ),
+                    )
+                } catch (e: Exception) {
+                    toastException(ctx = ctx, error = e)
+                }
             }
+        } ?: run {
+            unreadCountResponse = GetUnreadCountResponse(0, 0, 0)
         }
     }
 
