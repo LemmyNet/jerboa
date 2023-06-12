@@ -53,6 +53,7 @@ import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
 @Composable
@@ -74,6 +75,7 @@ fun CommentsHeaderTitle(
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
+    siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
@@ -109,6 +111,7 @@ fun PostActivity(
     val depth = getDepthFromComment(firstComment)
     val commentParentId = getCommentParentId(firstComment)
     val showContextButton = depth != null && depth > 0
+    val enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true
 
     if (showSortOptions) {
         CommentSortOptionsDialog(
@@ -120,6 +123,7 @@ fun PostActivity(
             },
         )
     }
+
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -270,6 +274,7 @@ fun PostActivity(
                                 account = account,
                                 postViewMode = PostViewMode.Card,
                                 showVotingArrowsInListView = showVotingArrowsInListView,
+                                enableDownVotes = enableDownVotes,
                             )
                         }
                         item(key = "${postView.post.id}_is_comment_view") {
@@ -359,8 +364,7 @@ fun PostActivity(
                             },
                             onReportClick = { commentView ->
                                 navController.navigate(
-                                    "commentReport/${commentView.comment
-                                        .id}",
+                                    "commentReport/${commentView.comment.id}",
                                 )
                             },
                             onCommentLinkClick = { commentView ->
@@ -371,7 +375,6 @@ fun PostActivity(
                                     commentView = it,
                                     account = account,
                                     ctx = ctx,
-
                                 )
                             },
                             onBlockCreatorClick = {
@@ -394,6 +397,7 @@ fun PostActivity(
                             showActionBar = { commentId ->
                                 showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                             },
+                            enableDownVotes = enableDownVotes,
                         )
                     }
                 }

@@ -276,6 +276,7 @@ fun MainPostListingsContent(
         },
         account = account,
         showVotingArrowsInListView = showVotingArrowsInListView,
+        enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
     )
 }
 
@@ -298,6 +299,7 @@ fun MainDrawer(
         unreadCounts = homeViewModel.unreadCountResponse,
         accountViewModel = accountViewModel,
         navController = navController,
+        isOpen = drawerState.isOpen,
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
             accountViewModel.setCurrent(acct.id)

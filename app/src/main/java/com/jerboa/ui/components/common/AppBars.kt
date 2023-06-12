@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -119,7 +120,7 @@ fun BottomAppBarAll(
                         )
                     }
                 },
-                selected = false,
+                selected = screen == "home",
                 onClick = {
                     navController.navigate("home")
                 },
@@ -127,10 +128,18 @@ fun BottomAppBarAll(
 
             NavigationBarItem(
                 icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.List,
-                        contentDescription = "TODO",
-                    )
+                    if (screen == "communityList") {
+                        Icon(
+                            imageVector = Icons.Filled.List,
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = "TODO",
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Outlined.List,
+                            contentDescription = "TODO",
+                        )
+                    }
                 },
                 onClick = {
                     navController.navigate("communityList")
@@ -155,7 +164,7 @@ fun BottomAppBarAll(
                 onClick = {
                     onClickInbox()
                 },
-                selected = false,
+                selected = screen == "inbox",
             )
             NavigationBarItem(
                 icon = {
@@ -175,7 +184,7 @@ fun BottomAppBarAll(
                 onClick = {
                     onClickSaved()
                 },
-                selected = false,
+                selected = screen == "saved",
             )
             NavigationBarItem(
                 icon = {
@@ -193,7 +202,7 @@ fun BottomAppBarAll(
                     }
                 },
                 onClick = onClickProfile,
-                selected = false,
+                selected = screen == "saved",
             )
         }
     }

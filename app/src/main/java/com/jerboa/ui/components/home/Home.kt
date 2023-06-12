@@ -107,8 +107,11 @@ fun Drawer(
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
     unreadCounts: GetUnreadCountResponse?,
+    isOpen: Boolean,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
+
+    if (!isOpen) showAccountAddMode = false
 
     DrawerHeader(
         myPerson = myUserInfo?.local_user_view?.person,
@@ -279,6 +282,7 @@ fun DrawerItemsMain(
                 CommunityLinkLarger(
                     community = follow.community,
                     onClick = onCommunityClick,
+                    showDefaultIcon = false,
                 )
             }
         }
