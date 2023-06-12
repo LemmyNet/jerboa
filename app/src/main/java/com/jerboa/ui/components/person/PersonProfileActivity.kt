@@ -147,6 +147,7 @@ fun PersonProfileActivity(
                 appSettingsViewModel = appSettingsViewModel,
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
             )
         },
         bottomBar = {
@@ -202,6 +203,7 @@ fun UserTabs(
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     val tabTitles = if (savedMode) {
         listOf(UserTab.Posts.name, UserTab.Comments.name)
@@ -265,6 +267,7 @@ fun UserTabs(
                             personProfileViewModel.res?.person_view?.also {
                                 PersonProfileTopSection(
                                     personView = it,
+                                    showAvatar = showAvatar,
                                 )
                             }
                         }
@@ -404,6 +407,7 @@ fun UserTabs(
                         postViewMode = getPostViewMode(appSettingsViewModel),
                         showVotingArrowsInListView = showVotingArrowsInListView,
                         enableDownVotes = enableDownVotes,
+                        showAvatar = showAvatar,
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -541,6 +545,7 @@ fun UserTabs(
                             isCollapsedByParent = false,
                             showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
                             enableDownVotes = enableDownVotes,
+                            showAvatar = showAvatar,
                         )
                     }
                 }

@@ -74,12 +74,14 @@ fun PrivateMessageReplyHeader(
 fun RepliedPrivateMessage(
     privateMessageView: PrivateMessageView,
     onPersonClick: (personId: Int) -> Unit,
+    showAvatar: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PrivateMessageHeader(
             privateMessageView = privateMessageView,
             onPersonClick = onPersonClick,
             myPersonId = privateMessageView.recipient.id,
+            showAvatar = showAvatar,
         )
         SelectionContainer {
             Text(text = privateMessageView.private_message.content)
@@ -93,6 +95,7 @@ fun RepliedPrivateMessagePreview() {
     RepliedPrivateMessage(
         privateMessageView = samplePrivateMessageView,
         onPersonClick = {},
+        showAvatar = true,
     )
 }
 
@@ -104,6 +107,7 @@ fun PrivateMessageReply(
     onPersonClick: (personId: Int) -> Unit,
     account: Account?,
     modifier: Modifier = Modifier,
+    showAvatar: Boolean,
 ) {
     val scrollState = rememberScrollState()
 
@@ -113,6 +117,7 @@ fun PrivateMessageReply(
         RepliedPrivateMessage(
             privateMessageView = privateMessageView,
             onPersonClick = onPersonClick,
+            showAvatar = showAvatar,
         )
         Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(

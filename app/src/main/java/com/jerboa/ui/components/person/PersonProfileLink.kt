@@ -61,14 +61,17 @@ fun PersonProfileLink(
     isModerator: Boolean = false,
     isCommunityBanned: Boolean = false,
     color: Color = MaterialTheme.colorScheme.tertiary,
+    showAvatar: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier = Modifier.clickable { onClick(person.id) },
     ) {
-        person.avatar?.also {
-            CircularIcon(icon = it)
+        if(showAvatar) {
+            person.avatar?.also {
+                CircularIcon(icon = it)
+            }
         }
         if (showTags) {
             if (isModerator) {
@@ -107,6 +110,7 @@ fun PersonProfileLinkPreview() {
     PersonProfileLink(
         person = samplePersonSafe,
         onClick = {},
+        showAvatar = true,
     )
 }
 
@@ -120,5 +124,6 @@ fun PersonProfileLinkPreviewTags() {
         isModerator = true,
         showTags = true,
         onClick = {},
+        showAvatar = true,
     )
 }

@@ -237,6 +237,7 @@ fun CommentOrPostNodeHeader(
     onLongCLick: () -> Unit,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Int = 0,
+    showAvatar: Boolean,
 ) {
     FlowRow(
         mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
@@ -274,6 +275,7 @@ fun CommentOrPostNodeHeader(
                 isPostCreator = isPostCreator,
                 isModerator = isModerator,
                 isCommunityBanned = isCommunityBanned,
+                showAvatar = showAvatar,
             )
         }
         ScoreAndTime(
@@ -303,6 +305,7 @@ fun CommentOrPostNodeHeaderPreview() {
         isCommunityBanned = false,
         onClick = {},
         onLongCLick = {},
+        showAvatar = true,
     )
 }
 

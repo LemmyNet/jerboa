@@ -35,6 +35,7 @@ fun PrivateMessageHeader(
     privateMessageView: PrivateMessageView,
     onPersonClick: (personId: Int) -> Unit,
     myPersonId: Int,
+    showAvatar: Boolean,
 ) {
     val otherPerson: PersonSafe
     val fromOrTo: String
@@ -61,6 +62,7 @@ fun PrivateMessageHeader(
             PersonProfileLink(
                 person = otherPerson,
                 onClick = { onPersonClick(otherPerson.id) },
+                showAvatar = showAvatar,
             )
         }
 
@@ -82,6 +84,7 @@ fun PrivateMessageViewPreview() {
         privateMessageView = samplePrivateMessageView,
         myPersonId = 23,
         onPersonClick = {},
+        showAvatar = true,
     )
 }
 
@@ -101,6 +104,7 @@ fun PrivateMessage(
     onPersonClick: (personId: Int) -> Unit,
     myPersonId: Int, // Required so we know the from / to
     account: Account?,
+    showAvatar: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -113,6 +117,7 @@ fun PrivateMessage(
             privateMessageView = privateMessageView,
             onPersonClick = onPersonClick,
             myPersonId = myPersonId,
+            showAvatar = showAvatar,
         )
         PrivateMessageBody(privateMessageView = privateMessageView)
         PrivateMessageFooterLine(
@@ -182,5 +187,6 @@ fun PrivateMessagePreview() {
         onPersonClick = {},
         onReplyClick = {},
         onMarkAsReadClick = {},
+        showAvatar = true,
     )
 }

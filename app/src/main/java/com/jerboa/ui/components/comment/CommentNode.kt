@@ -99,6 +99,7 @@ fun CommentNodeHeader(
     isExpanded: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
+    showAvatar: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -115,6 +116,7 @@ fun CommentNodeHeader(
         isExpanded = isExpanded,
         onClick = onClick,
         onLongCLick = onLongClick,
+        showAvatar = showAvatar,
     )
 }
 
@@ -131,6 +133,7 @@ fun CommentNodeHeaderPreview() {
         onLongClick = {},
         collapsedCommentsCount = 5,
         isExpanded = false,
+        showAvatar = true,
     )
 }
 
@@ -207,6 +210,7 @@ fun LazyListScope.commentNodeItem(
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -281,6 +285,7 @@ fun LazyListScope.commentNodeItem(
                             },
                             collapsedCommentsCount = node.commentView.counts.child_count,
                             isExpanded = isExpanded(commentId),
+                            showAvatar = showAvatar,
                         )
                         AnimatedVisibility(
                             visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -388,6 +393,7 @@ fun LazyListScope.commentNodeItem(
             showCollapsedCommentContent = showCollapsedCommentContent,
             showActionBar = showActionBar,
             enableDownVotes = enableDownVotes,
+            showAvatar = showAvatar,
         )
     }
 }
@@ -632,6 +638,7 @@ fun CommentNodesPreview() {
         showCollapsedCommentContent = false,
         showActionBarByDefault = true,
         enableDownVotes = true,
+        showAvatar = true,
     )
 }
 

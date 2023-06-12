@@ -61,6 +61,7 @@ fun CommentReplyNodeHeader(
     myVote: Int?,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
+    showAvatar: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
@@ -75,6 +76,7 @@ fun CommentReplyNodeHeader(
         isCommunityBanned = commentReplyView.creator_banned_from_community,
         onClick = onClick,
         onLongCLick = onLongClick,
+        showAvatar = showAvatar,
     )
 }
 
@@ -88,6 +90,7 @@ fun CommentReplyNodeHeaderPreview() {
         onPersonClick = {},
         onClick = {},
         onLongClick = {},
+        showAvatar = true,
     )
 }
 
@@ -290,6 +293,7 @@ fun CommentReplyNode(
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
     onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     account: Account?,
+    showAvatar: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = commentReplyView.counts.score
@@ -322,6 +326,7 @@ fun CommentReplyNode(
             onLongClick = {
                 isActionBarExpanded = !isActionBarExpanded
             },
+            showAvatar = showAvatar,
         )
         AnimatedVisibility(
             visible = isExpanded,
