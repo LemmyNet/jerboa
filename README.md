@@ -35,9 +35,9 @@
 
 ## About Jerboa
 
-| \_                                        | \_                                        |
+| Homepage                                  | Post & Comments                           |
 | ----------------------------------------- | ----------------------------------------- |
-| ![img_1](https://i.imgur.com/W3lT4nO.jpg) | ![img_2](https://i.imgur.com/MrAkd4d.jpg) |
+| ![img_1](./screenshots/homepage.png)      | ![img_2](./screenshots/post.png)          |
 
 Jerboa is a native-android client for Lemmy, built using the native Android Toolkit, Jetpack Compose.
 
