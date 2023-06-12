@@ -4,6 +4,8 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+apply(from = "get_instances.gradle.kts")
+
 android {
     compileSdk = 33
 
@@ -42,7 +44,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            
+
             if(project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig = signingConfigs.getByName("release")
             }
