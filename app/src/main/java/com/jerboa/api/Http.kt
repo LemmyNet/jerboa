@@ -262,7 +262,15 @@ interface API {
         private fun buildApi(): API {
             val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
-            val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+            val client: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    val requestBuilder = chain.request().newBuilder()
+                        .header("User-Agent", "Jerboa")
+                    val newRequest = requestBuilder.build()
+                    chain.proceed(newRequest)
+                }
+                .addInterceptor(interceptor)
+                .build()
 
             return Retrofit.Builder()
                 .baseUrl(buildUrl())

@@ -41,6 +41,7 @@ class LoginViewModel : ViewModel() {
         homeViewModel: HomeViewModel,
         ctx: Context,
     ) {
+        val originalInstance = API.currentInstance
         val api = API.changeLemmyInstance(instance)
 
         viewModelScope.launch {
@@ -61,6 +62,7 @@ class LoginViewModel : ViewModel() {
                         msg,
                         Toast.LENGTH_SHORT,
                     ).show()
+                    API.changeLemmyInstance(originalInstance)
                     this.cancel()
                     return@launch
                 }
@@ -73,6 +75,7 @@ class LoginViewModel : ViewModel() {
                     msg,
                     Toast.LENGTH_SHORT,
                 ).show()
+                API.changeLemmyInstance(originalInstance)
                 this.cancel()
                 return@launch
             }

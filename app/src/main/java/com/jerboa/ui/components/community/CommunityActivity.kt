@@ -37,6 +37,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
@@ -50,6 +51,7 @@ fun CommunityActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -226,6 +228,7 @@ fun CommunityActivity(
                 taglines = null,
                 postViewMode = getPostViewMode(appSettingsViewModel),
                 showVotingArrowsInListView = showVotingArrowsInListView,
+                enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
