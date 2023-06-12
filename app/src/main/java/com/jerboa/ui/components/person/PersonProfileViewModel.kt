@@ -93,7 +93,8 @@ class PersonProfileViewModel : ViewModel() {
     fun fetchPersonDetails(
         idOrName: Either<Int, String>,
         account: Account?,
-        clear: Boolean = false,
+        clearPersonDetails: Boolean = false,
+        clearPostsAndComments: Boolean = false,
         nextPage: Boolean = false,
         changeSortType: SortType? = null,
         changeSavedOnly: Boolean? = null,
@@ -115,8 +116,14 @@ class PersonProfileViewModel : ViewModel() {
                     page.value++
                 }
 
-                if (clear) {
+                if (clearPersonDetails) {
+                    res = null
+                }
+
+                if (clearPostsAndComments) {
                     page.value = 1
+                    posts.clear()
+                    comments.clear()
                 }
 
                 changeSortType?.also {
@@ -139,10 +146,6 @@ class PersonProfileViewModel : ViewModel() {
                 )
                 val out = retrofitErrorHandler(api.getPersonDetails(form = form.serializeToMap()))
 
-                if (clear) {
-                    posts.clear()
-                    comments.clear()
-                }
                 res = out
                 posts.addAll(out.posts)
                 comments.addAll(out.comments)

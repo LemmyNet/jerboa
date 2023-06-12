@@ -73,7 +73,7 @@ fun SimpleTopAppBar(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }
         },
@@ -93,14 +93,17 @@ fun BottomAppBarAll(
     val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
 
     if (showBottomNav == true) {
-        val window = (LocalContext.current as Activity).window
-        val colorScheme = MaterialTheme.colorScheme
+        // Check for preview mode
+        if (LocalContext.current is Activity) {
+            val window = (LocalContext.current as Activity).window
+            val colorScheme = MaterialTheme.colorScheme
 
-        DisposableEffect(Unit) {
-            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+            DisposableEffect(Unit) {
+                window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
 
-            onDispose {
-                window.navigationBarColor = colorScheme.background.toArgb()
+                onDispose {
+                    window.navigationBarColor = colorScheme.background.toArgb()
+                }
             }
         }
 
@@ -111,16 +114,16 @@ fun BottomAppBarAll(
                         Icon(
                             imageVector = Icons.Filled.Home,
                             tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_home),
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Outlined.Home,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_home),
                         )
                     }
                 },
-                selected = false,
+                selected = screen == "home",
                 onClick = {
                     navController.navigate("home")
                 },
@@ -132,19 +135,19 @@ fun BottomAppBarAll(
                         Icon(
                             imageVector = Icons.Filled.List,
                             tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_communityList),
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Outlined.List,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_communityList),
                         )
                     }
                 },
                 onClick = {
                     navController.navigate("communityList")
                 },
-                selected = false,
+                selected = screen == "communityList",
             )
             NavigationBarItem(
                 icon = {
@@ -152,19 +155,21 @@ fun BottomAppBarAll(
                         InboxIconAndBadge(
                             iconBadgeCount = totalUnreads,
                             icon = Icons.Filled.Email,
+                            contentDescription = stringResource(R.string.bottomBar_inbox),
                             tint = MaterialTheme.colorScheme.primary,
                         )
                     } else {
                         InboxIconAndBadge(
                             iconBadgeCount = totalUnreads,
                             icon = Icons.Outlined.Email,
+                            contentDescription = stringResource(R.string.bottomBar_inbox),
                         )
                     }
                 },
                 onClick = {
                     onClickInbox()
                 },
-                selected = false,
+                selected = screen == "inbox",
             )
             NavigationBarItem(
                 icon = {
@@ -172,19 +177,19 @@ fun BottomAppBarAll(
                         Icon(
                             imageVector = Icons.Filled.Bookmarks,
                             tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_bookmarks),
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Outlined.Bookmarks,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_bookmarks),
                         )
                     }
                 },
                 onClick = {
                     onClickSaved()
                 },
-                selected = false,
+                selected = screen == "saved",
             )
             NavigationBarItem(
                 icon = {
@@ -192,17 +197,17 @@ fun BottomAppBarAll(
                         Icon(
                             imageVector = Icons.Filled.Person,
                             tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_profile),
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Outlined.Person,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.bottomBar_profile),
                         )
                     }
                 },
                 onClick = onClickProfile,
-                selected = false,
+                selected = screen == "saved",
             )
         }
     }
@@ -261,7 +266,7 @@ fun CommentOrPostNodeHeader(
             if (deleted) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.commentOrPostHeader_deleted),
                     tint = MaterialTheme.colorScheme.error,
                 )
                 DotSpacer(style = MaterialTheme.typography.bodyMedium)
@@ -310,6 +315,7 @@ fun CommentOrPostNodeHeaderPreview() {
 fun ActionBarButton(
     onClick: () -> Unit,
     icon: ImageVector,
+    contentDescription: String?,
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
@@ -347,7 +353,7 @@ fun ActionBarButton(
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = "TODO",
+            contentDescription = contentDescription,
             tint = contentColor,
         )
         text?.also {
@@ -388,6 +394,7 @@ fun scoreColor(myVote: Int?): Color {
 fun InboxIconAndBadge(
     iconBadgeCount: Int?,
     icon: ImageVector,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current,
 ) {
@@ -406,7 +413,7 @@ fun InboxIconAndBadge(
             content = {
                 Icon(
                     imageVector = icon,
-                    contentDescription = "TODO",
+                    contentDescription = contentDescription,
                     tint = tint,
                 )
             },
@@ -414,7 +421,7 @@ fun InboxIconAndBadge(
     } else {
         Icon(
             imageVector = icon,
-            contentDescription = "TODO",
+            contentDescription = contentDescription,
             tint = tint,
             modifier = modifier,
         )

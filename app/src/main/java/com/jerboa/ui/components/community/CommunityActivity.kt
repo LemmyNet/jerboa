@@ -24,8 +24,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
@@ -37,6 +39,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
@@ -50,6 +53,7 @@ fun CommunityActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -226,6 +230,7 @@ fun CommunityActivity(
                 taglines = null,
                 postViewMode = getPostViewMode(appSettingsViewModel),
                 showVotingArrowsInListView = showVotingArrowsInListView,
+                enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -242,7 +247,10 @@ fun CommunityActivity(
                     }
                 },
             ) {
-                Icon(imageVector = Icons.Outlined.Add, contentDescription = "TODO")
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = stringResource(R.string.floating_createPost),
+                )
             }
         },
         bottomBar = {

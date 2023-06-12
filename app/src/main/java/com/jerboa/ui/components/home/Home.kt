@@ -295,6 +295,7 @@ fun DrawerItemsMain(
                 CommunityLinkLarger(
                     community = follow.community,
                     onClick = onCommunityClick,
+                    showDefaultIcon = false,
                 )
             }
         }
@@ -393,7 +394,11 @@ fun DrawerHeader(
                 } else {
                     Icons.Outlined.ExpandMore
                 },
-                contentDescription = "TODO",
+                contentDescription = if (showAccountAddMode) {
+                    stringResource(R.string.moreOptions)
+                } else {
+                    stringResource(R.string.lessOptions)
+                },
             )
         }
     }
@@ -547,7 +552,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.FilterList,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.homeHeader_filter),
                 )
             }
             IconButton(onClick = {
@@ -555,7 +560,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.selectSort),
                 )
             }
             IconButton(onClick = {
@@ -563,7 +568,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.moreOptions),
                 )
             }
         },

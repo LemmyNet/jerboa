@@ -134,6 +134,7 @@ fun LoginForm(
                 label = { Text(stringResource(R.string.login_instance)) },
                 placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
                 value = instance,
+                singleLine = true,
                 onValueChange = {
                     instance = it
                     expanded = true

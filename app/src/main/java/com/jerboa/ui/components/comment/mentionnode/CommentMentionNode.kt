@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
@@ -98,6 +99,7 @@ fun CommentMentionNodeFooterLine(
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
     onSaveClick: (personMentionView: PersonMentionView) -> Unit,
     onMarkAsReadClick: (personMentionView: PersonMentionView) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
@@ -113,6 +115,10 @@ fun CommentMentionNodeFooterLine(
         CommentReplyNodeOptionsDialog(
             personMentionView = personMentionView,
             onDismissRequest = { showMoreOptions = false },
+            onPersonClick = {
+                showMoreOptions = false
+                onPersonClick(personMentionView.creator.id)
+            },
             onViewSourceClick = {
                 showMoreOptions = false
                 onViewSourceClick()
@@ -157,6 +163,7 @@ fun CommentMentionNodeFooterLine(
             )
             ActionBarButton(
                 icon = Icons.Outlined.Link,
+                contentDescription = stringResource(R.string.commentMention_link),
                 onClick = { onLinkClick(personMentionView) },
                 account = account,
             )
@@ -165,6 +172,11 @@ fun CommentMentionNodeFooterLine(
                     Icons.Outlined.MarkChatRead
                 } else {
                     Icons.Outlined.MarkChatUnread
+                },
+                contentDescription = if (personMentionView.person_mention.read) {
+                    stringResource(R.string.markUnread)
+                } else {
+                    stringResource(R.string.markRead)
                 },
                 onClick = { onMarkAsReadClick(personMentionView) },
                 contentColor = if (personMentionView.person_mention.read) {
@@ -175,8 +187,15 @@ fun CommentMentionNodeFooterLine(
                 account = account,
             )
             ActionBarButton(
-                icon = if (personMentionView.saved) { Icons.Filled.Bookmark } else {
+                icon = if (personMentionView.saved) {
+                    Icons.Filled.Bookmark
+                } else {
                     Icons.Outlined.BookmarkBorder
+                },
+                contentDescription = if (personMentionView.saved) {
+                    stringResource(R.string.comment_unsave)
+                } else {
+                    stringResource(R.string.comment_save)
                 },
                 onClick = { onSaveClick(personMentionView) },
                 contentColor = if (personMentionView.saved) {
@@ -190,12 +209,14 @@ fun CommentMentionNodeFooterLine(
             if (personMentionView.creator.id != account?.id) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(personMentionView) },
                     account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
+                contentDescription = stringResource(R.string.moreOptions),
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
                 requiresAccount = false,
@@ -208,6 +229,7 @@ fun CommentMentionNodeFooterLine(
 fun CommentReplyNodeOptionsDialog(
     personMentionView: PersonMentionView,
     onDismissRequest: () -> Unit,
+    onPersonClick: () -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
@@ -220,6 +242,14 @@ fun CommentReplyNodeOptionsDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
+                IconAndTextDrawerItem(
+                    text = stringResource(
+                        R.string.comment_mention_node_go_to,
+                        personMentionView.creator.name,
+                    ),
+                    icon = Icons.Outlined.Person,
+                    onClick = onPersonClick,
+                )
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.comment_mention_node_view_source),
                     icon = Icons.Outlined.Description,
@@ -333,6 +363,7 @@ fun CommentMentionNode(
                         onDownvoteClick = {
                             onDownvoteClick(it)
                         },
+                        onPersonClick = onPersonClick,
                         onViewSourceClick = {
                             viewSource = !viewSource
                         },
