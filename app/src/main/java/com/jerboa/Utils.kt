@@ -379,7 +379,49 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
+/*
+ * Parses a "url" and returns a spec-compliant Url:
+ *
+ * - https://host/path - leave as-is
+ * - /c/community -> https://currentInstance/c/community
+ * - /c/community@instance -> https://instance/c/community
+ * - !community@instance -> https://instance/c/community
+ * - @user@instance -> https://instance/u/user
+ */
+fun parseUrl(url: String): String? {
+    if (url.startsWith("https://")) {
+        return url
+    } else if (url.startsWith("/c/")) {
+        if (url.count({ c -> c == '@' }) == 1) {
+            val (community, host) = url.split("@", limit = 2)
+            return "https://$host$community"
+        }
+        return "https://${API.currentInstance}$url"
+    } else if (url.startsWith("/u/")) {
+        if (url.count({ c -> c == '@' }) == 1) {
+            val (userPath, host) = url.split("@", limit = 2)
+            return "https://$host$userPath"
+        }
+        return "https://${API.currentInstance}$url"
+    } else if (url.startsWith("!")) {
+        if (url.count({ c -> c == '@' }) == 1) {
+            val (community, host) = url.substring(1).split("@", limit = 2)
+            return "https://$host/c/$community"
+        }
+        return "https://${API.currentInstance}/c/${url.substring(1)}"
+    } else if (url.startsWith("@")) {
+        if (url.count({ c -> c == '@' }) == 2) {
+            val (user, host) = url.substring(1).split("@", limit = 2)
+            return "https://$host/u/$user"
+        }
+        return "https://${API.currentInstance}/u/${url.substring(1)}"
+    }
+    return null
+}
+
 fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    val url = parseUrl(url) ?: return
+
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
             .build().apply {
