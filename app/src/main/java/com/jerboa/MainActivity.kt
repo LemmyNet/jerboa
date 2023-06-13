@@ -410,6 +410,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
                             commentReplyViewModel = commentReplyViewModel,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -489,6 +490,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
                             navController = navController,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -538,6 +540,7 @@ class MainActivity : ComponentActivity() {
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             navController = navController,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
