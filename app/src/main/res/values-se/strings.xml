@@ -198,7 +198,7 @@
     <string name="app_bars_dot_spacer">·</string>
     <string name="comment_node_in">"i "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Visa innehållet av kollapsade kommentarer</string>
-        <string name="comment_node_permalink_copied">Permalänk Kopierad</string>
+    <string name="comment_node_permalink_copied">Permalänk Kopierad</string>
     <string name="comment_reply_node_permalink_copied">Permalänk Kopierad</string>
     <string name="post_listing_link_copied">Länk Kopierad</string>
     <string name="post_listing_permalink_copied">Permalänk Kopierad</string>
