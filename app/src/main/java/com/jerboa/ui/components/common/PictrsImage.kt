@@ -99,7 +99,7 @@ fun pictureBlurOrRounded(
         modifier_ = modifier_.clip(RoundedCornerShape(12f))
     }
     if (nsfw) {
-        modifier_ = modifier_.blur(radius = 20.dp)
+        modifier_ = modifier_.blur(radius = 100.dp)
     }
     return modifier_
 }

@@ -53,6 +53,7 @@ import com.jerboa.ui.theme.muted
 fun PersonProfileTopSection(
     personView: PersonViewSafe,
     modifier: Modifier = Modifier,
+    showAvatar: Boolean,
 ) {
     var showImage by remember { mutableStateOf<String?>(null) }
 
@@ -80,14 +81,16 @@ fun PersonProfileTopSection(
                 )
             }
             Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
-                personView.person.avatar?.also {
-                    LargerCircularIcon(
-                        icon = it,
-                        contentDescription = stringResource(R.string.personProfile_viewAvatar),
-                        modifier = Modifier.clickable {
-                            showImage = personView.person.avatar
-                        },
-                    )
+                if (showAvatar) {
+                    personView.person.avatar?.also {
+                        LargerCircularIcon(
+                            icon = it,
+                            contentDescription = stringResource(R.string.personProfile_viewAvatar),
+                            modifier = Modifier.clickable {
+                                showImage = personView.person.avatar
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -141,7 +144,10 @@ fun CommentsAndPostsPreview() {
 @Preview
 @Composable
 fun PersonProfileTopSectionPreview() {
-    PersonProfileTopSection(personView = samplePersonView)
+    PersonProfileTopSection(
+        personView = samplePersonView,
+        showAvatar = true,
+    )
 }
 
 @Composable
