@@ -318,7 +318,7 @@ fun CommentMentionNode(
 
     var viewSource by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(true) }
-    var isActionBarExpanded by remember { mutableStateOf(false) }
+    var isActionBarExpanded by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier.padding(horizontal = LARGE_PADDING),
@@ -353,7 +353,9 @@ fun CommentMentionNode(
                     comment = personMentionView.comment,
                     viewSource = viewSource,
                     onClick = {},
-                    onLongClick = {},
+                    onLongClick = {
+                        isActionBarExpanded = !isActionBarExpanded
+                    },
                 )
                 AnimatedVisibility(
                     visible = isActionBarExpanded,

@@ -213,7 +213,7 @@
     <string name="moreOptions">Show more options</string>
     <string name="lessOptions">Show less options</string>
     <string name="bottomBar_home">Go home</string>
-    <string name="bottomBar_communityList">Go to community list</string>
+    <string name="bottomBar_search">Go to search</string>
     <string name="bottomBar_bookmarks">Go to my bookmarks</string>
     <string name="bottomBar_profile">Go to my profile</string>
     <string name="bottomBar_inbox">Go to my inbox</string>
@@ -280,4 +280,9 @@
     <string name="sorttype_topall">TopAll</string>
     <string name="sorttype_mostcomments">MostComments</string>
     <string name="sorttype_newcomments">NewComments</string>
+    <string name="bottomBar_label_home">Home</string>
+    <string name="bottomBar_label_search">Search</string>
+    <string name="bottomBar_label_inbox">Inbox</string>
+    <string name="bottomBar_label_bookmarks">Search</string>
+    <string name="bottomBar_label_profile">Profile</string>
 </resources>
