@@ -48,7 +48,7 @@ fun AboutActivity(
     val ctx = LocalContext.current
 
     @Suppress("DEPRECATION")
-    val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName
+    val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0)?.versionName
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -61,11 +61,11 @@ fun AboutActivity(
             Column(modifier = Modifier.padding(padding)) {
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_what_s_new)) },
-                    subtitle = { Text(stringResource(R.string.settings_about_version, version)) },
+                    subtitle = { Text(stringResource(R.string.settings_about_version, version ?: "")) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.NewReleases,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
@@ -79,7 +79,7 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.BugReport,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
@@ -91,7 +91,7 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Chat,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
@@ -103,7 +103,7 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.AttachMoney,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
@@ -118,7 +118,7 @@ fun AboutActivity(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_jerboa),
                             modifier = Modifier.size(32.dp),
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
@@ -130,7 +130,7 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.TravelExplore,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
@@ -151,7 +151,7 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Code,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
