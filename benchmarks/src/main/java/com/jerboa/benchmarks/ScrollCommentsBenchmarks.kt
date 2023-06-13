@@ -38,7 +38,7 @@ class ScrollCommentsBenchmarks {
             packageName = "com.jerboa",
             metrics = listOf(FrameTimingMetric()),
             compilationMode = compilationMode,
-            startupMode = StartupMode.WARM, // Wasted several hours on an issue bc i didnt properly know what this did but know i do :}
+            startupMode = StartupMode.WARM,
             iterations = 5,
             setupBlock = {
                 pressHome()
