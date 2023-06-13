@@ -97,6 +97,9 @@ dependencies {
     implementation 'androidx.compose.runtime:runtime-livedata:1.4.3'
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
 
+    // gif support
+    implementation "io.coil-kt:coil-gif:2.4.0"
+
     // To use Kotlin annotation processing tool
     ksp "androidx.room:room-compiler:2.5.1"
 

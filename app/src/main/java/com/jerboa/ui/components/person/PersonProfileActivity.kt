@@ -29,6 +29,7 @@ import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
@@ -44,6 +45,7 @@ import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -63,6 +65,7 @@ fun PersonProfileActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -96,7 +99,8 @@ fun PersonProfileActivity(
                                     .person.id,
                             ),
                             account = account,
-                            clear = true,
+                            clearPersonDetails = false,
+                            clearPostsAndComments = true,
                             changeSortType = sortType,
                             changeSavedOnly = savedMode,
                             ctx = ctx,
@@ -143,6 +147,8 @@ fun PersonProfileActivity(
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 showVotingArrowsInListView = showVotingArrowsInListView,
+                enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
             )
         },
         bottomBar = {
@@ -197,11 +203,16 @@ fun UserTabs(
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     val tabTitles = if (savedMode) {
-        listOf(UserTab.Posts.name, UserTab.Comments.name)
+        listOf(
+            getLocalizedStringForUserTab(ctx, UserTab.Posts),
+            getLocalizedStringForUserTab(ctx, UserTab.Comments),
+        )
     } else {
-        UserTab.values().map { it.toString() }
+        UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
     }
     val pagerState = rememberPagerState()
 
@@ -260,6 +271,7 @@ fun UserTabs(
                             personProfileViewModel.res?.person_view?.also {
                                 PersonProfileTopSection(
                                     personView = it,
+                                    showAvatar = showAvatar,
                                 )
                             }
                         }
@@ -283,6 +295,7 @@ fun UserTabs(
                                     onClick = { community ->
                                         navController.navigate(route = "community/${community.id}")
                                     },
+                                    showDefaultIcon = true,
                                 )
                             }
                         }
@@ -367,7 +380,8 @@ fun UserTabs(
                                 personProfileViewModel.fetchPersonDetails(
                                     idOrName = Either.Left(it),
                                     account = account,
-                                    clear = true,
+                                    clearPersonDetails = false,
+                                    clearPostsAndComments = true,
                                     changeSavedOnly = savedMode,
                                     ctx = ctx,
                                 )
@@ -382,6 +396,8 @@ fun UserTabs(
                                     personProfileViewModel.fetchPersonDetails(
                                         idOrName = Either.Left(it),
                                         account = account,
+                                        clearPersonDetails = false,
+                                        clearPostsAndComments = false,
                                         nextPage = true,
                                         changeSavedOnly = savedMode,
                                         ctx = ctx,
@@ -394,6 +410,8 @@ fun UserTabs(
                         taglines = null,
                         postViewMode = getPostViewMode(appSettingsViewModel),
                         showVotingArrowsInListView = showVotingArrowsInListView,
+                        enableDownVotes = enableDownVotes,
+                        showAvatar = showAvatar,
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -419,6 +437,8 @@ fun UserTabs(
                                     personProfileViewModel.fetchPersonDetails(
                                         idOrName = Either.Left(it),
                                         account = account,
+                                        clearPersonDetails = false,
+                                        clearPostsAndComments = false,
                                         nextPage = true,
                                         changeSavedOnly = savedMode,
                                         ctx = ctx,
@@ -435,7 +455,8 @@ fun UserTabs(
                                 personProfileViewModel.fetchPersonDetails(
                                     idOrName = Either.Left(it),
                                     account = account,
-                                    clear = true,
+                                    clearPersonDetails = false,
+                                    clearPostsAndComments = true,
                                     changeSavedOnly = savedMode,
                                     ctx = ctx,
                                 )
@@ -527,6 +548,8 @@ fun UserTabs(
                             moderators = listOf(),
                             isCollapsedByParent = false,
                             showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
+                            enableDownVotes = enableDownVotes,
+                            showAvatar = showAvatar,
                         )
                     }
                 }

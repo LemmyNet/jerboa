@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.jerboa.datatypes.api.CreatePrivateMessage
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxViewModel
 
 @Composable
@@ -31,6 +32,7 @@ fun PrivateMessageReplyActivity(
     inboxViewModel: InboxViewModel,
     accountViewModel: AccountViewModel,
     navController: NavController,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to private message reply activity")
 
@@ -84,6 +86,7 @@ fun PrivateMessageReplyActivity(
                             modifier = Modifier
                                 .padding(padding)
                                 .imePadding(),
+                            showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                         )
                     }
                 }

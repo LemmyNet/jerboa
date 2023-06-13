@@ -46,7 +46,7 @@ fun CommentEditHeader(
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Save,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.commentEdit_save),
                     )
                 }
             }

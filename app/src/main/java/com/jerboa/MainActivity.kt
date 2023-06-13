@@ -184,6 +184,7 @@ class MainActivity : ComponentActivity() {
                             communityListViewModel = communityListViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     // Only necessary for community deeplinks
@@ -228,6 +229,7 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -251,7 +253,8 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel.fetchPersonDetails(
                                 idOrName = idOrName,
                                 account = account,
-                                clear = true,
+                                clearPersonDetails = true,
+                                clearPostsAndComments = true,
                                 ctx = ctx,
                                 changeSavedOnly = savedMode,
                             )
@@ -268,6 +271,7 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     // Necessary for deep links
@@ -293,7 +297,8 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel.fetchPersonDetails(
                                 idOrName = idOrName,
                                 account = account,
-                                clear = true,
+                                clearPersonDetails = true,
+                                clearPostsAndComments = true,
                                 ctx = ctx,
                             )
                         }
@@ -309,6 +314,7 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -404,6 +410,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             homeViewModel = homeViewModel,
                             commentReplyViewModel = commentReplyViewModel,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -437,6 +444,7 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: false,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -470,6 +478,7 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -481,6 +490,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
                             navController = navController,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -530,6 +540,7 @@ class MainActivity : ComponentActivity() {
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             navController = navController,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(

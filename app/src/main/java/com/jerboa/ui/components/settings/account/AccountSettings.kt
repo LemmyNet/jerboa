@@ -209,6 +209,7 @@ fun SettingsForm(
                 stringResource(R.string.account_settings_active),
                 stringResource(R.string.account_settings_hot),
                 stringResource(R.string.account_settings_new),
+                stringResource(R.string.account_settings_old),
                 stringResource(R.string.account_settings_topday),
                 stringResource(R.string.account_settings_topweek),
                 stringResource(R.string.account_settings_topmonth),
