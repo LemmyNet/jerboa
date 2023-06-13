@@ -283,6 +283,6 @@
     <string name="bottomBar_label_home">Home</string>
     <string name="bottomBar_label_search">Search</string>
     <string name="bottomBar_label_inbox">Inbox</string>
-    <string name="bottomBar_label_bookmarks">Search</string>
+    <string name="bottomBar_label_bookmarks">Saved</string>
     <string name="bottomBar_label_profile">Profile</string>
 </resources>
