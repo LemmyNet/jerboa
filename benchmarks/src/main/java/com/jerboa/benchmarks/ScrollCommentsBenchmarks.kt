@@ -39,7 +39,7 @@ class ScrollCommentsBenchmarks {
             metrics = listOf(FrameTimingMetric()),
             compilationMode = compilationMode,
             startupMode = StartupMode.WARM, // Wasted several hours on an issue bc i didnt properly know what this did but know i do :}
-            iterations = 10,
+            iterations = 5,
             setupBlock = {
                 pressHome()
                 startActivityAndWait()

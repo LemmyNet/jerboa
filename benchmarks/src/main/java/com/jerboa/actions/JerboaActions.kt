@@ -48,7 +48,14 @@ fun MacrobenchmarkScope.openPost(): Boolean {
 }
 
 fun MacrobenchmarkScope.closePost() {
-    device.findOrFail("jerboa:back").click()
+    var backBtn = device.findObject(By.res("jerboa:back"))
+
+    while (backBtn == null) {
+        val comments = UiScrollable(UiSelector().scrollable(true).resourceId("jerboa:comments"))
+        comments.scrollBackward()
+        backBtn = device.findObject(By.res("jerboa:back"))
+    }
+    backBtn.click()
 }
 
 fun MacrobenchmarkScope.scrollThroughComments() {

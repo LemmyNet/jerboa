@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.post
 
+import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -57,6 +58,10 @@ fun PostListings(
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
 ) {
+    ReportDrawnWhen {
+        !loading
+    }
+
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
         onRefresh = onSwipeRefresh,
