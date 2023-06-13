@@ -226,7 +226,6 @@
     <string name="moreOptions">Mostra Altre Opzioni</string>
     <string name="lessOptions">Mostra Meno Opzioni</string>
     <string name="bottomBar_home">Vai Alla Home</string>
-    <string name="bottomBar_communityList">Vai Alla Lista Delle Comunità</string>
     <string name="bottomBar_bookmarks">Vai Ai Miei Segnalibri</string>
     <string name="bottomBar_profile">Vai Al Mio Profilo</string>
     <string name="bottomBar_inbox">Vai Alla Posta in Arrivo</string>

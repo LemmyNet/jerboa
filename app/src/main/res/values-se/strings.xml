@@ -212,7 +212,6 @@
     <string name="moreOptions">Visa fler alternativ</string>
     <string name="lessOptions">Visa färre alternativ</string>
     <string name="bottomBar_home">Gå hem</string>
-    <string name="bottomBar_communityList">Gå till gemenskapslistan</string>
     <string name="bottomBar_bookmarks">Gå till mina bokmärken</string>
     <string name="bottomBar_profile">Gå till min profil</string>
     <string name="bottomBar_inbox">Gå till min inkorg</string>
