@@ -4,11 +4,18 @@ package com.jerboa.ui.components.person
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,11 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.commentsToFlatNodes
@@ -187,7 +189,7 @@ enum class UserTab {
     Comments,
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun UserTabs(
     savedMode: Boolean,
@@ -246,7 +248,7 @@ fun UserTabs(
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
         HorizontalPager(
-            count = tabTitles.size,
+            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),
@@ -447,9 +449,8 @@ fun UserTabs(
                             }
                         }
                     }
-
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
+                    val state = rememberPullRefreshState(
+                        refreshing = loading,
                         onRefresh = {
                             personProfileViewModel.res?.person_view?.person?.id?.also {
                                 personProfileViewModel.fetchPersonDetails(
@@ -462,7 +463,10 @@ fun UserTabs(
                                 )
                             }
                         },
-                    ) {
+                    )
+
+                    Box(modifier = Modifier.pullRefresh(state)) {
+                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         CommentNodes(
                             nodes = nodes,
                             isFlat = true,
