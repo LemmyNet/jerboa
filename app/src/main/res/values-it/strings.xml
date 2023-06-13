@@ -88,7 +88,7 @@
     <string name="login_email_or_username">Email o Nome Utente</string>
     <string name="login_login">Login</string>
     <string name="login_back">Indietro</string>
-    <string name="person_profile_joined">Iscritti</string>
+    <string name="person_profile_joined">Account creato</string>
     <string name="person_profile_posts">%1$s post</string>
     <string name="person_profile_comments">%1$s commenti</string>
     <string name="person_profile_back">Indietro</string>
@@ -171,9 +171,18 @@
     <string name="look_and_feel_look_and_feel">Aspetto Interfaccia</string>
     <string name="look_and_feel_font_size">Grandezza font: %1$s</string>
     <string name="look_and_feel_theme">Tema</string>
+    <string name="look_and_feel_theme_system">System</string>
+    <string name="look_and_feel_theme_system_black">System Black</string>
+    <string name="look_and_feel_theme_light">Light</string>
+    <string name="look_and_feel_theme_dark">Dark</string>
+    <string name="look_and_feel_theme_black">Black</string>
     <string name="look_and_feel_theme_color">Colore del Tema</string>
     <string name="look_and_feel_post_view">Formato Post</string>
+    <string name="look_and_feel_post_view_card">Carta</string>
+    <string name="look_and_feel_post_view_small_card">Carta Piccola</string>
+    <string name="look_and_feel_post_view_list">Lista</string>
     <string name="look_and_feel_show_navigation_bar">Mostra barra di navigazione </string>
+    <string name="look_and_feel_use_custom_tabs">Usa schede custom</string>
     <string name="settings_activity_settings">Impostazioni</string>
     <string name="settings_activity_look_and_feel">Aspetto Interfaccia</string>
     <string name="settings_activity_account_settings">%1$s impostazioni</string>
@@ -187,4 +196,12 @@
     <string name="create_report_view_model_report_created">Segnalazione Creata</string>
     <string name="about_social">Social</string>
     <string name="app_bars_dot_spacer">·</string>
+    <string name="comment_node_in">"in "</string>
+    <string name="look_and_feel_activity_show_content_for_collapsed_comments">Mostra contenuti per commenti collassati</string>
+    <string name="comment_node_permalink_copied">Permalink Copiato</string>
+    <string name="comment_reply_node_permalink_copied">Permalink Copiato</string>
+    <string name="post_listing_link_copied">Link Copiato</string>
+    <string name="post_listing_permalink_copied">Permalink Copiato</string>
+    <string name="comment_node_block">Blocca %1$s</string>
+    <string name="comment_reply_node_copy_permalink">Copia Permalink</string>
 </resources>
