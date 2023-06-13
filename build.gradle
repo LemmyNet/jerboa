@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     repositories {
         google()
@@ -17,10 +19,33 @@ plugins {
 }
 
 subprojects {
-  apply plugin: "org.jmailen.kotlinter" // Version should be inherited from parent
+    apply plugin: "org.jmailen.kotlinter" // Version should be inherited from parent
 }
 
-task clean(type: Delete) {
+// Enables compose compiler metrics
+// Generate them with `./gradlew assembleRelease --rerun-tasks -P com.jerboa.enableComposeCompilerReports=true`
+// see https://github.com/androidx/androidx/blob/androidx-main/compose/compiler/design/compiler-metrics.md
+subprojects {
+    tasks.withType(KotlinCompile).configureEach {
+        compilerOptions {
+            if (project.findProperty("com.jerboa.enableComposeCompilerReports") == "true") {
+
+                freeCompilerArgs.addAll([
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                                project.buildDir.absolutePath + "/compose_metrics"
+                ])
+                freeCompilerArgs.addAll([
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                                project.buildDir.absolutePath + "/compose_metrics"
+                ])
+            }
+        }
+    }
+}
+
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
 
