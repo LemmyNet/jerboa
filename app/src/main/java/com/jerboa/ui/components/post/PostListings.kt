@@ -57,6 +57,7 @@ fun PostListings(
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
@@ -105,6 +106,7 @@ fun PostListings(
                     postViewMode = postViewMode,
                     showVotingArrowsInListView = showVotingArrowsInListView,
                     enableDownVotes = enableDownVotes,
+                    showAvatar = showAvatar,
                 )
                 Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
             }
@@ -151,5 +153,6 @@ fun PreviewPostListings() {
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
+        showAvatar = true,
     )
 }

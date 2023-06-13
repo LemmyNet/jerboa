@@ -231,6 +231,7 @@ fun CommunityActivity(
                 postViewMode = getPostViewMode(appSettingsViewModel),
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
             )
         },
         floatingActionButtonPosition = FabPosition.End,

@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -35,6 +36,7 @@ import com.jerboa.R
 import com.jerboa.datatypes.PersonViewSafe
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.samplePersonView
+import com.jerboa.getLocalizedSortingTypeName
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -53,6 +55,7 @@ import com.jerboa.ui.theme.muted
 fun PersonProfileTopSection(
     personView: PersonViewSafe,
     modifier: Modifier = Modifier,
+    showAvatar: Boolean,
 ) {
     var showImage by remember { mutableStateOf<String?>(null) }
 
@@ -80,14 +83,16 @@ fun PersonProfileTopSection(
                 )
             }
             Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
-                personView.person.avatar?.also {
-                    LargerCircularIcon(
-                        icon = it,
-                        contentDescription = stringResource(R.string.personProfile_viewAvatar),
-                        modifier = Modifier.clickable {
-                            showImage = personView.person.avatar
-                        },
-                    )
+                if (showAvatar) {
+                    personView.person.avatar?.also {
+                        LargerCircularIcon(
+                            icon = it,
+                            contentDescription = stringResource(R.string.personProfile_viewAvatar),
+                            modifier = Modifier.clickable {
+                                showImage = personView.person.avatar
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -141,7 +146,10 @@ fun CommentsAndPostsPreview() {
 @Preview
 @Composable
 fun PersonProfileTopSectionPreview() {
-    PersonProfileTopSection(personView = samplePersonView)
+    PersonProfileTopSection(
+        personView = samplePersonView,
+        showAvatar = true,
+    )
 }
 
 @Composable
@@ -249,7 +257,7 @@ fun PersonProfileHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = selectedSortType.toString(),
+            text = getLocalizedSortingTypeName(LocalContext.current, selectedSortType),
             style = MaterialTheme.typography.titleMedium,
         )
     }
