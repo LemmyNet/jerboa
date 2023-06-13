@@ -117,7 +117,7 @@ fun BottomAppBarAll(
                 },
                 label = {
                     Text(
-                        text = stringResource(R.string.bottomBar_home),
+                        text = stringResource(R.string.bottomBar_label_home),
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 },
@@ -131,12 +131,12 @@ fun BottomAppBarAll(
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Search,
-                        contentDescription = R.string.bottomBar_communityList,
+                        contentDescription = stringResource(R.string.bottomBar_search),
                     )
                 },
                 label = {
                     Text(
-                        text = stringResource(R.string.bottomBar_communityList),
+                        text = stringResource(R.string.bottomBar_label_search),
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 },
@@ -155,7 +155,7 @@ fun BottomAppBarAll(
                 },
                 label = {
                     Text(
-                        text = stringResource(R.string.bottomBar_inbox),
+                        text = stringResource(R.string.bottomBar_label_inbox),
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 },
@@ -168,12 +168,12 @@ fun BottomAppBarAll(
                 icon = {
                     Icon(
                         imageVector = Icons.Outlined.Bookmarks,
-                        contentDescription =stringResource(R.string.bottomBar_bookmarks),
+                        contentDescription = stringResource(R.string.bottomBar_bookmarks),
                     )
                 },
                 label = {
                     Text(
-                        text = stringResource(R.string.bottomBar_bookmarks),
+                        text = stringResource(R.string.bottomBar_label_bookmarks),
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 },
@@ -191,7 +191,7 @@ fun BottomAppBarAll(
                 },
                 label = {
                     Text(
-                        text = stringResource(R.string.bottomBar_profile),
+                        text = stringResource(R.string.bottomBar_label_profile),
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 },
