@@ -35,7 +35,7 @@ import io.noties.markwon.linkify.LinkifyPlugin
 object MarkdownHelper {
     private var markwon: Markwon? = null
 
-    fun init(context: Context, useCustomTabs: Boolean) {
+    fun init(context: Context, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
         val loader = ImageLoader.Builder(context)
             .crossfade(true)
             .placeholder(R.drawable.ic_launcher_foreground)
@@ -50,7 +50,7 @@ object MarkdownHelper {
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { view, link ->
-                        openLink(link, view.context, useCustomTabs)
+                        openLink(link, view.context, useCustomTabs, usePrivateTabs)
                     }
                 }
             })

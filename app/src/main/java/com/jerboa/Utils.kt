@@ -375,10 +375,14 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
-fun openLink(url: String, ctx: Context, useCustomTab: Boolean) {
+fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
-            .build()
+            .build().apply {
+                if (usePrivateTab) {
+                    intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+                }
+            }
         intent.launchUrl(ctx, Uri.parse(url))
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
