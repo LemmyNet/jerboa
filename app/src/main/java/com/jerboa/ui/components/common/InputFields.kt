@@ -571,9 +571,10 @@ fun MyCheckBox(
     enabled: Boolean = true,
     label: String,
     onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier.padding(SMALL_PADDING)
 ) {
     Row(
-        modifier = Modifier.padding(SMALL_PADDING),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = label)
