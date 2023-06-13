@@ -316,7 +316,7 @@ fun CommentReplyNode(
 
     var viewSource by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(true) }
-    var isActionBarExpanded by remember { mutableStateOf(false) }
+    var isActionBarExpanded by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier.padding(horizontal = LARGE_PADDING),
@@ -351,7 +351,9 @@ fun CommentReplyNode(
                     comment = commentReplyView.comment,
                     viewSource = viewSource,
                     onClick = {},
-                    onLongClick = {},
+                    onLongClick = {
+                        isActionBarExpanded = !isActionBarExpanded
+                    },
                 )
                 AnimatedVisibility(
                     visible = isActionBarExpanded,

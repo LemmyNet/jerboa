@@ -547,7 +547,7 @@ fun UserTabs(
                             account = account,
                             moderators = listOf(),
                             isCollapsedByParent = false,
-                            showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
+                            showActionBarByDefault = true,
                             enableDownVotes = enableDownVotes,
                             showAvatar = showAvatar,
                         )
