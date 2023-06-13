@@ -66,7 +66,7 @@ fun ImageWithClose(
         IconButton(onClick = onClick) {
             Icon(
                 imageVector = Icons.Outlined.Close,
-                contentDescription = stringResource(R.string.account_settings_remove_current_avatar)
+                contentDescription = stringResource(R.string.account_settings_remove_current_avatar),
             )
         }
     }
@@ -146,7 +146,7 @@ fun SettingsForm(
             onValueChange = { displayName = it },
         )
         Column(
-            modifier = Modifier.padding(MEDIUM_PADDING)
+            modifier = Modifier.padding(MEDIUM_PADDING),
         ) {
             Text(stringResource(R.string.account_settings_bio))
             MarkdownTextField(

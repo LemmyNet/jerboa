@@ -574,7 +574,7 @@ fun MyCheckBox(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
         .padding(SMALL_PADDING)
-        .fillMaxWidth()
+        .fillMaxWidth(),
 ) {
     Row(
         modifier = modifier,
