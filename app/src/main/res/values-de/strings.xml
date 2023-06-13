@@ -264,4 +264,6 @@
     <string name="bottomBar_label_inbox">Posteingang</string>
     <string name="bottomBar_label_bookmarks">Lesezeichen</string>
     <string name="bottomBar_label_profile">Profil</string>
+    <string name="look_and_feel_show_action_bar_for_comments">Aktionsleiste standardmäsig bei Kommentaren anzeigen</string>
+    <string name="look_and_feel_show_voting_arrows_list_view">Bewertungspfeile in Listenansicht anzeigen</string>
 </resources>
