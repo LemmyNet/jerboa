@@ -282,6 +282,7 @@ fun MainPostListingsContent(
         account = account,
         showVotingArrowsInListView = showVotingArrowsInListView,
         enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+        showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
     )
 }
 
@@ -372,6 +373,10 @@ fun MainDrawer(
         },
         onClickSettings = {
             navController.navigate(route = "settings")
+            closeDrawer(scope, drawerState)
+        },
+        onClickCommunities = {
+            navController.navigate(route = "communityList")
             closeDrawer(scope, drawerState)
         },
     )

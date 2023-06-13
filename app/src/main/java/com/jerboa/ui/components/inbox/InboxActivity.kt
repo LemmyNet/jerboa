@@ -30,6 +30,7 @@ import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -43,6 +44,7 @@ fun InboxActivity(
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     commentReplyViewModel: CommentReplyViewModel,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -105,6 +107,7 @@ fun InboxActivity(
                 ctx = ctx,
                 account = account,
                 scope = scope,
+                siteViewModel = siteViewModel,
             )
         },
         bottomBar = {
@@ -154,6 +157,7 @@ fun InboxTabs(
     scope: CoroutineScope,
     commentReplyViewModel: CommentReplyViewModel,
     padding: PaddingValues,
+    siteViewModel: SiteViewModel,
 ) {
     val tabTitles = InboxTab.values().map { it.toString() }
     val pagerState = rememberPagerState()
@@ -324,6 +328,7 @@ fun InboxTabs(
                                         navController.navigate(route = "post/$postId")
                                     },
                                     account = account,
+                                    showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                                 )
                             }
                         }
@@ -462,6 +467,7 @@ fun InboxTabs(
                                         navController.navigate(route = "post/$postId")
                                     },
                                     account = account,
+                                    showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                                 )
                             }
                         }
@@ -537,6 +543,7 @@ fun InboxTabs(
                                             navController.navigate(route = "profile/$personId")
                                         },
                                         account = acct,
+                                        showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                                     )
                                 }
                             }

@@ -116,6 +116,7 @@ fun PostHeaderLine(
     isModerator: Boolean,
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
+    showAvatar: Boolean,
 ) {
     val community = postView.community
     Column(modifier = modifier) {
@@ -157,6 +158,7 @@ fun PostHeaderLine(
                             isModerator = isModerator,
                             isCommunityBanned = postView.creator_banned_from_community,
                             color = MaterialTheme.colorScheme.onSurface.muted,
+                            showAvatar = showAvatar,
                         )
                         if (postView.post.featured_local) {
                             DotSpacer(0.dp)
@@ -219,6 +221,7 @@ fun PostHeaderLinePreview() {
         isModerator = false,
         onCommunityClick = {},
         onPersonClick = {},
+        showAvatar = true,
     )
 }
 
@@ -243,6 +246,7 @@ fun PostNodeHeader(
         isCommunityBanned = postView.creator_banned_from_community,
         onClick = {},
         onLongCLick = {},
+        showAvatar = true,
     )
 }
 
@@ -671,6 +675,7 @@ fun PreviewPostListingCard() {
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
+        showAvatar = true,
     )
 }
 
@@ -698,6 +703,7 @@ fun PreviewLinkPostListing() {
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
+        showAvatar = true,
     )
 }
 
@@ -725,6 +731,7 @@ fun PreviewImagePostListingCard() {
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
+        showAvatar = true,
     )
 }
 
@@ -752,6 +759,7 @@ fun PreviewImagePostListingSmallCard() {
         postViewMode = PostViewMode.SmallCard,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
+        showAvatar = true,
     )
 }
 
@@ -779,6 +787,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
+        showAvatar = true,
     )
 }
 
@@ -806,6 +815,7 @@ fun PostListing(
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -855,6 +865,7 @@ fun PostListing(
             account = account,
             expandedImage = true,
             enableDownVotes = enableDownVotes,
+            showAvatar = showAvatar,
         )
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
@@ -891,6 +902,7 @@ fun PostListing(
             fullBody = false,
             expandedImage = false,
             enableDownVotes = enableDownVotes,
+            showAvatar = showAvatar,
         )
         PostViewMode.List -> PostListingList(
             postView = postView,
@@ -917,6 +929,7 @@ fun PostListing(
             showCommunityName = showCommunityName,
             account = account,
             showVotingArrowsInListView = showVotingArrowsInListView,
+            showAvatar = showAvatar,
         )
     }
 }
@@ -981,6 +994,7 @@ fun PostListingList(
     showCommunityName: Boolean = true,
     account: Account?,
     showVotingArrowsInListView: Boolean,
+    showAvatar: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(
@@ -1029,6 +1043,7 @@ fun PostListingList(
                         isModerator = isModerator,
                         onClick = onPersonClick,
                         color = MaterialTheme.colorScheme.onSurface.muted,
+                        showAvatar = showAvatar,
                     )
                     DotSpacer(0.dp)
                     postView.post.url?.also { postUrl ->
@@ -1138,6 +1153,7 @@ fun PostListingListPreview() {
         isModerator = false,
         account = null,
         showVotingArrowsInListView = true,
+        showAvatar = true,
     )
 }
 
@@ -1164,6 +1180,7 @@ fun PostListingListWithThumbPreview() {
         isModerator = false,
         account = null,
         showVotingArrowsInListView = true,
+        showAvatar = true,
     )
 }
 
@@ -1191,6 +1208,7 @@ fun PostListingCard(
     account: Account?,
     expandedImage: Boolean,
     enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1208,6 +1226,7 @@ fun PostListingCard(
             isModerator = isModerator,
             showCommunityName = showCommunityName,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+            showAvatar = showAvatar,
         )
 
         //  Title + metadata
