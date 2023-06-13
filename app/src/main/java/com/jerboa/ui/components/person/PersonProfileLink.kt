@@ -73,8 +73,8 @@ fun PersonProfileLink(
         if (showAvatar) {
             person.avatar?.also {
                 CircularIcon(
-                  icon = it
-                  contentDescription = null,
+                    icon = it,
+                    contentDescription = null,
                 )
             }
         }
