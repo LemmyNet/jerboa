@@ -279,4 +279,5 @@
     <string name="privateMessage_reply">Rispondi al Messaggio</string>
     <string name="voteToggle">Seleziona Voto</string>
     <string name="topAppBar_back">Indietro</string>
+    <string name="home_communities">Comunità</string>
 </resources>
