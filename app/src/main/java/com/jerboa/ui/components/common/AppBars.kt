@@ -16,8 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -107,21 +107,19 @@ fun BottomAppBarAll(
             }
         }
 
-        BottomAppBar {
+        NavigationBar {
             NavigationBarItem(
                 icon = {
-                    if (screen == "home") {
-                        Icon(
-                            imageVector = Icons.Filled.Home,
-                            tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = stringResource(R.string.bottomBar_home),
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.Home,
-                            contentDescription = stringResource(R.string.bottomBar_home),
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        contentDescription = stringResource(R.string.bottomBar_home),
+                    )
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_home),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                 },
                 selected = screen == "home",
                 onClick = {
@@ -131,83 +129,74 @@ fun BottomAppBarAll(
 
             NavigationBarItem(
                 icon = {
-                    if (screen == "communityList") {
-                        Icon(
-                            imageVector = Icons.Filled.List,
-                            tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = stringResource(R.string.bottomBar_communityList),
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.List,
-                            contentDescription = stringResource(R.string.bottomBar_communityList),
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = stringResource(R.string.bottomBar_search),
+                    )
                 },
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_search),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                selected = screen == "communityList",
                 onClick = {
                     navController.navigate("communityList")
                 },
-                selected = screen == "communityList",
             )
             NavigationBarItem(
                 icon = {
-                    if (screen == "inbox") {
-                        InboxIconAndBadge(
-                            iconBadgeCount = totalUnreads,
-                            icon = Icons.Filled.Email,
-                            contentDescription = stringResource(R.string.bottomBar_inbox),
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                    } else {
-                        InboxIconAndBadge(
-                            iconBadgeCount = totalUnreads,
-                            icon = Icons.Outlined.Email,
-                            contentDescription = stringResource(R.string.bottomBar_inbox),
-                        )
-                    }
+                    InboxIconAndBadge(
+                        iconBadgeCount = totalUnreads,
+                        icon = Icons.Outlined.Email,
+                        contentDescription = stringResource(R.string.bottomBar_inbox),
+                    )
                 },
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_inbox),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                selected = screen == "inbox",
                 onClick = {
                     onClickInbox()
                 },
-                selected = screen == "inbox",
             )
             NavigationBarItem(
                 icon = {
-                    if (screen == "saved") {
-                        Icon(
-                            imageVector = Icons.Filled.Bookmarks,
-                            tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = stringResource(R.string.bottomBar_bookmarks),
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.Bookmarks,
-                            contentDescription = stringResource(R.string.bottomBar_bookmarks),
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Outlined.Bookmarks,
+                        contentDescription = stringResource(R.string.bottomBar_bookmarks),
+                    )
                 },
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_bookmarks),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                selected = screen == "saved",
                 onClick = {
                     onClickSaved()
                 },
-                selected = screen == "saved",
             )
             NavigationBarItem(
                 icon = {
-                    if (screen == "profile") {
-                        Icon(
-                            imageVector = Icons.Filled.Person,
-                            tint = MaterialTheme.colorScheme.primary,
-                            contentDescription = stringResource(R.string.bottomBar_profile),
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Outlined.Person,
-                            contentDescription = stringResource(R.string.bottomBar_profile),
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Outlined.Person,
+                        contentDescription = stringResource(R.string.bottomBar_profile),
+                    )
                 },
-                onClick = onClickProfile,
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_profile),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
                 selected = screen == "profile",
+                onClick = onClickProfile,
             )
         }
     }
