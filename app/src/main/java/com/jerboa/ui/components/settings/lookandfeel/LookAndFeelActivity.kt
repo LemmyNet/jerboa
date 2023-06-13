@@ -182,14 +182,14 @@ fun LookAndFeelActivity(
                 SettingsCheckbox(
                     state = showCommentActionBarByDefaultState,
                     title = {
-                        Text(text = "Show action bar by default for comments")
+                        Text(text = stringResource(R.string.look_and_feel_show_action_bar_for_comments))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
                     state = showVotingArrowsInListViewState,
                     title = {
-                        Text(text = "Show voting arrows in list view")
+                        Text(text = stringResource(R.string.look_and_feel_show_voting_arrows_list_view))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
