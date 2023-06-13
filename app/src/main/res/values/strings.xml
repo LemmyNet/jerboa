@@ -73,6 +73,7 @@
     <string name="home_local">Local</string>
     <string name="home_all">All</string>
     <string name="home_saved">Saved</string>
+    <string name="home_communities">Communities</string>
     <string name="home_profile">Profile</string>
     <string name="home_inbox">Inbox</string>
     <string name="home_settings">Settings</string>
