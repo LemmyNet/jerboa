@@ -60,12 +60,12 @@ baselineProfile {
 }
 
 
-//androidComponents {
-//    beforeVariants(selector().all()) {
-//        // enable only the benchmark buildType, since we only want to measure close to release performance
-//        it.enable = it.buildType == "benchmark"
-//    }
-//}
+androidComponents {
+    beforeVariants(selector().all()) {
+        // enable only the benchmark buildType, since we only want to measure close to release performance
+        it.enable = it.buildType == "benchmark"
+    }
+}
 
 dependencies {
     implementation 'androidx.test.ext:junit:1.1.5'
