@@ -8,6 +8,7 @@ import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import com.jerboa.findOrFail
 import com.jerboa.findOrFailTimeout
+import com.jerboa.retryOnStale
 import com.jerboa.scrollThrough
 import com.jerboa.scrollThroughShort
 
@@ -28,14 +29,16 @@ fun MacrobenchmarkScope.scrollThroughPostsShort() {
 
 fun MacrobenchmarkScope.scrollThroughPostsOnce() {
     val feed = device.findOrFailTimeout("jerboa:posts", "Posts not found", 60_000)
+    feed.setGestureMargin(device.displayWidth / 5)
     feed.fling(Direction.DOWN)
 }
 
 fun MacrobenchmarkScope.openPost(): Boolean {
-    val feed = device.findOrFail("jerboa:posts")
-    val post = feed.findOrFail("jerboa:posttitle", "Post not found")
-    post.click()
-    device.wait(Until.gone(By.res("jerboa:loading")), 15000)
+    val post = device.findOrFail("jerboa:posttitle", "Post not found")
+    device.retryOnStale(post, "jerboa:posttitle") {
+        it.click()
+    }
+    waitUntilLoadingDone(15_000)
 
     // Returns if it succeeded at fully loading a post
     return !device.hasObject(By.res("jerboa:loading")) &&
@@ -49,13 +52,15 @@ fun MacrobenchmarkScope.closePost() {
 }
 
 fun MacrobenchmarkScope.scrollThroughComments() {
-    val post = device.findOrFail("jerboa:posttitle", "Post not found")
-    post.fling(Direction.UP)
-    device.waitForIdle()
+    val post = device.findOrFailTimeout("jerboa:posttitle", "Post not found", 30_000)
+
+    device.retryOnStale(post, "jerboa:posttitle") {
+        it.scroll(Direction.DOWN, 100F)
+    }
     val comments = UiScrollable(UiSelector().scrollable(true).resourceId("jerboa:comments"))
 
-    repeat(5) { comments.scrollToEnd(100, 10) }
-    repeat(2) { comments.scrollToBeginning(100, 10) }
+    repeat(5) { comments.flingForward() }
+    repeat(2) { comments.flingBackward() }
     comments.scrollBackward() // Makes back btn visible
 }
 
@@ -77,7 +82,4 @@ fun MacrobenchmarkScope.waitUntilLoadingDone(timeout: Long = 10_000) {
 
 fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(timeout: Long = 30_000) {
     device.wait(Until.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post"))), timeout)
-    while (device.findObjects(By.res("jerboa:post")).size < 2) {
-        Thread.sleep(200)
-    }
 }

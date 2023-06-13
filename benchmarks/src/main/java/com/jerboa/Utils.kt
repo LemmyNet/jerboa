@@ -1,6 +1,5 @@
 package com.jerboa
 
-import android.graphics.Point
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.StaleObjectException
@@ -16,8 +15,9 @@ fun UiObject2.scrollThrough(qDown: Int = 10, qUp: Int = 5) {
         repeat(qUp) {
             this.fling(Direction.UP)
         }
-        // Sometimes causes it to fling the element out of bounds making it stale
-    } catch (_: StaleObjectException) {}
+        // Sometimes the element becomes stale, almost guaranteed when a upfling causes a refresh
+    } catch (_: StaleObjectException) {
+    }
 }
 
 fun UiObject2.scrollThroughShort() {
@@ -36,8 +36,20 @@ fun UiObject2.findOrFail(resId: String, failMsg: String): UiObject2 {
     return this.findObject(By.res(resId)) ?: throw IllegalStateException(failMsg)
 }
 
+fun UiDevice.findOrFailTimeout(resId: String): UiObject2 {
+    return this.findOrFailTimeout(resId, "$resId not found")
+}
+
 fun UiDevice.findOrFailTimeout(resId: String, failMsg: String, timeout: Long = 5000): UiObject2 {
-    val x = wait(Until.findObject(By.res(resId)), timeout)
-    if (x == null) { throw IllegalStateException(failMsg) }
-    return x
+    return wait(Until.findObject(By.res(resId)), timeout) ?: throw IllegalStateException(failMsg)
+}
+
+// Somehow you can have device.findObject().click() be instantly Stale
+// This is an attempt at solving that
+fun UiDevice.retryOnStale(element: UiObject2, resId: String, self: (UiObject2) -> Unit) {
+    try {
+        self(element)
+    } catch (_: StaleObjectException) {
+        this.retryOnStale(this.findOrFailTimeout(resId), resId, self)
+    }
 }

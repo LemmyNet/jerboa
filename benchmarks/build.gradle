@@ -24,6 +24,8 @@ android {
         targetSdk 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Only use the emulator to test benchmarks
+        testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', "EMULATOR"
         consumerProguardFiles("consumer-rules.pro")
     }
 

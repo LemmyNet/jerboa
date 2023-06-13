@@ -7,8 +7,6 @@ import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.Until
 import com.jerboa.actions.closeChangeLogIfOpen
 import com.jerboa.actions.closePost
 import com.jerboa.actions.openPost
@@ -16,7 +14,6 @@ import com.jerboa.actions.scrollThroughComments
 import com.jerboa.actions.scrollThroughPostsOnce
 import com.jerboa.actions.waitUntilLoadingDone
 import com.jerboa.actions.waitUntilPostsActuallyVisible
-import com.jerboa.findOrFail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,7 +38,7 @@ class ScrollCommentsBenchmarks {
             packageName = "com.jerboa",
             metrics = listOf(FrameTimingMetric()),
             compilationMode = compilationMode,
-            startupMode = StartupMode.COLD,
+            startupMode = StartupMode.WARM, // Wasted several hours on an issue bc i didnt properly know what this did but know i do :}
             iterations = 10,
             setupBlock = {
                 pressHome()
@@ -54,12 +51,8 @@ class ScrollCommentsBenchmarks {
                     closePost()
                     scrollThroughPostsOnce()
                 }
-                device.wait(Until.hasObject(By.res("jerboa:posttitle")), 5000)
-                device.findOrFail("jerboa:posttitle")
             },
             measureBlock = {
-                device.wait(Until.hasObject(By.res("jerboa:posttitle")), 50_000)
-                device.findOrFail("jerboa:posttitle")
                 scrollThroughComments()
             },
         )

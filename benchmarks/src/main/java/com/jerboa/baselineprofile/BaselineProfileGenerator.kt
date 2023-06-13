@@ -5,11 +5,11 @@ import androidx.annotation.RequiresApi
 import androidx.benchmark.macro.junit4.BaselineProfileRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.Until
 import com.jerboa.actions.closeChangeLogIfOpen
 import com.jerboa.actions.doTypicalUserJourney
 import com.jerboa.actions.scrollThroughPostsShort
+import com.jerboa.actions.waitUntilLoadingDone
+import com.jerboa.actions.waitUntilPostsActuallyVisible
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +48,8 @@ class BaselineProfileGenerator {
             pressHome()
             startActivityAndWait()
             closeChangeLogIfOpen()
-            device.wait(Until.hasObject(By.res("jerboa:posts")), 10000)
+            waitUntilLoadingDone()
+            waitUntilPostsActuallyVisible()
             scrollThroughPostsShort()
             doTypicalUserJourney()
         }

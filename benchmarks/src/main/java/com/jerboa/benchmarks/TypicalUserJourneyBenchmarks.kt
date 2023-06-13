@@ -35,7 +35,7 @@ class TypicalUserJourneyBenchmarks {
             packageName = "com.jerboa",
             metrics = listOf(FrameTimingMetric()),
             compilationMode = compilationMode,
-            startupMode = StartupMode.COLD,
+            startupMode = StartupMode.WARM,
             iterations = 5,
             setupBlock = {
                 pressHome()
