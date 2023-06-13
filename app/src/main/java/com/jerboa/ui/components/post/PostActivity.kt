@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +21,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -79,6 +81,28 @@ fun PostActivity(
     val commentParentId = getCommentParentId(firstComment)
     val showContextButton = depth != null && depth > 0
     val enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = postViewModel.loading,
+        onRefresh = {
+            val postId = postViewModel.postView.value?.post?.id
+            val commentId = postViewModel.commentId.value
+            val id = if (commentId != null) {
+                Either.Right(commentId)
+            } else if (postId != null) {
+                Either.Left(postId)
+            } else {
+                null
+            }
+
+            id?.let {
+                postViewModel.fetchPost(
+                    id = it,
+                    account = account,
+                    ctx = ctx,
+                )
+            }
+        },
+    )
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -95,32 +119,8 @@ fun PostActivity(
             }
         },
         content = { padding ->
-            Box(
-                modifier = Modifier.pullRefresh(
-                    rememberPullRefreshState(
-                        refreshing = postViewModel.loading,
-                        onRefresh = {
-                            val postId = postViewModel.postView.value?.post?.id
-                            val commentId = postViewModel.commentId.value
-                            val id = if (commentId != null) {
-                                Either.Right(commentId)
-                            } else if (postId != null) {
-                                Either.Left(postId)
-                            } else {
-                                null
-                            }
-
-                            id?.let {
-                                postViewModel.fetchPost(
-                                    id = it,
-                                    account = account,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
-                    ),
-                ),
-            ) {
+            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                PullRefreshIndicator(postViewModel.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
                 postViewModel.postView.value?.also { postView ->
                     LazyColumn(
                         state = listState,

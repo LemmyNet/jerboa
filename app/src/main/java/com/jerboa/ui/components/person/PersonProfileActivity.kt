@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
@@ -448,26 +449,24 @@ fun UserTabs(
                             }
                         }
                     }
+                    val state = rememberPullRefreshState(
+                        refreshing = loading,
+                        onRefresh = {
+                            personProfileViewModel.res?.person_view?.person?.id?.also {
+                                personProfileViewModel.fetchPersonDetails(
+                                    idOrName = Either.Left(it),
+                                    account = account,
+                                    clearPersonDetails = false,
+                                    clearPostsAndComments = true,
+                                    changeSavedOnly = savedMode,
+                                    ctx = ctx,
+                                )
+                            }
+                        },
+                    )
 
-                    Box(
-                        modifier = Modifier.pullRefresh(
-                            rememberPullRefreshState(
-                                refreshing = loading,
-                                onRefresh = {
-                                    personProfileViewModel.res?.person_view?.person?.id?.also {
-                                        personProfileViewModel.fetchPersonDetails(
-                                            idOrName = Either.Left(it),
-                                            account = account,
-                                            clearPersonDetails = false,
-                                            clearPostsAndComments = true,
-                                            changeSavedOnly = savedMode,
-                                            ctx = ctx,
-                                        )
-                                    }
-                                },
-                            ),
-                        ),
-                    ) {
+                    Box(modifier = Modifier.pullRefresh(state)) {
+                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         CommentNodes(
                             nodes = nodes,
                             isFlat = true,

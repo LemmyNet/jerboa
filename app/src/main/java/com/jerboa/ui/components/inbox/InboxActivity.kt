@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
@@ -227,22 +228,20 @@ fun InboxTabs(
                             }
                         }
                     }
-                    Box(
-                        modifier = Modifier.pullRefresh(
-                            state = rememberPullRefreshState(
-                                refreshing = loading,
-                                onRefresh = {
-                                    account?.also { acct ->
-                                        inboxViewModel.fetchReplies(
-                                            account = acct,
-                                            clear = true,
-                                            ctx = ctx,
-                                        )
-                                    }
-                                },
-                            ),
-                        ),
-                    ) {
+                    val state = rememberPullRefreshState(
+                        refreshing = loading,
+                        onRefresh = {
+                            account?.also { acct ->
+                                inboxViewModel.fetchReplies(
+                                    account = acct,
+                                    clear = true,
+                                    ctx = ctx,
+                                )
+                            }
+                        },
+                    )
+                    Box(modifier = Modifier.pullRefresh(state)) {
+                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         LazyColumn(
                             state = listState,
                             modifier = Modifier
@@ -366,22 +365,20 @@ fun InboxTabs(
                             }
                         }
                     }
-                    Box(
-                        modifier = Modifier.pullRefresh(
-                            state = rememberPullRefreshState(
-                                loading,
-                                onRefresh = {
-                                    account?.also { acct ->
-                                        inboxViewModel.fetchPersonMentions(
-                                            account = acct,
-                                            clear = true,
-                                            ctx = ctx,
-                                        )
-                                    }
-                                },
-                            ),
-                        ),
-                    ) {
+                    val state = rememberPullRefreshState(
+                        loading,
+                        onRefresh = {
+                            account?.also { acct ->
+                                inboxViewModel.fetchPersonMentions(
+                                    account = acct,
+                                    clear = true,
+                                    ctx = ctx,
+                                )
+                            }
+                        },
+                    )
+                    Box(modifier = Modifier.pullRefresh(state)) {
+                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         LazyColumn(
                             state = listState,
                             modifier = Modifier
@@ -509,22 +506,20 @@ fun InboxTabs(
                             }
                         }
                     }
-                    Box(
-                        modifier = Modifier.pullRefresh(
-                            state = rememberPullRefreshState(
-                                loading,
-                                onRefresh = {
-                                    account?.also { acct ->
-                                        inboxViewModel.fetchPrivateMessages(
-                                            account = acct,
-                                            clear = true,
-                                            ctx = ctx,
-                                        )
-                                    }
-                                },
-                            ),
-                        ),
-                    ) {
+                    val state = rememberPullRefreshState(
+                        loading,
+                        onRefresh = {
+                            account?.also { acct ->
+                                inboxViewModel.fetchPrivateMessages(
+                                    account = acct,
+                                    clear = true,
+                                    ctx = ctx,
+                                )
+                            }
+                        },
+                    )
+                    Box(modifier = Modifier.pullRefresh(state)) {
+                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         LazyColumn(
                             state = listState,
                             modifier = Modifier
