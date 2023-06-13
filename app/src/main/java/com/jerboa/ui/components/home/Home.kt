@@ -107,13 +107,17 @@ fun Drawer(
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
     unreadCounts: GetUnreadCountResponse?,
+    isOpen: Boolean,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
+
+    if (!isOpen) showAccountAddMode = false
 
     DrawerHeader(
         myPerson = myUserInfo?.local_user_view?.person,
         showAccountAddMode = showAccountAddMode,
         onClickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode },
+        showAvatar = myUserInfo?.local_user_view?.local_user?.show_avatars ?: true,
     )
     Divider()
     // Drawer items
@@ -279,6 +283,7 @@ fun DrawerItemsMain(
                 CommunityLinkLarger(
                     community = follow.community,
                     onClick = onCommunityClick,
+                    showDefaultIcon = false,
                 )
             }
         }
@@ -348,6 +353,7 @@ fun DrawerHeader(
     myPerson: PersonSafe?,
     onClickShowAccountAddMode: () -> Unit,
     showAccountAddMode: Boolean = false,
+    showAvatar: Boolean,
 ) {
     val sizeMod = Modifier
         .fillMaxWidth()
@@ -369,27 +375,33 @@ fun DrawerHeader(
             modifier = sizeMod
                 .padding(XL_PADDING),
         ) {
-            AvatarAndAccountName(myPerson)
+            AvatarAndAccountName(myPerson, showAvatar)
             Icon(
                 imageVector = if (showAccountAddMode) {
                     Icons.Outlined.ExpandLess
                 } else {
                     Icons.Outlined.ExpandMore
                 },
-                contentDescription = "TODO",
+                contentDescription = if (showAccountAddMode) {
+                    stringResource(R.string.moreOptions)
+                } else {
+                    stringResource(R.string.lessOptions)
+                },
             )
         }
     }
 }
 
 @Composable
-fun AvatarAndAccountName(myPerson: PersonSafe?) {
+fun AvatarAndAccountName(myPerson: PersonSafe?, showAvatar: Boolean) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
-        myPerson?.avatar?.also {
-            LargerCircularIcon(icon = it)
+        if (showAvatar) {
+            myPerson?.avatar?.also {
+                LargerCircularIcon(icon = it)
+            }
         }
         PersonName(
             person = myPerson,
@@ -404,6 +416,7 @@ fun DrawerHeaderPreview() {
     DrawerHeader(
         myPerson = samplePersonSafe,
         onClickShowAccountAddMode = {},
+        showAvatar = true,
     )
 }
 
@@ -530,7 +543,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.FilterList,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.homeHeader_filter),
                 )
             }
             IconButton(onClick = {
@@ -538,7 +551,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.selectSort),
                 )
             }
             IconButton(onClick = {
@@ -546,7 +559,7 @@ fun HomeHeader(
             }) {
                 Icon(
                     Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.moreOptions),
                 )
             }
         },

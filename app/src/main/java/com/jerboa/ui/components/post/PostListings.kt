@@ -22,6 +22,7 @@ import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.Tagline
+import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
@@ -55,6 +56,8 @@ fun PostListings(
     taglines: List<Tagline>?,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
+    enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     SwipeRefresh(
         state = rememberSwipeRefreshState(loading),
@@ -102,6 +105,8 @@ fun PostListings(
                     account = account, // TODO can't know with many posts
                     postViewMode = postViewMode,
                     showVotingArrowsInListView = showVotingArrowsInListView,
+                    enableDownVotes = enableDownVotes,
+                    showAvatar = showAvatar,
                 )
                 Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
             }
@@ -127,7 +132,7 @@ fun PostListings(
 @Composable
 fun PreviewPostListings() {
     PostListings(
-        posts = listOf(samplePostView, samplePostView),
+        posts = listOf(samplePostView, sampleLinkPostView),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
@@ -147,5 +152,7 @@ fun PreviewPostListings() {
         taglines = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
+        enableDownVotes = true,
+        showAvatar = true,
     )
 }

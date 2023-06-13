@@ -31,7 +31,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.closeDrawer
 import com.jerboa.db.Account
@@ -128,7 +130,10 @@ fun HomeActivity(
                             }
                         },
                     ) {
-                        Icon(imageVector = Icons.Outlined.Add, contentDescription = "TODO")
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = stringResource(R.string.floating_createPost),
+                        )
                     }
                 },
                 bottomBar = {
@@ -276,6 +281,8 @@ fun MainPostListingsContent(
         },
         account = account,
         showVotingArrowsInListView = showVotingArrowsInListView,
+        enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+        showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
     )
 }
 
@@ -298,6 +305,7 @@ fun MainDrawer(
         unreadCounts = homeViewModel.unreadCountResponse,
         accountViewModel = accountViewModel,
         navController = navController,
+        isOpen = drawerState.isOpen,
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
             accountViewModel.setCurrent(acct.id)

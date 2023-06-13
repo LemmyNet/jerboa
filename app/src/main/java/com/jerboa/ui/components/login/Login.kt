@@ -104,7 +104,6 @@ fun LoginForm(
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    val instanceOptions = DEFAULT_LEMMY_INSTANCES
     var expanded by remember { mutableStateOf(false) }
     var wasAutofilled by remember { mutableStateOf(false) }
 
@@ -135,12 +134,17 @@ fun LoginForm(
                 label = { Text(stringResource(R.string.login_instance)) },
                 placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
                 value = instance,
-                onValueChange = { instance = it },
+                singleLine = true,
+                onValueChange = {
+                    instance = it
+                    expanded = true
+                },
                 trailingIcon = {
                     TrailingIcon(expanded = expanded)
                 },
                 keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
             )
+            val instanceOptions = DEFAULT_LEMMY_INSTANCES.filter { instance.isEmpty() || it.contains(instance) }
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = {

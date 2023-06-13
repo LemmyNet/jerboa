@@ -54,7 +54,7 @@ fun CommunityListHeader(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.moreOptions),
                 )
             }
         },
@@ -66,7 +66,7 @@ fun CommunityListHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.community_list_back),
                 )
             }
         },
@@ -123,11 +123,13 @@ fun CommunityListings(
                 CommunityLinkLarger(
                     community = item.community,
                     onClick = onClickCommunity,
+                    showDefaultIcon = true,
                 )
             } else if (item is CommunityView) {
                 CommunityLinkLargerWithUserCount(
                     communityView = item,
                     onClick = onClickCommunity,
+                    showDefaultIcon = true,
                 )
             }
         }
