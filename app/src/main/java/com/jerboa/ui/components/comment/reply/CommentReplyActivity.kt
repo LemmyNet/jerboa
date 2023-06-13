@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
 import com.jerboa.isModerator
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 
@@ -31,6 +32,7 @@ fun CommentReplyActivity(
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
     navController: NavController,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to comment reply activity")
 
@@ -88,6 +90,7 @@ fun CommentReplyActivity(
                                 modifier = Modifier
                                     .padding(padding)
                                     .imePadding(),
+                                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                             )
                         is ReplyItem.PostItem -> PostReply(
                             postView = replyItem.item,
@@ -118,6 +121,7 @@ fun CommentReplyActivity(
                                 modifier = Modifier
                                     .padding(padding)
                                     .imePadding(),
+                                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                             )
                         is ReplyItem.MentionReplyItem ->
                             MentionReply(
@@ -131,6 +135,7 @@ fun CommentReplyActivity(
                                 modifier = Modifier
                                     .padding(padding)
                                     .imePadding(),
+                                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                             )
                     }
                 }
