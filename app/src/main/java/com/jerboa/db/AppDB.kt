@@ -221,7 +221,7 @@ class AppSettingsRepository(
                 val req = Request.Builder().url(releasesUrl).build()
                 val res = httpClient.newCall(req).execute()
                 _changelog.value = res.body.string()
-            } catch (e : Exception) {
+            } catch (e: Exception) {
                 Log.e("jerboa", "Failed to load changelog: $e")
             }
         }
