@@ -283,7 +283,7 @@ fun DrawerItemsMain(
                 CommunityLinkLarger(
                     community = follow.community,
                     onClick = onCommunityClick,
-                    showDefaultIcon = false,
+                    showDefaultIcon = true,
                 )
             }
         }
