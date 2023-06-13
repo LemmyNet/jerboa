@@ -73,6 +73,7 @@
     <string name="home_local">Local</string>
     <string name="home_all">All</string>
     <string name="home_saved">Saved</string>
+    <string name="home_communities">Communities</string>
     <string name="home_profile">Profile</string>
     <string name="home_inbox">Inbox</string>
     <string name="home_settings">Settings</string>
@@ -265,4 +266,18 @@
     <string name="privateMessage_reply">Reply to message</string>
     <string name="voteToggle">Toggle vote</string>
     <string name="topAppBar_back">Back</string>
+    <string name="person_profile_activity_about">About</string>
+    <string name="person_profile_activity_posts">Posts</string>
+    <string name="person_profile_activity_comments">Comments</string>
+    <string name="sorttype_active">Active</string>
+    <string name="sorttype_hot">Hot</string>
+    <string name="sorttype_new">New</string>
+    <string name="sorttype_old">Old</string>
+    <string name="sorttype_topday">TopDay</string>
+    <string name="sorttype_topweek">TopWeek</string>
+    <string name="sorttype_topmonth">TopMonth</string>
+    <string name="sorttype_topyear">TopYear</string>
+    <string name="sorttype_topall">TopAll</string>
+    <string name="sorttype_mostcomments">MostComments</string>
+    <string name="sorttype_newcomments">NewComments</string>
 </resources>
