@@ -70,13 +70,13 @@ fun InboxHeader(
             }) {
                 Icon(
                     Icons.Outlined.FilterList,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.inbox_filter),
                 )
             }
             IconButton(onClick = onClickMarkAllAsRead) {
                 Icon(
                     Icons.Outlined.DoneAll,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.inbox_markAllRead),
                 )
             }
         },

@@ -129,7 +129,7 @@ fun CreatePostActivity(
                     suggestedTitle = createPostViewModel.suggestedTitle,
                     image = _image,
                     onPickedImage = { uri ->
-                        if (uri != null && uri != Uri.EMPTY) {
+                        if (uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)
                             scope.launch {
                                 account?.also { acct ->
