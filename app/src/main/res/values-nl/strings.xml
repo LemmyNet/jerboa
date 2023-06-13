@@ -208,4 +208,18 @@
     <string name="post_listing_permalink_copied">Permalink gekopieerd</string>
     <string name="comment_node_block">%1$s blokkeren</string>
     <string name="comment_reply_node_copy_permalink">Permalink kopiëren</string>
+    <string name="person_profile_activity_about">Over</string>
+    <string name="person_profile_activity_posts">Berichten</string>
+    <string name="person_profile_activity_comments">Reacties</string>
+    <string name="sorttype_active">Actief</string>
+    <string name="sorttype_hot">Populair</string>
+    <string name="sorttype_new">Nieuw</string>
+    <string name="sorttype_old">Oud</string>
+    <string name="sorttype_topday">TopDag</string>
+    <string name="sorttype_topweek">TopWeek</string>
+    <string name="sorttype_topmonth">TopMaand</string>
+    <string name="sorttype_topyear">TopJaar</string>
+    <string name="sorttype_topall">TopAlles</string>
+    <string name="sorttype_mostcomments">Meeste reacties</string>
+    <string name="sorttype_newcomments">Nieuwste reacties</string>
 </resources>
