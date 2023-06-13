@@ -153,7 +153,7 @@ fun PostActivity(
                                 },
                                 onPostClick = {},
                                 onPostLinkClick = { url ->
-                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
+                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
                                 },
                                 onSaveClick = {
                                     account?.also { acct ->
