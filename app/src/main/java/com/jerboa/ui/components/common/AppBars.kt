@@ -207,7 +207,7 @@ fun BottomAppBarAll(
                     }
                 },
                 onClick = onClickProfile,
-                selected = screen == "saved",
+                selected = screen == "profile",
             )
         }
     }
