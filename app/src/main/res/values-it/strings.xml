@@ -247,7 +247,7 @@
     <string name="markRead">Segna Come Già Letto</string>
     <string name="markUnread">Segna Come Non Letto</string>
     <string name="comment_save">Salva Commento</string>
-    <string name="comment_unsave">De-salva Commento</string>
+    <string name="comment_unsave">Scarta Commento</string>
     <string name="commentReply_link">Vai alla Risposta</string>
     <string name="homeHeader_filter">Seleziona Filtro</string>
     <string name="selectSort">Seleziona Ordinamento</string>
