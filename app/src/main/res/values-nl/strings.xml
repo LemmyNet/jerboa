@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Jerboa voor Lemmy</string>
     <string name="comment_node_goto_comment">Ga naar reactie</string>
+    <string name="comment_node_go_to">Ga naar %1$s</string>
     <string name="comment_node_view_source">Bekijk bron</string>
     <string name="comment_node_copy_permalink">Kopieer permalink</string>
     <string name="comment_node_report_comment">Rapporteer opmerking</string>
@@ -15,6 +16,7 @@
     <string name="comment_edit_edit">Bewerk</string>
     <string name="comment_edit_type_your_comment">Typ je opmerking</string>
     <string name="comment_edit_back">Terug</string>
+    <string name="comment_mention_node_go_to">Ga naar %1$s</string>
     <string name="comment_mention_node_view_source">Bekijk bron</string>
     <string name="comment_mention_node_copy_permalink">Kopieer permalink</string>
     <string name="comment_mention_node_report_comment">Rapporteer reactie</string>
@@ -22,6 +24,7 @@
     <string name="comment_reply_reply">Antwoord</string>
     <string name="comment_reply_back">Terug</string>
     <string name="comment_reply_type_your_comment">Typ je opmerking</string>
+    <string name="comment_reply_node_go_to">Ga naar %1$s</string>
     <string name="comment_reply_node_view_source">Bekijk bron</string>
     <string name="comment_reply_node_report_comment">Rapporteer opmerking</string>
     <string name="comment_reply_node_block">Blokkeer %1$s</string>
@@ -150,6 +153,7 @@
     <string name="account_settings_active">Actief</string>
     <string name="account_settings_hot">Populair</string>
     <string name="account_settings_new">Nieuw</string>
+    <string name="account_settings_old">Oud</string>
     <string name="account_settings_topday">Top van de dag</string>
     <string name="account_settings_topweek">Top van de week</string>
     <string name="account_settings_topmonth">Top van de maand</string>
@@ -204,4 +208,18 @@
     <string name="post_listing_permalink_copied">Permalink gekopieerd</string>
     <string name="comment_node_block">%1$s blokkeren</string>
     <string name="comment_reply_node_copy_permalink">Permalink kopiëren</string>
+    <string name="person_profile_activity_about">Over</string>
+    <string name="person_profile_activity_posts">Berichten</string>
+    <string name="person_profile_activity_comments">Reacties</string>
+    <string name="sorttype_active">Actief</string>
+    <string name="sorttype_hot">Populair</string>
+    <string name="sorttype_new">Nieuw</string>
+    <string name="sorttype_old">Oud</string>
+    <string name="sorttype_topday">TopDag</string>
+    <string name="sorttype_topweek">TopWeek</string>
+    <string name="sorttype_topmonth">TopMaand</string>
+    <string name="sorttype_topyear">TopJaar</string>
+    <string name="sorttype_topall">TopAlles</string>
+    <string name="sorttype_mostcomments">Meeste reacties</string>
+    <string name="sorttype_newcomments">Nieuwste reacties</string>
 </resources>

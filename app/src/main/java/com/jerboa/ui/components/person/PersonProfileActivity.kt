@@ -29,6 +29,7 @@ import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
@@ -147,6 +148,7 @@ fun PersonProfileActivity(
                 appSettingsViewModel = appSettingsViewModel,
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
             )
         },
         bottomBar = {
@@ -202,11 +204,15 @@ fun UserTabs(
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     val tabTitles = if (savedMode) {
-        listOf(UserTab.Posts.name, UserTab.Comments.name)
+        listOf(
+            getLocalizedStringForUserTab(ctx, UserTab.Posts),
+            getLocalizedStringForUserTab(ctx, UserTab.Comments),
+        )
     } else {
-        UserTab.values().map { it.toString() }
+        UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
     }
     val pagerState = rememberPagerState()
 
@@ -265,6 +271,7 @@ fun UserTabs(
                             personProfileViewModel.res?.person_view?.also {
                                 PersonProfileTopSection(
                                     personView = it,
+                                    showAvatar = showAvatar,
                                 )
                             }
                         }
@@ -404,6 +411,7 @@ fun UserTabs(
                         postViewMode = getPostViewMode(appSettingsViewModel),
                         showVotingArrowsInListView = showVotingArrowsInListView,
                         enableDownVotes = enableDownVotes,
+                        showAvatar = showAvatar,
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -541,6 +549,7 @@ fun UserTabs(
                             isCollapsedByParent = false,
                             showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
                             enableDownVotes = enableDownVotes,
+                            showAvatar = showAvatar,
                         )
                     }
                 }

@@ -275,6 +275,7 @@ fun PostActivity(
                                 postViewMode = PostViewMode.Card,
                                 showVotingArrowsInListView = showVotingArrowsInListView,
                                 enableDownVotes = enableDownVotes,
+                                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                             )
                         }
                         item(key = "${postView.post.id}_is_comment_view") {
@@ -398,6 +399,7 @@ fun PostActivity(
                                 showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                             },
                             enableDownVotes = enableDownVotes,
+                            showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                         )
                     }
                 }

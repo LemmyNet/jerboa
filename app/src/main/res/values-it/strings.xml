@@ -204,4 +204,18 @@
     <string name="post_listing_permalink_copied">Permalink copiato</string>
     <string name="comment_node_block">Blocca %1$s</string>
     <string name="comment_reply_node_copy_permalink">Copia permalink</string>
+    <string name="person_profile_activity_about">About</string>
+    <string name="person_profile_activity_posts">Posts</string>
+    <string name="person_profile_activity_comments">Comments</string>
+    <string name="sorttype_active">Attivi</string>
+    <string name="sorttype_hot">Di tendenza</string>
+    <string name="sorttype_old">Old</string>
+    <string name="sorttype_new">Nuovi</string>
+    <string name="sorttype_topday">Top giorno</string>
+    <string name="sorttype_topweek">Top settimana</string>
+    <string name="sorttype_topmonth">Top mese</string>
+    <string name="sorttype_topyear">Top anno</string>
+    <string name="sorttype_topall">Top di tutti i tempi</string>
+    <string name="sorttype_mostcomments">Più commenti</string>
+    <string name="sorttype_newcomments">Nuovi commenti</string>
 </resources>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Jerboa für Lemmy</string>
     <string name="comment_node_goto_comment">Zum Kommentar</string>
+    <string name="comment_node_go_to">Gehe zu %1$s</string>
     <string name="comment_node_view_source">Quelle anzeigen</string>
     <string name="comment_node_copy_permalink">Permalink kopieren</string>
     <string name="comment_node_report_comment">Kommentar melden</string>
@@ -15,6 +16,7 @@
     <string name="comment_edit_edit">Bearbeiten</string>
     <string name="comment_edit_type_your_comment">Schreibe deinen Kommentar</string>
     <string name="comment_edit_back">Zurück</string>
+    <string name="comment_mention_node_go_to">Gehe zu %1$s</string>
     <string name="comment_mention_node_view_source">Quelle anzeigen</string>
     <string name="comment_mention_node_copy_permalink">Permalink kopieren</string>
     <string name="comment_mention_node_report_comment">Kommentar melden</string>
@@ -22,6 +24,7 @@
     <string name="comment_reply_reply">Antworten</string>
     <string name="comment_reply_back">Zurück</string>
     <string name="comment_reply_type_your_comment">Schreibe deinen Kommentar</string>
+    <string name="comment_reply_node_go_to">Gehe zu %1$s</string>
     <string name="comment_reply_node_view_source">Quelle anzeigen</string>
     <string name="comment_reply_node_report_comment">Kommentar melden</string>
     <string name="comment_reply_node_block">"Blockiere %1$s "</string>
@@ -37,13 +40,13 @@
     <string name="dialogs_top_month">Top des Monats</string>
     <string name="dialogs_top_year">Top des Jahrs</string>
     <string name="dialogs_top_all_time">Top aller Zeiten</string>
-    <string name="dialogs_subscribed">Abboniert</string>
+    <string name="dialogs_subscribed">Abonniert</string>
     <string name="dialogs_local">Lokal</string>
     <string name="dialogs_all">Alle</string>
     <string name="dialogs_active">Aktiv</string>
     <string name="dialogs_hot">Heiß</string>
     <string name="dialogs_new">Neu</string>
-    <string name="dialogs_most_comments">Meisten Kommentare</string>
+    <string name="dialogs_most_comments">Meiste Kommentare</string>
     <string name="dialogs_new_comments">Neue Kommentare</string>
     <string name="dialogs_top">Top</string>
     <string name="dialogs_old">Old</string>
@@ -59,21 +62,21 @@
     <string name="community_list_search">Suche...</string>
     <string name="community_users_month">%1$s Benutzer / Monat</string>
     <string name="community_joined">Beigetreten</string>
-    <string name="community_subscribe">Abbonieren</string>
+    <string name="community_subscribe">Abonnieren</string>
     <string name="community_pending">Wartend</string>
     <string name="community_back">Zurück</string>
     <string name="community_refresh">Refresh</string>
     <string name="community_community_info">Community Info</string>
     <string name="community_block_community">Community blockieren</string>
     <string name="community_link_users_month">%1$s Nutzer / Monat</string>
-    <string name="home_subscribed">Abboniert</string>
+    <string name="home_subscribed">Abonniert</string>
     <string name="home_local">Lokal</string>
     <string name="home_all">Alle</string>
     <string name="home_saved">Gespeichert</string>
     <string name="home_profile">Profil</string>
     <string name="home_inbox">Posteingang</string>
     <string name="home_settings">Einstellungen</string>
-    <string name="home_subscriptions">Abbonements</string>
+    <string name="home_subscriptions">Abonnements</string>
     <string name="home_add_account">Account hinzufügen</string>
     <string name="home_switch_to">Wechsele zu %1$s/%2$s</string>
     <string name="home_sign_out">Ausloggen</string>
@@ -151,6 +154,7 @@
     <string name="account_settings_active">Aktiv</string>
     <string name="account_settings_hot">Heiß</string>
     <string name="account_settings_new">Neu</string>
+    <string name="account_settings_old">Alt</string>
     <string name="account_settings_topday">Top des Tages</string>
     <string name="account_settings_topweek">Top der Woche</string>
     <string name="account_settings_topmonth">Top des Monats</string>
@@ -183,6 +187,7 @@
     <string name="look_and_feel_post_view_small_card">Small Card</string>
     <string name="look_and_feel_post_view_list">List</string>
     <string name="look_and_feel_show_navigation_bar">Zeige Navigationsleiste</string>
+    <string name="look_and_feel_use_custom_tabs">Angepasste Tabs nutzen</string>
     <string name="settings_activity_settings">Einstellungen</string>
     <string name="settings_activity_look_and_feel">Look and feel</string>
     <string name="settings_activity_account_settings">%1$s Einstellungen</string>
@@ -204,4 +209,18 @@
     <string name="post_listing_permalink_copied">Permalink kopiert</string>
     <string name="comment_node_block">Blockiere %1$s</string>
     <string name="comment_reply_node_copy_permalink">Kopiere Permalink</string>
+    <string name="person_profile_activity_about">Über</string>
+    <string name="person_profile_activity_posts">Beiträge</string>
+    <string name="person_profile_activity_comments">Kommentare</string>
+    <string name="sorttype_active">Aktiv</string>
+    <string name="sorttype_hot">Heiß</string>
+    <string name="sorttype_new">Neu</string>
+    <string name="sorttype_old">Alt</string>
+    <string name="sorttype_topday">Top des Tages</string>
+    <string name="sorttype_topweek">Top der Woche</string>
+    <string name="sorttype_topmonth">Top des Monats</string>
+    <string name="sorttype_topyear">Top des Jahres</string>
+    <string name="sorttype_topall">Top über alles</string>
+    <string name="sorttype_mostcomments">Meiste Kommentare</string>
+    <string name="sorttype_newcomments">Neue Kommentare</string>
 </resources>
