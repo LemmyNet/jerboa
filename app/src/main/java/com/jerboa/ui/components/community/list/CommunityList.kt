@@ -54,7 +54,7 @@ fun CommunityListHeader(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.MoreVert,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.moreOptions),
                 )
             }
         },
@@ -66,7 +66,7 @@ fun CommunityListHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.community_list_back),
                 )
             }
         },

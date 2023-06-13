@@ -72,6 +72,7 @@ fun PersonProfileTopSection(
             personView.person.banner?.also {
                 PictrsBannerImage(
                     url = it,
+                    contentDescription = stringResource(R.string.personProfile_viewBanner),
                     modifier = Modifier
                         .height(PROFILE_BANNER_SIZE)
                         .clickable {
@@ -84,6 +85,7 @@ fun PersonProfileTopSection(
                     personView.person.avatar?.also {
                         LargerCircularIcon(
                             icon = it,
+                            contentDescription = stringResource(R.string.personProfile_viewAvatar),
                             modifier = Modifier.clickable {
                                 showImage = personView.person.avatar
                             },
@@ -225,7 +227,7 @@ fun PersonProfileHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.selectSort),
                 )
             }
             if (!myProfile) {
@@ -234,7 +236,7 @@ fun PersonProfileHeader(
                 }) {
                     Icon(
                         Icons.Outlined.MoreVert,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.moreOptions),
                     )
                 }
             }

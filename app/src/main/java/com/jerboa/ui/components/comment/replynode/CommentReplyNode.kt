@@ -166,6 +166,7 @@ fun CommentReplyNodeFooterLine(
             )
             ActionBarButton(
                 icon = Icons.Outlined.Link,
+                contentDescription = stringResource(R.string.commentReply_link),
                 onClick = { onCommentLinkClick(commentReplyView) },
                 account = account,
             )
@@ -174,6 +175,11 @@ fun CommentReplyNodeFooterLine(
                     Icons.Outlined.MarkChatRead
                 } else {
                     Icons.Outlined.MarkChatUnread
+                },
+                contentDescription = if (commentReplyView.comment_reply.read) {
+                    stringResource(R.string.markUnread)
+                } else {
+                    stringResource(R.string.markRead)
                 },
                 onClick = { onMarkAsReadClick(commentReplyView) },
                 contentColor = if (commentReplyView.comment_reply.read) {
@@ -187,6 +193,11 @@ fun CommentReplyNodeFooterLine(
                 icon = if (commentReplyView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
                 },
+                contentDescription = if (commentReplyView.saved) {
+                    stringResource(R.string.comment_unsave)
+                } else {
+                    stringResource(R.string.comment_save)
+                },
                 onClick = { onSaveClick(commentReplyView) },
                 contentColor = if (commentReplyView.saved) {
                     MaterialTheme.colorScheme.primary
@@ -199,12 +210,14 @@ fun CommentReplyNodeFooterLine(
             if (commentReplyView.creator.id != account?.id) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(commentReplyView) },
                     account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
+                contentDescription = stringResource(R.string.moreOptions),
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
                 requiresAccount = false,
@@ -247,7 +260,7 @@ fun CommentReplyNodeOptionsDialog(
                     text = stringResource(R.string.comment_reply_node_copy_permalink),
                     icon = Icons.Outlined.Link,
                     onClick = {
-                        val permalink = "${commentReplyView.comment.ap_id}"
+                        val permalink = commentReplyView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
                         Toast.makeText(
                             ctx,
