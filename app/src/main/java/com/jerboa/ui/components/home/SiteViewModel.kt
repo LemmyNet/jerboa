@@ -1,10 +1,12 @@
 package com.jerboa.ui.components.home
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -12,13 +14,14 @@ import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.GetUnreadCountResponse
+import com.jerboa.db.AccountViewModel
 import com.jerboa.serializeToMap
 import kotlinx.coroutines.launch
 
 class SiteViewModel : ViewModel() {
 
+    // Can't be private, because it needs to be set by the login viewmodel
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
-        private set
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
         private set

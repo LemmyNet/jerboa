@@ -3,6 +3,7 @@ package com.jerboa.ui.components.login
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,12 +12,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
+import com.jerboa.api.apiWrapper
 import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.serializeToMap
+import com.jerboa.ui.components.common.ApiEmptyText
+import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.cancel
@@ -72,12 +77,17 @@ class LoginViewModel : ViewModel() {
 
             // Fetch the site to get your name and id
             // Can't do a co-routine within a co-routine
-            siteViewModel.getSite(GetSite(auth = jwt))
+            val form = GetSite(auth = jwt)
+            siteViewModel.siteRes = apiWrapper(API.getInstance().getSite(form.serializeToMap()))
 
             when (val siteRes = siteViewModel.siteRes) {
-                ApiState.Empty -> TODO()
-                is ApiState.Failure -> TODO()
-                ApiState.Loading -> TODO()
+                is ApiState.Failure -> {
+                    Toast.makeText(
+                        ctx,
+                        siteRes.msg.message,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
                 is ApiState.Success -> {
                     val luv = siteRes.data.my_user!!.local_user_view
                     val account = Account(
@@ -110,6 +120,8 @@ class LoginViewModel : ViewModel() {
 
                     navController.navigate(route = "home")
                 }
+
+                else -> {}
             }
         }
     }

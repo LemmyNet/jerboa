@@ -428,7 +428,10 @@ fun HomeHeaderTitle(
 fun Taglines(
     taglines: List<Tagline>?,
 ) {
-    taglines?.let { Tagline(it) }
+    taglines?.let { taglines ->
+        if (taglines.isNotEmpty()) {
+        Tagline(taglines)
+    } }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
