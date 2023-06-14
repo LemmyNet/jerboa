@@ -442,7 +442,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
-                            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: false,
+                            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
                         )
