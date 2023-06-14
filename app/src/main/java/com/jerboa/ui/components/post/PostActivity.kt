@@ -55,7 +55,7 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
