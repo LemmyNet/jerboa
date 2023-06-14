@@ -44,6 +44,7 @@ const val mastodonLink = "https://mastodon.social/@LemmyDev"
 fun AboutActivity(
     navController: NavController,
     useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Log.d("jerboa", "Got to About activity")
 
@@ -53,6 +54,10 @@ fun AboutActivity(
     val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0)?.versionName
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+    fun openLink(link: String) {
+        openLink(link, ctx, useCustomTabs, usePrivateTabs)
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -75,7 +80,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", ctx, useCustomTabs)
+                        openLink("$githubUrl/blob/main/RELEASES.md", ctx, useCustomTabs, usePrivateTabs)
                     },
                 )
                 SettingsDivider()
@@ -89,7 +94,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/issues", ctx, useCustomTabs)
+                        openLink("$githubUrl/issues")
                     },
                 )
                 SettingsMenuLink(
@@ -101,7 +106,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaMatrixChat, ctx, useCustomTabs)
+                        openLink(jerboaMatrixChat)
                     },
                 )
                 SettingsMenuLink(
@@ -113,7 +118,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(donateLink, ctx, useCustomTabs)
+                        openLink(donateLink)
                     },
                 )
                 SettingsDivider()
@@ -128,7 +133,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaLemmyLink, ctx, useCustomTabs)
+                        openLink(jerboaLemmyLink)
                     },
                 )
                 SettingsMenuLink(
@@ -140,7 +145,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(mastodonLink, ctx, useCustomTabs)
+                        openLink(mastodonLink)
                     },
                 )
                 SettingsDivider()
@@ -161,7 +166,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(githubUrl, ctx, useCustomTabs)
+                        openLink(githubUrl)
                     },
                 )
             }
@@ -189,5 +194,5 @@ fun SettingsHeader(
 @Preview
 @Composable
 fun AboutPreview() {
-    AboutActivity(navController = rememberNavController(), useCustomTabs = false)
+    AboutActivity(navController = rememberNavController(), useCustomTabs = false, usePrivateTabs = false)
 }

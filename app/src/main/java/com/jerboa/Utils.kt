@@ -17,7 +17,9 @@ import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TabPosition
@@ -44,8 +46,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -375,10 +375,14 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
-fun openLink(url: String, ctx: Context, useCustomTab: Boolean) {
+fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
-            .build()
+            .build().apply {
+                if (usePrivateTab) {
+                    intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+                }
+            }
         intent.launchUrl(ctx, Uri.parse(url))
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -772,7 +776,7 @@ enum class PostViewMode(val mode: Int) {
     List(R.string.look_and_feel_post_view_list),
 }
 
-@ExperimentalPagerApi
+@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.pagerTabIndicatorOffset2(
     pagerState: PagerState,
     tabPositions: List<TabPosition>,
@@ -786,7 +790,7 @@ fun Modifier.pagerTabIndicatorOffset2(
         val currentTab = tabPositions[currentPage]
         val previousTab = tabPositions.getOrNull(currentPage - 1)
         val nextTab = tabPositions.getOrNull(currentPage + 1)
-        val fraction = pagerState.currentPageOffset
+        val fraction = pagerState.currentPageOffsetFraction
         val indicatorWidth = if (fraction > 0 && nextTab != null) {
             lerp(currentTab.width, nextTab.width, fraction).roundToPx()
         } else if (fraction < 0 && previousTab != null) {
