@@ -255,7 +255,6 @@ fun PostNodeHeader(
 fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
-    onPostLinkClick: (url: String) -> Unit,
     account: Account?,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
@@ -267,7 +266,6 @@ fun PostTitleBlock(
     } else {
         PostTitleAndThumbnail(
             postView = postView,
-            onPostLinkClick = onPostLinkClick,
             account = account,
         )
     }
@@ -335,7 +333,6 @@ fun PostTitleAndImageLink(
 @Composable
 fun PostTitleAndThumbnail(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit,
     account: Account?,
 ) {
     Column(
@@ -363,7 +360,7 @@ fun PostTitleAndThumbnail(
                     }
                 }
             }
-            ThumbnailTile(postView = postView, onPostLinkClick = onPostLinkClick)
+            ThumbnailTile(postView = postView)
         }
     }
 }
@@ -373,7 +370,6 @@ fun PostBody(
     postView: PostView,
     fullBody: Boolean,
     expandedImage: Boolean,
-    onPostLinkClick: (rl: String) -> Unit,
     account: Account?,
 ) {
     val post = postView.post
@@ -383,7 +379,6 @@ fun PostBody(
         PostTitleBlock(
             postView = postView,
             expandedImage = expandedImage,
-            onPostLinkClick = onPostLinkClick,
             account = account,
         )
 
@@ -432,7 +427,6 @@ fun PostBody(
 fun PreviewStoryTitleAndMetadata() {
     PostBody(
         postView = samplePostView,
-        onPostLinkClick = {},
         fullBody = false,
         expandedImage = false,
         account = null,
@@ -662,7 +656,6 @@ fun PreviewPostListingCard() {
         onDownvoteClick = {},
         onReplyClick = {},
         onPostClick = {},
-        onPostLinkClick = {},
         onSaveClick = {},
         onCommunityClick = {},
         onEditPostClick = {},
@@ -690,7 +683,6 @@ fun PreviewLinkPostListing() {
         onDownvoteClick = {},
         onReplyClick = {},
         onPostClick = {},
-        onPostLinkClick = {},
         onSaveClick = {},
         onCommunityClick = {},
         onEditPostClick = {},
@@ -718,7 +710,6 @@ fun PreviewImagePostListingCard() {
         onDownvoteClick = {},
         onReplyClick = {},
         onPostClick = {},
-        onPostLinkClick = {},
         onSaveClick = {},
         onCommunityClick = {},
         onEditPostClick = {},
@@ -746,7 +737,6 @@ fun PreviewImagePostListingSmallCard() {
         onDownvoteClick = {},
         onReplyClick = {},
         onPostClick = {},
-        onPostLinkClick = {},
         onSaveClick = {},
         onCommunityClick = {},
         onEditPostClick = {},
@@ -774,7 +764,6 @@ fun PreviewLinkNoThumbnailPostListing() {
         onDownvoteClick = {},
         onReplyClick = {},
         onPostClick = {},
-        onPostLinkClick = {},
         onSaveClick = {},
         onCommunityClick = {},
         onEditPostClick = {},
@@ -800,7 +789,6 @@ fun PostListing(
     onDownvoteClick: (postView: PostView) -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit,
-    onPostLinkClick: (url: String) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
@@ -851,7 +839,6 @@ fun PostListing(
             },
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
-            onPostLinkClick = onPostLinkClick,
             onSaveClick = onSaveClick,
             onCommunityClick = onCommunityClick,
             onEditPostClick = onEditPostClick,
@@ -888,7 +875,6 @@ fun PostListing(
             },
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
-            onPostLinkClick = onPostLinkClick,
             onSaveClick = onSaveClick,
             onCommunityClick = onCommunityClick,
             onEditPostClick = onEditPostClick,
@@ -924,7 +910,6 @@ fun PostListing(
                 onDownvoteClick(it)
             },
             onPostClick = onPostClick,
-            onPostLinkClick = onPostLinkClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             isModerator = isModerator,
@@ -989,7 +974,6 @@ fun PostListingList(
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
-    onPostLinkClick: (url: String) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
@@ -1090,7 +1074,7 @@ fun PostListingList(
                     )
                 }
             }
-            ThumbnailTile(postView, onPostLinkClick)
+            ThumbnailTile(postView)
         }
     }
 }
@@ -1098,12 +1082,17 @@ fun PostListingList(
 @Composable
 private fun ThumbnailTile(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
+        var showImageDialog by remember { mutableStateOf(false) }
+
+        if (showImageDialog) {
+            ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
+        }
+
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
-            .clickable { onPostLinkClick(url) }
+            .clickable { showImageDialog = true }
 
         postView.post.thumbnail_url?.also { thumbnail ->
             PictrsThumbnailImage(
@@ -1149,7 +1138,6 @@ fun PostListingListPreview() {
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
-        onPostLinkClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         isModerator = false,
@@ -1176,7 +1164,6 @@ fun PostListingListWithThumbPreview() {
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
-        onPostLinkClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         isModerator = false,
@@ -1194,7 +1181,6 @@ fun PostListingCard(
     onDownvoteClick: (postView: PostView) -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit,
-    onPostLinkClick: (url: String) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
@@ -1235,7 +1221,6 @@ fun PostListingCard(
         //  Title + metadata
         PostBody(
             postView = postView,
-            onPostLinkClick = onPostLinkClick,
             fullBody = fullBody,
             expandedImage = expandedImage,
             account = account,

@@ -278,4 +278,9 @@
     <string name="sorttype_topall">PoppisgenomTiderna</string>
     <string name="sorttype_mostcomments">MestKommenterade</string>
     <string name="sorttype_newcomments">NyaKommentarer</string>
+    <string name="bottomBar_label_home">Hem</string>
+    <string name="bottomBar_label_search">Sök</string>
+    <string name="bottomBar_label_inbox">Inkorg</string>
+    <string name="bottomBar_label_bookmarks">Sparad</string>
+    <string name="bottomBar_label_profile">Profil</string>
 </resources>
