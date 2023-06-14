@@ -73,6 +73,7 @@ fun CreatePostActivity(
             }
         }
     }
+
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             topBar = {
