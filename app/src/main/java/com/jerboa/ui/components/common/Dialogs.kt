@@ -1,15 +1,22 @@
 package com.jerboa.ui.components.common
 
+import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.OpenInBrowser
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.BrightnessLow
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.FormatListNumbered
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.LocalFireDepartment
@@ -20,6 +27,8 @@ import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -27,14 +36,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.isImage
+import com.jerboa.saveImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -320,4 +336,82 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
             }
         }
     }
+}
+
+@Composable
+fun PostLinkOptionsDialog(
+    url: String,
+    onDismissRequest: () -> Unit,
+    onOpenInBrowser: () -> Unit,
+) {
+    val isImage = isImage(url)
+
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {},
+        text = {
+            Column {
+                Text(
+                    text = url,
+                    modifier = Modifier
+                        .padding(bottom = 15.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                )
+
+                IconAndTextDrawerItem(
+                    icon = Icons.Filled.OpenInBrowser,
+                    text = "Open in browser",
+                    onClick = {
+                        onOpenInBrowser()
+                        onDismissRequest()
+                    },
+                )
+                IconAndTextDrawerItem(
+                    icon = Icons.Filled.Share,
+                    text = "Share link",
+                    onClick = {
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, url)
+                            type = "text/plain"
+                        }
+
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        ContextCompat.startActivity(context, shareIntent, null)
+
+                        onDismissRequest()
+                    },
+                )
+                IconAndTextDrawerItem(
+                    icon = Icons.Outlined.ContentCopy,
+                    text = "Copy link",
+                    onClick = {
+                        clipboardManager.setText(AnnotatedString(url))
+                        Toast.makeText(context, "URL copied to clipboard", Toast.LENGTH_SHORT).show()
+                        onDismissRequest()
+                    },
+                )
+
+                if (isImage) {
+                    Divider(modifier = Modifier.padding(vertical = 20.dp))
+
+                    IconAndTextDrawerItem(
+                        icon = Icons.Outlined.Download,
+                        text = "Download image",
+                        onClick = {
+                            coroutineScope.launch {
+                                saveImage(url, context)
+                            }
+
+                            onDismissRequest()
+                        },
+                    )
+                }
+            }
+        },
+    )
 }

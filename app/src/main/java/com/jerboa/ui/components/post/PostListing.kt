@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.post
 
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -18,15 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.OpenInBrowser
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
-import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
@@ -48,7 +43,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,7 +55,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -85,7 +78,6 @@ import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
-import com.jerboa.saveImage
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -95,6 +87,7 @@ import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
+import com.jerboa.ui.components.common.PostLinkOptionsDialog
 import com.jerboa.ui.components.common.PreviewLines
 import com.jerboa.ui.components.common.ScoreAndTime
 import com.jerboa.ui.components.common.SimpleTopAppBar
@@ -115,7 +108,6 @@ import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
-import kotlinx.coroutines.launch
 
 @Composable
 fun PostHeaderLine(
@@ -854,78 +846,15 @@ fun PostListing(
         )
     }
 
-    val clipboardManager = LocalClipboardManager.current
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
     var showLinkDialog by remember { mutableStateOf<String?>(null) }
 
     if (showLinkDialog != null) {
         val url = showLinkDialog!!
-        val isImage = isImage(url)
 
-        AlertDialog(
+        PostLinkOptionsDialog(
+            url = url,
             onDismissRequest = { showLinkDialog = null },
-            confirmButton = {},
-            text = {
-                Column {
-                    Text(
-                        text = url,
-                        modifier = Modifier
-                            .padding(bottom = 15.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-
-                    IconAndTextDrawerItem(
-                        icon = Icons.Filled.OpenInBrowser,
-                        text = "Open in browser",
-                        onClick = {
-                            onPostLinkClick(url)
-                            showLinkDialog = null
-                        },
-                    )
-                    IconAndTextDrawerItem(
-                        icon = Icons.Filled.Share,
-                        text = "Share link",
-                        onClick = {
-                            val sendIntent: Intent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, url)
-                                type = "text/plain"
-                            }
-
-                            val shareIntent = Intent.createChooser(sendIntent, null)
-                            startActivity(context, shareIntent, null)
-
-                            showLinkDialog = null
-                        },
-                    )
-                    IconAndTextDrawerItem(
-                        icon = Icons.Outlined.ContentCopy,
-                        text = "Copy link",
-                        onClick = {
-                            clipboardManager.setText(AnnotatedString(url))
-                            Toast.makeText(context, "URL copied to clipboard", Toast.LENGTH_SHORT).show()
-                            showLinkDialog = null
-                        },
-                    )
-
-                    if (isImage) {
-                        Divider(modifier = Modifier.padding(vertical = 20.dp))
-
-                        IconAndTextDrawerItem(
-                            icon = Icons.Outlined.Download,
-                            text = "Download image",
-                            onClick = {
-                                coroutineScope.launch {
-                                    saveImage(url, context)
-                                }
-                                showLinkDialog = null
-                            },
-                        )
-                    }
-                }
-            },
+            onOpenInBrowser = { onPostLinkClick(url) },
         )
     }
 
