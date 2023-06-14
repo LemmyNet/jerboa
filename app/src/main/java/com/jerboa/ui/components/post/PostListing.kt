@@ -1,7 +1,10 @@
 package com.jerboa.ui.components.post
 
+import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,10 +18,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.OpenInBrowser
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
@@ -53,6 +59,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -255,6 +262,7 @@ fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
     onPostLinkClick: (url: String) -> Unit,
+    onPostLinkLongClick: (url: String) -> Unit,
     account: Account?,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
@@ -267,6 +275,7 @@ fun PostTitleBlock(
         PostTitleAndThumbnail(
             postView = postView,
             onPostLinkClick = onPostLinkClick,
+            onPostLinkLongClick = onPostLinkLongClick,
             account = account,
         )
     }
@@ -334,6 +343,7 @@ fun PostTitleAndImageLink(
 fun PostTitleAndThumbnail(
     postView: PostView,
     onPostLinkClick: (url: String) -> Unit,
+    onPostLinkLongClick: (url: String) -> Unit,
     account: Account?,
 ) {
     Column(
@@ -361,7 +371,11 @@ fun PostTitleAndThumbnail(
                     }
                 }
             }
-            ThumbnailTile(postView = postView, onPostLinkClick = onPostLinkClick)
+            ThumbnailTile(
+                postView = postView,
+                onPostLinkClick = onPostLinkClick,
+                onPostLinkLongClick = onPostLinkLongClick,
+            )
         }
     }
 }
@@ -372,6 +386,7 @@ fun PostBody(
     fullBody: Boolean,
     expandedImage: Boolean,
     onPostLinkClick: (rl: String) -> Unit,
+    onPostLinkLongClick: (rl: String) -> Unit,
     account: Account?,
 ) {
     val post = postView.post
@@ -382,6 +397,7 @@ fun PostBody(
             postView = postView,
             expandedImage = expandedImage,
             onPostLinkClick = onPostLinkClick,
+            onPostLinkLongClick = onPostLinkLongClick,
             account = account,
         )
 
@@ -431,6 +447,7 @@ fun PreviewStoryTitleAndMetadata() {
     PostBody(
         postView = samplePostView,
         onPostLinkClick = {},
+        onPostLinkLongClick = {},
         fullBody = false,
         expandedImage = false,
         account = null,
@@ -791,6 +808,7 @@ fun PreviewLinkNoThumbnailPostListing() {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostListing(
     postView: PostView,
@@ -829,6 +847,65 @@ fun PostListing(
         )
     }
 
+    val clipboardManager = LocalClipboardManager.current
+    var context = LocalContext.current
+
+    var showLinkDialog by remember { mutableStateOf<String?>(null) }
+
+    if (showLinkDialog != null) {
+        val url = showLinkDialog!!
+
+        AlertDialog(
+            onDismissRequest = { showLinkDialog = null },
+            confirmButton = {},
+            text = {
+                Column {
+                    Text(
+                        text = url,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(bottom = 15.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+
+                    IconAndTextDrawerItem(
+                        icon = Icons.Filled.OpenInBrowser,
+                        text = "Open in browser",
+                        onClick = {
+                            onPostLinkClick(url)
+                            showLinkDialog = null
+                        },
+                    )
+                    IconAndTextDrawerItem(
+                        icon = Icons.Filled.Share,
+                        text = "Share link",
+                        onClick = {
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, url)
+                                type = "text/plain"
+                            }
+
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            startActivity(context, shareIntent, null)
+
+                            showLinkDialog = null
+                        },
+                    )
+                    IconAndTextDrawerItem(
+                        icon = Icons.Outlined.ContentCopy,
+                        text = "Copy link",
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString(url))
+                            Toast.makeText(context, "URL copied to clipboard", Toast.LENGTH_SHORT).show()
+                            showLinkDialog = null
+                        },
+                    )
+                }
+            },
+        )
+    }
+
     when (postViewMode) {
         PostViewMode.Card -> PostListingCard(
             postView = postView,
@@ -850,6 +927,7 @@ fun PostListing(
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
             onPostLinkClick = onPostLinkClick,
+            onPostLinkLongClick = { showLinkDialog = it },
             onSaveClick = onSaveClick,
             onCommunityClick = onCommunityClick,
             onEditPostClick = onEditPostClick,
@@ -887,6 +965,7 @@ fun PostListing(
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
             onPostLinkClick = onPostLinkClick,
+            onPostLinkLongClick = { showLinkDialog = it },
             onSaveClick = onSaveClick,
             onCommunityClick = onCommunityClick,
             onEditPostClick = onEditPostClick,
@@ -988,6 +1067,7 @@ fun PostListingList(
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     onPostLinkClick: (url: String) -> Unit,
+    onPostLinkLongClick: (url: String) -> Unit = { },
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
@@ -1088,20 +1168,25 @@ fun PostListingList(
                     )
                 }
             }
-            ThumbnailTile(postView, onPostLinkClick)
+            ThumbnailTile(postView, onPostLinkClick, onPostLinkLongClick)
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ThumbnailTile(
     postView: PostView,
     onPostLinkClick: (url: String) -> Unit,
+    onPostLinkLongClick: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
-            .clickable { onPostLinkClick(url) }
+            .combinedClickable(
+                onLongClick = { onPostLinkLongClick(url) },
+                onClick = { onPostLinkClick(url) },
+            )
 
         postView.post.thumbnail_url?.also { thumbnail ->
             PictrsThumbnailImage(
@@ -1193,6 +1278,7 @@ fun PostListingCard(
     onReplyClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit,
     onPostLinkClick: (url: String) -> Unit,
+    onPostLinkLongClick: (url: String) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
@@ -1233,6 +1319,7 @@ fun PostListingCard(
         PostBody(
             postView = postView,
             onPostLinkClick = onPostLinkClick,
+            onPostLinkLongClick = onPostLinkLongClick,
             fullBody = fullBody,
             expandedImage = expandedImage,
             account = account,
