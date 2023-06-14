@@ -2,42 +2,28 @@ package com.jerboa.ui.components.person
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import arrow.core.Either
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
@@ -53,6 +39,7 @@ import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
 import com.jerboa.newVote
@@ -89,6 +76,8 @@ fun PersonProfileActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -182,10 +171,14 @@ fun PersonProfileActivity(
                 commentReplyViewModel = commentReplyViewModel,
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
+                showVotingArrowsInListView = showVotingArrowsInListView,
+                enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
             )
         },
         bottomBar = {
             BottomAppBarAll(
+                showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
                 screen = bottomAppBarScreen,
                 unreadCount = siteViewModel.getUnreadCountTotal(),
                 onClickProfile = {
@@ -219,7 +212,7 @@ enum class UserTab {
     Comments,
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun UserTabs(
     savedMode: Boolean,
@@ -234,11 +227,17 @@ fun UserTabs(
     postEditViewModel: PostEditViewModel,
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
+    enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     val tabTitles = if (savedMode) {
-        listOf(UserTab.Posts.name, UserTab.Comments.name)
+        listOf(
+            getLocalizedStringForUserTab(ctx, UserTab.Posts),
+            getLocalizedStringForUserTab(ctx, UserTab.Comments),
+        )
     } else {
-        UserTab.values().map { it.toString() }
+        UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
     }
     val pagerState = rememberPagerState()
 
@@ -269,7 +268,7 @@ fun UserTabs(
             }
         }
         HorizontalPager(
-            count = tabTitles.size,
+            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),
@@ -304,7 +303,7 @@ fun UserTabs(
                                 if (moderates.isNotEmpty()) {
                                     item {
                                         Text(
-                                            text = "Moderates",
+                                            text = stringResource(R.string.person_profile_activity_moderates),
                                             style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier.padding(MEDIUM_PADDING),
                                         )

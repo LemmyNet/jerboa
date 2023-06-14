@@ -10,7 +10,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -59,6 +59,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -66,15 +67,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
-import com.jerboa.ui.theme.MARKDOWN_FONT_MULTIPLIER
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -137,15 +137,14 @@ fun MarkdownTextField(
                     keyboardType = KeyboardType.Text,
                     // autoCorrect = true,
                 ),
-                // TODO see how this changed to colors?
-//                colors = TextFieldDefaults.colors(
-//                )
-//                colors = TextFieldDefaults.textFieldColors(
-//                    textColor = MaterialTheme.colorScheme.onSurface,
-//                    containerColor = Color.Transparent,
-//                    focusedIndicatorColor = Color.Transparent,
-//                    unfocusedIndicatorColor = Color.Transparent,
-//                ),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
             )
         }
 
@@ -259,7 +258,7 @@ fun CreateLinkDialog(
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
                 Text(
-                    text = "Insert link",
+                    text = stringResource(R.string.input_fields_insert_link),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -267,7 +266,7 @@ fun CreateLinkDialog(
                     value = text,
                     onValueChange = { text = it },
                     label = {
-                        Text(text = "Text")
+                        Text(text = stringResource(R.string.input_fields_text))
                     },
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -275,7 +274,7 @@ fun CreateLinkDialog(
                     value = link,
                     onValueChange = { link = it },
                     label = {
-                        Text(text = "Link")
+                        Text(text = stringResource(R.string.input_fields_link))
                     },
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -286,7 +285,7 @@ fun CreateLinkDialog(
                 onClick = onDismissRequest,
             ) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.input_fields_cancel),
                     color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
@@ -306,7 +305,7 @@ fun CreateLinkDialog(
                 },
             ) {
                 Text(
-                    text = "OK",
+                    text = stringResource(R.string.input_fields_ok),
                 )
             }
         },
@@ -326,6 +325,7 @@ fun ShowPreviewDialog(
             ) {
                 MyMarkdownText(
                     markdown = content,
+                    onClick = {},
                 )
             }
         },
@@ -334,7 +334,7 @@ fun ShowPreviewDialog(
                 onClick = onDismissRequest,
             ) {
                 Text(
-                    text = "OK",
+                    text = stringResource(R.string.input_fields_ok),
                     color = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
@@ -454,7 +454,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Preview,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_preview),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -463,7 +463,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Link,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertLink),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -478,7 +478,7 @@ fun MarkdownHelperBar(
             } else {
                 Icon(
                     imageVector = Icons.Outlined.Image,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.markdownHelper_insertImage),
                     tint = MaterialTheme.colorScheme.onBackground.muted,
                 )
             }
@@ -488,7 +488,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatBold,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatBold),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -497,7 +497,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatItalic,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatItalic),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -506,7 +506,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatQuote,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertQuote),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -515,7 +515,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatListBulleted,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertList),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -524,7 +524,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Title,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertHeader),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -533,7 +533,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Code,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_insertCode),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -542,7 +542,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatStrikethrough,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatStrikethrough),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -551,7 +551,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Subscript,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatSubscript),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -560,7 +560,7 @@ fun MarkdownHelperBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Superscript,
-                contentDescription = "TODO",
+                contentDescription = stringResource(R.string.markdownHelper_formatSuperscript),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -573,12 +573,16 @@ fun MyCheckBox(
     enabled: Boolean = true,
     label: String,
     onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+        .padding(SMALL_PADDING)
+        .fillMaxWidth(),
 ) {
     Row(
-        modifier = Modifier.padding(SMALL_PADDING),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = label)
+        Spacer(modifier = Modifier.weight(1.0f))
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
@@ -608,7 +612,9 @@ fun MyDropDown(
         TextField(
             readOnly = true,
             value = selectedText,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
             onValueChange = { },
             label = { Text(label) },
             trailingIcon = {
@@ -678,14 +684,14 @@ fun PreviewLines(
 fun MyMarkdownText(
     markdown: String,
     color: Color = MaterialTheme.colorScheme.onSurface,
+    onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
 ) {
-    MarkdownText(
+    MarkdownHelper.CreateMarkdownView(
         markdown = markdown,
-        modifier = Modifier.fillMaxSize(),
         color = color,
-        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(MARKDOWN_FONT_MULTIPLIER),
-//        style = MaterialTheme.typography.titleLarge,
-//        imageLoader =  LocalImageLoader.current
+        onClick = onClick,
+        onLongClick = onLongClick,
     )
 }
 

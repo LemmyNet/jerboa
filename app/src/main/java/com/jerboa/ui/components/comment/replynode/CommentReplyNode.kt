@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
@@ -31,8 +32,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.datatypes.types.CommentReplyView
@@ -56,7 +59,9 @@ fun CommentReplyNodeHeader(
     onPersonClick: (personId: Int) -> Unit,
     score: Int,
     myVote: Int?,
-    onLongClick: () -> Unit = {},
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    showAvatar: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
@@ -69,7 +74,9 @@ fun CommentReplyNodeHeader(
         isPostCreator = false,
         isModerator = false,
         isCommunityBanned = commentReplyView.creator_banned_from_community,
-        onLongClick = onLongClick,
+        onClick = onClick,
+        onLongCLick = onLongClick,
+        showAvatar = showAvatar,
     )
 }
 
@@ -81,6 +88,9 @@ fun CommentReplyNodeHeaderPreview() {
         score = 23,
         myVote = 26,
         onPersonClick = {},
+        onClick = {},
+        onLongClick = {},
+        showAvatar = true,
     )
 }
 
@@ -92,6 +102,7 @@ fun CommentReplyNodeFooterLine(
     onReplyClick: (commentReplyView: CommentReplyView) -> Unit,
     onSaveClick: (commentReplyView: CommentReplyView) -> Unit,
     onMarkAsReadClick: (commentReplyView: CommentReplyView) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
@@ -107,6 +118,10 @@ fun CommentReplyNodeFooterLine(
         CommentReplyNodeOptionsDialog(
             commentReplyView = commentReplyView,
             onDismissRequest = { showMoreOptions = false },
+            onPersonClick = {
+                showMoreOptions = false
+                onPersonClick(commentReplyView.creator.id)
+            },
             onViewSourceClick = {
                 showMoreOptions = false
                 onViewSourceClick()
@@ -151,6 +166,7 @@ fun CommentReplyNodeFooterLine(
             )
             ActionBarButton(
                 icon = Icons.Outlined.Link,
+                contentDescription = stringResource(R.string.commentReply_link),
                 onClick = { onCommentLinkClick(commentReplyView) },
                 account = account,
             )
@@ -159,6 +175,11 @@ fun CommentReplyNodeFooterLine(
                     Icons.Outlined.MarkChatRead
                 } else {
                     Icons.Outlined.MarkChatUnread
+                },
+                contentDescription = if (commentReplyView.comment_reply.read) {
+                    stringResource(R.string.markUnread)
+                } else {
+                    stringResource(R.string.markRead)
                 },
                 onClick = { onMarkAsReadClick(commentReplyView) },
                 contentColor = if (commentReplyView.comment_reply.read) {
@@ -172,6 +193,11 @@ fun CommentReplyNodeFooterLine(
                 icon = if (commentReplyView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
                 },
+                contentDescription = if (commentReplyView.saved) {
+                    stringResource(R.string.comment_unsave)
+                } else {
+                    stringResource(R.string.comment_save)
+                },
                 onClick = { onSaveClick(commentReplyView) },
                 contentColor = if (commentReplyView.saved) {
                     MaterialTheme.colorScheme.primary
@@ -184,14 +210,17 @@ fun CommentReplyNodeFooterLine(
             if (commentReplyView.creator.id != account?.id) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(commentReplyView) },
                     account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
+                contentDescription = stringResource(R.string.moreOptions),
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
+                requiresAccount = false,
             )
         }
     }
@@ -201,6 +230,7 @@ fun CommentReplyNodeFooterLine(
 fun CommentReplyNodeOptionsDialog(
     commentReplyView: CommentReplyView,
     onDismissRequest: () -> Unit,
+    onPersonClick: () -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
@@ -214,28 +244,43 @@ fun CommentReplyNodeOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "View Source",
+                    text = stringResource(
+                        R.string.comment_reply_node_go_to,
+                        commentReplyView.creator.name,
+                    ),
+                    icon = Icons.Outlined.Person,
+                    onClick = onPersonClick,
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.comment_reply_node_view_source),
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Copy Permalink",
+                    text = stringResource(R.string.comment_reply_node_copy_permalink),
                     icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = commentReplyView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_reply_node_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Report Comment",
+                        text = stringResource(R.string.comment_reply_node_report_comment),
                         icon = Icons.Outlined.Flag,
                         onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${commentReplyView.creator.name}",
+                        text = stringResource(
+                            R.string.comment_reply_node_block,
+                            commentReplyView.creator.name,
+                        ),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,
                     )
@@ -259,8 +304,9 @@ fun CommentReplyNode(
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
-    onBlockCreatorClick: (creator: Person) -> Unit,
+    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     account: Account?,
+    showAvatar: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = commentReplyView.counts.score
@@ -270,6 +316,7 @@ fun CommentReplyNode(
 
     var viewSource by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(true) }
+    var isActionBarExpanded by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier.padding(horizontal = LARGE_PADDING),
@@ -286,9 +333,13 @@ fun CommentReplyNode(
             onPersonClick = onPersonClick,
             score = score,
             myVote = myVote,
-            onLongClick = {
+            onClick = {
                 isExpanded = !isExpanded
             },
+            onLongClick = {
+                isActionBarExpanded = !isActionBarExpanded
+            },
+            showAvatar = showAvatar,
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -299,29 +350,40 @@ fun CommentReplyNode(
                 CommentBody(
                     comment = commentReplyView.comment,
                     viewSource = viewSource,
+                    onClick = {},
+                    onLongClick = {
+                        isActionBarExpanded = !isActionBarExpanded
+                    },
                 )
-                CommentReplyNodeFooterLine(
-                    commentReplyView = commentReplyView,
-                    onUpvoteClick = {
-                        onUpvoteClick(it)
-                    },
-                    onDownvoteClick = {
-                        onDownvoteClick(it)
-                    },
-                    onViewSourceClick = {
-                        viewSource = !viewSource
-                    },
-                    onReplyClick = onReplyClick,
-                    onSaveClick = onSaveClick,
-                    onMarkAsReadClick = onMarkAsReadClick,
-                    onReportClick = onReportClick,
-                    onCommentLinkClick = onCommentLinkClick,
-                    onBlockCreatorClick = onBlockCreatorClick,
-                    myVote = myVote,
-                    upvotes = upvotes,
-                    downvotes = downvotes,
-                    account = account,
-                )
+                AnimatedVisibility(
+                    visible = isActionBarExpanded,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
+                    CommentReplyNodeFooterLine(
+                        commentReplyView = commentReplyView,
+                        onUpvoteClick = {
+                            onUpvoteClick(it)
+                        },
+                        onDownvoteClick = {
+                            onDownvoteClick(it)
+                        },
+                        onPersonClick = onPersonClick,
+                        onViewSourceClick = {
+                            viewSource = !viewSource
+                        },
+                        onReplyClick = onReplyClick,
+                        onSaveClick = onSaveClick,
+                        onMarkAsReadClick = onMarkAsReadClick,
+                        onReportClick = onReportClick,
+                        onCommentLinkClick = onCommentLinkClick,
+                        onBlockCreatorClick = onBlockCreatorClick,
+                        myVote = myVote,
+                        upvotes = upvotes,
+                        downvotes = downvotes,
+                        account = account,
+                    )
+                }
             }
         }
     }

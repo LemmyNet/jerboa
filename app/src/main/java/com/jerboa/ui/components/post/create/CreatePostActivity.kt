@@ -136,10 +136,12 @@ fun CreatePostActivity(
                     siteMetadataRes = createPostViewModel.siteMetadataRes,
                     image = initialImage,
                     onPickedImage = { uri ->
-                        val imageIs = imageInputStreamFromUri(ctx, uri)
-                        scope.launch {
-                            account?.also { acct ->
-                                url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                        if (uri != Uri.EMPTY) {
+                            val imageIs = imageInputStreamFromUri(ctx, uri)
+                            scope.launch {
+                                account?.also { acct ->
+                                    url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                                }
                             }
                         }
                     },

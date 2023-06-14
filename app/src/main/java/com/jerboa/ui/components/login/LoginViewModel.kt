@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -41,6 +42,7 @@ class LoginViewModel : ViewModel() {
         homeViewModel: HomeViewModel,
         ctx: Context,
     ) {
+        val originalInstance = API.currentInstance
         val api = API.changeLemmyInstance(instance)
         var jwt: String
 
@@ -52,25 +54,30 @@ class LoginViewModel : ViewModel() {
                     // to be checked,
                 } catch (e: java.net.UnknownHostException) {
                     loading = false
-                    val msg = "$instance is not a Lemmy Instance"
+                    val msg = ctx.getString(
+                        R.string.login_view_model_is_not_a_lemmy_instance,
+                        instance,
+                    )
                     Log.e("login", e.toString())
                     Toast.makeText(
                         ctx,
                         msg,
                         Toast.LENGTH_SHORT,
                     ).show()
+                    API.changeLemmyInstance(originalInstance)
                     this.cancel()
                     return@launch
                 }
             } catch (e: Exception) {
                 loading = false
-                val msg = "Incorrect Login"
+                val msg = ctx.getString(R.string.login_view_model_incorrect_login)
                 Log.e("login", e.toString())
                 Toast.makeText(
                     ctx,
                     msg,
                     Toast.LENGTH_SHORT,
                 ).show()
+                API.changeLemmyInstance(originalInstance)
                 this.cancel()
                 return@launch
             }

@@ -4,11 +4,16 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,6 +29,7 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
@@ -42,11 +48,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.Border
 import com.jerboa.CommentNodeData
 import com.jerboa.InstantScores
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.border
 import com.jerboa.buildCommentsTree
@@ -64,6 +72,7 @@ import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
+import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.components.community.CommunityLink
@@ -81,7 +90,11 @@ fun CommentNodeHeader(
     score: Int,
     myVote: Int?,
     isModerator: Boolean,
-    onLongClick: () -> Unit = {},
+    collapsedCommentsCount: Int,
+    isExpanded: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    showAvatar: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -94,7 +107,11 @@ fun CommentNodeHeader(
         isPostCreator = isPostCreator(commentView),
         isModerator = isModerator,
         isCommunityBanned = commentView.creator_banned_from_community,
-        onLongClick = onLongClick,
+        collapsedCommentsCount = collapsedCommentsCount,
+        isExpanded = isExpanded,
+        onClick = onClick,
+        onLongCLick = onLongClick,
+        showAvatar = showAvatar,
     )
 }
 
@@ -107,18 +124,26 @@ fun CommentNodeHeaderPreview() {
         myVote = 26,
         isModerator = false,
         onPersonClick = {},
+        onClick = {},
+        onLongClick = {},
+        collapsedCommentsCount = 5,
+        isExpanded = false,
+        showAvatar = true,
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentBody(
     comment: Comment,
     viewSource: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
 ) {
     val content = if (comment.removed) {
-        "*Removed*"
+        stringResource(R.string.comment_body_removed)
     } else if (comment.deleted) {
-        "*Deleted*"
+        stringResource(R.string.comment_body_deleted)
     } else {
         comment.content
     }
@@ -127,17 +152,30 @@ fun CommentBody(
         SelectionContainer {
             Text(
                 text = comment.content,
+                modifier = Modifier.combinedClickable(
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                ),
             )
         }
     } else {
-        MyMarkdownText(markdown = content)
+        MyMarkdownText(
+            markdown = content,
+            onClick = onClick,
+            onLongClick = onLongClick,
+        )
     }
 }
 
 @Preview
 @Composable
 fun CommentBodyPreview() {
-    CommentBody(comment = sampleCommentView.comment, viewSource = false)
+    CommentBody(
+        comment = sampleCommentView.comment,
+        viewSource = false,
+        onClick = {},
+        onLongClick = {},
+    )
 }
 
 fun LazyListScope.commentNodeItem(
@@ -145,6 +183,7 @@ fun LazyListScope.commentNodeItem(
     isFlat: Boolean,
     isExpanded: (commentId: Int) -> Boolean,
     toggleExpanded: (commentId: Int) -> Unit,
+    toggleActionBar: (commentId: Int) -> Unit,
     moderators: List<CommunityModeratorView>,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
@@ -160,8 +199,13 @@ fun LazyListScope.commentNodeItem(
     onCommentLinkClick: (commentView: CommentView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
+    showCollapsedCommentContent: Boolean,
     showPostAndCommunityContext: Boolean = false,
     account: Account?,
+    isCollapsedByParent: Boolean,
+    showActionBar: (commentId: Int) -> Boolean,
+    enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -193,79 +237,112 @@ fun LazyListScope.commentNodeItem(
             )
         }
 
-        Column(
-            modifier = Modifier
-                .padding(
-                    start = offset,
-                ),
+        AnimatedVisibility(
+            visible = !isCollapsedByParent,
+            enter = expandVertically(),
+            exit = shrinkVertically(),
         ) {
-            Divider()
             Column(
-                modifier = Modifier.border(start = border),
-            ) {
-                Column(
-                    modifier = Modifier.padding(
-                        start = offset2,
-                        end = MEDIUM_PADDING,
+                modifier = Modifier
+                    .padding(
+                        start = offset,
                     ),
+            ) {
+                Divider()
+                Column(
+                    modifier = Modifier.border(start = border),
                 ) {
-                    if (showPostAndCommunityContext) {
-                        PostAndCommunityContextHeader(
-                            post = commentView.post,
-                            community = commentView.community,
-                            onCommunityClick = onCommunityClick,
-                            onPostClick = onPostClick,
-                        )
-                    }
-                    CommentNodeHeader(
-                        commentView = commentView,
-                        onPersonClick = onPersonClick,
-                        score = instantScores.value.score,
-                        myVote = instantScores.value.myVote,
-                        isModerator = isModerator(commentView.creator, moderators),
-                        onLongClick = {
-                            toggleExpanded(commentId)
-                        },
-                    )
-                    AnimatedVisibility(
-                        visible = isExpanded(commentId),
-                        enter = expandVertically(),
-                        exit = shrinkVertically(),
+                    Column(
+                        modifier = Modifier.padding(
+                            start = offset2,
+                            end = MEDIUM_PADDING,
+                        ),
                     ) {
-                        Column {
-                            CommentBody(
-                                comment = commentView.comment,
-                                viewSource = viewSource,
+                        if (showPostAndCommunityContext) {
+                            PostAndCommunityContextHeader(
+                                post = commentView.post,
+                                community = commentView.community,
+                                onCommunityClick = onCommunityClick,
+                                onPostClick = onPostClick,
                             )
-                            CommentFooterLine(
-                                commentView = commentView,
-                                instantScores = instantScores.value,
-                                onUpvoteClick = {
-                                    instantScores.value = calculateNewInstantScores(
-                                        instantScores.value,
-                                        voteType = VoteType.Upvote,
+                        }
+                        CommentNodeHeader(
+                            commentView = commentView,
+                            onPersonClick = onPersonClick,
+                            score = instantScores.value.score,
+                            myVote = instantScores.value.myVote,
+                            isModerator = isModerator(commentView.creator, moderators),
+                            onClick = {
+                                toggleExpanded(commentId)
+                            },
+                            onLongClick = {
+                                toggleActionBar(commentId)
+                            },
+                            collapsedCommentsCount = node.commentView.counts.child_count,
+                            isExpanded = isExpanded(commentId),
+                            showAvatar = showAvatar,
+                        )
+                        AnimatedVisibility(
+                            visible = isExpanded(commentId) || showCollapsedCommentContent,
+                            enter = expandVertically(),
+                            exit = shrinkVertically(),
+                        ) {
+                            Column {
+                                CommentBody(
+                                    comment = commentView.comment,
+                                    viewSource = viewSource,
+                                    onClick = {
+                                        toggleExpanded(commentId)
+                                    },
+                                    onLongClick = {
+                                        toggleActionBar(commentId)
+                                    },
+                                )
+                                Spacer(modifier = Modifier.height(MEDIUM_PADDING))
+                                AnimatedVisibility(
+                                    visible = showActionBar(commentId),
+                                    enter = expandVertically(),
+                                    exit = shrinkVertically(),
+                                ) {
+                                    CommentFooterLine(
+                                        commentView = commentView,
+                                        instantScores = instantScores.value,
+                                        onUpvoteClick = {
+                                            instantScores.value = calculateNewInstantScores(
+                                                instantScores.value,
+                                                voteType = VoteType.Upvote,
+                                            )
+                                            onUpvoteClick(it)
+                                        },
+                                        onDownvoteClick = {
+                                            instantScores.value = calculateNewInstantScores(
+                                                instantScores.value,
+                                                voteType = VoteType.Downvote,
+                                            )
+                                            onDownvoteClick(it)
+                                        },
+                                        onViewSourceClick = {
+                                            viewSource = !viewSource
+                                        },
+                                        onEditCommentClick = onEditCommentClick,
+                                        onDeleteCommentClick = onDeleteCommentClick,
+                                        onReplyClick = onReplyClick,
+                                        onSaveClick = onSaveClick,
+                                        onReportClick = onReportClick,
+                                        onCommentLinkClick = onCommentLinkClick,
+                                        onPersonClick = onPersonClick,
+                                        onBlockCreatorClick = onBlockCreatorClick,
+                                        onClick = {
+                                            toggleExpanded(commentId)
+                                        },
+                                        onLongClick = {
+                                            toggleActionBar(commentId)
+                                        },
+                                        account = account,
+                                        enableDownVotes = enableDownVotes,
                                     )
-                                    onUpvoteClick(it)
-                                },
-                                onDownvoteClick = {
-                                    instantScores.value = calculateNewInstantScores(
-                                        instantScores.value,
-                                        voteType = VoteType.Downvote,
-                                    )
-                                    onDownvoteClick(it)
-                                },
-                                onViewSourceClick = {
-                                    viewSource = !viewSource
-                                },
-                                onEditCommentClick = onEditCommentClick,
-                                onDeleteCommentClick = onDeleteCommentClick,
-                                onReplyClick = onReplyClick,
-                                onSaveClick = onSaveClick,
-                                onReportClick = onReportClick,
-                                onCommentLinkClick = onCommentLinkClick,
-                                onBlockCreatorClick = onBlockCreatorClick,
-                                account = account,
-                            )
+                                }
+                            }
                         }
                     }
                 }
@@ -273,38 +350,46 @@ fun LazyListScope.commentNodeItem(
         }
     }
 
-    if (showMoreChildren) {
-        item(key = "${commentId}_children") {
-            ShowMoreChildrenNode(node.depth, commentView, onFetchChildrenClick)
+    item(key = "${commentId}_show_more_children") {
+        AnimatedVisibility(
+            visible = showMoreChildren,
+            enter = expandVertically(),
+            exit = shrinkVertically(),
+        ) {
+            ShowMoreChildrenNode(node.depth, commentView, onFetchChildrenClick, isCollapsedByParent || !isExpanded(commentId))
         }
     }
 
-    if (isExpanded(commentId)) {
-        node.children?.also { nodes ->
-            commentNodeItems(
-                nodes = nodes,
-                isFlat = isFlat,
-                toggleExpanded = toggleExpanded,
-                isExpanded = isExpanded,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                onSaveClick = onSaveClick,
-                onMarkAsReadClick = onMarkAsReadClick,
-                onEditCommentClick = onEditCommentClick,
-                onDeleteCommentClick = onDeleteCommentClick,
-                onPersonClick = onPersonClick,
-                onCommunityClick = onCommunityClick,
-                onPostClick = onPostClick,
-                showPostAndCommunityContext = showPostAndCommunityContext,
-                onReportClick = onReportClick,
-                onCommentLinkClick = onCommentLinkClick,
-                onFetchChildrenClick = onFetchChildrenClick,
-                onReplyClick = onReplyClick,
-                onBlockCreatorClick = onBlockCreatorClick,
-                account = account,
-                moderators = moderators,
-            )
-        }
+    node.children?.also { nodes ->
+        commentNodeItems(
+            nodes = nodes,
+            isFlat = isFlat,
+            toggleExpanded = toggleExpanded,
+            toggleActionBar = toggleActionBar,
+            isExpanded = isExpanded,
+            onUpvoteClick = onUpvoteClick,
+            onDownvoteClick = onDownvoteClick,
+            onSaveClick = onSaveClick,
+            onMarkAsReadClick = onMarkAsReadClick,
+            onEditCommentClick = onEditCommentClick,
+            onDeleteCommentClick = onDeleteCommentClick,
+            onPersonClick = onPersonClick,
+            onCommunityClick = onCommunityClick,
+            onPostClick = onPostClick,
+            showPostAndCommunityContext = showPostAndCommunityContext,
+            onReportClick = onReportClick,
+            onCommentLinkClick = onCommentLinkClick,
+            onFetchChildrenClick = onFetchChildrenClick,
+            onReplyClick = onReplyClick,
+            onBlockCreatorClick = onBlockCreatorClick,
+            account = account,
+            moderators = moderators,
+            isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
+            showCollapsedCommentContent = showCollapsedCommentContent,
+            showActionBar = showActionBar,
+            enableDownVotes = enableDownVotes,
+            showAvatar = showAvatar,
+        )
     }
 }
 
@@ -313,6 +398,7 @@ private fun ShowMoreChildrenNode(
     depth: Int,
     commentView: CommentView,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
+    isCollapsedByParent: Boolean,
 ) {
     val newDepth = depth + 1
 
@@ -327,23 +413,29 @@ private fun ShowMoreChildrenNode(
     val borderColor = calculateBorderColor(backgroundColor, newDepth)
     val border = Border(SMALL_PADDING, borderColor)
 
-    Column(
-        modifier = Modifier
-            .padding(
-                start = offset,
-            ),
+    AnimatedVisibility(
+        visible = !isCollapsedByParent,
+        enter = expandVertically(),
+        exit = shrinkVertically(),
     ) {
-        Divider()
         Column(
-            modifier = Modifier.border(start = border),
+            modifier = Modifier
+                .padding(
+                    start = offset,
+                ),
         ) {
+            Divider()
             Column(
-                modifier = Modifier.padding(start = offset2, end = MEDIUM_PADDING),
+                modifier = Modifier.border(start = border),
             ) {
-                ShowMoreChildren(
-                    commentView = commentView,
-                    onFetchChildrenClick = onFetchChildrenClick,
-                )
+                Column(
+                    modifier = Modifier.padding(start = offset2, end = MEDIUM_PADDING),
+                ) {
+                    ShowMoreChildren(
+                        commentView = commentView,
+                        onFetchChildrenClick = onFetchChildrenClick,
+                    )
+                }
             }
         }
     }
@@ -352,8 +444,8 @@ private fun ShowMoreChildrenNode(
 @Composable
 fun PostAndCommunityContextHeader(
     post: Post,
-    community: Community,
-    onCommunityClick: (community: Community) -> Unit,
+    community: CommunitySafe,
+    onCommunityClick: (community: CommunitySafe) -> Unit,
     onPostClick: (postId: Int) -> Unit,
 ) {
     Column(
@@ -367,10 +459,11 @@ fun PostAndCommunityContextHeader(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = "in ", color = MaterialTheme.colorScheme.onBackground.muted)
+            Text(text = stringResource(R.string.comment_node_in), color = MaterialTheme.colorScheme.onBackground.muted)
             CommunityLink(
                 community = community,
                 onClick = onCommunityClick,
+                showDefaultIcon = false,
             )
         }
     }
@@ -387,9 +480,11 @@ fun PostAndCommunityContextHeaderPreview() {
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentFooterLine(
     commentView: CommentView,
+    enableDownVotes: Boolean,
     instantScores: InstantScores,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
@@ -400,7 +495,10 @@ fun CommentFooterLine(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
-    onBlockCreatorClick: (creator: Person) -> Unit,
+    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
     account: Account?,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -433,6 +531,10 @@ fun CommentFooterLine(
                 showMoreOptions = false
                 onCommentLinkClick(commentView)
             },
+            onPersonClick = {
+                showMoreOptions = false
+                onPersonClick(commentView.creator.id)
+            },
             isCreator = account?.id == commentView.creator.id,
         )
     }
@@ -441,7 +543,13 @@ fun CommentFooterLine(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING)
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick,
+                onLongClick = onLongClick,
+            ),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -455,17 +563,24 @@ fun CommentFooterLine(
                 showNumber = (instantScores.downvotes != 0),
                 account = account,
             )
-            VoteGeneric(
-                myVote = instantScores.myVote,
-                votes = instantScores.downvotes,
-                item = commentView,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (enableDownVotes) {
+                VoteGeneric(
+                    myVote = instantScores.myVote,
+                    votes = instantScores.downvotes,
+                    item = commentView,
+                    type = VoteType.Downvote,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = if (commentView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
+                },
+                contentDescription = if (commentView.saved) {
+                    stringResource(R.string.removeBookmark)
+                } else {
+                    stringResource(R.string.addBookmark)
                 },
                 onClick = { onSaveClick(commentView) },
                 contentColor = if (commentView.saved) {
@@ -475,18 +590,18 @@ fun CommentFooterLine(
                 },
                 account = account,
             )
-            // Don't let you respond to your own comment.
-            if (commentView.creator.id != account?.id) {
-                ActionBarButton(
-                    icon = Icons.Outlined.Textsms,
-                    onClick = { onReplyClick(commentView) },
-                    account = account,
-                )
-            }
+            ActionBarButton(
+                icon = Icons.Outlined.Textsms,
+                onClick = { onReplyClick(commentView) },
+                contentDescription = stringResource(R.string.commentFooter_reply),
+                account = account,
+            )
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
+                contentDescription = stringResource(R.string.moreOptions),
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
+                requiresAccount = false,
             )
         }
     }
@@ -495,6 +610,7 @@ fun CommentFooterLine(
 @Preview
 @Composable
 fun CommentNodesPreview() {
+    MarkdownHelper.init(LocalContext.current, useCustomTabs = true, usePrivateTabs = false)
     val comments = listOf(
         sampleSecondReplyCommentView,
         sampleCommentView,
@@ -520,6 +636,11 @@ fun CommentNodesPreview() {
         onPostClick = {},
         moderators = listOf(),
         listState = rememberLazyListState(),
+        isCollapsedByParent = false,
+        showCollapsedCommentContent = false,
+        showActionBarByDefault = true,
+        enableDownVotes = true,
+        showAvatar = true,
     )
 }
 
@@ -532,6 +653,7 @@ fun CommentOptionsDialog(
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
     onCommentLinkClick: () -> Unit,
+    onPersonClick: () -> Unit,
     isCreator: Boolean,
     commentView: CommentView,
 ) {
@@ -543,53 +665,65 @@ fun CommentOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Goto Comment",
+                    text = stringResource(R.string.comment_node_goto_comment),
                     icon = Icons.Outlined.Link,
                     onClick = onCommentLinkClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "View Source",
+                    text = stringResource(
+                        R.string.comment_node_go_to,
+                        commentView.creator.name,
+                    ),
+                    icon = Icons.Outlined.Person,
+                    onClick = onPersonClick,
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.comment_node_view_source),
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Copy Permalink",
+                    text = stringResource(R.string.comment_node_copy_permalink),
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
                         val permalink = commentView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_node_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Report Comment",
+                        text = stringResource(R.string.comment_node_report_comment),
                         icon = Icons.Outlined.Flag,
                         onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${commentView.creator.name}",
+                        text = stringResource(R.string.comment_node_block, commentView.creator.name),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,
                     )
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Edit",
+                        text = stringResource(R.string.comment_node_edit),
                         icon = Icons.Outlined.Edit,
                         onClick = onEditCommentClick,
                     )
                     val deleted = commentView.comment.deleted
                     if (deleted) {
                         IconAndTextDrawerItem(
-                            text = "Restore",
+                            text = stringResource(R.string.comment_node_restore),
                             icon = Icons.Outlined.Restore,
                             onClick = onDeleteCommentClick,
                         )
                     } else {
                         IconAndTextDrawerItem(
-                            text = "Delete",
+                            text = stringResource(R.string.comment_node_delete),
                             icon = Icons.Outlined.Delete,
                             onClick = onDeleteCommentClick,
                         )
@@ -613,6 +747,7 @@ fun CommentOptionsDialogPreview() {
         onReportClick = {},
         onViewSourceClick = {},
         onCommentLinkClick = {},
+        onPersonClick = {},
         onBlockCreatorClick = {},
     )
 }
@@ -624,7 +759,7 @@ fun ShowMoreChildren(
 ) {
     TextButton(
         content = {
-            Text("${commentView.counts.child_count} more replies")
+            Text(stringResource(R.string.comment_node_more_replies, commentView.counts.child_count))
         },
         onClick = { onFetchChildrenClick(commentView) },
     )
@@ -661,14 +796,14 @@ fun ShowCommentContextButtons(
     ) {
         OutlinedButton(
             content = {
-                Text("View Post")
+                Text(stringResource(R.string.comment_node_view_post))
             },
             onClick = { onPostClick(postId) },
         )
         if (showContextButton && commentParentId != null) {
             OutlinedButton(
                 content = {
-                    Text("View Context")
+                    Text(stringResource(R.string.comment_node_view_context))
                 },
                 onClick = { onCommentClick(commentParentId) },
             )

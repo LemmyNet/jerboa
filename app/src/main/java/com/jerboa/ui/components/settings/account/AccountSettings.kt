@@ -12,10 +12,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.ListingType
@@ -37,13 +39,15 @@ fun SettingsTextField(
     onValueChange: (String) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(SMALL_PADDING),
+        modifier = Modifier.padding(MEDIUM_PADDING),
     ) {
         Text(text = label)
         OutlinedTextField(
             value = text,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = MEDIUM_PADDING)
+                .fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.None,
@@ -62,7 +66,10 @@ fun ImageWithClose(
     Box(contentAlignment = Alignment.TopEnd) {
         composable()
         IconButton(onClick = onClick) {
-            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Remove Current Avatar")
+            Icon(
+                imageVector = Icons.Outlined.Close,
+                contentDescription = stringResource(R.string.account_settings_remove_current_avatar),
+            )
         }
     }
 }
@@ -88,23 +95,33 @@ fun SettingsForm(
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
-    var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty())) }
+    var bio by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(luv?.person?.bio.orEmpty()))
+    }
     var email by rememberSaveable { mutableStateOf(luv?.local_user?.email.orEmpty()) }
     var matrixUserId by rememberSaveable { mutableStateOf(luv?.person?.matrix_user_id.orEmpty()) }
     val theme by rememberSaveable { mutableStateOf(luv?.local_user?.theme.orEmpty()) }
-    val interfaceLang by rememberSaveable { mutableStateOf(luv?.local_user?.interface_language.orEmpty()) }
+    val interfaceLang by rememberSaveable {
+        mutableStateOf(luv?.local_user?.interface_language.orEmpty())
+    }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
     var defaultSortType by rememberSaveable { mutableStateOf(luv?.local_user?.default_sort_type) }
-    var defaultListingType by rememberSaveable { mutableStateOf(luv?.local_user?.default_listing_type) }
+    var defaultListingType by rememberSaveable {
+        mutableStateOf(luv?.local_user?.default_listing_type)
+    }
     var showAvatars by rememberSaveable { mutableStateOf(luv?.local_user?.show_avatars) }
     var showNsfw by rememberSaveable { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
     var showScores by rememberSaveable { mutableStateOf(luv?.local_user?.show_scores) }
     var showBotAccount by rememberSaveable { mutableStateOf(luv?.local_user?.show_bot_accounts) }
     var botAccount by rememberSaveable { mutableStateOf(luv?.person?.bot_account) }
     var showReadPosts by rememberSaveable { mutableStateOf(luv?.local_user?.show_read_posts) }
-    var showNewPostNotifs by rememberSaveable { mutableStateOf(luv?.local_user?.show_new_post_notifs) }
-    var sendNotificationsToEmail by rememberSaveable { mutableStateOf(luv?.local_user?.send_notifications_to_email) }
+    var showNewPostNotifs by rememberSaveable {
+        mutableStateOf(luv?.local_user?.show_new_post_notifs)
+    }
+    var sendNotificationsToEmail by rememberSaveable {
+        mutableStateOf(luv?.local_user?.send_notifications_to_email)
+    }
     val form = SaveUserSettings(
         display_name = displayName,
         bio = bio.text,
@@ -132,138 +149,164 @@ fun SettingsForm(
             .padding(padding)
             .imePadding()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         SettingsTextField(
-            label = "Display Name",
+            label = stringResource(R.string.account_settings_display_name),
             text = displayName,
             onValueChange = { displayName = it },
         )
-        Column {
-            Text("Bio")
+        Column(
+            modifier = Modifier.padding(MEDIUM_PADDING),
+        ) {
+            Text(stringResource(R.string.account_settings_bio))
             MarkdownTextField(
                 text = bio,
                 onTextChange = { bio = it },
                 account = account,
                 outlined = true,
                 focusImmediate = false,
-                modifier = Modifier.fillMaxWidth().padding(SMALL_PADDING),
+                modifier = Modifier
+                    .fillMaxWidth(),
             )
         }
 
         SettingsTextField(
-            label = "Email",
+            label = stringResource(R.string.account_settings_email),
             text = email,
             onValueChange = { email = it },
         )
         SettingsTextField(
-            label = "Matrix User",
+            label = stringResource(R.string.account_settings_matrix_user),
             text = matrixUserId,
             onValueChange = { matrixUserId = it },
         )
-        Text(text = "Avatar")
-        if (avatar.isNotEmpty()) {
-            ImageWithClose(onClick = { avatar = "" }) {
-                LargerCircularIcon(icon = avatar)
-            }
-        } else {
-            PickImage(onPickedImage = { uri ->
-                val imageIs = imageInputStreamFromUri(ctx, uri)
-                scope.launch {
-                    account?.also { acct ->
-                        avatar = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
-                    }
+        Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
+            Text(text = stringResource(R.string.account_settings_avatar))
+            if (avatar.isNotEmpty()) {
+                ImageWithClose(onClick = { avatar = "" }) {
+                    LargerCircularIcon(icon = avatar)
                 }
-            }, showImage = false)
-        }
-        Text(text = "Banner")
-        if (banner.isNotEmpty()) {
-            ImageWithClose(onClick = { banner = "" }) {
-                PictrsBannerImage(url = banner)
-            }
-        } else {
-            PickImage(onPickedImage = { uri ->
-                val imageIs = imageInputStreamFromUri(ctx, uri)
-                scope.launch {
-                    account?.also { acct ->
-                        banner = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+            } else {
+                PickImage(onPickedImage = { uri ->
+                    val imageIs = imageInputStreamFromUri(ctx, uri)
+                    scope.launch {
+                        account?.also { acct ->
+                            avatar = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                        }
                     }
-                }
-            }, showImage = false)
+                }, showImage = false)
+            }
         }
-        // Todo Update AppDb to save new sort and listing_type settings.
+        Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
+            Text(text = stringResource(R.string.account_settings_banner))
+            if (banner.isNotEmpty()) {
+                ImageWithClose(onClick = { banner = "" }) {
+                    PictrsBannerImage(url = banner)
+                }
+            } else {
+                PickImage(onPickedImage = { uri ->
+                    val imageIs = imageInputStreamFromUri(ctx, uri)
+                    scope.launch {
+                        account?.also { acct ->
+                            banner = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                        }
+                    }
+                }, showImage = false)
+            }
+        }
         MyDropDown(
-            suggestions = listOf("All", "Local", "Subscribed"),
-            onValueChange = { defaultListingType = ListingType.values()[it] },
+            suggestions = listOf(
+                stringResource(R.string.account_settings_all),
+                stringResource(R.string.account_settings_local),
+                stringResource(R.string.account_settings_subscribed),
+            ),
+onValueChange = { defaultListingType = ListingType.values()[it] },
             defaultListingType?.ordinal ?: 0,
-            label = "Default Listing Type",
+            onValueChange = { defaultListingType = it },
+            defaultListingType ?: 0,
+            label = stringResource(R.string.account_settings_default_listing_type),
         )
         MyDropDown(
             suggestions = listOf(
-                "Active",
-                "Hot",
-                "New",
-                "TopDay",
-                "TopWeek",
-                "TopMonth",
-                "TopYear",
-                "TopAll",
-                "MostComments",
-                "NewComments",
+                stringResource(R.string.account_settings_active),
+                stringResource(R.string.account_settings_hot),
+                stringResource(R.string.account_settings_new),
+                stringResource(R.string.account_settings_old),
+                stringResource(R.string.account_settings_topday),
+                stringResource(R.string.account_settings_topweek),
+                stringResource(R.string.account_settings_topmonth),
+                stringResource(R.string.account_settings_topyear),
+                stringResource(R.string.account_settings_topall),
+                stringResource(R.string.account_settings_mostcomments),
+                stringResource(R.string.account_settings_newcomments),
             ),
-            onValueChange = { defaultSortType = SortType.values()[it] },
+onValueChange = { defaultSortType = SortType.values()[it] },
             defaultSortType?.ordinal ?: 0,
             label = "Default Sort Type",
+            onValueChange = { defaultSortType = it },
+            initialValue = defaultSortType ?: 0,
+            label = stringResource(R.string.account_settings_default_sort_type),
         )
 
         MyCheckBox(
             checked = showNsfw,
-            label = "Show NSFW",
+            label = stringResource(R.string.account_settings_show_nsfw),
             onCheckedChange = { showNsfw = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showAvatars == true,
-            label = "Show Avatars",
+            label = stringResource(R.string.account_settings_show_avatars),
             onCheckedChange = { showAvatars = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showReadPosts == true,
-            label = "Show Read Posts",
+            label = stringResource(R.string.account_settings_show_read_posts),
             onCheckedChange = { showReadPosts = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = botAccount == true,
-            label = "Bot Account",
+            label = stringResource(R.string.account_settings_bot_account),
             onCheckedChange = { botAccount = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showBotAccount == true,
-            label = "Show Bot Accounts",
+            label = stringResource(R.string.account_settings_show_bot_accounts),
             onCheckedChange = { showBotAccount = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showScores == true,
-            label = "Show Scores",
+            label = stringResource(R.string.account_settings_show_scores),
             onCheckedChange = { showScores = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showNewPostNotifs == true,
-            label = "Show Notifications for New Posts",
+            label = stringResource(R.string.account_settings_show_notifications_for_new_posts),
             onCheckedChange = { showNewPostNotifs = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             enabled = email.isNotEmpty(),
             checked = sendNotificationsToEmail == true,
-            label = "Send Notifications to Email",
+            label = stringResource(R.string.account_settings_send_notifications_to_email),
             onCheckedChange = { sendNotificationsToEmail = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         // Todo: Remove this
         Button(
-            enabled = !loading,
+            enabled = !accountSettingsViewModel.loading,
             onClick = { onClickSave(form) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(MEDIUM_PADDING)
+                .fillMaxWidth(),
         ) {
-            Text(text = "Save Settings")
+            Text(text = stringResource(R.string.account_settings_save_settings))
         }
     }
 }

@@ -12,11 +12,13 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.samplePrivateMessageView
+import com.jerboa.R
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
@@ -33,7 +35,7 @@ fun PrivateMessageReplyHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Reply",
+                text = stringResource(R.string.private_message_reply_reply),
             )
         },
         actions = {
@@ -48,7 +50,7 @@ fun PrivateMessageReplyHeader(
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Send,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.form_submit),
                     )
                 }
             }
@@ -61,7 +63,7 @@ fun PrivateMessageReplyHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.private_message_reply_back),
                 )
             }
         },
@@ -72,12 +74,14 @@ fun PrivateMessageReplyHeader(
 fun RepliedPrivateMessage(
     privateMessageView: PrivateMessageView,
     onPersonClick: (personId: Int) -> Unit,
+    showAvatar: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         PrivateMessageHeader(
             privateMessageView = privateMessageView,
             onPersonClick = onPersonClick,
             myPersonId = privateMessageView.recipient.id,
+            showAvatar = showAvatar,
         )
         SelectionContainer {
             Text(text = privateMessageView.private_message.content)
@@ -91,6 +95,7 @@ fun RepliedPrivateMessagePreview() {
     RepliedPrivateMessage(
         privateMessageView = samplePrivateMessageView,
         onPersonClick = {},
+        showAvatar = true,
     )
 }
 
@@ -102,6 +107,7 @@ fun PrivateMessageReply(
     onPersonClick: (personId: Int) -> Unit,
     account: Account?,
     modifier: Modifier = Modifier,
+    showAvatar: Boolean,
 ) {
     val scrollState = rememberScrollState()
 
@@ -111,6 +117,7 @@ fun PrivateMessageReply(
         RepliedPrivateMessage(
             privateMessageView = privateMessageView,
             onPersonClick = onPersonClick,
+            showAvatar = showAvatar,
         )
         Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
@@ -118,7 +125,7 @@ fun PrivateMessageReply(
             onTextChange = onReplyChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your message",
+            placeholder = stringResource(R.string.private_message_reply_type_your_message_placeholder),
         )
     }
 }

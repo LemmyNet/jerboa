@@ -30,7 +30,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
@@ -66,6 +68,7 @@ fun HomeActivity(
     siteViewModel: SiteViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -121,6 +124,7 @@ fun HomeActivity(
                         ctx = ctx,
                         navController = navController,
                         postListState = postListState,
+                        showVotingArrowsInListView = showVotingArrowsInListView,
                     )
                 },
                 floatingActionButtonPosition = FabPosition.End,
@@ -134,11 +138,15 @@ fun HomeActivity(
                             }
                         },
                     ) {
-                        Icon(imageVector = Icons.Outlined.Add, contentDescription = "TODO")
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = stringResource(R.string.floating_createPost),
+                        )
                     }
                 },
                 bottomBar = {
                     BottomAppBarAll(
+                        showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
                         screen = "home",
                         unreadCount = siteViewModel.getUnreadCountTotal(),
                         onClickProfile = {
@@ -181,6 +189,7 @@ fun MainPostListingsContent(
     padding: PaddingValues,
     postListState: LazyListState,
     appSettingsViewModel: AppSettingsViewModel,
+    showVotingArrowsInListView: Boolean,
 ) {
     when (val siteRes = siteViewModel.siteRes) {
         ApiState.Loading ->
@@ -343,6 +352,7 @@ fun MainDrawer(
         unreadCount = siteViewModel.getUnreadCountTotal(),
         accountViewModel = accountViewModel,
         navController = navController,
+        isOpen = drawerState.isOpen,
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()
             accountViewModel.setCurrent(acct.id)
@@ -413,11 +423,11 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onClickSettings = {
-            account.also {
-                navController.navigate(route = "settings")
-            } ?: run {
-                loginFirstToast(ctx)
-            }
+            navController.navigate(route = "settings")
+            closeDrawer(scope, drawerState)
+        },
+        onClickCommunities = {
+            navController.navigate(route = "communityList")
             closeDrawer(scope, drawerState)
         },
     )

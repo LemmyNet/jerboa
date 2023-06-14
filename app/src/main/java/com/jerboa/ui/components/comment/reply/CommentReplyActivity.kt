@@ -20,6 +20,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.isModerator
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 
@@ -30,7 +31,9 @@ fun CommentReplyActivity(
     accountViewModel: AccountViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
-    navController: NavController,
+==== BASE ====
+    navController: NavController
+==== BASE ====
 ) {
     Log.d("jerboa", "got to comment reply activity")
 

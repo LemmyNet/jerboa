@@ -99,8 +99,7 @@ interface API {
      * Get the details for a person.
      */
     @GET("user")
-    suspend fun getPersonDetails(@QueryMap form: Map<String, String>):
-        Response<GetPersonDetailsResponse>
+    suspend fun getPersonDetails(@QueryMap form: Map<String, String>): Response<GetPersonDetailsResponse>
 
     /**
      * Get comment replies.
@@ -112,22 +111,19 @@ interface API {
      * Mark a comment as read.
      */
     @POST("comment/mark_as_read")
-    suspend fun markCommentReplyAsRead(@Body form: MarkCommentReplyAsRead):
-        Response<CommentResponse>
+    suspend fun markCommentReplyAsRead(@Body form: MarkCommentReplyAsRead): Response<CommentResponse>
 
     /**
      * Mark a person mention as read.
      */
     @POST("user/mention/mark_as_read")
-    suspend fun markPersonMentionAsRead(@Body form: MarkPersonMentionAsRead):
-        Response<PersonMentionResponse>
+    suspend fun markPersonMentionAsRead(@Body form: MarkPersonMentionAsRead): Response<PersonMentionResponse>
 
     /**
      * Mark a private message as read.
      */
     @POST("private_message/mark_as_read")
-    suspend fun markPrivateMessageAsRead(@Body form: MarkPrivateMessageAsRead):
-        Response<PrivateMessageResponse>
+    suspend fun markPrivateMessageAsRead(@Body form: MarkPrivateMessageAsRead): Response<PrivateMessageResponse>
 
     /**
      * Mark all replies as read.
@@ -139,29 +135,25 @@ interface API {
      * Get mentions for your user.
      */
     @GET("user/mention")
-    suspend fun getPersonMentions(@QueryMap form: Map<String, String>):
-        Response<GetPersonMentionsResponse>
+    suspend fun getPersonMentions(@QueryMap form: Map<String, String>): Response<GetPersonMentionsResponse>
 
     /**
      * Get / fetch private messages.
      */
     @GET("private_message/list")
-    suspend fun getPrivateMessages(@QueryMap form: Map<String, String>):
-        Response<PrivateMessagesResponse>
+    suspend fun getPrivateMessages(@QueryMap form: Map<String, String>): Response<PrivateMessagesResponse>
 
     /**
      * Create a private message.
      */
     @POST("private_message")
-    suspend fun createPrivateMessage(@Body form: CreatePrivateMessage):
-        Response<PrivateMessageResponse>
+    suspend fun createPrivateMessage(@Body form: CreatePrivateMessage): Response<PrivateMessageResponse>
 
     /**
      * Get your unread counts
      */
     @GET("user/unread_count")
-    suspend fun getUnreadCount(@QueryMap form: Map<String, String>):
-        Response<GetUnreadCountResponse>
+    suspend fun getUnreadCount(@QueryMap form: Map<String, String>): Response<GetUnreadCountResponse>
 
     /**
      * Follow / subscribe to a community.
@@ -197,15 +189,13 @@ interface API {
      * Fetch metadata for any given site.
      */
     @GET("post/site_metadata")
-    suspend fun getSiteMetadata(@QueryMap form: Map<String, String>):
-        Response<GetSiteMetadataResponse>
+    suspend fun getSiteMetadata(@QueryMap form: Map<String, String>): Response<GetSiteMetadataResponse>
 
     /**
      * Report a comment.
      */
     @POST("comment/report")
-    suspend fun createCommentReport(@Body form: CreateCommentReport):
-        Response<CommentReportResponse>
+    suspend fun createCommentReport(@Body form: CreateCommentReport): Response<CommentReportResponse>
 
     /**
      * Report a post.
@@ -267,7 +257,15 @@ interface API {
         private fun buildApi(): API {
             val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
-            val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+            val client: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    val requestBuilder = chain.request().newBuilder()
+                        .header("User-Agent", "Jerboa")
+                    val newRequest = requestBuilder.build()
+                    chain.proceed(newRequest)
+                }
+                .addInterceptor(interceptor)
+                .build()
 
             return Retrofit.Builder()
                 .baseUrl(buildUrl())

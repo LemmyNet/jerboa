@@ -65,8 +65,9 @@ class CreateReportViewModel : ViewModel() {
                     )
 
                 val message = when (val res = commentReportRes) {
+// TODO add error string here
                     is ApiState.Failure -> "Couldn't create report: ${res.msg.message}"
-                    is ApiState.Success -> "Report Created"
+                    is ApiState.Success -> ctx.getString(R.string.create_report_view_model_report_created),
                     else -> {
                         null
                     }
@@ -101,8 +102,9 @@ class CreateReportViewModel : ViewModel() {
                     )
 
                 val message = when (val res = postReportRes) {
+// TODO Error string here
                     is ApiState.Failure -> "Couldn't create report: ${res.msg.message}"
-                    is ApiState.Success -> "Report Created"
+                    is ApiState.Success -> ctx.getString(R.string.create_report_view_model_report_created)
                     else -> {
                         null
                     }

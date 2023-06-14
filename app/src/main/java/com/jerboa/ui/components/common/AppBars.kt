@@ -1,13 +1,13 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.common
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -17,18 +17,23 @@ import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -38,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
@@ -47,6 +53,7 @@ import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
@@ -64,7 +71,7 @@ fun SimpleTopAppBar(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }
         },
@@ -76,102 +83,120 @@ fun BottomAppBarAll(
     navController: NavController = rememberNavController(),
     screen: String,
     unreadCount: Int,
+showBottomNav: Boolean? = true,
     onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
 ) {
-    BottomAppBar {
-        NavigationBarItem(
-            icon = {
-                if (screen == "home") {
+    val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
+
+    if (showBottomNav == true) {
+        // Check for preview mode
+        if (LocalContext.current is Activity) {
+            val window = (LocalContext.current as Activity).window
+            val colorScheme = MaterialTheme.colorScheme
+
+            DisposableEffect(Unit) {
+                window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+
+                onDispose {
+                    window.navigationBarColor = colorScheme.background.toArgb()
+                }
+            }
+        }
+
+        NavigationBar {
+            NavigationBarItem(
+                icon = {
                     Icon(
                         imageVector = Icons.Filled.Home,
-                        tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.bottomBar_home),
                     )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.Home,
-                        contentDescription = "TODO",
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_home),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
-                }
-            },
-            selected = false,
-            onClick = {
-                navController.navigate("home")
-            },
-        )
+                },
+                selected = screen == "home",
+                onClick = {
+                    navController.navigate("home")
+                },
+            )
 
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.List,
-                    contentDescription = "TODO",
-                )
-            },
-            onClick = {
-                navController.navigate("communityList")
-            },
-            selected = screen == "communityList",
-        )
-        NavigationBarItem(
-            icon = {
-                if (screen == "inbox") {
-                    InboxIconAndBadge(
-                        iconBadgeCount = unreadCount,
-                        icon = Icons.Filled.Email,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                } else {
-                    InboxIconAndBadge(
-                        iconBadgeCount = unreadCount,
-                        icon = Icons.Outlined.Email,
-                    )
-                }
-            },
-            onClick = {
-                onClickInbox()
-            },
-            selected = false,
-        )
-        NavigationBarItem(
-            icon = {
-                if (screen == "saved") {
+            NavigationBarItem(
+                icon = {
                     Icon(
-                        imageVector = Icons.Filled.Bookmarks,
-                        tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = "TODO",
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = stringResource(R.string.bottomBar_search),
                     )
-                } else {
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_search),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                selected = screen == "communityList",
+                onClick = {
+                    navController.navigate("communityList")
+                },
+            )
+            NavigationBarItem(
+                icon = {
+                    InboxIconAndBadge(
+                        iconBadgeCount = totalUnreads,
+                        icon = Icons.Outlined.Email,
+                        contentDescription = stringResource(R.string.bottomBar_inbox),
+                    )
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_inbox),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                selected = screen == "inbox",
+                onClick = {
+                    onClickInbox()
+                },
+            )
+            NavigationBarItem(
+                icon = {
                     Icon(
                         imageVector = Icons.Outlined.Bookmarks,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.bottomBar_bookmarks),
                     )
-                }
-            },
-            onClick = {
-                onClickSaved()
-            },
-            selected = false,
-        )
-        NavigationBarItem(
-            icon = {
-                if (screen == "profile") {
-                    Icon(
-                        imageVector = Icons.Filled.Person,
-                        tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = "TODO",
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_bookmarks),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
-                } else {
+                },
+                selected = screen == "saved",
+                onClick = {
+                    onClickSaved()
+                },
+            )
+            NavigationBarItem(
+                icon = {
                     Icon(
                         imageVector = Icons.Outlined.Person,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.bottomBar_profile),
                     )
-                }
-            },
-            onClick = onClickProfile,
-            selected = false,
-        )
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.bottomBar_label_profile),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                selected = screen == "profile",
+                onClick = onClickProfile,
+            )
+        }
     }
 }
 
@@ -184,6 +209,7 @@ fun BottomAppBarAllPreview() {
         onClickSaved = {},
         unreadCount = 0,
         screen = "home",
+        showBottomNav = true,
     )
 }
 
@@ -200,7 +226,11 @@ fun CommentOrPostNodeHeader(
     isPostCreator: Boolean,
     isModerator: Boolean,
     isCommunityBanned: Boolean,
-    onLongClick: () -> Unit = {},
+    onClick: () -> Unit,
+    onLongCLick: () -> Unit,
+    isExpanded: Boolean = true,
+    collapsedCommentsCount: Int = 0,
+    showAvatar: Boolean,
 ) {
     FlowRow(
         mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
@@ -212,8 +242,10 @@ fun CommentOrPostNodeHeader(
                 bottom = MEDIUM_PADDING,
             )
             .combinedClickable(
-                onLongClick = onLongClick,
-                onClick = {},
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onLongClick = onLongCLick,
+                onClick = onClick,
             ),
     ) {
         Row(
@@ -223,7 +255,7 @@ fun CommentOrPostNodeHeader(
             if (deleted) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.commentOrPostHeader_deleted),
                     tint = MaterialTheme.colorScheme.error,
                 )
                 DotSpacer(style = MaterialTheme.typography.bodyMedium)
@@ -236,9 +268,17 @@ fun CommentOrPostNodeHeader(
                 isPostCreator = isPostCreator,
                 isModerator = isModerator,
                 isCommunityBanned = isCommunityBanned,
+                showAvatar = showAvatar,
             )
         }
-        ScoreAndTime(score = score, myVote = myVote, published = published, updated = updated)
+        ScoreAndTime(
+            score = score,
+            myVote = myVote,
+            published = published,
+            updated = updated,
+            isExpanded = isExpanded,
+            collapsedCommentsCount = collapsedCommentsCount,
+        )
     }
 }
 
@@ -256,6 +296,9 @@ fun CommentOrPostNodeHeaderPreview() {
         isPostCreator = true,
         isModerator = true,
         isCommunityBanned = false,
+        onClick = {},
+        onLongCLick = {},
+        showAvatar = true,
     )
 }
 
@@ -263,10 +306,12 @@ fun CommentOrPostNodeHeaderPreview() {
 fun ActionBarButton(
     onClick: () -> Unit,
     icon: ImageVector,
+    contentDescription: String?,
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
     account: Account?,
+    requiresAccount: Boolean = true,
 ) {
     val ctx = LocalContext.current
 //    Button(
@@ -286,7 +331,7 @@ fun ActionBarButton(
         Modifier
     } else {
         Modifier.clickable(onClick = {
-            if (account !== null) {
+            if (!requiresAccount || account !== null) {
                 onClick()
             } else {
                 loginFirstToast(ctx)
@@ -299,7 +344,7 @@ fun ActionBarButton(
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = "TODO",
+            contentDescription = contentDescription,
             tint = contentColor,
         )
         text?.also {
@@ -319,7 +364,7 @@ fun DotSpacer(
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     Text(
-        text = "·",
+        text = stringResource(R.string.app_bars_dot_spacer),
         style = style,
         color = MaterialTheme.colorScheme.onBackground.muted,
         modifier = Modifier.padding(horizontal = padding),
@@ -335,10 +380,12 @@ fun scoreColor(myVote: Int?): Color {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxIconAndBadge(
     iconBadgeCount: Int?,
     icon: ImageVector,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current,
 ) {
@@ -357,7 +404,7 @@ fun InboxIconAndBadge(
             content = {
                 Icon(
                     imageVector = icon,
-                    contentDescription = "TODO",
+                    contentDescription = contentDescription,
                     tint = tint,
                 )
             },
@@ -365,7 +412,7 @@ fun InboxIconAndBadge(
     } else {
         Icon(
             imageVector = icon,
-            contentDescription = "TODO",
+            contentDescription = contentDescription,
             tint = tint,
             modifier = modifier,
         )
@@ -391,7 +438,8 @@ fun Sidebar(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.padding(padding)
+        modifier = Modifier
+            .padding(padding)
             .simpleVerticalScrollbar(listState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
@@ -425,7 +473,7 @@ fun Sidebar(
                     )
                 }
                 TimeAgo(
-                    precedingString = "Created",
+                    precedingString = stringResource(R.string.AppBars_created),
                     includeAgo = true,
                     published = published,
                 )
@@ -450,6 +498,7 @@ fun Sidebar(
                     MyMarkdownText(
                         markdown = it,
                         color = MaterialTheme.colorScheme.onBackground.muted,
+                        onClick = {},
                     )
                 }
             }
@@ -468,32 +517,32 @@ fun CommentsAndPosts(
 ) {
     FlowRow {
         Text(
-            text = "${siFormat(usersActiveDay)} users / day",
+            text = stringResource(R.string.AppBars_users_day, siFormat(usersActiveDay)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(usersActiveWeek)} users / week",
+            text = stringResource(R.string.AppBars_users_week, siFormat(usersActiveWeek)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(usersActiveMonth)} users / month",
+            text = stringResource(R.string.AppBars_users_month, siFormat(usersActiveMonth)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(usersActiveHalfYear)} users / 6 months",
+            text = stringResource(R.string.AppBars_users_6_months, siFormat(usersActiveHalfYear)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(postCount)} posts",
+            text = stringResource(R.string.AppBars_posts, siFormat(postCount)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${siFormat(commentCount)} comments",
+            text = stringResource(R.string.AppBars_comments, siFormat(commentCount)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }
@@ -512,7 +561,6 @@ fun Modifier.simpleVerticalScrollbar(
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
         animationSpec = tween(durationMillis = duration),
-        label = "verticalScrollbar",
     )
 
     return drawWithContent {

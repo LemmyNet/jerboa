@@ -6,16 +6,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import com.jerboa.R
 import com.jerboa.communityNameShown
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleCommunityView
@@ -36,6 +42,7 @@ fun CommunityName(
     community: Community,
     color: Color = MaterialTheme.colorScheme.primary,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = communityNameShown(community),
@@ -64,6 +71,7 @@ fun CommunityLink(
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     onClick: (community: Community) -> Unit,
+    showDefaultIcon: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -73,15 +81,24 @@ fun CommunityLink(
         community.icon?.let {
             CircularIcon(
                 icon = it,
+                contentDescription = null,
                 size = size,
                 thumbnailSize = thumbnailSize,
             )
+        } ?: run {
+            if (showDefaultIcon) {
+                Icon(
+                    imageVector = Icons.Outlined.Forum,
+                    contentDescription = "TODO",
+                    modifier = Modifier.size(size),
+                )
+            }
         }
         Column {
             CommunityName(community = community, color = color, style = style)
             usersPerMonth?.also {
                 Text(
-                    text = "$usersPerMonth users / month",
+                    text = stringResource(R.string.community_link_users_month, usersPerMonth),
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
@@ -93,6 +110,7 @@ fun CommunityLink(
 fun CommunityLinkLarger(
     community: Community,
     onClick: (community: Community) -> Unit,
+    showDefaultIcon: Boolean,
 ) {
     CommunityLink(
         community = community,
@@ -105,6 +123,7 @@ fun CommunityLinkLarger(
             .padding(LARGE_PADDING)
             .fillMaxWidth(),
         onClick = onClick,
+        showDefaultIcon = showDefaultIcon,
     )
 }
 
@@ -112,6 +131,7 @@ fun CommunityLinkLarger(
 fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: Community) -> Unit,
+    showDefaultIcon: Boolean,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -125,6 +145,7 @@ fun CommunityLinkLargerWithUserCount(
             .fillMaxWidth(),
         style = MaterialTheme.typography.titleLarge,
         onClick = onClick,
+        showDefaultIcon = showDefaultIcon,
     )
 }
 
@@ -134,6 +155,7 @@ fun CommunityLinkPreview() {
     CommunityLink(
         community = sampleCommunity,
         onClick = {},
+        showDefaultIcon = true,
     )
 }
 
@@ -143,5 +165,6 @@ fun CommunityLinkWithUsersPreview() {
     CommunityLinkLargerWithUserCount(
         communityView = sampleCommunityView,
         onClick = {},
+        showDefaultIcon = true,
     )
 }

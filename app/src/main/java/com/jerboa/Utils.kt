@@ -1,6 +1,7 @@
 package com.jerboa
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -8,29 +9,41 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.AutofillNode
+import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalAutofill
+import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -40,14 +53,17 @@ import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
+import java.io.IOException
 import java.io.InputStream
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.pow
 
 val prettyTime = PrettyTime(Locale.getDefault())
@@ -59,14 +75,20 @@ const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
 
 val DEFAULT_LEMMY_INSTANCES = listOf(
-    "lemmy.ml",
-    "lemmygrad.ml",
-    "mujico.org",
-    "feddit.de",
-    "szmer.info",
     "beehaw.org",
+    "feddit.de",
     "feddit.it",
+    "lemmy.ca",
+    "lemmy.ml",
+    "lemmy.one",
+    "lemmy.world",
+    "lemmygrad.ml",
+    "midwest.social",
+    "mujico.org",
+    "sh.itjust.works",
+    "slrpnk.net",
     "sopuli.xyz",
+    "szmer.info",
 )
 
 // convert a data class to a map
@@ -93,7 +115,7 @@ fun toastException(ctx: Context, error: Exception) {
 
 // TODO also navigate to login page
 fun loginFirstToast(ctx: Context) {
-    Toast.makeText(ctx, "Login first", Toast.LENGTH_SHORT).show()
+    Toast.makeText(ctx, ctx.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
 
 enum class VoteType {
@@ -325,9 +347,19 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
-fun openLink(url: String, ctx: Context) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    ctx.startActivity(intent)
+fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    if (useCustomTab) {
+        val intent = CustomTabsIntent.Builder()
+            .build().apply {
+                if (usePrivateTab) {
+                    intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+                }
+            }
+        intent.launchUrl(ctx, Uri.parse(url))
+    } else {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        ctx.startActivity(intent)
+    }
 }
 
 fun prettyTimeShortener(timeString: String): String {
@@ -643,6 +675,7 @@ fun fetchInitialData(
                 sort = SortType.Active,
             ),
         )
+        homeViewModel.fetchUnreadCounts()
     }
 
     siteViewModel.getSite(
@@ -682,37 +715,40 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-enum class ThemeMode {
-    System,
-    Light,
-    Dark,
+enum class ThemeMode(val mode: Int) {
+    System(R.string.look_and_feel_theme_system),
+    SystemBlack(R.string.look_and_feel_theme_system_black),
+    Light(R.string.look_and_feel_theme_light),
+    Dark(R.string.look_and_feel_theme_dark),
+    Black(R.string.look_and_feel_theme_black),
 }
 
 enum class ThemeColor {
     Dynamic,
     Green,
     Pink,
+    Blue,
 }
 
-enum class PostViewMode(val mode: String) {
+enum class PostViewMode(val mode: Int) {
     /**
      * The full size post view card. For image posts, this expands them to their full height. For
      * link posts, the thumbnail is shown to the right of the title.
      */
-    Card("Card"),
+    Card(R.string.look_and_feel_post_view_card),
 
     /**
      * The same as regular card, except image posts only show a thumbnail image.
      */
-    SmallCard("Small Card"),
+    SmallCard(R.string.look_and_feel_post_view_small_card),
 
     /**
      * A list view that has no action bar.
      */
-    List("List"),
+    List(R.string.look_and_feel_post_view_list),
 }
 
-@ExperimentalPagerApi
+@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.pagerTabIndicatorOffset2(
     pagerState: PagerState,
     tabPositions: List<TabPosition>,
@@ -726,7 +762,7 @@ fun Modifier.pagerTabIndicatorOffset2(
         val currentTab = tabPositions[currentPage]
         val previousTab = tabPositions.getOrNull(currentPage - 1)
         val nextTab = tabPositions.getOrNull(currentPage + 1)
-        val fraction = pagerState.currentPageOffset
+        val fraction = pagerState.currentPageOffsetFraction
         val indicatorWidth = if (fraction > 0 && nextTab != null) {
             lerp(currentTab.width, nextTab.width, fraction).roundToPx()
         } else if (fraction < 0 && previousTab != null) {
@@ -781,6 +817,107 @@ fun getDepthFromComment(comment: Comment?): Int? {
 fun nsfwCheck(postView: PostView): Boolean {
     return postView.post.nsfw || postView.community.nsfw
 }
+
+@Throws(IOException::class)
+fun saveBitmap(
+    context: Context,
+    inputStream: InputStream,
+    mimeType: String?,
+    displayName: String,
+): Uri {
+    val values = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+        put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Jerboa")
+    }
+
+    val resolver = context.contentResolver
+    var uri: Uri? = null
+
+    try {
+        uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            ?: throw IOException("Failed to create new MediaStore record.")
+
+        resolver.openOutputStream(uri)?.use {
+            inputStream.copyTo(it)
+        } ?: throw IOException("Failed to open output stream.")
+
+        return uri
+    } catch (e: IOException) {
+        uri?.let { orphanUri ->
+            // Don't leave an orphan entry in the MediaStore
+            resolver.delete(orphanUri, null, null)
+        }
+
+        throw e
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> Unit): Modifier = composed {
+    val autofillNode = AutofillNode(
+        autofillTypes = autofillType.toList(),
+        onFill = onFill,
+    )
+    LocalAutofillTree.current += autofillNode
+
+    val autofill = LocalAutofill.current
+
+    this
+        .onGloballyPositioned {
+            autofillNode.boundingBox = it.boundsInWindow()
+        }
+        .onFocusChanged { focusState ->
+            autofill?.run {
+                if (focusState.isFocused) {
+                    requestAutofillForNode(autofillNode)
+                } else {
+                    cancelAutofillForNode(autofillNode)
+                }
+            }
+        }
+}
+
+/**
+ * Converts a scalable pixel (sp) to an actual pixel (px)
+ */
+fun convertSpToPx(sp: TextUnit, context: Context): Int {
+    return (sp.value * context.resources.displayMetrics.scaledDensity).toInt()
+}
+
+/**
+ * Returns localized Strings for SortingType Enum
+ */
+
+fun getLocalizedSortingTypeName(context: Context, sortingType: SortType): String {
+    val returnString = when (sortingType) {
+        SortType.Active -> context.getString(R.string.sorttype_active)
+        SortType.Hot -> context.getString(R.string.sorttype_hot)
+        SortType.New -> context.getString(R.string.sorttype_new)
+        SortType.Old -> context.getString(R.string.sorttype_old)
+        SortType.TopDay -> context.getString(R.string.sorttype_topday)
+        SortType.TopWeek -> context.getString(R.string.sorttype_topweek)
+        SortType.TopMonth -> context.getString(R.string.sorttype_topmonth)
+        SortType.TopYear -> context.getString(R.string.sorttype_topyear)
+        SortType.TopAll -> context.getString(R.string.sorttype_topall)
+        SortType.MostComments -> context.getString(R.string.sorttype_mostcomments)
+        SortType.NewComments -> context.getString(R.string.sorttype_newcomments)
+        else -> "Missing String Localization for Enum SortType"
+    }
+    return returnString
+}
+
+fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
+    val returnString = when (tab) {
+        UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
+        UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
+        UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+        else -> "Missing String Localization for Enum UserTab"
+    }
+    return returnString
+}
+
+
 
 fun findAndUpdatePrivateMessage(
     messages: List<PrivateMessageView>,

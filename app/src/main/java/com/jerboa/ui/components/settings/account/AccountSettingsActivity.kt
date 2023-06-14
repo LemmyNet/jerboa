@@ -9,7 +9,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -32,7 +34,7 @@ fun AccountSettingsActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = "Account Settings", navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.account_settings_activity_account_settings), navController = navController)
         },
         content = { padding ->
             account.also {

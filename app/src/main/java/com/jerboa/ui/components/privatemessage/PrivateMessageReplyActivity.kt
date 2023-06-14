@@ -77,6 +77,7 @@ fun PrivateMessageReplyActivity(
                             modifier = Modifier
                                 .padding(padding)
                                 .imePadding(),
+                            showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                         )
                     }
                 }

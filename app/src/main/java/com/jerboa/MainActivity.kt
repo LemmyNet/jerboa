@@ -2,6 +2,8 @@ package com.jerboa
 
 import android.app.Application
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -39,6 +41,7 @@ import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
@@ -70,6 +73,7 @@ import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 
@@ -94,7 +98,9 @@ class MainActivity : ComponentActivity() {
     private val commentEditViewModel by viewModels<CommentEditViewModel>()
     private val postEditViewModel by viewModels<PostEditViewModel>()
     private val createReportViewModel by viewModels<CreateReportViewModel>()
-    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>()
+    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>() {
+        AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
+    }
     private val privateMessageReplyViewModel by viewModels<PrivateMessageReplyViewModel>()
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).accountRepository)
@@ -105,6 +111,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MarkdownHelper.init(this, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val accountSync = getCurrentAccountSync(accountViewModel)
         fetchInitialData(accountSync, siteViewModel, homeViewModel)
@@ -123,7 +132,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = "splashScreen",
+                    startDestination = "home",
                 ) {
                     composable(
                         route = "login",
@@ -139,11 +148,6 @@ class MainActivity : ComponentActivity() {
                             homeViewModel = homeViewModel,
                         )
                     }
-                    composable(route = "splashScreen") {
-                        SplashScreenActivity(
-                            navController = navController,
-                        )
-                    }
                     composable(
                         route = "home",
                     ) {
@@ -153,7 +157,9 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
+==== BASE ====
+                            appSettingsViewModel = appSettingsViewModel
+==== BASE ====
                         )
                     }
                     composable(
@@ -166,21 +172,20 @@ class MainActivity : ComponentActivity() {
                     ) {
                         LaunchedEffect(Unit) {
                             val communityId = it.arguments?.getInt("id")!!
+                            val idOrName = Either.Left(communityId)
 
                             communityViewModel.getCommunity(
                                 form = GetCommunity(
-                                    id = communityId,
+                                    idOrName = communityId,
                                     auth = account?.jwt,
                                 ),
                             )
 
-                            communityViewModel.getPosts(
-                                GetPosts(
-                                    community_id = communityId,
-                                    type_ = ListingType.values()[account?.defaultListingType ?: 1],
-                                    sort = SortType.values()[account?.defaultSortType ?: 0],
-                                    auth = account?.jwt,
-                                ),
+                            communityViewModel.fetchPosts(
+                                communityIdOrName = idOrName,
+                                account = account,
+                                clear = true,
+                                ctx = ctx,
                             )
                         }
 
@@ -191,27 +196,33 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             communityListViewModel = communityListViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
                         )
                     }
                     // Only necessary for community deeplinks
                     composable(
-                        route = "c/{name}",
-                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                            navDeepLink { uriPattern = "$instance/c/{name}" }
-                        },
+                        route = "{instance}/c/{name}",
+                        deepLinks = listOf(
+                            navDeepLink { uriPattern = "{instance}/c/{name}" },
+                        ),
                         arguments = listOf(
                             navArgument("name") {
+                                type = NavType.StringType
+                            },
+                            navArgument("instance") {
                                 type = NavType.StringType
                             },
                         ),
                     ) {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
+                            val instance = it.arguments?.getString("instance")!!
+                            val idOrName = Either.Right("$name@$instance")
 
                             communityViewModel.getCommunity(
                                 form = GetCommunity(
-                                    name = name,
+                                    idOrname = name,
                                     auth = account?.jwt,
                                 ),
                             )
@@ -233,6 +244,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
                         )
                     }
@@ -251,6 +263,7 @@ class MainActivity : ComponentActivity() {
                         val savedMode = it.arguments?.getBoolean("saved")!!
                         LaunchedEffect(Unit) {
                             val personId = it.arguments?.getInt("id")!!
+                            val idOrName = Either.Left(personId)
 
                             personProfileViewModel.getPersonDetails(
                                 GetPersonDetails(
@@ -271,26 +284,32 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
                         )
                     }
                     // Necessary for deep links
                     composable(
-                        route = "u/{name}",
-                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                            navDeepLink { uriPattern = "$instance/u/{name}" }
-                        },
+                        route = "{instance}/u/{name}",
+                        deepLinks = listOf(
+                            navDeepLink { uriPattern = "{instance}/u/{name}" },
+                        ),
                         arguments = listOf(
                             navArgument("name") {
+                                type = NavType.StringType
+                            },
+                            navArgument("instance") {
                                 type = NavType.StringType
                             },
                         ),
                     ) {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
+val instance = it.arguments?.getString("instance")!!
+                            val idOrName = Either.Right("$name@$instance")
                             personProfileViewModel.getPersonDetails(
                                 GetPersonDetails(
-                                    username = name,
+                                    username = TODOIdOrName,
                                     sort = SortType.New,
                                     auth = account?.jwt,
                                 ),
@@ -306,6 +325,7 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
                         )
                     }
@@ -325,6 +345,8 @@ class MainActivity : ComponentActivity() {
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
+                            homeViewModel = homeViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
                             communityListViewModel = communityListViewModel,
                             selectMode = it.arguments?.getBoolean("select")!!,
                         )
@@ -395,6 +417,7 @@ class MainActivity : ComponentActivity() {
 
                         InboxActivity(
                             navController = navController,
+                            appSettingsViewModel = appSettingsViewModel,
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             commentReplyViewModel = commentReplyViewModel,
@@ -425,6 +448,11 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
+                            appSettingsViewModel = appSettingsViewModel,
+                            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
+                            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -450,6 +478,11 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
+                            appSettingsViewModel = appSettingsViewModel,
+                            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
+                            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -576,6 +609,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         AboutActivity(
                             navController = navController,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                         )
                     }
                 }

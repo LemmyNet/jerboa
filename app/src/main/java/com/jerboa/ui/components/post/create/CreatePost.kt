@@ -29,12 +29,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.types.Community
@@ -63,7 +65,7 @@ fun CreatePostHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Create post",
+                text = stringResource(R.string.create_post_create_post),
             )
         },
         actions = {
@@ -80,7 +82,7 @@ fun CreatePostHeader(
                     // Todo add are you sure cancel dialog
                     Icon(
                         Icons.Outlined.Add,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.form_submit),
                     )
                 }
             }
@@ -94,7 +96,7 @@ fun CreatePostHeader(
                 // Todo add are you sure cancel dialog
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Close",
+                    contentDescription = stringResource(R.string.create_post_close),
                 )
             }
         },
@@ -117,7 +119,8 @@ fun CreatePostBody(
     formValid: (valid: Boolean) -> Unit,
     account: Account?,
     padding: PaddingValues,
-    siteMetadataRes: ApiState<GetSiteMetadataResponse>,
+// TODO
+siteMetadataRes: ApiState<GetSiteMetadataResponse>,
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -167,7 +170,7 @@ fun CreatePostBody(
                 val title = siteMetadataRes.data.metadata.title
                 title?.also {
                     Text(
-                        text = "copy suggested title: $title",
+                        text = stringResource(R.string.create_post_copy_suggested_title, it)
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground.muted,
                         modifier = Modifier.clickable { onNameChange(title) },
@@ -197,12 +200,13 @@ fun CreatePostBody(
                     readOnly = true,
                     onValueChange = {}, // TODO what?
                     label = {
-                        Text("Community")
+                        Text(stringResource(R.string.create_post_community))
                     },
                     leadingIcon = {
                         community.icon?.let {
                             CircularIcon(
                                 icon = it,
+                                contentDescription = stringResource(R.string.community_icon),
                                 size = ICON_SIZE,
                                 thumbnailSize = THUMBNAIL_SIZE,
                             )
@@ -211,7 +215,7 @@ fun CreatePostBody(
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.ArrowDropDown,
-                            contentDescription = "TODO",
+                            contentDescription = stringResource(R.string.createPost_selectCommunity),
                         )
                     },
                     modifier = Modifier
@@ -222,7 +226,7 @@ fun CreatePostBody(
                     value = "",
                     onValueChange = {}, // TODO what?
                     label = {
-                        Text("Community")
+                        Text(stringResource(R.string.create_post_community))
                     },
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -272,6 +276,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         onUrlChange = {},
         onPickedImage = {},
         formValid = {},
+        suggestedTitle = stringResource(R.string.create_post_a_title_here),
         account = null,
         padding = PaddingValues(),
         siteMetadataRes = ApiState.Empty,

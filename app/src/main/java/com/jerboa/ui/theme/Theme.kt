@@ -3,12 +3,13 @@ package com.jerboa.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.sp
@@ -42,31 +43,53 @@ fun JerboaTheme(
         ThemeColor.Dynamic -> dynamicPair
         ThemeColor.Green -> green()
         ThemeColor.Pink -> pink()
+        ThemeColor.Blue -> blue()
+    }
+
+    fun makeBlack(darkTheme: ColorScheme): ColorScheme {
+        return darkTheme.copy(
+            background = Color(0xFF000000),
+            surface = Color(0xFF000000),
+        )
     }
 
     val systemTheme = if (!isSystemInDarkTheme()) {
         colorPair.first
     } else {
-        colorPair.second
+        if (themeMode == ThemeMode.SystemBlack) {
+            makeBlack(colorPair.second)
+        } else {
+            colorPair.second
+        }
     }
 
     val colors = when (themeMode) {
         ThemeMode.System -> systemTheme
+        ThemeMode.SystemBlack -> systemTheme
         ThemeMode.Light -> colorPair.first
         ThemeMode.Dark -> colorPair.second
+        ThemeMode.Black -> makeBlack(colorPair.second)
     }
 
     val typography = generateTypography(fontSize)
 
     val view = LocalView.current
 
-    if (isSystemInDarkTheme()) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            val insets = WindowCompat.getInsetsController(window, view)
-            insets.isAppearanceLightStatusBars = false
-        }
+    val window = (view.context as Activity).window
+    val insets = WindowCompat.getInsetsController(window, view)
+
+    val isLight = when (themeMode) {
+        ThemeMode.Black, ThemeMode.Dark -> false
+        ThemeMode.System, ThemeMode.SystemBlack -> !isSystemInDarkTheme()
+        else -> true
     }
+
+    window.statusBarColor = colors.background.toArgb()
+    // The navigation bar color is also set on BottomAppBarAll
+    window.navigationBarColor = colors.background.toArgb()
+
+    insets.isAppearanceLightStatusBars = isLight
+    insets.isAppearanceLightNavigationBars = isLight
 
     MaterialTheme(
         colorScheme = colors,

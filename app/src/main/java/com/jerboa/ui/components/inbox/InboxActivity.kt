@@ -2,10 +2,17 @@ package com.jerboa.ui.components.inbox
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,11 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.*
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockPerson
@@ -34,6 +36,7 @@ import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
@@ -53,6 +56,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun InboxActivity(
     navController: NavController,
+    appSettingsViewModel: AppSettingsViewModel,
     inboxViewModel: InboxViewModel,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
@@ -139,6 +143,7 @@ fun InboxActivity(
         },
         bottomBar = {
             BottomAppBarAll(
+                showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
                 screen = "inbox",
                 unreadCount = siteViewModel.getUnreadCountTotal(),
                 onClickProfile = {
@@ -172,7 +177,7 @@ enum class InboxTab {
     Messages,
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun InboxTabs(
     navController: NavController,
@@ -216,7 +221,7 @@ fun InboxTabs(
             },
         )
         HorizontalPager(
-            count = tabTitles.size,
+            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),
@@ -270,6 +275,7 @@ fun InboxTabs(
                             }
                         },
                     ) {
+// TODO PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         when (val repliesRes = inboxViewModel.repliesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(repliesRes.msg)

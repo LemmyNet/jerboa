@@ -16,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
+import com.jerboa.R
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -35,38 +37,45 @@ fun SettingsActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = "Settings", navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.settings_activity_settings), navController = navController)
         },
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
                 SettingsMenuLink(
-                    title = { Text("Look and feel") },
+                    title = { Text(stringResource(R.string.settings_activity_look_and_feel)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = { navController.navigate("lookAndFeel") },
                 )
                 account?.also { acct ->
                     SettingsMenuLink(
-                        title = { Text("${acct.name} settings") },
+                        title = {
+                            Text(
+                                stringResource(
+                                    R.string.settings_activity_account_settings,
+                                    acct.name,
+                                ),
+                            )
+                        },
                         icon = {
                             Icon(
                                 imageVector = Icons.Outlined.ManageAccounts,
-                                contentDescription = "TODO",
+                                contentDescription = null,
                             )
                         },
                         onClick = { navController.navigate("accountSettings") },
                     )
                 }
                 SettingsMenuLink(
-                    title = { Text("About") },
+                    title = { Text(stringResource(R.string.settings_activity_about)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Info,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = { navController.navigate("about") },

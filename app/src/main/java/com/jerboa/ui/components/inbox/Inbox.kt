@@ -19,8 +19,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
 
@@ -58,7 +60,7 @@ fun InboxHeader(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.inbox_back),
                 )
             }
         },
@@ -68,13 +70,13 @@ fun InboxHeader(
             }) {
                 Icon(
                     Icons.Outlined.FilterList,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.inbox_filter),
                 )
             }
             IconButton(onClick = onClickMarkAllAsRead) {
                 Icon(
                     Icons.Outlined.DoneAll,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.inbox_markAllRead),
                 )
             }
         },
@@ -83,7 +85,7 @@ fun InboxHeader(
 
 @Composable
 fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null) {
-    var title = "Inbox"
+    var title = stringResource(R.string.inbox_inbox)
     if (unreadCount != null && unreadCount > 0) {
         title = "$title ($unreadCount)"
     }

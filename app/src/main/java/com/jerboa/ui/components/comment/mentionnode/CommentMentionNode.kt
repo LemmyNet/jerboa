@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
@@ -31,8 +32,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.datatypes.types.Community
@@ -56,7 +59,9 @@ fun CommentMentionNodeHeader(
     onPersonClick: (personId: Int) -> Unit,
     score: Int,
     myVote: Int?,
-    onLongClick: () -> Unit = {},
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    showAvatar: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = personMentionView.creator,
@@ -69,7 +74,9 @@ fun CommentMentionNodeHeader(
         isPostCreator = false,
         isModerator = false,
         isCommunityBanned = personMentionView.creator_banned_from_community,
-        onLongClick = onLongClick,
+        onClick = onClick,
+        onLongCLick = onLongClick,
+        showAvatar = showAvatar,
     )
 }
 
@@ -81,6 +88,9 @@ fun CommentMentionNodeHeaderPreview() {
         score = 23,
         myVote = 26,
         onPersonClick = {},
+        onClick = {},
+        onLongClick = {},
+        showAvatar = true,
     )
 }
 
@@ -92,6 +102,7 @@ fun CommentMentionNodeFooterLine(
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
     onSaveClick: (personMentionView: PersonMentionView) -> Unit,
     onMarkAsReadClick: (personMentionView: PersonMentionView) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
@@ -107,6 +118,10 @@ fun CommentMentionNodeFooterLine(
         CommentReplyNodeOptionsDialog(
             personMentionView = personMentionView,
             onDismissRequest = { showMoreOptions = false },
+            onPersonClick = {
+                showMoreOptions = false
+                onPersonClick(personMentionView.creator.id)
+            },
             onViewSourceClick = {
                 showMoreOptions = false
                 onViewSourceClick()
@@ -151,6 +166,7 @@ fun CommentMentionNodeFooterLine(
             )
             ActionBarButton(
                 icon = Icons.Outlined.Link,
+                contentDescription = stringResource(R.string.commentMention_link),
                 onClick = { onLinkClick(personMentionView) },
                 account = account,
             )
@@ -159,6 +175,11 @@ fun CommentMentionNodeFooterLine(
                     Icons.Outlined.MarkChatRead
                 } else {
                     Icons.Outlined.MarkChatUnread
+                },
+                contentDescription = if (personMentionView.person_mention.read) {
+                    stringResource(R.string.markUnread)
+                } else {
+                    stringResource(R.string.markRead)
                 },
                 onClick = { onMarkAsReadClick(personMentionView) },
                 contentColor = if (personMentionView.person_mention.read) {
@@ -169,8 +190,15 @@ fun CommentMentionNodeFooterLine(
                 account = account,
             )
             ActionBarButton(
-                icon = if (personMentionView.saved) { Icons.Filled.Bookmark } else {
+                icon = if (personMentionView.saved) {
+                    Icons.Filled.Bookmark
+                } else {
                     Icons.Outlined.BookmarkBorder
+                },
+                contentDescription = if (personMentionView.saved) {
+                    stringResource(R.string.comment_unsave)
+                } else {
+                    stringResource(R.string.comment_save)
                 },
                 onClick = { onSaveClick(personMentionView) },
                 contentColor = if (personMentionView.saved) {
@@ -184,14 +212,17 @@ fun CommentMentionNodeFooterLine(
             if (personMentionView.creator.id != account?.id) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(personMentionView) },
                     account = account,
                 )
             }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
+                contentDescription = stringResource(R.string.moreOptions),
                 account = account,
                 onClick = { showMoreOptions = !showMoreOptions },
+                requiresAccount = false,
             )
         }
     }
@@ -201,6 +232,7 @@ fun CommentMentionNodeFooterLine(
 fun CommentReplyNodeOptionsDialog(
     personMentionView: PersonMentionView,
     onDismissRequest: () -> Unit,
+    onPersonClick: () -> Unit,
     onViewSourceClick: () -> Unit,
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
@@ -214,28 +246,43 @@ fun CommentReplyNodeOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "View Source",
+                    text = stringResource(
+                        R.string.comment_mention_node_go_to,
+                        personMentionView.creator.name,
+                    ),
+                    icon = Icons.Outlined.Person,
+                    onClick = onPersonClick,
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.comment_mention_node_view_source),
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Copy Permalink",
+                    text = stringResource(R.string.comment_mention_node_copy_permalink),
                     icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = personMentionView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(ctx, "Permalink Copied", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.comment_mention_node_permalink_copied),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         onDismissRequest()
                     },
                 )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
-                        text = "Report Comment",
+                        text = stringResource(R.string.comment_mention_node_report_comment),
                         icon = Icons.Outlined.Flag,
                         onClick = onReportClick,
                     )
                     IconAndTextDrawerItem(
-                        text = "Block ${personMentionView.creator.name}",
+                        text = stringResource(
+                            R.string.comment_mention_node_block,
+                            personMentionView.creator.name,
+                        ),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCreatorClick,
                     )
@@ -259,8 +306,9 @@ fun CommentMentionNode(
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
-    onBlockCreatorClick: (creator: Person) -> Unit,
+    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
     account: Account?,
+    showAvatar: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = personMentionView.counts.score
@@ -270,6 +318,7 @@ fun CommentMentionNode(
 
     var viewSource by remember { mutableStateOf(false) }
     var isExpanded by remember { mutableStateOf(true) }
+    var isActionBarExpanded by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier.padding(horizontal = LARGE_PADDING),
@@ -286,9 +335,13 @@ fun CommentMentionNode(
             onPersonClick = onPersonClick,
             score = score,
             myVote = myVote,
-            onLongClick = {
+            onClick = {
                 isExpanded = !isExpanded
             },
+            onLongClick = {
+                isActionBarExpanded = !isActionBarExpanded
+            },
+            showAvatar = showAvatar,
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -299,29 +352,40 @@ fun CommentMentionNode(
                 CommentBody(
                     comment = personMentionView.comment,
                     viewSource = viewSource,
+                    onClick = {},
+                    onLongClick = {
+                        isActionBarExpanded = !isActionBarExpanded
+                    },
                 )
-                CommentMentionNodeFooterLine(
-                    personMentionView = personMentionView,
-                    onUpvoteClick = {
-                        onUpvoteClick(it)
-                    },
-                    onDownvoteClick = {
-                        onDownvoteClick(it)
-                    },
-                    onViewSourceClick = {
-                        viewSource = !viewSource
-                    },
-                    onReplyClick = onReplyClick,
-                    onSaveClick = onSaveClick,
-                    onMarkAsReadClick = onMarkAsReadClick,
-                    onReportClick = onReportClick,
-                    onLinkClick = onLinkClick,
-                    onBlockCreatorClick = onBlockCreatorClick,
-                    myVote = myVote,
-                    upvotes = upvotes,
-                    downvotes = downvotes,
-                    account = account,
-                )
+                AnimatedVisibility(
+                    visible = isActionBarExpanded,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
+                    CommentMentionNodeFooterLine(
+                        personMentionView = personMentionView,
+                        onUpvoteClick = {
+                            onUpvoteClick(it)
+                        },
+                        onDownvoteClick = {
+                            onDownvoteClick(it)
+                        },
+                        onPersonClick = onPersonClick,
+                        onViewSourceClick = {
+                            viewSource = !viewSource
+                        },
+                        onReplyClick = onReplyClick,
+                        onSaveClick = onSaveClick,
+                        onMarkAsReadClick = onMarkAsReadClick,
+                        onReportClick = onReportClick,
+                        onLinkClick = onLinkClick,
+                        onBlockCreatorClick = onBlockCreatorClick,
+                        myVote = myVote,
+                        upvotes = upvotes,
+                        downvotes = downvotes,
+                        account = account,
+                    )
+                }
             }
         }
     }

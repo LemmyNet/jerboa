@@ -27,8 +27,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
+import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
@@ -70,27 +72,27 @@ fun SortTopOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Top Day",
+                    text = stringResource(R.string.dialogs_top_day),
                     onClick = { onClickSortType(SortType.TopDay) },
                     highlight = (selectedSortType == SortType.TopDay),
                 )
                 IconAndTextDrawerItem(
-                    text = "Top Week",
+                    text = stringResource(R.string.dialogs_top_week),
                     onClick = { onClickSortType(SortType.TopWeek) },
                     highlight = (selectedSortType == SortType.TopWeek),
                 )
                 IconAndTextDrawerItem(
-                    text = "Top Month",
+                    text = stringResource(R.string.dialogs_top_month),
                     onClick = { onClickSortType(SortType.TopMonth) },
                     highlight = (selectedSortType == SortType.TopMonth),
                 )
                 IconAndTextDrawerItem(
-                    text = "Top Year",
+                    text = stringResource(R.string.dialogs_top_year),
                     onClick = { onClickSortType(SortType.TopYear) },
                     highlight = (selectedSortType == SortType.TopYear),
                 )
                 IconAndTextDrawerItem(
-                    text = "Top All Time",
+                    text = stringResource(R.string.dialogs_top_all_time),
                     onClick = { onClickSortType(SortType.TopAll) },
                     highlight = (selectedSortType == SortType.TopAll),
                 )
@@ -122,20 +124,20 @@ fun ListingTypeOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Subscribed",
+                    text = stringResource(R.string.dialogs_subscribed),
                     icon = Icons.Outlined.Bookmarks,
                     onClick = { onClickListingType(ListingType.Subscribed) },
                     highlight = (selectedListingType == ListingType.Subscribed),
                 )
                 // TODO hide local for non-federated instances
                 IconAndTextDrawerItem(
-                    text = "Local",
+                    text = stringResource(R.string.dialogs_local),
                     icon = Icons.Outlined.LocationCity,
                     onClick = { onClickListingType(ListingType.Local) },
                     highlight = (selectedListingType == ListingType.Local),
                 )
                 IconAndTextDrawerItem(
-                    text = "All",
+                    text = stringResource(R.string.dialogs_all),
                     icon = Icons.Outlined.Public,
                     onClick = { onClickListingType(ListingType.All) },
                     highlight = (selectedListingType == ListingType.All),
@@ -158,37 +160,37 @@ fun SortOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Active",
+                    text = stringResource(R.string.dialogs_active),
                     icon = Icons.Outlined.Moving,
                     onClick = { onClickSortType(SortType.Active) },
                     highlight = (selectedSortType == SortType.Active),
                 )
                 IconAndTextDrawerItem(
-                    text = "Hot",
+                    text = stringResource(R.string.dialogs_hot),
                     icon = Icons.Outlined.LocalFireDepartment,
                     onClick = { onClickSortType(SortType.Hot) },
                     highlight = (selectedSortType == SortType.Hot),
                 )
                 IconAndTextDrawerItem(
-                    text = "New",
+                    text = stringResource(R.string.dialogs_new),
                     icon = Icons.Outlined.BrightnessLow,
                     onClick = { onClickSortType(SortType.New) },
                     highlight = (selectedSortType == SortType.New),
                 )
                 IconAndTextDrawerItem(
-                    text = "Most Comments",
+                    text = stringResource(R.string.dialogs_most_comments),
                     icon = Icons.Outlined.FormatListNumbered,
                     onClick = { onClickSortType(SortType.MostComments) },
                     highlight = (selectedSortType == SortType.MostComments),
                 )
                 IconAndTextDrawerItem(
-                    text = "New Comments",
+                    text = stringResource(R.string.dialogs_new_comments),
                     icon = Icons.Outlined.NewReleases,
                     onClick = { onClickSortType(SortType.NewComments) },
                     highlight = (selectedSortType == SortType.NewComments),
                 )
                 IconAndTextDrawerItem(
-                    text = "Top",
+                    text = stringResource(R.string.dialogs_top),
                     icon = Icons.Outlined.BarChart,
                     onClick = onClickSortTopOptions,
                     more = true,
@@ -211,14 +213,14 @@ fun UnreadOrAllOptionsDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "All",
+                    text = stringResource(R.string.dialogs_all),
                     icon = Icons.Outlined.List,
                     onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
                     highlight = (selectedUnreadOrAll == UnreadOrAll.All),
                 )
                 // TODO hide local for non-federated instances
                 IconAndTextDrawerItem(
-                    text = "Unread",
+                    text = stringResource(R.string.dialogs_unread),
                     icon = Icons.Outlined.MarkunreadMailbox,
                     onClick = { onClickUnreadOrAll(UnreadOrAll.Unread) },
                     highlight = (selectedUnreadOrAll == UnreadOrAll.Unread),
@@ -241,7 +243,7 @@ fun PostViewModeDialog(
             Column {
                 PostViewMode.values().map {
                     IconAndTextDrawerItem(
-                        text = it.mode,
+                        text = stringResource(it.mode),
                         onClick = { onClickPostViewMode(it) },
                         highlight = (selectedPostViewMode == it),
                     )
@@ -279,8 +281,15 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
 
             AlertDialog(
                 text = {
-                    Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
-                        MyMarkdownText(markdown = DONATION_MARKDOWN + markdown.value)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState),
+                    ) {
+                        MyMarkdownText(
+                            markdown = DONATION_MARKDOWN + markdown.value,
+                            onClick = {},
+                        )
                     }
                 },
                 confirmButton = {
@@ -291,7 +300,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                         },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("Done")
+                        Text(stringResource(R.string.dialogs_done))
                     }
                 },
                 onDismissRequest = {

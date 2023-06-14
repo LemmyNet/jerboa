@@ -12,11 +12,13 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.sampleCommentView
+import com.jerboa.R
 import com.jerboa.datatypes.types.CommentReplyView
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.PersonMentionView
@@ -40,7 +42,7 @@ fun CommentReplyHeader(
     TopAppBar(
         title = {
             Text(
-                text = "Reply",
+                text = stringResource(R.string.comment_reply_reply),
             )
         },
         actions = {
@@ -55,7 +57,7 @@ fun CommentReplyHeader(
                 } else {
                     Icon(
                         imageVector = Icons.Outlined.Send,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.commentReply_send),
                     )
                 }
             }
@@ -68,7 +70,7 @@ fun CommentReplyHeader(
             ) {
                 Icon(
                     Icons.Outlined.Close,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.comment_reply_back),
                 )
             }
         },
@@ -80,6 +82,7 @@ fun RepliedComment(
     commentView: CommentView,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
+    showAvatar: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentNodeHeader(
@@ -88,6 +91,11 @@ fun RepliedComment(
             score = commentView.counts.score,
             myVote = commentView.my_vote,
             isModerator = isModerator,
+            collapsedCommentsCount = 0,
+            isExpanded = true,
+            onClick = {},
+            onLongClick = {},
+            showAvatar = showAvatar,
         )
         SelectionContainer {
             Text(text = commentView.comment.content)
@@ -99,6 +107,7 @@ fun RepliedComment(
 fun RepliedCommentReply(
     commentReplyView: CommentReplyView,
     onPersonClick: (personId: Int) -> Unit,
+    showAvatar: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentReplyNodeHeader(
@@ -106,6 +115,9 @@ fun RepliedCommentReply(
             onPersonClick = onPersonClick,
             score = commentReplyView.counts.score,
             myVote = commentReplyView.my_vote,
+            onClick = {},
+            onLongClick = {},
+            showAvatar = showAvatar,
         )
         SelectionContainer {
             Text(text = commentReplyView.comment.content)
@@ -117,6 +129,7 @@ fun RepliedCommentReply(
 fun RepliedMentionReply(
     personMentionView: PersonMentionView,
     onPersonClick: (personId: Int) -> Unit,
+    showAvatar: Boolean,
 ) {
     Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
         CommentMentionNodeHeader(
@@ -124,6 +137,9 @@ fun RepliedMentionReply(
             onPersonClick = onPersonClick,
             score = personMentionView.counts.score,
             myVote = personMentionView.my_vote,
+            onClick = {},
+            onLongClick = {},
+            showAvatar = showAvatar,
         )
         SelectionContainer {
             Text(text = personMentionView.comment.content)
@@ -138,6 +154,7 @@ fun RepliedCommentPreview() {
         commentView = sampleCommentView,
         isModerator = false,
         onPersonClick = {},
+        showAvatar = true,
     )
 }
 
@@ -171,6 +188,7 @@ fun CommentReply(
     isModerator: Boolean,
     account: Account?,
     modifier: Modifier = Modifier,
+    showAvatar: Boolean,
 ) {
     val scrollState = rememberScrollState()
 
@@ -181,6 +199,7 @@ fun CommentReply(
             commentView = commentView,
             onPersonClick = onPersonClick,
             isModerator = isModerator,
+            showAvatar = showAvatar,
         )
         Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
@@ -200,6 +219,7 @@ fun CommentReplyReply(
     onPersonClick: (personId: Int) -> Unit,
     account: Account?,
     modifier: Modifier = Modifier,
+    showAvatar: Boolean,
 ) {
     val scrollState = rememberScrollState()
 
@@ -209,6 +229,7 @@ fun CommentReplyReply(
         RepliedCommentReply(
             commentReplyView = commentReplyView,
             onPersonClick = onPersonClick,
+            showAvatar = showAvatar,
         )
         Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
@@ -228,6 +249,7 @@ fun MentionReply(
     onPersonClick: (personId: Int) -> Unit,
     account: Account?,
     modifier: Modifier = Modifier,
+    showAvatar: Boolean,
 ) {
     val scrollState = rememberScrollState()
 
@@ -237,6 +259,7 @@ fun MentionReply(
         RepliedMentionReply(
             personMentionView = personMentionView,
             onPersonClick = onPersonClick,
+            showAvatar = showAvatar,
         )
         Divider(modifier = Modifier.padding(vertical = LARGE_PADDING))
         MarkdownTextField(
@@ -274,7 +297,7 @@ fun PostReply(
             onTextChange = onReplyChange,
             account = account,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Type your comment",
+            placeholder = stringResource(R.string.comment_reply_type_your_comment),
         )
     }
 }

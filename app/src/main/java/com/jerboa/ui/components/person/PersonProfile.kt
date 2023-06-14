@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.person
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,15 +25,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.samplePersonView
+import com.jerboa.R
 import com.jerboa.datatypes.types.PersonView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
+import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -47,7 +52,17 @@ import com.jerboa.ui.theme.muted
 fun PersonProfileTopSection(
     personView: PersonView,
     modifier: Modifier = Modifier,
+    showAvatar: Boolean,
 ) {
+    var showImage by remember { mutableStateOf<String?>(null) }
+
+    if (showImage != null) {
+        ImageViewerDialog(
+            url = showImage!!,
+            onBackRequest = { showImage = null },
+        )
+    }
+
     Column {
         Box(
             modifier = modifier.fillMaxWidth(),
@@ -56,12 +71,25 @@ fun PersonProfileTopSection(
             personView.person.banner?.also {
                 PictrsBannerImage(
                     url = it,
-                    modifier = Modifier.height(PROFILE_BANNER_SIZE),
+                    contentDescription = stringResource(R.string.personProfile_viewBanner),
+                    modifier = Modifier
+                        .height(PROFILE_BANNER_SIZE)
+                        .clickable {
+                            showImage = personView.person.banner
+                        },
                 )
             }
             Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
-                personView.person.avatar?.also {
-                    LargerCircularIcon(icon = it)
+                if (showAvatar) {
+                    personView.person.avatar?.also {
+                        LargerCircularIcon(
+                            icon = it,
+                            contentDescription = stringResource(R.string.personProfile_viewAvatar),
+                            modifier = Modifier.clickable {
+                                showImage = personView.person.avatar
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -75,7 +103,7 @@ fun PersonProfileTopSection(
             )
 
             TimeAgo(
-                precedingString = "Joined",
+                precedingString = stringResource(R.string.person_profile_joined),
                 includeAgo = true,
                 published = personView.person.published,
             )
@@ -84,6 +112,7 @@ fun PersonProfileTopSection(
                 MyMarkdownText(
                     markdown = it,
                     color = MaterialTheme.colorScheme.onBackground.muted,
+                    onClick = {},
                 )
             }
         }
@@ -94,12 +123,12 @@ fun PersonProfileTopSection(
 fun CommentsAndPosts(personView: PersonView) {
     Row {
         Text(
-            text = "${personView.counts.post_count} posts",
+            text = stringResource(R.string.person_profile_posts, personView.counts.post_count),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = "${personView.counts.comment_count} comments",
+            text = stringResource(R.string.person_profile_comments, personView.counts.comment_count),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }
@@ -114,7 +143,10 @@ fun CommentsAndPostsPreview() {
 @Preview
 @Composable
 fun PersonProfileTopSectionPreview() {
-    PersonProfileTopSection(personView = samplePersonView)
+    PersonProfileTopSection(
+        personView = samplePersonView,
+        showAvatar = true,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -185,7 +217,7 @@ fun PersonProfileHeader(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.person_profile_back),
                 )
             }
         },
@@ -195,7 +227,7 @@ fun PersonProfileHeader(
             }) {
                 Icon(
                     Icons.Outlined.Sort,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.selectSort),
                 )
             }
             if (!myProfile) {
@@ -204,7 +236,7 @@ fun PersonProfileHeader(
                 }) {
                     Icon(
                         Icons.Outlined.MoreVert,
-                        contentDescription = "TODO",
+                        contentDescription = stringResource(R.string.moreOptions),
                     )
                 }
             }
@@ -223,7 +255,7 @@ fun PersonProfileHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = selectedSortType.toString(),
+            text = getLocalizedSortingTypeName(LocalContext.current, selectedSortType),
             style = MaterialTheme.typography.titleMedium,
         )
     }
@@ -240,12 +272,12 @@ fun PersonProfileMoreDialog(
         text = {
             Column {
                 IconAndTextDrawerItem(
-                    text = "Block Person",
+                    text = stringResource(R.string.person_profile_block_person),
                     icon = Icons.Outlined.Block,
                     onClick = onBlockPersonClick,
                 )
                 IconAndTextDrawerItem(
-                    text = "Report Person",
+                    text = stringResource(R.string.person_profile_report_person),
                     icon = Icons.Outlined.Flag,
                     onClick = onReportPersonClick,
                 )

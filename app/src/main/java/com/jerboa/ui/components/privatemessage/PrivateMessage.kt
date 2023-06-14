@@ -14,8 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.datatypes.samplePrivateMessageView
+import com.jerboa.R
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.Account
@@ -33,16 +35,17 @@ fun PrivateMessageHeader(
     privateMessageView: PrivateMessageView,
     onPersonClick: (personId: Int) -> Unit,
     myPersonId: Int,
+    showAvatar: Boolean,
 ) {
     val otherPerson: Person
     val fromOrTo: String
 
     if (isCreator(myPersonId, privateMessageView)) {
         otherPerson = privateMessageView.recipient
-        fromOrTo = "to "
+        fromOrTo = stringResource(R.string.private_message_to)
     } else {
         otherPerson = privateMessageView.creator
-        fromOrTo = "from "
+        fromOrTo = stringResource(R.string.private_message_from)
     }
 
     Row(
@@ -59,6 +62,7 @@ fun PrivateMessageHeader(
             PersonProfileLink(
                 person = otherPerson,
                 onClick = { onPersonClick(otherPerson.id) },
+                showAvatar = showAvatar,
             )
         }
 
@@ -80,12 +84,16 @@ fun PrivateMessageViewPreview() {
         privateMessageView = samplePrivateMessageView,
         myPersonId = 23,
         onPersonClick = {},
+        showAvatar = true,
     )
 }
 
 @Composable
 fun PrivateMessageBody(privateMessageView: PrivateMessageView) {
-    MyMarkdownText(markdown = privateMessageView.private_message.content)
+    MyMarkdownText(
+        markdown = privateMessageView.private_message.content,
+        onClick = {},
+    )
 }
 
 @Composable
@@ -96,6 +104,7 @@ fun PrivateMessage(
     onPersonClick: (personId: Int) -> Unit,
     myPersonId: Int, // Required so we know the from / to
     account: Account?,
+    showAvatar: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -108,6 +117,7 @@ fun PrivateMessage(
             privateMessageView = privateMessageView,
             onPersonClick = onPersonClick,
             myPersonId = myPersonId,
+            showAvatar = showAvatar,
         )
         PrivateMessageBody(privateMessageView = privateMessageView)
         PrivateMessageFooterLine(
@@ -144,6 +154,11 @@ fun PrivateMessageFooterLine(
                     } else {
                         Icons.Outlined.MarkChatUnread
                     },
+                    contentDescription = if (privateMessageView.private_message.read) {
+                        stringResource(R.string.markUnread)
+                    } else {
+                        stringResource(R.string.markRead)
+                    },
                     onClick = { onMarkAsReadClick(privateMessageView) },
                     contentColor = if (privateMessageView.private_message.read) {
                         MaterialTheme.colorScheme.primary
@@ -154,6 +169,7 @@ fun PrivateMessageFooterLine(
                 )
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
+                    contentDescription = stringResource(R.string.privateMessage_reply),
                     onClick = { onReplyClick(privateMessageView) },
                     account = account,
                 )
@@ -177,5 +193,6 @@ fun PrivateMessagePreview() {
         onPersonClick = {},
         onReplyClick = {},
         onMarkAsReadClick = {},
+        showAvatar = true,
     )
 }

@@ -35,9 +35,15 @@ fun CommentNodes(
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
     showPostAndCommunityContext: Boolean = false,
+    showCollapsedCommentContent: Boolean,
+    isCollapsedByParent: Boolean,
+    showActionBarByDefault: Boolean,
+    enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     // Holds the un-expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
+    val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
 
     LazyColumn(state = listState) {
         commentNodeItems(
@@ -49,6 +55,13 @@ fun CommentNodes(
                     unExpandedComments.remove(commentId)
                 } else {
                     unExpandedComments.add(commentId)
+                }
+            },
+            toggleActionBar = { commentId ->
+                if (commentsWithToggledActionBar.contains(commentId)) {
+                    commentsWithToggledActionBar.remove(commentId)
+                } else {
+                    commentsWithToggledActionBar.add(commentId)
                 }
             },
             onUpvoteClick = onUpvoteClick,
@@ -68,6 +81,13 @@ fun CommentNodes(
             onFetchChildrenClick = onFetchChildrenClick,
             onBlockCreatorClick = onBlockCreatorClick,
             showPostAndCommunityContext = showPostAndCommunityContext,
+            showCollapsedCommentContent = showCollapsedCommentContent,
+            isCollapsedByParent = isCollapsedByParent,
+            showActionBar = { commentId ->
+                showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
+            },
+            enableDownVotes = enableDownVotes,
+            showAvatar = showAvatar,
         )
     }
 }
@@ -77,6 +97,7 @@ fun LazyListScope.commentNodeItems(
     isFlat: Boolean,
     isExpanded: (commentId: Int) -> Boolean,
     toggleExpanded: (commentId: Int) -> Unit,
+    toggleActionBar: (commentId: Int) -> Unit,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -94,6 +115,11 @@ fun LazyListScope.commentNodeItems(
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
     showPostAndCommunityContext: Boolean = false,
+    showCollapsedCommentContent: Boolean,
+    isCollapsedByParent: Boolean,
+    showActionBar: (commentId: Int) -> Boolean,
+    enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     nodes.forEach { node ->
         commentNodeItem(
@@ -101,6 +127,7 @@ fun LazyListScope.commentNodeItems(
             isFlat = isFlat,
             isExpanded = isExpanded,
             toggleExpanded = toggleExpanded,
+            toggleActionBar = toggleActionBar,
             onUpvoteClick = onUpvoteClick,
             onDownvoteClick = onDownvoteClick,
             onReplyClick = onReplyClick,
@@ -118,6 +145,11 @@ fun LazyListScope.commentNodeItems(
             onFetchChildrenClick = onFetchChildrenClick,
             onBlockCreatorClick = onBlockCreatorClick,
             showPostAndCommunityContext = showPostAndCommunityContext,
+            showCollapsedCommentContent = showCollapsedCommentContent,
+            isCollapsedByParent = isCollapsedByParent,
+            showActionBar = showActionBar,
+            enableDownVotes = enableDownVotes,
+            showAvatar = showAvatar,
         )
     }
 }

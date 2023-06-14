@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.Badge
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -14,12 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.types.Person
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
+import com.jerboa.ui.components.common.TextBadge
 import com.jerboa.ui.theme.SMALL_PADDING
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,16 +35,7 @@ fun PersonName(
     val style = MaterialTheme.typography.bodyMedium
 
     if (isPostCreator) {
-        Badge(
-            containerColor = MaterialTheme.colorScheme.tertiary,
-        ) {
-            Text(
-                text = name,
-                style = style,
-                overflow = TextOverflow.Clip,
-                maxLines = 1,
-            )
-        }
+        TextBadge(text = name, textStyle = style)
     } else {
         Text(
             text = name,
@@ -69,34 +62,40 @@ fun PersonProfileLink(
     isModerator: Boolean = false,
     isCommunityBanned: Boolean = false,
     color: Color = MaterialTheme.colorScheme.tertiary,
+    showAvatar: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier = Modifier.clickable { onClick(person.id) },
     ) {
-        person.avatar?.also {
-            CircularIcon(icon = it)
+        if (showAvatar) {
+            person.avatar?.also {
+                CircularIcon(
+                    icon = it,
+                    contentDescription = null,
+                )
+            }
         }
         if (showTags) {
             if (isModerator) {
                 Icon(
                     imageVector = Icons.Outlined.Shield,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.person_iconModerator),
                     tint = MaterialTheme.colorScheme.tertiary,
                 )
             }
             if (person.admin) {
                 Icon(
                     imageVector = Icons.Outlined.Shield,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.person_iconAdmin),
                     tint = MaterialTheme.colorScheme.primary,
                 )
             }
             if (isCommunityBanned || person.banned) {
                 Icon(
                     imageVector = Icons.Outlined.NoAccounts,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.person_iconBanned),
                     tint = Color.Red,
                 )
             }
@@ -113,8 +112,9 @@ fun PersonProfileLink(
 @Composable
 fun PersonProfileLinkPreview() {
     PersonProfileLink(
-        person = samplePerson,
+        person = samplePersonSafe,
         onClick = {},
+        showAvatar = true,
     )
 }
 
@@ -128,5 +128,6 @@ fun PersonProfileLinkPreviewTags() {
         isModerator = true,
         showTags = true,
         onClick = {},
+        showAvatar = true,
     )
 }

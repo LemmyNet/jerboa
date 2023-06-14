@@ -28,6 +28,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.home.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -40,6 +41,8 @@ fun CommunityListActivity(
     navController: NavController,
     communityListViewModel: CommunityListViewModel,
     accountViewModel: AccountViewModel,
+    homeViewModel: HomeViewModel,
+    appSettingsViewModel: AppSettingsViewModel,
     selectMode: Boolean = false,
 ) {
     Log.d("jerboa", "got to community list activity")
@@ -98,6 +101,35 @@ fun CommunityListActivity(
                         )
                     }
                 }
+            },
+            bottomBar = {
+                BottomAppBarAll(
+                    showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
+                    screen = "communityList",
+                    unreadCounts = homeViewModel.unreadCountResponse,
+                    onClickProfile = {
+                        account?.id?.also {
+                            navController.navigate(route = "profile/$it")
+                        } ?: run {
+                            loginFirstToast(ctx)
+                        }
+                    },
+                    onClickInbox = {
+                        account?.also {
+                            navController.navigate(route = "inbox")
+                        } ?: run {
+                            loginFirstToast(ctx)
+                        }
+                    },
+                    onClickSaved = {
+                        account?.id?.also {
+                            navController.navigate(route = "profile/$it?saved=${true}")
+                        } ?: run {
+                            loginFirstToast(ctx)
+                        }
+                    },
+                    navController = navController,
+                )
             },
         )
     }
