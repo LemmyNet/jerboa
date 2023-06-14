@@ -930,7 +930,6 @@ fun getLocalizedSortingTypeName(context: Context, sortingType: SortType): String
         SortType.TopAll -> context.getString(R.string.sorttype_topall)
         SortType.MostComments -> context.getString(R.string.sorttype_mostcomments)
         SortType.NewComments -> context.getString(R.string.sorttype_newcomments)
-        else -> "Missing String Localization for Enum SortType"
     }
     return returnString
 }
@@ -940,7 +939,6 @@ fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
         UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
         UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
         UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
-        else -> "Missing String Localization for Enum UserTab"
     }
     return returnString
 }

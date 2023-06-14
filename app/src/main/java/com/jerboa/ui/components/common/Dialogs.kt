@@ -316,7 +316,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                 val releasesUrl = "https://raw.githubusercontent.com/dessalines/jerboa/main/RELEASES.md".toHttpUrl()
                 val req = Request.Builder().url(releasesUrl).build()
                 val res = client.newCall(req).execute()
-                markdown.value = res.body?.string() ?: ""
+                markdown.value = res.body.string()
             }
         }
     }
