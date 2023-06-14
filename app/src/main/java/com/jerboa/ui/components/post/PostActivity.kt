@@ -36,7 +36,6 @@ import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
-import com.jerboa.openLink
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
@@ -152,9 +151,6 @@ fun PostActivity(
                                     navController.navigate("commentReply")
                                 },
                                 onPostClick = {},
-                                onPostLinkClick = { url ->
-                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
-                                },
                                 onSaveClick = {
                                     account?.also { acct ->
                                         postViewModel.savePost(
