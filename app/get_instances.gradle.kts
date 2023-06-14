@@ -9,7 +9,7 @@ import org.apache.groovy.json.internal.LazyMap
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-val endpointUrl = "https://the-federation.info/v1/graphql"
+val endpointUrl = "https://api.fediverse.observer/"
 val instancesFilePath = "src/main/java/com/jerboa/DefaultInstances.kt"
 val maxInstancesCount = 10
 
@@ -32,18 +32,10 @@ tasks.register("fetchInstances") {
         val url = URL(endpointUrl)
         val query = """
 {
-    plat: thefederation_platform_by_pk(id: 73) {
-        nodes: thefederation_nodes {
-            name
-            agg: thefederation_stats_aggregate {
-                aggregate {
-                    avg {
-                        users_monthly
-                    }
-                }
-            }
-        }
-    }
+  nodes(softwarename: "lemmy") {
+    domain
+    active_users_monthly
+  }
 }"""
 
         // Format JSON request body
@@ -53,6 +45,7 @@ tasks.register("fetchInstances") {
         val req = url.openConnection() as HttpURLConnection
         req.requestMethod = "POST"
         req.doOutput = true
+        req.setRequestProperty("Content-Type", "application/json")
 
         // Write body to request
         OutputStreamWriter(req.outputStream, "UTF-8").use {
@@ -65,16 +58,12 @@ tasks.register("fetchInstances") {
         // Get sorted list of nodes
         val nodes = json
             .getMap("data")
-            .getMap("plat")
             .getArray("nodes")
             .map {
-                val name = (it as LazyMap)["name"] as String
-                val users = it
-                    .getMap("agg")
-                    .getMap("aggregate")
-                    .getMap("avg")["users_monthly"] as BigDecimal?
+                val name = (it as LazyMap)["domain"] as String
+                val users = it["active_users_monthly"] as Int?
 
-                Pair(name, users?.toFloat())
+                Pair(name, users)
             }
             .filter {
                 it.second != null
@@ -82,8 +71,8 @@ tasks.register("fetchInstances") {
             .sortedBy {
                 it.second
             }
+            .takeLast(maxInstancesCount)
             .reversed()
-            .take(maxInstancesCount)
 
         // Create output file and write header
         val outFile = file(instancesFilePath)
