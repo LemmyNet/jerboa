@@ -816,7 +816,6 @@ fun PreviewLinkNoThumbnailPostListing() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostListing(
     postView: PostView,
@@ -1026,6 +1025,7 @@ fun PostListing(
             },
             onPostClick = onPostClick,
             onPostLinkClick = onPostLinkClick,
+            onPostLinkLongClick = { showLinkDialog = it },
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
             isModerator = isModerator,
