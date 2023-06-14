@@ -124,7 +124,6 @@ fun PostActivity(
         )
     }
 
-
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
