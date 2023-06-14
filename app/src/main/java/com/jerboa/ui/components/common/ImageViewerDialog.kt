@@ -1,10 +1,6 @@
 package com.jerboa.ui.components.common
 
-import android.content.Context
-import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
-import android.webkit.MimeTypeMap
-import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -43,13 +39,10 @@ import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
-import com.jerboa.saveBitmap
-import kotlinx.coroutines.Dispatchers
+import com.jerboa.saveImage
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
-import java.net.URL
 
 const val backFadeTime = 300
 
@@ -134,29 +127,12 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
 
                 BarIcon(icon = Icons.Outlined.Download, name = "Download") {
                     coroutineScope.launch {
-                        SaveImage(url, context)
+                        saveImage(url, context)
                     }
                 }
             }
         }
     }
-}
-
-suspend fun SaveImage(url: String, context: Context) {
-    Toast.makeText(context, "Saving image...", Toast.LENGTH_SHORT).show()
-
-    val fileName = Uri.parse(url).pathSegments.last()
-
-    val extension = MimeTypeMap.getFileExtensionFromUrl(url)
-    val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-
-    withContext(Dispatchers.IO) {
-        URL(url).openStream().use {
-            saveBitmap(context, it, mimeType, fileName)
-        }
-    }
-
-    Toast.makeText(context, "Saved image", Toast.LENGTH_SHORT).show()
 }
 
 @Composable

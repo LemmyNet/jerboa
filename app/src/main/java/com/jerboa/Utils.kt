@@ -15,6 +15,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Patterns
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -58,7 +59,9 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.ocpsoft.prettytime.PrettyTime
 import java.io.IOException
 import java.io.InputStream
@@ -879,6 +882,23 @@ fun saveBitmap(
 
         throw e
     }
+}
+
+suspend fun saveImage(url: String, context: Context) {
+    Toast.makeText(context, "Saving image...", Toast.LENGTH_SHORT).show()
+
+    val fileName = Uri.parse(url).pathSegments.last()
+
+    val extension = MimeTypeMap.getFileExtensionFromUrl(url)
+    val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+
+    withContext(Dispatchers.IO) {
+        URL(url).openStream().use {
+            saveBitmap(context, it, mimeType, fileName)
+        }
+    }
+
+    Toast.makeText(context, "Saved image", Toast.LENGTH_SHORT).show()
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
