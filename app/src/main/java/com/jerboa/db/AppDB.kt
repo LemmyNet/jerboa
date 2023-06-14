@@ -98,6 +98,11 @@ data class AppSettings(
         defaultValue = "1",
     )
     val useCustomTabs: Boolean,
+    @ColumnInfo(
+        name = "use_private_tabs",
+        defaultValue = "0",
+    )
+    val usePrivateTabs: Boolean,
 )
 
 @Dao
@@ -386,8 +391,17 @@ val MIGRATION_12_13 = object : Migration(12, 13) {
     }
 }
 
+val MIGRATION_13_14 = object : Migration(13, 14) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column use_private_tabs INTEGER NOT NULL default 0",
+        )
+    }
+}
+
 @Database(
-    version = 13,
+    version = 14,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -424,6 +438,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_10_11,
                         MIGRATION_11_12,
                         MIGRATION_12_13,
+                        MIGRATION_13_14,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

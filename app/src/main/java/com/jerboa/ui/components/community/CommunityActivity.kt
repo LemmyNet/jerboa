@@ -43,6 +43,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityActivity(
     navController: NavController,
@@ -146,7 +147,7 @@ fun CommunityActivity(
                     navController.navigate(route = "post/${postView.post.id}")
                 },
                 onPostLinkClick = { url ->
-                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
+                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
                 },
                 onSaveClick = { postView ->
                     account?.also { acct ->
