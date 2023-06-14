@@ -41,7 +41,6 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.fetchInitialData
 import com.jerboa.loginFirstToast
-import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -207,9 +206,6 @@ fun MainPostListingsContent(
         },
         onPostClick = { postView ->
             navController.navigate(route = "post/${postView.post.id}")
-        },
-        onPostLinkClick = { url ->
-            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
         },
         onSaveClick = { postView ->
             account?.also { acct ->
