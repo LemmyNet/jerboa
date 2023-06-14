@@ -873,7 +873,6 @@ fun PostListing(
                     Text(
                         text = url,
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
                             .padding(bottom = 15.dp),
                         color = MaterialTheme.colorScheme.primary,
                     )
