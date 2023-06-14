@@ -364,7 +364,7 @@ fun PostLinkOptionsDialog(
 
                 IconAndTextDrawerItem(
                     icon = Icons.Filled.OpenInBrowser,
-                    text = "Open in browser",
+                    text = stringResource(R.string.link_dialog_open_in_browser),
                     onClick = {
                         onOpenInBrowser()
                         onDismissRequest()
@@ -372,7 +372,7 @@ fun PostLinkOptionsDialog(
                 )
                 IconAndTextDrawerItem(
                     icon = Icons.Filled.Share,
-                    text = "Share link",
+                    text = stringResource(R.string.link_dialog_share_link),
                     onClick = {
                         val sendIntent: Intent = Intent().apply {
                             action = Intent.ACTION_SEND
@@ -388,10 +388,10 @@ fun PostLinkOptionsDialog(
                 )
                 IconAndTextDrawerItem(
                     icon = Icons.Outlined.ContentCopy,
-                    text = "Copy link",
+                    text = stringResource(R.string.link_dialog_copy_link),
                     onClick = {
                         clipboardManager.setText(AnnotatedString(url))
-                        Toast.makeText(context, "URL copied to clipboard", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.resources.getString(R.string.link_dialog_toast_url_copied), Toast.LENGTH_SHORT).show()
                         onDismissRequest()
                     },
                 )
@@ -401,7 +401,7 @@ fun PostLinkOptionsDialog(
 
                     IconAndTextDrawerItem(
                         icon = Icons.Outlined.Download,
-                        text = "Download image",
+                        text = stringResource(R.string.link_dialog_download_image),
                         onClick = {
                             coroutineScope.launch {
                                 saveImage(url, context)
