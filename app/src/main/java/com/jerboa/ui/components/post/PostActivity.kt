@@ -3,22 +3,27 @@
 package com.jerboa.ui.components.post
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -26,10 +31,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavController
 import arrow.core.Either
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -50,7 +55,7 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
@@ -71,11 +76,6 @@ fun PostActivity(
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val swipeRefreshState = rememberSwipeRefreshState(
-        isRefreshing = postViewModel.loading && postViewModel
-            .postView.value !== null,
-    )
-
     // Holds expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
     val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
@@ -88,6 +88,28 @@ fun PostActivity(
     val commentParentId = getCommentParentId(firstComment)
     val showContextButton = depth != null && depth > 0
     val enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = postViewModel.loading,
+        onRefresh = {
+            val postId = postViewModel.postView.value?.post?.id
+            val commentId = postViewModel.commentId.value
+            val id = if (commentId != null) {
+                Either.Right(commentId)
+            } else if (postId != null) {
+                Either.Left(postId)
+            } else {
+                null
+            }
+
+            id?.let {
+                postViewModel.fetchPost(
+                    id = it,
+                    account = account,
+                    ctx = ctx,
+                )
+            }
+        },
+    )
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
             .semantics { testTagsAsResourceId = true },
@@ -100,33 +122,13 @@ fun PostActivity(
                     scrollBehavior,
                 )
                 if (postViewModel.loading) {
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().testTag("jerboa:loading"))
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 }
             }
         },
         content = { padding ->
-            SwipeRefresh(
-                state = swipeRefreshState,
-                onRefresh = {
-                    val postId = postViewModel.postView.value?.post?.id
-                    val commentId = postViewModel.commentId.value
-                    val id = if (commentId != null) {
-                        Either.Right(commentId)
-                    } else if (postId != null) {
-                        Either.Left(postId)
-                    } else {
-                        null
-                    }
-
-                    id?.let {
-                        postViewModel.fetchPost(
-                            id = it,
-                            account = account,
-                            ctx = ctx,
-                        )
-                    }
-                },
-            ) {
+            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                PullRefreshIndicator(postViewModel.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
                 postViewModel.postView.value?.also { postView ->
                     LazyColumn(
                         state = listState,
@@ -160,7 +162,7 @@ fun PostActivity(
                                 },
                                 onPostClick = {},
                                 onPostLinkClick = { url ->
-                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
+                                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
                                 },
                                 onSaveClick = {
                                     account?.also { acct ->
