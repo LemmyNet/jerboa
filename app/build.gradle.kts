@@ -14,8 +14,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 33
-        versionCode = 32
-        versionName = "0.0.32"
+        versionCode = 34
+        versionName = "0.0.34"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -73,19 +73,24 @@ dependencies {
 
     // Markdown support
     implementation("io.noties.markwon:core:4.6.2")
+    implementation("io.noties.markwon:ext-strikethrough:4.6.2")
+    implementation("io.noties.markwon:ext-tables:4.6.2")
+    implementation("io.noties.markwon:html:4.6.2")
     implementation("io.noties.markwon:image-coil:4.6.2")
     implementation("io.noties.markwon:linkify:4.6.2")
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-pager:0.30.1")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.30.1")
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.30.1")
     implementation("com.google.accompanist:accompanist-flowlayout:0.30.1")
 
     // LiveData
     implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.core:core-ktx:1.10.1")
+
+    // gif support
+    implementation("io.coil-kt:coil-gif:2.4.0")
 
     // To use Kotlin annotation processing tool
     ksp("androidx.room:room-compiler:2.5.1")

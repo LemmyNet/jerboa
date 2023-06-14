@@ -2,10 +2,17 @@ package com.jerboa.ui.components.inbox
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,11 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
@@ -30,6 +32,7 @@ import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -43,6 +46,7 @@ fun InboxActivity(
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     commentReplyViewModel: CommentReplyViewModel,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -105,6 +109,7 @@ fun InboxActivity(
                 ctx = ctx,
                 account = account,
                 scope = scope,
+                siteViewModel = siteViewModel,
             )
         },
         bottomBar = {
@@ -143,7 +148,7 @@ enum class InboxTab {
     Messages,
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun InboxTabs(
     navController: NavController,
@@ -154,6 +159,7 @@ fun InboxTabs(
     scope: CoroutineScope,
     commentReplyViewModel: CommentReplyViewModel,
     padding: PaddingValues,
+    siteViewModel: SiteViewModel,
 ) {
     val tabTitles = InboxTab.values().map { it.toString() }
     val pagerState = rememberPagerState()
@@ -189,7 +195,7 @@ fun InboxTabs(
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
         HorizontalPager(
-            count = tabTitles.size,
+            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),
@@ -222,9 +228,8 @@ fun InboxTabs(
                             }
                         }
                     }
-
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
+                    val state = rememberPullRefreshState(
+                        refreshing = loading,
                         onRefresh = {
                             account?.also { acct ->
                                 inboxViewModel.fetchReplies(
@@ -234,10 +239,13 @@ fun InboxTabs(
                                 )
                             }
                         },
-                    ) {
+                    )
+                    Box(modifier = Modifier.pullRefresh(state)) {
+                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         LazyColumn(
                             state = listState,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
                                 .simpleVerticalScrollbar(listState),
                         ) {
                             items(
@@ -324,6 +332,7 @@ fun InboxTabs(
                                         navController.navigate(route = "post/$postId")
                                     },
                                     account = account,
+                                    showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                                 )
                             }
                         }
@@ -356,9 +365,8 @@ fun InboxTabs(
                             }
                         }
                     }
-
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
+                    val state = rememberPullRefreshState(
+                        loading,
                         onRefresh = {
                             account?.also { acct ->
                                 inboxViewModel.fetchPersonMentions(
@@ -368,10 +376,13 @@ fun InboxTabs(
                                 )
                             }
                         },
-                    ) {
+                    )
+                    Box(modifier = Modifier.pullRefresh(state)) {
+                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         LazyColumn(
                             state = listState,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
                                 .simpleVerticalScrollbar(listState),
                         ) {
                             items(
@@ -462,6 +473,7 @@ fun InboxTabs(
                                         navController.navigate(route = "post/$postId")
                                     },
                                     account = account,
+                                    showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                                 )
                             }
                         }
@@ -494,9 +506,8 @@ fun InboxTabs(
                             }
                         }
                     }
-
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
+                    val state = rememberPullRefreshState(
+                        loading,
                         onRefresh = {
                             account?.also { acct ->
                                 inboxViewModel.fetchPrivateMessages(
@@ -506,10 +517,13 @@ fun InboxTabs(
                                 )
                             }
                         },
-                    ) {
+                    )
+                    Box(modifier = Modifier.pullRefresh(state)) {
+                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         LazyColumn(
                             state = listState,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
                                 .simpleVerticalScrollbar(listState),
                         ) {
                             items(
@@ -537,6 +551,7 @@ fun InboxTabs(
                                             navController.navigate(route = "profile/$personId")
                                         },
                                         account = acct,
+                                        showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                                     )
                                 }
                             }

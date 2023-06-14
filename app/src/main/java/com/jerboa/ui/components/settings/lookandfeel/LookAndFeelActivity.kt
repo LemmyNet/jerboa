@@ -3,6 +3,8 @@ package com.jerboa.ui.components.settings.lookandfeel
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,8 +60,11 @@ fun LookAndFeelActivity(
         settings?.showVotingArrowsInListView ?: true,
     )
     val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
+    val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)
 
     val snackbarHostState = remember { SnackbarHostState() }
+	
+    val scrollState = rememberScrollState()
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
@@ -75,6 +80,7 @@ fun LookAndFeelActivity(
                 showCommentActionBarByDefault = showCommentActionBarByDefaultState.value,
                 showVotingArrowsInListView = showVotingArrowsInListViewState.value,
                 useCustomTabs = useCustomTabsState.value,
+                usePrivateTabs = usePrivateTabsState.value,
             ),
         )
     }
@@ -85,7 +91,11 @@ fun LookAndFeelActivity(
             SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), navController = navController)
         },
         content = { padding ->
-            Column(modifier = Modifier.padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .padding(padding),
+            ) {
                 SettingsSlider(
                     modifier = Modifier.padding(top = 10.dp),
                     valueRange = 8f..48f,
@@ -93,7 +103,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.FormatSize,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     title = {
@@ -112,7 +122,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     title = {
@@ -129,7 +139,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Colorize,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     title = {
@@ -146,7 +156,7 @@ fun LookAndFeelActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.ViewList,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     title = {
@@ -174,14 +184,14 @@ fun LookAndFeelActivity(
                 SettingsCheckbox(
                     state = showCommentActionBarByDefaultState,
                     title = {
-                        Text(text = "Show action bar by default for comments")
+                        Text(text = stringResource(R.string.look_and_feel_show_action_bar_for_comments))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
                     state = showVotingArrowsInListViewState,
                     title = {
-                        Text(text = "Show voting arrows in list view")
+                        Text(text = stringResource(R.string.look_and_feel_show_voting_arrows_list_view))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
@@ -189,6 +199,13 @@ fun LookAndFeelActivity(
                     state = useCustomTabsState,
                     title = {
                         Text(text = stringResource(id = R.string.look_and_feel_use_custom_tabs))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = usePrivateTabsState,
+                    title = {
+                        Text(text = stringResource(id = R.string.look_and_feel_use_private_tabs))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

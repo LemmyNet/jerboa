@@ -42,15 +42,20 @@ const val mastodonLink = "https://mastodon.social/@LemmyDev"
 fun AboutActivity(
     navController: NavController,
     useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Log.d("jerboa", "Got to About activity")
 
     val ctx = LocalContext.current
 
     @Suppress("DEPRECATION")
-    val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName
+    val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0)?.versionName
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+    fun openLink(link: String) {
+        openLink(link, ctx, useCustomTabs, usePrivateTabs)
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -61,15 +66,15 @@ fun AboutActivity(
             Column(modifier = Modifier.padding(padding)) {
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_what_s_new)) },
-                    subtitle = { Text(stringResource(R.string.settings_about_version, version)) },
+                    subtitle = { Text(stringResource(R.string.settings_about_version, version ?: "")) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.NewReleases,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", ctx, useCustomTabs)
+                        openLink("$githubUrl/blob/main/RELEASES.md", ctx, useCustomTabs, usePrivateTabs)
                     },
                 )
                 SettingsDivider()
@@ -79,11 +84,11 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.BugReport,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/issues", ctx, useCustomTabs)
+                        openLink("$githubUrl/issues")
                     },
                 )
                 SettingsMenuLink(
@@ -91,11 +96,11 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Chat,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
-                        openLink(jerboaMatrixChat, ctx, useCustomTabs)
+                        openLink(jerboaMatrixChat)
                     },
                 )
                 SettingsMenuLink(
@@ -103,11 +108,11 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.AttachMoney,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
-                        openLink(donateLink, ctx, useCustomTabs)
+                        openLink(donateLink)
                     },
                 )
                 SettingsDivider()
@@ -118,11 +123,11 @@ fun AboutActivity(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_jerboa),
                             modifier = Modifier.size(32.dp),
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
-                        openLink(jerboaLemmyLink, ctx, useCustomTabs)
+                        openLink(jerboaLemmyLink)
                     },
                 )
                 SettingsMenuLink(
@@ -130,11 +135,11 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.TravelExplore,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
-                        openLink(mastodonLink, ctx, useCustomTabs)
+                        openLink(mastodonLink)
                     },
                 )
                 SettingsDivider()
@@ -151,11 +156,11 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Code,
-                            contentDescription = "TODO",
+                            contentDescription = null,
                         )
                     },
                     onClick = {
-                        openLink(githubUrl, ctx, useCustomTabs)
+                        openLink(githubUrl)
                     },
                 )
             }
@@ -183,5 +188,5 @@ fun SettingsHeader(
 @Preview
 @Composable
 fun AboutPreview() {
-    AboutActivity(navController = rememberNavController(), useCustomTabs = false)
+    AboutActivity(navController = rememberNavController(), useCustomTabs = false, usePrivateTabs = false)
 }

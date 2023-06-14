@@ -4,11 +4,18 @@ package com.jerboa.ui.components.person
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,17 +25,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
@@ -44,6 +47,7 @@ import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -63,6 +67,7 @@ fun PersonProfileActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -96,7 +101,8 @@ fun PersonProfileActivity(
                                     .person.id,
                             ),
                             account = account,
-                            clear = true,
+                            clearPersonDetails = false,
+                            clearPostsAndComments = true,
                             changeSortType = sortType,
                             changeSavedOnly = savedMode,
                             ctx = ctx,
@@ -143,6 +149,8 @@ fun PersonProfileActivity(
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 showVotingArrowsInListView = showVotingArrowsInListView,
+                enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
             )
         },
         bottomBar = {
@@ -181,7 +189,7 @@ enum class UserTab {
     Comments,
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun UserTabs(
     savedMode: Boolean,
@@ -197,11 +205,16 @@ fun UserTabs(
     padding: PaddingValues,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    enableDownVotes: Boolean,
+    showAvatar: Boolean,
 ) {
     val tabTitles = if (savedMode) {
-        listOf(UserTab.Posts.name, UserTab.Comments.name)
+        listOf(
+            getLocalizedStringForUserTab(ctx, UserTab.Posts),
+            getLocalizedStringForUserTab(ctx, UserTab.Comments),
+        )
     } else {
-        UserTab.values().map { it.toString() }
+        UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
     }
     val pagerState = rememberPagerState()
 
@@ -235,7 +248,7 @@ fun UserTabs(
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
         HorizontalPager(
-            count = tabTitles.size,
+            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),
@@ -260,6 +273,7 @@ fun UserTabs(
                             personProfileViewModel.res?.person_view?.also {
                                 PersonProfileTopSection(
                                     personView = it,
+                                    showAvatar = showAvatar,
                                 )
                             }
                         }
@@ -283,6 +297,7 @@ fun UserTabs(
                                     onClick = { community ->
                                         navController.navigate(route = "community/${community.id}")
                                     },
+                                    showDefaultIcon = true,
                                 )
                             }
                         }
@@ -311,7 +326,7 @@ fun UserTabs(
                             navController.navigate(route = "post/${postView.post.id}")
                         },
                         onPostLinkClick = { url ->
-                            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
+                            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
                         },
                         onSaveClick = { postView ->
                             account?.also { acct ->
@@ -367,7 +382,8 @@ fun UserTabs(
                                 personProfileViewModel.fetchPersonDetails(
                                     idOrName = Either.Left(it),
                                     account = account,
-                                    clear = true,
+                                    clearPersonDetails = false,
+                                    clearPostsAndComments = true,
                                     changeSavedOnly = savedMode,
                                     ctx = ctx,
                                 )
@@ -382,6 +398,8 @@ fun UserTabs(
                                     personProfileViewModel.fetchPersonDetails(
                                         idOrName = Either.Left(it),
                                         account = account,
+                                        clearPersonDetails = false,
+                                        clearPostsAndComments = false,
                                         nextPage = true,
                                         changeSavedOnly = savedMode,
                                         ctx = ctx,
@@ -394,6 +412,8 @@ fun UserTabs(
                         taglines = null,
                         postViewMode = getPostViewMode(appSettingsViewModel),
                         showVotingArrowsInListView = showVotingArrowsInListView,
+                        enableDownVotes = enableDownVotes,
+                        showAvatar = showAvatar,
                     )
                 }
                 UserTab.Comments.ordinal -> {
@@ -419,6 +439,8 @@ fun UserTabs(
                                     personProfileViewModel.fetchPersonDetails(
                                         idOrName = Either.Left(it),
                                         account = account,
+                                        clearPersonDetails = false,
+                                        clearPostsAndComments = false,
                                         nextPage = true,
                                         changeSavedOnly = savedMode,
                                         ctx = ctx,
@@ -427,21 +449,24 @@ fun UserTabs(
                             }
                         }
                     }
-
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
+                    val state = rememberPullRefreshState(
+                        refreshing = loading,
                         onRefresh = {
                             personProfileViewModel.res?.person_view?.person?.id?.also {
                                 personProfileViewModel.fetchPersonDetails(
                                     idOrName = Either.Left(it),
                                     account = account,
-                                    clear = true,
+                                    clearPersonDetails = false,
+                                    clearPostsAndComments = true,
                                     changeSavedOnly = savedMode,
                                     ctx = ctx,
                                 )
                             }
                         },
-                    ) {
+                    )
+
+                    Box(modifier = Modifier.pullRefresh(state)) {
+                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         CommentNodes(
                             nodes = nodes,
                             isFlat = true,
@@ -526,7 +551,9 @@ fun UserTabs(
                             account = account,
                             moderators = listOf(),
                             isCollapsedByParent = false,
-                            showActionBarByDefault = appSettingsViewModel.appSettings.value?.showCommentActionBarByDefault ?: true,
+                            showActionBarByDefault = true,
+                            enableDownVotes = enableDownVotes,
+                            showAvatar = showAvatar,
                         )
                     }
                 }

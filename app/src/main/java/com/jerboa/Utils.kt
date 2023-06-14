@@ -17,7 +17,9 @@ import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TabPosition
@@ -41,10 +43,9 @@ import androidx.compose.ui.platform.LocalAutofill
 import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -54,6 +55,7 @@ import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -356,10 +358,14 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
-fun openLink(url: String, ctx: Context, useCustomTab: Boolean) {
+fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
-            .build()
+            .build().apply {
+                if (usePrivateTab) {
+                    intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+                }
+            }
         intent.launchUrl(ctx, Uri.parse(url))
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -681,6 +687,7 @@ fun fetchInitialData(
             changeListingType = ListingType.Local,
             changeSortType = SortType.Active,
         )
+        homeViewModel.fetchUnreadCounts()
     }
 
     siteViewModel.fetchSite(
@@ -752,7 +759,7 @@ enum class PostViewMode(val mode: Int) {
     List(R.string.look_and_feel_post_view_list),
 }
 
-@ExperimentalPagerApi
+@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.pagerTabIndicatorOffset2(
     pagerState: PagerState,
     tabPositions: List<TabPosition>,
@@ -766,7 +773,7 @@ fun Modifier.pagerTabIndicatorOffset2(
         val currentTab = tabPositions[currentPage]
         val previousTab = tabPositions.getOrNull(currentPage - 1)
         val nextTab = tabPositions.getOrNull(currentPage + 1)
-        val fraction = pagerState.currentPageOffset
+        val fraction = pagerState.currentPageOffsetFraction
         val indicatorWidth = if (fraction > 0 && nextTab != null) {
             lerp(currentTab.width, nextTab.width, fraction).roundToPx()
         } else if (fraction < 0 && previousTab != null) {
@@ -880,4 +887,43 @@ fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> U
                 }
             }
         }
+}
+
+/**
+ * Converts a scalable pixel (sp) to an actual pixel (px)
+ */
+fun convertSpToPx(sp: TextUnit, context: Context): Int {
+    return (sp.value * context.resources.displayMetrics.scaledDensity).toInt()
+}
+
+/**
+ * Returns localized Strings for SortingType Enum
+ */
+
+fun getLocalizedSortingTypeName(context: Context, sortingType: SortType): String {
+    val returnString = when (sortingType) {
+        SortType.Active -> context.getString(R.string.sorttype_active)
+        SortType.Hot -> context.getString(R.string.sorttype_hot)
+        SortType.New -> context.getString(R.string.sorttype_new)
+        SortType.Old -> context.getString(R.string.sorttype_old)
+        SortType.TopDay -> context.getString(R.string.sorttype_topday)
+        SortType.TopWeek -> context.getString(R.string.sorttype_topweek)
+        SortType.TopMonth -> context.getString(R.string.sorttype_topmonth)
+        SortType.TopYear -> context.getString(R.string.sorttype_topyear)
+        SortType.TopAll -> context.getString(R.string.sorttype_topall)
+        SortType.MostComments -> context.getString(R.string.sorttype_mostcomments)
+        SortType.NewComments -> context.getString(R.string.sorttype_newcomments)
+        else -> "Missing String Localization for Enum SortType"
+    }
+    return returnString
+}
+
+fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
+    val returnString = when (tab) {
+        UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
+        UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
+        UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+        else -> "Missing String Localization for Enum UserTab"
+    }
+    return returnString
 }

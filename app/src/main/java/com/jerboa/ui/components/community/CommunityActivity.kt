@@ -24,8 +24,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
+import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
@@ -37,9 +39,11 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityActivity(
     navController: NavController,
@@ -50,6 +54,7 @@ fun CommunityActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -142,7 +147,7 @@ fun CommunityActivity(
                     navController.navigate(route = "post/${postView.post.id}")
                 },
                 onPostLinkClick = { url ->
-                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true)
+                    openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
                 },
                 onSaveClick = { postView ->
                     account?.also { acct ->
@@ -226,6 +231,8 @@ fun CommunityActivity(
                 taglines = null,
                 postViewMode = getPostViewMode(appSettingsViewModel),
                 showVotingArrowsInListView = showVotingArrowsInListView,
+                enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
+                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -242,7 +249,10 @@ fun CommunityActivity(
                     }
                 },
             ) {
-                Icon(imageVector = Icons.Outlined.Add, contentDescription = "TODO")
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = stringResource(R.string.floating_createPost),
+                )
             }
         },
         bottomBar = {

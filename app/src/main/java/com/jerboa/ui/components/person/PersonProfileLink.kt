@@ -15,8 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.R
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.personNameShown
@@ -61,34 +63,40 @@ fun PersonProfileLink(
     isModerator: Boolean = false,
     isCommunityBanned: Boolean = false,
     color: Color = MaterialTheme.colorScheme.tertiary,
+    showAvatar: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         modifier = Modifier.clickable { onClick(person.id) },
     ) {
-        person.avatar?.also {
-            CircularIcon(icon = it)
+        if (showAvatar) {
+            person.avatar?.also {
+                CircularIcon(
+                    icon = it,
+                    contentDescription = null,
+                )
+            }
         }
         if (showTags) {
             if (isModerator) {
                 Icon(
                     imageVector = Icons.Outlined.Shield,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.person_iconModerator),
                     tint = MaterialTheme.colorScheme.tertiary,
                 )
             }
             if (person.admin) {
                 Icon(
                     imageVector = Icons.Outlined.Shield,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.person_iconAdmin),
                     tint = MaterialTheme.colorScheme.primary,
                 )
             }
             if (isCommunityBanned || person.banned) {
                 Icon(
                     imageVector = Icons.Outlined.NoAccounts,
-                    contentDescription = "TODO",
+                    contentDescription = stringResource(R.string.person_iconBanned),
                     tint = Color.Red,
                 )
             }
@@ -107,6 +115,7 @@ fun PersonProfileLinkPreview() {
     PersonProfileLink(
         person = samplePersonSafe,
         onClick = {},
+        showAvatar = true,
     )
 }
 
@@ -120,5 +129,6 @@ fun PersonProfileLinkPreviewTags() {
         isModerator = true,
         showTags = true,
         onClick = {},
+        showAvatar = true,
     )
 }
