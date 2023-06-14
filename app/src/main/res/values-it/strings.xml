@@ -180,7 +180,7 @@
     <string name="look_and_feel_post_view_card">Scheda</string>
     <string name="look_and_feel_post_view_list">Lista</string>
     <string name="look_and_feel_post_view_small_card">Scheda piccola</string>
-    <string name="look_and_feel_show_action_bar_for_comments">Mostra barra delle azioni per i commenti</string>
+    <string name="look_and_feel_show_action_bar_for_comments">Mostra sempre la barra delle azioni per i commenti</string>
     <string name="look_and_feel_show_navigation_bar">Mostra barra di navigazione </string>
     <string name="look_and_feel_show_voting_arrows_list_view">Mostra frecce per votare in visualizzazione lista</string>
     <string name="look_and_feel_theme">Tema</string>
@@ -255,14 +255,14 @@
     <string name="private_message_reply_type_your_message_placeholder">Digita il messaggio</string>
     <string name="private_message_to">"a "</string>
     <string name="removeBookmark">Rimuovi dai segnalibri</string>
-    <string name="selectSort">Scegli criterio ordinamento</string>
+    <string name="selectSort">Scegli il criterio di ordinamento</string>
     <string name="settings_about_about">Info</string>
     <string name="settings_about_developer_matrix_chatroom">Chat Matrix degli sviluppatori</string>
     <string name="settings_about_donate_to_jerboa_development">Sostieni lo sviluppo di Jerboa</string>
     <string name="settings_about_follow_on_mastodon">Seguici su Mastodon</string>
     <string name="settings_about_issue_tracker">Segnalazione problemi</string>
     <string name="settings_about_join_c_jerboa">Partecipa a c/jerboa</string>
-    <string name="settings_about_open_source">Open Source</string>
+    <string name="settings_about_open_source">Open source</string>
     <string name="settings_about_source_code">Codice sorgente</string>
     <string name="settings_about_source_code_subtitle_part1">"Jerboa è un software libero e open-source, rilasciato sotto licenza "</string>
     <string name="settings_about_source_code_subtitle_part2"> GNU Affero General Public License v3.0</string>
