@@ -26,6 +26,7 @@ import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
@@ -47,6 +48,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,6 +85,7 @@ import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
+import com.jerboa.saveImage
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -112,6 +115,7 @@ import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
+import kotlinx.coroutines.launch
 
 @Composable
 fun PostHeaderLine(
@@ -270,6 +274,7 @@ fun PostTitleBlock(
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
             postView = postView,
+            onImageLongClick = { onPostLinkLongClick(postView.post.url!!) },
         )
     } else {
         PostTitleAndThumbnail(
@@ -304,9 +309,11 @@ fun PostName(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
+    onImageLongClick: () -> Unit,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -330,12 +337,13 @@ fun PostTitleAndImageLink(
         ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
     }
 
-    val postLinkPicMod = Modifier
-        .clickable { showImageDialog = true }
     PictrsUrlImage(
         url = url,
         nsfw = nsfwCheck(postView),
-        modifier = postLinkPicMod,
+        modifier = Modifier.combinedClickable(
+            onLongClick = onImageLongClick,
+            onClick = { showImageDialog = true },
+        ),
     )
 }
 
@@ -848,12 +856,14 @@ fun PostListing(
     }
 
     val clipboardManager = LocalClipboardManager.current
-    var context = LocalContext.current
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     var showLinkDialog by remember { mutableStateOf<String?>(null) }
 
     if (showLinkDialog != null) {
         val url = showLinkDialog!!
+        val isImage = isImage(url)
 
         AlertDialog(
             onDismissRequest = { showLinkDialog = null },
@@ -901,6 +911,21 @@ fun PostListing(
                             showLinkDialog = null
                         },
                     )
+
+                    if (isImage) {
+                        Divider(modifier = Modifier.padding(vertical = 20.dp))
+
+                        IconAndTextDrawerItem(
+                            icon = Icons.Outlined.Download,
+                            text = "Download image",
+                            onClick = {
+                                coroutineScope.launch {
+                                    saveImage(url, context)
+                                }
+                                showLinkDialog = null
+                            },
+                        )
+                    }
                 }
             },
         )
