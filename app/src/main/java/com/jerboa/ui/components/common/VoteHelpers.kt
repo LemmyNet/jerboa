@@ -27,11 +27,7 @@ fun <T> VoteGeneric(
     }
 
     val votesStr = if (showNumber) {
-        if (type == VoteType.Downvote && votes == 0) {
-            null
-        } else {
-            votes.toString()
-        }
+        votes.toString()
     } else {
         null
     }

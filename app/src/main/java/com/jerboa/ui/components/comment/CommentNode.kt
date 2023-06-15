@@ -565,7 +565,7 @@ fun CommentFooterLine(
                 item = commentView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (instantScores.downvotes != 0),
+                showNumber = (instantScores.myVote?.let { it != 0 } ?: let { false }),
                 account = account,
             )
             if (enableDownVotes) {
@@ -575,6 +575,7 @@ fun CommentFooterLine(
                     item = commentView,
                     type = VoteType.Downvote,
                     onVoteClick = onDownvoteClick,
+                    showNumber = (instantScores.myVote?.let { it != 0 } ?: let { false }),
                     account = account,
                 )
             }
