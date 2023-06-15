@@ -58,7 +58,6 @@ class ExampleUnitTest {
             auth = null,
         )
         val out = api.getPost(form.serializeToMap()).body()!!
-        println(out.comments)
         assertNotNull(out)
     }
 

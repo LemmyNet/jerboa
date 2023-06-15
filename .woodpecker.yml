@@ -9,6 +9,11 @@ pipeline:
     image: tmknom/prettier
     commands:
       - prettier -c "*.md" "*.yml"
+  run_tests:
+    image: cimg/android:2023.05
+    commands:
+      - sudo chown -R circleci:circleci .
+      - sudo ./gradlew connectedAndroidTest testDebug test
 
   build_project:
     image: cimg/android:2023.05
