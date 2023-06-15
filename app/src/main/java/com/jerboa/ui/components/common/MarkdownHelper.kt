@@ -44,7 +44,7 @@ object MarkdownHelper {
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { view, link ->
-                        link?.let { openLink(link, view.context, useCustomTabs) }
+                        openLink(link, view.context, useCustomTabs)
                     }
                 }
             })
@@ -57,6 +57,7 @@ object MarkdownHelper {
         color: Color = Color.Unspecified,
         onClick: (() -> Unit)? = null,
         onLongClick: (() -> Unit)? = null,
+        maxLines: Int = Int.MAX_VALUE,
     ) {
         val style = MaterialTheme.typography.bodyLarge
         val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
@@ -72,6 +73,7 @@ object MarkdownHelper {
                     viewId = null,
                     onClick = onClick,
                     onLongClick = onLongClick,
+                    maxLines = maxLines
                 )
             },
             update = { textView ->
@@ -111,7 +113,7 @@ object MarkdownHelper {
             setMaxLines(maxLines)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                setLineHeight(convertSpToPx(mergedStyle.lineHeight, context))
+                lineHeight = convertSpToPx(mergedStyle.lineHeight, context)
             }
             width = maxWidth
 

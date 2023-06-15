@@ -85,7 +85,6 @@ import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
-import com.jerboa.ui.components.common.PreviewLines
 import com.jerboa.ui.components.common.ScoreAndTime
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.TimeAgo
@@ -308,7 +307,7 @@ fun PostTitleAndImageLink(
             horizontal = MEDIUM_PADDING,
         ),
 
-    ) {
+        ) {
         // Title of the post
         PostName(
             postView = postView,
@@ -402,24 +401,24 @@ fun PostBody(
                     .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
                     .fillMaxWidth(),
                 content = {
-                    if (fullBody) {
-                        Column(
-                            modifier = Modifier
-                                .padding(MEDIUM_PADDING),
-                        ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(MEDIUM_PADDING)
+                    ) {
+                        if (fullBody) {
                             MyMarkdownText(
                                 markdown = text,
                                 onClick = {},
                             )
+                        } else {
+                            MyMarkdownText(
+                                markdown = text,
+                                onClick = {},
+                                maxLines = 5
+                            )
                         }
-                    } else {
-                        PreviewLines(
-                            text = text,
-                            modifier = Modifier
-                                .padding(MEDIUM_PADDING),
-                        )
                     }
-                },
+                }
             )
         }
     }
