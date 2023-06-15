@@ -59,12 +59,15 @@ fun NavGraphBuilder.postScreen(
             },
         ),
     ) {
+        val args = PostArgs(it)
+
         LaunchedEffect(Unit) {
-            val args = PostArgs(it)
+            val postId = args.id
             postViewModel.fetchPost(
-                id = Either.Left(args.id),
+                id = Either.Left(postId),
                 account = account,
-                clear = true,
+                clearPost = true,
+                clearComments = true,
                 ctx = ctx,
             )
         }
@@ -74,15 +77,23 @@ fun NavGraphBuilder.postScreen(
             commentEditViewModel = commentEditViewModel,
             commentReplyViewModel = commentReplyViewModel,
             postEditViewModel = postEditViewModel,
-            appSettingsViewModel = appSettingsViewModel,
-            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent
-                ?: false,
-            showActionBarByDefault = appSettings?.showCommentActionBarByDefault
-                ?: false,
-            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
-                ?: true,
+            navController = navController,
+            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
+            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+            onClickSortType = { commentSortType ->
+                val postId = args.id
+                postViewModel.fetchPost(
+                    id = Either.Left(postId),
+                    account = account,
+                    clearPost = false,
+                    clearComments = true,
+                    ctx = ctx,
+                    changeSortType = commentSortType,
+                )
+            },
+            selectedSortType = postViewModel.sortType.value,
             siteViewModel = siteViewModel,
-            navController = navController
         )
     }
 }

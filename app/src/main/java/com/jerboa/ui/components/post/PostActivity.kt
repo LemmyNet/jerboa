@@ -53,6 +53,7 @@ import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
@@ -155,14 +156,7 @@ fun PostActivity(
                             selectedSortType = selectedSortType,
                         )
                     },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(
-                                Icons.Outlined.ArrowBack,
-                                contentDescription = "Back",
-                            )
-                        }
-                    },
+                    navigationIcon = { DefaultBackButton(navController) },
                     actions = {
                         IconButton(onClick = {
                             showSortOptions = !showSortOptions

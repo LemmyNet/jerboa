@@ -59,29 +59,40 @@ fun NavGraphBuilder.commentScreen(
             },
         ),
     ) {
+        val args = CommentArgs(it)
+
         LaunchedEffect(Unit) {
-            val args = CommentArgs(it)
+            val commentId = args.id
             postViewModel.fetchPost(
-                id = Either.Right(args.id),
+                id = Either.Right(commentId),
                 account = account,
-                clear = true,
+                clearPost = true,
+                clearComments = true,
                 ctx = ctx,
             )
         }
         PostActivity(
-            navController = navController,
             postViewModel = postViewModel,
             accountViewModel = accountViewModel,
             commentEditViewModel = commentEditViewModel,
             commentReplyViewModel = commentReplyViewModel,
             postEditViewModel = postEditViewModel,
-            appSettingsViewModel = appSettingsViewModel,
-            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent
-                ?: false,
-            showActionBarByDefault = appSettings?.showCommentActionBarByDefault
-                ?: true,
-            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
-                ?: true,
+            navController = navController,
+            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
+            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+            onClickSortType = { commentSortType ->
+                val commentId = args.id
+                postViewModel.fetchPost(
+                    id = Either.Right(commentId),
+                    account = account,
+                    clearPost = false,
+                    clearComments = true,
+                    ctx = ctx,
+                    changeSortType = commentSortType,
+                )
+            },
+            selectedSortType = postViewModel.sortType.value,
             siteViewModel = siteViewModel,
         )
     }
