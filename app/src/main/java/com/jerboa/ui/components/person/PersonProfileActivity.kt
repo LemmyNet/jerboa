@@ -34,7 +34,6 @@ import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
-import com.jerboa.openLink
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
@@ -324,9 +323,6 @@ fun UserTabs(
                         },
                         onPostClick = { postView ->
                             navController.navigate(route = "post/${postView.post.id}")
-                        },
-                        onPostLinkClick = { url ->
-                            openLink(url, ctx, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
                         },
                         onSaveClick = { postView ->
                             account?.also { acct ->

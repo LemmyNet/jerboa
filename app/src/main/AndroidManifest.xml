@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:name=".JerboaApplication"
@@ -19,8 +18,6 @@
         android:theme="@style/Theme.Jerboa"
         android:localeConfig="@xml/locales_config"
         tools:targetApi="33">
-
-
 
         <activity
             android:name=".MainActivity"
@@ -50,85 +47,21 @@
               <action android:name="android.intent.action.VIEW" />
               <category android:name="android.intent.category.DEFAULT" />
               <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="beehaw.org" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="feddit.de" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="feddit.it" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="lemmy.ca" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="lemmy.ml" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="lemmy.one" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="lemmy.world" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="lemmygrad.ml" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="midwest.social" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="mujico.org" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="sh.itjust.works" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="slrpnk.net" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="sopuli.xyz" />
-            </intent-filter>
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="szmer.info" />
+              <data android:scheme="https"/>
+              <data android:host="beehaw.org"/>
+              <data android:host="feddit.de" />
+              <data android:host="feddit.it" />
+              <data android:host="lemmy.ca" />
+              <data android:host="lemmy.ml" />
+              <data android:host="lemmy.one" />
+              <data android:host="lemmy.world" />
+              <data android:host="lemmygrad.ml" />
+              <data android:host="midwest.social" />
+              <data android:host="mujico.org" />
+              <data android:host="sh.itjust.works" />
+              <data android:host="slrpnk.net" />
+              <data android:host="sopuli.xyz" />
+              <data android:host="szmer.info" />
             </intent-filter>
         </activity>
     </application>
