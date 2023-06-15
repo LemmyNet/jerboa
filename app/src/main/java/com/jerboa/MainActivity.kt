@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +23,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.util.DebugLogger
+import coil.util.Logger
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -66,11 +71,20 @@ import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
+import net.engawapg.lib.zoomable.BuildConfig
 
-class JerboaApplication : Application() {
+class JerboaApplication : Application(), ImageLoaderFactory {
     private val database by lazy { AppDB.getDatabase(this) }
     val accountRepository by lazy { AccountRepository(database.accountDao()) }
     val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .crossfade(true)
+            .logger(DebugLogger())
+            .build()
+    }
+
 }
 
 class MainActivity : ComponentActivity() {
