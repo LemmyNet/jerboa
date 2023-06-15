@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.BrightnessLow
 import androidx.compose.material.icons.outlined.FormatListNumbered
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material.icons.outlined.LocationCity
@@ -32,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
+import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
 import com.jerboa.db.AppSettingsViewModel
@@ -195,6 +197,56 @@ fun SortOptionsDialog(
                     onClick = onClickSortTopOptions,
                     more = true,
                     highlight = (topSortTypes.contains(selectedSortType)),
+                )
+            }
+        },
+        confirmButton = {},
+    )
+}
+
+@Preview
+@Composable
+fun CommentSortOptionsDialogPreview() {
+    CommentSortOptionsDialog(
+        selectedSortType = CommentSortType.Hot,
+        onDismissRequest = {},
+        onClickSortType = {},
+    )
+}
+
+@Composable
+fun CommentSortOptionsDialog(
+    onDismissRequest: () -> Unit,
+    onClickSortType: (CommentSortType) -> Unit,
+    selectedSortType: CommentSortType,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_hot),
+                    icon = Icons.Outlined.LocalFireDepartment,
+                    onClick = { onClickSortType(CommentSortType.Hot) },
+                    highlight = (selectedSortType == CommentSortType.Hot),
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_top),
+                    icon = Icons.Outlined.BarChart,
+                    onClick = { onClickSortType(CommentSortType.Top) },
+                    highlight = (selectedSortType == CommentSortType.Top),
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_new),
+                    icon = Icons.Outlined.NewReleases,
+                    onClick = { onClickSortType(CommentSortType.New) },
+                    highlight = (selectedSortType == CommentSortType.New),
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_old),
+                    icon = Icons.Outlined.History,
+                    onClick = { onClickSortType(CommentSortType.Old) },
+                    highlight = (selectedSortType == CommentSortType.Old),
                 )
             }
         },
