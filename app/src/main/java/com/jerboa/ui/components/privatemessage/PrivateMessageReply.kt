@@ -22,6 +22,7 @@ import com.jerboa.R
 import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -55,18 +56,7 @@ fun PrivateMessageReplyHeader(
                 }
             }
         },
-        navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
-            ) {
-                Icon(
-                    Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.private_message_reply_back),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
     )
 }
 
