@@ -11,6 +11,9 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.util.DebugLogger
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.jerboa.db.AccountRepository
@@ -67,7 +70,6 @@ import com.jerboa.ui.components.report.CreateReportViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.theme.JerboaTheme
-import net.engawapg.lib.zoomable.BuildConfig
 
 class JerboaApplication : Application(), ImageLoaderFactory {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -80,7 +82,6 @@ class JerboaApplication : Application(), ImageLoaderFactory {
             .logger(DebugLogger())
             .build()
     }
-
 }
 
 class MainActivity : ComponentActivity() {
