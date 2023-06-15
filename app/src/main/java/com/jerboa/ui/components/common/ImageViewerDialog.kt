@@ -113,7 +113,7 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
     ) {
         Box(Modifier.background(backgroundColor.value)) {
             Image(
-                painter = painterState ,
+                painter = painterState,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
@@ -123,10 +123,10 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
                     ),
             )
 
-            if(painterState.state is AsyncImagePainter.State.Loading) {
+            if (painterState.state is AsyncImagePainter.State.Loading) {
                 CircularProgressIndicator(
                     modifier = Modifier
-                        .align(Alignment.Center)
+                        .align(Alignment.Center),
                 )
             }
 
