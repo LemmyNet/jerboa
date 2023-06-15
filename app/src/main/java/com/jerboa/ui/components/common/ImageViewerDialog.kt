@@ -99,6 +99,7 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
         }
         .build()
 
+    println("Debugging url: $url")
     Dialog(
         onDismissRequest = onBackRequest,
         properties = DialogProperties(

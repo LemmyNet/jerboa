@@ -94,6 +94,8 @@ fun NavGraphBuilder.postScreen(
             },
             selectedSortType = postViewModel.sortType.value,
             siteViewModel = siteViewModel,
+            useCustomTabs = appSettings?.useCustomTabs ?: true,
+            usePrivateTabs = appSettings?.usePrivateTabs ?: false
         )
     }
 }

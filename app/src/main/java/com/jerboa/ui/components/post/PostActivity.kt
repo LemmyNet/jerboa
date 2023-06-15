@@ -46,6 +46,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
+import com.jerboa.openLink
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
@@ -90,6 +91,8 @@ fun PostActivity(
     showVotingArrowsInListView: Boolean,
     onClickSortType: (CommentSortType) -> Unit,
     selectedSortType: CommentSortType,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -256,6 +259,9 @@ fun PostActivity(
                                             ctx = ctx,
                                         )
                                     }
+                                },
+                                onLinkClick = {
+                                    openLink(it, ctx, useCustomTabs, usePrivateTabs)
                                 },
                                 showReply = true, // Do nothing
                                 isModerator = isModerator(

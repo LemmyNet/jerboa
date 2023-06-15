@@ -255,6 +255,7 @@ fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
     account: Account?,
+    onLinkClick: (url: String) -> Unit,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
@@ -266,6 +267,7 @@ fun PostTitleBlock(
         PostTitleAndThumbnail(
             postView = postView,
             account = account,
+            onLinkClick = onLinkClick,
         )
     }
 }
@@ -332,6 +334,7 @@ fun PostTitleAndImageLink(
 fun PostTitleAndThumbnail(
     postView: PostView,
     account: Account?,
+    onLinkClick: (url: String) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -358,7 +361,7 @@ fun PostTitleAndThumbnail(
                     }
                 }
             }
-            ThumbnailTile(postView = postView)
+            ThumbnailTile(postView = postView, onLinkClick)
         }
     }
 }
@@ -369,6 +372,7 @@ fun PostBody(
     fullBody: Boolean,
     expandedImage: Boolean,
     account: Account?,
+    onLinkClick: (url: String) -> Unit,
 ) {
     val post = postView.post
     Column(
@@ -378,6 +382,7 @@ fun PostBody(
             postView = postView,
             expandedImage = expandedImage,
             account = account,
+            onLinkClick = onLinkClick,
         )
 
         // The metadata card
@@ -428,6 +433,7 @@ fun PreviewStoryTitleAndMetadata() {
         fullBody = false,
         expandedImage = false,
         account = null,
+        onLinkClick = {},
     )
 }
 
@@ -662,6 +668,7 @@ fun PreviewPostListingCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onLinkClick = {},
         isModerator = true,
         fullBody = false,
         account = null,
@@ -689,6 +696,7 @@ fun PreviewLinkPostListing() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onLinkClick = {},
         isModerator = false,
         fullBody = false,
         account = null,
@@ -716,6 +724,7 @@ fun PreviewImagePostListingCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onLinkClick = {},
         isModerator = false,
         fullBody = false,
         account = null,
@@ -743,6 +752,7 @@ fun PreviewImagePostListingSmallCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onLinkClick = {},
         isModerator = false,
         fullBody = false,
         account = null,
@@ -770,6 +780,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onLinkClick = {},
         isModerator = true,
         fullBody = false,
         account = null,
@@ -795,6 +806,7 @@ fun PostListing(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: CommunitySafe) -> Unit,
     onBlockCreatorClick: (person: PersonSafe) -> Unit,
+    onLinkClick: (url: String) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -845,6 +857,7 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onLinkClick = onLinkClick,
             showReply = showReply,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
@@ -881,6 +894,7 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onLinkClick = onLinkClick,
             showReply = showReply,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
@@ -910,6 +924,7 @@ fun PostListing(
             onPostClick = onPostClick,
             onCommunityClick = onCommunityClick,
             onPersonClick = onPersonClick,
+            onLinkClick = onLinkClick,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
             account = account,
@@ -974,6 +989,7 @@ fun PostListingList(
     onPostClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onLinkClick: (url: String) -> Unit,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
     account: Account?,
@@ -1072,7 +1088,7 @@ fun PostListingList(
                     )
                 }
             }
-            ThumbnailTile(postView)
+            ThumbnailTile(postView, onLinkClick)
         }
     }
 }
@@ -1080,17 +1096,15 @@ fun PostListingList(
 @Composable
 private fun ThumbnailTile(
     postView: PostView,
+    onLinkClick: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
-        var showImageDialog by remember { mutableStateOf(false) }
-
-        if (showImageDialog) {
-            ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
-        }
 
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
-            .clickable { showImageDialog = true }
+            .clickable {
+                onLinkClick(url)
+            }
 
         postView.post.thumbnail_url?.also { thumbnail ->
             PictrsThumbnailImage(
@@ -1138,6 +1152,7 @@ fun PostListingListPreview() {
         onPostClick = {},
         onCommunityClick = {},
         onPersonClick = {},
+        onLinkClick = {},
         isModerator = false,
         account = null,
         showVotingArrowsInListView = true,
@@ -1164,6 +1179,7 @@ fun PostListingListWithThumbPreview() {
         onPostClick = {},
         onCommunityClick = {},
         onPersonClick = {},
+        onLinkClick = {},
         isModerator = false,
         account = null,
         showVotingArrowsInListView = true,
@@ -1187,6 +1203,7 @@ fun PostListingCard(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: CommunitySafe) -> Unit,
     onBlockCreatorClick: (person: PersonSafe) -> Unit,
+    onLinkClick: (url: String) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -1221,6 +1238,7 @@ fun PostListingCard(
             fullBody = fullBody,
             expandedImage = expandedImage,
             account = account,
+            onLinkClick = onLinkClick,
         )
 
         // Footer bar

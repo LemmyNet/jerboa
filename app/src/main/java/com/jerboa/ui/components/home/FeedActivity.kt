@@ -42,6 +42,7 @@ import com.jerboa.nav.bottomNavSelectProfile
 import com.jerboa.nav.bottomNavSelectSaved
 import com.jerboa.nav.bottomNavSelectSearch
 import com.jerboa.nav.showLogin
+import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -212,6 +213,14 @@ fun MainPostListingsContent(
                 account = account,
                 clear = true,
                 ctx = ctx,
+            )
+        },
+        onLinkClick = {
+            openLink(
+                it,
+                ctx,
+                appSettingsViewModel.appSettings.value?.useCustomTabs ?: true,
+                appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false
             )
         },
         loading = homeViewModel.loading.value &&
