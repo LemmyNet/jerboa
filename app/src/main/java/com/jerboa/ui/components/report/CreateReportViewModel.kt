@@ -9,6 +9,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -65,9 +66,8 @@ class CreateReportViewModel : ViewModel() {
                     )
 
                 val message = when (val res = commentReportRes) {
-// TODO add error string here
-                    is ApiState.Failure -> "Couldn't create report: ${res.msg.message}"
-                    is ApiState.Success -> ctx.getString(R.string.create_report_view_model_report_created),
+                    is ApiState.Failure -> ctx.getString(R.string.create_report_view_model_report_fail, res.msg.message)
+                    is ApiState.Success -> ctx.getString(R.string.create_report_view_model_report_created)
                     else -> {
                         null
                     }
@@ -102,8 +102,7 @@ class CreateReportViewModel : ViewModel() {
                     )
 
                 val message = when (val res = postReportRes) {
-// TODO Error string here
-                    is ApiState.Failure -> "Couldn't create report: ${res.msg.message}"
+                    is ApiState.Failure -> ctx.getString(R.string.create_report_view_model_report_fail, res.msg.message)
                     is ApiState.Success -> ctx.getString(R.string.create_report_view_model_report_created)
                     else -> {
                         null

@@ -1,4 +1,3 @@
-
 package com.jerboa.ui.components.post.create
 
 import android.net.Uri
@@ -37,13 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
-import com.jerboa.api.ApiState
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.GetSiteMetadataResponse
 import com.jerboa.db.Account
-import com.jerboa.ui.components.common.ApiEmptyText
-import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
@@ -103,7 +98,6 @@ fun CreatePostHeader(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostBody(
     name: String,
@@ -119,8 +113,8 @@ fun CreatePostBody(
     formValid: (valid: Boolean) -> Unit,
     account: Account?,
     padding: PaddingValues,
-// TODO
-siteMetadataRes: ApiState<GetSiteMetadataResponse>,
+    suggestedTitle: String?,
+    suggestedTitleLoading: Boolean,
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -162,20 +156,16 @@ siteMetadataRes: ApiState<GetSiteMetadataResponse>,
             modifier = Modifier
                 .fillMaxWidth(),
         )
-        when (siteMetadataRes) {
-            ApiState.Empty -> ApiEmptyText()
-            is ApiState.Failure -> ApiErrorText(siteMetadataRes.msg)
-            ApiState.Loading -> CircularProgressIndicator()
-            is ApiState.Success -> {
-                val title = siteMetadataRes.data.metadata.title
-                title?.also {
-                    Text(
-                        text = stringResource(R.string.create_post_copy_suggested_title, it)
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground.muted,
-                        modifier = Modifier.clickable { onNameChange(title) },
-                    )
-                }
+        if (suggestedTitleLoading) {
+            CircularProgressIndicator()
+        } else {
+            suggestedTitle?.let {
+                Text(
+                    text = stringResource(R.string.create_post_copy_suggested_title, it),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    modifier = Modifier.clickable { onNameChange(it) },
+                )
             }
         }
         PickImage(
@@ -260,7 +250,8 @@ fun CreatePostBodyPreview() {
         formValid = {},
         account = null,
         padding = PaddingValues(),
-        siteMetadataRes = ApiState.Empty,
+        suggestedTitle = null,
+        suggestedTitleLoading = false,
     )
 }
 
@@ -277,8 +268,8 @@ fun CreatePostBodyPreviewNoCommunity() {
         onPickedImage = {},
         formValid = {},
         suggestedTitle = stringResource(R.string.create_post_a_title_here),
+        suggestedTitleLoading = false,
         account = null,
         padding = PaddingValues(),
-        siteMetadataRes = ApiState.Empty,
     )
 }

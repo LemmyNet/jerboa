@@ -5,7 +5,6 @@ import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -36,7 +35,8 @@ import kotlinx.coroutines.launch
 
 private var fetchSiteMetadataJob: Job? = null
 
-@OptIn(ExperimentalMaterial3Api::class)
+data class MetaDataRes(val title: String?, val loading: Boolean)
+
 @Composable
 fun CreatePostActivity(
     accountViewModel: AccountViewModel,
@@ -74,6 +74,14 @@ fun CreatePostActivity(
                 }
             }
         }
+    }
+
+    val (suggestedTitle, suggestedTitleLoading) = when (val res = createPostViewModel.siteMetadataRes) {
+        ApiState.Empty -> MetaDataRes(null, false)
+        ApiState.Loading -> MetaDataRes(null, true)
+        is ApiState.Success ->
+            MetaDataRes(res.data.metadata.title, false)
+        else -> MetaDataRes(null, false)
     }
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
@@ -133,7 +141,8 @@ fun CreatePostActivity(
                     navController = navController,
                     community = communityListViewModel.selectedCommunity,
                     formValid = { formValid = it },
-                    siteMetadataRes = createPostViewModel.siteMetadataRes,
+                    suggestedTitle = suggestedTitle,
+                    suggestedTitleLoading = suggestedTitleLoading,
                     image = initialImage,
                     onPickedImage = { uri ->
                         if (uri != Uri.EMPTY) {
