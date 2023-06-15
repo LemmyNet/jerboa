@@ -135,6 +135,7 @@
     <string name="dialogs_top_month">Top Month</string>
     <string name="dialogs_top_week">Top Week</string>
     <string name="dialogs_top_year">Top Year</string>
+    <string name="dialogs_old">Old</string>
     <string name="dialogs_unread">Unread</string>
     <string name="floating_createPost">Create post</string>
     <string name="form_submit">Submit</string>
