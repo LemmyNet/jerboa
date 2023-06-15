@@ -49,6 +49,7 @@
     <string name="dialogs_most_comments">Meiste Kommentare</string>
     <string name="dialogs_new_comments">Neue Kommentare</string>
     <string name="dialogs_top">Top</string>
+    <string name="dialogs_old">Old</string>
     <string name="dialogs_unread">Ungelesen</string>
     <string name="dialogs_done">Fertig</string>
     <string name="input_fields_insert_link">Link einfügen</string>
