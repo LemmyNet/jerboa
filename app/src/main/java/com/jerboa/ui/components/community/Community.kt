@@ -18,6 +18,7 @@ import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.SubscribedType
 import com.jerboa.datatypes.sampleCommunityView
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -179,14 +180,7 @@ fun CommunityHeader(
                 selectedSortType = selectedSortType,
             )
         },
-        navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(
-                    Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.community_back),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
         actions = {
             IconButton(onClick = {
                 showSortOptions = !showSortOptions
