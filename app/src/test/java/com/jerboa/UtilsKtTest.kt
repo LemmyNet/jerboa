@@ -142,6 +142,7 @@ class UtilsKtTest {
     fun testParseUrl() {
         val cases = mapOf(
             "https://feddit.de" to "https://feddit.de",
+            "http://example.com" to "http://example.com",
             "/c/community" to "https://${API.currentInstance}/c/community",
             "/c/community@instance.ml" to "https://instance.ml/c/community",
             "!community@instance.ml" to "https://instance.ml/c/community",

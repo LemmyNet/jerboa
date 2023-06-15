@@ -383,13 +383,14 @@ fun LazyListState.isScrolledToEnd(): Boolean {
  * Parses a "url" and returns a spec-compliant Url:
  *
  * - https://host/path - leave as-is
+ * - http://host/path - leave as-is
  * - /c/community -> https://currentInstance/c/community
  * - /c/community@instance -> https://instance/c/community
  * - !community@instance -> https://instance/c/community
  * - @user@instance -> https://instance/u/user
  */
 fun parseUrl(url: String): String? {
-    if (url.startsWith("https://")) {
+    if (url.startsWith("https://") || url.startsWith("http://")) {
         return url
     } else if (url.startsWith("/c/")) {
         if (url.count({ c -> c == '@' }) == 1) {
