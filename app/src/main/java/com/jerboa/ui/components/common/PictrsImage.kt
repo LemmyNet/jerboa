@@ -1,4 +1,5 @@
 package com.jerboa.ui.components.common
+
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -188,11 +189,13 @@ fun PickImage(
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent(),
     ) { uri ->
-        imageUri = uri
-        bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
-        Log.d("jerboa", "Uploading image...")
-        Log.d("jerboa", imageUri.toString())
-        onPickedImage(uri!!)
+        uri?.let {
+            imageUri = it
+            bitmap.value = decodeUriToBitmap(ctx, it)
+            Log.d("jerboa", "Uploading image...")
+            Log.d("jerboa", imageUri.toString())
+            onPickedImage(it)
+        }
     }
     Column(
         modifier = modifier,
@@ -209,14 +212,11 @@ fun PickImage(
 
         if (showImage) {
             Spacer(modifier = Modifier.height(SMALL_PADDING))
-
-            imageUri?.let {
-                bitmap.value?.let { btm ->
-                    Image(
-                        bitmap = btm.asImageBitmap(),
-                        contentDescription = stringResource(R.string.pickImage_imagePreview),
-                    )
-                }
+            bitmap.value?.let { btm ->
+                Image(
+                    bitmap = btm.asImageBitmap(),
+                    contentDescription = stringResource(R.string.pickImage_imagePreview),
+                )
             }
         }
     }
