@@ -60,6 +60,7 @@ fun LookAndFeelActivity(
         settings?.showVotingArrowsInListView ?: true,
     )
     val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
+    val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)
 
     val snackbarHostState = remember { SnackbarHostState() }
 	
@@ -79,6 +80,7 @@ fun LookAndFeelActivity(
                 showCommentActionBarByDefault = showCommentActionBarByDefaultState.value,
                 showVotingArrowsInListView = showVotingArrowsInListViewState.value,
                 useCustomTabs = useCustomTabsState.value,
+                usePrivateTabs = usePrivateTabsState.value,
             ),
         )
     }
@@ -182,14 +184,14 @@ fun LookAndFeelActivity(
                 SettingsCheckbox(
                     state = showCommentActionBarByDefaultState,
                     title = {
-                        Text(text = "Show action bar by default for comments")
+                        Text(text = stringResource(R.string.look_and_feel_show_action_bar_for_comments))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
                     state = showVotingArrowsInListViewState,
                     title = {
-                        Text(text = "Show voting arrows in list view")
+                        Text(text = stringResource(R.string.look_and_feel_show_voting_arrows_list_view))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
@@ -197,6 +199,13 @@ fun LookAndFeelActivity(
                     state = useCustomTabsState,
                     title = {
                         Text(text = stringResource(id = R.string.look_and_feel_use_custom_tabs))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = usePrivateTabsState,
+                    title = {
+                        Text(text = stringResource(id = R.string.look_and_feel_use_private_tabs))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

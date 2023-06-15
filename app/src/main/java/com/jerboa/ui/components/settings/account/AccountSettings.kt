@@ -37,13 +37,15 @@ fun SettingsTextField(
     onValueChange: (String) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(SMALL_PADDING),
+        modifier = Modifier.padding(MEDIUM_PADDING),
     ) {
         Text(text = label)
         OutlinedTextField(
             value = text,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = MEDIUM_PADDING)
+                .fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.None,
@@ -62,7 +64,10 @@ fun ImageWithClose(
     Box(contentAlignment = Alignment.TopEnd) {
         composable()
         IconButton(onClick = onClick) {
-            Icon(imageVector = Icons.Outlined.Close, contentDescription = stringResource(R.string.account_settings_remove_current_avatar))
+            Icon(
+                imageVector = Icons.Outlined.Close,
+                contentDescription = stringResource(R.string.account_settings_remove_current_avatar),
+            )
         }
     }
 }
@@ -133,14 +138,16 @@ fun SettingsForm(
             .padding(padding)
             .imePadding()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+        verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         SettingsTextField(
             label = stringResource(R.string.account_settings_display_name),
             text = displayName,
             onValueChange = { displayName = it },
         )
-        Column {
+        Column(
+            modifier = Modifier.padding(MEDIUM_PADDING),
+        ) {
             Text(stringResource(R.string.account_settings_bio))
             MarkdownTextField(
                 text = bio,
@@ -149,8 +156,7 @@ fun SettingsForm(
                 outlined = true,
                 focusImmediate = false,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(SMALL_PADDING),
+                    .fillMaxWidth(),
             )
         }
 
@@ -164,35 +170,39 @@ fun SettingsForm(
             text = matrixUserId,
             onValueChange = { matrixUserId = it },
         )
-        Text(text = stringResource(R.string.account_settings_avatar))
-        if (avatar.isNotEmpty()) {
-            ImageWithClose(onClick = { avatar = "" }) {
-                LargerCircularIcon(icon = avatar)
-            }
-        } else {
-            PickImage(onPickedImage = { uri ->
-                val imageIs = imageInputStreamFromUri(ctx, uri)
-                scope.launch {
-                    account?.also { acct ->
-                        avatar = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
-                    }
+        Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
+            Text(text = stringResource(R.string.account_settings_avatar))
+            if (avatar.isNotEmpty()) {
+                ImageWithClose(onClick = { avatar = "" }) {
+                    LargerCircularIcon(icon = avatar)
                 }
-            }, showImage = false)
+            } else {
+                PickImage(onPickedImage = { uri ->
+                    val imageIs = imageInputStreamFromUri(ctx, uri)
+                    scope.launch {
+                        account?.also { acct ->
+                            avatar = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                        }
+                    }
+                }, showImage = false)
+            }
         }
-        Text(text = stringResource(R.string.account_settings_banner))
-        if (banner.isNotEmpty()) {
-            ImageWithClose(onClick = { banner = "" }) {
-                PictrsBannerImage(url = banner)
-            }
-        } else {
-            PickImage(onPickedImage = { uri ->
-                val imageIs = imageInputStreamFromUri(ctx, uri)
-                scope.launch {
-                    account?.also { acct ->
-                        banner = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
-                    }
+        Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
+            Text(text = stringResource(R.string.account_settings_banner))
+            if (banner.isNotEmpty()) {
+                ImageWithClose(onClick = { banner = "" }) {
+                    PictrsBannerImage(url = banner)
                 }
-            }, showImage = false)
+            } else {
+                PickImage(onPickedImage = { uri ->
+                    val imageIs = imageInputStreamFromUri(ctx, uri)
+                    scope.launch {
+                        account?.also { acct ->
+                            banner = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                        }
+                    }
+                }, showImage = false)
+            }
         }
         MyDropDown(
             suggestions = listOf(
@@ -227,48 +237,58 @@ fun SettingsForm(
             checked = showNsfw,
             label = stringResource(R.string.account_settings_show_nsfw),
             onCheckedChange = { showNsfw = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showAvatars == true,
             label = stringResource(R.string.account_settings_show_avatars),
             onCheckedChange = { showAvatars = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showReadPosts == true,
             label = stringResource(R.string.account_settings_show_read_posts),
             onCheckedChange = { showReadPosts = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = botAccount == true,
             label = stringResource(R.string.account_settings_bot_account),
             onCheckedChange = { botAccount = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showBotAccount == true,
             label = stringResource(R.string.account_settings_show_bot_accounts),
             onCheckedChange = { showBotAccount = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showScores == true,
             label = stringResource(R.string.account_settings_show_scores),
             onCheckedChange = { showScores = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             checked = showNewPostNotifs == true,
             label = stringResource(R.string.account_settings_show_notifications_for_new_posts),
             onCheckedChange = { showNewPostNotifs = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         MyCheckBox(
             enabled = email.isNotEmpty(),
             checked = sendNotificationsToEmail == true,
             label = stringResource(R.string.account_settings_send_notifications_to_email),
             onCheckedChange = { sendNotificationsToEmail = it },
+            modifier = Modifier.padding(MEDIUM_PADDING),
         )
         // Todo: Remove this
         Button(
             enabled = !accountSettingsViewModel.loading,
             onClick = { onClickSave(form) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(MEDIUM_PADDING)
+                .fillMaxWidth(),
         ) {
             Text(text = stringResource(R.string.account_settings_save_settings))
         }

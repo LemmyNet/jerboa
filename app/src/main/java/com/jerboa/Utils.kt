@@ -14,10 +14,11 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.util.Patterns
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TabPosition
@@ -44,8 +45,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
+import androidx.core.util.PatternsCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -126,8 +126,7 @@ enum class VoteType {
 fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType): InstantScores {
     val newVote = newVote(
         currentVote = instantScores.myVote,
-        voteType =
-        voteType,
+        voteType = voteType,
     )
     val score = newScore(
         instantScores.score,
@@ -136,8 +135,7 @@ fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType):
     )
     val votes = newVoteCount(
         Pair(instantScores.upvotes, instantScores.downvotes),
-        instantScores
-            .myVote,
+        instantScores.myVote,
         voteType,
     )
 
@@ -149,6 +147,9 @@ fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType):
     )
 }
 
+/*
+ * User changed their vote, so calculate score difference given this user's new vote.
+ */
 fun newVote(currentVote: Int?, voteType: VoteType): Int {
     return if (voteType == VoteType.Upvote) {
         if (currentVote == 1) {
@@ -165,6 +166,9 @@ fun newVote(currentVote: Int?, voteType: VoteType): Int {
     }
 }
 
+/*
+ * Calculate the new score after the user votes.
+ */
 fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
     return if (voteType == VoteType.Upvote) {
         when (currentVote) {
@@ -375,10 +379,14 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
-fun openLink(url: String, ctx: Context, useCustomTab: Boolean) {
+fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
-            .build()
+            .build().apply {
+                if (usePrivateTab) {
+                    intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+                }
+            }
         intent.launchUrl(ctx, Uri.parse(url))
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -417,9 +425,11 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
     }
 
     val host = split[0]
-    val path = split[1]
+    // eliminate the query param portion of the path so we can replace it later
+    // without this, we'd end up with something like host/path?thumbnail=...?thumbnail=...
+    val path = split[1].replaceAfter('?', "")
 
-    return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
+    return "$host/pictrs/image/${path}thumbnail=$thumbnailSize&format=webp"
 }
 
 fun isImage(url: String): Boolean {
@@ -643,7 +653,7 @@ fun validatePostName(
 fun validateUrl(
     url: String,
 ): InputField {
-    return if (url.isNotEmpty() && !Patterns.WEB_URL.matcher(url).matches()) {
+    return if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
         InputField(
             label = "Invalid Url",
             hasError = true,
@@ -772,7 +782,7 @@ enum class PostViewMode(val mode: Int) {
     List(R.string.look_and_feel_post_view_list),
 }
 
-@ExperimentalPagerApi
+@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.pagerTabIndicatorOffset2(
     pagerState: PagerState,
     tabPositions: List<TabPosition>,
@@ -786,7 +796,7 @@ fun Modifier.pagerTabIndicatorOffset2(
         val currentTab = tabPositions[currentPage]
         val previousTab = tabPositions.getOrNull(currentPage - 1)
         val nextTab = tabPositions.getOrNull(currentPage + 1)
-        val fraction = pagerState.currentPageOffset
+        val fraction = pagerState.currentPageOffsetFraction
         val indicatorWidth = if (fraction > 0 && nextTab != null) {
             lerp(currentTab.width, nextTab.width, fraction).roundToPx()
         } else if (fraction < 0 && previousTab != null) {
@@ -926,7 +936,6 @@ fun getLocalizedSortingTypeName(context: Context, sortingType: SortType): String
         SortType.TopAll -> context.getString(R.string.sorttype_topall)
         SortType.MostComments -> context.getString(R.string.sorttype_mostcomments)
         SortType.NewComments -> context.getString(R.string.sorttype_newcomments)
-        else -> "Missing String Localization for Enum SortType"
     }
     return returnString
 }
@@ -936,7 +945,6 @@ fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
         UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
         UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
         UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
-        else -> "Missing String Localization for Enum UserTab"
     }
     return returnString
 }
