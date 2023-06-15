@@ -964,7 +964,6 @@ fun getLocalizedListingTypeName(context: Context, listingType: ListingType): Str
     return returnString
 }
 
-
 /**
  * Returns localized Strings for CommentSortType Enum
  */

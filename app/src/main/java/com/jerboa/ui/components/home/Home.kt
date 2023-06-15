@@ -449,7 +449,7 @@ fun HomeHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeName(context,selectedSortType),
+            text = getLocalizedSortingTypeName(context, selectedSortType),
             style = MaterialTheme.typography.titleSmall,
         )
     }

@@ -91,7 +91,7 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedUnreadOrAllName(context,selectedUnreadOrAll),
+            text = getLocalizedUnreadOrAllName(context, selectedUnreadOrAll),
             style = MaterialTheme.typography.titleMedium,
         )
     }
