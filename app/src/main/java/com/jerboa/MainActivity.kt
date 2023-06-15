@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,7 +25,6 @@ import arrow.core.Either
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.util.DebugLogger
-import coil.util.Logger
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -47,7 +45,10 @@ import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
-import com.jerboa.ui.components.home.*
+import com.jerboa.ui.components.home.HomeActivity
+import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteSidebarActivity
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.login.LoginActivity
@@ -71,7 +72,6 @@ import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
-import net.engawapg.lib.zoomable.BuildConfig
 
 class JerboaApplication : Application(), ImageLoaderFactory {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -84,7 +84,6 @@ class JerboaApplication : Application(), ImageLoaderFactory {
             .logger(DebugLogger())
             .build()
     }
-
 }
 
 class MainActivity : ComponentActivity() {
