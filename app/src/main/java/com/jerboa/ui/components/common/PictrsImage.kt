@@ -70,11 +70,7 @@ fun CircularIcon(
 }
 
 @Composable
-fun LargerCircularIcon(
-    modifier: Modifier = Modifier,
-    icon: String,
-    contentDescription: String? = null
-) {
+fun LargerCircularIcon(modifier: Modifier = Modifier, icon: String, contentDescription: String? = null) {
     CircularIcon(
         modifier = modifier,
         icon = icon,
