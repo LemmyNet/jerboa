@@ -142,7 +142,7 @@ fun HomeActivity(
                     AnimatedNavHost(
                         navController = bottomNavController,
                         startDestination = bottomNavDefaultRoute(),
-                        modifier = Modifier.padding(),
+                        modifier = Modifier.padding(bottom = padding.calculateBottomPadding()),
                         enterTransition = { noEnterTransition },
                         popExitTransition = { noPopExitTransition },
                     ) {
