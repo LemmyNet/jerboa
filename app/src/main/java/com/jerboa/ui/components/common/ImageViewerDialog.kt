@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.ImageLoader
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
@@ -99,6 +101,8 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
         }
         .build()
 
+    val painterState = rememberAsyncImagePainter(url, imageLoader = imageLoader)
+
     Dialog(
         onDismissRequest = onBackRequest,
         properties = DialogProperties(
@@ -109,7 +113,7 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
     ) {
         Box(Modifier.background(backgroundColor.value)) {
             Image(
-                painter = rememberAsyncImagePainter(url, imageLoader = imageLoader),
+                painter = painterState ,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
@@ -118,6 +122,13 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
                         onTap = { showTopBar = !showTopBar },
                     ),
             )
+
+            if(painterState.state is AsyncImagePainter.State.Loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                )
+            }
 
             Row(
                 modifier = Modifier
