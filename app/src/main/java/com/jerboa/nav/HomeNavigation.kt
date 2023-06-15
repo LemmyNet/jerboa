@@ -1,7 +1,6 @@
 package com.jerboa.nav
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material3.DrawerState
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import com.google.accompanist.navigation.animation.composable
@@ -11,8 +10,8 @@ import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.community.list.CommunityListViewModel
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.HomeActivity
+import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel

@@ -23,7 +23,7 @@ fun NavGraphBuilder.accountSettingsScreen(
     composable(
         route = accountSettingsRoutePattern,
         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-            navDeepLink { uriPattern = "${instance}/settings" }
+            navDeepLink { uriPattern = "$instance/settings" }
         },
     ) {
         AccountSettingsActivity(

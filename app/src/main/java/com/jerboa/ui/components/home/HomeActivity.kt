@@ -289,24 +289,28 @@ fun BottomNavBar(
                                     BottomNavBarType.Profile -> Icons.Outlined.Person
                                 }
                             },
-                            contentDescription = stringResource(when (type) {
-                                BottomNavBarType.Home -> R.string.bottomBar_home
-                                BottomNavBarType.Search -> R.string.bottomBar_search
-                                BottomNavBarType.Inbox -> R.string.bottomBar_inbox
-                                BottomNavBarType.Saved -> R.string.bottomBar_bookmarks
-                                BottomNavBarType.Profile -> R.string.bottomBar_profile
-                            }),
+                            contentDescription = stringResource(
+                                when (type) {
+                                    BottomNavBarType.Home -> R.string.bottomBar_home
+                                    BottomNavBarType.Search -> R.string.bottomBar_search
+                                    BottomNavBarType.Inbox -> R.string.bottomBar_inbox
+                                    BottomNavBarType.Saved -> R.string.bottomBar_bookmarks
+                                    BottomNavBarType.Profile -> R.string.bottomBar_profile
+                                },
+                            ),
                         )
                     },
                     label = {
                         Text(
-                            text = stringResource(when (type) {
-                                BottomNavBarType.Home -> R.string.bottomBar_label_home
-                                BottomNavBarType.Search -> R.string.bottomBar_label_search
-                                BottomNavBarType.Inbox -> R.string.bottomBar_label_inbox
-                                BottomNavBarType.Saved -> R.string.bottomBar_label_bookmarks
-                                BottomNavBarType.Profile -> R.string.bottomBar_label_profile
-                            }),
+                            text = stringResource(
+                                when (type) {
+                                    BottomNavBarType.Home -> R.string.bottomBar_label_home
+                                    BottomNavBarType.Search -> R.string.bottomBar_label_search
+                                    BottomNavBarType.Inbox -> R.string.bottomBar_label_inbox
+                                    BottomNavBarType.Saved -> R.string.bottomBar_label_bookmarks
+                                    BottomNavBarType.Profile -> R.string.bottomBar_label_profile
+                                },
+                            ),
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     },

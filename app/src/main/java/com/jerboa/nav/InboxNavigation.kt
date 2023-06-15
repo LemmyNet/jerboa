@@ -19,7 +19,7 @@ import com.jerboa.ui.components.inbox.InboxViewModel
 
 private const val inboxRoutePattern = "inbox"
 
-fun NavBackStackEntry.bottomNavIsInbox() = destination.route == inboxRoutePattern;
+fun NavBackStackEntry.bottomNavIsInbox() = destination.route == inboxRoutePattern
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.inboxScreen(
@@ -35,7 +35,7 @@ fun NavGraphBuilder.inboxScreen(
     composable(
         route = inboxRoutePattern,
         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-            navDeepLink { uriPattern = "${instance}/${inboxRoutePattern}" }
+            navDeepLink { uriPattern = "$instance/$inboxRoutePattern" }
         },
     ) {
         if (account != null) {

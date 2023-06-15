@@ -106,7 +106,7 @@ class MainActivity : ComponentActivity() {
         MarkdownHelper.init(
             this,
             appSettingsViewModel.appSettings.value?.useCustomTabs ?: true,
-            appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false
+            appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false,
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
@@ -131,7 +131,7 @@ class MainActivity : ComponentActivity() {
                     enterTransition = { defaultEnterTransition },
                     exitTransition = { defaultExitTransition },
                     popEnterTransition = { defaultPopEnterTransition },
-                    popExitTransition = { defaultPopExitTransition }
+                    popExitTransition = { defaultPopExitTransition },
                 ) {
                     loginScreen(
                         navController = navController,

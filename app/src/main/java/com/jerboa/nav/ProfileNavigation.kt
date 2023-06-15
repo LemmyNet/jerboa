@@ -24,7 +24,7 @@ import com.jerboa.ui.components.post.edit.PostEditViewModel
 private class ProfileArgs(val id: Int, val saved: Boolean) {
     constructor(navBackStackEntry: NavBackStackEntry) : this(
         id = navBackStackEntry.arguments?.getInt(ID)!!,
-        saved = navBackStackEntry.arguments?.getBoolean(SAVED)!!
+        saved = navBackStackEntry.arguments?.getBoolean(SAVED)!!,
     )
 
     companion object {
@@ -36,13 +36,13 @@ private class ProfileArgs(val id: Int, val saved: Boolean) {
 private const val profileRoutePattern = "profile/{${ProfileArgs.ID}}?saved={${ProfileArgs.SAVED}}"
 
 fun NavBackStackEntry.bottomNavIsProfile() =
-    destination.route == profileRoutePattern && !ProfileArgs(this).saved;
+    destination.route == profileRoutePattern && !ProfileArgs(this).saved
 
 fun NavBackStackEntry.bottomNavIsSaved() =
-    destination.route == profileRoutePattern && ProfileArgs(this).saved;
+    destination.route == profileRoutePattern && ProfileArgs(this).saved
 
 fun NavController.bottomNavSelectSaved(profileId: Int) {
-    val route = "profile/${profileId}?saved=${true}"
+    val route = "profile/$profileId?saved=${true}"
     navigate(route) {
         launchSingleTop = true
         popUpTo(0)
@@ -50,7 +50,7 @@ fun NavController.bottomNavSelectSaved(profileId: Int) {
 }
 
 fun NavController.bottomNavSelectProfile(profileId: Int) {
-    val route = "profile/${profileId}"
+    val route = "profile/$profileId"
     navigate(route) {
         launchSingleTop = true
         popUpTo(0)

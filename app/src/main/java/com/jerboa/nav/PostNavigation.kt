@@ -47,11 +47,11 @@ fun NavGraphBuilder.postScreen(
     account: Account?,
     appSettings: AppSettings?,
     ctx: Context,
-    ) {
+) {
     composable(
         route = postRoutePattern,
         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-            navDeepLink { uriPattern = "$instance/${postRoutePattern}" }
+            navDeepLink { uriPattern = "$instance/$postRoutePattern" }
         },
         arguments = listOf(
             navArgument(PostArgs.ID) {

@@ -58,7 +58,7 @@ fun CommunityListHeader(
                 )
             }
         },
-        navigationIcon = { DefaultBackButton(navController) }
+        navigationIcon = { DefaultBackButton(navController) },
     )
 }
 

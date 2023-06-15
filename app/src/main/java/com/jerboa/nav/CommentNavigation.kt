@@ -51,7 +51,7 @@ fun NavGraphBuilder.commentScreen(
     composable(
         route = commentRoutePattern,
         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-            navDeepLink { uriPattern = "${instance}/${commentRoutePattern}" }
+            navDeepLink { uriPattern = "$instance/$commentRoutePattern" }
         },
         arguments = listOf(
             navArgument(CommentArgs.ID) {

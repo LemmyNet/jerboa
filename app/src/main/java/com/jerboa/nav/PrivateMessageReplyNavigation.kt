@@ -9,7 +9,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
 
-private const val privateMessageReplyRoutePattern ="privateMessageReply"
+private const val privateMessageReplyRoutePattern = "privateMessageReply"
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.privateMessageReplyScreen(

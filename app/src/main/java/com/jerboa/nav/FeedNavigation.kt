@@ -16,7 +16,7 @@ import com.jerboa.ui.components.post.edit.PostEditViewModel
 
 private const val feedRoutePattern = "feed"
 
-fun bottomNavDefaultRoute() = feedRoutePattern;
+fun bottomNavDefaultRoute() = feedRoutePattern
 
 fun NavBackStackEntry.bottomNavIsHome(): Boolean = destination.route == feedRoutePattern
 

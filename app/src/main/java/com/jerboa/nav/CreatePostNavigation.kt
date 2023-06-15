@@ -17,7 +17,7 @@ import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.post.create.CreatePostActivity
 import com.jerboa.ui.components.post.create.CreatePostViewModel
 
-private const val createPostRoutePattern = "createPost";
+private const val createPostRoutePattern = "createPost"
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.createPostScreen(

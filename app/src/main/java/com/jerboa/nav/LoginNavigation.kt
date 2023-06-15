@@ -25,7 +25,7 @@ fun NavGraphBuilder.loginScreen(
     composable(
         route = loginRoutePattern,
         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-            navDeepLink { uriPattern = "${instance}/${loginRoutePattern}" }
+            navDeepLink { uriPattern = "$instance/$loginRoutePattern" }
         },
     ) {
         LoginActivity(

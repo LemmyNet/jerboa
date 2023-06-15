@@ -17,9 +17,6 @@ import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
-import com.jerboa.ui.components.community.CommunityActivity
-import com.jerboa.ui.components.community.CommunityViewModel
-import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.ui.components.person.PersonProfileViewModel
@@ -37,7 +34,8 @@ private class ProfileByUrlArgs(val instance: String, val name: String) {
     }
 }
 
-private const val profileByUrlRoutePattern = "{${ProfileByUrlArgs.INSTANCE}}/u/{${ProfileByUrlArgs.NAME}}"
+private const val profileByUrlRoutePattern =
+    "{${ProfileByUrlArgs.INSTANCE}}/u/{${ProfileByUrlArgs.NAME}}"
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.profileScreenFromUrl(

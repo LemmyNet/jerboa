@@ -20,7 +20,7 @@ private class PostReportArgs(val id: Int) {
     }
 }
 
-private const val postReportRoutePattern ="postReport/{${PostReportArgs.ID}}"
+private const val postReportRoutePattern = "postReport/{${PostReportArgs.ID}}"
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.postReportScreen(

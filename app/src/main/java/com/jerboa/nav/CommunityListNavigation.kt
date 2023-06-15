@@ -23,7 +23,7 @@ private class CommunityListArgs(val select: Boolean) {
 
 private const val communityListRoutePattern = "communityList?select={${CommunityListArgs.SELECT}}"
 
-fun NavBackStackEntry.bottomNavIsSearch() = destination.route == communityListRoutePattern;
+fun NavBackStackEntry.bottomNavIsSearch() = destination.route == communityListRoutePattern
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.communityListScreen(
@@ -61,4 +61,3 @@ fun NavController.bottomNavSelectSearch() {
         popUpTo(0)
     }
 }
-

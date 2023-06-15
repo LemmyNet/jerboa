@@ -30,7 +30,7 @@ fun DefaultBackButton(navController: NavController) {
             pressedBackButton = true
             Icon(
                 imageVector = Icons.Outlined.ArrowBack,
-                contentDescription = stringResource(R.string.topAppBar_back)
+                contentDescription = stringResource(R.string.topAppBar_back),
             )
         }
     }

@@ -12,7 +12,7 @@ private const val aboutRoutePattern = "about"
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.aboutScreen(
     navController: NavController,
-    appSettings: AppSettings?
+    appSettings: AppSettings?,
 ) {
     composable(
         route = aboutRoutePattern,

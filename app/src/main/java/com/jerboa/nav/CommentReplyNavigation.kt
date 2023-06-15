@@ -11,7 +11,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 
-private const val commentReplyRoutePattern = "commentReply";
+private const val commentReplyRoutePattern = "commentReply"
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.commentReplyScreen(
