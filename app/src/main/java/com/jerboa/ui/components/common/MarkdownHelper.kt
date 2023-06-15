@@ -2,6 +2,7 @@ package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.os.Build
+import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -43,7 +44,7 @@ object MarkdownHelper {
 
         markwon = Markwon.builder(context)
             .usePlugin(CoilImagesPlugin.create(context, loader))
-            .usePlugin(LinkifyPlugin.create())
+            .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
             .usePlugin(HtmlPlugin.create())
