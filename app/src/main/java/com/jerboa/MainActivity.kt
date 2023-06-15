@@ -429,7 +429,8 @@ class MainActivity : ComponentActivity() {
                             postViewModel.fetchPost(
                                 id = Either.Left(postId),
                                 account = account,
-                                clear = true,
+                                clearPost = true,
+                                clearComments = true,
                                 ctx = ctx,
                             )
                         }
@@ -440,10 +441,21 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            onClickSortType = { commentSortType ->
+                                val postId = it.arguments?.getInt("id")!!
+                                postViewModel.fetchPost(
+                                    id = Either.Left(postId),
+                                    account = account,
+                                    clearPost = false,
+                                    clearComments = true,
+                                    ctx = ctx,
+                                    changeSortType = commentSortType,
+                                )
+                            },
+                            selectedSortType = postViewModel.sortType.value,
                             siteViewModel = siteViewModel,
                         )
                     }
@@ -463,7 +475,8 @@ class MainActivity : ComponentActivity() {
                             postViewModel.fetchPost(
                                 id = Either.Right(commentId),
                                 account = account,
-                                clear = true,
+                                clearPost = true,
+                                clearComments = true,
                                 ctx = ctx,
                             )
                         }
@@ -474,10 +487,21 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            onClickSortType = { commentSortType ->
+                                val commentId = it.arguments?.getInt("id")!!
+                                postViewModel.fetchPost(
+                                    id = Either.Right(commentId),
+                                    account = account,
+                                    clearPost = false,
+                                    clearComments = true,
+                                    ctx = ctx,
+                                    changeSortType = commentSortType,
+                                )
+                            },
+                            selectedSortType = postViewModel.sortType.value,
                             siteViewModel = siteViewModel,
                         )
                     }
