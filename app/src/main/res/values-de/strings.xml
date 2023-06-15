@@ -49,6 +49,7 @@
     <string name="dialogs_most_comments">Meiste Kommentare</string>
     <string name="dialogs_new_comments">Neue Kommentare</string>
     <string name="dialogs_top">Top</string>
+    <string name="dialogs_old">Old</string>
     <string name="dialogs_unread">Ungelesen</string>
     <string name="dialogs_done">Fertig</string>
     <string name="input_fields_insert_link">Link einfügen</string>
@@ -139,7 +140,7 @@
     <string name="settings_about_source_code">Quellcode</string>
     <string name="settings_about_source_code_subtitle_part1">"Jerboa is libre open-source software, licensed under "</string>
     <string name="settings_about_source_code_subtitle_part2">the GNU Affero General Public License v3.0</string>
-    <string name="account_settings_remove_current_avatar">Momentanen Avatar entfernen</string>
+    <string name="account_settings_remove_current_avatar">Aktuellen Avatar entfernen</string>
     <string name="account_settings_display_name">Anzeigename</string>
     <string name="account_settings_bio">Biografie</string>
     <string name="account_settings_email">E-Mail</string>
@@ -181,7 +182,7 @@
     <string name="look_and_feel_theme_dark">Dunkel</string>
     <string name="look_and_feel_theme_black">Schwarz</string>
     <string name="look_and_feel_theme_color">Theme-Farbe</string>
-    <string name="look_and_feel_post_view">Beitragssansicht</string>
+    <string name="look_and_feel_post_view">Beitragsansicht</string>
     <string name="look_and_feel_post_view_card">Karten</string>
     <string name="look_and_feel_post_view_small_card">Kleine Karten</string>
     <string name="look_and_feel_post_view_list">Liste</string>

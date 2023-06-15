@@ -17,6 +17,7 @@ import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
 import com.jerboa.datatypes.types.CommentId
 import com.jerboa.datatypes.types.CommentResponse
+import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.CreatePostLike
@@ -52,6 +53,8 @@ class PostViewModel : ViewModel() {
     // If this is set, its a comment type view
     var id by mutableStateOf<Either<PostId, CommentId>?>(null)
         private set
+    var sortType by mutableStateOf(CommentSortType.Hot)
+        private set
 
     private var fetchingMore by mutableStateOf(false)
 
@@ -70,6 +73,10 @@ class PostViewModel : ViewModel() {
         id: Either<PostId, CommentId>,
     ) {
         this.id = id
+    }
+
+    fun updateSortType(sortType: CommentSortType) {
+        this.sortType = sortType
     }
 
     fun getData(
@@ -94,6 +101,7 @@ class PostViewModel : ViewModel() {
                         type_ = ListingType.All,
                         post_id = it,
                         auth = account?.jwt,
+                        sort = sortType,
                     )
                 }, {
                     GetComments(
@@ -101,6 +109,7 @@ class PostViewModel : ViewModel() {
                         type_ = ListingType.All,
                         parent_id = it,
                         auth = account?.jwt,
+                        sort = sortType,
                     )
                 })
 

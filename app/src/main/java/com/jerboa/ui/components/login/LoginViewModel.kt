@@ -81,8 +81,8 @@ class LoginViewModel : ViewModel() {
 
             // Fetch the site to get your name and id
             // Can't do a co-routine within a co-routine
-            val form = GetSite(auth = jwt)
-            siteViewModel.siteRes = apiWrapper(API.getInstance().getSite(form.serializeToMap()))
+            val getSiteForm = GetSite(auth = jwt)
+            siteViewModel.siteRes = apiWrapper(API.getInstance().getSite(getSiteForm.serializeToMap()))
 
             when (val siteRes = siteViewModel.siteRes) {
                 is ApiState.Failure -> {

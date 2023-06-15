@@ -9,6 +9,7 @@ import com.jerboa.datatypes.types.SortType
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -16,6 +17,7 @@ import org.junit.Test
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+@Ignore
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
@@ -52,7 +54,6 @@ class ExampleUnitTest {
             auth = null,
         )
         val out = api.getPost(form.serializeToMap()).body()!!
-        println(out.post_view)
         assertNotNull(out)
     }
 

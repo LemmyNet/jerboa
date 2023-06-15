@@ -12,7 +12,6 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.util.Patterns
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -44,6 +43,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
+import androidx.core.util.PatternsCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -125,8 +125,7 @@ enum class VoteType {
 fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType): InstantScores {
     val newVote = newVote(
         currentVote = instantScores.myVote,
-        voteType =
-        voteType,
+        voteType = voteType,
     )
     val score = newScore(
         instantScores.score,
@@ -135,8 +134,7 @@ fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType):
     )
     val votes = newVoteCount(
         Pair(instantScores.upvotes, instantScores.downvotes),
-        instantScores
-            .myVote,
+        instantScores.myVote,
         voteType,
     )
 
@@ -148,7 +146,9 @@ fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType):
     )
 }
 
-// TODO should that currentVote be mandatory?
+/*
+ * User changed their vote, so calculate score difference given this user's new vote.
+ */
 fun newVote(currentVote: Int?, voteType: VoteType): Int {
     return if (voteType == VoteType.Upvote) {
         if (currentVote == 1) {
@@ -165,7 +165,9 @@ fun newVote(currentVote: Int?, voteType: VoteType): Int {
     }
 }
 
-// TODO get rid of this instant voting mess, just use the comment response, and a loading icon
+/*
+ * Calculate the new score after the user votes.
+ */
 fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
     return if (voteType == VoteType.Upvote) {
         when (currentVote) {
@@ -392,9 +394,11 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
     }
 
     val host = split[0]
-    val path = split[1]
+    // eliminate the query param portion of the path so we can replace it later
+    // without this, we'd end up with something like host/path?thumbnail=...?thumbnail=...
+    val path = split[1].replaceAfter('?', "")
 
-    return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
+    return "$host/pictrs/image/${path}thumbnail=$thumbnailSize&format=webp"
 }
 
 fun isImage(url: String): Boolean {
@@ -615,7 +619,7 @@ fun validatePostName(
 fun validateUrl(
     url: String,
 ): InputField {
-    return if (url.isNotEmpty() && !Patterns.WEB_URL.matcher(url).matches()) {
+    return if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
         InputField(
             label = "Invalid Url",
             hasError = true,

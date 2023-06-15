@@ -450,6 +450,11 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            onClickSortType = { commentSortType ->
+                                postViewModel.updateSortType(commentSortType)
+                                postViewModel.getData(account)
+                            },
+                            selectedSortType = postViewModel.sortType,
                             siteViewModel = siteViewModel,
                         )
                     }
@@ -464,8 +469,8 @@ class MainActivity : ComponentActivity() {
                             },
                         ),
                     ) {
+                        val commentId = it.arguments?.getInt("id")!!
                         LaunchedEffect(Unit) {
-                            val commentId = it.arguments?.getInt("id")!!
                             postViewModel.initialize(id = Either.Right(commentId))
                             postViewModel.getData(account)
                         }
@@ -479,6 +484,11 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            onClickSortType = { commentSortType ->
+                                postViewModel.updateSortType(commentSortType)
+                                postViewModel.getData(account)
+                            },
+                            selectedSortType = postViewModel.sortType,
                             siteViewModel = siteViewModel,
                         )
                     }
