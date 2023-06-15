@@ -69,8 +69,6 @@ import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
 
-val prettyTime = PrettyTime(Locale.getDefault())
-
 val gson = Gson()
 
 const val LAUNCH_DELAY = 300L
@@ -464,6 +462,28 @@ fun openLink(url: String, navController: NavController, useCustomTab: Boolean, u
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         navController.context.startActivity(intent)
+    }
+}
+
+var prettyTime = PrettyTime(Locale.getDefault())
+var prettyTimeEnglish = PrettyTime(Locale.ENGLISH)
+val invalidPrettyDateRegex = "^[0123456789 ]+$".toRegex()
+fun formatDuration(date: Date, longTimeFormat: Boolean = false): String {
+    if (prettyTime.locale != Locale.getDefault()) {
+        prettyTime = PrettyTime(Locale.getDefault())
+    }
+
+    var prettyDate = prettyTime.formatDuration(date)
+
+    // A bug in PrettyTime means that some languages (pl, ru, uk, kk) will not include any time unit
+    if (prettyDate.matches(invalidPrettyDateRegex)) {
+        prettyDate = prettyTimeEnglish.formatDuration(date)
+    }
+
+    return if (longTimeFormat) {
+        prettyDate
+    } else {
+        prettyTimeShortener(prettyDate)
     }
 }
 

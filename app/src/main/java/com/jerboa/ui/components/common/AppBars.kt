@@ -13,10 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -475,7 +472,7 @@ fun Sidebar(
                 }
                 TimeAgo(
                     precedingString = stringResource(R.string.AppBars_created),
-                    includeAgo = true,
+                    longTimeFormat = true,
                     published = published,
                 )
                 CommentsAndPosts(

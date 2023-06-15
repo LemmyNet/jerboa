@@ -6,6 +6,11 @@ import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.ui.theme.SMALL_PADDING
 import org.junit.Assert.*
 import org.junit.Test
+import org.ocpsoft.prettytime.PrettyTime
+import java.time.Duration
+import java.time.Instant
+import java.util.Date
+import java.util.Locale
 
 class UtilsKtTest {
     @Test
@@ -152,5 +157,25 @@ class UtilsKtTest {
         )
 
         cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)) }
+    }
+
+    @Test
+    fun testBrokenLanguagesRemappedToEnglish() {
+        listOf("pl", "ru", "uk", "kk").forEach { locale ->
+            val date = Date.from(Instant.now().minus(Duration.ofDays(1)))
+            prettyTime = PrettyTime(Locale(locale))
+
+            val durationString = formatDuration(date, true)
+            assertNotEquals("1", durationString)
+        }
+    }
+
+    @Test
+    fun testEnglish() {
+        val date = Date.from(Instant.now().minus(Duration.ofDays(1)))
+        Locale.setDefault(Locale.ENGLISH)
+
+        val durationString = formatDuration(date, true)
+        assertEquals("1 day", durationString)
     }
 }
