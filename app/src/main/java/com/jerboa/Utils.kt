@@ -423,6 +423,14 @@ fun parseUrl(url: String): String? {
 fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
     val url = parseUrl(url) ?: return
 
+    if (url.startsWith("@")) {
+        Toast.makeText(ctx, "User info links not yet supported", Toast.LENGTH_SHORT).show()
+        return
+    } else if (url.startsWith("!")) {
+        Toast.makeText(ctx, "Community links not yet supported", Toast.LENGTH_SHORT).show()
+        return
+    }
+
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
             .build().apply {
