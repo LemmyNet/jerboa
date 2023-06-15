@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,7 +23,6 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.TextBadge
 import com.jerboa.ui.theme.SMALL_PADDING
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonName(
     person: Person?,
@@ -112,7 +110,7 @@ fun PersonProfileLink(
 @Composable
 fun PersonProfileLinkPreview() {
     PersonProfileLink(
-        person = samplePersonSafe,
+        person = samplePerson,
         onClick = {},
         showAvatar = true,
     )

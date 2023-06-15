@@ -67,25 +67,11 @@ class HomeViewModel : ViewModel() {
 
     fun getPosts(form: GetPosts) {
         viewModelScope.launch {
-            try {
-                val api = API.getInstance()
-                val form = GetUnreadCount(
-                    auth = account.jwt
+            postsRes = ApiState.Loading
+            postsRes =
+                apiWrapper(
+                    API.getInstance().getPosts(form.serializeToMap()),
                 )
-                Log.d(
-                    "jerboa",
-                    "Fetching unread counts: $form"
-                )
-                unreadCountResponse = retrofitErrorHandler(
-                    api.getUnreadCount(
-                        form = form
-                            .serializeToMap()
-                    )
-                )
-            } catch (e: Exception) {
-                toastException(ctx = ctx, error = e)
-            }
-==== BASE ====
         }
     }
 

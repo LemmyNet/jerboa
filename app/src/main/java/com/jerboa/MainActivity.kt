@@ -157,9 +157,8 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
-==== BASE ====
-                            appSettingsViewModel = appSettingsViewModel
-==== BASE ====
+                            appSettingsViewModel = appSettingsViewModel,
+                                showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     composable(
@@ -172,21 +171,22 @@ class MainActivity : ComponentActivity() {
                     ) {
                         LaunchedEffect(Unit) {
                             val communityId = it.arguments?.getInt("id")!!
-                            val idOrName = Either.Left(communityId)
 
                             communityViewModel.getCommunity(
                                 form = GetCommunity(
-                                    idOrName = communityId,
+                                    id = communityId,
                                     auth = account?.jwt,
                                 ),
                             )
-
-                            communityViewModel.fetchPosts(
-                                communityIdOrName = idOrName,
-                                account = account,
-                                clear = true,
-                                ctx = ctx,
-                            )
+                            communityViewModel.getPosts(
+                                form =
+                                    GetPosts(
+                                        community_id = communityId,
+                                        page = communityViewModel.page,
+                                        sort = communityViewModel.sortType,
+                                        auth = account?.jwt,
+                                    ),
+                                )
                         }
 
                         CommunityActivity(
@@ -218,11 +218,11 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
                             val instance = it.arguments?.getString("instance")!!
-                            val idOrName = Either.Right("$name@$instance")
+                            val qualifiedName = "$name@$instance"
 
                             communityViewModel.getCommunity(
                                 form = GetCommunity(
-                                    idOrname = name,
+                                    name = qualifiedName,
                                     auth = account?.jwt,
                                 ),
                             )
@@ -262,12 +262,11 @@ class MainActivity : ComponentActivity() {
                     ) {
                         val savedMode = it.arguments?.getBoolean("saved")!!
                         LaunchedEffect(Unit) {
-                            val personId = it.arguments?.getInt("id")!!
-                            val idOrName = Either.Left(personId)
+                            val person_id = it.arguments?.getInt("id")!!
 
                             personProfileViewModel.getPersonDetails(
                                 GetPersonDetails(
-                                    person_id = personId,
+                                    person_id,
                                     sort = SortType.New,
                                     auth = account?.jwt,
                                     saved_only = savedMode,
@@ -306,10 +305,10 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
 val instance = it.arguments?.getString("instance")!!
-                            val idOrName = Either.Right("$name@$instance")
+                            val qualifiedName = "$name@$instance"
                             personProfileViewModel.getPersonDetails(
                                 GetPersonDetails(
-                                    username = TODOIdOrName,
+                                    username = qualifiedName,
                                     sort = SortType.New,
                                     auth = account?.jwt,
                                 ),

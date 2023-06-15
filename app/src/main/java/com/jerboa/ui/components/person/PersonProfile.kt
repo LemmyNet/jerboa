@@ -34,6 +34,7 @@ import com.jerboa.datatypes.samplePersonView
 import com.jerboa.R
 import com.jerboa.datatypes.types.PersonView
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.getLocalizedSortingTypeName
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem

@@ -3,6 +3,7 @@ package com.jerboa.ui.components.community
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -25,8 +26,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import com.jerboa.VoteType
 import com.jerboa.R
+import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
@@ -40,7 +41,6 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.loginFirstToast
 import com.jerboa.newVote
-import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
@@ -63,7 +63,6 @@ fun CommunityActivity(
     accountViewModel: AccountViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
-    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -151,17 +150,163 @@ fun CommunityActivity(
                                 )
                             }
                         },
+                        modifier = Modifier.padding(it)
                     )
-                },
-                onDownvoteClick = { postView ->
-                    communityViewModel.likePost(
-                        voteType = VoteType.Downvote,
-                        postView = postView,
+                }
+
+                else -> {}
+            }
+
+            when (val postsRes = communityViewModel.postsRes) {
+                ApiState.Empty -> ApiEmptyText()
+                is ApiState.Failure -> ApiErrorText(postsRes.msg)
+                // TODO
+                ApiState.Loading -> CircularProgressIndicator()
+                is ApiState.Success -> {
+                    PostListings(
+                        posts = postsRes.data.posts,
+                        onUpvoteClick = { postView ->
+                            account?.also { acct ->
+                                communityViewModel.likePost(
+                                    form = CreatePostLike(
+                                        post_id = postView.post.id,
+                                        score = newVote(
+                                            currentVote = postView.my_vote,
+                                            voteType = VoteType.Upvote,
+                                        ),
+                                        auth = acct.jwt,
+                                    ),
+                                )
+                            }
+                        },
+                        onDownvoteClick = { postView ->
+                            account?.also { acct ->
+                                communityViewModel.likePost(
+                                    form = CreatePostLike(
+                                        post_id = postView.post.id,
+                                        score = newVote(
+                                            currentVote = postView.my_vote,
+                                            voteType = VoteType.Downvote,
+                                        ),
+                                        auth = acct.jwt,
+                                    ),
+                                )
+                            }
+                        },
+                        onPostClick = { postView ->
+                            navController.navigate(route = "post/${postView.post.id}")
+                        },
+                        onSaveClick = { postView ->
+                            account?.also { acct ->
+                                communityViewModel.savePost(
+                                    form = SavePost(
+                                        post_id = postView.post.id,
+                                        save = !postView.saved,
+                                        auth = acct.jwt,
+                                    ),
+                                )
+                            }
+                        },
+                        onEditPostClick = { postView ->
+                            postEditViewModel.initialize(postView)
+                            navController.navigate("postEdit")
+                        },
+                        onDeletePostClick = { postView ->
+                            account?.also { acct ->
+                                communityViewModel.deletePost(
+                                    DeletePost(
+                                        post_id = postView.post.id,
+                                        deleted = !postView.post.deleted,
+                                        auth = acct.jwt,
+                                    ),
+                                )
+                            }
+                        },
+                        onReportClick = { postView ->
+                            navController.navigate("postReport/${postView.post.id}")
+                        },
+                        onCommunityClick = { community ->
+                            navController.navigate(route = "community/${community.id}")
+                        },
+                        onPersonClick = { personId ->
+                            navController.navigate(route = "profile/$personId")
+                        },
+                        onBlockCommunityClick = {
+                            when (val communityRes = communityViewModel.communityRes) {
+                                is ApiState.Success -> {
+                                    account?.also { acct ->
+                                        communityViewModel.blockCommunity(
+                                            form = BlockCommunity(
+                                                community_id = communityRes.data.community_view.community.id,
+                                                block = !communityRes.data.community_view.blocked,
+                                                auth = acct.jwt,
+                                            ),
+                                            ctx = ctx,
+                                        )
+                                    }
+                                }
+
+                                else -> {}
+                            }
+                        },
+                        onBlockCreatorClick = { person ->
+                            account?.also { acct ->
+                                communityViewModel.blockPerson(
+                                    form = BlockPerson(
+                                        person_id = person.id,
+                                        block = true,
+                                        auth = acct.jwt,
+                                    ),
+                                    ctx = ctx,
+                                )
+                            }
+                        },
+                        onSwipeRefresh = {
+                            when (val communityRes = communityViewModel.communityRes) {
+                                is ApiState.Success -> {
+                                    communityViewModel.resetPage()
+                                    communityViewModel.getPosts(
+                                        form =
+                                        GetPosts(
+                                            community_id = communityRes.data.community_view.community.id,
+                                            page = communityViewModel.page,
+                                            sort = communityViewModel.sortType,
+                                            auth = account?.jwt,
+                                        ),
+                                    )
+                                }
+
+                                else -> {}
+                            }
+                        },
+                        // TODO
+                        loading = false,
+                        isScrolledToEnd = {
+                            when (val communityRes = communityViewModel.communityRes) {
+                                is ApiState.Success -> {
+                                    communityViewModel.nextPage()
+                                    communityViewModel.appendPosts(
+                                        form =
+                                        GetPosts(
+                                            community_id = communityRes.data.community_view.community.id,
+                                            page = communityViewModel.page,
+                                            sort = communityViewModel.sortType,
+                                            auth = account?.jwt,
+                                        ),
+                                    )
+                                }
+
+                                else -> {}
+                            }
+                        },
                         account = account,
                         showCommunityName = false,
                         padding = it,
                         listState = postListState,
                         postViewMode = getPostViewMode(appSettingsViewModel),
+                        enableDownVotes = siteViewModel.enableDownvotes(),
+                        showAvatar =  siteViewModel.showAvatar(),
+                        showVotingArrowsInListView = showVotingArrowsInListView,
                     )
                 }
             }

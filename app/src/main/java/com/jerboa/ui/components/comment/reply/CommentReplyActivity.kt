@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -24,16 +23,14 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentReplyActivity(
     commentReplyViewModel: CommentReplyViewModel,
     accountViewModel: AccountViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
-==== BASE ====
+    siteViewModel: SiteViewModel,
     navController: NavController
-==== BASE ====
 ) {
     Log.d("jerboa", "got to comment reply activity")
 
@@ -96,6 +93,7 @@ fun CommentReplyActivity(
                                         modifier = Modifier
                                             .padding(padding)
                                             .imePadding(),
+                                        showAvatar = siteViewModel.showAvatar(),
                                     )
 
                                 is ReplyItem.PostItem -> PostReply(
@@ -127,6 +125,7 @@ fun CommentReplyActivity(
                                         modifier = Modifier
                                             .padding(padding)
                                             .imePadding(),
+                                        showAvatar = siteViewModel.showAvatar(),
                                     )
 
                                 is ReplyItem.MentionReplyItem ->
@@ -141,6 +140,7 @@ fun CommentReplyActivity(
                                         modifier = Modifier
                                             .padding(padding)
                                             .imePadding(),
+                                        showAvatar = siteViewModel.showAvatar(),
                                     )
                             }
                         }

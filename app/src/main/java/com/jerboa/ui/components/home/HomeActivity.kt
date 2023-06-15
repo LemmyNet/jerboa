@@ -48,7 +48,6 @@ import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.fetchInitialData
 import com.jerboa.loginFirstToast
 import com.jerboa.newVote
-import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
@@ -241,9 +240,6 @@ fun MainPostListingsContent(
                 onPostClick = { postView ->
                     navController.navigate(route = "post/${postView.post.id}")
                 },
-                onPostLinkClick = { url ->
-                    openLink(url, ctx)
-                },
                 onSaveClick = { postView ->
                     account?.also { acct ->
                         homeViewModel.savePost(
@@ -328,12 +324,14 @@ fun MainPostListingsContent(
                     )
                 },
                 account = account,
+                enableDownVotes = siteViewModel.enableDownvotes(),
+                showAvatar = siteViewModel.showAvatar(),
+                showVotingArrowsInListView = showVotingArrowsInListView,
             )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainDrawer(
     siteViewModel: SiteViewModel,

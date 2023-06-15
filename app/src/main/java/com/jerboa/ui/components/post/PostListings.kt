@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.PostViewMode
+import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
@@ -54,7 +55,6 @@ fun PostListings(
     showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
     listState: LazyListState,
-    taglines: List<Tagline>?,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
@@ -142,7 +142,6 @@ fun PreviewPostListings() {
         isScrolledToEnd = {},
         account = null,
         listState = rememberLazyListState(),
-        taglines = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,

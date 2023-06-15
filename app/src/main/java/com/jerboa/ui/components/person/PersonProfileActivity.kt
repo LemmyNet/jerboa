@@ -11,9 +11,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,7 +19,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import arrow.core.Either
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -77,7 +73,6 @@ fun PersonProfileActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
-    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -172,8 +167,8 @@ fun PersonProfileActivity(
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 showVotingArrowsInListView = showVotingArrowsInListView,
-                enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
-                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
+                enableDownVotes = siteViewModel.enableDownvotes(),
+                showAvatar = siteViewModel.showAvatar(),
             )
         },
         bottomBar = {
@@ -297,6 +292,7 @@ fun UserTabs(
                                 item {
                                     PersonProfileTopSection(
                                         personView = profileRes.data.person_view,
+                                        showAvatar = showAvatar,
                                     )
                                 }
                                 val moderates = profileRes.data.moderates
@@ -319,6 +315,7 @@ fun UserTabs(
                                         onClick = { community ->
                                             navController.navigate(route = "community/${community.id}")
                                         },
+                                        showDefaultIcon = true,
                                     )
                                 }
                             }
@@ -364,9 +361,6 @@ fun UserTabs(
                                 },
                                 onPostClick = { pv ->
                                     navController.navigate(route = "post/${pv.post.id}")
-                                },
-                                onPostLinkClick = { url ->
-                                    openLink(url, ctx)
                                 },
                                 onSaveClick = { pv ->
                                     account?.also { acct ->
@@ -455,6 +449,9 @@ fun UserTabs(
                                 account = account,
                                 listState = postListState,
                                 postViewMode = getPostViewMode(appSettingsViewModel),
+                                enableDownVotes = enableDownVotes,
+                                showAvatar = showAvatar,
+                                showVotingArrowsInListView = showVotingArrowsInListView,
                             )
                         }
                     }

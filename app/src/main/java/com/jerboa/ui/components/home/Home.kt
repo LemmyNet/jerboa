@@ -62,6 +62,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
 import com.jerboa.R
+import com.jerboa.api.ApiState
+import com.jerboa.datatypes.samplePerson
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.GetSiteResponse
+import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.MyUserInfo
+import com.jerboa.datatypes.types.Person
+import com.jerboa.datatypes.types.SortType
+import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -97,6 +106,8 @@ fun Drawer(
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
+    onClickCommunities: () -> Unit,
+    isOpen: Boolean,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -445,16 +456,6 @@ fun HomeHeaderTitle(
     }
 }
 
-@Composable
-fun Taglines(
-    taglines: List<Tagline>?,
-) {
-    taglines?.let { taglines ->
-        if (taglines.isNotEmpty()) {
-        Tagline(taglines)
-    } }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeHeader(
@@ -648,14 +649,16 @@ fun HomeMoreDialog(
 }
 
 @Composable
-fun Tagline(taglines: List<Tagline>) {
-    val tagline by remember { mutableStateOf(taglines.random()) }
-    Column(
-        Modifier.padding(LARGE_PADDING),
-    ) {
-        MyMarkdownText(
-            markdown = tagline.content,
-            onClick = {},
-        )
+fun Taglines(taglines: List<Tagline>) {
+    if (taglines.isNotEmpty()) {
+        val tagline by remember { mutableStateOf(taglines.random()) }
+        Column(
+            Modifier.padding(LARGE_PADDING),
+        ) {
+            MyMarkdownText(
+                markdown = tagline.content,
+                onClick = {},
+            )
+        }
     }
 }

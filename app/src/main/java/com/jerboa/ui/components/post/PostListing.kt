@@ -254,27 +254,18 @@ fun PostNodeHeader(
 fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
-==== BASE ====
-    onPostLinkClick: (url: String) -> Unit,
     account: Account?
-==== BASE ====
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
             postView = postView,
-==== BASE ====
-            onPostLinkClick = onPostLinkClick
-==== BASE ====
         )
     } else {
         PostTitleAndThumbnail(
             postView = postView,
-==== BASE ====
-            onPostLinkClick = onPostLinkClick,
             account = account
-==== BASE ====
         )
     }
 }
@@ -305,9 +296,6 @@ fun PostName(
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
-==== BASE ====
-    onPostLinkClick: (url: String) -> Unit
-==== BASE ====
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -343,10 +331,7 @@ fun PostTitleAndImageLink(
 @Composable
 fun PostTitleAndThumbnail(
     postView: PostView,
-==== BASE ====
-    onPostLinkClick: (url: String) -> Unit,
     account: Account?
-==== BASE ====
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -383,10 +368,7 @@ fun PostBody(
     postView: PostView,
     fullBody: Boolean,
     expandedImage: Boolean,
-==== BASE ====
-    onPostLinkClick: (rl: String) -> Unit,
     account: Account?
-==== BASE ====
 ) {
     val post = postView.post
     Column(
@@ -395,10 +377,7 @@ fun PostBody(
         PostTitleBlock(
             postView = postView,
             expandedImage = expandedImage,
-==== BASE ====
-            onPostLinkClick = onPostLinkClick,
             account = account
-==== BASE ====
         )
 
         // The metadata card
@@ -424,9 +403,8 @@ fun PostBody(
                                 .padding(MEDIUM_PADDING),
                         ) {
                             MyMarkdownText(
-==== BASE ====
-                                markdown = text
-==== BASE ====
+                                markdown = text,
+                                onClick = {}
                             )
                         }
                     } else {
@@ -994,7 +972,6 @@ fun PostListingList(
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
-    onPostLinkClick: (url: String) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
@@ -1103,7 +1080,6 @@ fun PostListingList(
 @Composable
 private fun ThumbnailTile(
     postView: PostView,
-    onPostLinkClick: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
         var showImageDialog by remember { mutableStateOf(false) }

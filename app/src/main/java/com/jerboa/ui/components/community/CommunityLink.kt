@@ -42,7 +42,6 @@ fun CommunityName(
     community: Community,
     color: Color = MaterialTheme.colorScheme.primary,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    modifier: Modifier = Modifier,
 ) {
     Text(
         text = communityNameShown(community),
