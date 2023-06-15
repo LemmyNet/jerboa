@@ -14,6 +14,7 @@ import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.buildCommentsTree
+import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
 import com.jerboa.datatypes.ListingType
@@ -52,12 +53,16 @@ class PostViewModel : ViewModel() {
         private set
     var loading: Boolean by mutableStateOf(false)
         private set
+    var sortType = mutableStateOf(CommentSortType.Hot)
+        private set
 
     fun fetchPost(
         id: Either<PostId, CommentId>,
-        clear: Boolean = false,
+        clearPost: Boolean = false,
+        clearComments: Boolean = false,
         account: Account?,
         ctx: Context,
+        changeSortType: CommentSortType? = null,
     ) {
         val api = API.getInstance()
 
@@ -71,8 +76,17 @@ class PostViewModel : ViewModel() {
                     "Fetching post: $id",
                 )
 
-                if (clear) {
+                if (clearPost) {
                     postView.value = null
+                }
+
+                if (clearComments) {
+                    comments.clear()
+                    commentTree.clear()
+                }
+
+                changeSortType?.also {
+                    sortType.value = it
                 }
 
                 loading = true
@@ -92,6 +106,7 @@ class PostViewModel : ViewModel() {
                         type_ = ListingType.All,
                         post_id = it,
                         auth = account?.jwt,
+                        sort = sortType.value,
                     )
                 }, {
                     GetComments(
@@ -99,6 +114,7 @@ class PostViewModel : ViewModel() {
                         type_ = ListingType.All,
                         parent_id = it,
                         auth = account?.jwt,
+                        sort = sortType.value,
                     )
                 })
 
@@ -146,6 +162,7 @@ class PostViewModel : ViewModel() {
                     max_depth = COMMENTS_DEPTH_MAX,
                     type_ = ListingType.All,
                     auth = account?.jwt,
+                    sort = sortType.value,
                 )
                 val commentsOut = retrofitErrorHandler(
                     api.getComments(
