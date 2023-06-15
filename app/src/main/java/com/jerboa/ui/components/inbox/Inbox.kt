@@ -18,11 +18,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
+import com.jerboa.getLocalizedUnreadOrAllName
 import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
 
@@ -79,6 +81,7 @@ fun InboxHeader(
 @Composable
 fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null) {
     var title = stringResource(R.string.inbox_inbox)
+    val context = LocalContext.current
     if (unreadCount != null && unreadCount > 0) {
         title = "$title ($unreadCount)"
     }
@@ -88,7 +91,7 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = selectedUnreadOrAll.toString(),
+            text = getLocalizedUnreadOrAllName(context,selectedUnreadOrAll),
             style = MaterialTheme.typography.titleMedium,
         )
     }

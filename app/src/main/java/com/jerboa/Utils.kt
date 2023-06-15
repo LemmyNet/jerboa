@@ -940,11 +940,51 @@ fun getLocalizedSortingTypeName(context: Context, sortingType: SortType): String
     return returnString
 }
 
+/**
+ * Returns localized Strings for UserTab Enum
+ */
 fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
     val returnString = when (tab) {
         UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
         UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
         UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+    }
+    return returnString
+}
+
+/**
+ * Returns localized Strings for ListingType Enum
+ */
+fun getLocalizedListingTypeName(context: Context, listingType: ListingType): String {
+    val returnString = when (listingType) {
+        ListingType.All -> context.getString(R.string.home_all)
+        ListingType.Local -> context.getString(R.string.home_local)
+        ListingType.Subscribed -> context.getString(R.string.home_subscribed)
+    }
+    return returnString
+}
+
+
+/**
+ * Returns localized Strings for CommentSortType Enum
+ */
+fun getLocalizedCommentSortTypeName(context: Context, commentSortType: CommentSortType): String {
+    val returnString = when (commentSortType) {
+        CommentSortType.Hot -> context.getString(R.string.sorttype_hot)
+        CommentSortType.New -> context.getString(R.string.sorttype_new)
+        CommentSortType.Old -> context.getString(R.string.sorttype_old)
+        CommentSortType.Top -> context.getString(R.string.dialogs_top)
+    }
+    return returnString
+}
+
+/**
+ * Returns localized Strings for UnreadOrAll Enum
+ */
+fun getLocalizedUnreadOrAllName(context: Context, unreadOrAll: UnreadOrAll): String {
+    val returnString = when (unreadOrAll) {
+        UnreadOrAll.Unread -> context.getString(R.string.dialogs_unread)
+        UnreadOrAll.All -> context.getString(R.string.dialogs_all)
     }
     return returnString
 }
