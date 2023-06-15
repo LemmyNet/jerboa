@@ -39,28 +39,26 @@ class PostEditViewModel : ViewModel() {
         homeViewModel: HomeViewModel,
     ) {
         viewModelScope.launch {
-            postView?.also { pv ->
-                editPostRes = ApiState.Loading
-                editPostRes =
-                    apiWrapper(
-                        API.getInstance().editPost(form),
-                    )
+            editPostRes = ApiState.Loading
+            editPostRes =
+                apiWrapper(
+                    API.getInstance().editPost(form),
+                )
 
-                when (val res = editPostRes) {
-                    is ApiState.Success -> {
-                        val post = res.data.post_view
-                        postView = post
+            when (val res = editPostRes) {
+                is ApiState.Success -> {
+                    val post = res.data.post_view
+                    postView = post
 
-                        // Update the other view models
-                        postViewModel.updatePost(post)
-                        personProfileViewModel.updatePost(post)
-                        communityViewModel.updatePost(post)
-                        homeViewModel.updatePost(post)
+                    // Update the other view models
+                    postViewModel.updatePost(post)
+                    personProfileViewModel.updatePost(post)
+                    communityViewModel.updatePost(post)
+                    homeViewModel.updatePost(post)
 
-                        navController.popBackStack()
-                    }
-                    else -> {}
+                    navController.popBackStack()
                 }
+                else -> {}
             }
         }
     }

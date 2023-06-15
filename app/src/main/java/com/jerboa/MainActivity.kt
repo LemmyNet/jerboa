@@ -98,7 +98,7 @@ class MainActivity : ComponentActivity() {
     private val commentEditViewModel by viewModels<CommentEditViewModel>()
     private val postEditViewModel by viewModels<PostEditViewModel>()
     private val createReportViewModel by viewModels<CreateReportViewModel>()
-    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>() {
+    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
         AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
     }
     private val privateMessageReplyViewModel by viewModels<PrivateMessageReplyViewModel>()
@@ -262,11 +262,11 @@ class MainActivity : ComponentActivity() {
                     ) {
                         val savedMode = it.arguments?.getBoolean("saved")!!
                         LaunchedEffect(Unit) {
-                            val person_id = it.arguments?.getInt("id")!!
+                            val personId = it.arguments?.getInt("id")!!
 
                             personProfileViewModel.getPersonDetails(
                                 GetPersonDetails(
-                                    person_id,
+                                    person_id = personId,
                                     sort = SortType.New,
                                     auth = account?.jwt,
                                     saved_only = savedMode,
@@ -366,6 +366,7 @@ class MainActivity : ComponentActivity() {
                                     Uri::class.java,
                                 )
                             } else {
+                                @Suppress("DEPRECATION")
                                 activity?.intent?.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
                             }
                         // url and body will be empty everytime except when there is EXTRA TEXT in the intent
