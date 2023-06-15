@@ -259,8 +259,8 @@ fun InboxTabs(
                         else -> false
                     }
 
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
+                    val refreshState = rememberPullRefreshState(
+                        refreshing = loading,
                         onRefresh = {
                             account?.also { acct ->
                                 inboxViewModel.resetPage()
@@ -274,8 +274,9 @@ fun InboxTabs(
                                 )
                             }
                         },
-                    ) {
-// TODO PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
+                    )
+                    Box(modifier = Modifier.pullRefresh(refreshState)) {
+                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
                         when (val repliesRes = inboxViewModel.repliesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(repliesRes.msg)
@@ -385,6 +386,7 @@ fun InboxTabs(
                                                 navController.navigate(route = "post/$postId")
                                             },
                                             account = account,
+                                            showAvatar = siteViewModel.showAvatar(),
                                         )
                                     }
                                 }
@@ -425,8 +427,8 @@ fun InboxTabs(
                         else -> false
                     }
 
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
+                    val refreshState = rememberPullRefreshState(
+                        refreshing = loading,
                         onRefresh = {
                             account?.also { acct ->
                                 inboxViewModel.resetPage()
@@ -440,7 +442,9 @@ fun InboxTabs(
                                 )
                             }
                         },
-                    ) {
+                    )
+                    Box(modifier = Modifier.pullRefresh(refreshState)) {
+                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(mentionsRes.msg)
@@ -557,6 +561,7 @@ fun InboxTabs(
                                                 navController.navigate(route = "post/$postId")
                                             },
                                             account = account,
+                                            showAvatar = siteViewModel.showAvatar(),
                                         )
                                     }
                                 }
@@ -596,10 +601,11 @@ fun InboxTabs(
                         else -> false
                     }
 
-                    SwipeRefresh(
-                        state = rememberSwipeRefreshState(loading),
+                    val refreshState = rememberPullRefreshState(
+                        refreshing = loading,
                         onRefresh = {
                             account?.also { acct ->
+                                inboxViewModel.resetPage()
                                 inboxViewModel.getMessages(
                                     GetPrivateMessages(
                                         unread_only = inboxViewModel.unreadOnly,
@@ -609,7 +615,9 @@ fun InboxTabs(
                                 )
                             }
                         },
-                    ) {
+                    )
+                    Box(modifier = Modifier.pullRefresh(refreshState)) {
+                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
                         when (val messagesRes = inboxViewModel.messagesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(messagesRes.msg)
@@ -654,6 +662,7 @@ fun InboxTabs(
                                                     navController.navigate(route = "profile/$personId")
                                                 },
                                                 account = acct,
+                                                showAvatar = siteViewModel.showAvatar(),
                                             )
                                         }
                                     }

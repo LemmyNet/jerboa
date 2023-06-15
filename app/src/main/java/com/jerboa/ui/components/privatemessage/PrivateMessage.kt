@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.R
+import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.Account

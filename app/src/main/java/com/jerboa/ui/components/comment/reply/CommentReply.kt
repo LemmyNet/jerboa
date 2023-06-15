@@ -17,8 +17,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.R
+import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.types.CommentReplyView
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.PersonMentionView

@@ -158,7 +158,7 @@ class MainActivity : ComponentActivity() {
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                                showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                         )
                     }
                     composable(
@@ -180,13 +180,13 @@ class MainActivity : ComponentActivity() {
                             )
                             communityViewModel.getPosts(
                                 form =
-                                    GetPosts(
-                                        community_id = communityId,
-                                        page = communityViewModel.page,
-                                        sort = communityViewModel.sortType,
-                                        auth = account?.jwt,
-                                    ),
-                                )
+                                GetPosts(
+                                    community_id = communityId,
+                                    page = communityViewModel.page,
+                                    sort = communityViewModel.sortType,
+                                    auth = account?.jwt,
+                                ),
+                            )
                         }
 
                         CommunityActivity(
@@ -304,7 +304,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
-val instance = it.arguments?.getString("instance")!!
+                            val instance = it.arguments?.getString("instance")!!
                             val qualifiedName = "$name@$instance"
                             personProfileViewModel.getPersonDetails(
                                 GetPersonDetails(
@@ -344,7 +344,7 @@ val instance = it.arguments?.getString("instance")!!
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            homeViewModel = homeViewModel,
+                            siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             communityListViewModel = communityListViewModel,
                             selectMode = it.arguments?.getBoolean("select")!!,
@@ -447,7 +447,6 @@ val instance = it.arguments?.getString("instance")!!
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -477,7 +476,6 @@ val instance = it.arguments?.getString("instance")!!
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -493,6 +491,7 @@ val instance = it.arguments?.getString("instance")!!
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
                             navController = navController,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(
@@ -542,6 +541,7 @@ val instance = it.arguments?.getString("instance")!!
                             privateMessageReplyViewModel = privateMessageReplyViewModel,
                             accountViewModel = accountViewModel,
                             navController = navController,
+                            siteViewModel = siteViewModel,
                         )
                     }
                     composable(

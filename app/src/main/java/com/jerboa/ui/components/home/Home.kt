@@ -113,7 +113,7 @@ fun Drawer(
 
     if (!isOpen) showAccountAddMode = false
 
-val myUserInfo = when (siteRes) {
+    val myUserInfo = when (siteRes) {
         is ApiState.Success -> siteRes.data.my_user
         else -> null
     }
@@ -319,7 +319,7 @@ fun DrawerItemsMainPreview() {
         onClickSaved = {},
         onClickSettings = {},
         onClickCommunities = {},
-unreadCount = 2,
+        unreadCount = 2,
     )
 }
 

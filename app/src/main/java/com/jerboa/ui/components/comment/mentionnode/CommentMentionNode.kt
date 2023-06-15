@@ -306,7 +306,7 @@ fun CommentMentionNode(
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account?,
     showAvatar: Boolean,
 ) {

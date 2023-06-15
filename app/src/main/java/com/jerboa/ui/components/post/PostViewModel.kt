@@ -128,11 +128,10 @@ class PostViewModel : ViewModel() {
                         type_ = ListingType.All,
                         auth = account?.jwt,
                     )
-                )
 
-                // Remove the first comment, since it is a parent
-                val newComments = commentsOut.comments.toMutableList()
-                newComments.removeAt(0)
+                    val moreComments =
+                        apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
+                    fetchingMore = true
 
                     when (moreComments) {
                         is ApiState.Success -> {

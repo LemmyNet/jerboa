@@ -444,8 +444,8 @@ private fun ShowMoreChildrenNode(
 @Composable
 fun PostAndCommunityContextHeader(
     post: Post,
-    community: CommunitySafe,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    community: Community,
+    onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
 ) {
     Column(
@@ -495,7 +495,7 @@ fun CommentFooterLine(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,

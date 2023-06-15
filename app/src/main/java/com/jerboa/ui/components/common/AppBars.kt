@@ -13,10 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -83,13 +80,11 @@ fun BottomAppBarAll(
     navController: NavController = rememberNavController(),
     screen: String,
     unreadCount: Int,
-showBottomNav: Boolean? = true,
+    showBottomNav: Boolean? = true,
     onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
 ) {
-    val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
-
     if (showBottomNav == true) {
         // Check for preview mode
         if (LocalContext.current is Activity) {
@@ -146,7 +141,7 @@ showBottomNav: Boolean? = true,
             NavigationBarItem(
                 icon = {
                     InboxIconAndBadge(
-                        iconBadgeCount = totalUnreads,
+                        iconBadgeCount = unreadCount,
                         icon = Icons.Outlined.Email,
                         contentDescription = stringResource(R.string.bottomBar_inbox),
                     )
@@ -561,6 +556,7 @@ fun Modifier.simpleVerticalScrollbar(
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
         animationSpec = tween(durationMillis = duration),
+        label = "animateScrollBar",
     )
 
     return drawWithContent {

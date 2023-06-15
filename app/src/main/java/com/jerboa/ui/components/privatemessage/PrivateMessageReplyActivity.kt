@@ -1,11 +1,9 @@
-
 package com.jerboa.ui.components.privatemessage
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,12 +20,13 @@ import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.home.SiteViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrivateMessageReplyActivity(
     privateMessageReplyViewModel: PrivateMessageReplyViewModel,
     accountViewModel: AccountViewModel,
+    siteViewModel: SiteViewModel,
     navController: NavController,
 ) {
     Log.d("jerboa", "got to private message reply activity")
@@ -77,7 +76,7 @@ fun PrivateMessageReplyActivity(
                             modifier = Modifier
                                 .padding(padding)
                                 .imePadding(),
-                            showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
+                            showAvatar = siteViewModel.showAvatar(),
                         )
                     }
                 }

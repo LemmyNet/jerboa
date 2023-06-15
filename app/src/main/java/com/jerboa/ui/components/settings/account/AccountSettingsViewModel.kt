@@ -40,10 +40,12 @@ class AccountSettingsViewModel(
             )
         }
     }
+
+//     TODO Where is this used??
     private suspend fun maybeUpdateAccountSettings(account: Account, form: SaveUserSettings) {
         val newAccount = account.copy(
-            defaultListingType = form.default_listing_type ?: account.defaultListingType,
-            defaultSortType = form.default_sort_type ?: account.defaultSortType,
+            defaultListingType = form.default_listing_type?.ordinal ?: account.defaultListingType,
+            defaultSortType = form.default_sort_type ?.ordinal ?: account.defaultSortType,
         )
         if (newAccount != account) {
             accountRepository.update(newAccount)

@@ -30,8 +30,6 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.theme.*
 import kotlinx.coroutines.launch
 
-// TODO replace all these
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsTextField(
     label: String,
@@ -221,10 +219,8 @@ fun SettingsForm(
                 stringResource(R.string.account_settings_local),
                 stringResource(R.string.account_settings_subscribed),
             ),
-onValueChange = { defaultListingType = ListingType.values()[it] },
-            defaultListingType?.ordinal ?: 0,
-            onValueChange = { defaultListingType = it },
-            defaultListingType ?: 0,
+            onValueChange = { defaultListingType = ListingType.values()[it] },
+            initialValue = defaultListingType?.ordinal ?: 0,
             label = stringResource(R.string.account_settings_default_listing_type),
         )
         MyDropDown(
@@ -241,11 +237,8 @@ onValueChange = { defaultListingType = ListingType.values()[it] },
                 stringResource(R.string.account_settings_mostcomments),
                 stringResource(R.string.account_settings_newcomments),
             ),
-onValueChange = { defaultSortType = SortType.values()[it] },
-            defaultSortType?.ordinal ?: 0,
-            label = "Default Sort Type",
-            onValueChange = { defaultSortType = it },
-            initialValue = defaultSortType ?: 0,
+            onValueChange = { defaultSortType = SortType.values()[it] },
+            initialValue = defaultSortType?.ordinal ?: 0,
             label = stringResource(R.string.account_settings_default_sort_type),
         )
 
@@ -300,7 +293,7 @@ onValueChange = { defaultSortType = SortType.values()[it] },
         )
         // Todo: Remove this
         Button(
-            enabled = !accountSettingsViewModel.loading,
+            enabled = !loading,
             onClick = { onClickSave(form) },
             modifier = Modifier
                 .padding(MEDIUM_PADDING)

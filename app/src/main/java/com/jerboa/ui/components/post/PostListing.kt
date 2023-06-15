@@ -254,7 +254,7 @@ fun PostNodeHeader(
 fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
-    account: Account?
+    account: Account?,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
@@ -265,7 +265,7 @@ fun PostTitleBlock(
     } else {
         PostTitleAndThumbnail(
             postView = postView,
-            account = account
+            account = account,
         )
     }
 }
@@ -331,7 +331,7 @@ fun PostTitleAndImageLink(
 @Composable
 fun PostTitleAndThumbnail(
     postView: PostView,
-    account: Account?
+    account: Account?,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -368,7 +368,7 @@ fun PostBody(
     postView: PostView,
     fullBody: Boolean,
     expandedImage: Boolean,
-    account: Account?
+    account: Account?,
 ) {
     val post = postView.post
     Column(
@@ -377,7 +377,7 @@ fun PostBody(
         PostTitleBlock(
             postView = postView,
             expandedImage = expandedImage,
-            account = account
+            account = account,
         )
 
         // The metadata card
@@ -404,7 +404,7 @@ fun PostBody(
                         ) {
                             MyMarkdownText(
                                 markdown = text,
-                                onClick = {}
+                                onClick = {},
                             )
                         }
                     } else {

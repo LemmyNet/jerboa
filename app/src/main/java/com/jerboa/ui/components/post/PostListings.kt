@@ -65,6 +65,7 @@ fun PostListings(
         onRefresh = onSwipeRefresh,
     )
 
+    // TODO this whole thing might need to be moved up, because this doesn't include the API call with loading?
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
         LazyColumn(

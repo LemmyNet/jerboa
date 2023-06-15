@@ -150,7 +150,7 @@ fun CommunityActivity(
                                 )
                             }
                         },
-                        modifier = Modifier.padding(it)
+                        modifier = Modifier.padding(it),
                     )
                 }
 
@@ -305,7 +305,7 @@ fun CommunityActivity(
                         listState = postListState,
                         postViewMode = getPostViewMode(appSettingsViewModel),
                         enableDownVotes = siteViewModel.enableDownvotes(),
-                        showAvatar =  siteViewModel.showAvatar(),
+                        showAvatar = siteViewModel.showAvatar(),
                         showVotingArrowsInListView = showVotingArrowsInListView,
                     )
                 }
@@ -322,10 +322,11 @@ fun CommunityActivity(
                                 navController.navigate("createPost")
                             }
                         },
-                    ) { Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = stringResource(R.string.floating_createPost),
-                )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = stringResource(R.string.floating_createPost),
+                        )
                     }
                 }
 

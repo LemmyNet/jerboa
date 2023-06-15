@@ -30,7 +30,7 @@ fun CommentReplyActivity(
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
     siteViewModel: SiteViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     Log.d("jerboa", "got to comment reply activity")
 

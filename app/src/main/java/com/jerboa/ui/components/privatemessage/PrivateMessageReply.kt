@@ -17,8 +17,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.R
+import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField

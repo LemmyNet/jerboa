@@ -11,6 +11,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -25,7 +26,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import arrow.core.Either
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -40,12 +40,10 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
 import com.jerboa.newVote
-import com.jerboa.openLink
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
@@ -59,7 +57,7 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
@@ -69,7 +67,6 @@ fun PostActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     navController: NavController,
-    appSettingsViewModel: AppSettingsViewModel,
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
     showVotingArrowsInListView: Boolean,
@@ -85,10 +82,6 @@ fun PostActivity(
         else -> false
     }
 
-    val swipeRefreshState = rememberSwipeRefreshState(
-        isRefreshing = loading,
-    )
-
     // Holds expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
     val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
@@ -96,31 +89,10 @@ fun PostActivity(
     val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val firstComment = postViewModel.commentTree.firstOrNull()?.commentView?.comment
-    val depth = getDepthFromComment(firstComment)
-    val commentParentId = getCommentParentId(firstComment)
-    val showContextButton = depth != null && depth > 0
-    val enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = postViewModel.loading,
+        refreshing = loading,
         onRefresh = {
-            val postId = postViewModel.postView.value?.post?.id
-            val commentId = postViewModel.commentId.value
-            val id = if (commentId != null) {
-                Either.Right(commentId)
-            } else if (postId != null) {
-                Either.Left(postId)
-            } else {
-                null
-            }
-
-            id?.let {
-                postViewModel.fetchPost(
-                    id = it,
-                    account = account,
-                    ctx = ctx,
-                )
-            }
+            postViewModel.getData(account)
         },
     )
     Scaffold(
@@ -138,17 +110,11 @@ fun PostActivity(
                 }
             }
         },
-
-//Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-                PullRefreshIndicator(postViewModel.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
         content = { padding ->
-            SwipeRefresh(
-                state = swipeRefreshState,
-                onRefresh = {
-                    postViewModel.getData(account)
-                },
-            ) {
+            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
                 when (val postRes = postViewModel.postRes) {
+// TODO
                     ApiState.Empty -> ApiEmptyText()
                     is ApiState.Failure -> ApiErrorText(postRes.msg)
                     ApiState.Loading -> CircularProgressIndicator()
@@ -199,9 +165,6 @@ fun PostActivity(
                                         navController.navigate("commentReply")
                                     },
                                     onPostClick = {},
-                                    onPostLinkClick = { url ->
-                                        openLink(url, ctx)
-                                    },
                                     onSaveClick = { pv ->
                                         account?.also { acct ->
                                             postViewModel.savePost(
@@ -270,6 +233,9 @@ fun PostActivity(
                                     fullBody = true,
                                     account = account,
                                     postViewMode = PostViewMode.Card,
+                                    enableDownVotes = siteViewModel.enableDownvotes(),
+                                    showAvatar = siteViewModel.showAvatar(),
+                                    showVotingArrowsInListView = showVotingArrowsInListView,
                                 )
                             }
 
@@ -323,6 +289,13 @@ fun PostActivity(
                                                 unExpandedComments.remove(commentId)
                                             } else {
                                                 unExpandedComments.add(commentId)
+                                            }
+                                        },
+                                        toggleActionBar = { commentId ->
+                                            if (commentsWithToggledActionBar.contains(commentId)) {
+                                                commentsWithToggledActionBar.remove(commentId)
+                                            } else {
+                                                commentsWithToggledActionBar.add(commentId)
                                             }
                                         },
                                         onMarkAsReadClick = {},
@@ -427,6 +400,15 @@ fun PostActivity(
                                         onPostClick = {}, // Do nothing
                                         account = account,
                                         moderators = postRes.data.moderators,
+                                        enableDownVotes = siteViewModel.enableDownvotes(),
+                                        showAvatar = siteViewModel.showAvatar(),
+                                        isCollapsedByParent = false,
+                                        showCollapsedCommentContent = showCollapsedCommentContent,
+                                        showActionBar = { commentId ->
+                                            showActionBarByDefault xor commentsWithToggledActionBar.contains(
+                                                commentId,
+                                            )
+                                        },
                                     )
                                 }
                             }

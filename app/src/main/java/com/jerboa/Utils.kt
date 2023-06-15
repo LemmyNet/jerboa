@@ -913,8 +913,6 @@ fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
     return returnString
 }
 
-
-
 fun findAndUpdatePrivateMessage(
     messages: List<PrivateMessageView>,
     updated: PrivateMessageView,

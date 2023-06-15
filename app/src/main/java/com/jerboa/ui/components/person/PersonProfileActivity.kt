@@ -11,6 +11,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,7 +42,6 @@ import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
 import com.jerboa.newVote
-import com.jerboa.openLink
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
@@ -490,9 +492,13 @@ fun UserTabs(
                                 }
                             }
 
-                            SwipeRefresh(
-                                // TODO loading weirdness
-                                state = rememberSwipeRefreshState(false),
+                            val loading = when (personProfileViewModel.personDetailsRes) {
+                                ApiState.Loading -> true
+                                else -> false
+                            }
+
+                            val refreshState = rememberPullRefreshState(
+                                refreshing = loading,
                                 onRefresh = {
                                     personProfileViewModel.resetPage()
                                     personProfileViewModel.getPersonDetails(
@@ -505,7 +511,10 @@ fun UserTabs(
                                         ),
                                     )
                                 },
-                            ) {
+                            )
+
+                            Box(modifier = Modifier.pullRefresh(refreshState)) {
+                                PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
                                 CommentNodes(
                                     nodes = nodes,
                                     isFlat = true,
@@ -595,8 +604,13 @@ fun UserTabs(
                                         }
                                     },
                                     showPostAndCommunityContext = true,
+                                    showCollapsedCommentContent = true,
+                                    isCollapsedByParent = false,
+                                    showActionBarByDefault = true,
                                     account = account,
                                     moderators = listOf(),
+                                    enableDownVotes = enableDownVotes,
+                                    showAvatar = showAvatar,
                                 )
                             }
                         }
