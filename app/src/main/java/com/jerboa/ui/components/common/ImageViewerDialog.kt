@@ -184,7 +184,7 @@ suspend fun SaveImage(url: String, context: Context) {
     withContext(Dispatchers.IO) {
         URL(url).openStream().use {
             if (SDK_INT < 29) {
-                saveBitmapP(it, fileName)
+                saveBitmapP(context, it, mimeType, fileName)
             } else {
                 saveBitmap(context, it, mimeType, fileName)
             }
