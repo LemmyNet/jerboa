@@ -88,7 +88,7 @@ fun CommunityLink(
             if (showDefaultIcon) {
                 Icon(
                     imageVector = Icons.Outlined.Forum,
-                    contentDescription = "TODO",
+                    contentDescription = "",
                     modifier = Modifier.size(size),
                 )
             }

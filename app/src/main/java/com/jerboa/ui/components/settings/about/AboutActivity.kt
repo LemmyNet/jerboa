@@ -56,7 +56,7 @@ fun AboutActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun openLink(link: String) {
-        openLink(link, ctx, useCustomTabs, usePrivateTabs)
+        openLink(link, navController, useCustomTabs, usePrivateTabs)
     }
 
     Scaffold(
@@ -80,7 +80,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", ctx, useCustomTabs, usePrivateTabs)
+                        openLink("$githubUrl/blob/main/RELEASES.md", navController, useCustomTabs, usePrivateTabs)
                     },
                 )
                 SettingsDivider()

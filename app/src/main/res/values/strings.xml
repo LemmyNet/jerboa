@@ -120,7 +120,7 @@
     <string name="create_report_type_your_reason">Type your reason</string>
     <string name="create_report_view_model_report_created">Report Created</string>
     <string name="create_report_view_model_report_fail">Couldn\'t create report: %1$s</string>
-    <string name="dialog_moreOptions">Show more options</string>
+    <string name="dialog_moreOptions">More options</string>
     <string name="dialogs_active">Active</string>
     <string name="dialogs_all">All</string>
     <string name="dialogs_done">Done</string>
@@ -140,7 +140,7 @@
     <string name="dialogs_unread">Unread</string>
     <string name="floating_createPost">Create post</string>
     <string name="form_submit">Submit</string>
-    <string name="homeHeader_filter">Select listing filter</string>
+    <string name="homeHeader_filter">Select feed</string>
     <string name="home_add_account">Add Account</string>
     <string name="home_all">All</string>
     <string name="home_communities">Communities</string>
@@ -158,7 +158,7 @@
     <string name="home_subscriptions">Subscriptions</string>
     <string name="home_switch_to">Switch to %1$s/%2$s</string>
     <string name="inbox_back">Back</string>
-    <string name="inbox_filter">Select inbox filter</string>
+    <string name="inbox_filter">Filter</string>
     <string name="inbox_inbox">Inbox</string>
     <string name="inbox_markAllRead">Mark all as read</string>
     <string name="input_fields_cancel">Cancel</string>
@@ -208,7 +208,7 @@
     <string name="markdownHelper_insertList">Insert list</string>
     <string name="markdownHelper_insertQuote">Insert quote</string>
     <string name="markdownHelper_preview">View preview</string>
-    <string name="moreOptions">Show more options</string>
+    <string name="moreOptions">More options</string>
     <string name="personProfile_viewAvatar">View avatar image</string>
     <string name="personProfile_viewBanner">View banner image</string>
     <string name="person_iconAdmin">Is administrator</string>
@@ -257,7 +257,7 @@
     <string name="private_message_reply_type_your_message_placeholder">Type your message</string>
     <string name="private_message_to">"to "</string>
     <string name="removeBookmark">Remove from bookmarks</string>
-    <string name="selectSort">Select sort option</string>
+    <string name="selectSort">Sort by</string>
     <string name="settings_about_about">About</string>
     <string name="settings_about_developer_matrix_chatroom">Developer Matrix chatroom</string>
     <string name="settings_about_donate_to_jerboa_development">Donate to Jerboa development</string>
@@ -290,4 +290,8 @@
     <string name="topAppBar_back">Back</string>
     <string name="utils_login_first">Login first</string>
     <string name="voteToggle">Toggle vote</string>
+    <string name="upvote">Upvote</string>
+    <string name="downvote">Downvote</string>
+    <string name="upvoted">Upvoted</string>
+    <string name="downvoted">Downvoted</string>
 </resources>
