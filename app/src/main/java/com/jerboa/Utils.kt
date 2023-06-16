@@ -427,7 +427,7 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
     val host = split[0]
     // eliminate the query param portion of the path so we can replace it later
     // without this, we'd end up with something like host/path?thumbnail=...?thumbnail=...
-    val path = split[1].replaceAfter('?', "")
+    val path = split[1].replaceAfter('?', "").replace("?", "")
 
     return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
 }
