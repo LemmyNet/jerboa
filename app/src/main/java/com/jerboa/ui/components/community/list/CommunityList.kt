@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.community.list
 
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -74,7 +72,7 @@ fun CommunityListHeader(
 
 @Composable
 fun CommunityListings(
-    communities: List<Any>,
+    communities: List<CommunityView>,
     onClickCommunity: (community: Community) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -86,45 +84,16 @@ fun CommunityListings(
     ) {
         items(
             communities,
-            key = { item ->
-                when (item) {
-                    is CommunityFollowerView -> {
-                        item.community.id
-                    }
-
-                    is CommunityView -> {
-                        item.community.id
-                    }
-
-                    else -> {
-                        0
-                    }
-                }
-            },
-            contentType = { item ->
-                when (item) {
-                    is CommunityFollowerView -> {
-                        item.follower
-                    }
-
-                    is CommunityView -> {
-                        item.community
-                    }
-
-                    else -> {
-                        0
-                    }
-                }
-            },
-
+            key = { it.community.id },
         ) { item ->
-            if (item is CommunityFollowerView) {
+            // A hack for the community follower views that were coerced into community views without counts
+            if (item.counts.users_active_month == 0) {
                 CommunityLinkLarger(
                     community = item.community,
                     onClick = onClickCommunity,
                     showDefaultIcon = true,
                 )
-            } else if (item is CommunityView) {
+            } else {
                 CommunityLinkLargerWithUserCount(
                     communityView = item,
                     onClick = onClickCommunity,

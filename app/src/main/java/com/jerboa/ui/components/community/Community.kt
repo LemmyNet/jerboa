@@ -25,17 +25,16 @@ import com.jerboa.ui.theme.*
 
 @Composable
 fun CommunityTopSection(
-    // TODO add loading to this
     communityView: CommunityView,
     modifier: Modifier = Modifier,
     onClickFollowCommunity: (communityView: CommunityView) -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxWidth(),
     ) {
         Box(
-            modifier = modifier
-                .fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
             communityView.community.banner?.also {

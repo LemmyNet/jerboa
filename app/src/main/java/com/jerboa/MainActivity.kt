@@ -172,6 +172,7 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(Unit) {
                             val communityId = it.arguments?.getInt("id")!!
 
+                            communityViewModel.resetPage()
                             communityViewModel.getCommunity(
                                 form = GetCommunity(
                                     id = communityId,
@@ -220,6 +221,7 @@ class MainActivity : ComponentActivity() {
                             val instance = it.arguments?.getString("instance")!!
                             val qualifiedName = "$name@$instance"
 
+                            communityViewModel.resetPage()
                             communityViewModel.getCommunity(
                                 form = GetCommunity(
                                     name = qualifiedName,
@@ -264,6 +266,7 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(Unit) {
                             val personId = it.arguments?.getInt("id")!!
 
+                            personProfileViewModel.resetPage()
                             personProfileViewModel.getPersonDetails(
                                 GetPersonDetails(
                                     person_id = personId,
@@ -306,6 +309,7 @@ class MainActivity : ComponentActivity() {
                             val name = it.arguments?.getString("name")!!
                             val instance = it.arguments?.getString("instance")!!
                             val qualifiedName = "$name@$instance"
+                            personProfileViewModel.resetPage()
                             personProfileViewModel.getPersonDetails(
                                 GetPersonDetails(
                                     username = qualifiedName,
@@ -338,8 +342,7 @@ class MainActivity : ComponentActivity() {
                         ),
                     ) {
                         // Whenever navigating here, reset the list with your followed communities
-                        // TODO
-//                        communityListViewModel.setCommunityListFromFollowed(siteViewModel)
+                        communityListViewModel.setCommunityListFromFollowed(siteViewModel)
 
                         CommunityListActivity(
                             navController = navController,
@@ -397,6 +400,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         if (account != null) {
                             LaunchedEffect(Unit) {
+                                inboxViewModel.resetPage()
                                 inboxViewModel.getReplies(
                                     GetReplies(
                                         auth = account.jwt,

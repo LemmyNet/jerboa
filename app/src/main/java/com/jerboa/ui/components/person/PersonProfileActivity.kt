@@ -51,6 +51,7 @@ import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -98,7 +99,7 @@ fun PersonProfileActivity(
             when (val profileRes = personProfileViewModel.personDetailsRes) {
                 ApiState.Empty -> ApiEmptyText()
                 is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                ApiState.Loading -> CircularProgressIndicator()
+                ApiState.Loading -> LoadingBar()
                 is ApiState.Success -> {
                     val person = profileRes.data.person_view.person
                     PersonProfileHeader(
@@ -238,6 +239,29 @@ fun UserTabs(
     }
     val pagerState = rememberPagerState()
 
+    val loading = personProfileViewModel.personDetailsRes == ApiState.Loading
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = loading,
+        onRefresh = {
+            when (val profileRes = personProfileViewModel.personDetailsRes) {
+                is ApiState.Success -> {
+                    personProfileViewModel.resetPage()
+                    personProfileViewModel.getPersonDetails(
+                        GetPersonDetails(
+                            person_id = profileRes.data.person_view.person.id,
+                            sort = personProfileViewModel.sortType,
+                            page = personProfileViewModel.page,
+                            saved_only = personProfileViewModel.savedOnly,
+                            auth = account?.jwt,
+                        ),
+                    )
+                }
+                else -> {}
+            }
+        },
+    )
+
     Column(
         modifier = Modifier.padding(padding),
     ) {
@@ -281,7 +305,7 @@ fun UserTabs(
                     when (val profileRes = personProfileViewModel.personDetailsRes) {
                         ApiState.Empty -> ApiEmptyText()
                         is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                        ApiState.Loading -> CircularProgressIndicator()
+                        ApiState.Loading -> LoadingBar(padding)
                         is ApiState.Success -> {
                             val listState = rememberLazyListState()
 
@@ -326,135 +350,129 @@ fun UserTabs(
                 }
 
                 UserTab.Posts.ordinal -> {
-                    when (val profileRes = personProfileViewModel.personDetailsRes) {
-                        ApiState.Empty -> ApiEmptyText()
-                        is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                        ApiState.Loading -> CircularProgressIndicator()
-                        is ApiState.Success -> {
-                            PostListings(
-                                posts = profileRes.data.posts,
-                                onUpvoteClick = { pv ->
-                                    account?.also { acct ->
-                                        personProfileViewModel.likePost(
-                                            CreatePostLike(
-                                                post_id = pv.post.id,
-                                                score = newVote(
-                                                    pv.my_vote,
-                                                    VoteType.Upvote,
+                    Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                        PullRefreshIndicator(
+                            loading,
+                            pullRefreshState,
+                            Modifier.align(Alignment.TopCenter),
+                        )
+                        when (val profileRes = personProfileViewModel.personDetailsRes) {
+                            ApiState.Empty -> ApiEmptyText()
+                            is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                            ApiState.Loading -> LoadingBar(padding)
+                            is ApiState.Success -> {
+                                PostListings(
+                                    posts = profileRes.data.posts,
+                                    onUpvoteClick = { pv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.likePost(
+                                                CreatePostLike(
+                                                    post_id = pv.post.id,
+                                                    score = newVote(
+                                                        pv.my_vote,
+                                                        VoteType.Upvote,
+                                                    ),
+                                                    auth = acct.jwt,
                                                 ),
-                                                auth = acct.jwt,
-                                            ),
-                                        )
-                                    }
-                                },
-                                onDownvoteClick = { pv ->
-                                    account?.also { acct ->
-                                        personProfileViewModel.likePost(
-                                            CreatePostLike(
-                                                post_id = pv.post.id,
-                                                score = newVote(
-                                                    pv.my_vote,
-                                                    VoteType.Downvote,
+                                            )
+                                        }
+                                    },
+                                    onDownvoteClick = { pv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.likePost(
+                                                CreatePostLike(
+                                                    post_id = pv.post.id,
+                                                    score = newVote(
+                                                        pv.my_vote,
+                                                        VoteType.Downvote,
+                                                    ),
+                                                    auth = acct.jwt,
                                                 ),
-                                                auth = acct.jwt,
+                                            )
+                                        }
+                                    },
+                                    onPostClick = { pv ->
+                                        navController.navigate(route = "post/${pv.post.id}")
+                                    },
+                                    onSaveClick = { pv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.savePost(
+                                                SavePost(
+                                                    post_id = pv.post.id,
+                                                    save = !pv.saved,
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onEditPostClick = { pv ->
+                                        postEditViewModel.initialize(pv)
+                                        navController.navigate("postEdit")
+                                    },
+                                    onDeletePostClick = { pv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.deletePost(
+                                                DeletePost(
+                                                    post_id = pv.post.id,
+                                                    deleted = !pv.post.deleted,
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onReportClick = { pv ->
+                                        navController.navigate("postReport/${pv.post.id}")
+                                    },
+                                    onCommunityClick = { community ->
+                                        navController.navigate(route = "community/${community.id}")
+                                    },
+                                    onPersonClick = { personId ->
+                                        navController.navigate(route = "profile/$personId")
+                                    },
+                                    onBlockCommunityClick = { community ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.blockCommunity(
+                                                BlockCommunity(
+                                                    community_id = community.id,
+                                                    block = true,
+                                                    auth = acct.jwt,
+                                                ),
+                                                ctx,
+                                            )
+                                        }
+                                    },
+                                    onBlockCreatorClick = { person ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.blockPerson(
+                                                BlockPerson(
+                                                    person_id = person.id,
+                                                    block = true,
+                                                    auth = acct.jwt,
+                                                ),
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    isScrolledToEnd = {
+                                        personProfileViewModel.nextPage()
+                                        personProfileViewModel.appendData(
+                                            GetPersonDetails(
+                                                person_id = profileRes.data.person_view.person.id,
+                                                sort = personProfileViewModel.sortType,
+                                                page = personProfileViewModel.page,
+                                                saved_only = personProfileViewModel.savedOnly,
+                                                auth = account?.jwt,
                                             ),
                                         )
-                                    }
-                                },
-                                onPostClick = { pv ->
-                                    navController.navigate(route = "post/${pv.post.id}")
-                                },
-                                onSaveClick = { pv ->
-                                    account?.also { acct ->
-                                        personProfileViewModel.savePost(
-                                            SavePost(
-                                                post_id = pv.post.id,
-                                                save = !pv.saved,
-                                                auth = acct.jwt,
-                                            ),
-                                        )
-                                    }
-                                },
-                                onEditPostClick = { pv ->
-                                    postEditViewModel.initialize(pv)
-                                    navController.navigate("postEdit")
-                                },
-                                onDeletePostClick = { pv ->
-                                    account?.also { acct ->
-                                        personProfileViewModel.deletePost(
-                                            DeletePost(
-                                                post_id = pv.post.id,
-                                                deleted = !pv.post.deleted,
-                                                auth = acct.jwt,
-                                            ),
-                                        )
-                                    }
-                                },
-                                onReportClick = { pv ->
-                                    navController.navigate("postReport/${pv.post.id}")
-                                },
-                                onCommunityClick = { community ->
-                                    navController.navigate(route = "community/${community.id}")
-                                },
-                                onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
-                                },
-                                onBlockCommunityClick = { community ->
-                                    account?.also { acct ->
-                                        personProfileViewModel.blockCommunity(
-                                            BlockCommunity(
-                                                community_id = community.id,
-                                                block = true,
-                                                auth = acct.jwt,
-                                            ),
-                                            ctx,
-                                        )
-                                    }
-                                },
-                                onBlockCreatorClick = { person ->
-                                    account?.also { acct ->
-                                        personProfileViewModel.blockPerson(
-                                            BlockPerson(
-                                                person_id = person.id,
-                                                block = true,
-                                                auth = acct.jwt,
-                                            ),
-                                            ctx = ctx,
-                                        )
-                                    }
-                                },
-                                onSwipeRefresh = {
-                                    personProfileViewModel.resetPage()
-                                    personProfileViewModel.getPersonDetails(
-                                        GetPersonDetails(
-                                            person_id = profileRes.data.person_view.person.id,
-                                            sort = personProfileViewModel.sortType,
-                                            page = personProfileViewModel.page,
-                                            saved_only = personProfileViewModel.savedOnly,
-                                            auth = account?.jwt,
-                                        ),
-                                    )
-                                },
-                                loading = false,
-                                isScrolledToEnd = {
-                                    personProfileViewModel.nextPage()
-                                    personProfileViewModel.appendData(
-                                        GetPersonDetails(
-                                            person_id = profileRes.data.person_view.person.id,
-                                            sort = personProfileViewModel.sortType,
-                                            page = personProfileViewModel.page,
-                                            saved_only = personProfileViewModel.savedOnly,
-                                            auth = account?.jwt,
-                                        ),
-                                    )
-                                },
-                                account = account,
-                                listState = postListState,
-                                postViewMode = getPostViewMode(appSettingsViewModel),
-                                enableDownVotes = enableDownVotes,
-                                showAvatar = showAvatar,
-                                showVotingArrowsInListView = showVotingArrowsInListView,
-                            )
+                                    },
+                                    account = account,
+                                    listState = postListState,
+                                    postViewMode = getPostViewMode(appSettingsViewModel),
+                                    enableDownVotes = enableDownVotes,
+                                    showAvatar = showAvatar,
+                                    showVotingArrowsInListView = showVotingArrowsInListView,
+                                )
+                            }
                         }
                     }
                 }
@@ -463,7 +481,7 @@ fun UserTabs(
                     when (val profileRes = personProfileViewModel.personDetailsRes) {
                         ApiState.Empty -> ApiEmptyText()
                         is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                        ApiState.Loading -> CircularProgressIndicator()
+                        ApiState.Loading -> LoadingBar(padding)
                         is ApiState.Success -> {
                             val nodes = commentsToFlatNodes(profileRes.data.comments)
 
@@ -492,29 +510,8 @@ fun UserTabs(
                                 }
                             }
 
-                            val loading = when (personProfileViewModel.personDetailsRes) {
-                                ApiState.Loading -> true
-                                else -> false
-                            }
-
-                            val refreshState = rememberPullRefreshState(
-                                refreshing = loading,
-                                onRefresh = {
-                                    personProfileViewModel.resetPage()
-                                    personProfileViewModel.getPersonDetails(
-                                        GetPersonDetails(
-                                            person_id = profileRes.data.person_view.person.id,
-                                            sort = personProfileViewModel.sortType,
-                                            page = personProfileViewModel.page,
-                                            saved_only = personProfileViewModel.savedOnly,
-                                            auth = account?.jwt,
-                                        ),
-                                    )
-                                },
-                            )
-
-                            Box(modifier = Modifier.pullRefresh(refreshState)) {
-                                PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                                PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
                                 CommentNodes(
                                     nodes = nodes,
                                     isFlat = true,

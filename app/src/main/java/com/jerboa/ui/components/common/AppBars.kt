@@ -580,3 +580,10 @@ fun Modifier.simpleVerticalScrollbar(
         }
     }
 }
+
+@Composable
+fun LoadingBar(
+    padding: PaddingValues = PaddingValues(0.dp),
+) {
+    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(padding))
+}

@@ -40,7 +40,8 @@ class HomeViewModel : ViewModel() {
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
         mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
-    private var fetchingMore by mutableStateOf(false)
+    var fetchingMore by mutableStateOf(false)
+        private set
 
     var sortType by mutableStateOf(SortType.Active)
         private set
