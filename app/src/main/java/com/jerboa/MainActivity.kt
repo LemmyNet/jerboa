@@ -101,7 +101,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MarkdownHelper.init(this, appSettingsViewModel.appSettings.value?.useCustomTabs ?: true, appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val accountSync = getCurrentAccountSync(accountViewModel)
@@ -116,6 +115,12 @@ class MainActivity : ComponentActivity() {
             ) {
                 val navController = rememberNavController()
                 val ctx = LocalContext.current
+
+                MarkdownHelper.init(
+                    navController,
+                    appSettingsViewModel.appSettings.value?.useCustomTabs ?: true,
+                    appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false,
+                )
 
                 ShowChangelog(appSettingsViewModel = appSettingsViewModel)
 
@@ -441,7 +446,6 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -488,7 +492,6 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
