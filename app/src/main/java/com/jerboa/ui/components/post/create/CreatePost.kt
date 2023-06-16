@@ -76,17 +76,14 @@ fun CreatePostHeader(
                     )
                 } else {
                     // Todo add are you sure cancel dialog+
-                    if (formValid && !loading) {
-                        Icon(
-                            Icons.Filled.Send,
-                            contentDescription = stringResource(R.string.form_submit),
-                        )
-                    } else {
-                        Icon(
-                            Icons.Outlined.Send,
-                            contentDescription = stringResource(R.string.form_submit),
-                        )
-                    }
+                    Icon(
+                        if (formValid) {
+                            Icons.Filled.Send
+                        } else {
+                            Icons.Outlined.Send
+                        },
+                        contentDescription = stringResource(R.string.form_submit),
+                    )
                 }
             }
         },
