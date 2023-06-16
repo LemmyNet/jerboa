@@ -34,10 +34,7 @@ fun AccountSettingsActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(
-                text = stringResource(R.string.account_settings_activity_account_settings),
-                navController = navController,
-            )
+            SimpleTopAppBar(text = stringResource(R.string.account_settings_activity_account_settings), navController = navController)
         },
         content = { padding ->
             account.also {

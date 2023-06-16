@@ -36,9 +36,11 @@ import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.loginFirstToast
 import com.jerboa.openLink
 import com.jerboa.scrollToTop
+import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.community.list.CommunityListViewModel
+import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
@@ -50,6 +52,7 @@ fun CommunityActivity(
     communityViewModel: CommunityViewModel,
     communityListViewModel: CommunityListViewModel,
     accountViewModel: AccountViewModel,
+    homeViewModel: HomeViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
@@ -259,6 +262,35 @@ fun CommunityActivity(
                     contentDescription = stringResource(R.string.floating_createPost),
                 )
             }
+        },
+        bottomBar = {
+            BottomAppBarAll(
+                showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
+                screen = "communityList",
+                unreadCounts = homeViewModel.unreadCountResponse,
+                onClickProfile = {
+                    account?.id?.also {
+                        navController.navigate(route = "profile/$it")
+                    } ?: run {
+                        loginFirstToast(ctx)
+                    }
+                },
+                onClickInbox = {
+                    account?.also {
+                        navController.navigate(route = "inbox")
+                    } ?: run {
+                        loginFirstToast(ctx)
+                    }
+                },
+                onClickSaved = {
+                    account?.id?.also {
+                        navController.navigate(route = "profile/$it?saved=${true}")
+                    } ?: run {
+                        loginFirstToast(ctx)
+                    }
+                },
+                navController = navController,
+            )
         },
     )
 }

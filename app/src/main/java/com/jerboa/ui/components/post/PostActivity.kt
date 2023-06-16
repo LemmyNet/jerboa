@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -53,7 +54,6 @@ import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
@@ -158,7 +158,14 @@ fun PostActivity(
                             selectedSortType = selectedSortType,
                         )
                     },
-                    navigationIcon = { DefaultBackButton(navController) },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                Icons.Outlined.ArrowBack,
+                                contentDescription = "Back",
+                            )
+                        }
+                    },
                     actions = {
                         IconButton(onClick = {
                             showSortOptions = !showSortOptions
@@ -178,11 +185,7 @@ fun PostActivity(
         },
         content = { padding ->
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-                PullRefreshIndicator(
-                    postViewModel.loading,
-                    pullRefreshState,
-                    Modifier.align(Alignment.TopCenter),
-                )
+                PullRefreshIndicator(postViewModel.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
                 postViewModel.postView.value?.also { postView ->
                     LazyColumn(
                         state = listState,
@@ -275,8 +278,7 @@ fun PostActivity(
                                 postViewMode = PostViewMode.Card,
                                 showVotingArrowsInListView = showVotingArrowsInListView,
                                 enableDownVotes = enableDownVotes,
-                                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars
-                                    ?: true,
+                                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                             )
                         }
                         item(key = "${postView.post.id}_is_comment_view") {
@@ -397,13 +399,10 @@ fun PostActivity(
                             showCollapsedCommentContent = showCollapsedCommentContent,
                             isCollapsedByParent = false,
                             showActionBar = { commentId ->
-                                showActionBarByDefault xor commentsWithToggledActionBar.contains(
-                                    commentId,
-                                )
+                                showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                             },
                             enableDownVotes = enableDownVotes,
-                            showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars
-                                ?: true,
+                            showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                         )
                     }
                 }

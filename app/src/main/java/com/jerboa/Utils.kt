@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.core.util.PatternsCompat
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -420,8 +421,37 @@ fun parseUrl(url: String): String? {
     return null
 }
 
-fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
+fun looksLikeCommunityUrl(url: String): Pair<String, String>? {
+    val pattern = Regex("^https?://([^/]+)/c/([^/&?]+)")
+    val match = pattern.find(url)
+    if (match != null) {
+        val (host, community) = match.destructured
+        return Pair(host, community)
+    }
+    return null
+}
+
+fun looksLikeUserUrl(url: String): Pair<String, String>? {
+    val pattern = Regex("^https?://([^/]+)/u/([^/&?]+)")
+    val match = pattern.find(url)
+    if (match != null) {
+        val (host, user) = match.destructured
+        return Pair(host, user)
+    }
+    return null
+}
+
+fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
     val url = parseUrl(url) ?: return
+
+    looksLikeUserUrl(url)?.let { it ->
+        navController.navigate("${it.first}/u/${it.second}")
+        return
+    }
+    looksLikeCommunityUrl(url)?.let { it ->
+        navController.navigate("${it.first}/c/${it.second}")
+        return
+    }
 
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
@@ -430,10 +460,10 @@ fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Bo
                     intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
                 }
             }
-        intent.launchUrl(ctx, Uri.parse(url))
+        intent.launchUrl(navController.context, Uri.parse(url))
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        ctx.startActivity(intent)
+        navController.context.startActivity(intent)
     }
 }
 
