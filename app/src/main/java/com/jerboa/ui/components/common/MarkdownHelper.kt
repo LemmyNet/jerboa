@@ -2,6 +2,10 @@ package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.os.Build
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.URLSpan
+import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -19,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.NavController
 import coil.ImageLoader
 import com.jerboa.R
 import com.jerboa.convertSpToPx
@@ -26,16 +31,99 @@ import com.jerboa.openLink
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
+import io.noties.markwon.MarkwonPlugin
+import io.noties.markwon.MarkwonVisitor
+import io.noties.markwon.SpannableBuilder
+import io.noties.markwon.core.CorePlugin
+import io.noties.markwon.core.CorePlugin.OnTextAddedListener
+import io.noties.markwon.core.CoreProps
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
+import org.commonmark.node.Link
+import java.util.regex.Pattern
+
+/**
+ * pattern that matches all valid communities; intended to be loose
+ */
+const val communityPatternFragment: String = """[a-zA-Z0-9_]{3,}"""
+
+/**
+ * pattern to match all valid instances
+ */
+const val instancePatternFragment: String =
+    """([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}"""
+
+/**
+ * pattern to match all valid usernames
+ */
+const val userPatternFragment: String = """[a-zA-Z0-9_]{3,}"""
+
+/**
+ * Pattern to match lemmy's unique community pattern, e.g. !commmunity[@instance]
+ */
+val lemmyCommunityPattern: Pattern =
+    Pattern.compile("(?:^|\\s)!($communityPatternFragment)(?:@($instancePatternFragment))?\\b")
+
+/**
+ * Pattern to match lemmy's unique user pattern, e.g. @user[@instance]
+ */
+val lemmyUserPattern: Pattern =
+    Pattern.compile("(?:^|\\s)@($userPatternFragment)(?:@($instancePatternFragment))?\\b")
+
+/**
+ * Plugin to turn Lemmy-specific URIs into clickable links.
+ */
+class LemmyLinkPlugin : AbstractMarkwonPlugin() {
+    override fun configure(registry: MarkwonPlugin.Registry) {
+        registry.require(CorePlugin::class.java) { it.addOnTextAddedListener(LemmyTextAddedListener()) }
+    }
+
+    private class LemmyTextAddedListener : OnTextAddedListener {
+        override fun onTextAdded(visitor: MarkwonVisitor, text: String, start: Int) {
+            // we will be using the link that is used by markdown (instead of directly applying URLSpan)
+            val spanFactory = visitor.configuration().spansFactory().get(
+                Link::class.java,
+            ) ?: return
+
+            // don't re-use builder (thread safety achieved for
+            // render calls from different threads and ... better performance)
+            val builder = SpannableStringBuilder(text)
+            if (addLinks(builder)) {
+                // target URL span specifically
+                val spans = builder.getSpans(0, builder.length, URLSpan::class.java)
+                if (!spans.isNullOrEmpty()) {
+                    val renderProps = visitor.renderProps()
+                    val spannableBuilder = visitor.builder()
+                    for (span in spans) {
+                        CoreProps.LINK_DESTINATION[renderProps] = span.url
+                        SpannableBuilder.setSpans(
+                            spannableBuilder,
+                            spanFactory.getSpans(visitor.configuration(), renderProps),
+                            start + builder.getSpanStart(span),
+                            start + builder.getSpanEnd(span),
+                        )
+                    }
+                }
+            }
+        }
+
+        fun addLinks(text: Spannable): Boolean {
+            val communityLinkAdded = Linkify.addLinks(text, lemmyCommunityPattern, null)
+            val userLinkAdded = Linkify.addLinks(text, lemmyUserPattern, null)
+
+            return communityLinkAdded || userLinkAdded
+        }
+    }
+}
 
 object MarkdownHelper {
     private var markwon: Markwon? = null
 
-    fun init(context: Context, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+    fun init(navController: NavController, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+        val context = navController.context
         val loader = ImageLoader.Builder(context)
             .crossfade(true)
             .placeholder(R.drawable.ic_launcher_foreground)
@@ -43,18 +131,27 @@ object MarkdownHelper {
 
         markwon = Markwon.builder(context)
             .usePlugin(CoilImagesPlugin.create(context, loader))
-            .usePlugin(LinkifyPlugin.create())
+            // email urls interfere with lemmy links
+            .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
+            .usePlugin(LemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
             .usePlugin(HtmlPlugin.create())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                    builder.linkResolver { view, link ->
-                        openLink(link, view.context, useCustomTabs, usePrivateTabs)
+                    builder.linkResolver { _, link ->
+                        openLink(link, navController, useCustomTabs, usePrivateTabs)
                     }
                 }
             })
             .build()
+    }
+
+    /*
+     * This is a workaround for previews.
+     */
+    fun init(context: Context) {
+        markwon = Markwon.builder(context).build()
     }
 
     @Composable
