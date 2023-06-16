@@ -41,6 +41,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.fetchInitialData
 import com.jerboa.loginFirstToast
+import com.jerboa.openLink
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -279,6 +280,14 @@ fun MainPostListingsContent(
         showVotingArrowsInListView = showVotingArrowsInListView,
         enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
         showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
+        onLinkClick = { url ->
+            openLink(
+                url,
+                navController,
+                appSettingsViewModel.appSettings.value?.useCustomTabs ?: true,
+                appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false,
+            )
+        },
     )
 }
 

@@ -389,7 +389,7 @@ fun UserTabs(
                         onLinkClick = {
                             openLink(
                                 it,
-                                ctx,
+                                navController,
                                 appSettingsViewModel.appSettings.value?.useCustomTabs ?: true,
                                 appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false,
                             )

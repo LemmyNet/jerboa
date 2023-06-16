@@ -462,6 +462,8 @@ class MainActivity : ComponentActivity() {
                             },
                             selectedSortType = postViewModel.sortType.value,
                             siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                         )
                     }
                     composable(
@@ -508,6 +510,8 @@ class MainActivity : ComponentActivity() {
                             },
                             selectedSortType = postViewModel.sortType.value,
                             siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                         )
                     }
                     composable(

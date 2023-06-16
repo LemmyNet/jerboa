@@ -264,7 +264,7 @@ fun PostActivity(
                                     }
                                 },
                                 onLinkClick = {
-                                    openLink(it, ctx, useCustomTabs, usePrivateTabs)
+                                    openLink(it, navController, useCustomTabs, usePrivateTabs)
                                 },
                                 showReply = true, // Do nothing
                                 isModerator = isModerator(

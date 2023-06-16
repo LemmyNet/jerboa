@@ -211,7 +211,7 @@ fun CommunityActivity(
                 onLinkClick = { url ->
                     openLink(
                         url,
-                        ctx,
+                        navController,
                         appSettings?.useCustomTabs ?: true,
                         appSettings?.usePrivateTabs ?: false,
                     )
