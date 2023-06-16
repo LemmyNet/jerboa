@@ -882,8 +882,8 @@ fun saveBitmap(
     }
 }
 
-// saveBitmap that works for Android 10 and below
-fun saveBitmapQ(
+// saveBitmap that works for Android 9 and below
+fun saveBitmapP(
     inputStream: InputStream,
     displayName: String,
 ) {
@@ -891,16 +891,12 @@ fun saveBitmapQ(
     val picsDir = File(dir, "Jerboa")
     val dest = File(picsDir, displayName)
 
-    try {
-        picsDir.mkdirs(); // make if not exist
+    picsDir.mkdirs(); // make if not exist
 
-        inputStream.use { input ->
-            dest.outputStream().use {
-                input.copyTo(it)
-            }
+    inputStream.use { input ->
+        dest.outputStream().use {
+            input.copyTo(it)
         }
-    } catch (e: IOException) {
-        throw e
     }
 }
 

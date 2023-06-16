@@ -47,7 +47,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.jerboa.R
 import com.jerboa.saveBitmap
-import com.jerboa.saveBitmapQ
+import com.jerboa.saveBitmapP
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -184,7 +184,7 @@ suspend fun SaveImage(url: String, context: Context) {
     withContext(Dispatchers.IO) {
         URL(url).openStream().use {
             if (SDK_INT < 29) {
-                saveBitmapQ(it, fileName)
+                saveBitmapP(it, fileName)
             } else {
                 saveBitmap(context, it, mimeType, fileName)
             }
