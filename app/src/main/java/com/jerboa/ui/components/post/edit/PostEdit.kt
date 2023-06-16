@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.db.Account
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -63,8 +63,17 @@ fun EditPostHeader(
             }
         },
         navigationIcon = {
-            // Todo add are you sure cancel dialog
-            DefaultBackButton(navController)
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+            ) {
+                // Todo add are you sure cancel dialog
+                Icon(
+                    Icons.Outlined.Close,
+                    contentDescription = stringResource(R.string.post_edit_close),
+                )
+            }
         },
     )
 }

@@ -20,7 +20,6 @@ import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.fetchInitialData
-import com.jerboa.nav.loginSuccessGoToHome
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.cancel
@@ -127,7 +126,7 @@ class LoginViewModel : ViewModel() {
 
             loading = false
 
-            navController.loginSuccessGoToHome()
+            navController.navigate(route = "home")
         }
     }
 }

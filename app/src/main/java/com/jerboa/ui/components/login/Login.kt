@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.*
@@ -35,7 +36,6 @@ import com.jerboa.R
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
 import com.jerboa.onAutofill
-import com.jerboa.ui.components.common.DefaultBackButton
 
 val BANNED_INSTANCES = listOf("wolfballs.com")
 
@@ -216,7 +216,19 @@ fun LoginHeader(
                 text = stringResource(R.string.login_login),
             )
         },
-        navigationIcon = { DefaultBackButton(navController) },
+        navigationIcon = {
+            IconButton(
+                enabled = !accounts.isNullOrEmpty(),
+                onClick = {
+                    navController.popBackStack()
+                },
+            ) {
+                Icon(
+                    Icons.Outlined.ArrowBack,
+                    contentDescription = stringResource(R.string.login_back),
+                )
+            }
+        },
     )
 }
 
