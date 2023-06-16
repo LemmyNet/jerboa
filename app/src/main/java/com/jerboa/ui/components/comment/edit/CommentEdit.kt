@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.MarkdownTextField
 
 @Composable
@@ -51,18 +52,7 @@ fun CommentEditHeader(
                 }
             }
         },
-        navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
-            ) {
-                Icon(
-                    Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.comment_edit_back),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
     )
 }
 

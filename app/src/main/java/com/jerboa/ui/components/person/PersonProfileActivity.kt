@@ -33,19 +33,16 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
-import com.jerboa.loginFirstToast
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
-import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
@@ -60,7 +57,6 @@ fun PersonProfileActivity(
     navController: NavController,
     personProfileViewModel: PersonProfileViewModel,
     accountViewModel: AccountViewModel,
-    homeViewModel: HomeViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
@@ -74,7 +70,6 @@ fun PersonProfileActivity(
     val postListState = rememberLazyListState()
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
-    val bottomAppBarScreen = if (savedMode) { "saved" } else { "profile" }
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -150,33 +145,6 @@ fun PersonProfileActivity(
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
                 showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
-            )
-        },
-        bottomBar = {
-            BottomAppBarAll(
-                showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
-                screen = bottomAppBarScreen,
-                unreadCounts = homeViewModel.unreadCountResponse,
-                onClickProfile = {
-                    account?.id?.also {
-                        navController.navigate(route = "profile/$it")
-                    }
-                },
-                onClickInbox = {
-                    account?.also {
-                        navController.navigate(route = "inbox")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                onClickSaved = {
-                    account?.id?.also {
-                        navController.navigate(route = "profile/$it?saved=${true}")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                navController = navController,
             )
         },
     )

@@ -18,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowDropDown
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,6 +41,7 @@ import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.sampleCommunitySafe
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.CircularIcon
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.theme.ICON_SIZE
@@ -83,17 +83,8 @@ fun CreatePostHeader(
             }
         },
         navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
-            ) {
-                // Todo add are you sure cancel dialog
-                Icon(
-                    Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.create_post_close),
-                )
-            }
+            // Todo add are you sure cancel dialog
+            DefaultBackButton(navController)
         },
     )
 }

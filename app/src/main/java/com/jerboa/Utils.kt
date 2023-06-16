@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.core.util.PatternsCompat
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -379,7 +380,79 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     return out
 }
 
-fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
+/*
+ * Parses a "url" and returns a spec-compliant Url:
+ *
+ * - https://host/path - leave as-is
+ * - http://host/path - leave as-is
+ * - /c/community -> https://currentInstance/c/community
+ * - /c/community@instance -> https://instance/c/community
+ * - !community@instance -> https://instance/c/community
+ * - @user@instance -> https://instance/u/user
+ */
+fun parseUrl(url: String): String? {
+    if (url.startsWith("https://") || url.startsWith("http://")) {
+        return url
+    } else if (url.startsWith("/c/")) {
+        if (url.count({ c -> c == '@' }) == 1) {
+            val (community, host) = url.split("@", limit = 2)
+            return "https://$host$community"
+        }
+        return "https://${API.currentInstance}$url"
+    } else if (url.startsWith("/u/")) {
+        if (url.count({ c -> c == '@' }) == 1) {
+            val (userPath, host) = url.split("@", limit = 2)
+            return "https://$host$userPath"
+        }
+        return "https://${API.currentInstance}$url"
+    } else if (url.startsWith("!")) {
+        if (url.count({ c -> c == '@' }) == 1) {
+            val (community, host) = url.substring(1).split("@", limit = 2)
+            return "https://$host/c/$community"
+        }
+        return "https://${API.currentInstance}/c/${url.substring(1)}"
+    } else if (url.startsWith("@")) {
+        if (url.count({ c -> c == '@' }) == 2) {
+            val (user, host) = url.substring(1).split("@", limit = 2)
+            return "https://$host/u/$user"
+        }
+        return "https://${API.currentInstance}/u/${url.substring(1)}"
+    }
+    return null
+}
+
+fun looksLikeCommunityUrl(url: String): Pair<String, String>? {
+    val pattern = Regex("^https?://([^/]+)/c/([^/&?]+)")
+    val match = pattern.find(url)
+    if (match != null) {
+        val (host, community) = match.destructured
+        return Pair(host, community)
+    }
+    return null
+}
+
+fun looksLikeUserUrl(url: String): Pair<String, String>? {
+    val pattern = Regex("^https?://([^/]+)/u/([^/&?]+)")
+    val match = pattern.find(url)
+    if (match != null) {
+        val (host, user) = match.destructured
+        return Pair(host, user)
+    }
+    return null
+}
+
+fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    val url = parseUrl(url) ?: return
+
+    looksLikeUserUrl(url)?.let { it ->
+        navController.navigate("${it.first}/u/${it.second}")
+        return
+    }
+    looksLikeCommunityUrl(url)?.let { it ->
+        navController.navigate("${it.first}/c/${it.second}")
+        return
+    }
+
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
             .build().apply {
@@ -387,10 +460,10 @@ fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Bo
                     intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
                 }
             }
-        intent.launchUrl(ctx, Uri.parse(url))
+        intent.launchUrl(navController.context, Uri.parse(url))
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        ctx.startActivity(intent)
+        navController.context.startActivity(intent)
     }
 }
 

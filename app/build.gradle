@@ -85,6 +85,7 @@ dependencies {
     implementation 'com.google.accompanist:accompanist-pager:0.30.1'
     implementation 'com.google.accompanist:accompanist-pager-indicators:0.30.1'
     implementation 'com.google.accompanist:accompanist-flowlayout:0.30.1'
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.30.1"
 
     // LiveData
     implementation 'androidx.compose.runtime:runtime-livedata:1.4.3'
@@ -104,6 +105,7 @@ dependencies {
 
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:2.5.1"
+    testImplementation  "pl.pragmatists:JUnitParams:1.1.1"
 
     // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:2.5.1"
