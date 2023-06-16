@@ -44,6 +44,7 @@ import com.jerboa.ui.components.comment.replynode.CommentReplyNode
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
@@ -280,7 +281,7 @@ fun InboxTabs(
                         when (val repliesRes = inboxViewModel.repliesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(repliesRes.msg)
-                            ApiState.Loading -> CircularProgressIndicator()
+                            ApiState.Loading -> LoadingBar(padding)
                             is ApiState.Success -> {
                                 val replies = repliesRes.data.replies
                                 LazyColumn(
@@ -448,7 +449,7 @@ fun InboxTabs(
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(mentionsRes.msg)
-                            ApiState.Loading -> CircularProgressIndicator()
+                            ApiState.Loading -> LoadingBar(padding)
                             is ApiState.Success -> {
                                 val mentions = mentionsRes.data.mentions
                                 LazyColumn(
@@ -621,7 +622,7 @@ fun InboxTabs(
                         when (val messagesRes = inboxViewModel.messagesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(messagesRes.msg)
-                            ApiState.Loading -> CircularProgressIndicator()
+                            ApiState.Loading -> LoadingBar(padding)
                             is ApiState.Success -> {
                                 val messages = messagesRes.data.private_messages
                                 LazyColumn(

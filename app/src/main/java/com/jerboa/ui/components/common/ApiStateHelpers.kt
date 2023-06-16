@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.common
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
@@ -7,7 +8,7 @@ import androidx.compose.runtime.Composable
 fun ApiErrorText(
     msg: Throwable,
 ) {
-    msg.message?.also { Text(it) }
+    msg.message?.also { Text(text = it, color = MaterialTheme.colorScheme.error) }
 }
 
 @Composable

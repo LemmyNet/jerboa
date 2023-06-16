@@ -1,10 +1,8 @@
 package com.jerboa.ui.components.comment.reply
 
 import android.util.Log
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +16,7 @@ import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.isModerator
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
@@ -69,7 +68,7 @@ fun CommentReplyActivity(
         },
         content = { padding ->
             if (loading) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                LoadingBar(padding)
             } else {
                 when (val postRes = postViewModel.postRes) {
                     is ApiState.Success -> {

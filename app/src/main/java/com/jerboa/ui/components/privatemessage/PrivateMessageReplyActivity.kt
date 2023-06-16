@@ -1,10 +1,8 @@
 package com.jerboa.ui.components.privatemessage
 
 import android.util.Log
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -19,6 +17,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
 
@@ -62,7 +61,7 @@ fun PrivateMessageReplyActivity(
             },
             content = { padding ->
                 if (loading) {
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    LoadingBar(padding)
                 } else {
                     privateMessageReplyViewModel.replyItem?.also { pmv ->
                         PrivateMessageReply(

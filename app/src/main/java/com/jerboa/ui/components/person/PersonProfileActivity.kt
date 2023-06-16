@@ -97,9 +97,7 @@ fun PersonProfileActivity(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
-                ApiState.Empty -> ApiEmptyText()
                 is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                ApiState.Loading -> LoadingBar()
                 is ApiState.Success -> {
                     val person = profileRes.data.person_view.person
                     PersonProfileHeader(
@@ -153,6 +151,8 @@ fun PersonProfileActivity(
                         navController = navController,
                     )
                 }
+
+                else -> {}
             }
         },
         content = {

@@ -3,11 +3,9 @@ package com.jerboa.ui.components.post.edit
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,6 +22,7 @@ import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.EditPost
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.home.HomeViewModel
@@ -96,7 +95,7 @@ fun PostEditActivity(
                     },
                 )
                 if (loading) {
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    LoadingBar()
                 }
             }
         },

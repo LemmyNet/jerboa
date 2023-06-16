@@ -1,10 +1,8 @@
 package com.jerboa.ui.components.community.list
 
 import android.util.Log
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -28,6 +26,7 @@ import com.jerboa.loginFirstToast
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.Job
@@ -82,7 +81,7 @@ fun CommunityListActivity(
                     ApiState.Empty -> ApiEmptyText()
                     is ApiState.Failure -> ApiErrorText(communitiesRes.msg)
                     ApiState.Loading -> {
-                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        LoadingBar(padding)
                     }
 
                     is ApiState.Success -> {

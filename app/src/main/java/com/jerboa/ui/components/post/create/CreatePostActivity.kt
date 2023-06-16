@@ -4,8 +4,6 @@ import android.net.Uri
 import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -16,7 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
@@ -27,6 +24,7 @@ import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import kotlinx.coroutines.Job
@@ -117,7 +115,7 @@ fun CreatePostActivity(
                         },
                     )
                     if (loading) {
-                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        LoadingBar()
                     }
                 }
             },
