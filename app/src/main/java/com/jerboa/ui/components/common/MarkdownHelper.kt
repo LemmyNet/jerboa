@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.NavController
 import coil.ImageLoader
 import com.jerboa.R
 import com.jerboa.convertSpToPx
@@ -121,7 +122,8 @@ class LemmyLinkPlugin : AbstractMarkwonPlugin() {
 object MarkdownHelper {
     private var markwon: Markwon? = null
 
-    fun init(context: Context, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+    fun init(navController: NavController, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+        val context = navController.context
         val loader = ImageLoader.Builder(context)
             .crossfade(true)
             .placeholder(R.drawable.ic_launcher_foreground)
@@ -137,12 +139,19 @@ object MarkdownHelper {
             .usePlugin(HtmlPlugin.create())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                    builder.linkResolver { view, link ->
-                        openLink(link, view.context, useCustomTabs, usePrivateTabs)
+                    builder.linkResolver { _, link ->
+                        openLink(link, navController, useCustomTabs, usePrivateTabs)
                     }
                 }
             })
             .build()
+    }
+
+    /*
+     * This is a workaround for previews.
+     */
+    fun init(context: Context) {
+        markwon = Markwon.builder(context).build()
     }
 
     @Composable
