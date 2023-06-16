@@ -64,13 +64,13 @@ import java.io.InputStream
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.pow
 
 val prettyTime = PrettyTime(Locale.getDefault())
 
 val gson = Gson()
 
-const val LAUNCH_DELAY = 300L
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
 
@@ -292,48 +292,6 @@ fun buildCommentsTree(
     return tree
 }
 
-fun insertCommentIntoTree(
-    commentTree: MutableList<CommentNodeData>,
-    cv: CommentView,
-    parentComment: Boolean,
-) {
-    val nodeData = CommentNodeData(
-        commentView = cv,
-        children = null,
-        depth = 0,
-    )
-    val parentId = getCommentParentId(cv.comment)
-    parentId?.also { cParentId ->
-        val foundIndex = commentTree.indexOfFirst {
-            it.commentView.comment.id == cParentId
-        }
-
-        if (foundIndex != -1) {
-            val parent = commentTree[foundIndex]
-            nodeData.depth = parent.depth.plus(1)
-
-            parent.children?.also { children ->
-                children.add(0, nodeData)
-            } ?: run {
-                commentTree[foundIndex] = parent.copy(children = mutableStateListOf(nodeData))
-            }
-        } else {
-            commentTree.forEach { node ->
-                node.children?.also { children ->
-                    insertCommentIntoTree(children, cv, parentComment)
-                }
-            }
-        }
-    } ?: run {
-        if (!parentComment) {
-            commentTree.add(0, nodeData)
-        }
-    }
-}
-
-// fun LazyListState.isScrolledToEnd() =
-//    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
-
 fun LazyListState.isScrolledToEnd(): Boolean {
     val totalItems = layoutInfo.totalItemsCount
     val lastItemVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index
@@ -411,13 +369,13 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
 }
 
 fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
-    val url = parseUrl(url) ?: return
+    val parsedUrl = parseUrl(url) ?: return
 
-    looksLikeUserUrl(url)?.let { it ->
+    looksLikeUserUrl(parsedUrl)?.let { it ->
         navController.navigate("${it.first}/u/${it.second}")
         return
     }
-    looksLikeCommunityUrl(url)?.let { it ->
+    looksLikeCommunityUrl(parsedUrl)?.let { it ->
         navController.navigate("${it.first}/c/${it.second}")
         return
     }
@@ -429,9 +387,9 @@ fun openLink(url: String, navController: NavController, useCustomTab: Boolean, u
                     intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
                 }
             }
-        intent.launchUrl(navController.context, Uri.parse(url))
+        intent.launchUrl(navController.context, Uri.parse(parsedUrl))
     } else {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(parsedUrl))
         navController.context.startActivity(intent)
     }
 }
@@ -1101,34 +1059,11 @@ fun findAndUpdateCommentReply(replies: List<CommentReplyView>, updatedCommentVie
     }
 }
 
-// TODO
-fun findAndUpdateCommentInTree(
-    commentTree: SnapshotStateList<CommentNodeData>,
-    cv: CommentView?,
-) {
-    cv?.also {
-        val foundIndex = commentTree.indexOfFirst {
-            it.commentView.comment.id == cv.comment.id
-        }
-
-        if (foundIndex != -1) {
-            val updatedComment = commentTree[foundIndex].copy(commentView = cv)
-            commentTree[foundIndex] = updatedComment
-        } else {
-            commentTree.forEach { node ->
-                node.children?.also { children ->
-                    findAndUpdateCommentInTree(children, cv)
-                }
-            }
-        }
-    }
-}
-
 fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
     return if (depth == 0) {
         0.dp
     } else {
-        ((depth.minus(1) * multiplier).dp) + SMALL_PADDING
+        (abs((depth.minus(1) * multiplier)).dp + SMALL_PADDING)
     }
 }
 
