@@ -124,6 +124,23 @@ class CommunityViewModel : ViewModel() {
             followCommunityRes = ApiState.Loading
             followCommunityRes =
                 apiWrapper(API.getInstance().followCommunity(form))
+
+            // Copy that response to the communityRes
+            when (val followRes = followCommunityRes) {
+                is ApiState.Success -> {
+                    val cv = followRes.data.community_view
+                    when (val cRes = communityRes) {
+                        is ApiState.Success -> {
+                            val newCRes = cRes.data.copy(community_view = cv)
+                            communityRes = ApiState.Success(newCRes)
+                        }
+
+                        else -> {}
+                    }
+                }
+
+                else -> {}
+            }
         }
     }
 
@@ -216,6 +233,7 @@ class CommunityViewModel : ViewModel() {
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 postsRes = newRes
             }
+
             else -> {}
         }
     }
