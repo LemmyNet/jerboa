@@ -10,6 +10,12 @@ pipeline:
     commands:
       - prettier -c "*.md" "*.yml"
 
+  run_tests:
+    image: cimg/android:2023.05
+    commands:
+      - sudo chown -R circleci:circleci .
+      - ./gradlew testDebug
+
   build_project:
     image: cimg/android:2023.05
     commands:

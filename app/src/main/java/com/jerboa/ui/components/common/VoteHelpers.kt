@@ -35,11 +35,24 @@ fun <T> VoteGeneric(
     } else {
         null
     }
+    val contentDescription: String = if (type == VoteType.Upvote) {
+        if (myVote == 1) {
+            stringResource(R.string.upvoted)
+        } else {
+            stringResource(R.string.upvote)
+        }
+    } else {
+        if (myVote == 1) {
+            stringResource(R.string.downvoted)
+        } else {
+            stringResource(R.string.downvote)
+        }
+    }
     ActionBarButton(
         onClick = { onVoteClick(item) },
         contentColor = iconAndColor.second,
         icon = iconAndColor.first,
-        contentDescription = stringResource(R.string.voteToggle),
+        contentDescription = contentDescription,
         text = votesStr,
         account = account,
     )

@@ -2,6 +2,7 @@ package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
@@ -38,7 +39,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.jerboa.saveBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -69,7 +73,7 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
     }
 
     val backColor = MaterialTheme.colorScheme.scrim
-    val backColorTranslucent = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f)
+    val backColorTranslucent = MaterialTheme.colorScheme.scrim.copy(alpha = 0.8f)
 
     var showTopBar by remember { mutableStateOf(true) }
 
@@ -85,6 +89,16 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+    val imageLoader = ImageLoader.Builder(LocalContext.current)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }
+        .build()
+
     Dialog(
         onDismissRequest = onBackRequest,
         properties = DialogProperties(
@@ -95,7 +109,7 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
     ) {
         Box(Modifier.background(backgroundColor.value)) {
             Image(
-                painter = rememberAsyncImagePainter(url),
+                painter = rememberAsyncImagePainter(url, imageLoader = imageLoader),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()

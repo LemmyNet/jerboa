@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.Divider
@@ -42,6 +44,7 @@ const val mastodonLink = "https://mastodon.social/@LemmyDev"
 fun AboutActivity(
     navController: NavController,
     useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Log.d("jerboa", "Got to About activity")
 
@@ -52,13 +55,21 @@ fun AboutActivity(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    fun openLink(link: String) {
+        openLink(link, navController, useCustomTabs, usePrivateTabs)
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             SimpleTopAppBar(text = stringResource(R.string.settings_about_about), navController = navController)
         },
         content = { padding ->
-            Column(modifier = Modifier.padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(padding),
+            ) {
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_what_s_new)) },
                     subtitle = { Text(stringResource(R.string.settings_about_version, version ?: "")) },
@@ -69,7 +80,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", ctx, useCustomTabs)
+                        openLink("$githubUrl/blob/main/RELEASES.md", navController, useCustomTabs, usePrivateTabs)
                     },
                 )
                 SettingsDivider()
@@ -83,7 +94,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/issues", ctx, useCustomTabs)
+                        openLink("$githubUrl/issues")
                     },
                 )
                 SettingsMenuLink(
@@ -95,7 +106,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaMatrixChat, ctx, useCustomTabs)
+                        openLink(jerboaMatrixChat)
                     },
                 )
                 SettingsMenuLink(
@@ -107,7 +118,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(donateLink, ctx, useCustomTabs)
+                        openLink(donateLink)
                     },
                 )
                 SettingsDivider()
@@ -122,7 +133,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaLemmyLink, ctx, useCustomTabs)
+                        openLink(jerboaLemmyLink)
                     },
                 )
                 SettingsMenuLink(
@@ -134,7 +145,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(mastodonLink, ctx, useCustomTabs)
+                        openLink(mastodonLink)
                     },
                 )
                 SettingsDivider()
@@ -155,7 +166,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(githubUrl, ctx, useCustomTabs)
+                        openLink(githubUrl)
                     },
                 )
             }
@@ -183,5 +194,5 @@ fun SettingsHeader(
 @Preview
 @Composable
 fun AboutPreview() {
-    AboutActivity(navController = rememberNavController(), useCustomTabs = false)
+    AboutActivity(navController = rememberNavController(), useCustomTabs = false, usePrivateTabs = false)
 }

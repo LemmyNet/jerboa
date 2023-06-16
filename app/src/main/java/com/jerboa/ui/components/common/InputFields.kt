@@ -11,6 +11,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -570,12 +571,16 @@ fun MyCheckBox(
     enabled: Boolean = true,
     label: String,
     onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+        .padding(SMALL_PADDING)
+        .fillMaxWidth(),
 ) {
     Row(
-        modifier = Modifier.padding(SMALL_PADDING),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = label)
+        Spacer(modifier = Modifier.weight(1.0f))
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange,

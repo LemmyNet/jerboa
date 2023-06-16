@@ -1,3 +1,60 @@
+# Jerboa v0.0.34-alpha Release (2023-06-13)
+
+## What's Changed
+
+- QoL: Allow debug version installed next to release version by @MV-GH in https://github.com/dessalines/jerboa/pull/501
+- Added Italian localization by @andreaippo in https://github.com/dessalines/jerboa/pull/533
+- Highlight the current screen in BottomAppBar by @ironveil in https://github.com/dessalines/jerboa/pull/531
+- Fix stale user profile data showing momentarily on PersonProfileActivity during fetch operations by @a1studmuffin in https://github.com/dessalines/jerboa/pull/518
+- Prevent multiple line entry for the name of an instance on login. by @camporter in https://github.com/dessalines/jerboa/pull/520
+- Add Brazilian Portuguese localization by @somehare in https://github.com/dessalines/jerboa/pull/540
+- Fix big font size cutting off settings options by @calincara in https://github.com/dessalines/jerboa/pull/534
+- Hide downvote button on comments and posts when disabled by @lsim in https://github.com/dessalines/jerboa/pull/502
+- Added default community icon where appropriate by @a1studmuffin in https://github.com/dessalines/jerboa/pull/549
+- Add a user agent by @camporter in https://github.com/dessalines/jerboa/pull/519
+- If login fails, don't leave the current lemmy instance invalid by @camporter in https://github.com/dessalines/jerboa/pull/521
+- Fix some issues with the unread counts not being accurate by @camporter in https://github.com/dessalines/jerboa/pull/537
+- Fix the missing 'Old' default sort account setting. by @camporter in https://github.com/dessalines/jerboa/pull/517
+- Added "Go to (user)" option in more places by @a1studmuffin in https://github.com/dessalines/jerboa/pull/515
+- Update AndroidManifest.xml to match instances added in #505 by @shombando in https://github.com/dessalines/jerboa/pull/552
+- Add contentDescription to all relevant components by @pipe01 in https://github.com/dessalines/jerboa/pull/470
+- Added Swedish localisation by @JasBC in https://github.com/dessalines/jerboa/pull/569
+- Fix typos in German strings by @tribut in https://github.com/dessalines/jerboa/pull/564
+- #345 respect avatar settings by @igarshep in https://github.com/dessalines/jerboa/pull/554
+- Increased NSFW blur by @XanderV2001 in https://github.com/dessalines/jerboa/pull/576
+- Localization of user tabs by @kuroi-usagi in https://github.com/dessalines/jerboa/pull/563
+- Add communities list to sidebar, fixes #510 by @twizmwazin in https://github.com/dessalines/jerboa/pull/512
+- feat/launcher icon by @seamuslowry in https://github.com/dessalines/jerboa/pull/528
+- Bash isn't portable, use POSIX sh instead by @7heo in https://github.com/dessalines/jerboa/pull/560
+- Implement animated gifs when clicking on an image by @beatgammit in https://github.com/dessalines/jerboa/pull/580
+- Add strings.xml for locale `ko` by @meinside in https://github.com/dessalines/jerboa/pull/586
+- Copy paste bugfix for bottom bar highlight by @a1studmuffin in https://github.com/dessalines/jerboa/pull/592
+- Swedish localisation revised; strings.xml-file fixed. by @JasBC in https://github.com/dessalines/jerboa/pull/594
+- Images updated 2 by @dessalines in https://github.com/dessalines/jerboa/pull/595
+- Comment action bar fixes by @a1studmuffin in https://github.com/dessalines/jerboa/pull/593
+- Remove unnecessary check by @7heo in https://github.com/dessalines/jerboa/pull/600
+- Show default icon for community links in sidebar by @a1studmuffin in https://github.com/dessalines/jerboa/pull/590
+- Update Italian Translations by @andscape-dev in https://github.com/dessalines/jerboa/pull/591
+- Revamped BottomBar to match MD3 by @ironveil in https://github.com/dessalines/jerboa/pull/567
+
+## New Contributors
+
+- @andreaippo made their first contribution in https://github.com/dessalines/jerboa/pull/533
+- @ironveil made their first contribution in https://github.com/dessalines/jerboa/pull/531
+- @camporter made their first contribution in https://github.com/dessalines/jerboa/pull/520
+- @somehare made their first contribution in https://github.com/dessalines/jerboa/pull/540
+- @calincara made their first contribution in https://github.com/dessalines/jerboa/pull/534
+- @JasBC made their first contribution in https://github.com/dessalines/jerboa/pull/569
+- @tribut made their first contribution in https://github.com/dessalines/jerboa/pull/564
+- @igarshep made their first contribution in https://github.com/dessalines/jerboa/pull/554
+- @XanderV2001 made their first contribution in https://github.com/dessalines/jerboa/pull/576
+- @seamuslowry made their first contribution in https://github.com/dessalines/jerboa/pull/528
+- @beatgammit made their first contribution in https://github.com/dessalines/jerboa/pull/580
+- @meinside made their first contribution in https://github.com/dessalines/jerboa/pull/586
+- @andscape-dev made their first contribution in https://github.com/dessalines/jerboa/pull/591
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.33...0.0.34
+
 # Jerboa v0.0.33-alpha Release (2023-06-10)
 
 This is a big one, thank you to all our new contributors! 🥳 Jerboa is still very much an alpha-level app, but its wonderful to see its pace accelerating rapidly thanks to others working hard to make it better.
