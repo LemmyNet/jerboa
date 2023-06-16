@@ -305,7 +305,7 @@ fun UserTabs(
                     when (val profileRes = personProfileViewModel.personDetailsRes) {
                         ApiState.Empty -> ApiEmptyText()
                         is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                        ApiState.Loading -> LoadingBar(padding)
+                        ApiState.Loading -> LoadingBar()
                         is ApiState.Success -> {
                             val listState = rememberLazyListState()
 
@@ -359,7 +359,7 @@ fun UserTabs(
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                            ApiState.Loading -> LoadingBar(padding)
+                            ApiState.Loading -> LoadingBar()
                             is ApiState.Success -> {
                                 PostListings(
                                     posts = profileRes.data.posts,
@@ -481,7 +481,7 @@ fun UserTabs(
                     when (val profileRes = personProfileViewModel.personDetailsRes) {
                         ApiState.Empty -> ApiEmptyText()
                         is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                        ApiState.Loading -> LoadingBar(padding)
+                        ApiState.Loading -> LoadingBar()
                         is ApiState.Success -> {
                             val nodes = commentsToFlatNodes(profileRes.data.comments)
 
