@@ -45,6 +45,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import com.jerboa.R
 import com.jerboa.saveBitmap
 import com.jerboa.saveBitmapQ
 import kotlinx.coroutines.Dispatchers
@@ -147,7 +148,7 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
                                 SaveImage(url, context)
                             }
                         } else {
-                            Toast.makeText(context, "Permission not granted", Toast.LENGTH_SHORT)
+                            Toast.makeText(context, context.getString(R.string.permission_denied), Toast.LENGTH_SHORT)
                                 .show()
                         }
                     }
@@ -173,7 +174,7 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
 
 // Needs to check for permission before this for API 29 and below
 suspend fun SaveImage(url: String, context: Context) {
-    Toast.makeText(context, "Saving image...", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, context.getString(R.string.saving_image), Toast.LENGTH_SHORT).show()
 
     val fileName = Uri.parse(url).pathSegments.last()
 
@@ -190,7 +191,7 @@ suspend fun SaveImage(url: String, context: Context) {
         }
     }
 
-    Toast.makeText(context, "Saved image", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, context.getString(R.string.saved_image), Toast.LENGTH_SHORT).show()
 }
 
 @Composable
