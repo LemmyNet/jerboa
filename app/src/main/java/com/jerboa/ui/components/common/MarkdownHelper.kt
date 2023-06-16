@@ -136,6 +136,7 @@ object MarkdownHelper {
             // email urls interfere with lemmy links
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
             .usePlugin(LemmyLinkPlugin())
+            .usePlugin(SpoilerPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
             // use TableAwareLinkMovementMethod to handle clicks inside tables,
