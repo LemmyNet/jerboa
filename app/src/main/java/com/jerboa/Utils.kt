@@ -60,6 +60,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
@@ -877,6 +878,28 @@ fun saveBitmap(
             resolver.delete(orphanUri, null, null)
         }
 
+        throw e
+    }
+}
+
+// saveBitmap that works for Android 10 and below
+fun saveBitmapQ(
+    inputStream: InputStream,
+    displayName: String,
+) {
+    val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+    val picsDir = File(dir, "Jerboa")
+    val dest = File(picsDir, displayName)
+
+    try {
+        picsDir.mkdirs(); // make if not exist
+
+        inputStream.use { input ->
+            dest.outputStream().use {
+                input.copyTo(it)
+            }
+        }
+    } catch (e: IOException) {
         throw e
     }
 }

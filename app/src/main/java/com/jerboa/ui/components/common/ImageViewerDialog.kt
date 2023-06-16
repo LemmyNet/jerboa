@@ -43,7 +43,10 @@ import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.jerboa.saveBitmap
+import com.jerboa.saveBitmapQ
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,6 +56,7 @@ import java.net.URL
 
 const val backFadeTime = 300
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
     @Composable
@@ -132,16 +136,42 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
 
                 Spacer(Modifier.weight(1f))
 
-                BarIcon(icon = Icons.Outlined.Download, name = "Download") {
-                    coroutineScope.launch {
-                        SaveImage(url, context)
+                val onTap: () -> Unit
+
+                if (SDK_INT < 29) {
+                    val storagePermissionState = rememberPermissionState(
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    ) {
+                        if (it) {
+                            coroutineScope.launch {
+                                SaveImage(url, context)
+                            }
+                        } else {
+                            Toast.makeText(context, "Permission not granted", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+
+                    onTap = storagePermissionState::launchPermissionRequest
+                } else {
+                    onTap = {
+                        coroutineScope.launch {
+                            SaveImage(url, context)
+                        }
                     }
                 }
+
+                BarIcon(
+                    icon = Icons.Outlined.Download,
+                    name = "Download",
+                    onTap = onTap,
+                )
             }
         }
     }
 }
 
+// Needs to check for permission before this for API 29 and below
 suspend fun SaveImage(url: String, context: Context) {
     Toast.makeText(context, "Saving image...", Toast.LENGTH_SHORT).show()
 
@@ -152,7 +182,11 @@ suspend fun SaveImage(url: String, context: Context) {
 
     withContext(Dispatchers.IO) {
         URL(url).openStream().use {
-            saveBitmap(context, it, mimeType, fileName)
+            if (SDK_INT < 29) {
+                saveBitmapQ(it, fileName)
+            } else {
+                saveBitmap(context, it, mimeType, fileName)
+            }
         }
     }
 
