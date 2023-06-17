@@ -502,7 +502,7 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
     // without this, we'd end up with something like host/path?thumbnail=...?thumbnail=...
     val path = split[1].replaceAfter('?', "")
 
-    return "$host/pictrs/image/${path}thumbnail=$thumbnailSize&format=webp"
+    return "$host/pictrs/image/${path}?thumbnail=$thumbnailSize&format=webp"
 }
 
 fun isImage(url: String): Boolean {
