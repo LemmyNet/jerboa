@@ -24,19 +24,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.CommunityFollowerView
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.sampleCommunityView
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
 
 @Composable
 fun CommunityListHeader(
-    navController: NavController,
+    navController: NavController = rememberNavController(),
     search: String,
     onSearchChange: (search: String) -> Unit,
 ) {
@@ -58,7 +58,18 @@ fun CommunityListHeader(
                 )
             }
         },
-        navigationIcon = { DefaultBackButton(navController) },
+        navigationIcon = {
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+            ) {
+                Icon(
+                    Icons.Outlined.Close,
+                    contentDescription = stringResource(R.string.community_list_back),
+                )
+            }
+        },
     )
 }
 
