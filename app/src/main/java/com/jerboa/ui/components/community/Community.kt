@@ -209,14 +209,14 @@ fun CommunityHeaderTitle(
     communityName: String,
     selectedSortType: SortType,
 ) {
-    val context = LocalContext.current
+    val ctx = LocalContext.current
     Column {
         Text(
             text = communityName,
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeName(context, selectedSortType),
+            text = getLocalizedSortingTypeName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleMedium,
         )
     }

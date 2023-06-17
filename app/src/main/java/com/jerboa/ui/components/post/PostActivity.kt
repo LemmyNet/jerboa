@@ -64,7 +64,7 @@ import com.jerboa.ui.components.post.edit.PostEditViewModel
 fun CommentsHeaderTitle(
     selectedSortType: CommentSortType,
 ) {
-    val context = LocalContext.current
+    val ctx = LocalContext.current
     Column {
         Text(
             text = stringResource(R.string.post_activity_comments),
@@ -72,7 +72,7 @@ fun CommentsHeaderTitle(
         )
         Text(
 
-            text = getLocalizedCommentSortTypeName(context, selectedSortType),
+            text = getLocalizedCommentSortTypeName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleSmall,
         )
     }

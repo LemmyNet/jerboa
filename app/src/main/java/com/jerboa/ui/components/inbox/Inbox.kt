@@ -81,7 +81,7 @@ fun InboxHeader(
 @Composable
 fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null) {
     var title = stringResource(R.string.inbox_inbox)
-    val context = LocalContext.current
+    val ctx = LocalContext.current
     if (unreadCount != null && unreadCount > 0) {
         title = "$title ($unreadCount)"
     }
@@ -91,7 +91,7 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedUnreadOrAllName(context, selectedUnreadOrAll),
+            text = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll),
             style = MaterialTheme.typography.titleMedium,
         )
     }

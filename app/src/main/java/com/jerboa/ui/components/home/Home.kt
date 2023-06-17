@@ -442,14 +442,14 @@ fun HomeHeaderTitle(
     selectedSortType: SortType,
     selectedListingType: ListingType,
 ) {
-    val context = LocalContext.current
+    val ctx = LocalContext.current
     Column {
         Text(
-            text = getLocalizedListingTypeName(context, selectedListingType),
+            text = getLocalizedListingTypeName(ctx, selectedListingType),
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeName(context, selectedSortType),
+            text = getLocalizedSortingTypeName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleSmall,
         )
     }
