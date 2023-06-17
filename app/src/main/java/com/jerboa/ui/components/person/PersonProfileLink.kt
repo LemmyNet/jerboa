@@ -58,6 +58,7 @@ fun PersonNamePreview() {
 fun PersonProfileLink(
     person: PersonSafe,
     onClick: (personId: Int) -> Unit,
+    clickable: Boolean = true,
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
     isModerator: Boolean = false,
@@ -68,7 +69,11 @@ fun PersonProfileLink(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-        modifier = Modifier.clickable { onClick(person.id) },
+        modifier = if (clickable) {
+            Modifier.clickable { onClick(person.id) }
+        } else {
+            Modifier
+        },
     ) {
         if (showAvatar) {
             person.avatar?.also {

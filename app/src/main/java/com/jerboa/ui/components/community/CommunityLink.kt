@@ -70,12 +70,17 @@ fun CommunityLink(
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     onClick: (community: CommunitySafe) -> Unit,
+    clickable: Boolean = true,
     showDefaultIcon: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing),
-        modifier = modifier.clickable { onClick(community) },
+        modifier = if (clickable) {
+            modifier.clickable { onClick(community) }
+        } else {
+            modifier
+        },
     ) {
         community.icon?.let {
             CircularIcon(
