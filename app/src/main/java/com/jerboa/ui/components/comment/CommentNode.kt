@@ -195,9 +195,12 @@ fun LazyListScope.commentNodeItem(
     onReplyClick: (commentView: CommentView) -> Unit,
     onSaveClick: (commentView: CommentView) -> Unit,
     onMarkAsReadClick: (commentView: CommentView) -> Unit,
+    onCommentClick: (commentView: CommentView) -> Unit,
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onHeaderClick: (commentView: CommentView) -> Unit,
+    onHeaderLongClick: (commentView: CommentView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
@@ -278,10 +281,10 @@ fun LazyListScope.commentNodeItem(
                             myVote = instantScores.value.myVote,
                             isModerator = isModerator(commentView.creator, moderators),
                             onClick = {
-                                toggleExpanded(commentId)
+                                onHeaderClick(commentView)
                             },
                             onLongClick = {
-                                toggleActionBar(commentId)
+                                onHeaderLongClick(commentView)
                             },
                             collapsedCommentsCount = node.commentView.counts.child_count,
                             isExpanded = isExpanded(commentId),
@@ -296,9 +299,7 @@ fun LazyListScope.commentNodeItem(
                                 CommentBody(
                                     comment = commentView.comment,
                                     viewSource = viewSource,
-                                    onClick = {
-                                        toggleExpanded(commentId)
-                                    },
+                                    onClick = { onCommentClick(commentView) },
                                     onLongClick = {
                                         toggleActionBar(commentId)
                                     },
@@ -376,9 +377,12 @@ fun LazyListScope.commentNodeItem(
             onDownvoteClick = onDownvoteClick,
             onSaveClick = onSaveClick,
             onMarkAsReadClick = onMarkAsReadClick,
+            onCommentClick = onCommentClick,
             onEditCommentClick = onEditCommentClick,
             onDeleteCommentClick = onDeleteCommentClick,
             onPersonClick = onPersonClick,
+            onHeaderClick = onHeaderClick,
+            onHeaderLongClick = onHeaderLongClick,
             onCommunityClick = onCommunityClick,
             onPostClick = onPostClick,
             showPostAndCommunityContext = showPostAndCommunityContext,
@@ -625,17 +629,23 @@ fun CommentNodesPreview() {
     CommentNodes(
         nodes = tree,
         isFlat = false,
+        isExpanded = { _ -> true },
+        toggleExpanded = {},
+        toggleActionBar = {},
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
         onFetchChildrenClick = {},
         onSaveClick = {},
         onMarkAsReadClick = {},
+        onCommentClick = {},
         onEditCommentClick = {},
         onDeleteCommentClick = {},
         onReportClick = {},
         onCommentLinkClick = {},
         onPersonClick = {},
+        onHeaderClick = {},
+        onHeaderLongClick = {},
         onCommunityClick = {},
         onBlockCreatorClick = {},
         onPostClick = {},
@@ -643,7 +653,7 @@ fun CommentNodesPreview() {
         listState = rememberLazyListState(),
         isCollapsedByParent = false,
         showCollapsedCommentContent = false,
-        showActionBarByDefault = true,
+        showActionBar = { _ -> true },
         enableDownVotes = true,
         showAvatar = true,
     )

@@ -111,6 +111,22 @@ fun PostActivity(
     val showContextButton = depth != null && depth > 0
     val enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true
 
+    var toggleExpanded = { commentId: Int ->
+        if (unExpandedComments.contains(commentId)) {
+            unExpandedComments.remove(commentId)
+        } else {
+            unExpandedComments.add(commentId)
+        }
+    }
+
+    var toggleActionBar = { commentId: Int ->
+        if (commentsWithToggledActionBar.contains(commentId)) {
+            commentsWithToggledActionBar.remove(commentId)
+        } else {
+            commentsWithToggledActionBar.add(commentId)
+        }
+    }
+
     val pullRefreshState = rememberPullRefreshState(
         refreshing = postViewModel.loading,
         onRefresh = {
@@ -296,21 +312,10 @@ fun PostActivity(
                             nodes = postViewModel.commentTree,
                             isFlat = false,
                             isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
-                            toggleExpanded = { commentId ->
-                                if (unExpandedComments.contains(commentId)) {
-                                    unExpandedComments.remove(commentId)
-                                } else {
-                                    unExpandedComments.add(commentId)
-                                }
-                            },
-                            toggleActionBar = { commentId ->
-                                if (commentsWithToggledActionBar.contains(commentId)) {
-                                    commentsWithToggledActionBar.remove(commentId)
-                                } else {
-                                    commentsWithToggledActionBar.add(commentId)
-                                }
-                            },
+                            toggleExpanded = { commentId -> toggleExpanded(commentId) },
+                            toggleActionBar = { commentId -> toggleActionBar(commentId) },
                             onMarkAsReadClick = {},
+                            onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
                             onUpvoteClick = { commentView ->
                                 account?.also { acct ->
                                     postViewModel.likeComment(
@@ -347,6 +352,8 @@ fun PostActivity(
                             onPersonClick = { personId ->
                                 navController.navigate(route = "profile/$personId")
                             },
+                            onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
+                            onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                             onEditCommentClick = { commentView ->
                                 commentEditViewModel.initialize(commentView)
                                 navController.navigate("commentEdit")
