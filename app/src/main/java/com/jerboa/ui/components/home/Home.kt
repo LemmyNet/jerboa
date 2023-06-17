@@ -76,6 +76,7 @@ import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getLocalizedListingTypeName
+import com.jerboa.getLocalizedSortingTypeName
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
@@ -95,7 +96,6 @@ import com.jerboa.ui.theme.muted
 import com.jerboa.unreadCountTotal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import com.jerboa.getLocalizedSortingTypeName
 
 @Composable
 fun Drawer(
