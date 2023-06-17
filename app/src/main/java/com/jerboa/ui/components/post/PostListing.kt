@@ -318,8 +318,7 @@ fun PostTitleAndImageLink(
         ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
     }
 
-    val postLinkPicMod = Modifier
-        .clickable { showImageDialog = true }
+    val postLinkPicMod = Modifier.clickable { showImageDialog = true }
     PictrsUrlImage(
         url = url,
         nsfw = nsfwCheck(postView),
@@ -369,6 +368,7 @@ fun PostBody(
     expandedImage: Boolean,
     account: Account?,
 ) {
+    val PREVIEW_MAX_LINES = 5
     val post = postView.post
     Column(
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
@@ -389,16 +389,14 @@ fun PostBody(
 
         // The desc
         body?.also { text ->
-            Card(
-                colors = CARD_COLORS,
+            Card(colors = CARD_COLORS,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
                     .fillMaxWidth(),
                 content = {
                     Column(
-                        modifier = Modifier
-                            .padding(MEDIUM_PADDING)
+                        modifier = Modifier.padding(MEDIUM_PADDING)
                     ) {
                         if (fullBody) {
                             MyMarkdownText(
@@ -407,14 +405,11 @@ fun PostBody(
                             )
                         } else {
                             MyMarkdownText(
-                                markdown = text,
-                                onClick = {},
-                                maxLines = 5
+                                markdown = text, onClick = {}, maxLines = PREVIEW_MAX_LINES
                             )
                         }
                     }
-                }
-            )
+                })
         }
     }
 }
@@ -618,13 +613,12 @@ fun CommentCountPreview() {
 @Composable
 fun PostFooterLinePreview() {
     val postView = samplePostView
-    val instantScores =
-        InstantScores(
-            myVote = postView.my_vote,
-            score = postView.counts.score,
-            upvotes = postView.counts.upvotes,
-            downvotes = postView.counts.downvotes,
-        )
+    val instantScores = InstantScores(
+        myVote = postView.my_vote,
+        score = postView.counts.score,
+        upvotes = postView.counts.upvotes,
+        downvotes = postView.counts.downvotes,
+    )
     PostFooterLine(
         postView = postView,
         instantScores = instantScores,
@@ -853,6 +847,7 @@ fun PostListing(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
         )
+
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
             instantScores = instantScores.value,
@@ -889,6 +884,7 @@ fun PostListing(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
         )
+
         PostViewMode.List -> PostListingList(
             postView = postView,
             instantScores = instantScores.value,
@@ -1122,13 +1118,12 @@ private fun ThumbnailTile(
 @Composable
 fun PostListingListPreview() {
     val postView = samplePostView
-    val instantScores =
-        InstantScores(
-            myVote = postView.my_vote,
-            score = postView.counts.score,
-            upvotes = postView.counts.upvotes,
-            downvotes = postView.counts.downvotes,
-        )
+    val instantScores = InstantScores(
+        myVote = postView.my_vote,
+        score = postView.counts.score,
+        upvotes = postView.counts.upvotes,
+        downvotes = postView.counts.downvotes,
+    )
     PostListingList(
         postView = postView,
         instantScores = instantScores,
@@ -1148,13 +1143,12 @@ fun PostListingListPreview() {
 @Composable
 fun PostListingListWithThumbPreview() {
     val postView = sampleImagePostView
-    val instantScores =
-        InstantScores(
-            myVote = postView.my_vote,
-            score = postView.counts.score,
-            upvotes = postView.counts.upvotes,
-            downvotes = postView.counts.downvotes,
-        )
+    val instantScores = InstantScores(
+        myVote = postView.my_vote,
+        score = postView.counts.score,
+        upvotes = postView.counts.upvotes,
+        downvotes = postView.counts.downvotes,
+    )
     PostListingList(
         postView = postView,
         instantScores = instantScores,
