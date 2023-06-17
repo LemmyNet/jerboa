@@ -102,9 +102,9 @@ fun SettingsForm(
     }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
-    var defaultSortType = rememberIntSettingState(luv?.local_user?.default_sort_type ?: 0)
-    var defaultListingType = rememberIntSettingState(luv?.local_user?.default_listing_type ?: 0)
-    var showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
+    val defaultSortType = rememberIntSettingState(luv?.local_user?.default_sort_type ?: 0)
+    val defaultListingType = rememberIntSettingState(luv?.local_user?.default_listing_type ?: 0)
+    val showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
     val showNsfw = rememberBooleanSettingState(luv?.local_user?.show_nsfw ?: false)
     val showScores = rememberBooleanSettingState(luv?.local_user?.show_scores ?: false)
     val showBotAccount = rememberBooleanSettingState(luv?.local_user?.show_bot_accounts ?: false)
