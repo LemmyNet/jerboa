@@ -13,6 +13,7 @@ import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
+import com.jerboa.datatypes.types.CommentReplyResponse
 import com.jerboa.datatypes.types.CommentResponse
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.GetPersonMentions
@@ -63,7 +64,7 @@ class InboxViewModel : ViewModel() {
 
     private var saveMentionRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
-    private var markReplyAsReadRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
+    private var markReplyAsReadRes: ApiState<CommentReplyResponse> by mutableStateOf(ApiState.Empty)
 
     private var markMentionAsReadRes: ApiState<PersonMentionResponse> by mutableStateOf(ApiState.Empty)
 
@@ -352,7 +353,7 @@ class InboxViewModel : ViewModel() {
                         is ApiState.Success -> {
                             val mutable = existing.data.replies.toMutableList()
                             val foundIndex = mutable.indexOfFirst {
-                                it.comment_reply.comment_id == readRes.data.comment_view.comment.id
+                                it.comment_reply.comment_id == readRes.data.comment_reply_view.comment.id
                             }
                             val cr = mutable[foundIndex].comment_reply
                             val newCr = cr.copy(read = !cr.read)
