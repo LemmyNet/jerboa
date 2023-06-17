@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -26,6 +27,7 @@ import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
 import com.jerboa.db.AppDB
+import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsRepository
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.AppSettingsViewModelFactory
@@ -98,6 +100,14 @@ class MainActivity : ComponentActivity() {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
 
+    private fun updateWindowFlags(appSettings: AppSettings) {
+        if (appSettings.secureWindow) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -109,6 +119,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val account = getCurrentAccount(accountViewModel)
             val appSettings by appSettingsViewModel.appSettings.observeAsState()
+
+            appSettings?.let { updateWindowFlags(it) }
 
             JerboaTheme(
                 appSettings = appSettings,
