@@ -566,61 +566,6 @@ fun MarkdownHelperBar(
     }
 }
 
-// https://stackoverflow.com/a/67111599
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyDropDown(
-    suggestions: List<String>,
-    onValueChange: (Int) -> Unit,
-    initialValue: Int,
-    label: String,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(suggestions[initialValue]) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
-        },
-    ) {
-        TextField(
-            readOnly = true,
-            value = selectedText,
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth(),
-            onValueChange = { },
-            label = { Text(label) },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded,
-                )
-            },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            },
-        ) {
-            suggestions.forEach { selectionOption ->
-                DropdownMenuItem(
-                    text = {
-                        Text(text = selectionOption)
-                    },
-                    onClick = {
-                        selectedText = selectionOption
-                        expanded = false
-                        onValueChange(suggestions.indexOf(selectedText))
-                    },
-                )
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 fun TextMarkdownBarPreview() {

@@ -20,7 +20,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
+import com.alorma.compose.settings.storage.base.rememberIntSetSettingState
+import com.alorma.compose.settings.storage.base.rememberIntSettingState
+import com.alorma.compose.settings.storage.base.rememberStringSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
+import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.api.SaveUserSettings
@@ -98,10 +102,8 @@ fun SettingsForm(
     }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
-    var defaultSortType by rememberSaveable { mutableStateOf(luv?.local_user?.default_sort_type) }
-    var defaultListingType by rememberSaveable {
-        mutableStateOf(luv?.local_user?.default_listing_type)
-    }
+    var defaultSortType = rememberIntSettingState(luv?.local_user?.default_sort_type ?: 0)
+    var defaultListingType = rememberIntSettingState(luv?.local_user?.default_listing_type ?: 0)
     var showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
     val showNsfw = rememberBooleanSettingState(luv?.local_user?.show_nsfw ?: false)
     val showScores = rememberBooleanSettingState(luv?.local_user?.show_scores ?: false)
@@ -122,12 +124,12 @@ fun SettingsForm(
         matrix_user_id = matrixUserId,
         interface_language = interfaceLang,
         bot_account = botAccount.value,
-        default_sort_type = defaultSortType,
+        default_sort_type = defaultSortType.value,
         send_notifications_to_email = sendNotificationsToEmail.value,
         show_avatars = showAvatars.value,
         show_bot_accounts = showBotAccount.value,
         show_nsfw = showNsfw.value,
-        default_listing_type = defaultListingType,
+        default_listing_type = defaultListingType.value,
         show_new_post_notifs = showNewPostNotifs.value,
         show_read_posts = showReadPosts.value,
         theme = theme,
@@ -205,18 +207,19 @@ fun SettingsForm(
                 }, showImage = false)
             }
         }
-        MyDropDown(
-            suggestions = listOf(
+        SettingsListDropdown(
+            state = defaultListingType,
+            title = { Text(text = stringResource(R.string.account_settings_default_listing_type)) },
+            items = listOf(
                 stringResource(R.string.account_settings_all),
                 stringResource(R.string.account_settings_local),
                 stringResource(R.string.account_settings_subscribed),
             ),
-            onValueChange = { defaultListingType = it },
-            defaultListingType ?: 0,
-            label = stringResource(R.string.account_settings_default_listing_type),
         )
-        MyDropDown(
-            suggestions = listOf(
+        SettingsListDropdown(
+            state = defaultSortType,
+            title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
+            items = listOf(
                 stringResource(R.string.account_settings_active),
                 stringResource(R.string.account_settings_hot),
                 stringResource(R.string.account_settings_new),
@@ -229,9 +232,6 @@ fun SettingsForm(
                 stringResource(R.string.account_settings_mostcomments),
                 stringResource(R.string.account_settings_newcomments),
             ),
-            onValueChange = { defaultSortType = it },
-            initialValue = defaultSortType ?: 0,
-            label = stringResource(R.string.account_settings_default_sort_type),
         )
 
         SettingsCheckbox(
