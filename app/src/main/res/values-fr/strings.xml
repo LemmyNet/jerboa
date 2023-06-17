@@ -85,15 +85,15 @@
     <string name="login_password">Mot de passe</string>
     <string name="login_instance">Instance</string>
     <string name="login_instance_placeholder">ex.: lemmy.ml</string>
-    <string name="login_email_or_username">Courriel ou nom d'utilisateur</string>
+    <string name="login_email_or_username">Courriel ou nom d\'utilisateur</string>
     <string name="login_login">Se connecter</string>
     <string name="login_back">Précédent</string>
     <string name="person_profile_joined">Profil créé</string>
     <string name="person_profile_posts">%1$s publication(s)</string>
     <string name="person_profile_comments">%1$s commentaires</string>
     <string name="person_profile_back">Précédent</string>
-    <string name="person_profile_block_person">Bloquer l'utilisateur</string>
-    <string name="person_profile_report_person">Signaler l'utilisateur</string>
+    <string name="person_profile_block_person">Bloquer l\'utilisateur</string>
+    <string name="person_profile_report_person">Signaler l\'utilisateur</string>
     <string name="person_profile_activity_moderates">Modérateur</string>
     <string name="create_post_create_post">Créer une publication</string>
     <string name="create_post_close">Quitter</string>
@@ -137,7 +137,7 @@
     <string name="settings_about_source_code_subtitle_part1">"Jerboa est un logiciel libre et gratuit, publié sous une licence "</string>
     <string name="settings_about_source_code_subtitle_part2"> GNU Affero General Public License v3.0</string>
     <string name="account_settings_remove_current_avatar">Supprimer l\'avatar actuel</string>
-    <string name="account_settings_display_name">Nom d'affichage</string>
+    <string name="account_settings_display_name">Nom d\'affichage</string>
     <string name="account_settings_bio">Biographie</string>
     <string name="account_settings_email">Courrier électronique</string>
     <string name="account_settings_matrix_user">Utilisateur Matrix</string>
@@ -184,7 +184,7 @@
     <string name="look_and_feel_show_navigation_bar">Afficher la barre de navigation </string>
     <string name="look_and_feel_use_custom_tabs">Utiliser des onglets personnalisés</string>
     <string name="settings_activity_settings">Réglages</string>
-    <string name="settings_activity_look_and_feel">Apparence de l'interface</string>
+    <string name="settings_activity_look_and_feel">Apparence de l\'interface</string>
     <string name="settings_activity_account_settings">Réglages %1$s</string>
     <string name="settings_activity_about">Info</string>
     <string name="community_blocked">%1$s bloquée</string>
