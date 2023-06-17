@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -306,7 +305,7 @@ fun PostTitleAndImageLink(
             horizontal = MEDIUM_PADDING,
         ),
 
-    ) {
+        ) {
         // Title of the post
         PostName(
             postView = postView,
@@ -854,6 +853,7 @@ fun PostListing(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
         )
+
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
             instantScores = instantScores.value,
@@ -890,9 +890,11 @@ fun PostListing(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
         )
+
         PostViewMode.List -> PostListingList(
             postView = postView,
             instantScores = instantScores.value,
+            onSaveClick = { onSaveClick(postView) },
             onUpvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
@@ -921,17 +923,20 @@ fun PostListing(
 
 @Composable
 fun PostVotingTile(
+    modifier: Modifier = Modifier,
     postView: PostView,
     instantScores: InstantScores,
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
+    onSaveClick: (postView: PostView) -> Unit,
     account: Account?,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight()
-            .padding(end = MEDIUM_PADDING),
+            .padding(horizontal = SMALL_PADDING),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         VoteGeneric(
             myVote = instantScores.myVote,
@@ -947,12 +952,6 @@ fun PostVotingTile(
             style = MaterialTheme.typography.bodyMedium,
             color = scoreColor(myVote = instantScores.myVote),
         )
-        // invisible Text below aligns width of PostVotingTiles
-        Text(
-            text = "00000",
-            modifier = Modifier.height(0.dp),
-            style = MaterialTheme.typography.bodyMedium,
-        )
         VoteGeneric(
             myVote = instantScores.myVote,
             votes = instantScores.downvotes,
@@ -961,6 +960,25 @@ fun PostVotingTile(
             showNumber = false,
             onVoteClick = onDownvoteClick,
             account = account,
+        )
+        ActionBarButton(
+            icon = if (postView.saved) {
+                Icons.Filled.Bookmark
+            } else {
+                Icons.Outlined.BookmarkBorder
+            },
+            contentDescription = if (postView.saved) {
+                stringResource(R.string.removeBookmark)
+            } else {
+                stringResource(R.string.addBookmark)
+            },
+            onClick = { onSaveClick(postView) },
+            contentColor = if (postView.saved) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onBackground.muted
+            },
+            account = account
         )
     }
 }
@@ -971,6 +989,7 @@ fun PostListingList(
     instantScores: InstantScores,
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
+    onSaveClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     onCommunityClick: (community: CommunitySafe) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
@@ -988,9 +1007,8 @@ fun PostListingList(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(
-                SMALL_PADDING,
-            ),
+            horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             if (showVotingArrowsInListView) {
                 PostVotingTile(
@@ -998,7 +1016,8 @@ fun PostListingList(
                     instantScores = instantScores,
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
-                    account = account,
+                    onSaveClick = { onSaveClick(postView) },
+                    account = account
                 )
             }
             Column(
@@ -1136,6 +1155,7 @@ fun PostListingListPreview() {
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
+        onSaveClick = {},
         onCommunityClick = {},
         onPersonClick = {},
         isModerator = false,
@@ -1163,6 +1183,7 @@ fun PostListingListWithThumbPreview() {
         onDownvoteClick = {},
         onPostClick = {},
         onCommunityClick = {},
+        onSaveClick = {},
         onPersonClick = {},
         isModerator = false,
         account = null,
