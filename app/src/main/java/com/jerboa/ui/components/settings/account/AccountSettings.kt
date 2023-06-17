@@ -239,49 +239,42 @@ fun SettingsForm(
             title = {
                 Text(text = stringResource(R.string.account_settings_show_nsfw))
             },
-            onCheckedChange = { showNsfw.value = it },
         )
         SettingsCheckbox(
             state = showAvatars,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_avatars))
             },
-            onCheckedChange = { showAvatars.value = it },
         )
         SettingsCheckbox(
             state = showReadPosts,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_read_posts))
             },
-            onCheckedChange = { showReadPosts.value = it },
         )
         SettingsCheckbox(
             state = botAccount,
             title = {
                 Text(text = stringResource(R.string.account_settings_bot_account))
             },
-            onCheckedChange = { botAccount.value = it },
         )
         SettingsCheckbox(
             state = showBotAccount,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_bot_accounts))
             },
-            onCheckedChange = { showBotAccount.value = it },
         )
         SettingsCheckbox(
             state = showScores,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_scores))
             },
-            onCheckedChange = { showScores.value = it },
         )
         SettingsCheckbox(
             state = showNewPostNotifs,
             title = {
                 Text(text = stringResource(R.string.account_settings_show_notifications_for_new_posts))
             },
-            onCheckedChange = { showNewPostNotifs.value = it },
         )
         SettingsCheckbox(
             enabled = email.isNotEmpty(),
@@ -289,7 +282,6 @@ fun SettingsForm(
             title = {
                 Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
             },
-            onCheckedChange = { sendNotificationsToEmail.value = it },
         )
         // Todo: Remove this
         Button(
