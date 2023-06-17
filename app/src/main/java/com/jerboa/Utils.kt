@@ -1013,6 +1013,19 @@ fun getLocalizedSortingTypeName(context: Context, sortingType: SortType): String
     return returnString
 }
 
+/**
+ * Returns localized Strings for ListingType Enum
+ */
+
+fun getLocalizedListingTypeName(context: Context, listingType: ListingType): String {
+    val returnString = when (listingType) {
+        ListingType.Local -> context.getString(R.string.home_local)
+        ListingType.All -> context.getString(R.string.home_all)
+        ListingType.Subscribed -> context.getString(R.string.home_subscribed)
+    }
+    return returnString
+}
+
 fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
     val returnString = when (tab) {
         UserTab.About -> ctx.getString(R.string.person_profile_activity_about)

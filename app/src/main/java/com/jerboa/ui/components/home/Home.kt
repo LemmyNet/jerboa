@@ -58,6 +58,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -74,6 +75,7 @@ import com.jerboa.datatypes.api.MyUserInfo
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.getLocalizedListingTypeName
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
@@ -93,6 +95,7 @@ import com.jerboa.ui.theme.muted
 import com.jerboa.unreadCountTotal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import com.jerboa.getLocalizedSortingTypeName
 
 @Composable
 fun Drawer(
@@ -441,11 +444,11 @@ fun HomeHeaderTitle(
 ) {
     Column {
         Text(
-            text = selectedListingType.toString(),
+            text = getLocalizedListingTypeName(LocalContext.current, selectedListingType),
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = selectedSortType.toString(),
+            text = getLocalizedSortingTypeName(LocalContext.current, selectedSortType),
             style = MaterialTheme.typography.titleSmall,
         )
     }
