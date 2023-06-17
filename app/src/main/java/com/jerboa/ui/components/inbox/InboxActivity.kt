@@ -323,7 +323,8 @@ fun InboxTabs(
                                                     ReplyItem
                                                         .CommentReplyItem(cr),
                                                 )
-                                                navController.navigate("commentReply")
+
+                                                navController.navigate("commentReply?isModerator=false")
                                             },
                                             onSaveClick = { cr ->
                                                 account?.also { acct ->
@@ -491,7 +492,7 @@ fun InboxTabs(
                                                     ReplyItem
                                                         .MentionReplyItem(pm),
                                                 )
-                                                navController.navigate("commentReply")
+                                                navController.navigate("commentReply?isModerator=false")
                                             },
                                             onSaveClick = { pm ->
                                                 account?.also { acct ->
