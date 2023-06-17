@@ -566,30 +566,6 @@ fun MarkdownHelperBar(
     }
 }
 
-@Composable
-fun MyCheckBox(
-    checked: Boolean,
-    enabled: Boolean = true,
-    label: String,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-        .padding(SMALL_PADDING)
-        .fillMaxWidth(),
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(text = label)
-        Spacer(modifier = Modifier.weight(1.0f))
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            enabled = enabled,
-        )
-    }
-}
-
 // https://stackoverflow.com/a/67111599
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
