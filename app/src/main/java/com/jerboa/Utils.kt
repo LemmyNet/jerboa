@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.core.util.PatternsCompat
 import androidx.navigation.NavController
+import arrow.core.compareTo
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -1212,4 +1213,22 @@ fun scrollToPreviousParentComment(
                 listState.animateScrollToItem(nearestPreviousIndex)
             }
     }
+}
+
+/**
+ * Compare two version strings.
+ *
+ * This attempts to do a natural comparison assuming it's a typical semver (e.g. x.y.z),
+ * but it ignores anything it doesn't understand. Since we're highly confident that these verisons
+ * will be properly formed, this is safe enough without overcomplicating it.
+ */
+fun compareVersions(a: String, b: String): Int {
+    val versionA: List<Int> = a.split('.').mapNotNull { it.toIntOrNull() }
+    val versionB: List<Int> = b.split('.').mapNotNull { it.toIntOrNull() }
+
+    val comparison = versionA.compareTo(versionB)
+    if (comparison == 0) {
+        return a.compareTo(b)
+    }
+    return comparison
 }

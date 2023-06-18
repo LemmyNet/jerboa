@@ -172,4 +172,14 @@ class UtilsKtTest {
         val durationString = formatDuration(date, true)
         assertEquals("1 day", durationString)
     }
+
+    @Test
+    fun compareVersions() {
+        assertEquals(-1, compareVersions("0.0.1", "0.0.2"))
+        assertEquals(1, compareVersions("0.0.10", "0.0.2"))
+        assertEquals(1, compareVersions("0.1.10", "0.1.2"))
+        assertEquals(0, compareVersions("0.1.2", "0.1.2"))
+        assertEquals(-1, compareVersions("0.1.2-alpha1", "0.1.2-beta1"))
+        assertEquals(1, compareVersions("0.1.2-beta1", "0.1.2-alpha2"))
+    }
 }
