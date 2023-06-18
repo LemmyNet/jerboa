@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.datatypes.CommentReplyView
@@ -22,14 +21,15 @@ import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetUnreadCount
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.db.Account
-import com.jerboa.serializeToMap
-import com.jerboa.toastException
 import com.jerboa.ui.components.community.blockCommunityRoutine
 import com.jerboa.ui.components.person.blockPersonRoutine
 import com.jerboa.ui.components.post.deletePostRoutine
 import com.jerboa.ui.components.post.fetchPostsRoutine
 import com.jerboa.ui.components.post.likePostRoutine
 import com.jerboa.ui.components.post.savePostRoutine
+import com.jerboa.util.VoteType
+import com.jerboa.util.serializeToMap
+import com.jerboa.util.toastException
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {

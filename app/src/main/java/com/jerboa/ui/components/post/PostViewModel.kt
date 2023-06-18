@@ -9,11 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.jerboa.CommentNodeData
-import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
@@ -23,13 +20,16 @@ import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.api.GetComments
 import com.jerboa.datatypes.api.GetPost
 import com.jerboa.db.Account
-import com.jerboa.serializeToMap
-import com.jerboa.toastException
 import com.jerboa.ui.components.comment.deleteCommentRoutine
 import com.jerboa.ui.components.comment.likeCommentRoutine
 import com.jerboa.ui.components.comment.saveCommentRoutine
 import com.jerboa.ui.components.community.blockCommunityRoutine
 import com.jerboa.ui.components.person.blockPersonRoutine
+import com.jerboa.util.CommentNodeData
+import com.jerboa.util.VoteType
+import com.jerboa.util.buildCommentsTree
+import com.jerboa.util.serializeToMap
+import com.jerboa.util.toastException
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6

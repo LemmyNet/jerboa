@@ -36,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonMentionView
 import com.jerboa.datatypes.PersonSafe
@@ -52,6 +51,7 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
+import com.jerboa.util.VoteType
 
 @Composable
 fun CommentMentionNodeHeader(

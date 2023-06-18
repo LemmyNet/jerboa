@@ -28,11 +28,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.loginFirstToast
-import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -41,6 +38,9 @@ import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.util.VoteType
+import com.jerboa.util.loginFirstToast
+import com.jerboa.util.scrollToTop
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

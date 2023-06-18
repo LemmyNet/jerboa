@@ -26,16 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.jerboa.R
-import com.jerboa.VoteType
-import com.jerboa.commentsToFlatNodes
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.getLocalizedStringForUserTab
-import com.jerboa.isScrolledToEnd
-import com.jerboa.loginFirstToast
-import com.jerboa.pagerTabIndicatorOffset2
-import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
@@ -50,6 +43,13 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.util.VoteType
+import com.jerboa.util.commentsToFlatNodes
+import com.jerboa.util.getLocalizedStringForUserTab
+import com.jerboa.util.isScrolledToEnd
+import com.jerboa.util.loginFirstToast
+import com.jerboa.util.pagerTabIndicatorOffset2
+import com.jerboa.util.scrollToTop
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

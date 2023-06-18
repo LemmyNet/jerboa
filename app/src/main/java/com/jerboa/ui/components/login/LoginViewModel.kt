@@ -19,9 +19,9 @@ import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
-import com.jerboa.fetchInitialData
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.util.fetchInitialData
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 

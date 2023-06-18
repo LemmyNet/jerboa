@@ -22,7 +22,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.jerboa.R
-import com.jerboa.communityNameShown
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.CommunityView
 import com.jerboa.datatypes.sampleCommunitySafe
@@ -35,6 +34,7 @@ import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.util.communityNameShown
 
 @Composable
 fun CommunityName(

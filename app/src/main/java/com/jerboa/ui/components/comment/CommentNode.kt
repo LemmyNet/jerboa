@@ -51,15 +51,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.Border
-import com.jerboa.CommentNodeData
-import com.jerboa.InstantScores
 import com.jerboa.R
-import com.jerboa.VoteType
-import com.jerboa.border
-import com.jerboa.buildCommentsTree
-import com.jerboa.calculateCommentOffset
-import com.jerboa.calculateNewInstantScores
 import com.jerboa.datatypes.Comment
 import com.jerboa.datatypes.CommentView
 import com.jerboa.datatypes.CommunityModeratorView
@@ -72,8 +64,6 @@ import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.db.Account
-import com.jerboa.isModerator
-import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -87,6 +77,16 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
+import com.jerboa.util.Border
+import com.jerboa.util.CommentNodeData
+import com.jerboa.util.InstantScores
+import com.jerboa.util.VoteType
+import com.jerboa.util.border
+import com.jerboa.util.buildCommentsTree
+import com.jerboa.util.calculateCommentOffset
+import com.jerboa.util.calculateNewInstantScores
+import com.jerboa.util.isModerator
+import com.jerboa.util.isPostCreator
 
 @Composable
 fun CommentNodeHeader(

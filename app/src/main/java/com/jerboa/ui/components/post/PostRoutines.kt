@@ -3,7 +3,6 @@ package com.jerboa.ui.components.post
 import android.content.Context
 import androidx.compose.runtime.MutableState
 import arrow.core.Either
-import com.jerboa.VoteType
 import com.jerboa.api.deletePostWrapper
 import com.jerboa.api.fetchPostsWrapper
 import com.jerboa.api.likePostWrapper
@@ -13,6 +12,7 @@ import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.DeletePost
 import com.jerboa.db.Account
+import com.jerboa.util.VoteType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

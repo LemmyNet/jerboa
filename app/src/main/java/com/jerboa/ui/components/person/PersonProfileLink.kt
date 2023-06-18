@@ -21,10 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.samplePersonSafe
-import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.TextBadge
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.util.personNameShown
 
 @Composable
 fun PersonName(

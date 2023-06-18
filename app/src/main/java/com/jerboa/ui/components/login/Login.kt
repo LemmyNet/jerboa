@@ -31,11 +31,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
 import com.jerboa.datatypes.api.Login
 import com.jerboa.db.Account
-import com.jerboa.onAutofill
+import com.jerboa.util.DEFAULT_LEMMY_INSTANCES
+import com.jerboa.util.onAutofill
 
 val BANNED_INSTANCES = listOf("wolfballs.com")
 

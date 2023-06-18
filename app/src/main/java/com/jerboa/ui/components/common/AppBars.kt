@@ -13,10 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -49,11 +46,11 @@ import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.Account
-import com.jerboa.loginFirstToast
-import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
-import com.jerboa.unreadCountTotal
+import com.jerboa.util.loginFirstToast
+import com.jerboa.util.siFormat
+import com.jerboa.util.unreadCountTotal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

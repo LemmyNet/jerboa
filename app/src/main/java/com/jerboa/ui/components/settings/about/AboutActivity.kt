@@ -31,8 +31,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
-import com.jerboa.openLink
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.util.openLink
 
 const val githubUrl = "https://github.com/dessalines/jerboa"
 const val jerboaMatrixChat = "https://matrix.to/#/#jerboa-dev:matrix.org"

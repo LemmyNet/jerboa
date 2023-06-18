@@ -26,8 +26,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
 import coil.ImageLoader
 import com.jerboa.R
-import com.jerboa.convertSpToPx
-import com.jerboa.openLink
+import com.jerboa.util.convertSpToPx
+import com.jerboa.util.openLink
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration

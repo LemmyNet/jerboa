@@ -62,7 +62,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.ListingType
@@ -90,7 +89,8 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
-import com.jerboa.unreadCountTotal
+import com.jerboa.util.PostViewMode
+import com.jerboa.util.unreadCountTotal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

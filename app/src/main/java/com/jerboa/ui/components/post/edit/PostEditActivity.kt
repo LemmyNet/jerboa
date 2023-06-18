@@ -22,12 +22,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.db.AccountViewModel
-import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.util.imageInputStreamFromUri
 import kotlinx.coroutines.launch
 
 @Composable

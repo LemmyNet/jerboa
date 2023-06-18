@@ -23,8 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
-import com.jerboa.UnreadOrAll
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
+import com.jerboa.util.UnreadOrAll
 
 @Composable
 fun InboxHeader(

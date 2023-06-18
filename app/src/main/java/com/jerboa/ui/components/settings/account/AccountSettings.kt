@@ -23,10 +23,10 @@ import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.api.SaveUserSettings
 import com.jerboa.db.Account
-import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.theme.*
+import com.jerboa.util.imageInputStreamFromUri
 import kotlinx.coroutines.launch
 
 // TODO replace all these

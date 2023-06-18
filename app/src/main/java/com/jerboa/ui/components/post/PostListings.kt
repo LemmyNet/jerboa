@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jerboa.PostViewMode
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.PostView
@@ -29,10 +28,11 @@ import com.jerboa.datatypes.Tagline
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
-import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.Tagline
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.util.PostViewMode
+import com.jerboa.util.isScrolledToEnd
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

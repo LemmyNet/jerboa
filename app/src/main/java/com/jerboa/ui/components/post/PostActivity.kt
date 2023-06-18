@@ -39,14 +39,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import arrow.core.Either
-import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.datatypes.CommentSortType
 import com.jerboa.db.AccountViewModel
-import com.jerboa.getCommentParentId
-import com.jerboa.getDepthFromComment
-import com.jerboa.isModerator
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
@@ -57,6 +52,11 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.util.PostViewMode
+import com.jerboa.util.VoteType
+import com.jerboa.util.getCommentParentId
+import com.jerboa.util.getDepthFromComment
+import com.jerboa.util.isModerator
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

@@ -36,8 +36,6 @@ import com.jerboa.R
 import com.jerboa.datatypes.PersonViewSafe
 import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.samplePersonView
-import com.jerboa.getLocalizedSortingTypeName
-import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.ImageViewerDialog
@@ -50,6 +48,8 @@ import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
 import com.jerboa.ui.theme.muted
+import com.jerboa.util.getLocalizedSortingTypeName
+import com.jerboa.util.personNameShown
 
 @Composable
 fun PersonProfileTopSection(
