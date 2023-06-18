@@ -105,10 +105,10 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
             dismissOnBackPress = true,
             dismissOnClickOutside = false,
             usePlatformDefaultWidth = false,
-        )
+        ),
     ) {
         Box(
-            Modifier.background(backgroundColor.value)
+            Modifier.background(backgroundColor.value),
         ) {
             Image(
                 painter = rememberAsyncImagePainter(url, imageLoader = imageLoader),
