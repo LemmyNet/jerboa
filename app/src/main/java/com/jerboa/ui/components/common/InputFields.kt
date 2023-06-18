@@ -55,11 +55,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
@@ -585,13 +585,17 @@ fun PreviewLines(
     text: String,
     modifier: Modifier = Modifier,
 ) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyMedium,
-        maxLines = 5,
-        overflow = TextOverflow.Ellipsis,
+    Row(
         modifier = modifier,
-    )
+    ) {
+        MyMarkdownText(
+            markdown = text,
+            onClick = {},
+            maxLines = 5,
+            style = MaterialTheme.typography.bodyMedium,
+            includeImages = false,
+        )
+    }
 }
 
 @Composable
@@ -600,12 +604,18 @@ fun MyMarkdownText(
     color: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
+    maxLines: Int? = null,
+    style: TextStyle = MaterialTheme.typography.bodyLarge,
+    includeImages: Boolean = true,
 ) {
     MarkdownHelper.CreateMarkdownView(
         markdown = markdown,
         color = color,
         onClick = onClick,
         onLongClick = onLongClick,
+        maxLines = maxLines,
+        style = style,
+        includeImages = includeImages,
     )
 }
 

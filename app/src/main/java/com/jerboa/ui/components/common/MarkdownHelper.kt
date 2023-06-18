@@ -41,6 +41,7 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TableAwareMovementMethod
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.html.HtmlPlugin
+import io.noties.markwon.html.TagHandlerNoOp
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
@@ -123,6 +124,7 @@ class LemmyLinkPlugin : AbstractMarkwonPlugin() {
 
 object MarkdownHelper {
     private var markwon: Markwon? = null
+    private var noImageMarkwon: Markwon? = null
 
     fun init(navController: NavController, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
         val context = navController.context
@@ -131,8 +133,7 @@ object MarkdownHelper {
             .placeholder(R.drawable.ic_launcher_foreground)
             .build()
 
-        markwon = Markwon.builder(context)
-            .usePlugin(CoilImagesPlugin.create(context, loader))
+        val commonMarkwonBuilder = Markwon.builder(context)
             // email urls interfere with lemmy links
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
             .usePlugin(LemmyLinkPlugin())
@@ -141,7 +142,6 @@ object MarkdownHelper {
             // use TableAwareLinkMovementMethod to handle clicks inside tables,
             // wraps LinkMovementMethod internally
             .usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
-            .usePlugin(HtmlPlugin.create())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { _, link ->
@@ -149,6 +149,16 @@ object MarkdownHelper {
                     }
                 }
             })
+
+        // main markdown parser has coil + html on
+        markwon = commonMarkwonBuilder
+            .usePlugin(CoilImagesPlugin.create(context, loader))
+            .usePlugin(HtmlPlugin.create())
+            .build()
+
+        // no image parser has html off
+        noImageMarkwon = commonMarkwonBuilder
+            .usePlugin(HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) })
             .build()
     }
 
@@ -157,6 +167,7 @@ object MarkdownHelper {
      */
     fun init(context: Context) {
         markwon = Markwon.builder(context).build()
+        noImageMarkwon = Markwon.builder(context).build()
     }
 
     @Composable
@@ -165,10 +176,11 @@ object MarkdownHelper {
         color: Color = Color.Unspecified,
         onClick: (() -> Unit)? = null,
         onLongClick: (() -> Unit)? = null,
+        maxLines: Int? = null,
+        style: TextStyle = MaterialTheme.typography.bodyLarge,
+        includeImages: Boolean = true,
     ) {
-        val style = MaterialTheme.typography.bodyLarge
         val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
-
         AndroidView(
             factory = { ctx ->
                 createTextView(
@@ -180,13 +192,15 @@ object MarkdownHelper {
                     viewId = null,
                     onClick = onClick,
                     onLongClick = onLongClick,
+                    maxLines = maxLines ?: Int.MAX_VALUE,
                 )
             },
             update = { textView ->
-                markwon!!.setMarkdown(textView, markdown)
-//            if (disableLinkMovementMethod) {
-//                textView.movementMethod = null
-//            }
+                if (includeImages) {
+                    markwon!!.setMarkdown(textView, markdown)
+                } else {
+                    noImageMarkwon!!.setMarkdown(textView, markdown)
+                }
             },
         )
     }
