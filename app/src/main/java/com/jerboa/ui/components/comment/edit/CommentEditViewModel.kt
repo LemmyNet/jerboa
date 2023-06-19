@@ -55,9 +55,14 @@ class CommentEditViewModel : ViewModel() {
                 focusManager.clearFocus()
 
                 // Update all the views which might have your comment
-                personProfileViewModel.updateComment(cv)
-                postViewModel.updateComment(cv)
+                when (val res = editCommentRes) {
+                    is ApiState.Success -> {
+                        personProfileViewModel.updateComment(res.data.comment_view)
+                        postViewModel.updateComment(res.data.comment_view)
+                    }
 
+                    else -> {}
+                }
                 navController.navigateUp()
             }
         }
