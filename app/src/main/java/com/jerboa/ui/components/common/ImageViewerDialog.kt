@@ -112,7 +112,9 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
             usePlatformDefaultWidth = false,
         ),
     ) {
-        Box(Modifier.background(backgroundColor.value)) {
+        Box(
+            Modifier.background(backgroundColor.value),
+        ) {
             Image(
                 painter = rememberAsyncImagePainter(url, imageLoader = imageLoader),
                 contentDescription = null,
@@ -121,7 +123,10 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
                     .zoomable(
                         zoomState = rememberZoomState(),
                         onTap = { showTopBar = !showTopBar },
-                    ),
+                    )
+                    .clickable {
+                        onBackRequest()
+                    },
             )
 
             Row(
