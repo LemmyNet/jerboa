@@ -185,6 +185,7 @@
     <string name="look_and_feel_show_navigation_bar">Show navigation bar</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Show voting arrows in list view</string>
     <string name="look_and_feel_show_parent_comment_navigation_buttons">Show parent comment navigation buttons</string>
+    <string name="look_and_feel_navigate_parent_comments_with_volume_buttons">Navigate parent comments with volume buttons</string>
     <string name="look_and_feel_theme">Theme</string>
     <string name="look_and_feel_theme_black">Black</string>
     <string name="look_and_feel_theme_color">Theme color</string>

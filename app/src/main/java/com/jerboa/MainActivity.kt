@@ -450,6 +450,7 @@ class MainActivity : ComponentActivity() {
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
+                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
                             onClickSortType = { commentSortType ->
                                 val postId = it.arguments?.getInt("id")!!
                                 postViewModel.fetchPost(
@@ -497,6 +498,7 @@ class MainActivity : ComponentActivity() {
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
+                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: true,
                             onClickSortType = { commentSortType ->
                                 val commentId = it.arguments?.getInt("id")!!
                                 postViewModel.fetchPost(

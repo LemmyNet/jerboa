@@ -62,6 +62,9 @@ fun LookAndFeelActivity(
     val showParentCommentNavigationButtonsState = rememberBooleanSettingState(
         settings?.showParentCommentNavigationButtons ?: true,
     )
+    val navigateParentCommentsWithVolumeButtonsState = rememberBooleanSettingState(
+        settings?.navigateParentCommentsWithVolumeButtons ?: false,
+    )
     val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
     val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)
 
@@ -83,6 +86,7 @@ fun LookAndFeelActivity(
                 showCommentActionBarByDefault = showCommentActionBarByDefaultState.value,
                 showVotingArrowsInListView = showVotingArrowsInListViewState.value,
                 showParentCommentNavigationButtons = showParentCommentNavigationButtonsState.value,
+                navigateParentCommentsWithVolumeButtons = navigateParentCommentsWithVolumeButtonsState.value,
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
             ),
@@ -203,6 +207,13 @@ fun LookAndFeelActivity(
                     state = showParentCommentNavigationButtonsState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_show_parent_comment_navigation_buttons))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = navigateParentCommentsWithVolumeButtonsState,
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_navigate_parent_comments_with_volume_buttons))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

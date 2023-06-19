@@ -3,6 +3,7 @@
 package com.jerboa.ui.components.post
 
 import android.util.Log
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -32,15 +34,23 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -65,6 +75,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -84,7 +95,7 @@ fun CommentsHeaderTitle(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
@@ -98,6 +109,7 @@ fun PostActivity(
     showActionBarByDefault: Boolean,
     showVotingArrowsInListView: Boolean,
     showParentCommentNavigationButtons: Boolean,
+    navigateParentCommentsWithVolumeButtons: Boolean,
     onClickSortType: (CommentSortType) -> Unit,
     selectedSortType: CommentSortType,
 ) {
@@ -111,6 +123,7 @@ fun PostActivity(
     val unExpandedComments = remember { mutableStateListOf<Int>() }
     val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
     var showSortOptions by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
 
     val listState = rememberLazyListState()
     var lazyListIndexTracker: Int
@@ -158,8 +171,27 @@ fun PostActivity(
         )
     }
 
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .focusRequester(focusRequester)
+            .focusable()
+            .onKeyEvent { keyEvent ->
+                if (navigateParentCommentsWithVolumeButtons) {
+                    if (keyEvent.key == Key.VolumeUp) {
+                        scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                    } else if (keyEvent.key == Key.VolumeDown) {
+                        scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                    }
+                    true
+                } else {
+                    false
+                }
+            },
         bottomBar = {
             if (showParentCommentNavigationButtons) {
                 BottomAppBar(
@@ -167,9 +199,7 @@ fun PostActivity(
                     modifier = Modifier.height(50.dp),
                     content = {
                         IconButton(modifier = Modifier.weight(.5f), onClick = {
-                            scope.launch {
-                                parentListStateIndexes.lastOrNull { parentIndex -> parentIndex < listState.firstVisibleItemIndex }?.let { nearestPreviousIndex -> listState.animateScrollToItem(nearestPreviousIndex) }
-                            }
+                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
                         }) {
                             Icon(
                                 modifier = Modifier.scale(1.5f),
@@ -178,9 +208,7 @@ fun PostActivity(
                             )
                         }
                         IconButton(modifier = Modifier.weight(.5f), onClick = {
-                            scope.launch {
-                                parentListStateIndexes.firstOrNull { parentIndex -> parentIndex > listState.firstVisibleItemIndex }?.let { nearestNextIndex -> listState.animateScrollToItem(nearestNextIndex) }
-                            }
+                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
                         }) {
                             Icon(
                                 modifier = Modifier.scale(1.5f),
@@ -461,4 +489,30 @@ fun PostActivity(
             }
         },
     )
+}
+
+private fun scrollToNextParentComment(
+    scope: CoroutineScope,
+    parentListStateIndexes: SnapshotStateList<Int>,
+    listState: LazyListState,
+) {
+    scope.launch {
+        parentListStateIndexes.firstOrNull { parentIndex -> parentIndex > listState.firstVisibleItemIndex }
+            ?.let { nearestNextIndex ->
+                listState.animateScrollToItem(nearestNextIndex)
+            }
+    }
+}
+
+private fun scrollToPreviousParentComment(
+    scope: CoroutineScope,
+    parentListStateIndexes: SnapshotStateList<Int>,
+    listState: LazyListState,
+) {
+    scope.launch {
+        parentListStateIndexes.lastOrNull { parentIndex -> parentIndex < listState.firstVisibleItemIndex }
+            ?.let { nearestPreviousIndex ->
+                listState.animateScrollToItem(nearestPreviousIndex)
+            }
+    }
 }

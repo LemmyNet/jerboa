@@ -90,6 +90,11 @@ data class AppSettings(
     )
     val showParentCommentNavigationButtons: Boolean,
     @ColumnInfo(
+        name = "navigate_parent_comments_with_volume_buttons",
+        defaultValue = "0",
+    )
+    val navigateParentCommentsWithVolumeButtons: Boolean,
+    @ColumnInfo(
         name = "use_custom_tabs",
         defaultValue = "1",
     )
@@ -377,6 +382,9 @@ val MIGRATION_14_15 = object : Migration(14, 15) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
             "ALTER TABLE AppSettings add column show_parent_comment_navigation_buttons INTEGER NOT NULL default 1",
+        )
+        database.execSQL(
+            "ALTER TABLE AppSettings add column navigate_parent_comments_with_volume_buttons INTEGER NOT NULL default 0",
         )
     }
 }
