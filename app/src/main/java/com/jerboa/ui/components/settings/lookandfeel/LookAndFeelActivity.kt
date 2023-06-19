@@ -63,7 +63,7 @@ fun LookAndFeelActivity(
         settings?.showParentCommentNavigationButtons ?: true,
     )
     val navigateParentCommentsWithVolumeButtonsState = rememberBooleanSettingState(
-        settings?.navigateParentCommentsWithVolumeButtons ?: false,
+        settings?.navigateParentCommentsWithVolumeButtons ?: true,
     )
     val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
     val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)

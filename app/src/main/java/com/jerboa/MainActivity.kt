@@ -497,7 +497,7 @@ class MainActivity : ComponentActivity() {
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
-                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: true,
+                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
                             onClickSortType = { commentSortType ->
                                 postViewModel.updateSortType(commentSortType)
                                 postViewModel.getData(account)
