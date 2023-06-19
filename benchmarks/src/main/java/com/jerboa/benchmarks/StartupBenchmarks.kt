@@ -60,7 +60,7 @@ class StartupBenchmarks {
             measureBlock = {
                 startActivityAndWait()
                 closeChangeLogIfOpen()
-                waitUntilPostsActuallyVisible(false)
+                waitUntilPostsActuallyVisible(true , 3_000)
             },
         )
     }

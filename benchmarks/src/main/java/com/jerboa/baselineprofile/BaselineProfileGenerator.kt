@@ -51,7 +51,7 @@ class BaselineProfileGenerator {
             waitUntilLoadingDone()
             waitUntilPostsActuallyVisible()
             scrollThroughPostsShort()
-            doTypicalUserJourney()
+            doTypicalUserJourney(3)
         }
     }
 }

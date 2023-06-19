@@ -8,6 +8,7 @@ import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import com.jerboa.findOrFail
 import com.jerboa.findOrFailTimeout
+import com.jerboa.findTimeout
 import com.jerboa.retryOnStale
 import com.jerboa.scrollThrough
 import com.jerboa.scrollThroughShort
@@ -34,7 +35,12 @@ fun MacrobenchmarkScope.scrollThroughPostsOnce() {
 }
 
 fun MacrobenchmarkScope.openPost(): Boolean {
-    val post = device.findOrFail("jerboa:posttitle", "Post not found")
+    val post = device.findTimeout("jerboa:posttitle", 2_000)
+    if (post == null) {
+        scrollThroughPostsOnce()
+        return openPost()
+    }
+
     device.retryOnStale(post, "jerboa:posttitle") {
         it.click()
     }
@@ -48,14 +54,7 @@ fun MacrobenchmarkScope.openPost(): Boolean {
 }
 
 fun MacrobenchmarkScope.closePost() {
-    var backBtn = device.findObject(By.res("jerboa:back"))
-
-    while (backBtn == null) {
-        val comments = UiScrollable(UiSelector().scrollable(true).resourceId("jerboa:comments"))
-        comments.scrollBackward()
-        backBtn = device.findObject(By.res("jerboa:back"))
-    }
-    backBtn.click()
+    device.pressBack()
 }
 
 fun MacrobenchmarkScope.scrollThroughComments() {
@@ -68,17 +67,15 @@ fun MacrobenchmarkScope.scrollThroughComments() {
 
     repeat(5) { comments.flingForward() }
     repeat(2) { comments.flingBackward() }
-    comments.scrollBackward() // Makes back btn visible
 }
 
 fun MacrobenchmarkScope.doTypicalUserJourney(repeat: Int = 5) {
     repeat(repeat) {
+        waitUntilPostsActuallyVisible()
         scrollThroughPostsOnce()
-        device.waitForIdle()
         if (openPost()) {
             scrollThroughComments()
         }
-        device.waitForIdle()
         closePost()
     }
 }
@@ -100,7 +97,7 @@ fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(retry: Boolean = true, tim
 }
 
 fun MacrobenchmarkScope.openOptions() {
-    device.findOrFail("jerboa:options").click()
+    device.findOrFailTimeout("jerboa:options", "Options not found", timeout = 2).click()
 }
 
 fun MacrobenchmarkScope.clickRefresh() {

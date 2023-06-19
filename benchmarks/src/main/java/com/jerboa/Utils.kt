@@ -48,7 +48,6 @@ fun UiDevice.findTimeout(resId: String, timeout: Long = 5000): UiObject2? {
     return wait(Until.findObject(By.res(resId)), timeout)
 }
 
-
 // Somehow you can have device.findObject().click() be instantly Stale
 // This is an attempt at solving that
 fun UiDevice.retryOnStale(element: UiObject2, resId: String, self: (UiObject2) -> Unit) {

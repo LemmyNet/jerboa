@@ -108,7 +108,8 @@ fun HomeActivity(
         },
         content = {
             Scaffold(
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    .semantics { testTagsAsResourceId = true },
                 snackbarHost = { SnackbarHost(snackbarHostState) },
                 topBar = {
                     MainTopBar(
