@@ -626,7 +626,7 @@ fun CommentFooterLine(
 @Preview
 @Composable
 fun CommentNodesPreview() {
-    MarkdownHelper.init(LocalContext.current, useCustomTabs = true, usePrivateTabs = false)
+    MarkdownHelper.init(LocalContext.current)
     val comments = listOf(
         sampleSecondReplyCommentView,
         sampleCommentView,
