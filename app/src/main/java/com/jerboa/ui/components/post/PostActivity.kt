@@ -117,7 +117,6 @@ fun PostActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val scope = rememberCoroutineScope()
 
-
     val parentListStateIndexes = remember { mutableStateListOf<Int>() }
     val firstComment = postViewModel.commentTree.firstOrNull()?.commentView?.comment
     val depth = getDepthFromComment(firstComment)
@@ -191,7 +190,7 @@ fun PostActivity(
                             Icon(
                                 modifier = Modifier.scale(1.5f),
                                 imageVector = Icons.Filled.KeyboardArrowUp,
-                                contentDescription = "Up"
+                                contentDescription = "Up",
                             )
                         }
                         IconButton(modifier = Modifier.weight(.5f), onClick = {
@@ -218,10 +217,11 @@ fun PostActivity(
                             Icon(
                                 modifier = Modifier.scale(1.5f),
                                 imageVector = Icons.Filled.KeyboardArrowDown,
-                                contentDescription = "Down"
+                                contentDescription = "Down",
                             )
                         }
-                    })
+                    },
+                )
             }
         },
         topBar = {
