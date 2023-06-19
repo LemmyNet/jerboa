@@ -42,9 +42,14 @@ fun JerboaTheme(
 
     val colorPair = when (themeColor) {
         ThemeColor.Dynamic -> dynamicPair
-        ThemeColor.Green -> green()
-        ThemeColor.Pink -> pink()
+        ThemeColor.Beach -> beach()
         ThemeColor.Blue -> blue()
+        ThemeColor.Crimson -> crimson()
+        ThemeColor.Green -> green()
+        ThemeColor.Grey -> grey()
+        ThemeColor.Pink -> pink()
+        ThemeColor.Purple -> purple()
+        ThemeColor.Woodland -> woodland()
     }
 
     fun makeBlack(darkTheme: ColorScheme): ColorScheme {

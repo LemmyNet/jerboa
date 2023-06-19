@@ -16,7 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
+import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
+import com.alorma.compose.settings.storage.base.rememberIntSettingState
+import com.alorma.compose.settings.ui.SettingsCheckbox
+import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
@@ -82,7 +85,9 @@ fun SettingsForm(
 ) {
     val luv = when (val siteRes = siteViewModel.siteRes) {
         is ApiState.Success -> siteRes.data.my_user?.local_user_view
-        else -> { null }
+        else -> {
+            null
+        }
     }
 
     val loading = when (accountSettingsViewModel.saveUserSettingsRes) {
@@ -104,22 +109,19 @@ fun SettingsForm(
     }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
-    var defaultSortType by rememberSaveable { mutableStateOf(luv?.local_user?.default_sort_type) }
-    var defaultListingType by rememberSaveable {
-        mutableStateOf(luv?.local_user?.default_listing_type)
-    }
-    var showAvatars by rememberSaveable { mutableStateOf(luv?.local_user?.show_avatars) }
-    var showNsfw by rememberSaveable { mutableStateOf(luv?.local_user?.show_nsfw ?: false) }
-    var showScores by rememberSaveable { mutableStateOf(luv?.local_user?.show_scores) }
-    var showBotAccount by rememberSaveable { mutableStateOf(luv?.local_user?.show_bot_accounts) }
-    var botAccount by rememberSaveable { mutableStateOf(luv?.person?.bot_account) }
-    var showReadPosts by rememberSaveable { mutableStateOf(luv?.local_user?.show_read_posts) }
-    var showNewPostNotifs by rememberSaveable {
-        mutableStateOf(luv?.local_user?.show_new_post_notifs)
-    }
-    var sendNotificationsToEmail by rememberSaveable {
-        mutableStateOf(luv?.local_user?.send_notifications_to_email)
-    }
+    val defaultSortType = rememberIntSettingState(luv?.local_user?.default_sort_type?.ordinal ?: 0)
+    val defaultListingType =
+        rememberIntSettingState(luv?.local_user?.default_listing_type?.ordinal ?: 0)
+    val showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
+    val showNsfw = rememberBooleanSettingState(luv?.local_user?.show_nsfw ?: false)
+    val showScores = rememberBooleanSettingState(luv?.local_user?.show_scores ?: false)
+    val showBotAccount = rememberBooleanSettingState(luv?.local_user?.show_bot_accounts ?: false)
+    val botAccount = rememberBooleanSettingState(luv?.person?.bot_account ?: false)
+    val showReadPosts = rememberBooleanSettingState(luv?.local_user?.show_read_posts ?: false)
+    val showNewPostNotifs =
+        rememberBooleanSettingState(luv?.local_user?.show_new_post_notifs ?: false)
+    val sendNotificationsToEmail =
+        rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
     val form = SaveUserSettings(
         display_name = displayName,
         bio = bio.text,
@@ -129,17 +131,17 @@ fun SettingsForm(
         banner = banner,
         matrix_user_id = matrixUserId,
         interface_language = interfaceLang,
-        bot_account = botAccount,
-        default_sort_type = defaultSortType,
-        send_notifications_to_email = sendNotificationsToEmail,
-        show_avatars = showAvatars,
-        show_bot_accounts = showBotAccount,
-        show_nsfw = showNsfw,
-        default_listing_type = defaultListingType,
-        show_new_post_notifs = showNewPostNotifs,
-        show_read_posts = showReadPosts,
+        bot_account = botAccount.value,
+        default_sort_type = SortType.values()[defaultSortType.value],
+        send_notifications_to_email = sendNotificationsToEmail.value,
+        show_avatars = showAvatars.value,
+        show_bot_accounts = showBotAccount.value,
+        show_nsfw = showNsfw.value,
+        default_listing_type = ListingType.values()[defaultListingType.value],
+        show_new_post_notifs = showNewPostNotifs.value,
+        show_read_posts = showReadPosts.value,
         theme = theme,
-        show_scores = showScores,
+        show_scores = showScores.value,
         discussion_languages = null,
     )
     Column(
@@ -213,18 +215,19 @@ fun SettingsForm(
                 }, showImage = false)
             }
         }
-        MyDropDown(
-            suggestions = listOf(
+        SettingsListDropdown(
+            state = defaultListingType,
+            title = { Text(text = stringResource(R.string.account_settings_default_listing_type)) },
+            items = listOf(
                 stringResource(R.string.account_settings_all),
                 stringResource(R.string.account_settings_local),
                 stringResource(R.string.account_settings_subscribed),
             ),
-            onValueChange = { defaultListingType = ListingType.values()[it] },
-            initialValue = defaultListingType?.ordinal ?: 0,
-            label = stringResource(R.string.account_settings_default_listing_type),
         )
-        MyDropDown(
-            suggestions = listOf(
+        SettingsListDropdown(
+            state = defaultSortType,
+            title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
+            items = listOf(
                 stringResource(R.string.account_settings_active),
                 stringResource(R.string.account_settings_hot),
                 stringResource(R.string.account_settings_new),
@@ -237,59 +240,56 @@ fun SettingsForm(
                 stringResource(R.string.account_settings_mostcomments),
                 stringResource(R.string.account_settings_newcomments),
             ),
-            onValueChange = { defaultSortType = SortType.values()[it] },
-            initialValue = defaultSortType?.ordinal ?: 0,
-            label = stringResource(R.string.account_settings_default_sort_type),
         )
 
-        MyCheckBox(
-            checked = showNsfw,
-            label = stringResource(R.string.account_settings_show_nsfw),
-            onCheckedChange = { showNsfw = it },
-            modifier = Modifier.padding(MEDIUM_PADDING),
+        SettingsCheckbox(
+            state = showNsfw,
+            title = {
+                Text(text = stringResource(R.string.account_settings_show_nsfw))
+            },
         )
-        MyCheckBox(
-            checked = showAvatars == true,
-            label = stringResource(R.string.account_settings_show_avatars),
-            onCheckedChange = { showAvatars = it },
-            modifier = Modifier.padding(MEDIUM_PADDING),
+        SettingsCheckbox(
+            state = showAvatars,
+            title = {
+                Text(text = stringResource(R.string.account_settings_show_avatars))
+            },
         )
-        MyCheckBox(
-            checked = showReadPosts == true,
-            label = stringResource(R.string.account_settings_show_read_posts),
-            onCheckedChange = { showReadPosts = it },
-            modifier = Modifier.padding(MEDIUM_PADDING),
+        SettingsCheckbox(
+            state = showReadPosts,
+            title = {
+                Text(text = stringResource(R.string.account_settings_show_read_posts))
+            },
         )
-        MyCheckBox(
-            checked = botAccount == true,
-            label = stringResource(R.string.account_settings_bot_account),
-            onCheckedChange = { botAccount = it },
-            modifier = Modifier.padding(MEDIUM_PADDING),
+        SettingsCheckbox(
+            state = botAccount,
+            title = {
+                Text(text = stringResource(R.string.account_settings_bot_account))
+            },
         )
-        MyCheckBox(
-            checked = showBotAccount == true,
-            label = stringResource(R.string.account_settings_show_bot_accounts),
-            onCheckedChange = { showBotAccount = it },
-            modifier = Modifier.padding(MEDIUM_PADDING),
+        SettingsCheckbox(
+            state = showBotAccount,
+            title = {
+                Text(text = stringResource(R.string.account_settings_show_bot_accounts))
+            },
         )
-        MyCheckBox(
-            checked = showScores == true,
-            label = stringResource(R.string.account_settings_show_scores),
-            onCheckedChange = { showScores = it },
-            modifier = Modifier.padding(MEDIUM_PADDING),
+        SettingsCheckbox(
+            state = showScores,
+            title = {
+                Text(text = stringResource(R.string.account_settings_show_scores))
+            },
         )
-        MyCheckBox(
-            checked = showNewPostNotifs == true,
-            label = stringResource(R.string.account_settings_show_notifications_for_new_posts),
-            onCheckedChange = { showNewPostNotifs = it },
-            modifier = Modifier.padding(MEDIUM_PADDING),
+        SettingsCheckbox(
+            state = showNewPostNotifs,
+            title = {
+                Text(text = stringResource(R.string.account_settings_show_notifications_for_new_posts))
+            },
         )
-        MyCheckBox(
+        SettingsCheckbox(
             enabled = email.isNotEmpty(),
-            checked = sendNotificationsToEmail == true,
-            label = stringResource(R.string.account_settings_send_notifications_to_email),
-            onCheckedChange = { sendNotificationsToEmail = it },
-            modifier = Modifier.padding(MEDIUM_PADDING),
+            state = sendNotificationsToEmail,
+            title = {
+                Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
+            },
         )
         // Todo: Remove this
         Button(
@@ -302,10 +302,4 @@ fun SettingsForm(
             Text(text = stringResource(R.string.account_settings_save_settings))
         }
     }
-}
-
-@Preview
-@Composable
-fun MyCheckBoxPreview() {
-    MyCheckBox(checked = true, label = " Test", onCheckedChange = {})
 }

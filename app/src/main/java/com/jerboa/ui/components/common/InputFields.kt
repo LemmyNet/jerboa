@@ -10,7 +10,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -30,12 +29,8 @@ import androidx.compose.material.icons.outlined.Subscript
 import androidx.compose.material.icons.outlined.Superscript
 import androidx.compose.material.icons.outlined.Title
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +48,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -73,7 +67,6 @@ import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 import kotlinx.coroutines.launch
 
@@ -563,85 +556,6 @@ fun MarkdownHelperBar(
                 contentDescription = stringResource(R.string.markdownHelper_formatSuperscript),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
-        }
-    }
-}
-
-@Composable
-fun MyCheckBox(
-    checked: Boolean,
-    enabled: Boolean = true,
-    label: String,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-        .padding(SMALL_PADDING)
-        .fillMaxWidth(),
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(text = label)
-        Spacer(modifier = Modifier.weight(1.0f))
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            enabled = enabled,
-        )
-    }
-}
-
-// https://stackoverflow.com/a/67111599
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyDropDown(
-    suggestions: List<String>,
-    onValueChange: (Int) -> Unit,
-    initialValue: Int,
-    label: String,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(suggestions[initialValue]) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
-        },
-    ) {
-        TextField(
-            readOnly = true,
-            value = selectedText,
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth(),
-            onValueChange = { },
-            label = { Text(label) },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded,
-                )
-            },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            },
-        ) {
-            suggestions.forEach { selectionOption ->
-                DropdownMenuItem(
-                    text = {
-                        Text(text = selectionOption)
-                    },
-                    onClick = {
-                        selectedText = selectionOption
-                        expanded = false
-                        onValueChange(suggestions.indexOf(selectedText))
-                    },
-                )
-            }
         }
     }
 }
