@@ -62,6 +62,8 @@ fun LookAndFeelActivity(
     val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
     val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)
 
+    val secureWindowState = rememberBooleanSettingState(settings?.secureWindow ?: false)
+
     val snackbarHostState = remember { SnackbarHostState() }
 	
     val scrollState = rememberScrollState()
@@ -81,6 +83,7 @@ fun LookAndFeelActivity(
                 showVotingArrowsInListView = showVotingArrowsInListViewState.value,
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
+                secureWindow = secureWindowState.value,
             ),
         )
     }
@@ -206,6 +209,13 @@ fun LookAndFeelActivity(
                     state = usePrivateTabsState,
                     title = {
                         Text(text = stringResource(id = R.string.look_and_feel_use_private_tabs))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = secureWindowState,
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_secure_window))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

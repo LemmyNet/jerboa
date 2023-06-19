@@ -262,7 +262,6 @@
     <string name="postListing_deleted">Raderad</string>
     <string name="postListing_reply">Svara på inlägg</string>
     <string name="privateMessage_reply">Svara på meddelande</string>
-    <string name="voteToggle">Växla Röstning</string>
     <string name="topAppBar_back">Tillbaka</string>
     <string name="person_profile_activity_about">Om</string>
     <string name="person_profile_activity_posts">Inlägg</string>

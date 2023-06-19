@@ -1,22 +1,28 @@
 package com.jerboa.ui.components.comment.edit
 
-import android.content.Context
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.jerboa.datatypes.CommentView
+import com.jerboa.api.API
+import com.jerboa.api.ApiState
+import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.types.CommentResponse
+import com.jerboa.datatypes.types.CommentView
+import com.jerboa.datatypes.types.EditComment
 import com.jerboa.db.Account
-import com.jerboa.ui.components.comment.editCommentRoutine
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
+import kotlinx.coroutines.launch
 
 class CommentEditViewModel : ViewModel() {
 
     var commentView = mutableStateOf<CommentView?>(null)
         private set
-    var loading = mutableStateOf(false)
+    var editCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     fun initialize(
@@ -27,24 +33,38 @@ class CommentEditViewModel : ViewModel() {
 
     fun editComment(
         content: String,
-        ctx: Context,
         navController: NavController,
         focusManager: FocusManager,
         account: Account,
         personProfileViewModel: PersonProfileViewModel,
         postViewModel: PostViewModel,
     ) {
-        editCommentRoutine(
-            commentView = commentView,
-            loading = loading,
-            content = content,
-            ctx = ctx,
-            scope = viewModelScope,
-            navController = navController,
-            focusManager = focusManager,
-            account = account,
-            personProfileViewModel = personProfileViewModel,
-            postViewModel = postViewModel,
-        )
+        viewModelScope.launch {
+            commentView.value?.also { cv ->
+                val form = EditComment(
+                    content = content,
+                    comment_id = cv.comment.id,
+                    auth = account.jwt,
+                )
+
+                editCommentRes = ApiState.Loading
+                editCommentRes =
+                    apiWrapper(
+                        API.getInstance().editComment(form),
+                    )
+                focusManager.clearFocus()
+
+                // Update all the views which might have your comment
+                when (val res = editCommentRes) {
+                    is ApiState.Success -> {
+                        personProfileViewModel.updateComment(res.data.comment_view)
+                        postViewModel.updateComment(res.data.comment_view)
+                    }
+
+                    else -> {}
+                }
+                navController.navigateUp()
+            }
+        }
     }
 }

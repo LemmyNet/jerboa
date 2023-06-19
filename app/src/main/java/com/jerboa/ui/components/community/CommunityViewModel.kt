@@ -1,164 +1,240 @@
 package com.jerboa.ui.components.community
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.Either
-import com.jerboa.VoteType
 import com.jerboa.api.API
-import com.jerboa.api.followCommunityWrapper
-import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.CommunityModeratorView
-import com.jerboa.datatypes.CommunityView
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.api.GetCommunity
-import com.jerboa.db.Account
-import com.jerboa.loginFirstToast
+import com.jerboa.api.ApiState
+import com.jerboa.api.apiWrapper
+import com.jerboa.appendData
+import com.jerboa.datatypes.types.BlockCommunity
+import com.jerboa.datatypes.types.BlockCommunityResponse
+import com.jerboa.datatypes.types.BlockPerson
+import com.jerboa.datatypes.types.BlockPersonResponse
+import com.jerboa.datatypes.types.CommunityResponse
+import com.jerboa.datatypes.types.CreatePostLike
+import com.jerboa.datatypes.types.DeletePost
+import com.jerboa.datatypes.types.FollowCommunity
+import com.jerboa.datatypes.types.GetCommunity
+import com.jerboa.datatypes.types.GetCommunityResponse
+import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.GetPostsResponse
+import com.jerboa.datatypes.types.PostResponse
+import com.jerboa.datatypes.types.PostView
+import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.SortType
+import com.jerboa.dedupePosts
+import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
-import com.jerboa.ui.components.person.blockPersonRoutine
-import com.jerboa.ui.components.post.deletePostRoutine
-import com.jerboa.ui.components.post.fetchPostsRoutine
-import com.jerboa.ui.components.post.likePostRoutine
-import com.jerboa.ui.components.post.savePostRoutine
+import com.jerboa.showBlockCommunityToast
+import com.jerboa.showBlockPersonToast
 import kotlinx.coroutines.launch
 
 class CommunityViewModel : ViewModel() {
-
-    var communityView by mutableStateOf<CommunityView?>(null)
-        private set
-    var moderators = mutableStateListOf<CommunityModeratorView>()
+    var communityRes: ApiState<GetCommunityResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    var loading = mutableStateOf(false)
-        private set
-    var posts = mutableStateListOf<PostView>()
-        private set
-    var page = mutableStateOf(1)
-        private set
-    var sortType = mutableStateOf(SortType.Active)
+    private var followCommunityRes: ApiState<CommunityResponse> by
+        mutableStateOf(ApiState.Empty)
+
+    var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    fun fetchPosts(
-        account: Account?,
-        communityIdOrName: Either<Int, String>,
-        nextPage: Boolean = false,
-        clear: Boolean = false,
-        changeSortType: SortType? = null,
-        ctx: Context,
-    ) {
-        fetchPostsRoutine(
-            posts = posts,
-            loading = loading,
-            page = page,
-            communityIdOrName = communityIdOrName,
-            listingType = mutableStateOf(ListingType.All),
-            sortType = sortType,
-            nextPage = nextPage,
-            clear = clear,
-            changeSortType = changeSortType,
-            account = account,
-            ctx = ctx,
-            scope = viewModelScope,
-        )
+    private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
+        mutableStateOf(ApiState.Empty)
+    private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+
+    var fetchingMore by mutableStateOf(false)
+        private set
+
+    var sortType by mutableStateOf(SortType.Active)
+        private set
+    var page by mutableStateOf(1)
+        private set
+
+    fun updateSortType(sortType: SortType) {
+        this.sortType = sortType
     }
 
-    fun likePost(voteType: VoteType, postView: PostView, account: Account?, ctx: Context) {
-        likePostRoutine(mutableStateOf(postView), posts, voteType, account, ctx, viewModelScope)
+    fun resetPage() {
+        page = 1
     }
 
-    fun savePost(postView: PostView, account: Account, ctx: Context) {
-        savePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
+    fun nextPage() {
+        page += 1
     }
 
-    fun deletePost(postView: PostView, account: Account, ctx: Context) {
-        deletePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
-    }
-
-    fun followCommunity(
-        cv: CommunityView,
-        account: Account?,
-        ctx: Context,
-    ) {
+    fun getCommunity(form: GetCommunity) {
         viewModelScope.launch {
-            account?.also { acct ->
-                communityView =
-                    followCommunityWrapper(communityView = cv, auth = acct.jwt, ctx = ctx)?.community_view
-            } ?: run {
-                loginFirstToast(ctx)
+            communityRes = ApiState.Loading
+            communityRes =
+                apiWrapper(
+                    API.getInstance().getCommunity(form.serializeToMap()),
+                )
+        }
+    }
+
+    fun getPosts(form: GetPosts) {
+        viewModelScope.launch {
+            postsRes = ApiState.Loading
+            postsRes =
+                apiWrapper(
+                    API.getInstance().getPosts(form.serializeToMap()),
+                )
+        }
+    }
+
+    fun appendPosts(form: GetPosts) {
+        viewModelScope.launch {
+            fetchingMore = true
+            val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+            // Only append when both new and existing are Successes
+            when (val existing = postsRes) {
+                is ApiState.Success -> {
+                    when (more) {
+                        is ApiState.Success -> {
+                            val newPostsDeduped = dedupePosts(more.data.posts, existing.data.posts)
+                            val appended = appendData(existing.data.posts, newPostsDeduped)
+                            val newPostRes = ApiState.Success(existing.data.copy(posts = appended))
+                            postsRes = newPostRes
+                            fetchingMore = false
+                        }
+
+                        is ApiState.Failure -> {
+                            fetchingMore = false
+                        }
+
+                        else -> {}
+                    }
+                }
+
+                else -> {}
             }
         }
     }
 
-    fun fetchCommunity(
-        idOrName: Either<Int, String>,
-        auth: String?,
-    ) {
-        val api = API.getInstance()
-
+    fun followCommunity(form: FollowCommunity) {
         viewModelScope.launch {
-            val idOrNameStr = idOrName.fold({ id -> id.toString() }, { it })
+            followCommunityRes = ApiState.Loading
+            followCommunityRes =
+                apiWrapper(API.getInstance().followCommunity(form))
 
-            try {
-                Log.d(
-                    "jerboa",
-                    "Fetching community: $idOrNameStr",
-                )
-                loading.value = true
+            // Copy that response to the communityRes
+            when (val followRes = followCommunityRes) {
+                is ApiState.Success -> {
+                    val cv = followRes.data.community_view
+                    when (val cRes = communityRes) {
+                        is ApiState.Success -> {
+                            val newCRes = cRes.data.copy(community_view = cv)
+                            communityRes = ApiState.Success(newCRes)
+                        }
 
-                val form = idOrName.fold({ id ->
-                    GetCommunity(id = id, auth = auth)
-                }, { name ->
-                    GetCommunity(name = name, auth = auth)
-                })
-                val out = retrofitErrorHandler(api.getCommunity(form = form.serializeToMap()))
-                communityView = out.community_view
-                moderators.clear()
-                moderators.addAll(out.moderators)
-            } catch (e: Exception) {
-                Log.e(
-                    "jerboa",
-                    e.toString(),
-                )
-            } finally {
-                loading.value = false
+                        else -> {}
+                    }
+                }
+
+                else -> {}
             }
         }
     }
 
-    fun blockCommunity(
-        account: Account,
-        ctx: Context,
-    ) {
-        communityView?.community?.also {
-            blockCommunityRoutine(
-                community = it,
-                block = true,
-                account = account,
-                ctx = ctx,
-                scope = viewModelScope,
-            )
+    fun likePost(form: CreatePostLike) {
+        viewModelScope.launch {
+            likePostRes = ApiState.Loading
+            likePostRes = apiWrapper(API.getInstance().likePost(form))
+
+            when (val likeRes = likePostRes) {
+                is ApiState.Success -> {
+                    updatePost(likeRes.data.post_view)
+                }
+
+                else -> {}
+            }
         }
     }
 
-    fun blockCreator(
-        creator: PersonSafe,
-        account: Account,
-        ctx: Context,
-    ) {
-        blockPersonRoutine(
-            person = creator,
-            block = true,
-            account = account,
-            ctx = ctx,
-            scope = viewModelScope,
-        )
+    fun savePost(form: SavePost) {
+        viewModelScope.launch {
+            savePostRes = ApiState.Loading
+            savePostRes = apiWrapper(API.getInstance().savePost(form))
+            when (val saveRes = savePostRes) {
+                is ApiState.Success -> {
+                    updatePost(saveRes.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun deletePost(form: DeletePost) {
+        viewModelScope.launch {
+            deletePostRes = ApiState.Loading
+            deletePostRes = apiWrapper(API.getInstance().deletePost(form))
+            when (val deletePost = deletePostRes) {
+                is ApiState.Success -> {
+                    updatePost(deletePost.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun blockCommunity(form: BlockCommunity, ctx: Context) {
+        viewModelScope.launch {
+            blockCommunityRes = ApiState.Loading
+            blockCommunityRes =
+                apiWrapper(API.getInstance().blockCommunity(form))
+
+            when (val blockCommunity = blockCommunityRes) {
+                is ApiState.Success -> {
+                    showBlockCommunityToast(blockCommunity, ctx)
+
+                    when (val existing = communityRes) {
+                        is ApiState.Success -> {
+                            val newRes =
+                                ApiState.Success(
+                                    existing.data.copy(
+                                        community_view =
+                                        blockCommunity.data.community_view,
+                                    ),
+                                )
+                            communityRes = newRes
+                        }
+
+                        else -> {}
+                    }
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun blockPerson(form: BlockPerson, ctx: Context) {
+        viewModelScope.launch {
+            blockPersonRes = ApiState.Loading
+            blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
+            showBlockPersonToast(blockPersonRes, ctx)
+        }
+    }
+
+    fun updatePost(postView: PostView) {
+        when (val existing = postsRes) {
+            is ApiState.Success -> {
+                val newPosts = findAndUpdatePost(existing.data.posts, postView)
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                postsRes = newRes
+            }
+
+            else -> {}
+        }
     }
 }
