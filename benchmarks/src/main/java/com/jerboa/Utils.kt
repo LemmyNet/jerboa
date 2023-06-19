@@ -41,8 +41,13 @@ fun UiDevice.findOrFailTimeout(resId: String): UiObject2 {
 }
 
 fun UiDevice.findOrFailTimeout(resId: String, failMsg: String, timeout: Long = 5000): UiObject2 {
-    return wait(Until.findObject(By.res(resId)), timeout) ?: throw IllegalStateException(failMsg)
+    return findTimeout(resId, timeout) ?: throw IllegalStateException(failMsg)
 }
+
+fun UiDevice.findTimeout(resId: String, timeout: Long = 5000): UiObject2? {
+    return wait(Until.findObject(By.res(resId)), timeout)
+}
+
 
 // Somehow you can have device.findObject().click() be instantly Stale
 // This is an attempt at solving that
