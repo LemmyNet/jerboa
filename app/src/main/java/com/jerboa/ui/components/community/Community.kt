@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -16,6 +17,7 @@ import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
+import com.jerboa.getLocalizedSortingTypeName
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -212,13 +214,14 @@ fun CommunityHeaderTitle(
     communityName: String,
     selectedSortType: SortType,
 ) {
+    val ctx = LocalContext.current
     Column {
         Text(
             text = communityName,
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = selectedSortType.toString(),
+            text = getLocalizedSortingTypeName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleMedium,
         )
     }

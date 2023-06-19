@@ -51,6 +51,7 @@ import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
+import com.jerboa.getLocalizedCommentSortTypeName
 import com.jerboa.isModerator
 import com.jerboa.newVote
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
@@ -70,13 +71,15 @@ import com.jerboa.ui.components.post.edit.PostEditViewModel
 fun CommentsHeaderTitle(
     selectedSortType: CommentSortType,
 ) {
+    val ctx = LocalContext.current
     Column {
         Text(
             text = stringResource(R.string.post_activity_comments),
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = selectedSortType.toString(),
+
+            text = getLocalizedCommentSortTypeName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleSmall,
         )
     }

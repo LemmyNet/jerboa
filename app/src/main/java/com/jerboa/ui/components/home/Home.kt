@@ -56,6 +56,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -73,6 +74,8 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.getLocalizedListingTypeName
+import com.jerboa.getLocalizedSortingTypeName
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
@@ -444,13 +447,14 @@ fun HomeHeaderTitle(
     selectedSortType: SortType,
     selectedListingType: ListingType,
 ) {
+    val ctx = LocalContext.current
     Column {
         Text(
-            text = selectedListingType.toString(),
+            text = getLocalizedListingTypeName(ctx, selectedListingType),
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = selectedSortType.toString(),
+            text = getLocalizedSortingTypeName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleSmall,
         )
     }

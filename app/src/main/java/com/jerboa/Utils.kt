@@ -853,7 +853,7 @@ fun nsfwCheck(postView: PostView): Boolean {
 
 @Throws(IOException::class)
 fun saveBitmap(
-    context: Context,
+    ctx: Context,
     inputStream: InputStream,
     mimeType: String?,
     displayName: String,
@@ -864,7 +864,7 @@ fun saveBitmap(
         put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Jerboa")
     }
 
-    val resolver = context.contentResolver
+    val resolver = ctx.contentResolver
     var uri: Uri? = null
 
     try {
@@ -914,36 +914,75 @@ fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> U
 /**
  * Converts a scalable pixel (sp) to an actual pixel (px)
  */
-fun convertSpToPx(sp: TextUnit, context: Context): Int {
-    return (sp.value * context.resources.displayMetrics.scaledDensity).toInt()
+fun convertSpToPx(sp: TextUnit, ctx: Context): Int {
+    return (sp.value * ctx.resources.displayMetrics.scaledDensity).toInt()
 }
 
 /**
  * Returns localized Strings for SortingType Enum
  */
 
-fun getLocalizedSortingTypeName(context: Context, sortingType: SortType): String {
+fun getLocalizedSortingTypeName(ctx: Context, sortingType: SortType): String {
     val returnString = when (sortingType) {
-        SortType.Active -> context.getString(R.string.sorttype_active)
-        SortType.Hot -> context.getString(R.string.sorttype_hot)
-        SortType.New -> context.getString(R.string.sorttype_new)
-        SortType.Old -> context.getString(R.string.sorttype_old)
-        SortType.TopDay -> context.getString(R.string.sorttype_topday)
-        SortType.TopWeek -> context.getString(R.string.sorttype_topweek)
-        SortType.TopMonth -> context.getString(R.string.sorttype_topmonth)
-        SortType.TopYear -> context.getString(R.string.sorttype_topyear)
-        SortType.TopAll -> context.getString(R.string.sorttype_topall)
-        SortType.MostComments -> context.getString(R.string.sorttype_mostcomments)
-        SortType.NewComments -> context.getString(R.string.sorttype_newcomments)
+        SortType.Active -> ctx.getString(R.string.sorttype_active)
+        SortType.Hot -> ctx.getString(R.string.sorttype_hot)
+        SortType.New -> ctx.getString(R.string.sorttype_new)
+        SortType.Old -> ctx.getString(R.string.sorttype_old)
+        SortType.TopDay -> ctx.getString(R.string.sorttype_topday)
+        SortType.TopWeek -> ctx.getString(R.string.sorttype_topweek)
+        SortType.TopMonth -> ctx.getString(R.string.sorttype_topmonth)
+        SortType.TopYear -> ctx.getString(R.string.sorttype_topyear)
+        SortType.TopAll -> ctx.getString(R.string.sorttype_topall)
+        SortType.MostComments -> ctx.getString(R.string.sorttype_mostcomments)
+        SortType.NewComments -> ctx.getString(R.string.sorttype_newcomments)
     }
     return returnString
 }
 
+/**
+ * Returns localized Strings for UserTab Enum
+ */
 fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
     val returnString = when (tab) {
         UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
         UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
         UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+    }
+    return returnString
+}
+
+/**
+ * Returns localized Strings for ListingType Enum
+ */
+fun getLocalizedListingTypeName(ctx: Context, listingType: ListingType): String {
+    val returnString = when (listingType) {
+        ListingType.All -> ctx.getString(R.string.home_all)
+        ListingType.Local -> ctx.getString(R.string.home_local)
+        ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
+    }
+    return returnString
+}
+
+/**
+ * Returns localized Strings for CommentSortType Enum
+ */
+fun getLocalizedCommentSortTypeName(ctx: Context, commentSortType: CommentSortType): String {
+    val returnString = when (commentSortType) {
+        CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
+        CommentSortType.New -> ctx.getString(R.string.sorttype_new)
+        CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
+        CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
+    }
+    return returnString
+}
+
+/**
+ * Returns localized Strings for UnreadOrAll Enum
+ */
+fun getLocalizedUnreadOrAllName(ctx: Context, unreadOrAll: UnreadOrAll): String {
+    val returnString = when (unreadOrAll) {
+        UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
+        UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
     }
     return returnString
 }
