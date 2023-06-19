@@ -544,7 +544,7 @@ fun UserTabs(
                                             ReplyItem.CommentItem
                                                 (cv),
                                         )
-                                        navController.navigate("commentReply/isModerator=false")
+                                        navController.navigate("commentReply?isModerator=false")
                                     },
                                     onSaveClick = { cv ->
                                         account?.also { acct ->
