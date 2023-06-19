@@ -44,16 +44,32 @@ This project is full Kotlin. Please do not write Java classes.
 The code must be formatted to a common standard.
 
 To check for violations
-`./gradlew lintKotlin`
+
+```shell
+./gradlew lintKotlin`
+```
+
 Or just run this to fix them
-`./gradlew formatKotlin`
+
+```shell
+./gradlew formatKotlin
+```
 
 Markdown and yaml files are formatted according to prettier.
 
 You can install prettier either through the plugin, or globally using npm `npm install -g prettier`
 
 To check for violations
-`prettier -c "*.md" "*.yml"`
+
+```shell
+prettier -c "*.md" "*.yml"`
+```
+
+To fix the violations
+
+```shell
+prettier --write "*.md" "*.yml"`
+```
 
 ## Adding translations
 
