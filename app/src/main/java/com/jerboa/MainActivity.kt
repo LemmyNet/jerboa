@@ -503,8 +503,15 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = "commentReply",
+                        route = "commentReply?isModerator={isMod}",
+                        arguments = listOf(
+                            navArgument("isMod") {
+                                type = NavType.BoolType
+                            },
+                        ),
                     ) {
+                        val isModerator = it.arguments?.getBoolean("isMod")!!
+
                         CommentReplyActivity(
                             commentReplyViewModel = commentReplyViewModel,
                             postViewModel = postViewModel,
@@ -512,6 +519,7 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel = personProfileViewModel,
                             navController = navController,
                             siteViewModel = siteViewModel,
+                            isModerator = isModerator,
                         )
                     }
                     composable(

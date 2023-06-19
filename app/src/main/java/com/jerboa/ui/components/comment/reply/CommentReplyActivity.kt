@@ -30,6 +30,7 @@ fun CommentReplyActivity(
     postViewModel: PostViewModel,
     siteViewModel: SiteViewModel,
     navController: NavController,
+    isModerator: Boolean,
 ) {
     Log.d("jerboa", "got to comment reply activity")
 
@@ -70,82 +71,68 @@ fun CommentReplyActivity(
             if (loading) {
                 LoadingBar(padding)
             } else {
-                when (val postRes = postViewModel.postRes) {
-                    is ApiState.Success -> {
-                        val moderators = postRes.data.moderators
+                commentReplyViewModel.replyItem?.let { replyItem ->
+                    when (replyItem) {
+                        is ReplyItem.CommentItem ->
+                            CommentReply(
+                                commentView = replyItem.item,
+                                account = account,
+                                reply = reply,
+                                onReplyChange = { reply = it },
+                                onPersonClick = { personId ->
+                                    navController.navigate(route = "profile/$personId")
+                                },
+                                isModerator = isModerator,
+                                modifier = Modifier
+                                    .padding(padding)
+                                    .imePadding(),
+                                showAvatar = siteViewModel.showAvatar(),
+                            )
 
-                        commentReplyViewModel.replyItem?.let { replyItem ->
-                            when (replyItem) {
-                                is ReplyItem.CommentItem ->
-                                    CommentReply(
-                                        commentView = replyItem.item,
-                                        account = account,
-                                        reply = reply,
-                                        onReplyChange = { reply = it },
-                                        onPersonClick = { personId ->
-                                            navController.navigate(route = "profile/$personId")
-                                        },
-                                        isModerator = isModerator(
-                                            replyItem.item.creator,
-                                            moderators,
-                                        ),
-                                        modifier = Modifier
-                                            .padding(padding)
-                                            .imePadding(),
-                                        showAvatar = siteViewModel.showAvatar(),
-                                    )
+                        is ReplyItem.PostItem -> PostReply(
+                            postView = replyItem.item,
+                            account = account,
+                            reply = reply,
+                            onReplyChange = { reply = it },
+                            onPersonClick = { personId ->
+                                navController.navigate(route = "profile/$personId")
+                            },
+                            isModerator = isModerator,
+                            modifier = Modifier
+                                .padding(padding)
+                                .imePadding(),
+                        )
 
-                                is ReplyItem.PostItem -> PostReply(
-                                    postView = replyItem.item,
-                                    account = account,
-                                    reply = reply,
-                                    onReplyChange = { reply = it },
-                                    onPersonClick = { personId ->
-                                        navController.navigate(route = "profile/$personId")
-                                    },
-                                    isModerator = isModerator(
-                                        replyItem.item.creator,
-                                        moderators,
-                                    ),
-                                    modifier = Modifier
-                                        .padding(padding)
-                                        .imePadding(),
-                                )
+                        is ReplyItem.CommentReplyItem ->
+                            CommentReplyReply(
+                                commentReplyView = replyItem.item,
+                                account = account,
+                                reply = reply,
+                                onReplyChange = { reply = it },
+                                onPersonClick = { personId ->
+                                    navController.navigate(route = "profile/$personId")
+                                },
+                                modifier = Modifier
+                                    .padding(padding)
+                                    .imePadding(),
+                                showAvatar = siteViewModel.showAvatar(),
+                            )
 
-                                is ReplyItem.CommentReplyItem ->
-                                    CommentReplyReply(
-                                        commentReplyView = replyItem.item,
-                                        account = account,
-                                        reply = reply,
-                                        onReplyChange = { reply = it },
-                                        onPersonClick = { personId ->
-                                            navController.navigate(route = "profile/$personId")
-                                        },
-                                        modifier = Modifier
-                                            .padding(padding)
-                                            .imePadding(),
-                                        showAvatar = siteViewModel.showAvatar(),
-                                    )
-
-                                is ReplyItem.MentionReplyItem ->
-                                    MentionReply(
-                                        personMentionView = replyItem.item,
-                                        account = account,
-                                        reply = reply,
-                                        onReplyChange = { reply = it },
-                                        onPersonClick = { personId ->
-                                            navController.navigate(route = "profile/$personId")
-                                        },
-                                        modifier = Modifier
-                                            .padding(padding)
-                                            .imePadding(),
-                                        showAvatar = siteViewModel.showAvatar(),
-                                    )
-                            }
-                        }
+                        is ReplyItem.MentionReplyItem ->
+                            MentionReply(
+                                personMentionView = replyItem.item,
+                                account = account,
+                                reply = reply,
+                                onReplyChange = { reply = it },
+                                onPersonClick = { personId ->
+                                    navController.navigate(route = "profile/$personId")
+                                },
+                                modifier = Modifier
+                                    .padding(padding)
+                                    .imePadding(),
+                                showAvatar = siteViewModel.showAvatar(),
+                            )
                     }
-
-                    else -> {}
                 }
             }
         },

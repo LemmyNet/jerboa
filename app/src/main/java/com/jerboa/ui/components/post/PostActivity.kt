@@ -219,7 +219,8 @@ fun PostActivity(
                                     },
                                     onReplyClick = { pv ->
                                         commentReplyViewModel.initialize(ReplyItem.PostItem(pv))
-                                        navController.navigate("commentReply")
+                                        val isModerator = isModerator(pv.creator, postRes.data.moderators)
+                                        navController.navigate("commentReply?isModerator=$isModerator")
                                     },
                                     onPostClick = {},
                                     onSaveClick = { pv ->
@@ -393,7 +394,9 @@ fun PostActivity(
                                                     cv,
                                                 ),
                                             )
-                                            navController.navigate("commentReply")
+
+                                            val isModerator = isModerator(cv.creator, postRes.data.moderators)
+                                            navController.navigate("commentReply?isModerator=$isModerator")
                                         },
                                         onSaveClick = { cv ->
                                             account?.also { acct ->
