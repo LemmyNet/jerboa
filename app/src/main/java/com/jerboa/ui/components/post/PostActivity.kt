@@ -168,23 +168,7 @@ fun PostActivity(
                     content = {
                         IconButton(modifier = Modifier.weight(.5f), onClick = {
                             scope.launch {
-                                var minDifference = Int.MAX_VALUE
-                                var nearestPreviousIndex: Int? = null
-                                val currentListStateIndex = listState.firstVisibleItemIndex
-
-                                for (parentIndex in parentListStateIndexes) {
-                                    if (parentIndex < currentListStateIndex) {
-                                        val difference = currentListStateIndex - parentIndex
-                                        if (difference < minDifference) {
-                                            minDifference = difference
-                                            nearestPreviousIndex = parentIndex
-                                        }
-                                    }
-                                }
-
-                                if (nearestPreviousIndex != null) {
-                                    listState.animateScrollToItem(nearestPreviousIndex)
-                                }
+                                parentListStateIndexes.lastOrNull { parentIndex -> parentIndex < listState.firstVisibleItemIndex }?.let { nearestPreviousIndex -> listState.animateScrollToItem(nearestPreviousIndex) }
                             }
                         }) {
                             Icon(
@@ -195,23 +179,7 @@ fun PostActivity(
                         }
                         IconButton(modifier = Modifier.weight(.5f), onClick = {
                             scope.launch {
-                                var minDifference = Int.MAX_VALUE
-                                var nearestNextIndex: Int? = null
-                                val currentListStateIndex = listState.firstVisibleItemIndex
-
-                                for (parentIndex in parentListStateIndexes) {
-                                    if (parentIndex > currentListStateIndex) {
-                                        val difference = parentIndex - currentListStateIndex
-                                        if (difference < minDifference) {
-                                            minDifference = difference
-                                            nearestNextIndex = parentIndex
-                                        }
-                                    }
-                                }
-
-                                if (nearestNextIndex != null) {
-                                    listState.animateScrollToItem(nearestNextIndex)
-                                }
+                                parentListStateIndexes.firstOrNull { parentIndex -> parentIndex > listState.firstVisibleItemIndex }?.let { nearestPreviousIndex -> listState.animateScrollToItem(nearestPreviousIndex) }
                             }
                         }) {
                             Icon(
