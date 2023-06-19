@@ -87,6 +87,22 @@ fun MacrobenchmarkScope.waitUntilLoadingDone(timeout: Long = 10_000) {
     device.wait(Until.gone(By.res("jerboa:loading")), timeout)
 }
 
-fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(timeout: Long = 30_000) {
-    device.wait(Until.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post"))), timeout)
+fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(retry: Boolean = true, timeout: Long = 10_000) {
+    device.wait(
+        Until.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post"))),
+        timeout,
+    )
+    if (retry && !device.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post")))) {
+        openOptions()
+        clickRefresh()
+        waitUntilPostsActuallyVisible(timeout = timeout)
+    }
+}
+
+fun MacrobenchmarkScope.openOptions() {
+    device.findOrFail("jerboa:options").click()
+}
+
+fun MacrobenchmarkScope.clickRefresh() {
+    device.findOrFailTimeout("jerboa:refresh", "Refresh not found", 2_000).click()
 }

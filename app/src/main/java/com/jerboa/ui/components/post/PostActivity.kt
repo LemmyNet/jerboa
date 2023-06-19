@@ -87,7 +87,11 @@ fun CommentsHeaderTitle(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class,
+)
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
@@ -138,7 +142,8 @@ fun PostActivity(
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true },
         topBar = {
             Column {
                 TopAppBar(
@@ -148,7 +153,10 @@ fun PostActivity(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(
+                            modifier = Modifier.testTag("jerboa:back"),
+                            onClick = { navController.popBackStack() },
+                        ) {
                             Icon(
                                 Icons.Outlined.ArrowBack,
                                 contentDescription = stringResource(R.string.topAppBar_back),

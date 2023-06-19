@@ -586,5 +586,5 @@ fun Modifier.simpleVerticalScrollbar(
 fun LoadingBar(
     padding: PaddingValues = PaddingValues(0.dp),
 ) {
-    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(padding))
+    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(padding).testTag("jerboa:loading"))
 }

@@ -7,9 +7,8 @@ import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.Until
 import com.jerboa.actions.closeChangeLogIfOpen
+import com.jerboa.actions.waitUntilPostsActuallyVisible
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -61,7 +60,7 @@ class StartupBenchmarks {
             measureBlock = {
                 startActivityAndWait()
                 closeChangeLogIfOpen()
-                device.wait(Until.hasObject(By.res("jerboa:posts")), 10000)
+                waitUntilPostsActuallyVisible(false)
             },
         )
     }

@@ -27,6 +27,7 @@ import com.jerboa.ui.theme.LARGE_PADDING
 @Composable
 fun IconAndTextDrawerItem(
     text: String,
+    modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     iconBadgeCount: Int? = null,
     onClick: () -> Unit,
@@ -39,7 +40,7 @@ fun IconAndTextDrawerItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .background(

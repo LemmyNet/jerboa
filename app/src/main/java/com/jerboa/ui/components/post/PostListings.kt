@@ -52,7 +52,6 @@ fun PostListings(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
 ) {
-
     LazyColumn(
         state = listState,
         modifier = Modifier
