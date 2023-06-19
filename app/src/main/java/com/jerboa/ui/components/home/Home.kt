@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.home
 
 import androidx.compose.animation.AnimatedVisibility
@@ -64,14 +62,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.Tagline
-import com.jerboa.datatypes.api.GetUnreadCountResponse
-import com.jerboa.datatypes.api.MyUserInfo
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.api.ApiState
+import com.jerboa.datatypes.samplePerson
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.GetSiteResponse
+import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.MyUserInfo
+import com.jerboa.datatypes.types.Person
+import com.jerboa.datatypes.types.SortType
+import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -90,30 +89,34 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
-import com.jerboa.unreadCountTotal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun Drawer(
+    siteRes: ApiState<GetSiteResponse>,
+    unreadCount: Int,
     navController: NavController = rememberNavController(),
     accountViewModel: AccountViewModel,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
-    myUserInfo: MyUserInfo?,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
     onClickCommunities: () -> Unit,
-    unreadCounts: GetUnreadCountResponse?,
     isOpen: Boolean,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
     if (!isOpen) showAccountAddMode = false
+
+    val myUserInfo = when (siteRes) {
+        is ApiState.Success -> siteRes.data.my_user
+        else -> null
+    }
 
     DrawerHeader(
         myPerson = myUserInfo?.local_user_view?.person,
@@ -125,7 +128,7 @@ fun Drawer(
     // Drawer items
     DrawerContent(
         accountViewModel = accountViewModel,
-        unreadCounts = unreadCounts,
+        unreadCount = unreadCount,
         myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
         navController = navController,
@@ -149,14 +152,14 @@ fun DrawerContent(
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
     onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
     onClickCommunities: () -> Unit,
     myUserInfo: MyUserInfo?,
-    unreadCounts: GetUnreadCountResponse?,
+    unreadCount: Int,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
@@ -179,7 +182,7 @@ fun DrawerContent(
             onClickProfile = onClickProfile,
             onClickInbox = onClickInbox,
             onClickSaved = onClickSaved,
-            unreadCounts = unreadCounts,
+            unreadCount = unreadCount,
             onClickSettings = onClickSettings,
             onClickCommunities = onClickCommunities,
         )
@@ -195,12 +198,11 @@ fun DrawerItemsMain(
     onClickSettings: () -> Unit,
     onClickCommunities: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
-    unreadCounts: GetUnreadCountResponse? = null,
+    onCommunityClick: (community: Community) -> Unit,
+    unreadCount: Int,
 ) {
     val listState = rememberLazyListState()
 
-    val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
     val follows = myUserInfo?.follows
 
     LazyColumn(
@@ -264,16 +266,18 @@ fun DrawerItemsMain(
                     text = stringResource(R.string.home_inbox),
                     icon = Icons.Outlined.Email,
                     onClick = onClickInbox,
-                    iconBadgeCount = totalUnreads,
+                    iconBadgeCount = unreadCount,
                 )
             }
         }
         item {
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_settings),
-                icon = Icons.Outlined.Settings,
-                onClick = onClickSettings,
-            )
+            myUserInfo?.also {
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.home_settings),
+                    icon = Icons.Outlined.Settings,
+                    onClick = onClickSettings,
+                )
+            }
         }
         item {
             myUserInfo?.also {
@@ -315,6 +319,7 @@ fun DrawerItemsMainPreview() {
         onClickSaved = {},
         onClickSettings = {},
         onClickCommunities = {},
+        unreadCount = 2,
     )
 }
 
@@ -364,7 +369,7 @@ fun DrawerAddAccountModePreview() {
 
 @Composable
 fun DrawerHeader(
-    myPerson: PersonSafe?,
+    myPerson: Person?,
     onClickShowAccountAddMode: () -> Unit,
     showAccountAddMode: Boolean = false,
     showAvatar: Boolean,
@@ -407,7 +412,7 @@ fun DrawerHeader(
 }
 
 @Composable
-fun AvatarAndAccountName(myPerson: PersonSafe?, showAvatar: Boolean) {
+fun AvatarAndAccountName(myPerson: Person?, showAvatar: Boolean) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -428,7 +433,7 @@ fun AvatarAndAccountName(myPerson: PersonSafe?, showAvatar: Boolean) {
 @Composable
 fun DrawerHeaderPreview() {
     DrawerHeader(
-        myPerson = samplePersonSafe,
+        myPerson = samplePerson,
         onClickShowAccountAddMode = {},
         showAvatar = true,
     )
@@ -451,6 +456,7 @@ fun HomeHeaderTitle(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeHeader(
     scope: CoroutineScope,
@@ -580,6 +586,7 @@ fun HomeHeader(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun HomeHeaderPreview() {
@@ -642,14 +649,16 @@ fun HomeMoreDialog(
 }
 
 @Composable
-fun Tagline(taglines: List<Tagline>) {
-    val tagline by remember { mutableStateOf(taglines.random()) }
-    Column(
-        Modifier.padding(LARGE_PADDING),
-    ) {
-        MyMarkdownText(
-            markdown = tagline.content,
-            onClick = {},
-        )
+fun Taglines(taglines: List<Tagline>) {
+    if (taglines.isNotEmpty()) {
+        val tagline by remember { mutableStateOf(taglines.random()) }
+        Column(
+            Modifier.padding(LARGE_PADDING),
+        ) {
+            MyMarkdownText(
+                markdown = tagline.content,
+                onClick = {},
+            )
+        }
     }
 }

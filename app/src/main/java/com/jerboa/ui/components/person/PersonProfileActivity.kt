@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.person
 
 import android.content.Context
@@ -24,28 +22,40 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import arrow.core.Either
 import com.jerboa.R
 import com.jerboa.VoteType
+import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
+import com.jerboa.datatypes.types.BlockCommunity
+import com.jerboa.datatypes.types.BlockPerson
+import com.jerboa.datatypes.types.CreateCommentLike
+import com.jerboa.datatypes.types.CreatePostLike
+import com.jerboa.datatypes.types.DeleteComment
+import com.jerboa.datatypes.types.DeletePost
+import com.jerboa.datatypes.types.GetPersonDetails
+import com.jerboa.datatypes.types.SaveComment
+import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.loginFirstToast
+import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
+import com.jerboa.ui.components.common.ApiEmptyText
+import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
@@ -60,13 +70,12 @@ fun PersonProfileActivity(
     navController: NavController,
     personProfileViewModel: PersonProfileViewModel,
     accountViewModel: AccountViewModel,
-    homeViewModel: HomeViewModel,
+    siteViewModel: SiteViewModel,
     commentEditViewModel: CommentEditViewModel,
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
-    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -74,63 +83,76 @@ fun PersonProfileActivity(
     val postListState = rememberLazyListState()
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
-    val bottomAppBarScreen = if (savedMode) { "saved" } else { "profile" }
+    val bottomAppBarScreen = if (savedMode) {
+        "saved"
+    } else {
+        "profile"
+    }
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    personProfileViewModel.updateSavedOnly(savedMode)
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            personProfileViewModel.res?.person_view?.person?.also { person ->
-                PersonProfileHeader(
-                    scrollBehavior = scrollBehavior,
-                    personName = if (savedMode) {
-                        "Saved"
-                    } else {
-                        person.name
-                    },
-                    myProfile = account?.id == person.id,
-                    selectedSortType = personProfileViewModel.sortType.value,
-                    onClickSortType = { sortType ->
-                        scrollToTop(scope, postListState)
-                        personProfileViewModel.fetchPersonDetails(
-                            idOrName = Either.Left(
-                                personProfileViewModel.res!!.person_view
-                                    .person.id,
-                            ),
-                            account = account,
-                            clearPersonDetails = false,
-                            clearPostsAndComments = true,
-                            changeSortType = sortType,
-                            changeSavedOnly = savedMode,
-                            ctx = ctx,
-                        )
-                    },
-                    onBlockPersonClick = {
-                        account?.also { acct ->
-                            personProfileViewModel.blockPerson(
-                                person = person,
-                                account = acct,
-                                ctx = ctx,
+            when (val profileRes = personProfileViewModel.personDetailsRes) {
+                is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                is ApiState.Success -> {
+                    val person = profileRes.data.person_view.person
+                    PersonProfileHeader(
+                        scrollBehavior = scrollBehavior,
+                        personName = if (savedMode) {
+                            "Saved"
+                        } else {
+                            person.name
+                        },
+                        myProfile = account?.id == person.id,
+                        selectedSortType = personProfileViewModel.sortType,
+                        onClickSortType = { sortType ->
+                            scrollToTop(scope, postListState)
+                            personProfileViewModel.resetPage()
+                            personProfileViewModel.updateSortType(sortType)
+                            personProfileViewModel.getPersonDetails(
+                                GetPersonDetails(
+                                    person_id = person.id,
+                                    sort = personProfileViewModel.sortType,
+                                    page = personProfileViewModel.page,
+                                    saved_only = personProfileViewModel.savedOnly,
+                                    auth = account?.jwt,
+                                ),
                             )
-                        }
-                    },
-                    onReportPersonClick = {
-                        val firstComment = personProfileViewModel.comments.firstOrNull()
-                        val firstPost = personProfileViewModel.posts.firstOrNull()
-                        if (firstComment !== null) {
-                            navController.navigate(
-                                "commentReport/${firstComment.comment.id}",
-                            )
-                        } else if (firstPost !== null) {
-                            navController.navigate(
-                                "postReport/${firstPost.post.id}",
-                            )
-                        }
-                    },
-                    navController = navController,
-                )
+                        },
+                        onBlockPersonClick = {
+                            account?.also { acct ->
+                                personProfileViewModel.blockPerson(
+                                    BlockPerson(
+                                        person_id = person.id,
+                                        block = true,
+                                        auth = acct.jwt,
+                                    ),
+                                    ctx,
+                                )
+                            }
+                        },
+                        onReportPersonClick = {
+                            val firstComment = profileRes.data.comments.firstOrNull()
+                            val firstPost = profileRes.data.posts.firstOrNull()
+                            if (firstComment !== null) {
+                                navController.navigate(
+                                    "commentReport/${firstComment.comment.id}",
+                                )
+                            } else if (firstPost !== null) {
+                                navController.navigate(
+                                    "postReport/${firstPost.post.id}",
+                                )
+                            }
+                        },
+                        navController = navController,
+                    )
+                }
+
+                else -> {}
             }
         },
         content = {
@@ -148,15 +170,15 @@ fun PersonProfileActivity(
                 postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 showVotingArrowsInListView = showVotingArrowsInListView,
-                enableDownVotes = siteViewModel.siteRes?.site_view?.local_site?.enable_downvotes ?: true,
-                showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
+                enableDownVotes = siteViewModel.enableDownvotes(),
+                showAvatar = siteViewModel.showAvatar(),
             )
         },
         bottomBar = {
             BottomAppBarAll(
                 showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
                 screen = bottomAppBarScreen,
-                unreadCounts = homeViewModel.unreadCountResponse,
+                unreadCount = siteViewModel.getUnreadCountTotal(),
                 onClickProfile = {
                     account?.id?.also {
                         navController.navigate(route = "profile/$it")
@@ -217,6 +239,29 @@ fun UserTabs(
     }
     val pagerState = rememberPagerState()
 
+    val loading = personProfileViewModel.personDetailsRes == ApiState.Loading
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = loading,
+        onRefresh = {
+            when (val profileRes = personProfileViewModel.personDetailsRes) {
+                is ApiState.Success -> {
+                    personProfileViewModel.resetPage()
+                    personProfileViewModel.getPersonDetails(
+                        GetPersonDetails(
+                            person_id = profileRes.data.person_view.person.id,
+                            sort = personProfileViewModel.sortType,
+                            page = personProfileViewModel.page,
+                            saved_only = personProfileViewModel.savedOnly,
+                            auth = account?.jwt,
+                        ),
+                    )
+                }
+                else -> {}
+            }
+        },
+    )
+
     Column(
         modifier = Modifier.padding(padding),
     ) {
@@ -243,9 +288,6 @@ fun UserTabs(
                 )
             }
         }
-        if (personProfileViewModel.loading.value) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-        }
         HorizontalPager(
             pageCount = tabTitles.size,
             state = pagerState,
@@ -260,297 +302,315 @@ fun UserTabs(
             }
             when (tabI) {
                 UserTab.About.ordinal -> {
-                    val listState = rememberLazyListState()
+                    when (val profileRes = personProfileViewModel.personDetailsRes) {
+                        ApiState.Empty -> ApiEmptyText()
+                        is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                        ApiState.Loading -> LoadingBar()
+                        is ApiState.Success -> {
+                            val listState = rememberLazyListState()
 
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .simpleVerticalScrollbar(listState),
-                    ) {
-                        item {
-                            personProfileViewModel.res?.person_view?.also {
-                                PersonProfileTopSection(
-                                    personView = it,
+                            LazyColumn(
+                                state = listState,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .simpleVerticalScrollbar(listState),
+                            ) {
+                                item {
+                                    PersonProfileTopSection(
+                                        personView = profileRes.data.person_view,
+                                        showAvatar = showAvatar,
+                                    )
+                                }
+                                val moderates = profileRes.data.moderates
+                                if (moderates.isNotEmpty()) {
+                                    item {
+                                        Text(
+                                            text = stringResource(R.string.person_profile_activity_moderates),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            modifier = Modifier.padding(MEDIUM_PADDING),
+                                        )
+                                    }
+                                }
+                                items(
+                                    moderates,
+                                    key = { cmv -> cmv.community.id },
+                                ) { cmv ->
+                                    CommunityLink(
+                                        community = cmv.community,
+                                        modifier = Modifier.padding(MEDIUM_PADDING),
+                                        onClick = { community ->
+                                            navController.navigate(route = "community/${community.id}")
+                                        },
+                                        showDefaultIcon = true,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                UserTab.Posts.ordinal -> {
+                    Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                        PullRefreshIndicator(
+                            loading,
+                            pullRefreshState,
+                            Modifier.align(Alignment.TopCenter),
+                        )
+                        when (val profileRes = personProfileViewModel.personDetailsRes) {
+                            ApiState.Empty -> ApiEmptyText()
+                            is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                            ApiState.Loading -> LoadingBar()
+                            is ApiState.Success -> {
+                                PostListings(
+                                    posts = profileRes.data.posts,
+                                    onUpvoteClick = { pv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.likePost(
+                                                CreatePostLike(
+                                                    post_id = pv.post.id,
+                                                    score = newVote(
+                                                        pv.my_vote,
+                                                        VoteType.Upvote,
+                                                    ),
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onDownvoteClick = { pv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.likePost(
+                                                CreatePostLike(
+                                                    post_id = pv.post.id,
+                                                    score = newVote(
+                                                        pv.my_vote,
+                                                        VoteType.Downvote,
+                                                    ),
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onPostClick = { pv ->
+                                        navController.navigate(route = "post/${pv.post.id}")
+                                    },
+                                    onSaveClick = { pv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.savePost(
+                                                SavePost(
+                                                    post_id = pv.post.id,
+                                                    save = !pv.saved,
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onEditPostClick = { pv ->
+                                        postEditViewModel.initialize(pv)
+                                        navController.navigate("postEdit")
+                                    },
+                                    onDeletePostClick = { pv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.deletePost(
+                                                DeletePost(
+                                                    post_id = pv.post.id,
+                                                    deleted = !pv.post.deleted,
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onReportClick = { pv ->
+                                        navController.navigate("postReport/${pv.post.id}")
+                                    },
+                                    onCommunityClick = { community ->
+                                        navController.navigate(route = "community/${community.id}")
+                                    },
+                                    onPersonClick = { personId ->
+                                        navController.navigate(route = "profile/$personId")
+                                    },
+                                    onBlockCommunityClick = { community ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.blockCommunity(
+                                                BlockCommunity(
+                                                    community_id = community.id,
+                                                    block = true,
+                                                    auth = acct.jwt,
+                                                ),
+                                                ctx,
+                                            )
+                                        }
+                                    },
+                                    onBlockCreatorClick = { person ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.blockPerson(
+                                                BlockPerson(
+                                                    person_id = person.id,
+                                                    block = true,
+                                                    auth = acct.jwt,
+                                                ),
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    },
+                                    isScrolledToEnd = {
+                                        personProfileViewModel.nextPage()
+                                        personProfileViewModel.appendData(
+                                            GetPersonDetails(
+                                                person_id = profileRes.data.person_view.person.id,
+                                                sort = personProfileViewModel.sortType,
+                                                page = personProfileViewModel.page,
+                                                saved_only = personProfileViewModel.savedOnly,
+                                                auth = account?.jwt,
+                                            ),
+                                        )
+                                    },
+                                    account = account,
+                                    listState = postListState,
+                                    postViewMode = getPostViewMode(appSettingsViewModel),
+                                    enableDownVotes = enableDownVotes,
+                                    showAvatar = showAvatar,
+                                    showVotingArrowsInListView = showVotingArrowsInListView,
+                                )
+                            }
+                        }
+                    }
+                }
+
+                UserTab.Comments.ordinal -> {
+                    when (val profileRes = personProfileViewModel.personDetailsRes) {
+                        ApiState.Empty -> ApiEmptyText()
+                        is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                        ApiState.Loading -> LoadingBar()
+                        is ApiState.Success -> {
+                            val nodes = commentsToFlatNodes(profileRes.data.comments)
+
+                            val listState = rememberLazyListState()
+
+                            // observer when reached end of list
+                            val endOfListReached by remember {
+                                derivedStateOf {
+                                    listState.isScrolledToEnd()
+                                }
+                            }
+
+                            // act when end of list reached
+                            if (endOfListReached) {
+                                LaunchedEffect(Unit) {
+                                    personProfileViewModel.nextPage()
+                                    personProfileViewModel.appendData(
+                                        GetPersonDetails(
+                                            person_id = profileRes.data.person_view.person.id,
+                                            sort = personProfileViewModel.sortType,
+                                            page = personProfileViewModel.page,
+                                            saved_only = personProfileViewModel.savedOnly,
+                                            auth = account?.jwt,
+                                        ),
+                                    )
+                                }
+                            }
+
+                            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                                PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
+                                CommentNodes(
+                                    nodes = nodes,
+                                    isFlat = true,
+                                    listState = listState,
+                                    onMarkAsReadClick = {},
+                                    onUpvoteClick = { cv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.likeComment(
+                                                CreateCommentLike(
+                                                    comment_id = cv.comment.id,
+                                                    score = newVote(cv.my_vote, VoteType.Upvote),
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onDownvoteClick = { cv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.likeComment(
+                                                CreateCommentLike(
+                                                    comment_id = cv.comment.id,
+                                                    score = newVote(cv.my_vote, VoteType.Downvote),
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onReplyClick = { cv ->
+                                        commentReplyViewModel.initialize(
+                                            ReplyItem.CommentItem
+                                                (cv),
+                                        )
+                                        navController.navigate("commentReply?isModerator=false")
+                                    },
+                                    onSaveClick = { cv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.saveComment(
+                                                SaveComment(
+                                                    comment_id = cv.comment.id,
+                                                    save = !cv.saved,
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onPersonClick = { personId ->
+                                        navController.navigate(route = "profile/$personId")
+                                    },
+                                    onCommunityClick = { community ->
+                                        navController.navigate(route = "community/${community.id}")
+                                    },
+                                    onPostClick = { postId ->
+                                        navController.navigate(route = "post/$postId")
+                                    },
+                                    onEditCommentClick = { cv ->
+                                        commentEditViewModel.initialize(cv)
+                                        navController.navigate("commentEdit")
+                                    },
+                                    onDeleteCommentClick = { cv ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.deleteComment(
+                                                DeleteComment(
+                                                    comment_id = cv.comment.id,
+                                                    deleted = !cv.comment.deleted,
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onReportClick = { cv ->
+                                        navController.navigate("commentReport/${cv.comment.id}")
+                                    },
+                                    onCommentLinkClick = { cv ->
+                                        navController.navigate("comment/${cv.comment.id}")
+                                    },
+                                    onFetchChildrenClick = {},
+                                    onBlockCreatorClick = { person ->
+                                        account?.also { acct ->
+                                            personProfileViewModel.blockPerson(
+                                                BlockPerson(
+                                                    person_id = person.id,
+                                                    block = true,
+                                                    auth = acct.jwt,
+                                                ),
+                                                ctx,
+                                            )
+                                        }
+                                    },
+                                    showPostAndCommunityContext = true,
+                                    showCollapsedCommentContent = true,
+                                    isCollapsedByParent = false,
+                                    showActionBarByDefault = true,
+                                    account = account,
+                                    moderators = listOf(),
+                                    enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                 )
                             }
                         }
-                        personProfileViewModel.res?.moderates?.also { moderates ->
-                            if (moderates.isNotEmpty()) {
-                                item {
-                                    Text(
-                                        text = stringResource(R.string.person_profile_activity_moderates),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.padding(MEDIUM_PADDING),
-                                    )
-                                }
-                            }
-                            items(
-                                moderates,
-                                key = { cmv -> cmv.community.id },
-                            ) { cmv ->
-                                CommunityLink(
-                                    community = cmv.community,
-                                    modifier = Modifier.padding(MEDIUM_PADDING),
-                                    onClick = { community ->
-                                        navController.navigate(route = "community/${community.id}")
-                                    },
-                                    showDefaultIcon = true,
-                                )
-                            }
-                        }
-                    }
-                }
-                UserTab.Posts.ordinal -> {
-                    PostListings(
-                        posts = personProfileViewModel.posts,
-                        onUpvoteClick = { postView ->
-                            personProfileViewModel.likePost(
-                                voteType = VoteType.Upvote,
-                                postView = postView,
-                                account = account,
-                                ctx = ctx,
-                            )
-                        },
-                        onDownvoteClick = { postView ->
-                            personProfileViewModel.likePost(
-                                voteType = VoteType.Downvote,
-                                postView = postView,
-                                account = account,
-                                ctx = ctx,
-                            )
-                        },
-                        onPostClick = { postView ->
-                            navController.navigate(route = "post/${postView.post.id}")
-                        },
-                        onSaveClick = { postView ->
-                            account?.also { acct ->
-                                personProfileViewModel.savePost(
-                                    postView = postView,
-                                    account = acct,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
-                        onEditPostClick = { postView ->
-                            postEditViewModel.initialize(postView)
-                            navController.navigate("postEdit")
-                        },
-                        onDeletePostClick = { postView ->
-                            account?.also { acct ->
-                                personProfileViewModel.deletePost(
-                                    postView = postView,
-                                    account = acct,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
-                        onReportClick = { postView ->
-                            navController.navigate("postReport/${postView.post.id}")
-                        },
-                        onCommunityClick = { community ->
-                            navController.navigate(route = "community/${community.id}")
-                        },
-                        onPersonClick = { personId ->
-                            navController.navigate(route = "profile/$personId")
-                        },
-                        onBlockCommunityClick = {
-                            account?.also { acct ->
-                                personProfileViewModel.blockCommunity(
-                                    community = it,
-                                    account = acct,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
-                        onBlockCreatorClick = {
-                            account?.also { acct ->
-                                personProfileViewModel.blockPerson(
-                                    person = it,
-                                    account = acct,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
-                        onSwipeRefresh = {
-                            personProfileViewModel.res?.person_view?.person?.id?.also {
-                                personProfileViewModel.fetchPersonDetails(
-                                    idOrName = Either.Left(it),
-                                    account = account,
-                                    clearPersonDetails = false,
-                                    clearPostsAndComments = true,
-                                    changeSavedOnly = savedMode,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
-                        loading = personProfileViewModel.loading.value &&
-                            personProfileViewModel.page.value == 1 &&
-                            personProfileViewModel.posts.isNotEmpty(),
-                        isScrolledToEnd = {
-                            if (personProfileViewModel.posts.size > 0) {
-                                personProfileViewModel.res?.person_view?.person?.id?.also {
-                                    personProfileViewModel.fetchPersonDetails(
-                                        idOrName = Either.Left(it),
-                                        account = account,
-                                        clearPersonDetails = false,
-                                        clearPostsAndComments = false,
-                                        nextPage = true,
-                                        changeSavedOnly = savedMode,
-                                        ctx = ctx,
-                                    )
-                                }
-                            }
-                        },
-                        account = account,
-                        listState = postListState,
-                        taglines = null,
-                        postViewMode = getPostViewMode(appSettingsViewModel),
-                        showVotingArrowsInListView = showVotingArrowsInListView,
-                        enableDownVotes = enableDownVotes,
-                        showAvatar = showAvatar,
-                    )
-                }
-                UserTab.Comments.ordinal -> {
-                    val nodes = commentsToFlatNodes(personProfileViewModel.comments)
-
-                    val listState = rememberLazyListState()
-                    val loading = personProfileViewModel.loading.value &&
-                        personProfileViewModel.page.value == 1 &&
-                        personProfileViewModel.comments.isNotEmpty()
-
-                    // observer when reached end of list
-                    val endOfListReached by remember {
-                        derivedStateOf {
-                            listState.isScrolledToEnd()
-                        }
-                    }
-
-                    // act when end of list reached
-                    if (endOfListReached) {
-                        LaunchedEffect(Unit) {
-                            if (personProfileViewModel.comments.size > 0) {
-                                personProfileViewModel.res?.person_view?.person?.id?.also {
-                                    personProfileViewModel.fetchPersonDetails(
-                                        idOrName = Either.Left(it),
-                                        account = account,
-                                        clearPersonDetails = false,
-                                        clearPostsAndComments = false,
-                                        nextPage = true,
-                                        changeSavedOnly = savedMode,
-                                        ctx = ctx,
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    val state = rememberPullRefreshState(
-                        refreshing = loading,
-                        onRefresh = {
-                            personProfileViewModel.res?.person_view?.person?.id?.also {
-                                personProfileViewModel.fetchPersonDetails(
-                                    idOrName = Either.Left(it),
-                                    account = account,
-                                    clearPersonDetails = false,
-                                    clearPostsAndComments = true,
-                                    changeSavedOnly = savedMode,
-                                    ctx = ctx,
-                                )
-                            }
-                        },
-                    )
-
-                    Box(modifier = Modifier.pullRefresh(state)) {
-                        PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
-                        CommentNodes(
-                            nodes = nodes,
-                            isFlat = true,
-                            listState = listState,
-                            onMarkAsReadClick = {},
-                            onUpvoteClick = { commentView ->
-                                account?.also { acct ->
-                                    personProfileViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Upvote,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            onDownvoteClick = { commentView ->
-                                account?.also { acct ->
-                                    personProfileViewModel.likeComment(
-                                        commentView = commentView,
-                                        voteType = VoteType.Downvote,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            onReplyClick = { commentView ->
-                                commentReplyViewModel.initialize(
-                                    ReplyItem.CommentItem
-                                        (commentView),
-                                )
-                                navController.navigate("commentReply")
-                            },
-                            onSaveClick = { commentView ->
-                                account?.also { acct ->
-                                    personProfileViewModel.saveComment(
-                                        commentView = commentView,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            onPersonClick = { personId ->
-                                navController.navigate(route = "profile/$personId")
-                            },
-                            onCommunityClick = { community ->
-                                navController.navigate(route = "community/${community.id}")
-                            },
-                            onPostClick = { postId ->
-                                navController.navigate(route = "post/$postId")
-                            },
-                            onEditCommentClick = { commentView ->
-                                commentEditViewModel.initialize(commentView)
-                                navController.navigate("commentEdit")
-                            },
-                            onDeleteCommentClick = { commentView ->
-                                account?.also { acct ->
-                                    personProfileViewModel.deleteComment(
-                                        commentView = commentView,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            onReportClick = { commentView ->
-                                navController.navigate("commentReport/${commentView.comment.id}")
-                            },
-                            onCommentLinkClick = { commentView ->
-                                navController.navigate("comment/${commentView.comment.id}")
-                            },
-                            onFetchChildrenClick = {},
-                            onBlockCreatorClick = {
-                                account?.also { acct ->
-                                    personProfileViewModel.blockPerson(
-                                        person = it,
-                                        account = acct,
-                                        ctx = ctx,
-                                    )
-                                }
-                            },
-                            showPostAndCommunityContext = true,
-                            showCollapsedCommentContent = true,
-                            account = account,
-                            moderators = listOf(),
-                            isCollapsedByParent = false,
-                            showActionBarByDefault = true,
-                            enableDownVotes = enableDownVotes,
-                            showAvatar = showAvatar,
-                        )
                     }
                 }
             }

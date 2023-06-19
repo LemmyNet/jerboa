@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.report.post
 
@@ -14,12 +13,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
+import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 import com.jerboa.ui.components.report.CreateReportHeader
 import com.jerboa.ui.components.report.CreateReportViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostReportActivity(
     accountViewModel: AccountViewModel,
@@ -33,12 +34,16 @@ fun CreatePostReportActivity(
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
 
     val focusManager = LocalFocusManager.current
+    val loading = when (createReportViewModel.postReportRes) {
+        ApiState.Loading -> true
+        else -> false
+    }
 
     Scaffold(
         topBar = {
             CreateReportHeader(
                 navController = navController,
-                loading = createReportViewModel.loading.value,
+                loading = loading,
                 onCreateClick = {
                     account?.also { acct ->
                         createReportViewModel.createPostReport(

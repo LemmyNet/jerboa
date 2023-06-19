@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.privatemessage
 
@@ -19,13 +18,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
-import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.samplePrivateMessageView
+import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrivateMessageReplyHeader(
     navController: NavController = rememberNavController(),
