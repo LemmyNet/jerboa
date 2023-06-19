@@ -44,7 +44,6 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.isModerator
@@ -70,7 +69,6 @@ fun PostActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     navController: NavController,
-    appSettingsViewModel: AppSettingsViewModel,
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
     showVotingArrowsInListView: Boolean,
