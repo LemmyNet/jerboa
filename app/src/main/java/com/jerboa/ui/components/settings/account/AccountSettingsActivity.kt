@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.settings.account
 
@@ -9,7 +8,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.jerboa.R
@@ -18,6 +16,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountSettingsActivity(
     navController: NavController,
@@ -27,7 +26,6 @@ fun AccountSettingsActivity(
 ) {
     Log.d("jerboa", "Got to settings activity")
 
-    val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -43,7 +41,6 @@ fun AccountSettingsActivity(
                     onClickSave = { form ->
                         accountSettingsViewModel.saveSettings(
                             form,
-                            ctx,
                             siteViewModel = siteViewModel,
                             account = account,
                         )

@@ -3,8 +3,8 @@ package com.jerboa.ui.components.home.sidebar
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.jerboa.datatypes.SiteView
 import com.jerboa.datatypes.sampleSiteView
+import com.jerboa.datatypes.types.SiteView
 import com.jerboa.ui.components.common.Sidebar
 
 @Composable
