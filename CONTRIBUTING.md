@@ -41,7 +41,7 @@ This project is full Kotlin. Please do not write Java classes.
 
 ### Code quality
 
-The code must be formatted to a common standard.
+The code must be formatted to a [common standard](https://pinterest.github.io/ktlint/0.49.1/rules/standard/).
 
 To check for violations
 
