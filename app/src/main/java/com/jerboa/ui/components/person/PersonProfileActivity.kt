@@ -542,7 +542,9 @@ fun UserTabs(
                                     toggleExpanded = { commentId -> toggleExpanded(commentId) },
                                     toggleActionBar = { commentId -> toggleActionBar(commentId) },
                                     onMarkAsReadClick = {},
-                                    onCommentClick = {},
+                                    onCommentClick = { cv ->
+                                        navController.navigate("comment/${cv.comment.id}")
+                                    },
                                     onUpvoteClick = { cv ->
                                         account?.also { acct ->
                                             personProfileViewModel.likeComment(
