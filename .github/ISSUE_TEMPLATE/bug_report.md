@@ -6,7 +6,7 @@ labels: bug
 assignees: ""
 ---
 
-** Jerboa Version **
+**Jerboa Version**
 Type the version from the settings here.
 
 **Describe the bug**
