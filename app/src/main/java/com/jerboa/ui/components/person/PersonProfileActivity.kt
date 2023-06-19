@@ -90,15 +90,16 @@ fun PersonProfileActivity(
         val personName = personArg.fold({ null }, { it })
 
         personProfileViewModel.resetPage()
+        personProfileViewModel.updateSavedOnly(savedMode)
         personProfileViewModel.getPersonDetails(
             GetPersonDetails(
                 person_id = personId,
                 username = personName,
                 sort = SortType.New,
+                saved_only = savedMode,
                 auth = account?.jwt,
             ),
         )
-        personProfileViewModel.updateSavedOnly(savedMode)
     }
 
     Scaffold(
