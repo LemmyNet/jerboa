@@ -37,10 +37,10 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.VoteType
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.PersonMentionView
-import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.samplePersonMentionView
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.Person
+import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
@@ -106,7 +106,7 @@ fun CommentMentionNodeFooterLine(
     onViewSourceClick: () -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
@@ -302,11 +302,11 @@ fun CommentMentionNode(
     onSaveClick: (personMentionView: PersonMentionView) -> Unit,
     onMarkAsReadClick: (personMentionView: PersonMentionView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account?,
     showAvatar: Boolean,
 ) {

@@ -1,52 +1,55 @@
 package com.jerboa.ui.components.post.create
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.jerboa.api.createPostWrapper
-import com.jerboa.api.getSiteMetadataWrapper
-import com.jerboa.db.Account
+import com.jerboa.api.API
+import com.jerboa.api.ApiState
+import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.types.CreatePost
+import com.jerboa.datatypes.types.GetSiteMetadata
+import com.jerboa.datatypes.types.GetSiteMetadataResponse
+import com.jerboa.datatypes.types.PostResponse
+import com.jerboa.serializeToMap
 import kotlinx.coroutines.launch
 
 class CreatePostViewModel : ViewModel() {
-    var suggestedTitle by mutableStateOf<String?>(null)
-    var loading by mutableStateOf(false)
+    var createPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+        private set
+    var siteMetadataRes: ApiState<GetSiteMetadataResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     fun createPost(
-        account: Account,
-        ctx: Context,
-        body: String?,
-        url: String?,
-        name: String,
-        communityId: Int,
+        form: CreatePost,
         navController: NavController,
     ) {
         viewModelScope.launch {
-            loading = true
-            val postOut = createPostWrapper(
-                account = account,
-                communityId = communityId,
-                body = body,
-                url = url,
-                name = name,
-                ctx = ctx,
-            )
-            loading = false
-            navController.popBackStack()
-            postOut?.also { pv ->
-                navController.navigate(route = "post/${pv.post.id}")
+            createPostRes = ApiState.Loading
+            createPostRes =
+                apiWrapper(
+                    API.getInstance().createPost(form),
+                )
+
+            when (val postRes = createPostRes) {
+                is ApiState.Success -> {
+                    navController.popBackStack()
+                    navController.navigate(route = "post/${postRes.data.post_view.post.id}")
+                }
+                else -> {}
             }
         }
     }
 
-    fun fetchSuggestedTitle(url: String, ctx: Context) {
+    fun getSiteMetadata(form: GetSiteMetadata) {
         viewModelScope.launch {
-            suggestedTitle = getSiteMetadataWrapper(url, ctx)?.title
+            siteMetadataRes = ApiState.Loading
+            siteMetadataRes =
+                apiWrapper(
+                    API.getInstance().getSiteMetadata(form.serializeToMap()),
+                )
         }
     }
 }

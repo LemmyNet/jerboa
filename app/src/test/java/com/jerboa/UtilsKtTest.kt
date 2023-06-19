@@ -2,7 +2,6 @@ package com.jerboa
 
 import androidx.compose.ui.unit.dp
 import com.jerboa.api.API
-import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.ui.theme.SMALL_PADDING
 import org.junit.Assert.*
 import org.junit.Test
@@ -126,11 +125,6 @@ class UtilsKtTest {
                 3,
             ),
         )
-    }
-
-    @Test
-    fun testUnreadCountTotal() {
-        assertEquals(6, unreadCountTotal(GetUnreadCountResponse(1, 2, 3)))
     }
 
     @Test
