@@ -119,6 +119,7 @@
     <string name="create_report_report">Report</string>
     <string name="create_report_type_your_reason">Type your reason</string>
     <string name="create_report_view_model_report_created">Report Created</string>
+    <string name="create_report_view_model_report_fail">Couldn\'t create report: %1$s</string>
     <string name="dialog_moreOptions">More options</string>
     <string name="dialogs_active">Active</string>
     <string name="dialogs_all">All</string>
