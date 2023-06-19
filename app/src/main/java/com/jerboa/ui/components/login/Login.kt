@@ -33,11 +33,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
-import com.jerboa.datatypes.api.Login
+import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.onAutofill
-
-val BANNED_INSTANCES = listOf("wolfballs.com")
 
 @Composable
 fun MyTextField(
@@ -109,8 +107,7 @@ fun LoginForm(
     var wasAutofilled by remember { mutableStateOf(false) }
 
     val isValid =
-        instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty() &&
-            !BANNED_INSTANCES.contains(instance)
+        instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()
 
     val form = Login(
         username_or_email = username.trim(),
