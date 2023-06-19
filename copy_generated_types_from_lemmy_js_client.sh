@@ -25,14 +25,14 @@ for filename in *.ts;
   sed -i '1ipackage com.jerboa.datatypes.types' "$kt_file" 
 
   # Change Number or Any to Int
-  sed -i 's/Any/Int/g' "$kt_file"
-  sed -i 's/Number/Int/g' "$kt_file"
+  sed -i 's/Any\b/Int/g' "$kt_file"
+  sed -i 's/Number\b/Int/g' "$kt_file"
 
   # Change Array to immutable List
-  sed -i 's/Array/List/g' "$kt_file"
+  sed -i 's/Array\b/List/g' "$kt_file"
 
   # Change mutable var to immutable val
-  sed -i 's/var/val/g' "$kt_file"
+  sed -i 's/var\b/val/g' "$kt_file"
 
   # Convert a few string to enum types like sort, listing_type, etc
   sed -i 's/listing_type: String/listing_type: ListingType/g' "$kt_file"
@@ -45,7 +45,6 @@ for filename in *.ts;
   sed -i 's/registration_mode: String/registration_mode: RegistrationMode/g' "$kt_file"
   sed -i 's/feature_type: String/feature_type: PostFeatureType/g' "$kt_file"
   
-
   # Add = null to any lines containing ?
   sed -i '/\?/ s/$/ = null/' "$kt_file"
 
