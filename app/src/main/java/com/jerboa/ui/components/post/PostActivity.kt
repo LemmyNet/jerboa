@@ -74,6 +74,7 @@ fun PostActivity(
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
     showVotingArrowsInListView: Boolean,
+    showParentCommentNavigationButtons: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -122,57 +123,67 @@ fun PostActivity(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         bottomBar = {
-            BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.background.copy(alpha = .75f),
-                modifier = Modifier.height(50.dp),
-                content = {
-                    IconButton(modifier = Modifier.weight(.5f), onClick = {
-                        scope.launch {
-                            var minDifference = Int.MAX_VALUE
-                            var nearestPreviousIndex: Int? = null
-                            val currentListStateIndex = listState.firstVisibleItemIndex
+            if (showParentCommentNavigationButtons) {
+                BottomAppBar(
+                    containerColor = MaterialTheme.colorScheme.background.copy(alpha = .75f),
+                    modifier = Modifier.height(50.dp),
+                    content = {
+                        IconButton(modifier = Modifier.weight(.5f), onClick = {
+                            scope.launch {
+                                var minDifference = Int.MAX_VALUE
+                                var nearestPreviousIndex: Int? = null
+                                val currentListStateIndex = listState.firstVisibleItemIndex
 
-                            for (parentIndex in parentListStateIndexes) {
-                                if (parentIndex < currentListStateIndex) {
-                                    val difference = currentListStateIndex - parentIndex
-                                    if (difference < minDifference) {
-                                        minDifference = difference
-                                        nearestPreviousIndex = parentIndex
+                                for (parentIndex in parentListStateIndexes) {
+                                    if (parentIndex < currentListStateIndex) {
+                                        val difference = currentListStateIndex - parentIndex
+                                        if (difference < minDifference) {
+                                            minDifference = difference
+                                            nearestPreviousIndex = parentIndex
+                                        }
                                     }
                                 }
-                            }
 
-                            if (nearestPreviousIndex != null) {
-                                listState.animateScrollToItem(nearestPreviousIndex)
-                            }
-                        }
-                    }) {
-                        Icon(modifier = Modifier.scale(1.5f), imageVector = Icons.Filled.KeyboardArrowUp, contentDescription = "Up")
-                    }
-                    IconButton(modifier = Modifier.weight(.5f), onClick = {
-                        scope.launch {
-                            var minDifference = Int.MAX_VALUE
-                            var nearestNextIndex: Int? = null
-                            val currentListStateIndex = listState.firstVisibleItemIndex
-
-                            for (parentIndex in parentListStateIndexes) {
-                                if (parentIndex > currentListStateIndex) {
-                                    val difference = parentIndex - currentListStateIndex
-                                    if (difference < minDifference) {
-                                        minDifference = difference
-                                        nearestNextIndex = parentIndex
-                                    }
+                                if (nearestPreviousIndex != null) {
+                                    listState.animateScrollToItem(nearestPreviousIndex)
                                 }
                             }
-
-                            if (nearestNextIndex != null) {
-                                listState.animateScrollToItem(nearestNextIndex)
-                            }
+                        }) {
+                            Icon(
+                                modifier = Modifier.scale(1.5f),
+                                imageVector = Icons.Filled.KeyboardArrowUp,
+                                contentDescription = "Up"
+                            )
                         }
-                    }) {
-                        Icon(modifier = Modifier.scale(1.5f), imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Down")
-                    }
-            })
+                        IconButton(modifier = Modifier.weight(.5f), onClick = {
+                            scope.launch {
+                                var minDifference = Int.MAX_VALUE
+                                var nearestNextIndex: Int? = null
+                                val currentListStateIndex = listState.firstVisibleItemIndex
+
+                                for (parentIndex in parentListStateIndexes) {
+                                    if (parentIndex > currentListStateIndex) {
+                                        val difference = parentIndex - currentListStateIndex
+                                        if (difference < minDifference) {
+                                            minDifference = difference
+                                            nearestNextIndex = parentIndex
+                                        }
+                                    }
+                                }
+
+                                if (nearestNextIndex != null) {
+                                    listState.animateScrollToItem(nearestNextIndex)
+                                }
+                            }
+                        }) {
+                            Icon(
+                                modifier = Modifier.scale(1.5f),
+                                imageVector = Icons.Filled.KeyboardArrowDown,
+                                contentDescription = "Down"
+                            )
+                        }
+                    })
+            }
         },
         topBar = {
             Column {
@@ -413,8 +424,10 @@ fun PostActivity(
                             enableDownVotes = enableDownVotes,
                             showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                         )
-                        item {
-                            Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
+                        if (showParentCommentNavigationButtons) {
+                            item {
+                                Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
+                            }
                         }
                     }
                 }

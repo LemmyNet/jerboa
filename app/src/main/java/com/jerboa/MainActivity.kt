@@ -444,6 +444,7 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
                             siteViewModel = siteViewModel,
                         )
                     }
@@ -478,6 +479,7 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
                             siteViewModel = siteViewModel,
                         )
                     }

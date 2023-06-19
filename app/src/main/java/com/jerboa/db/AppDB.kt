@@ -85,6 +85,11 @@ data class AppSettings(
     )
     val showVotingArrowsInListView: Boolean,
     @ColumnInfo(
+        name = "show_parent_comment_navigation_buttons",
+        defaultValue = "1",
+    )
+    val showParentCommentNavigationButtons: Boolean,
+    @ColumnInfo(
         name = "use_custom_tabs",
         defaultValue = "1",
     )
@@ -367,8 +372,17 @@ val MIGRATION_13_14 = object : Migration(13, 14) {
     }
 }
 
+val MIGRATION_14_15 = object : Migration(14, 15) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column show_parent_comment_navigation_buttons INTEGER NOT NULL default 1",
+        )
+    }
+}
+
 @Database(
-    version = 14,
+    version = 15,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -406,6 +420,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_11_12,
                         MIGRATION_12_13,
                         MIGRATION_13_14,
+                        MIGRATION_14_15,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

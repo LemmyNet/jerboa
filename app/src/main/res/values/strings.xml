@@ -288,4 +288,5 @@
     <string name="bottomBar_label_profile">Profile</string>
     <string name="look_and_feel_show_action_bar_for_comments">Show action bar by default for comments</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Show voting arrows in list view</string>
+    <string name="show_parent_comment_navigation_buttons">Show parent comment navigation buttons</string>
 </resources>
