@@ -1,26 +1,32 @@
 pipeline:
-  check_formatting:
-    image: cimg/android:2023.05
-    commands:
-      - sudo chown -R circleci:circleci .
-      - ./gradlew lintKotlin
-
   prettier_markdown_check:
     image: tmknom/prettier
     commands:
       - prettier -c "*.md" "*.yml"
 
-  run_tests:
+  check_formatting:
     image: cimg/android:2023.05
     commands:
       - sudo chown -R circleci:circleci .
-      - ./gradlew testDebug
+      - ./gradlew lintKotlin
+    environment:
+      GRADLE_RO_DEP_CACHE: .depcache
 
   build_project:
     image: cimg/android:2023.05
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew assembleDebug
+    environment:
+      GRADLE_RO_DEP_CACHE: .depcache
+
+  run_tests:
+    image: cimg/android:2023.05
+    commands:
+      - sudo chown -R circleci:circleci .
+      - ./gradlew testDebug
+    environment:
+      GRADLE_RO_DEP_CACHE: .depcache
 
   notify:
     image: alpine:3
