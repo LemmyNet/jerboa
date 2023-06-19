@@ -832,13 +832,13 @@ enum class ThemeMode(val mode: Int) {
 
 enum class ThemeColor {
     Dynamic,
-    Green,
-    Pink,
+    Beach,
     Blue,
+    Green,
     Grey,
+    Pink,
     Purple,
     Woodland,
-    Beach,
 }
 
 enum class PostViewMode(val mode: Int) {
