@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.settings.account
 
 import androidx.compose.foundation.layout.*
@@ -23,8 +21,11 @@ import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.jerboa.R
+import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
-import com.jerboa.datatypes.api.SaveUserSettings
+import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.SaveUserSettings
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.*
@@ -32,7 +33,6 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.theme.*
 import kotlinx.coroutines.launch
 
-// TODO replace all these
 @Composable
 fun SettingsTextField(
     label: String,
@@ -83,7 +83,16 @@ fun SettingsForm(
     onClickSave: (form: SaveUserSettings) -> Unit,
     padding: PaddingValues,
 ) {
-    val luv = siteViewModel.siteRes?.my_user?.local_user_view
+    val luv = when (val siteRes = siteViewModel.siteRes) {
+        is ApiState.Success -> siteRes.data.my_user?.local_user_view
+        else -> { null }
+    }
+
+    val loading = when (accountSettingsViewModel.saveUserSettingsRes) {
+        ApiState.Loading -> true
+        else -> false
+    }
+
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
     var displayName by rememberSaveable { mutableStateOf(luv?.person?.display_name.orEmpty()) }
@@ -281,7 +290,7 @@ fun SettingsForm(
         )
         // Todo: Remove this
         Button(
-            enabled = !accountSettingsViewModel.loading,
+            enabled = !loading,
             onClick = { onClickSave(form) },
             modifier = Modifier
                 .padding(MEDIUM_PADDING)
