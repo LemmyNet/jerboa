@@ -33,8 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -52,7 +50,7 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeActivity(
     navController: NavController,
@@ -169,7 +167,6 @@ fun HomeActivity(
                 },
             )
         },
-        modifier = Modifier.semantics { testTagsAsResourceId = true },
     )
 }
 

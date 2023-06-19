@@ -23,10 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.jerboa.R
 import com.jerboa.communityNameShown
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.CommunityView
-import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleCommunityView
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
 import com.jerboa.ui.theme.ICON_SIZE
@@ -38,10 +38,10 @@ import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
 fun CommunityName(
-    community: CommunitySafe,
+    modifier: Modifier = Modifier,
+    community: Community,
     color: Color = MaterialTheme.colorScheme.primary,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    modifier: Modifier = Modifier,
 ) {
     Text(
         text = communityNameShown(community),
@@ -56,20 +56,20 @@ fun CommunityName(
 @Preview
 @Composable
 fun CommunityNamePreview() {
-    CommunityName(community = sampleCommunitySafe)
+    CommunityName(community = sampleCommunity)
 }
 
 @Composable
 fun CommunityLink(
     modifier: Modifier = Modifier,
-    community: CommunitySafe,
+    community: Community,
     usersPerMonth: Int? = null,
     color: Color = MaterialTheme.colorScheme.primary,
     spacing: Dp = SMALL_PADDING,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    onClick: (community: CommunitySafe) -> Unit,
+    onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
 ) {
     Row(
@@ -107,8 +107,8 @@ fun CommunityLink(
 
 @Composable
 fun CommunityLinkLarger(
-    community: CommunitySafe,
-    onClick: (community: CommunitySafe) -> Unit,
+    community: Community,
+    onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
 ) {
     CommunityLink(
@@ -129,7 +129,7 @@ fun CommunityLinkLarger(
 @Composable
 fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
-    onClick: (community: CommunitySafe) -> Unit,
+    onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
 ) {
     CommunityLink(
@@ -152,7 +152,7 @@ fun CommunityLinkLargerWithUserCount(
 @Composable
 fun CommunityLinkPreview() {
     CommunityLink(
-        community = sampleCommunitySafe,
+        community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
     )
