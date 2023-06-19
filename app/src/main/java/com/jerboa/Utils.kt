@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.jerboa.util
+package com.jerboa
 
 import android.app.Activity
 import android.content.ContentValues
@@ -49,7 +49,6 @@ import androidx.core.util.PatternsCompat
 import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.* // ktlint-disable no-unused-imports

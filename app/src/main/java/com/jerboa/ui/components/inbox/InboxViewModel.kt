@@ -7,6 +7,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.datatypes.CommentReplyView
 import com.jerboa.datatypes.CommentSortType
@@ -17,6 +18,7 @@ import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.api.CreatePrivateMessage
 import com.jerboa.datatypes.api.MarkAllAsRead
 import com.jerboa.db.Account
+import com.jerboa.toastException
 import com.jerboa.ui.components.comment.createPrivateMessageRoutine
 import com.jerboa.ui.components.comment.fetchPersonMentionsRoutine
 import com.jerboa.ui.components.comment.fetchRepliesRoutine
@@ -30,8 +32,6 @@ import com.jerboa.ui.components.community.blockCommunityRoutine
 import com.jerboa.ui.components.person.blockPersonRoutine
 import com.jerboa.ui.components.person.fetchPrivateMessagesRoutine
 import com.jerboa.ui.components.person.markPrivateMessageAsReadRoutine
-import com.jerboa.util.VoteType
-import com.jerboa.util.toastException
 import kotlinx.coroutines.launch
 
 class InboxViewModel : ViewModel() {

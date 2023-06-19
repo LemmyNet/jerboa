@@ -57,7 +57,12 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.jerboa.InstantScores
+import com.jerboa.PostViewMode
 import com.jerboa.R
+import com.jerboa.VoteType
+import com.jerboa.calculateNewInstantScores
+import com.jerboa.communityNameShown
 import com.jerboa.datatypes.CommunitySafe
 import com.jerboa.datatypes.PersonSafe
 import com.jerboa.datatypes.Post
@@ -67,6 +72,10 @@ import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.db.Account
+import com.jerboa.hostName
+import com.jerboa.isImage
+import com.jerboa.isSameInstance
+import com.jerboa.nsfwCheck
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -96,15 +105,6 @@ import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
-import com.jerboa.util.InstantScores
-import com.jerboa.util.PostViewMode
-import com.jerboa.util.VoteType
-import com.jerboa.util.calculateNewInstantScores
-import com.jerboa.util.communityNameShown
-import com.jerboa.util.hostName
-import com.jerboa.util.isImage
-import com.jerboa.util.isSameInstance
-import com.jerboa.util.nsfwCheck
 
 @Composable
 fun PostHeaderLine(

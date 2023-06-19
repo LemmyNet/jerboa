@@ -3,13 +3,13 @@ package com.jerboa.api
 import android.content.Context
 import android.util.Log
 import arrow.core.Either
+import com.jerboa.VoteType
 import com.jerboa.datatypes.*
 import com.jerboa.datatypes.api.*
 import com.jerboa.db.Account
-import com.jerboa.util.VoteType
-import com.jerboa.util.newVote
-import com.jerboa.util.serializeToMap
-import com.jerboa.util.toastException
+import com.jerboa.newVote
+import com.jerboa.serializeToMap
+import com.jerboa.toastException
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody

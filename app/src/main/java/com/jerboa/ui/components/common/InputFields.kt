@@ -70,12 +70,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
+import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
+import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
-import com.jerboa.util.appendMarkdownImage
-import com.jerboa.util.imageInputStreamFromUri
 import kotlinx.coroutines.launch
 
 @Composable

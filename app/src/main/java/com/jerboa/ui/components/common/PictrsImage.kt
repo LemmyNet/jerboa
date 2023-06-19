@@ -40,6 +40,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.decodeUriToBitmap
+import com.jerboa.pictrsImageThumbnail
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGER_ICON_SIZE
@@ -48,8 +50,6 @@ import com.jerboa.ui.theme.MAX_IMAGE_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.ui.theme.muted
-import com.jerboa.util.decodeUriToBitmap
-import com.jerboa.util.pictrsImageThumbnail
 
 @Composable
 fun CircularIcon(

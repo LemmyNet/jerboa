@@ -18,11 +18,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
+import com.jerboa.isModerator
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
-import com.jerboa.util.isModerator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

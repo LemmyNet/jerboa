@@ -25,14 +25,14 @@ import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsSlider
+import com.jerboa.PostViewMode
 import com.jerboa.R
+import com.jerboa.ThemeColor
+import com.jerboa.ThemeMode
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.DEFAULT_FONT_SIZE
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.util.PostViewMode
-import com.jerboa.util.ThemeColor
-import com.jerboa.util.ThemeMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

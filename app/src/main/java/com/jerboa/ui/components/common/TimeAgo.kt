@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.datatypes.samplePost
+import com.jerboa.prettyTime
+import com.jerboa.prettyTimeShortener
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
-import com.jerboa.util.prettyTime
-import com.jerboa.util.prettyTimeShortener
 import java.time.Instant
 import java.util.Date
 

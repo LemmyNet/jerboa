@@ -6,6 +6,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.focus.FocusManager
 import androidx.navigation.NavController
+import com.jerboa.CommentNodeData
+import com.jerboa.VoteType
 import com.jerboa.api.API
 import com.jerboa.api.createCommentWrapper
 import com.jerboa.api.createPrivateMessageWrapper
@@ -28,14 +30,12 @@ import com.jerboa.datatypes.api.EditComment
 import com.jerboa.datatypes.api.GetPersonMentions
 import com.jerboa.datatypes.api.GetReplies
 import com.jerboa.db.Account
+import com.jerboa.findAndUpdateCommentInTree
+import com.jerboa.insertCommentIntoTree
+import com.jerboa.serializeToMap
+import com.jerboa.toastException
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
-import com.jerboa.util.CommentNodeData
-import com.jerboa.util.VoteType
-import com.jerboa.util.findAndUpdateCommentInTree
-import com.jerboa.util.insertCommentIntoTree
-import com.jerboa.util.serializeToMap
-import com.jerboa.util.toastException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

@@ -34,14 +34,6 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessage
-import com.jerboa.util.UnreadOrAll
-import com.jerboa.util.VoteType
-import com.jerboa.util.getCommentParentId
-import com.jerboa.util.isScrolledToEnd
-import com.jerboa.util.loginFirstToast
-import com.jerboa.util.pagerTabIndicatorOffset2
-import com.jerboa.util.unreadCountTotal
-import com.jerboa.util.unreadOrAllFromBool
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

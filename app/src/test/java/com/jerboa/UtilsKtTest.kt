@@ -4,30 +4,10 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.api.API
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.util.InputField
-import com.jerboa.util.InstantScores
-import com.jerboa.util.MAX_POST_TITLE_LENGTH
-import com.jerboa.util.UnreadOrAll
-import com.jerboa.util.VoteType
-import com.jerboa.util.calculateCommentOffset
-import com.jerboa.util.calculateNewInstantScores
-import com.jerboa.util.hostName
-import com.jerboa.util.isImage
-import com.jerboa.util.newScore
-import com.jerboa.util.newVote
-import com.jerboa.util.newVoteCount
-import com.jerboa.util.parseUrl
-import com.jerboa.util.pictrsImageThumbnail
-import com.jerboa.util.serializeToMap
-import com.jerboa.util.siFormat
-import com.jerboa.util.unreadCountTotal
-import com.jerboa.util.unreadOrAllFromBool
-import com.jerboa.util.validatePostName
-import com.jerboa.util.validateUrl
 import org.junit.Assert.*
 import org.junit.Test
 
-class JerboaUtilsKtTest {
+class UtilsKtTest {
     @Test
     fun testCalculateCommentOffset() {
         assertEquals(0.dp, calculateCommentOffset(0, 0))

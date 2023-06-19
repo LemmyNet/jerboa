@@ -6,7 +6,6 @@ import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.api.GetPost
 import com.jerboa.datatypes.api.GetPosts
 import com.jerboa.datatypes.api.GetSite
-import com.jerboa.util.serializeToMap
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull

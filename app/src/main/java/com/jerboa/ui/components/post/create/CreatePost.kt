@@ -48,8 +48,8 @@ import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.ui.theme.muted
-import com.jerboa.util.validatePostName
-import com.jerboa.util.validateUrl
+import com.jerboa.validatePostName
+import com.jerboa.validateUrl
 
 @Composable
 fun CreatePostHeader(

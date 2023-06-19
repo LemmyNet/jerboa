@@ -15,10 +15,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
+import com.jerboa.ThemeColor
+import com.jerboa.ThemeMode
 import com.jerboa.db.AppSettings
 import com.jerboa.db.DEFAULT_FONT_SIZE
-import com.jerboa.util.ThemeColor
-import com.jerboa.util.ThemeMode
 
 @Composable
 fun JerboaTheme(

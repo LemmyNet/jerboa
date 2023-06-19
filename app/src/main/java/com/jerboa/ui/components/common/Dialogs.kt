@@ -30,13 +30,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.PostViewMode
 import com.jerboa.R
+import com.jerboa.UnreadOrAll
 import com.jerboa.datatypes.CommentSortType
 import com.jerboa.datatypes.ListingType
 import com.jerboa.datatypes.SortType
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.util.PostViewMode
-import com.jerboa.util.UnreadOrAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrl

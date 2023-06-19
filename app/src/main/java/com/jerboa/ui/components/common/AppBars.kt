@@ -46,11 +46,11 @@ import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.datatypes.samplePersonSafe
 import com.jerboa.datatypes.samplePost
 import com.jerboa.db.Account
+import com.jerboa.loginFirstToast
+import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
-import com.jerboa.util.loginFirstToast
-import com.jerboa.util.siFormat
-import com.jerboa.util.unreadCountTotal
+import com.jerboa.unreadCountTotal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

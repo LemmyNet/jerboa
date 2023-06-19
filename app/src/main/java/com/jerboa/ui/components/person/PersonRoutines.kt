@@ -14,8 +14,8 @@ import com.jerboa.datatypes.PrivateMessageView
 import com.jerboa.datatypes.api.BlockPerson
 import com.jerboa.datatypes.api.GetPrivateMessages
 import com.jerboa.db.Account
-import com.jerboa.util.serializeToMap
-import com.jerboa.util.toastException
+import com.jerboa.serializeToMap
+import com.jerboa.toastException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

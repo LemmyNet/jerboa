@@ -28,8 +28,8 @@ import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.util.validatePostName
-import com.jerboa.util.validateUrl
+import com.jerboa.validatePostName
+import com.jerboa.validateUrl
 
 @Composable
 fun EditPostHeader(

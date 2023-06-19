@@ -66,9 +66,6 @@ import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
-import com.jerboa.util.DEFAULT_LEMMY_INSTANCES
-import com.jerboa.util.fetchInitialData
-import com.jerboa.util.findActivity
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
