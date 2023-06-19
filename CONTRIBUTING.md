@@ -1,16 +1,18 @@
 # Contributing to Jerboa
 
-<!-- TOC -->
+<!-- prettier-ignore-start -->
 
+<!-- TOC -->
 * [Contributing to Jerboa](#contributing-to-jerboa)
-    * [Ways to contribute](#ways-to-contribute)
-    * [Application structure](#application-structure)
-    * [Code contributions](#code-contributions)
-        * [Kotlin](#kotlin)
-        * [Code quality](#code-quality)
-    * [Adding translations](#adding-translations)
-
+  * [Ways to contribute](#ways-to-contribute)
+  * [Application structure](#application-structure)
+  * [Code contributions](#code-contributions)
+    * [Kotlin](#kotlin)
+    * [Code quality](#code-quality)
+  * [Adding translations](#adding-translations)
 <!-- TOC -->
+
+<!-- prettier-ignore-end -->
 
 ## Ways to contribute
 
@@ -45,6 +47,13 @@ To check for violations
 `./gradlew lintKotlin`
 Or just run this to fix them
 `./gradlew formatKotlin`
+
+Markdown and yaml files are formatted according to prettier.
+
+You can install prettier either through the plugin, or globally using npm `npm install -g prettier`
+
+To check for violations
+`prettier -c "*.md" "*.yml"`
 
 ## Adding translations
 
