@@ -3,6 +3,7 @@ package com.jerboa.db
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE
+import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +12,15 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.util.concurrent.Executors
 
 const val DEFAULT_FONT_SIZE = 16
@@ -178,7 +187,14 @@ class AccountRepository(private val accountDao: AccountDao) {
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
-class AppSettingsRepository(private val appSettingsDao: AppSettingsDao) {
+class AppSettingsRepository(
+    private val appSettingsDao: AppSettingsDao,
+    private val httpClient: OkHttpClient = OkHttpClient(),
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) {
+
+    private val _changelog = MutableStateFlow("")
+    val changelog = _changelog.asStateFlow()
 
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
@@ -197,6 +213,23 @@ class AppSettingsRepository(private val appSettingsDao: AppSettingsDao) {
     @WorkerThread
     suspend fun updatePostViewMode(postViewMode: Int) {
         appSettingsDao.updatePostViewMode(postViewMode)
+    }
+
+    @WorkerThread
+    suspend fun updateChangelog() {
+        withContext(ioDispatcher) {
+            try {
+                Log.d("jerboa", "Fetching RELEASES.md ...")
+                // Fetch the markdown text
+                val releasesUrl =
+                    "https://raw.githubusercontent.com/dessalines/jerboa/main/RELEASES.md".toHttpUrl()
+                val req = Request.Builder().url(releasesUrl).build()
+                val res = httpClient.newCall(req).execute()
+                _changelog.value = res.body.string()
+            } catch (e: Exception) {
+                Log.e("jerboa", "Failed to load changelog: $e")
+            }
+        }
     }
 }
 
@@ -467,6 +500,7 @@ class AccountViewModelFactory(private val repository: AccountRepository) :
 class AppSettingsViewModel(private val repository: AppSettingsRepository) : ViewModel() {
 
     val appSettings = repository.appSettings
+    val changelog = repository.changelog
 
     fun update(appSettings: AppSettings) = viewModelScope.launch {
         repository.update(appSettings)
@@ -478,6 +512,10 @@ class AppSettingsViewModel(private val repository: AppSettingsRepository) : View
 
     fun updatedPostViewMode(postViewMode: Int) = viewModelScope.launch {
         repository.updatePostViewMode(postViewMode)
+    }
+
+    fun updateChangelog() = viewModelScope.launch {
+        repository.updateChangelog()
     }
 }
 

@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.common
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,10 +22,13 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,11 +39,6 @@ import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AppSettingsViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 val DONATION_MARKDOWN = """
     ### Support Jerboa
@@ -324,12 +321,15 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
     changelogViewed?.also { cViewed ->
         val viewed = cViewed == 1
 
-        val whatsChangedDialogOpen = remember { mutableStateOf(!viewed) }
+        var whatsChangedDialogOpen by remember { mutableStateOf(!viewed) }
 
-        if (whatsChangedDialogOpen.value) {
+        if (whatsChangedDialogOpen) {
             val scrollState = rememberScrollState()
-            val scope = rememberCoroutineScope()
-            val markdown = remember { mutableStateOf("") }
+
+            val markdown by appSettingsViewModel.changelog.collectAsState()
+            LaunchedEffect(appSettingsViewModel) {
+                appSettingsViewModel.updateChangelog()
+            }
 
             AlertDialog(
                 text = {
@@ -339,7 +339,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                             .verticalScroll(scrollState),
                     ) {
                         MyMarkdownText(
-                            markdown = DONATION_MARKDOWN + markdown.value,
+                            markdown = DONATION_MARKDOWN + markdown,
                             onClick = {},
                         )
                     }
@@ -347,7 +347,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                 confirmButton = {
                     Button(
                         onClick = {
-                            whatsChangedDialogOpen.value = false
+                            whatsChangedDialogOpen = false
                             appSettingsViewModel.markChangelogViewed()
                         },
                         modifier = Modifier.fillMaxWidth(),
@@ -356,20 +356,10 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                     }
                 },
                 onDismissRequest = {
-                    whatsChangedDialogOpen.value = false
+                    whatsChangedDialogOpen = false
                     appSettingsViewModel.markChangelogViewed()
                 },
             )
-
-            scope.launch(Dispatchers.IO) {
-                Log.d("jerboa", "Fetching RELEASES.md ...")
-                // Fetch the markdown text
-                val client = OkHttpClient()
-                val releasesUrl = "https://raw.githubusercontent.com/dessalines/jerboa/main/RELEASES.md".toHttpUrl()
-                val req = Request.Builder().url(releasesUrl).build()
-                val res = client.newCall(req).execute()
-                markdown.value = res.body.string()
-            }
         }
     }
 }
