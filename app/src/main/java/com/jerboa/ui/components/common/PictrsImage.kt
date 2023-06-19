@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jerboa.R
-import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.decodeUriToBitmap
 import com.jerboa.pictrsImageThumbnail
 import com.jerboa.ui.theme.ICON_SIZE
@@ -53,11 +53,11 @@ import com.jerboa.ui.theme.muted
 
 @Composable
 fun CircularIcon(
+    modifier: Modifier = Modifier,
     icon: String,
     contentDescription: String?,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
-    modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = getImageRequest(
@@ -92,7 +92,7 @@ fun LargerCircularIcon(modifier: Modifier = Modifier, icon: String, contentDescr
 @Composable
 fun CircularIconPreview() {
     CircularIcon(
-        icon = sampleCommunitySafe.icon!!,
+        icon = sampleCommunity.icon!!,
         contentDescription = "",
     )
 }

@@ -41,16 +41,14 @@ import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.R
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.api.GetUnreadCountResponse
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
+import com.jerboa.datatypes.types.Person
 import com.jerboa.db.Account
 import com.jerboa.loginFirstToast
 import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
-import com.jerboa.unreadCountTotal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,14 +79,12 @@ fun SimpleTopAppBar(
 fun BottomAppBarAll(
     navController: NavController = rememberNavController(),
     screen: String,
-    unreadCounts: GetUnreadCountResponse? = null,
+    unreadCount: Int,
     showBottomNav: Boolean? = true,
     onClickSaved: () -> Unit,
     onClickProfile: () -> Unit,
     onClickInbox: () -> Unit,
 ) {
-    val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
-
     if (showBottomNav == true) {
         // Check for preview mode
         if (LocalContext.current is Activity) {
@@ -145,7 +141,7 @@ fun BottomAppBarAll(
             NavigationBarItem(
                 icon = {
                     InboxIconAndBadge(
-                        iconBadgeCount = totalUnreads,
+                        iconBadgeCount = unreadCount,
                         icon = Icons.Outlined.Email,
                         contentDescription = stringResource(R.string.bottomBar_inbox),
                     )
@@ -206,6 +202,7 @@ fun BottomAppBarAllPreview() {
         onClickInbox = {},
         onClickProfile = {},
         onClickSaved = {},
+        unreadCount = 0,
         screen = "home",
         showBottomNav = true,
     )
@@ -214,7 +211,7 @@ fun BottomAppBarAllPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentOrPostNodeHeader(
-    creator: PersonSafe,
+    creator: Person,
     score: Int,
     myVote: Int?,
     published: String,
@@ -284,7 +281,7 @@ fun CommentOrPostNodeHeader(
 @Composable
 fun CommentOrPostNodeHeaderPreview() {
     CommentOrPostNodeHeader(
-        creator = samplePersonSafe,
+        creator = samplePerson,
         score = 23,
         myVote = 1,
         published = samplePost.published,
@@ -472,7 +469,7 @@ fun Sidebar(
                 }
                 TimeAgo(
                     precedingString = stringResource(R.string.AppBars_created),
-                    includeAgo = true,
+                    longTimeFormat = true,
                     published = published,
                 )
                 CommentsAndPosts(
@@ -559,6 +556,7 @@ fun Modifier.simpleVerticalScrollbar(
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
         animationSpec = tween(durationMillis = duration),
+        label = "animateScrollBar",
     )
 
     return drawWithContent {
@@ -581,4 +579,11 @@ fun Modifier.simpleVerticalScrollbar(
             )
         }
     }
+}
+
+@Composable
+fun LoadingBar(
+    padding: PaddingValues = PaddingValues(0.dp),
+) {
+    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(padding))
 }
