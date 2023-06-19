@@ -12,19 +12,19 @@ pipeline:
     environment:
       GRADLE_RO_DEP_CACHE: .depcache
 
-  run_tests:
-    image: cimg/android:2023.05
-    commands:
-      - sudo chown -R circleci:circleci .
-      - ./gradlew testDebug
-    environment:
-      GRADLE_RO_DEP_CACHE: .depcache
-
   build_project:
     image: cimg/android:2023.05
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew assembleDebug
+    environment:
+      GRADLE_RO_DEP_CACHE: .depcache
+
+  run_tests:
+    image: cimg/android:2023.05
+    commands:
+      - sudo chown -R circleci:circleci .
+      - ./gradlew testDebug
     environment:
       GRADLE_RO_DEP_CACHE: .depcache
 
