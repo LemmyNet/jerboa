@@ -22,6 +22,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
+import com.jerboa.datatypes.types.GetCommunity
+import com.jerboa.datatypes.types.GetPersonDetails
+import com.jerboa.datatypes.types.GetPersonMentions
+import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.GetPrivateMessages
+import com.jerboa.datatypes.types.GetReplies
+import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -43,6 +51,7 @@ import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.*
+import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.login.LoginActivity
@@ -56,6 +65,7 @@ import com.jerboa.ui.components.post.create.CreatePostViewModel
 import com.jerboa.ui.components.post.edit.PostEditActivity
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
+import com.jerboa.ui.components.privatemessage.PrivateMessageReplyViewModel
 import com.jerboa.ui.components.report.CreateReportViewModel
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
@@ -88,9 +98,10 @@ class MainActivity : ComponentActivity() {
     private val commentEditViewModel by viewModels<CommentEditViewModel>()
     private val postEditViewModel by viewModels<PostEditViewModel>()
     private val createReportViewModel by viewModels<CreateReportViewModel>()
-    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>() {
+    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
         AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
     }
+    private val privateMessageReplyViewModel by viewModels<PrivateMessageReplyViewModel>()
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModelFactory((application as JerboaApplication).accountRepository)
     }
@@ -165,18 +176,22 @@ class MainActivity : ComponentActivity() {
                     ) {
                         LaunchedEffect(Unit) {
                             val communityId = it.arguments?.getInt("id")!!
-                            val idOrName = Either.Left(communityId)
 
-                            communityViewModel.fetchCommunity(
-                                idOrName = idOrName,
-                                auth = account?.jwt,
+                            communityViewModel.resetPage()
+                            communityViewModel.getCommunity(
+                                form = GetCommunity(
+                                    id = communityId,
+                                    auth = account?.jwt,
+                                ),
                             )
-
-                            communityViewModel.fetchPosts(
-                                communityIdOrName = idOrName,
-                                account = account,
-                                clear = true,
-                                ctx = ctx,
+                            communityViewModel.getPosts(
+                                form =
+                                GetPosts(
+                                    community_id = communityId,
+                                    page = communityViewModel.page,
+                                    sort = communityViewModel.sortType,
+                                    auth = account?.jwt,
+                                ),
                             )
                         }
 
@@ -184,7 +199,6 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             communityViewModel = communityViewModel,
                             accountViewModel = accountViewModel,
-                            homeViewModel = homeViewModel,
                             postEditViewModel = postEditViewModel,
                             communityListViewModel = communityListViewModel,
                             appSettingsViewModel = appSettingsViewModel,
@@ -210,18 +224,23 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
                             val instance = it.arguments?.getString("instance")!!
-                            val idOrName = Either.Right("$name@$instance")
+                            val qualifiedName = "$name@$instance"
 
-                            communityViewModel.fetchCommunity(
-                                idOrName = idOrName,
-                                auth = account?.jwt,
+                            communityViewModel.resetPage()
+                            communityViewModel.getCommunity(
+                                form = GetCommunity(
+                                    name = qualifiedName,
+                                    auth = account?.jwt,
+                                ),
                             )
 
-                            communityViewModel.fetchPosts(
-                                communityIdOrName = idOrName,
-                                account = account,
-                                clear = true,
-                                ctx = ctx,
+                            communityViewModel.getPosts(
+                                GetPosts(
+                                    community_name = name,
+                                    type_ = ListingType.values()[account?.defaultListingType ?: 1],
+                                    sort = SortType.values()[account?.defaultSortType ?: 0],
+                                    auth = account?.jwt,
+                                ),
                             )
                         }
 
@@ -230,7 +249,6 @@ class MainActivity : ComponentActivity() {
                             communityViewModel = communityViewModel,
                             communityListViewModel = communityListViewModel,
                             accountViewModel = accountViewModel,
-                            homeViewModel = homeViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -250,18 +268,17 @@ class MainActivity : ComponentActivity() {
                         ),
                     ) {
                         val savedMode = it.arguments?.getBoolean("saved")!!
-
                         LaunchedEffect(Unit) {
                             val personId = it.arguments?.getInt("id")!!
-                            val idOrName = Either.Left(personId)
 
-                            personProfileViewModel.fetchPersonDetails(
-                                idOrName = idOrName,
-                                account = account,
-                                clearPersonDetails = true,
-                                clearPostsAndComments = true,
-                                ctx = ctx,
-                                changeSavedOnly = savedMode,
+                            personProfileViewModel.resetPage()
+                            personProfileViewModel.getPersonDetails(
+                                GetPersonDetails(
+                                    person_id = personId,
+                                    sort = SortType.New,
+                                    auth = account?.jwt,
+                                    saved_only = savedMode,
+                                ),
                             )
                         }
 
@@ -270,7 +287,6 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
                             accountViewModel = accountViewModel,
-                            homeViewModel = homeViewModel,
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
@@ -297,14 +313,14 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(Unit) {
                             val name = it.arguments?.getString("name")!!
                             val instance = it.arguments?.getString("instance")!!
-                            val idOrName = Either.Right("$name@$instance")
-
-                            personProfileViewModel.fetchPersonDetails(
-                                idOrName = idOrName,
-                                account = account,
-                                clearPersonDetails = true,
-                                clearPostsAndComments = true,
-                                ctx = ctx,
+                            val qualifiedName = "$name@$instance"
+                            personProfileViewModel.resetPage()
+                            personProfileViewModel.getPersonDetails(
+                                GetPersonDetails(
+                                    username = qualifiedName,
+                                    sort = SortType.New,
+                                    auth = account?.jwt,
+                                ),
                             )
                         }
 
@@ -313,7 +329,6 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
                             accountViewModel = accountViewModel,
-                            homeViewModel = homeViewModel,
                             commentEditViewModel = commentEditViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
@@ -337,7 +352,7 @@ class MainActivity : ComponentActivity() {
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            homeViewModel = homeViewModel,
+                            siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             communityListViewModel = communityListViewModel,
                             selectMode = it.arguments?.getBoolean("select")!!,
@@ -376,9 +391,9 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             createPostViewModel = createPostViewModel,
                             communityListViewModel = communityListViewModel,
-                            _url = url,
-                            _body = body,
-                            _image = image,
+                            initialUrl = url,
+                            initialBody = body,
+                            initialImage = image,
                         )
                         activity?.intent?.replaceExtras(Bundle())
                     }
@@ -390,20 +405,21 @@ class MainActivity : ComponentActivity() {
                     ) {
                         if (account != null) {
                             LaunchedEffect(Unit) {
-                                inboxViewModel.fetchReplies(
-                                    account = account,
-                                    clear = true,
-                                    ctx = ctx,
+                                inboxViewModel.resetPage()
+                                inboxViewModel.getReplies(
+                                    GetReplies(
+                                        auth = account.jwt,
+                                    ),
                                 )
-                                inboxViewModel.fetchPersonMentions(
-                                    account = account,
-                                    clear = true,
-                                    ctx = ctx,
+                                inboxViewModel.getMentions(
+                                    GetPersonMentions(
+                                        auth = account.jwt,
+                                    ),
                                 )
-                                inboxViewModel.fetchPrivateMessages(
-                                    account = account,
-                                    clear = true,
-                                    ctx = ctx,
+                                inboxViewModel.getMessages(
+                                    GetPrivateMessages(
+                                        auth = account.jwt,
+                                    ),
                                 )
                             }
                         }
@@ -413,9 +429,9 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
-                            homeViewModel = homeViewModel,
                             commentReplyViewModel = commentReplyViewModel,
                             siteViewModel = siteViewModel,
+                            privateMessageReplyViewModel = privateMessageReplyViewModel,
                         )
                     }
                     composable(
@@ -431,13 +447,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         LaunchedEffect(Unit) {
                             val postId = it.arguments?.getInt("id")!!
-                            postViewModel.fetchPost(
-                                id = Either.Left(postId),
-                                account = account,
-                                clearPost = true,
-                                clearComments = true,
-                                ctx = ctx,
-                            )
+                            postViewModel.initialize(id = Either.Left(postId))
+                            postViewModel.getData(account)
                         }
                         PostActivity(
                             postViewModel = postViewModel,
@@ -450,17 +461,10 @@ class MainActivity : ComponentActivity() {
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             onClickSortType = { commentSortType ->
-                                val postId = it.arguments?.getInt("id")!!
-                                postViewModel.fetchPost(
-                                    id = Either.Left(postId),
-                                    account = account,
-                                    clearPost = false,
-                                    clearComments = true,
-                                    ctx = ctx,
-                                    changeSortType = commentSortType,
-                                )
+                                postViewModel.updateSortType(commentSortType)
+                                postViewModel.getData(account)
                             },
-                            selectedSortType = postViewModel.sortType.value,
+                            selectedSortType = postViewModel.sortType,
                             siteViewModel = siteViewModel,
                         )
                     }
@@ -475,15 +479,10 @@ class MainActivity : ComponentActivity() {
                             },
                         ),
                     ) {
+                        val commentId = it.arguments?.getInt("id")!!
                         LaunchedEffect(Unit) {
-                            val commentId = it.arguments?.getInt("id")!!
-                            postViewModel.fetchPost(
-                                id = Either.Right(commentId),
-                                account = account,
-                                clearPost = true,
-                                clearComments = true,
-                                ctx = ctx,
-                            )
+                            postViewModel.initialize(id = Either.Right(commentId))
+                            postViewModel.getData(account)
                         }
                         PostActivity(
                             postViewModel = postViewModel,
@@ -496,23 +495,23 @@ class MainActivity : ComponentActivity() {
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             onClickSortType = { commentSortType ->
-                                val commentId = it.arguments?.getInt("id")!!
-                                postViewModel.fetchPost(
-                                    id = Either.Right(commentId),
-                                    account = account,
-                                    clearPost = false,
-                                    clearComments = true,
-                                    ctx = ctx,
-                                    changeSortType = commentSortType,
-                                )
+                                postViewModel.updateSortType(commentSortType)
+                                postViewModel.getData(account)
                             },
-                            selectedSortType = postViewModel.sortType.value,
+                            selectedSortType = postViewModel.sortType,
                             siteViewModel = siteViewModel,
                         )
                     }
                     composable(
-                        route = "commentReply",
+                        route = "commentReply?isModerator={isMod}",
+                        arguments = listOf(
+                            navArgument("isMod") {
+                                type = NavType.BoolType
+                            },
+                        ),
                     ) {
+                        val isModerator = it.arguments?.getBoolean("isMod")!!
+
                         CommentReplyActivity(
                             commentReplyViewModel = commentReplyViewModel,
                             postViewModel = postViewModel,
@@ -520,6 +519,7 @@ class MainActivity : ComponentActivity() {
                             personProfileViewModel = personProfileViewModel,
                             navController = navController,
                             siteViewModel = siteViewModel,
+                            isModerator = isModerator,
                         )
                     }
                     composable(
@@ -566,7 +566,7 @@ class MainActivity : ComponentActivity() {
                         route = "privateMessageReply",
                     ) {
                         PrivateMessageReplyActivity(
-                            inboxViewModel = inboxViewModel,
+                            privateMessageReplyViewModel = privateMessageReplyViewModel,
                             accountViewModel = accountViewModel,
                             navController = navController,
                             siteViewModel = siteViewModel,

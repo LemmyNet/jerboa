@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.settings.about
 
@@ -40,6 +39,7 @@ const val donateLink = "https://join-lemmy.org/donate"
 const val jerboaLemmyLink = "https://lemmy.ml/c/jerboa"
 const val mastodonLink = "https://mastodon.social/@LemmyDev"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutActivity(
     navController: NavController,

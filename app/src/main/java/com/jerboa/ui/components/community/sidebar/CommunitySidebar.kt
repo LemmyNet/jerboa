@@ -2,7 +2,7 @@ package com.jerboa.ui.components.community.sidebar
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import com.jerboa.datatypes.CommunityView
+import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.ui.components.common.Sidebar
 
 @Composable

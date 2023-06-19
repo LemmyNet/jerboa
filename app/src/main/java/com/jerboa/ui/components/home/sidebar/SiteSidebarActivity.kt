@@ -1,15 +1,18 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
-package com.jerboa.ui.components.home
+package com.jerboa.ui.components.home.sidebar
 
 import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.jerboa.api.ApiState
+import com.jerboa.ui.components.common.ApiEmptyText
+import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.ui.components.home.sidebar.SiteSidebar
+import com.jerboa.ui.components.home.SiteViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SiteSidebarActivity(
     siteViewModel: SiteViewModel,
@@ -17,7 +20,10 @@ fun SiteSidebarActivity(
 ) {
     Log.d("jerboa", "got to site sidebar activity")
 
-    val title = "${siteViewModel.siteRes?.site_view?.site?.name} Info"
+    val title = when (val siteRes = siteViewModel.siteRes) {
+        is ApiState.Success -> "${siteRes.data.site_view.site.name} Info"
+        else -> { "Loading..." }
+    }
 
     Scaffold(
         topBar = {
@@ -27,8 +33,13 @@ fun SiteSidebarActivity(
             )
         },
         content = { padding ->
-            siteViewModel.siteRes?.site_view?.also { siteView ->
-                SiteSidebar(siteView = siteView, padding = padding)
+            when (val siteRes = siteViewModel.siteRes) {
+                ApiState.Empty -> ApiEmptyText()
+                is ApiState.Failure -> ApiErrorText(siteRes.msg)
+                ApiState.Loading -> LoadingBar(padding)
+                is ApiState.Success -> {
+                    SiteSidebar(siteView = siteRes.data.site_view, padding = padding)
+                }
             }
         },
     )
