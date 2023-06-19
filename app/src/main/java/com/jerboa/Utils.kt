@@ -778,16 +778,16 @@ enum class ThemeMode(val mode: Int) {
     Black(R.string.look_and_feel_theme_black),
 }
 
-enum class ThemeColor {
-    Dynamic,
-    Beach,
-    Blue,
-    Crimson,
-    Green,
-    Grey,
-    Pink,
-    Purple,
-    Woodland,
+enum class ThemeColor (val mode: Int) {
+    Dynamic(R.string.look_and_feel_theme_color_dynamic),
+    Beach(R.string.look_and_feel_theme_color_beach),
+    Blue(R.string.look_and_feel_theme_color_blue),
+    Crimson(R.string.look_and_feel_theme_color_crimson),
+    Green(R.string.look_and_feel_theme_color_green),
+    Grey(R.string.look_and_feel_theme_color_grey),
+    Pink(R.string.look_and_feel_theme_color_pink),
+    Purple(R.string.look_and_feel_theme_color_purple),
+    Woodland(R.string.look_and_feel_theme_color_woodland),
 }
 
 enum class PostViewMode(val mode: Int) {
