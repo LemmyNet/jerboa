@@ -38,10 +38,12 @@ import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.core.CorePlugin.OnTextAddedListener
 import io.noties.markwon.core.CoreProps
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
+import io.noties.markwon.ext.tables.TableAwareMovementMethod
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
+import io.noties.markwon.movement.MovementMethodPlugin
 import org.commonmark.node.Link
 import java.util.regex.Pattern
 
@@ -136,6 +138,9 @@ object MarkdownHelper {
             .usePlugin(LemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
+            // use TableAwareLinkMovementMethod to handle clicks inside tables,
+            // wraps LinkMovementMethod internally
+            .usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
             .usePlugin(HtmlPlugin.create())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
