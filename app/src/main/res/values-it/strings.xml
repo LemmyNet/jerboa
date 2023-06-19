@@ -287,5 +287,4 @@
     <string name="time_ago_ago">%1$s %2$s fa</string>
     <string name="topAppBar_back">Indietro</string>
     <string name="utils_login_first">Effettua prima il login</string>
-    <string name="voteToggle">Seleziona voto</string>
 </resources>

@@ -265,7 +265,6 @@
     <string name="postListing_deleted">Borrado</string>
     <string name="postListing_reply">Responder a publicación</string>
     <string name="privateMessage_reply">Responder a mensaje</string>
-    <string name="voteToggle">Activar votos</string>
     <string name="topAppBar_back">Atrás</string>
     <string name="person_profile_activity_about">Acerca de</string>
     <string name="person_profile_activity_posts">Publicaciones</string>

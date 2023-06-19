@@ -5,10 +5,10 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import com.jerboa.CommentNodeData
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.CommunityModeratorView
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.PersonSafe
+import com.jerboa.datatypes.types.CommentView
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.CommunityModeratorView
+import com.jerboa.datatypes.types.Person
 import com.jerboa.db.Account
 
 @Composable
@@ -33,8 +33,8 @@ fun CommentNodes(
     onPersonClick: (personId: Int) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
@@ -101,8 +101,8 @@ fun LazyListScope.commentNodeItems(
     onPersonClick: (personId: Int) -> Unit,
     onHeaderClick: (commentView: CommentView) -> Unit,
     onHeaderLongClick: (commentView: CommentView) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     account: Account? = null,
     moderators: List<CommunityModeratorView>,
