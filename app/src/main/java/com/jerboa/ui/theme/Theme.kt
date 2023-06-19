@@ -2,6 +2,7 @@ package com.jerboa.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import android.view.WindowManager
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -87,6 +88,14 @@ fun JerboaTheme(
         ThemeMode.Black, ThemeMode.Dark -> false
         ThemeMode.System, ThemeMode.SystemBlack -> !isSystemInDarkTheme()
         else -> true
+    }
+
+    appSettings?.let {
+        if (it.secureWindow) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
     }
 
     window.statusBarColor = colors.background.toArgb()

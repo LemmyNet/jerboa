@@ -63,14 +63,14 @@ import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.communityNameShown
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.Post
-import com.jerboa.datatypes.PostView
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.Person
+import com.jerboa.datatypes.types.Post
+import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.Account
 import com.jerboa.hostName
 import com.jerboa.isImage
@@ -111,7 +111,7 @@ fun PostHeaderLine(
     postView: PostView,
     myVote: Int?,
     score: Int,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     modifier: Modifier = Modifier,
@@ -442,10 +442,10 @@ fun PostFooterLine(
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onBlockCreatorClick: (person: PersonSafe) -> Unit,
-    onBlockCommunityClick: (community: CommunitySafe) -> Unit,
+    onBlockCreatorClick: (person: Person) -> Unit,
+    onBlockCommunityClick: (community: Community) -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
     account: Account?,
@@ -788,13 +788,13 @@ fun PostListing(
     onReplyClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onBlockCommunityClick: (community: CommunitySafe) -> Unit,
-    onBlockCreatorClick: (person: PersonSafe) -> Unit,
+    onBlockCommunityClick: (community: Community) -> Unit,
+    onBlockCreatorClick: (person: Person) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -972,7 +972,7 @@ fun PostListingList(
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -1180,13 +1180,13 @@ fun PostListingCard(
     onReplyClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
     onDeletePostClick: (postView: PostView) -> Unit,
     onReportClick: (postView: PostView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onBlockCommunityClick: (community: CommunitySafe) -> Unit,
-    onBlockCreatorClick: (person: PersonSafe) -> Unit,
+    onBlockCommunityClick: (community: Community) -> Unit,
+    onBlockCreatorClick: (person: Person) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,

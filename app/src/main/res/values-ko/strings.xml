@@ -262,7 +262,6 @@
     <string name="postListing_deleted">삭제됨</string>
     <string name="postListing_reply">게시물에 답장하기</string>
     <string name="privateMessage_reply">메시지에 답장하기</string>
-    <string name="voteToggle">투표 토글</string>
     <string name="topAppBar_back">뒤로</string>
     <string name="person_profile_activity_about">정보</string>
     <string name="person_profile_activity_posts">게시물</string>

@@ -7,3 +7,4 @@ insert_final_newline = true
 end_of_line = lf
 
 ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_comment-wrapping = disabled
