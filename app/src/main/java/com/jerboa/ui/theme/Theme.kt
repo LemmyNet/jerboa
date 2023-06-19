@@ -46,6 +46,7 @@ fun JerboaTheme(
         ThemeColor.Blue -> blue()
         ThemeColor.Grey -> grey()
         ThemeColor.Purple -> purple()
+        ThemeColor.Woodland -> woodland()
     }
 
     fun makeBlack(darkTheme: ColorScheme): ColorScheme {

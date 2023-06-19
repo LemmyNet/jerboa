@@ -837,6 +837,7 @@ enum class ThemeColor {
     Blue,
     Grey,
     Purple,
+    Woodland,
 }
 
 enum class PostViewMode(val mode: Int) {
