@@ -294,4 +294,7 @@
     <string name="downvote">Downvote</string>
     <string name="upvoted">Upvoted</string>
     <string name="downvoted">Downvoted</string>
+    <string name="saved_image">Saved image</string>
+    <string name="saving_image">Saving image…</string>
+    <string name="permission_denied">Permission denied</string>
 </resources>

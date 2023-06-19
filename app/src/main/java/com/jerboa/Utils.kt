@@ -7,6 +7,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
@@ -59,6 +60,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
@@ -449,7 +451,7 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
     // without this, we'd end up with something like host/path?thumbnail=...?thumbnail=...
     val path = split[1].replaceAfter('?', "")
 
-    return "$host/pictrs/image/${path}thumbnail=$thumbnailSize&format=webp"
+    return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
 }
 
 fun isImage(url: String): Boolean {
@@ -904,6 +906,29 @@ fun saveBitmap(
 
         throw e
     }
+}
+
+// saveBitmap that works for Android 9 and below
+fun saveBitmapP(
+    context: Context,
+    inputStream: InputStream,
+    mimeType: String?,
+    displayName: String,
+) {
+    val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+    val picsDir = File(dir, "Jerboa")
+    val dest = File(picsDir, displayName)
+
+    picsDir.mkdirs() // make if not exist
+
+    inputStream.use { input ->
+        dest.outputStream().use {
+            input.copyTo(it)
+        }
+    }
+    // Makes it show up in gallery
+    val mimeTypes = if (mimeType == null) null else arrayOf(mimeType)
+    MediaScannerConnection.scanFile(context, arrayOf(dest.absolutePath), mimeTypes, null)
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
