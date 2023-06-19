@@ -290,7 +290,6 @@
     <string name="time_ago_ago">%1$s %2$s ago</string>
     <string name="topAppBar_back">Back</string>
     <string name="utils_login_first">Login first</string>
-    <string name="voteToggle">Toggle vote</string>
     <string name="upvote">Upvote</string>
     <string name="downvote">Downvote</string>
     <string name="upvoted">Upvoted</string>
