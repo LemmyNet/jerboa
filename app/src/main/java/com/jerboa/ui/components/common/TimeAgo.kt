@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.prettyTime
 import com.jerboa.prettyTimeShortener
@@ -83,7 +83,7 @@ fun dateStringToPretty(dateStr: String, includeAgo: Boolean = false): String {
 @Preview
 @Composable
 fun TimeAgoPreview() {
-    TimeAgo(samplePersonSafe.published, samplePersonSafe.updated)
+    TimeAgo(samplePerson.published, samplePerson.updated)
 }
 
 @Composable

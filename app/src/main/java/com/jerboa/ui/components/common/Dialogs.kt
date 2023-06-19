@@ -33,9 +33,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
-import com.jerboa.datatypes.CommentSortType
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.types.CommentSortType
+import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AppSettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

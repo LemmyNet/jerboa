@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.person
 
 import androidx.compose.foundation.clickable
@@ -7,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,8 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.datatypes.samplePerson
+import com.jerboa.datatypes.types.Person
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.TextBadge
@@ -28,7 +25,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
 fun PersonName(
-    person: PersonSafe?,
+    person: Person?,
     color: Color = MaterialTheme.colorScheme.tertiary,
     isPostCreator: Boolean = false,
 ) {
@@ -51,12 +48,12 @@ fun PersonName(
 @Preview
 @Composable
 fun PersonNamePreview() {
-    PersonName(person = samplePersonSafe, isPostCreator = false)
+    PersonName(person = samplePerson, isPostCreator = false)
 }
 
 @Composable
 fun PersonProfileLink(
-    person: PersonSafe,
+    person: Person,
     onClick: (personId: Int) -> Unit,
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
@@ -113,7 +110,7 @@ fun PersonProfileLink(
 @Composable
 fun PersonProfileLinkPreview() {
     PersonProfileLink(
-        person = samplePersonSafe,
+        person = samplePerson,
         onClick = {},
         showAvatar = true,
     )
@@ -123,7 +120,7 @@ fun PersonProfileLinkPreview() {
 @Composable
 fun PersonProfileLinkPreviewTags() {
     PersonProfileLink(
-        person = samplePersonSafe,
+        person = samplePerson,
         isPostCreator = true,
         isCommunityBanned = true,
         isModerator = true,
