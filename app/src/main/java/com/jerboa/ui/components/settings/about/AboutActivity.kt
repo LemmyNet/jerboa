@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.settings.about
 
@@ -6,6 +5,8 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.Divider
@@ -38,6 +39,7 @@ const val donateLink = "https://join-lemmy.org/donate"
 const val jerboaLemmyLink = "https://lemmy.ml/c/jerboa"
 const val mastodonLink = "https://mastodon.social/@LemmyDev"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutActivity(
     navController: NavController,
@@ -54,7 +56,7 @@ fun AboutActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun openLink(link: String) {
-        openLink(link, ctx, useCustomTabs, usePrivateTabs)
+        openLink(link, navController, useCustomTabs, usePrivateTabs)
     }
 
     Scaffold(
@@ -63,7 +65,11 @@ fun AboutActivity(
             SimpleTopAppBar(text = stringResource(R.string.settings_about_about), navController = navController)
         },
         content = { padding ->
-            Column(modifier = Modifier.padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(padding),
+            ) {
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_what_s_new)) },
                     subtitle = { Text(stringResource(R.string.settings_about_version, version ?: "")) },
@@ -74,7 +80,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", ctx, useCustomTabs, usePrivateTabs)
+                        openLink("$githubUrl/blob/main/RELEASES.md", navController, useCustomTabs, usePrivateTabs)
                     },
                 )
                 SettingsDivider()

@@ -33,11 +33,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
-import com.jerboa.datatypes.api.Login
+import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.onAutofill
-
-val BANNED_INSTANCES = listOf("wolfballs.com")
 
 @Composable
 fun MyTextField(
@@ -104,12 +102,12 @@ fun LoginForm(
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    val instanceOptions = DEFAULT_LEMMY_INSTANCES
     var expanded by remember { mutableStateOf(false) }
     var wasAutofilled by remember { mutableStateOf(false) }
 
     val isValid =
-        instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty() &&
-            !BANNED_INSTANCES.contains(instance)
+        instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()
 
     val form = Login(
         username_or_email = username.trim(),
@@ -135,16 +133,12 @@ fun LoginForm(
                 placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
                 value = instance,
                 singleLine = true,
-                onValueChange = {
-                    instance = it
-                    expanded = true
-                },
+                onValueChange = { instance = it },
                 trailingIcon = {
                     TrailingIcon(expanded = expanded)
                 },
                 keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
             )
-            val instanceOptions = DEFAULT_LEMMY_INSTANCES.filter { instance.isEmpty() || it.contains(instance) }
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = {

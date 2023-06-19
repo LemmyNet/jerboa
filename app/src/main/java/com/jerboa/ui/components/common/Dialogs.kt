@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.BrightnessLow
 import androidx.compose.material.icons.outlined.FormatListNumbered
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material.icons.outlined.LocationCity
@@ -34,8 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.SortType
+import com.jerboa.datatypes.types.CommentSortType
+import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AppSettingsViewModel
 
 val DONATION_MARKDOWN = """
@@ -199,6 +201,56 @@ fun SortOptionsDialog(
     )
 }
 
+@Preview
+@Composable
+fun CommentSortOptionsDialogPreview() {
+    CommentSortOptionsDialog(
+        selectedSortType = CommentSortType.Hot,
+        onDismissRequest = {},
+        onClickSortType = {},
+    )
+}
+
+@Composable
+fun CommentSortOptionsDialog(
+    onDismissRequest: () -> Unit,
+    onClickSortType: (CommentSortType) -> Unit,
+    selectedSortType: CommentSortType,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        text = {
+            Column {
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_hot),
+                    icon = Icons.Outlined.LocalFireDepartment,
+                    onClick = { onClickSortType(CommentSortType.Hot) },
+                    highlight = (selectedSortType == CommentSortType.Hot),
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_top),
+                    icon = Icons.Outlined.BarChart,
+                    onClick = { onClickSortType(CommentSortType.Top) },
+                    highlight = (selectedSortType == CommentSortType.Top),
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_new),
+                    icon = Icons.Outlined.NewReleases,
+                    onClick = { onClickSortType(CommentSortType.New) },
+                    highlight = (selectedSortType == CommentSortType.New),
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_old),
+                    icon = Icons.Outlined.History,
+                    onClick = { onClickSortType(CommentSortType.Old) },
+                    highlight = (selectedSortType == CommentSortType.Old),
+                )
+            }
+        },
+        confirmButton = {},
+    )
+}
+
 @Composable
 fun UnreadOrAllOptionsDialog(
     onDismissRequest: () -> Unit,
@@ -304,10 +356,20 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                     }
                 },
                 onDismissRequest = {
-                    whatsChangedDialogOpen = false
+                    whatsChangedDialogOpen.value = false
                     appSettingsViewModel.markChangelogViewed()
                 },
             )
+
+            scope.launch(Dispatchers.IO) {
+                Log.d("jerboa", "Fetching RELEASES.md ...")
+                // Fetch the markdown text
+                val client = OkHttpClient()
+                val releasesUrl = "https://raw.githubusercontent.com/dessalines/jerboa/main/RELEASES.md".toHttpUrl()
+                val req = Request.Builder().url(releasesUrl).build()
+                val res = client.newCall(req).execute()
+                markdown.value = res.body.string()
+            }
         }
     }
 }

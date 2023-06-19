@@ -1,4 +1,5 @@
 package com.jerboa.ui.components.common
+
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -35,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jerboa.R
-import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.decodeUriToBitmap
 import com.jerboa.pictrsImageThumbnail
 import com.jerboa.ui.theme.ICON_SIZE
@@ -49,11 +50,11 @@ import com.jerboa.ui.theme.muted
 
 @Composable
 fun CircularIcon(
+    modifier: Modifier = Modifier,
     icon: String,
     contentDescription: String?,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
-    modifier: Modifier = Modifier,
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -83,7 +84,7 @@ fun LargerCircularIcon(modifier: Modifier = Modifier, icon: String, contentDescr
 @Composable
 fun CircularIconPreview() {
     CircularIcon(
-        icon = sampleCommunitySafe.icon!!,
+        icon = sampleCommunity.icon!!,
         contentDescription = "",
     )
 }
@@ -188,11 +189,13 @@ fun PickImage(
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent(),
     ) { uri ->
-        imageUri = uri
-        bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
-        Log.d("jerboa", "Uploading image...")
-        Log.d("jerboa", imageUri.toString())
-        onPickedImage(uri!!)
+        uri?.let {
+            imageUri = it
+            bitmap.value = decodeUriToBitmap(ctx, it)
+            Log.d("jerboa", "Uploading image...")
+            Log.d("jerboa", imageUri.toString())
+            onPickedImage(it)
+        }
     }
     Column(
         modifier = modifier,
@@ -209,14 +212,11 @@ fun PickImage(
 
         if (showImage) {
             Spacer(modifier = Modifier.height(SMALL_PADDING))
-
-            imageUri?.let {
-                bitmap.value?.let { btm ->
-                    Image(
-                        bitmap = btm.asImageBitmap(),
-                        contentDescription = stringResource(R.string.pickImage_imagePreview),
-                    )
-                }
+            bitmap.value?.let { btm ->
+                Image(
+                    bitmap = btm.asImageBitmap(),
+                    contentDescription = stringResource(R.string.pickImage_imagePreview),
+                )
             }
         }
     }

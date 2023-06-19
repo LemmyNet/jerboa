@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.common
 
@@ -78,6 +77,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarkdownTextField(
     text: TextFieldValue,
@@ -236,6 +236,7 @@ fun MarkdownTextField(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateLinkDialog(
     value: TextFieldValue,
