@@ -17,7 +17,7 @@
 ## Ways to contribute
 
 - Participate here and start answering questions.
-- File GitHub issues for big reports from /c/Jerboa. Watch the project for duplicate reports and
+- File GitHub issues for bug reports from /c/Jerboa. Watch the project for duplicate reports and
   link them to the first report so devs can easily close dupes.
 - File new bug reports for issues you find.
 - Add missing translations
