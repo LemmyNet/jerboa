@@ -1,7 +1,5 @@
 package com.jerboa.ui.components.post
 
-import androidx.activity.compose.ReportDrawnWhen
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,10 +52,6 @@ fun PostListings(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
 ) {
-    // TODO VERD
-    ReportDrawnWhen {
-        !loading
-    }
 
     LazyColumn(
         state = listState,
@@ -134,11 +128,9 @@ fun PreviewPostListings() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
-        onSwipeRefresh = {},
         isScrolledToEnd = {},
         account = null,
         listState = rememberLazyListState(),
-        taglines = null,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
