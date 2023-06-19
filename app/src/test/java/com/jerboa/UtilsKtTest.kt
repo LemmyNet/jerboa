@@ -1,6 +1,7 @@
 package com.jerboa
 
 import androidx.compose.ui.unit.dp
+import com.jerboa.api.API
 import com.jerboa.datatypes.api.GetUnreadCountResponse
 import com.jerboa.ui.theme.SMALL_PADDING
 import org.junit.Assert.*
@@ -135,5 +136,21 @@ class UtilsKtTest {
         assertEquals("1M", siFormat(1000000))
         assertEquals("1.2M", siFormat(1234500))
         assertEquals("12M", siFormat(12345000))
+    }
+
+    @Test
+    fun testParseUrl() {
+        val cases = mapOf(
+            "https://feddit.de" to "https://feddit.de",
+            "http://example.com" to "http://example.com",
+            "/c/community" to "https://${API.currentInstance}/c/community",
+            "/c/community@instance.ml" to "https://instance.ml/c/community",
+            "!community@instance.ml" to "https://instance.ml/c/community",
+            "!community" to "https://${API.currentInstance}/c/community",
+            "/u/user@instance.ml" to "https://instance.ml/u/user",
+            "@user@instance.ml" to "https://instance.ml/u/user",
+        )
+
+        cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)) }
     }
 }
