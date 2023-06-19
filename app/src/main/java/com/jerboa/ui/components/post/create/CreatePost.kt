@@ -14,9 +14,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -74,9 +75,13 @@ fun CreatePostHeader(
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 } else {
-                    // Todo add are you sure cancel dialog
+                    // Todo add are you sure cancel dialog+
                     Icon(
-                        Icons.Outlined.Add,
+                        if (formValid) {
+                            Icons.Filled.Send
+                        } else {
+                            Icons.Outlined.Send
+                        },
                         contentDescription = stringResource(R.string.form_submit),
                     )
                 }
@@ -233,6 +238,16 @@ fun CreatePostBody(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun CreatePostHeaderPreview() {
+    CreatePostHeader(
+        onCreatePostClick = {},
+        formValid = true,
+        loading = false,
+    )
 }
 
 @Preview

@@ -470,7 +470,7 @@ fun Sidebar(
                 }
                 TimeAgo(
                     precedingString = stringResource(R.string.AppBars_created),
-                    includeAgo = true,
+                    longTimeFormat = true,
                     published = published,
                 )
                 CommentsAndPosts(
