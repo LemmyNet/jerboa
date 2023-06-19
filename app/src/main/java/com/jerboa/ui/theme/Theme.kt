@@ -43,6 +43,7 @@ fun JerboaTheme(
         ThemeColor.Dynamic -> dynamicPair
         ThemeColor.Beach -> beach()
         ThemeColor.Blue -> blue()
+        ThemeColor.Crimson -> crimson()
         ThemeColor.Green -> green()
         ThemeColor.Grey -> grey()
         ThemeColor.Pink -> pink()

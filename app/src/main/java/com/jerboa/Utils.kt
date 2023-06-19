@@ -834,6 +834,7 @@ enum class ThemeColor {
     Dynamic,
     Beach,
     Blue,
+    Crimson,
     Green,
     Grey,
     Pink,
