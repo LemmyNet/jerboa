@@ -14,19 +14,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
 
 @Composable
 fun PrivateMessageReplyActivity(
-    privateMessageReplyViewModel: PrivateMessageReplyViewModel,
+    privateMessageView: PrivateMessageView,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    navController: NavController,
+    navController: PrivateMessageReplyNavController,
 ) {
     Log.d("jerboa", "got to private message reply activity")
 
@@ -35,6 +37,11 @@ fun PrivateMessageReplyActivity(
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
 
     val focusManager = LocalFocusManager.current
+
+    val privateMessageReplyViewModel: PrivateMessageReplyViewModel = viewModel()
+    InitializeRoute {
+        privateMessageReplyViewModel.initialize(privateMessageView)
+    }
 
     val loading = when (privateMessageReplyViewModel.createMessageRes) {
         ApiState.Loading -> true
@@ -52,9 +59,10 @@ fun PrivateMessageReplyActivity(
                             privateMessageReplyViewModel.createPrivateMessage(
                                 content = reply.text,
                                 account = acct,
-                                navController,
-                                focusManager,
-                            )
+                            ) {
+                                focusManager.clearFocus()
+                                navController.navigateUp()
+                            }
                         }
                     },
                 )
@@ -70,7 +78,7 @@ fun PrivateMessageReplyActivity(
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = { personId ->
-                                navController.navigate(route = "profile/$personId")
+                                navController.toProfile.navigate(personId)
                             },
                             modifier = Modifier
                                 .padding(padding)

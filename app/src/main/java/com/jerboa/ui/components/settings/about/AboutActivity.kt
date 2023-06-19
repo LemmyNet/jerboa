@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
+import com.jerboa.nav.NavControllerWrapper
 import com.jerboa.openLink
 import com.jerboa.ui.components.common.SimpleTopAppBar
 
@@ -62,7 +63,12 @@ fun AboutActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.settings_about_about), navController = navController)
+            SimpleTopAppBar(
+                text = stringResource(R.string.settings_about_about),
+                navController = object : NavControllerWrapper() {
+                    override val navController = navController
+                },
+            )
         },
         content = { padding ->
             Column(

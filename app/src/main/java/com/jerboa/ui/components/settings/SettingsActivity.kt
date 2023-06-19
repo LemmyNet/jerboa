@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
 import com.jerboa.db.AccountViewModel
@@ -26,7 +25,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 
 @Composable
 fun SettingsActivity(
-    navController: NavController,
+    navController: SettingsNavController,
     accountViewModel: AccountViewModel,
 ) {
     Log.d("jerboa", "Got to settings activity")
@@ -49,7 +48,7 @@ fun SettingsActivity(
                             contentDescription = null,
                         )
                     },
-                    onClick = { navController.navigate("lookAndFeel") },
+                    onClick = { navController.toLookAndFeel.navigate() },
                 )
                 account?.also { acct ->
                     SettingsMenuLink(
@@ -67,7 +66,7 @@ fun SettingsActivity(
                                 contentDescription = null,
                             )
                         },
-                        onClick = { navController.navigate("accountSettings") },
+                        onClick = { navController.toAccountSettings.navigate() },
                     )
                 }
                 SettingsMenuLink(
@@ -78,7 +77,7 @@ fun SettingsActivity(
                             contentDescription = null,
                         )
                     },
-                    onClick = { navController.navigate("about") },
+                    onClick = { navController.toAbout.navigate() },
                 )
             }
         },

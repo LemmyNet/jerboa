@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
 import com.jerboa.datatypes.types.GetSiteMetadataResponse
@@ -17,6 +17,12 @@ import com.jerboa.serializeToMap
 import kotlinx.coroutines.launch
 
 class CreatePostViewModel : ViewModel() {
+    var selectedCommunity by mutableStateOf<Community?>(null)
+
+    fun initialize(inCommunity: Community?) {
+        selectedCommunity = inCommunity
+    }
+
     var createPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
         private set
     var siteMetadataRes: ApiState<GetSiteMetadataResponse> by mutableStateOf(ApiState.Empty)
@@ -24,7 +30,7 @@ class CreatePostViewModel : ViewModel() {
 
     fun createPost(
         form: CreatePost,
-        navController: NavController,
+        onSuccess: (postId: Int) -> Unit,
     ) {
         viewModelScope.launch {
             createPostRes = ApiState.Loading
@@ -35,8 +41,7 @@ class CreatePostViewModel : ViewModel() {
 
             when (val postRes = createPostRes) {
                 is ApiState.Success -> {
-                    navController.popBackStack()
-                    navController.navigate(route = "post/${postRes.data.post_view.post.id}")
+                    onSuccess(postRes.data.post_view.post.id)
                 }
                 else -> {}
             }

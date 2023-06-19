@@ -9,25 +9,29 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.types.CommentView
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.PostViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentEditActivity(
+    commentView: CommentView,
+    onCommentEdit: OnCommentEdit?,
     accountViewModel: AccountViewModel,
-    navController: NavController,
-    commentEditViewModel: CommentEditViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
+    navController: CommentEditNavController,
 ) {
     Log.d("jerboa", "got to comment edit activity")
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
+
+    val commentEditViewModel: CommentEditViewModel = viewModel()
+    InitializeRoute {
+        commentEditViewModel.initialize(commentView)
+    }
 
     var content by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(commentEditViewModel.commentView.value?.comment?.content.orEmpty())) }
 
@@ -48,12 +52,12 @@ fun CommentEditActivity(
                         account?.also { acct ->
                             commentEditViewModel.editComment(
                                 content = content.text,
-                                navController = navController,
-                                focusManager = focusManager,
                                 account = acct,
-                                personProfileViewModel = personProfileViewModel,
-                                postViewModel = postViewModel,
-                            )
+                            ) { cv ->
+                                focusManager.clearFocus()
+                                onCommentEdit?.invoke(cv)
+                                navController.navigateUp()
+                            }
                         }
                     },
                 )

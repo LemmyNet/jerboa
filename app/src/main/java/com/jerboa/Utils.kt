@@ -708,10 +708,26 @@ fun siFormat(num: Int): String {
 fun fetchInitialData(
     account: Account?,
     siteViewModel: SiteViewModel,
-    homeViewModel: HomeViewModel,
 ) {
     if (account != null) {
         API.changeLemmyInstance(account.instance)
+        siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
+    } else {
+        API.changeLemmyInstance(DEFAULT_INSTANCE)
+    }
+
+    siteViewModel.getSite(
+        GetSite(
+            auth = account?.jwt,
+        ),
+    )
+}
+
+fun fetchHomePosts(
+    account: Account?,
+    homeViewModel: HomeViewModel,
+) {
+    if (account != null) {
         homeViewModel.resetPage()
         homeViewModel.getPosts(
             GetPosts(
@@ -720,10 +736,8 @@ fun fetchInitialData(
                 auth = account.jwt,
             ),
         )
-        siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
     } else {
         Log.d("jerboa", "Fetching posts for anonymous user")
-        API.changeLemmyInstance(DEFAULT_INSTANCE)
         homeViewModel.resetPage()
         homeViewModel.getPosts(
             GetPosts(
@@ -732,12 +746,6 @@ fun fetchInitialData(
             ),
         )
     }
-
-    siteViewModel.getSite(
-        GetSite(
-            auth = account?.jwt,
-        ),
-    )
 }
 
 fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {

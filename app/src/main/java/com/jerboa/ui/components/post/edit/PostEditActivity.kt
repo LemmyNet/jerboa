@@ -16,30 +16,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.EditPost
+import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.community.CommunityViewModel
-import com.jerboa.ui.components.home.HomeViewModel
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.PostViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostEditActivity(
     accountViewModel: AccountViewModel,
-    postEditViewModel: PostEditViewModel,
-    navController: NavController,
-    postViewModel: PostViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    communityViewModel: CommunityViewModel,
-    homeViewModel: HomeViewModel,
+    navController: PostEditNavController,
+    postView: PostView,
+    onPostEdit: OnPostEdit?,
 ) {
     Log.d("jerboa", "got to post edit activity")
 
@@ -47,13 +42,17 @@ fun PostEditActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
 
-    val pv = postEditViewModel.postView
-    var name by rememberSaveable { mutableStateOf(pv?.post?.name.orEmpty()) }
-    var url by rememberSaveable { mutableStateOf(pv?.post?.url.orEmpty()) }
+    val postEditViewModel: PostEditViewModel = viewModel()
+    InitializeRoute {
+        postEditViewModel.initialize(postView)
+    }
+
+    var name by rememberSaveable { mutableStateOf(postView.post.name.orEmpty()) }
+    var url by rememberSaveable { mutableStateOf(postView.post.url.orEmpty()) }
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue(
-                pv?.post?.body.orEmpty(),
+                postView.post.body.orEmpty(),
             ),
         )
     }
@@ -79,18 +78,16 @@ fun PostEditActivity(
 
                             postEditViewModel.editPost(
                                 form = EditPost(
-                                    post_id = pv!!.post.id,
+                                    post_id = postView.post.id,
                                     name = nameOut,
                                     url = urlOut,
                                     body = bodyOut,
                                     auth = acct.jwt,
                                 ),
-                                navController = navController,
-                                postViewModel = postViewModel,
-                                personProfileViewModel = personProfileViewModel,
-                                communityViewModel = communityViewModel,
-                                homeViewModel = homeViewModel,
-                            )
+                            ) { postView ->
+                                onPostEdit?.invoke(postView)
+                                navController.navigateUp()
+                            }
                         }
                     },
                 )

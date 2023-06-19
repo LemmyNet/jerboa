@@ -15,24 +15,23 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.db.AccountViewModel
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 
 @Composable
 fun LoginActivity(
-    navController: NavController,
-    loginViewModel: LoginViewModel,
+    navController: LoginNavController,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    homeViewModel: HomeViewModel,
 ) {
     Log.d("jerboa", "Got to login activity")
 
     val snackbarHostState = remember { SnackbarHostState() }
     val accounts by accountViewModel.allAccounts.observeAsState()
     val ctx = LocalContext.current
+
+    val loginViewModel: LoginViewModel = viewModel()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -50,14 +49,14 @@ fun LoginActivity(
                     .imePadding(),
                 onClickLogin = { form, instance ->
                     loginViewModel.login(
-                        navController = navController,
                         form = form,
                         instance = instance.trim(),
                         ctx = ctx,
                         accountViewModel = accountViewModel,
                         siteViewModel = siteViewModel,
-                        homeViewModel = homeViewModel,
-                    )
+                    ) {
+                        navController.toHome.navigate()
+                    }
                 },
             )
         },

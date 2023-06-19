@@ -75,6 +75,7 @@ import com.jerboa.db.Account
 import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
+import com.jerboa.nav.NavControllerWrapper
 import com.jerboa.nsfwCheck
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CircularIcon
@@ -1250,7 +1251,9 @@ fun PostListingCard(
 @Preview
 @Composable
 fun PostListingHeaderPreview() {
-    val navController = rememberNavController()
+    val navController = object : NavControllerWrapper() {
+        override val navController = rememberNavController()
+    }
     SimpleTopAppBar("Post", navController)
 }
 

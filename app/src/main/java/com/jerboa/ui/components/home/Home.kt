@@ -59,8 +59,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.api.ApiState
@@ -99,8 +97,8 @@ import kotlinx.coroutines.launch
 fun Drawer(
     siteRes: ApiState<GetSiteResponse>,
     unreadCount: Int,
-    navController: NavController = rememberNavController(),
     accountViewModel: AccountViewModel,
+    onAddAccountClick: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
@@ -134,7 +132,7 @@ fun Drawer(
         unreadCount = unreadCount,
         myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
-        navController = navController,
+        onAddAccountClick = onAddAccountClick,
         onSwitchAccountClick = onSwitchAccountClick,
         onSignOutClick = onSignOutClick,
         onClickListingType = onClickListingType,
@@ -150,8 +148,8 @@ fun Drawer(
 @Composable
 fun DrawerContent(
     showAccountAddMode: Boolean,
-    navController: NavController,
     accountViewModel: AccountViewModel,
+    onAddAccountClick: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
@@ -171,7 +169,7 @@ fun DrawerContent(
     ) {
         DrawerAddAccountMode(
             accountViewModel = accountViewModel,
-            navController = navController,
+            onAddAccountClick = onAddAccountClick,
             onSwitchAccountClick = onSwitchAccountClick,
             onSignOutClick = onSignOutClick,
         )
@@ -326,8 +324,8 @@ fun DrawerItemsMainPreview() {
 
 @Composable
 fun DrawerAddAccountMode(
-    navController: NavController = rememberNavController(),
     accountViewModel: AccountViewModel?,
+    onAddAccountClick: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
 ) {
@@ -339,7 +337,7 @@ fun DrawerAddAccountMode(
         IconAndTextDrawerItem(
             text = stringResource(R.string.home_add_account),
             icon = Icons.Outlined.Add,
-            onClick = { navController.navigate(route = "login") },
+            onClick = onAddAccountClick,
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
@@ -365,6 +363,7 @@ fun DrawerAddAccountModePreview() {
         onSignOutClick = {},
         onSwitchAccountClick = {},
         accountViewModel = null,
+        onAddAccountClick = { },
     )
 }
 
@@ -467,10 +466,10 @@ fun HomeHeader(
     onClickListingType: (ListingType) -> Unit,
     onClickRefresh: () -> Unit,
     onClickPostViewMode: (PostViewMode) -> Unit,
+    onClickShowSiteInfo: () -> Unit,
     selectedSortType: SortType,
     selectedListingType: ListingType,
     selectedPostViewMode: PostViewMode,
-    navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
@@ -524,7 +523,7 @@ fun HomeHeader(
                 showMoreOptions = false
                 showPostViewModeOptions = !showPostViewModeOptions
             },
-            navController = navController,
+            onClickShowSiteInfo = onClickShowSiteInfo,
         )
     }
 
@@ -604,7 +603,7 @@ fun HomeHeaderPreview() {
         selectedSortType = SortType.Hot,
         selectedListingType = ListingType.All,
         selectedPostViewMode = PostViewMode.Card,
-        navController = rememberNavController(),
+        onClickShowSiteInfo = {},
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
     )
 }
@@ -612,7 +611,7 @@ fun HomeHeaderPreview() {
 @Composable
 fun HomeMoreDialog(
     onDismissRequest: () -> Unit,
-    navController: NavController,
+    onClickShowSiteInfo: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickShowPostViewModeDialog: () -> Unit,
 ) {
@@ -640,7 +639,7 @@ fun HomeMoreDialog(
                     text = stringResource(R.string.home_site_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
-                        navController.navigate("siteSidebar")
+                        onClickShowSiteInfo()
                         onDismissRequest()
                     },
                 )

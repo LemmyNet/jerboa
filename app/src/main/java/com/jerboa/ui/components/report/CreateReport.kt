@@ -14,16 +14,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.db.Account
+import com.jerboa.nav.NavControllerWrapper
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.MarkdownTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReportHeader(
-    navController: NavController = rememberNavController(),
+    navController: NavControllerWrapper,
     onCreateClick: () -> Unit,
     loading: Boolean,
 ) {
@@ -50,18 +50,7 @@ fun CreateReportHeader(
                 }
             }
         },
-        navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
-            ) {
-                Icon(
-                    Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.create_report_back),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
     )
 }
 

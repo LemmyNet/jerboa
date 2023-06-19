@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.*
@@ -29,13 +28,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
 import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
+import com.jerboa.nav.NavControllerWrapper
 import com.jerboa.onAutofill
+import com.jerboa.ui.components.common.DefaultBackButton
 
 @Composable
 fun MyTextField(
@@ -204,7 +204,7 @@ fun LoginFormPreview() {
 
 @Composable
 fun LoginHeader(
-    navController: NavController = rememberNavController(),
+    navController: NavControllerWrapper,
     accounts: List<Account>? = null,
 ) {
     TopAppBar(
@@ -213,24 +213,14 @@ fun LoginHeader(
                 text = stringResource(R.string.login_login),
             )
         },
-        navigationIcon = {
-            IconButton(
-                enabled = !accounts.isNullOrEmpty(),
-                onClick = {
-                    navController.popBackStack()
-                },
-            ) {
-                Icon(
-                    Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.login_back),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
     )
 }
 
 @Preview
 @Composable
 fun LoginHeaderPreview() {
-    LoginHeader()
+    LoginHeader(object : NavControllerWrapper() {
+        override val navController = rememberNavController()
+    })
 }

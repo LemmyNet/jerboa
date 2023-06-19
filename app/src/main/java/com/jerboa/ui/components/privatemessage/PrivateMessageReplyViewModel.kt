@@ -3,10 +3,8 @@ package com.jerboa.ui.components.privatemessage
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -32,8 +30,7 @@ class PrivateMessageReplyViewModel : ViewModel() {
     fun createPrivateMessage(
         content: String,
         account: Account,
-        navController: NavController,
-        focusManager: FocusManager,
+        onFinish: () -> Unit,
     ) {
         viewModelScope.launch {
             val form = CreatePrivateMessage(
@@ -45,8 +42,7 @@ class PrivateMessageReplyViewModel : ViewModel() {
             createMessageRes = ApiState.Loading
             createMessageRes = apiWrapper(API.getInstance().createPrivateMessage(form))
 
-            focusManager.clearFocus()
-            navController.navigateUp()
+            onFinish()
         }
     }
 }

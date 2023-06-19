@@ -8,19 +8,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.serializeToMap
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -33,11 +30,10 @@ class LoginViewModel : ViewModel() {
     fun login(
         instance: String,
         form: Login,
-        navController: NavController,
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
-        homeViewModel: HomeViewModel,
         ctx: Context,
+        onSuccess: () -> Unit,
     ) {
         val originalInstance = API.currentInstance
         val api = API.changeLemmyInstance(instance)
@@ -104,16 +100,6 @@ class LoginViewModel : ViewModel() {
                         defaultSortType = luv.local_user.default_sort_type.ordinal,
                     )
 
-                    homeViewModel.resetPage()
-                    homeViewModel.getPosts(
-                        GetPosts(
-                            type_ = luv.local_user.default_listing_type,
-                            sort = luv.local_user.default_sort_type,
-                            page = homeViewModel.page,
-                            auth = account.jwt,
-                        ),
-                    )
-
                     // Remove the default account
                     accountViewModel.removeCurrent()
 
@@ -121,8 +107,7 @@ class LoginViewModel : ViewModel() {
                     accountViewModel.insert(account)
 
                     loading = false
-
-                    navController.navigate(route = "home")
+                    onSuccess()
                 }
 
                 else -> {}

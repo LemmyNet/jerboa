@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,10 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -33,7 +31,7 @@ import com.jerboa.validateUrl
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPostHeader(
-    navController: NavController = rememberNavController(),
+    navController: PostEditNavController,
     onEditPostClick: () -> Unit,
     formValid: Boolean,
     loading: Boolean,
@@ -63,17 +61,8 @@ fun EditPostHeader(
             }
         },
         navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
-            ) {
-                // Todo add are you sure cancel dialog
-                Icon(
-                    Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.post_edit_close),
-                )
-            }
+            // Todo add are you sure cancel dialog
+            DefaultBackButton(navController)
         },
     )
 }

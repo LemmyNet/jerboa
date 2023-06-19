@@ -12,25 +12,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.isModerator
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.PostViewModel
 
 @Composable
 fun CommentReplyActivity(
-    commentReplyViewModel: CommentReplyViewModel,
     accountViewModel: AccountViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
     siteViewModel: SiteViewModel,
-    navController: NavController,
+    replyItem: ReplyItem,
+    onCommentReply: OnCommentReply?,
     isModerator: Boolean,
+    navController: CommentReplyNavController,
 ) {
     Log.d("jerboa", "got to comment reply activity")
 
@@ -40,6 +38,11 @@ fun CommentReplyActivity(
             TextFieldValue
             (""),
         )
+    }
+
+    val commentReplyViewModel: CommentReplyViewModel = viewModel()
+    InitializeRoute {
+        commentReplyViewModel.initialize(replyItem)
     }
 
     val focusManager = LocalFocusManager.current
@@ -58,11 +61,11 @@ fun CommentReplyActivity(
                         commentReplyViewModel.createComment(
                             content = reply.text,
                             account = acct,
-                            navController = navController,
-                            focusManager = focusManager,
-                            personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel,
-                        )
+                        ) { cv ->
+                            focusManager.clearFocus()
+                            onCommentReply?.invoke(cv)
+                            navController.navigateUp()
+                        }
                     }
                 },
             )
@@ -80,7 +83,7 @@ fun CommentReplyActivity(
                                 reply = reply,
                                 onReplyChange = { reply = it },
                                 onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
+                                    navController.toProfile.navigate(personId)
                                 },
                                 isModerator = isModerator,
                                 modifier = Modifier
@@ -95,7 +98,7 @@ fun CommentReplyActivity(
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = { personId ->
-                                navController.navigate(route = "profile/$personId")
+                                navController.toProfile.navigate(personId)
                             },
                             isModerator = isModerator,
                             modifier = Modifier
@@ -110,7 +113,7 @@ fun CommentReplyActivity(
                                 reply = reply,
                                 onReplyChange = { reply = it },
                                 onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
+                                    navController.toProfile.navigate(personId)
                                 },
                                 modifier = Modifier
                                     .padding(padding)
@@ -125,7 +128,7 @@ fun CommentReplyActivity(
                                 reply = reply,
                                 onReplyChange = { reply = it },
                                 onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
+                                    navController.toProfile.navigate(personId)
                                 },
                                 modifier = Modifier
                                     .padding(padding)

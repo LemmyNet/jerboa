@@ -13,7 +13,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -35,8 +38,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -46,6 +47,8 @@ import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.Account
 import com.jerboa.loginFirstToast
+import com.jerboa.nav.HomeTab
+import com.jerboa.nav.NavControllerWrapper
 import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
@@ -54,7 +57,7 @@ import com.jerboa.ui.theme.*
 @Composable
 fun SimpleTopAppBar(
     text: String,
-    navController: NavController,
+    navController: NavControllerWrapper,
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     TopAppBar(
@@ -64,26 +67,16 @@ fun SimpleTopAppBar(
                 text = text,
             )
         },
-        navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(
-                    Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.topAppBar_back),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
     )
 }
 
 @Composable
 fun BottomAppBarAll(
-    navController: NavController = rememberNavController(),
-    screen: String,
-    unreadCount: Int,
+    selectedTab: HomeTab,
+    onSelect: (HomeTab) -> Unit,
+    unreadCounts: Int,
     showBottomNav: Boolean? = true,
-    onClickSaved: () -> Unit,
-    onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit,
 ) {
     if (showBottomNav == true) {
         // Check for preview mode
@@ -101,96 +94,60 @@ fun BottomAppBarAll(
         }
 
         NavigationBar {
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Home,
-                        contentDescription = stringResource(R.string.bottomBar_home),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_home),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "home",
-                onClick = {
-                    navController.navigate("home")
-                },
-            )
-
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = stringResource(R.string.bottomBar_search),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_search),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "communityList",
-                onClick = {
-                    navController.navigate("communityList")
-                },
-            )
-            NavigationBarItem(
-                icon = {
-                    InboxIconAndBadge(
-                        iconBadgeCount = unreadCount,
-                        icon = Icons.Outlined.Email,
-                        contentDescription = stringResource(R.string.bottomBar_inbox),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_inbox),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "inbox",
-                onClick = {
-                    onClickInbox()
-                },
-            )
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Bookmarks,
-                        contentDescription = stringResource(R.string.bottomBar_bookmarks),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_bookmarks),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "saved",
-                onClick = {
-                    onClickSaved()
-                },
-            )
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Person,
-                        contentDescription = stringResource(R.string.bottomBar_profile),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_profile),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "profile",
-                onClick = onClickProfile,
-            )
+            for (tab in HomeTab.values()) {
+                val selected = tab == selectedTab
+                NavigationBarItem(
+                    icon = {
+                        InboxIconAndBadge(
+                            iconBadgeCount = if (tab == HomeTab.Inbox) unreadCounts else null,
+                            icon = if (selected) {
+                                when (tab) {
+                                    HomeTab.Feed -> Icons.Filled.Home
+                                    HomeTab.Search -> Icons.Filled.Search
+                                    HomeTab.Inbox -> Icons.Filled.Email
+                                    HomeTab.Saved -> Icons.Filled.Bookmarks
+                                    HomeTab.Profile -> Icons.Filled.Person
+                                }
+                            } else {
+                                when (tab) {
+                                    HomeTab.Feed -> Icons.Outlined.Home
+                                    HomeTab.Search -> Icons.Outlined.Search
+                                    HomeTab.Inbox -> Icons.Outlined.Email
+                                    HomeTab.Saved -> Icons.Outlined.Bookmarks
+                                    HomeTab.Profile -> Icons.Outlined.Person
+                                }
+                            },
+                            contentDescription = stringResource(
+                                when (tab) {
+                                    HomeTab.Feed -> R.string.bottomBar_home
+                                    HomeTab.Search -> R.string.bottomBar_search
+                                    HomeTab.Inbox -> R.string.bottomBar_inbox
+                                    HomeTab.Saved -> R.string.bottomBar_bookmarks
+                                    HomeTab.Profile -> R.string.bottomBar_profile
+                                },
+                            ),
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(
+                                when (tab) {
+                                    HomeTab.Feed -> R.string.bottomBar_label_home
+                                    HomeTab.Search -> R.string.bottomBar_label_search
+                                    HomeTab.Inbox -> R.string.bottomBar_label_inbox
+                                    HomeTab.Saved -> R.string.bottomBar_label_bookmarks
+                                    HomeTab.Profile -> R.string.bottomBar_label_profile
+                                },
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    },
+                    selected = selected,
+                    onClick = {
+                        onSelect(tab)
+                    },
+                )
+            }
         }
     }
 }
@@ -199,11 +156,9 @@ fun BottomAppBarAll(
 @Composable
 fun BottomAppBarAllPreview() {
     BottomAppBarAll(
-        onClickInbox = {},
-        onClickProfile = {},
-        onClickSaved = {},
-        unreadCount = 0,
-        screen = "home",
+        selectedTab = HomeTab.Inbox,
+        onSelect = {},
+        unreadCounts = 4,
         showBottomNav = true,
     )
 }
@@ -585,5 +540,9 @@ fun Modifier.simpleVerticalScrollbar(
 fun LoadingBar(
     padding: PaddingValues = PaddingValues(0.dp),
 ) {
-    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(padding))
+    LinearProgressIndicator(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(padding),
+    )
 }

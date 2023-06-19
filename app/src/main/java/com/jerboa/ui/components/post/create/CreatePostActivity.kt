@@ -11,22 +11,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
+import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.community.list.CommunityListViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -38,9 +40,8 @@ data class MetaDataRes(val title: String?, val loading: Boolean)
 @Composable
 fun CreatePostActivity(
     accountViewModel: AccountViewModel,
-    createPostViewModel: CreatePostViewModel,
-    navController: NavController,
-    communityListViewModel: CommunityListViewModel,
+    navController: CreatePostNavController,
+    inCommunity: Community?,
     initialUrl: String,
     initialBody: String,
     initialImage: Uri?,
@@ -51,6 +52,12 @@ fun CreatePostActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
 
+    val createPostViewModel: CreatePostViewModel = viewModel()
+    InitializeRoute {
+        createPostViewModel.initialize(inCommunity)
+    }
+
+    val selectedCommunity = createPostViewModel.selectedCommunity
     var name by rememberSaveable { mutableStateOf("") }
     var url by rememberSaveable { mutableStateOf(initialUrl) }
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -95,7 +102,7 @@ fun CreatePostActivity(
                         loading = loading,
                         onCreatePostClick = {
                             account?.also { acct ->
-                                communityListViewModel.selectedCommunity?.id?.also {
+                                selectedCommunity?.id?.also {
                                     // Clean up that data
                                     val nameOut = name.trim()
                                     val bodyOut = body.text.trim().ifEmpty { null }
@@ -108,8 +115,9 @@ fun CreatePostActivity(
                                             body = bodyOut,
                                             auth = acct.jwt,
                                         ),
-                                        navController,
-                                    )
+                                    ) { postId ->
+                                        navController.toPost.navigate(postId)
+                                    }
                                 }
                             }
                         },
@@ -137,7 +145,8 @@ fun CreatePostActivity(
                         }
                     },
                     navController = navController,
-                    community = communityListViewModel.selectedCommunity,
+                    community = selectedCommunity,
+                    onSelectCommunity = createPostViewModel::selectedCommunity::set,
                     formValid = { formValid = it },
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,

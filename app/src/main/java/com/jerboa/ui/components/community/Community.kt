@@ -10,14 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.getLocalizedSortingTypeName
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -127,7 +126,7 @@ fun CommunityHeader(
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
     selectedSortType: SortType,
-    navController: NavController = rememberNavController(),
+    navController: CommunityNavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
@@ -168,7 +167,9 @@ fun CommunityHeader(
                 showMoreOptions = false
                 onBlockCommunityClick()
             },
-            navController = navController,
+            onClickShowCommunitySideBar = {
+                navController.toCommunitySideBar.navigate()
+            },
         )
     }
 
@@ -180,14 +181,7 @@ fun CommunityHeader(
                 selectedSortType = selectedSortType,
             )
         },
-        navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(
-                    Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.community_back),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
         actions = {
             IconButton(onClick = {
                 showSortOptions = !showSortOptions
@@ -232,7 +226,7 @@ fun CommunityMoreDialog(
     onDismissRequest: () -> Unit,
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
-    navController: NavController,
+    onClickShowCommunitySideBar: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -250,7 +244,7 @@ fun CommunityMoreDialog(
                     text = stringResource(R.string.community_community_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
-                        navController.navigate("communitySidebar")
+                        onClickShowCommunitySideBar()
                         onDismissRequest()
                     },
                 )

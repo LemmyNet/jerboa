@@ -9,17 +9,17 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.settings.AccountSettingsNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountSettingsActivity(
-    navController: NavController,
+    navController: AccountSettingsNavController,
     accountSettingsViewModel: AccountSettingsViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,

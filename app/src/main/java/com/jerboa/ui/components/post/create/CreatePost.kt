@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.ArrowDropDown
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,15 +33,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.types.Community
 import com.jerboa.db.Account
+import com.jerboa.nav.dependencyContainer
 import com.jerboa.ui.components.common.CircularIcon
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.community.list.CommunityListDependencies
+import com.jerboa.ui.components.community.list.OnSelectCommunity
+import com.jerboa.ui.components.community.list.ToCommunityList
+import com.jerboa.ui.components.post.ToPost
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
@@ -53,7 +57,7 @@ import com.jerboa.validateUrl
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostHeader(
-    navController: NavController = rememberNavController(),
+    navController: CreatePostNavController,
     onCreatePostClick: () -> Unit,
     formValid: Boolean,
     loading: Boolean,
@@ -88,17 +92,8 @@ fun CreatePostHeader(
             }
         },
         navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
-            ) {
-                // Todo add are you sure cancel dialog
-                Icon(
-                    Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.create_post_close),
-                )
-            }
+            // Todo add are you sure cancel dialog
+            DefaultBackButton(navController)
         },
     )
 }
@@ -114,7 +109,8 @@ fun CreatePostBody(
     onPickedImage: (image: Uri) -> Unit,
     image: Uri? = null,
     community: Community? = null,
-    navController: NavController = rememberNavController(),
+    onSelectCommunity: OnSelectCommunity,
+    navController: CreatePostNavController,
     formValid: (valid: Boolean) -> Unit,
     account: Account?,
     padding: PaddingValues,
@@ -233,7 +229,9 @@ fun CreatePostBody(
                     .height(60.dp)
                     .fillMaxWidth()
                     .clickable {
-                        navController.navigate("communityList?select=true")
+                        navController.toCommunityList.navigate(
+                            CommunityListDependencies(onSelectCommunity = onSelectCommunity),
+                        )
                     },
             )
         }
@@ -247,6 +245,11 @@ fun CreatePostHeaderPreview() {
         onCreatePostClick = {},
         formValid = true,
         loading = false,
+        navController = CreatePostNavController(
+            rememberNavController(),
+            ToPost { },
+            ToCommunityList(dependencyContainer()) { },
+        ),
     )
 }
 
@@ -267,6 +270,12 @@ fun CreatePostBodyPreview() {
         padding = PaddingValues(),
         suggestedTitle = null,
         suggestedTitleLoading = false,
+        navController = CreatePostNavController(
+            rememberNavController(),
+            ToPost { },
+            ToCommunityList(dependencyContainer()) { },
+        ),
+        onSelectCommunity = { },
     )
 }
 
@@ -286,5 +295,11 @@ fun CreatePostBodyPreviewNoCommunity() {
         suggestedTitleLoading = false,
         account = null,
         padding = PaddingValues(),
+        navController = CreatePostNavController(
+            rememberNavController(),
+            ToPost { },
+            ToCommunityList(dependencyContainer()) { },
+        ),
+        onSelectCommunity = { },
     )
 }

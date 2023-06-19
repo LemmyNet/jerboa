@@ -12,25 +12,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 import com.jerboa.ui.components.report.CreateReportHeader
+import com.jerboa.ui.components.report.CreateReportNavController
 import com.jerboa.ui.components.report.CreateReportViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostReportActivity(
+    postId: Int,
     accountViewModel: AccountViewModel,
-    navController: NavController,
-    createReportViewModel: CreateReportViewModel,
+    navController: CreateReportNavController,
 ) {
     Log.d("jerboa", "got to create post report activity")
 
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
+
+    val createReportViewModel: CreateReportViewModel = viewModel()
+    InitializeRoute {
+        createReportViewModel.setPostId(postId)
+    }
+
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
 
     val focusManager = LocalFocusManager.current
@@ -49,10 +57,11 @@ fun CreatePostReportActivity(
                         createReportViewModel.createPostReport(
                             reason = reason.text,
                             ctx = ctx,
-                            navController = navController,
-                            focusManager = focusManager,
                             account = acct,
-                        )
+                        ) {
+                            focusManager.clearFocus()
+                            navController.navigateUp()
+                        }
                     }
                 },
             )

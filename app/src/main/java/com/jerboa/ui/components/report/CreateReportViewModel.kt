@@ -5,10 +5,8 @@ import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -48,8 +46,7 @@ class CreateReportViewModel : ViewModel() {
         reason: String,
         account: Account,
         ctx: Context,
-        navController: NavController,
-        focusManager: FocusManager,
+        onFinish: () -> Unit,
     ) {
         commentId?.also { cId ->
             viewModelScope.launch {
@@ -74,8 +71,7 @@ class CreateReportViewModel : ViewModel() {
                 }
 
                 Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
-                focusManager.clearFocus()
-                navController.navigateUp()
+                onFinish()
             }
         }
     }
@@ -84,8 +80,7 @@ class CreateReportViewModel : ViewModel() {
         reason: String,
         account: Account,
         ctx: Context,
-        navController: NavController,
-        focusManager: FocusManager,
+        onFinish: () -> Unit,
     ) {
         postId?.also { pId ->
             viewModelScope.launch {
@@ -110,8 +105,7 @@ class CreateReportViewModel : ViewModel() {
                 }
 
                 Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
-                focusManager.clearFocus()
-                navController.navigateUp()
+                onFinish()
             }
         }
     }
