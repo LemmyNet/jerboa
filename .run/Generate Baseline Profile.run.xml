@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":app:generateReleaseBaselineProfile" />
+          <option value=":benchmarks:pixel6Api31BenchmarkAndroidTest" />
           <option value="--rerun" />
           <option value="--enable-display" />
         </list>
