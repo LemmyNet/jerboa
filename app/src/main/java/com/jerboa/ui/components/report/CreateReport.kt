@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.report
 
 import androidx.compose.foundation.layout.Column
@@ -22,6 +20,7 @@ import com.jerboa.R
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReportHeader(
     navController: NavController = rememberNavController(),

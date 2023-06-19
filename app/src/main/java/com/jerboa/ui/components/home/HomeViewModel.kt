@@ -1,176 +1,178 @@
 package com.jerboa.ui.components.home
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jerboa.VoteType
 import com.jerboa.api.API
-import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.CommentReplyView
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.PersonMentionView
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.PostView
-import com.jerboa.datatypes.PrivateMessageView
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.api.GetUnreadCount
-import com.jerboa.datatypes.api.GetUnreadCountResponse
-import com.jerboa.db.Account
+import com.jerboa.api.ApiState
+import com.jerboa.api.apiWrapper
+import com.jerboa.appendData
+import com.jerboa.datatypes.types.BlockCommunity
+import com.jerboa.datatypes.types.BlockCommunityResponse
+import com.jerboa.datatypes.types.BlockPerson
+import com.jerboa.datatypes.types.BlockPersonResponse
+import com.jerboa.datatypes.types.CreatePostLike
+import com.jerboa.datatypes.types.DeletePost
+import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.GetPostsResponse
+import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.PostResponse
+import com.jerboa.datatypes.types.PostView
+import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.SortType
+import com.jerboa.dedupePosts
+import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
-import com.jerboa.toastException
-import com.jerboa.ui.components.community.blockCommunityRoutine
-import com.jerboa.ui.components.person.blockPersonRoutine
-import com.jerboa.ui.components.post.deletePostRoutine
-import com.jerboa.ui.components.post.fetchPostsRoutine
-import com.jerboa.ui.components.post.likePostRoutine
-import com.jerboa.ui.components.post.savePostRoutine
+import com.jerboa.showBlockCommunityToast
+import com.jerboa.showBlockPersonToast
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
-
-    var posts = mutableStateListOf<PostView>()
-    var loading = mutableStateOf(false)
-        private set
-    var page = mutableStateOf(1)
-        private set
-    var sortType = mutableStateOf(SortType.Active)
-        private set
-    var listingType = mutableStateOf(ListingType.Local)
-        private set
-    var unreadCountResponse by mutableStateOf<GetUnreadCountResponse?>(null)
+    var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    fun fetchPosts(
-        account: Account?,
-        nextPage: Boolean = false,
-        clear: Boolean = false,
-        changeListingType: ListingType? = null,
-        changeSortType: SortType? = null,
-        ctx: Context? = null,
-    ) {
-        fetchPostsRoutine(
-            posts = posts,
-            loading = loading,
-            page = page,
-            listingType = listingType,
-            sortType = sortType,
-            nextPage = nextPage,
-            clear = clear,
-            changeListingType = changeListingType,
-            changeSortType = changeSortType,
-            account = account,
-            ctx = ctx,
-            scope = viewModelScope,
-        )
+    private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
+        mutableStateOf(ApiState.Empty)
+    private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    var fetchingMore by mutableStateOf(false)
+        private set
+
+    var sortType by mutableStateOf(SortType.Active)
+        private set
+    var listingType by mutableStateOf(ListingType.Local)
+        private set
+    var page by mutableStateOf(1)
+        private set
+
+    fun updateSortType(sortType: SortType) {
+        this.sortType = sortType
     }
 
-    fun likePost(voteType: VoteType, postView: PostView, account: Account?, ctx: Context) {
-        likePostRoutine(mutableStateOf(postView), posts, voteType, account, ctx, viewModelScope)
+    fun updateListingType(listingType: ListingType) {
+        this.listingType = listingType
     }
 
-    fun savePost(postView: PostView, account: Account, ctx: Context) {
-        savePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
+    fun resetPage() {
+        page = 1
     }
 
-    fun deletePost(postView: PostView, account: Account, ctx: Context) {
-        deletePostRoutine(mutableStateOf(postView), posts, account, ctx, viewModelScope)
+    fun nextPage() {
+        page += 1
     }
 
-    fun fetchUnreadCounts(
-        account: Account? = null,
-        ctx: Context? = null,
-    ) {
-        account?.let {
-            viewModelScope.launch {
-                try {
-                    val api = API.getInstance()
-                    val form = GetUnreadCount(
-                        auth = account.jwt,
-                    )
-                    Log.d(
-                        "jerboa",
-                        "Fetching unread counts: $form",
-                    )
-                    unreadCountResponse = retrofitErrorHandler(
-                        api.getUnreadCount(
-                            form = form
-                                .serializeToMap(),
-                        ),
-                    )
-                } catch (e: Exception) {
-                    toastException(ctx = ctx, error = e)
-                }
-            }
-        } ?: run {
-            unreadCountResponse = GetUnreadCountResponse(0, 0, 0)
+    fun getPosts(form: GetPosts) {
+        viewModelScope.launch {
+            postsRes = ApiState.Loading
+            postsRes =
+                apiWrapper(
+                    API.getInstance().getPosts(form.serializeToMap()),
+                )
         }
     }
 
-    fun updateUnreads(commentReplyView: CommentReplyView) {
-        val inc = incrementFromRead(commentReplyView.comment_reply.read)
-        val newReplyCount = unreadCountResponse!!.replies + inc
-        unreadCountResponse = unreadCountResponse?.copy(replies = newReplyCount)
+    fun appendPosts(form: GetPosts) {
+        viewModelScope.launch {
+            fetchingMore = true
+            val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+            // Only append when both new and existing are Successes
+            when (val existing = postsRes) {
+                is ApiState.Success -> {
+                    when (more) {
+                        is ApiState.Success -> {
+                            val newPostsDeduped = dedupePosts(more.data.posts, existing.data.posts)
+                            val appended = appendData(existing.data.posts, newPostsDeduped)
+                            val newPostRes = ApiState.Success(existing.data.copy(posts = appended))
+                            postsRes = newPostRes
+                            fetchingMore = false
+                        }
+
+                        is ApiState.Failure -> {
+                            fetchingMore = false
+                        }
+
+                        else -> {}
+                    }
+                }
+
+                else -> {}
+            }
+        }
     }
 
-    fun updateUnreads(privateMessageView: PrivateMessageView) {
-        val inc = incrementFromRead(privateMessageView.private_message.read)
-        val newPmCount = unreadCountResponse!!.private_messages + inc
-        unreadCountResponse = unreadCountResponse?.copy(private_messages = newPmCount)
+    fun likePost(form: CreatePostLike) {
+        viewModelScope.launch {
+            likePostRes = ApiState.Loading
+            likePostRes = apiWrapper(API.getInstance().likePost(form))
+
+            when (val likeRes = likePostRes) {
+                is ApiState.Success -> {
+                    updatePost(likeRes.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
     }
 
-    fun updateUnreads(personMentionView: PersonMentionView) {
-        val inc = incrementFromRead(personMentionView.person_mention.read)
-        val newMentionCount = unreadCountResponse!!.mentions + inc
-        unreadCountResponse = unreadCountResponse?.copy(mentions = newMentionCount)
+    fun savePost(form: SavePost) {
+        viewModelScope.launch {
+            savePostRes = ApiState.Loading
+            savePostRes = apiWrapper(API.getInstance().savePost(form))
+            when (val saveRes = savePostRes) {
+                is ApiState.Success -> {
+                    updatePost(saveRes.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
     }
 
-    fun markAllAsRead() {
-        unreadCountResponse = unreadCountResponse?.copy(
-            replies = 0,
-            private_messages = 0,
-            mentions = 0,
-        )
+    fun deletePost(form: DeletePost) {
+        viewModelScope.launch {
+            deletePostRes = ApiState.Loading
+            deletePostRes = apiWrapper(API.getInstance().deletePost(form))
+            when (val deletePost = deletePostRes) {
+                is ApiState.Success -> {
+                    updatePost(deletePost.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
     }
 
-    fun blockCommunity(
-        community: CommunitySafe,
-        account: Account,
-        ctx: Context,
-    ) {
-        blockCommunityRoutine(
-            community = community,
-            block = true,
-            account = account,
-            ctx = ctx,
-            scope = viewModelScope,
-        )
+    fun blockCommunity(form: BlockCommunity, ctx: Context) {
+        viewModelScope.launch {
+            blockCommunityRes = ApiState.Loading
+            blockCommunityRes =
+                apiWrapper(API.getInstance().blockCommunity(form))
+            showBlockCommunityToast(blockCommunityRes, ctx)
+        }
     }
 
-    fun blockCreator(
-        creator: PersonSafe,
-        account: Account,
-        ctx: Context,
-    ) {
-        blockPersonRoutine(
-            person = creator,
-            block = true,
-            account = account,
-            ctx = ctx,
-            scope = viewModelScope,
-        )
+    fun blockPerson(form: BlockPerson, ctx: Context) {
+        viewModelScope.launch {
+            blockPersonRes = ApiState.Loading
+            blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
+            showBlockPersonToast(blockPersonRes, ctx)
+        }
     }
-}
 
-fun incrementFromRead(read: Boolean): Int {
-    return if (read) {
-        1
-    } else {
-        -1
+    fun updatePost(postView: PostView) {
+        when (val existing = postsRes) {
+            is ApiState.Success -> {
+                val newPosts = findAndUpdatePost(existing.data.posts, postView)
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                postsRes = newRes
+            }
+            else -> {}
+        }
     }
 }

@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.comment.edit
 
@@ -22,6 +21,7 @@ import com.jerboa.R
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentEditHeader(
     navController: NavController = rememberNavController(),
