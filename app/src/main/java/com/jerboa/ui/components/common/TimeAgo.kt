@@ -25,8 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
-import com.jerboa.prettyTime
-import com.jerboa.prettyTimeShortener
+import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 import java.time.Instant
@@ -37,9 +36,9 @@ fun TimeAgo(
     published: String,
     updated: String? = null,
     precedingString: String? = null,
-    includeAgo: Boolean = false,
+    longTimeFormat: Boolean = false,
 ) {
-    val publishedPretty = dateStringToPretty(published, includeAgo)
+    val publishedPretty = dateStringToPretty(published, longTimeFormat)
 
     val afterPreceding = precedingString?.let {
         stringResource(R.string.time_ago_ago, it, publishedPretty)
@@ -53,7 +52,7 @@ fun TimeAgo(
         )
 
         updated?.also {
-            val updatedPretty = dateStringToPretty(it, includeAgo)
+            val updatedPretty = dateStringToPretty(it, longTimeFormat)
 
             DotSpacer(
                 padding = SMALL_PADDING,
@@ -69,15 +68,9 @@ fun TimeAgo(
     }
 }
 
-fun dateStringToPretty(dateStr: String, includeAgo: Boolean = false): String {
+fun dateStringToPretty(dateStr: String, longTimeFormat: Boolean = false): String {
     val publishedDate = Date.from(Instant.parse(dateStr + "Z"))
-    val prettyPublished = prettyTime.formatDuration(publishedDate)
-
-    return if (includeAgo) {
-        prettyPublished
-    } else {
-        prettyTimeShortener(prettyPublished)
-    }
+    return formatDuration(publishedDate, longTimeFormat)
 }
 
 @Preview

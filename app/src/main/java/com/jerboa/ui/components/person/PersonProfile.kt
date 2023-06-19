@@ -105,7 +105,7 @@ fun PersonProfileTopSection(
 
             TimeAgo(
                 precedingString = stringResource(R.string.person_profile_joined),
-                includeAgo = true,
+                longTimeFormat = true,
                 published = personView.person.published,
             )
             CommentsAndPosts(personView)
