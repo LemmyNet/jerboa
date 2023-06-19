@@ -1,7 +1,10 @@
 package com.jerboa.ui.components.common
 
+import BlurTransformation
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -57,15 +60,20 @@ fun CircularIcon(
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
 ) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(pictrsImageThumbnail(icon, thumbnailSize))
-            .crossfade(true)
-            .build(),
+        model = getImageRequest(
+            context = LocalContext.current,
+            path = icon,
+            size = thumbnailSize,
+            nsfw = false,
+        ),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
-        modifier = pictureBlurOrRounded(modifier, true, false)
-            .size(size),
+        modifier = getBlurredRoundedModifier(
+            modifier = modifier,
+            rounded = true,
+            nsfw = false,
+        ).size(size),
     )
 }
 
@@ -89,20 +97,44 @@ fun CircularIconPreview() {
     )
 }
 
-fun pictureBlurOrRounded(
+fun getBlurredRoundedModifier(
     modifier: Modifier = Modifier,
     rounded: Boolean,
     nsfw: Boolean,
 ): Modifier {
-    var modifier_ = modifier
+    var lModifier = modifier
 
     if (rounded) {
-        modifier_ = modifier_.clip(RoundedCornerShape(12f))
+        lModifier = lModifier.clip(RoundedCornerShape(12f))
     }
-    if (nsfw) {
-        modifier_ = modifier_.blur(radius = 100.dp)
+    if (nsfw && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        lModifier = lModifier.blur(radius = 100.dp)
     }
-    return modifier_
+    return lModifier
+}
+
+fun getImageRequest(
+    context: Context,
+    path: String,
+    size: Int,
+    nsfw: Boolean,
+): ImageRequest {
+    val builder = ImageRequest.Builder(context)
+        .data(pictrsImageThumbnail(path, size))
+        .crossfade(true)
+
+    if (nsfw && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+        builder.transformations(
+            listOf(
+                BlurTransformation(
+                    scale = 0.5f,
+                    radius = 100,
+                ),
+            ),
+        )
+    }
+
+    return builder.build()
 }
 
 @Composable
@@ -112,14 +144,20 @@ fun PictrsThumbnailImage(
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(pictrsImageThumbnail(thumbnail, THUMBNAIL_SIZE))
-            .crossfade(true)
-            .build(),
+        model = getImageRequest(
+            context = LocalContext.current,
+            path = thumbnail,
+            size = THUMBNAIL_SIZE,
+            nsfw = nsfw,
+        ),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = pictureBlurOrRounded(modifier, true, nsfw),
+        modifier = getBlurredRoundedModifier(
+            modifier = modifier,
+            rounded = true,
+            nsfw = nsfw,
+        ),
     )
 }
 
@@ -130,15 +168,20 @@ fun PictrsUrlImage(
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(pictrsImageThumbnail(url, MAX_IMAGE_SIZE))
-            .crossfade(true)
-            .build(),
+        model = getImageRequest(
+            context = LocalContext.current,
+            path = url,
+            size = MAX_IMAGE_SIZE,
+            nsfw = nsfw,
+        ),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.FillWidth,
-        modifier = pictureBlurOrRounded(modifier, false, nsfw)
-            .fillMaxWidth(),
+        modifier = getBlurredRoundedModifier(
+            modifier = modifier,
+            rounded = false,
+            nsfw = nsfw,
+        ).fillMaxWidth(),
     )
 }
 
@@ -149,10 +192,12 @@ fun PictrsBannerImage(
     contentDescription: String? = null,
 ) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(pictrsImageThumbnail(url, MAX_IMAGE_SIZE))
-            .crossfade(true)
-            .build(),
+        model = getImageRequest(
+            context = LocalContext.current,
+            path = url,
+            size = MAX_IMAGE_SIZE,
+            nsfw = false,
+        ),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
