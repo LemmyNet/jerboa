@@ -111,7 +111,7 @@ interface API {
      * Mark a comment as read.
      */
     @POST("comment/mark_as_read")
-    suspend fun markCommentReplyAsRead(@Body form: MarkCommentReplyAsRead): Response<CommentResponse>
+    suspend fun markCommentReplyAsRead(@Body form: MarkCommentReplyAsRead): Response<CommentReplyResponse>
 
     /**
      * Mark a person mention as read.
