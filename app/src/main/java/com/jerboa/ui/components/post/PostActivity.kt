@@ -179,7 +179,7 @@ fun PostActivity(
                         }
                         IconButton(modifier = Modifier.weight(.5f), onClick = {
                             scope.launch {
-                                parentListStateIndexes.firstOrNull { parentIndex -> parentIndex > listState.firstVisibleItemIndex }?.let { nearestPreviousIndex -> listState.animateScrollToItem(nearestPreviousIndex) }
+                                parentListStateIndexes.firstOrNull { parentIndex -> parentIndex > listState.firstVisibleItemIndex }?.let { nearestNextIndex -> listState.animateScrollToItem(nearestNextIndex) }
                             }
                         }) {
                             Icon(
