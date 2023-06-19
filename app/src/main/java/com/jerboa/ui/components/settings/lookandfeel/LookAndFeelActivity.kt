@@ -202,7 +202,7 @@ fun LookAndFeelActivity(
                 SettingsCheckbox(
                     state = showParentCommentNavigationButtonsState,
                     title = {
-                        Text(text = stringResource(R.string.show_parent_comment_navigation_buttons))
+                        Text(text = stringResource(R.string.look_and_feel_show_parent_comment_navigation_buttons))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
