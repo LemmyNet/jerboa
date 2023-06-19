@@ -778,7 +778,7 @@ enum class ThemeMode(val mode: Int) {
     Black(R.string.look_and_feel_theme_black),
 }
 
-enum class ThemeColor (val mode: Int) {
+enum class ThemeColor(val mode: Int) {
     Dynamic(R.string.look_and_feel_theme_color_dynamic),
     Beach(R.string.look_and_feel_theme_color_beach),
     Blue(R.string.look_and_feel_theme_color_blue),
