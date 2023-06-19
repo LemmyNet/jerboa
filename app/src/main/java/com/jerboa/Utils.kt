@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa
 
 import android.app.Activity
@@ -46,12 +44,13 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.core.util.PatternsCompat
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
+import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
-import com.jerboa.datatypes.* // ktlint-disable no-unused-imports
-import com.jerboa.datatypes.api.GetUnreadCountResponse
+import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
@@ -72,7 +71,6 @@ val prettyTime = PrettyTime(Locale.getDefault())
 
 val gson = Gson()
 
-const val LAUNCH_DELAY = 300L
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
 
@@ -107,13 +105,15 @@ inline fun <I, reified O> I.convert(): O {
     )
 }
 
-fun toastException(ctx: Context?, error: Exception) {
+// / This should be done in a UI wrapper
+fun toastException(ctx: Context, error: Exception) {
     Log.e("jerboa", error.toString())
-    if (ctx !== null) {
-        Toast.makeText(ctx, error.message, Toast.LENGTH_SHORT).show()
-    }
+//    if (ctx !== null) {
+    Toast.makeText(ctx, error.message, Toast.LENGTH_SHORT).show()
+//    }
 }
 
+// TODO also navigate to login page
 fun loginFirstToast(ctx: Context) {
     Toast.makeText(ctx, ctx.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
@@ -250,17 +250,17 @@ fun commentsToFlatNodes(
 }
 
 fun buildCommentsTree(
-    comments: List<CommentView>?,
-    parentComment: Boolean,
+    comments: List<CommentView>,
+    isCommentView: Boolean,
 ): List<CommentNodeData> {
     val map = LinkedHashMap<Number, CommentNodeData>()
-    val firstComment = comments?.firstOrNull()?.comment
+    val firstComment = comments.firstOrNull()?.comment
 
-    val depthOffset = if (!parentComment) { 0 } else {
+    val depthOffset = if (!isCommentView) { 0 } else {
         getDepthFromComment(firstComment) ?: 0
     }
 
-    comments?.forEach { cv ->
+    comments.forEach { cv ->
         val depth = getDepthFromComment(cv.comment)?.minus(depthOffset) ?: 0
         val node = CommentNodeData(
             commentView = cv,
@@ -272,7 +272,7 @@ fun buildCommentsTree(
 
     val tree = mutableListOf<CommentNodeData>()
 
-    comments?.forEach { cv ->
+    comments.forEach { cv ->
         val child = map[cv.comment.id]
         child?.let { cChild ->
             val parentId = getCommentParentId(cv.comment)
@@ -291,78 +291,6 @@ fun buildCommentsTree(
 
     return tree
 }
-
-fun insertCommentIntoTree(
-    commentTree: MutableList<CommentNodeData>,
-    cv: CommentView,
-    parentComment: Boolean,
-) {
-    val nodeData = CommentNodeData(
-        commentView = cv,
-        children = null,
-        depth = 0,
-    )
-    val parentId = getCommentParentId(cv.comment)
-    parentId?.also { cParentId ->
-        val foundIndex = commentTree.indexOfFirst {
-            it.commentView.comment.id == cParentId
-        }
-
-        if (foundIndex != -1) {
-            val parent = commentTree[foundIndex]
-            nodeData.depth = parent.depth.plus(1)
-
-            parent.children?.also { children ->
-                children.add(0, nodeData)
-            } ?: run {
-                commentTree[foundIndex] = parent.copy(children = mutableStateListOf(nodeData))
-            }
-        } else {
-            commentTree.forEach { node ->
-                node.children?.also { children ->
-                    insertCommentIntoTree(children, cv, parentComment)
-                }
-            }
-        }
-    } ?: run {
-        if (!parentComment) {
-            commentTree.add(0, nodeData)
-        }
-    }
-}
-
-fun findAndUpdateCommentInTree(
-    commentTree: SnapshotStateList<CommentNodeData>,
-    cv: CommentView?,
-) {
-    cv?.also {
-        val foundIndex = commentTree.indexOfFirst {
-            it.commentView.comment.id == cv.comment.id
-        }
-
-        if (foundIndex != -1) {
-            val updatedComment = commentTree[foundIndex].copy(commentView = cv)
-            commentTree[foundIndex] = updatedComment
-        } else {
-            commentTree.forEach { node ->
-                node.children?.also { children ->
-                    findAndUpdateCommentInTree(children, cv)
-                }
-            }
-        }
-    }
-}
-
-fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
-    return if (depth == 0) {
-        0.dp
-    } else {
-        (abs((depth.minus(1) * multiplier)).dp + SMALL_PADDING)
-    }
-}
-
-// fun LazyListState.isScrolledToEnd() =
-//    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
 
 fun LazyListState.isScrolledToEnd(): Boolean {
     val totalItems = layoutInfo.totalItemsCount
@@ -420,8 +348,37 @@ fun parseUrl(url: String): String? {
     return null
 }
 
-fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Boolean) {
-    val url = parseUrl(url) ?: return
+fun looksLikeCommunityUrl(url: String): Pair<String, String>? {
+    val pattern = Regex("^https?://([^/]+)/c/([^/&?]+)")
+    val match = pattern.find(url)
+    if (match != null) {
+        val (host, community) = match.destructured
+        return Pair(host, community)
+    }
+    return null
+}
+
+fun looksLikeUserUrl(url: String): Pair<String, String>? {
+    val pattern = Regex("^https?://([^/]+)/u/([^/&?]+)")
+    val match = pattern.find(url)
+    if (match != null) {
+        val (host, user) = match.destructured
+        return Pair(host, user)
+    }
+    return null
+}
+
+fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    val parsedUrl = parseUrl(url) ?: return
+
+    looksLikeUserUrl(parsedUrl)?.let { it ->
+        navController.navigate("${it.first}/u/${it.second}")
+        return
+    }
+    looksLikeCommunityUrl(parsedUrl)?.let { it ->
+        navController.navigate("${it.first}/c/${it.second}")
+        return
+    }
 
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
@@ -430,10 +387,10 @@ fun openLink(url: String, ctx: Context, useCustomTab: Boolean, usePrivateTab: Bo
                     intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
                 }
             }
-        intent.launchUrl(ctx, Uri.parse(url))
+        intent.launchUrl(navController.context, Uri.parse(parsedUrl))
     } else {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        ctx.startActivity(intent)
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(parsedUrl))
+        navController.context.startActivity(intent)
     }
 }
 
@@ -484,6 +441,7 @@ val imageRegex = Regex(
 )
 
 // Todo is the scope.launch still necessary?
+@OptIn(ExperimentalMaterial3Api::class)
 fun closeDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
@@ -493,7 +451,7 @@ fun closeDrawer(
     }
 }
 
-fun personNameShown(person: PersonSafe, federatedName: Boolean = false): String {
+fun personNameShown(person: Person, federatedName: Boolean = false): String {
     return if (!federatedName) {
         person.display_name ?: person.name
     } else {
@@ -506,7 +464,7 @@ fun personNameShown(person: PersonSafe, federatedName: Boolean = false): String 
     }
 }
 
-fun communityNameShown(community: CommunitySafe): String {
+fun communityNameShown(community: Community): String {
     return if (community.local) {
         community.title
     } else {
@@ -533,10 +491,6 @@ fun unreadOrAllFromBool(b: Boolean): UnreadOrAll {
     } else {
         UnreadOrAll.All
     }
-}
-
-fun unreadCountTotal(unreads: GetUnreadCountResponse): Int {
-    return unreads.mentions + unreads.private_messages + unreads.replies
 }
 
 fun appendMarkdownImage(text: String, url: String): String {
@@ -658,7 +612,7 @@ fun isPostCreator(commentView: CommentView): Boolean {
     return commentView.creator.id == commentView.post.creator_id
 }
 
-fun isModerator(person: PersonSafe, moderators: List<CommunityModeratorView>): Boolean {
+fun isModerator(person: Person, moderators: List<CommunityModeratorView>): Boolean {
     return moderators.map { it.moderator.id }.contains(person.id)
 }
 
@@ -736,29 +690,31 @@ fun fetchInitialData(
 ) {
     if (account != null) {
         API.changeLemmyInstance(account.instance)
-
-        homeViewModel.fetchPosts(
-            account = account,
-            changeListingType = ListingType.values()[account.defaultListingType],
-            changeSortType = SortType.values()[account.defaultSortType],
-            clear = true,
+        homeViewModel.resetPage()
+        homeViewModel.getPosts(
+            GetPosts(
+                type_ = ListingType.values()[account.defaultListingType],
+                sort = SortType.values()[account.defaultSortType],
+                auth = account.jwt,
+            ),
         )
-        homeViewModel.fetchUnreadCounts(account = account)
+        siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
     } else {
         Log.d("jerboa", "Fetching posts for anonymous user")
         API.changeLemmyInstance(DEFAULT_INSTANCE)
-        homeViewModel.fetchPosts(
-            account = null,
-            clear = true,
-            changeListingType = ListingType.Local,
-            changeSortType = SortType.Active,
+        homeViewModel.resetPage()
+        homeViewModel.getPosts(
+            GetPosts(
+                type_ = ListingType.Local,
+                sort = SortType.Active,
+            ),
         )
-        homeViewModel.fetchUnreadCounts()
     }
 
-    siteViewModel.fetchSite(
-        auth = account?.jwt,
-        ctx = null,
+    siteViewModel.getSite(
+        GetSite(
+            auth = account?.jwt,
+        ),
     )
 }
 
@@ -1029,4 +985,155 @@ fun getLocalizedUnreadOrAllName(ctx: Context, unreadOrAll: UnreadOrAll): String 
         UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
     }
     return returnString
+}
+
+fun findAndUpdatePrivateMessage(
+    messages: List<PrivateMessageView>,
+    updated: PrivateMessageView,
+): List<PrivateMessageView> {
+    val foundIndex = messages.indexOfFirst {
+        it.private_message.id == updated.private_message.id
+    }
+    return if (foundIndex != -1) {
+        val mutable = messages.toMutableList()
+        mutable[foundIndex] = updated
+        mutable.toList()
+    } else {
+        messages
+    }
+}
+
+fun showBlockPersonToast(blockPersonRes: ApiState<BlockPersonResponse>, ctx: Context) {
+    when (blockPersonRes) {
+        is ApiState.Success -> {
+            Toast.makeText(
+                ctx,
+                "${blockPersonRes.data.person_view.person.name} Blocked",
+                Toast.LENGTH_SHORT,
+            )
+                .show()
+        }
+
+        else -> {}
+    }
+}
+
+fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>, ctx: Context) {
+    when (blockCommunityRes) {
+        is ApiState.Success -> {
+            Toast.makeText(
+                ctx,
+                "${blockCommunityRes.data.community_view.community.name} Blocked",
+                Toast.LENGTH_SHORT,
+            )
+                .show()
+        }
+
+        else -> {}
+    }
+}
+
+fun findAndUpdatePersonMention(mentions: List<PersonMentionView>, updatedCommentView: CommentView): List<PersonMentionView> {
+    val foundIndex = mentions.indexOfFirst {
+        it.person_mention.comment_id == updatedCommentView.comment.id
+    }
+    return if (foundIndex != -1) {
+        val mutable = mentions.toMutableList()
+        mutable[foundIndex] = mentions[foundIndex].copy(
+            my_vote = updatedCommentView.my_vote,
+            counts = updatedCommentView.counts,
+            saved = updatedCommentView.saved,
+            comment = updatedCommentView.comment,
+        )
+        mutable.toList()
+    } else {
+        mentions
+    }
+}
+
+fun findAndUpdateMention(
+    mentions: List<PersonMentionView>,
+    updated: PersonMentionView,
+): List<PersonMentionView> {
+    val foundIndex = mentions.indexOfFirst {
+        it.person_mention.id == updated.person_mention.id
+    }
+    return if (foundIndex != -1) {
+        val mutable = mentions.toMutableList()
+        mutable[foundIndex] = updated
+        mutable.toList()
+    } else {
+        mentions
+    }
+}
+
+fun findAndUpdateComment(comments: List<CommentView>, updated: CommentView): List<CommentView> {
+    val foundIndex = comments.indexOfFirst {
+        it.comment.id == updated.comment.id
+    }
+    return if (foundIndex != -1) {
+        val mutable = comments.toMutableList()
+        mutable[foundIndex] = updated
+        mutable.toList()
+    } else {
+        comments
+    }
+}
+
+fun findAndUpdateCommentReply(replies: List<CommentReplyView>, updatedCommentView: CommentView): List<CommentReplyView> {
+    val foundIndex = replies.indexOfFirst {
+        it.comment_reply.comment_id == updatedCommentView.comment.id
+    }
+    return if (foundIndex != -1) {
+        val mutable = replies.toMutableList()
+        mutable[foundIndex] = replies[foundIndex].copy(
+            my_vote = updatedCommentView.my_vote,
+            counts = updatedCommentView.counts,
+            saved = updatedCommentView.saved,
+            comment = updatedCommentView.comment,
+        )
+        mutable.toList()
+    } else {
+        replies
+    }
+}
+
+fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
+    return if (depth == 0) {
+        0.dp
+    } else {
+        (abs((depth.minus(1) * multiplier)).dp + SMALL_PADDING)
+    }
+}
+
+fun dedupePosts(
+    more: List<PostView>,
+    existing: List<PostView>,
+): List<PostView> {
+    val newPostsDeduped = more.filterNot { pv ->
+        existing.map { op -> op.post.id }.contains(
+            pv
+                .post.id,
+        )
+    }
+    return newPostsDeduped
+}
+
+fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
+    val appended = existing.toMutableList()
+    appended.addAll(more)
+    return appended.toList()
+}
+
+fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
+    val foundIndex = posts.indexOfFirst {
+        it.post.id == updatedPostView.post.id
+    }
+    return if (foundIndex != -1) {
+        val mutable = posts.toMutableList()
+        mutable[foundIndex] = updatedPostView
+        mutable.toList()
+    } else {
+        posts
+    }
 }

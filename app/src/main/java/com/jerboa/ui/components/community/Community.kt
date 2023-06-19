@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.community
 
 import androidx.compose.foundation.layout.*
@@ -15,12 +13,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
-import com.jerboa.datatypes.CommunityView
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.SubscribedType
 import com.jerboa.datatypes.sampleCommunityView
+import com.jerboa.datatypes.types.CommunityView
+import com.jerboa.datatypes.types.SortType
+import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.getLocalizedSortingTypeName
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -36,10 +33,10 @@ fun CommunityTopSection(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxWidth(),
     ) {
         Box(
-            modifier = modifier
-                .fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
             communityView.community.banner?.also {
@@ -122,6 +119,7 @@ fun CommunityTopSectionPreview() {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityHeader(
     communityName: String,
@@ -182,7 +180,14 @@ fun CommunityHeader(
                 selectedSortType = selectedSortType,
             )
         },
-        navigationIcon = { DefaultBackButton(navController) },
+        navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    Icons.Outlined.ArrowBack,
+                    contentDescription = stringResource(R.string.community_back),
+                )
+            }
+        },
         actions = {
             IconButton(onClick = {
                 showSortOptions = !showSortOptions

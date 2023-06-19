@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.post.create
 
 import android.net.Uri
@@ -18,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,11 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.datatypes.sampleCommunity
+import com.jerboa.datatypes.types.Community
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.CircularIcon
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.theme.ICON_SIZE
@@ -51,6 +49,7 @@ import com.jerboa.ui.theme.muted
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostHeader(
     navController: NavController = rememberNavController(),
@@ -70,6 +69,7 @@ fun CreatePostHeader(
                 onClick = onCreatePostClick,
             ) {
                 if (loading) {
+                    // TODO is this color necessary? If not, remove all of them
                     CircularProgressIndicator(
                         color = MaterialTheme.colorScheme.onSurface,
                     )
@@ -83,8 +83,17 @@ fun CreatePostHeader(
             }
         },
         navigationIcon = {
-            // Todo add are you sure cancel dialog
-            DefaultBackButton(navController)
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+            ) {
+                // Todo add are you sure cancel dialog
+                Icon(
+                    Icons.Outlined.Close,
+                    contentDescription = stringResource(R.string.create_post_close),
+                )
+            }
         },
     )
 }
@@ -99,12 +108,13 @@ fun CreatePostBody(
     onUrlChange: (url: String) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
     image: Uri? = null,
-    community: CommunitySafe? = null,
+    community: Community? = null,
     navController: NavController = rememberNavController(),
     formValid: (valid: Boolean) -> Unit,
-    suggestedTitle: String? = null,
     account: Account?,
     padding: PaddingValues,
+    suggestedTitle: String?,
+    suggestedTitleLoading: Boolean,
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -146,13 +156,17 @@ fun CreatePostBody(
             modifier = Modifier
                 .fillMaxWidth(),
         )
-        suggestedTitle?.also {
-            Text(
-                text = stringResource(R.string.create_post_copy_suggested_title, it),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground.muted,
-                modifier = Modifier.clickable { onNameChange(it) },
-            )
+        if (suggestedTitleLoading) {
+            CircularProgressIndicator()
+        } else {
+            suggestedTitle?.let {
+                Text(
+                    text = stringResource(R.string.create_post_copy_suggested_title, it),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    modifier = Modifier.clickable { onNameChange(it) },
+                )
+            }
         }
         PickImage(
             onPickedImage = onPickedImage,
@@ -232,10 +246,12 @@ fun CreatePostBodyPreview() {
         url = "",
         onUrlChange = {},
         onPickedImage = {},
-        community = sampleCommunitySafe,
+        community = sampleCommunity,
         formValid = {},
         account = null,
         padding = PaddingValues(),
+        suggestedTitle = null,
+        suggestedTitleLoading = false,
     )
 }
 
@@ -252,6 +268,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         onPickedImage = {},
         formValid = {},
         suggestedTitle = stringResource(R.string.create_post_a_title_here),
+        suggestedTitleLoading = false,
         account = null,
         padding = PaddingValues(),
     )

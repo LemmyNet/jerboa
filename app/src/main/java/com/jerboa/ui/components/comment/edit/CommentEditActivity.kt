@@ -7,10 +7,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
+import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.person.PersonProfileViewModel
@@ -27,10 +27,14 @@ fun CommentEditActivity(
 ) {
     Log.d("jerboa", "got to comment edit activity")
 
-    val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     var content by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(commentEditViewModel.commentView.value?.comment?.content.orEmpty())) }
+
+    val loading = when (commentEditViewModel.editCommentRes) {
+        ApiState.Loading -> true
+        else -> false
+    }
 
     val focusManager = LocalFocusManager.current
 
@@ -39,12 +43,11 @@ fun CommentEditActivity(
             topBar = {
                 CommentEditHeader(
                     navController = navController,
-                    loading = commentEditViewModel.loading.value,
+                    loading = loading,
                     onSaveClick = {
                         account?.also { acct ->
                             commentEditViewModel.editComment(
                                 content = content.text,
-                                ctx = ctx,
                                 navController = navController,
                                 focusManager = focusManager,
                                 account = acct,
