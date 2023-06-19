@@ -121,7 +121,7 @@ class UtilsKtTest {
         assertEquals(
             "http://localhost:8535/pictrs/image/file.png?thumbnail=3&format=webp",
             pictrsImageThumbnail(
-                "http://localhost:8535/pictrs/image/file.png?thumbnail=256&format=jpg",
+                "http://localhost:8535/pictrs/image/file.png?thumbnail=3&format=webp",
                 3,
             ),
         )
