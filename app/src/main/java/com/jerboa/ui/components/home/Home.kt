@@ -278,13 +278,11 @@ fun DrawerItemsMain(
             }
         }
         item {
-            myUserInfo?.also {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_settings),
-                    icon = Icons.Outlined.Settings,
-                    onClick = onClickSettings,
-                )
-            }
+            IconAndTextDrawerItem(
+                text = stringResource(R.string.home_settings),
+                icon = Icons.Outlined.Settings,
+                onClick = onClickSettings,
+            )
         }
         item {
             myUserInfo?.also {
