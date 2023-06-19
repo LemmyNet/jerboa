@@ -119,6 +119,7 @@
     <string name="create_report_report">Report</string>
     <string name="create_report_type_your_reason">Type your reason</string>
     <string name="create_report_view_model_report_created">Report Created</string>
+    <string name="create_report_view_model_report_fail">Couldn\'t create report: %1$s</string>
     <string name="dialog_moreOptions">More options</string>
     <string name="dialogs_active">Active</string>
     <string name="dialogs_all">All</string>
@@ -181,6 +182,7 @@
     <string name="look_and_feel_post_view_card">Card</string>
     <string name="look_and_feel_post_view_list">List</string>
     <string name="look_and_feel_post_view_small_card">Small Card</string>
+    <string name="look_and_feel_secure_window">Prevent Screenshots</string>
     <string name="look_and_feel_show_action_bar_for_comments">Show action bar by default for comments</string>
     <string name="look_and_feel_show_navigation_bar">Show navigation bar</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Show voting arrows in list view</string>
@@ -290,9 +292,11 @@
     <string name="time_ago_ago">%1$s %2$s ago</string>
     <string name="topAppBar_back">Back</string>
     <string name="utils_login_first">Login first</string>
-    <string name="voteToggle">Toggle vote</string>
     <string name="upvote">Upvote</string>
     <string name="downvote">Downvote</string>
     <string name="upvoted">Upvoted</string>
     <string name="downvoted">Downvoted</string>
+    <string name="saved_image">Saved image</string>
+    <string name="saving_image">Saving image…</string>
+    <string name="permission_denied">Permission denied</string>
 </resources>

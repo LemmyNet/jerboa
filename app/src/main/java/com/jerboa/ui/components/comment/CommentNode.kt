@@ -60,17 +60,12 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.calculateNewInstantScores
-import com.jerboa.datatypes.Comment
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.CommunityModeratorView
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.Post
 import com.jerboa.datatypes.sampleCommentView
-import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
+import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.isModerator
 import com.jerboa.isPostCreator
@@ -200,11 +195,11 @@ fun LazyListScope.commentNodeItem(
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     showCollapsedCommentContent: Boolean,
     showPostAndCommunityContext: Boolean = false,
@@ -460,8 +455,8 @@ private fun ShowMoreChildrenNode(
 @Composable
 fun PostAndCommunityContextHeader(
     post: Post,
-    community: CommunitySafe,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    community: Community,
+    onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
 ) {
     Column(
@@ -490,7 +485,7 @@ fun PostAndCommunityContextHeader(
 fun PostAndCommunityContextHeaderPreview() {
     PostAndCommunityContextHeader(
         post = samplePost,
-        community = sampleCommunitySafe,
+        community = sampleCommunity,
         onCommunityClick = {},
         onPostClick = {},
     )
@@ -511,7 +506,7 @@ fun CommentFooterLine(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,

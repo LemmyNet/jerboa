@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.jerboa.ui.components.person
 
 import androidx.compose.foundation.clickable
@@ -33,9 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
-import com.jerboa.datatypes.PersonViewSafe
-import com.jerboa.datatypes.SortType
 import com.jerboa.datatypes.samplePersonView
+import com.jerboa.datatypes.types.PersonView
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.getLocalizedSortingTypeName
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
@@ -53,7 +51,7 @@ import com.jerboa.ui.theme.muted
 
 @Composable
 fun PersonProfileTopSection(
-    personView: PersonViewSafe,
+    personView: PersonView,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
 ) {
@@ -107,7 +105,7 @@ fun PersonProfileTopSection(
 
             TimeAgo(
                 precedingString = stringResource(R.string.person_profile_joined),
-                includeAgo = true,
+                longTimeFormat = true,
                 published = personView.person.published,
             )
             CommentsAndPosts(personView)
@@ -123,7 +121,7 @@ fun PersonProfileTopSection(
 }
 
 @Composable
-fun CommentsAndPosts(personView: PersonViewSafe) {
+fun CommentsAndPosts(personView: PersonView) {
     Row {
         Text(
             text = stringResource(R.string.person_profile_posts, personView.counts.post_count),
@@ -152,6 +150,7 @@ fun PersonProfileTopSectionPreview() {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonProfileHeader(
     personName: String,

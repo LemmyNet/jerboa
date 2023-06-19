@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.jerboa.ui.components.post.edit
 
@@ -31,6 +30,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPostHeader(
     navController: NavController = rememberNavController(),
@@ -78,6 +78,7 @@ fun EditPostHeader(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPostBody(
     name: String,
