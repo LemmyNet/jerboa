@@ -356,20 +356,10 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                     }
                 },
                 onDismissRequest = {
-                    whatsChangedDialogOpen.value = false
+                    whatsChangedDialogOpen = false
                     appSettingsViewModel.markChangelogViewed()
                 },
             )
-
-            scope.launch(Dispatchers.IO) {
-                Log.d("jerboa", "Fetching RELEASES.md ...")
-                // Fetch the markdown text
-                val client = OkHttpClient()
-                val releasesUrl = "https://raw.githubusercontent.com/dessalines/jerboa/main/RELEASES.md".toHttpUrl()
-                val req = Request.Builder().url(releasesUrl).build()
-                val res = client.newCall(req).execute()
-                markdown.value = res.body.string()
-            }
         }
     }
 }
