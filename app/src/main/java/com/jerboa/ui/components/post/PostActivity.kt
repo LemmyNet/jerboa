@@ -5,27 +5,39 @@ package com.jerboa.ui.components.post
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.jerboa.PostViewMode
@@ -46,6 +58,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -73,8 +86,12 @@ fun PostActivity(
     val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
 
     val listState = rememberLazyListState()
+    var lazyListIndexTracker: Int
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scope = rememberCoroutineScope()
 
+
+    val parentListStateIndexes = remember { mutableStateListOf<Int>() }
     val firstComment = postViewModel.commentTree.firstOrNull()?.commentView?.comment
     val depth = getDepthFromComment(firstComment)
     val commentParentId = getCommentParentId(firstComment)
@@ -104,6 +121,59 @@ fun PostActivity(
     )
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        bottomBar = {
+            BottomAppBar(
+                containerColor = MaterialTheme.colorScheme.background.copy(alpha = .75f),
+                modifier = Modifier.height(50.dp),
+                content = {
+                    IconButton(modifier = Modifier.weight(.5f), onClick = {
+                        scope.launch {
+                            var minDifference = Int.MAX_VALUE
+                            var nearestPreviousIndex: Int? = null
+                            val currentListStateIndex = listState.firstVisibleItemIndex
+
+                            for (parentIndex in parentListStateIndexes) {
+                                if (parentIndex < currentListStateIndex) {
+                                    val difference = currentListStateIndex - parentIndex
+                                    if (difference < minDifference) {
+                                        minDifference = difference
+                                        nearestPreviousIndex = parentIndex
+                                    }
+                                }
+                            }
+
+                            if (nearestPreviousIndex != null) {
+                                listState.animateScrollToItem(nearestPreviousIndex)
+                            }
+                        }
+                    }) {
+                        Icon(modifier = Modifier.scale(1.5f), imageVector = Icons.Filled.KeyboardArrowUp, contentDescription = "Up")
+                    }
+                    IconButton(modifier = Modifier.weight(.5f), onClick = {
+                        scope.launch {
+                            var minDifference = Int.MAX_VALUE
+                            var nearestNextIndex: Int? = null
+                            val currentListStateIndex = listState.firstVisibleItemIndex
+
+                            for (parentIndex in parentListStateIndexes) {
+                                if (parentIndex > currentListStateIndex) {
+                                    val difference = parentIndex - currentListStateIndex
+                                    if (difference < minDifference) {
+                                        minDifference = difference
+                                        nearestNextIndex = parentIndex
+                                    }
+                                }
+                            }
+
+                            if (nearestNextIndex != null) {
+                                listState.animateScrollToItem(nearestNextIndex)
+                            }
+                        }
+                    }) {
+                        Icon(modifier = Modifier.scale(1.5f), imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "Down")
+                    }
+            })
+        },
         topBar = {
             Column {
                 SimpleTopAppBar(
@@ -119,12 +189,14 @@ fun PostActivity(
         },
         content = { padding ->
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                parentListStateIndexes.clear()
+                lazyListIndexTracker = 2
                 PullRefreshIndicator(postViewModel.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
                 postViewModel.postView.value?.also { postView ->
                     LazyColumn(
                         state = listState,
                         modifier = Modifier
-                            .padding(padding)
+                            .padding(top = padding.calculateTopPadding())
                             .simpleVerticalScrollbar(listState),
                     ) {
                         item(key = "${postView.post.id}_listing") {
@@ -231,6 +303,12 @@ fun PostActivity(
                         }
                         commentNodeItems(
                             nodes = postViewModel.commentTree,
+                            increaseLazyListIndexTracker = {
+                                lazyListIndexTracker++
+                            },
+                            addToParentIndexes = {
+                                parentListStateIndexes.add(lazyListIndexTracker)
+                            },
                             isFlat = false,
                             isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
                             toggleExpanded = { commentId ->
@@ -335,6 +413,9 @@ fun PostActivity(
                             enableDownVotes = enableDownVotes,
                             showAvatar = siteViewModel.siteRes?.my_user?.local_user_view?.local_user?.show_avatars ?: true,
                         )
+                        item {
+                            Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
+                        }
                     }
                 }
             }

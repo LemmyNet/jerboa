@@ -465,6 +465,8 @@ fun UserTabs(
                         PullRefreshIndicator(loading, state, Modifier.align(Alignment.TopCenter))
                         CommentNodes(
                             nodes = nodes,
+                            increaseLazyListIndexTracker = {},
+                            addToParentIndexes = {},
                             isFlat = true,
                             listState = listState,
                             onMarkAsReadClick = {},
