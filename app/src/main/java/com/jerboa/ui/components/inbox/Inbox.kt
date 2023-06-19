@@ -4,6 +4,7 @@ package com.jerboa.ui.components.inbox
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,12 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
-import com.jerboa.ui.components.common.DefaultBackButton
+import com.jerboa.getLocalizedUnreadOrAllName
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
 
 @Composable
@@ -56,7 +58,14 @@ fun InboxHeader(
                 selectedUnreadOrAll = selectedUnreadOrAll,
             )
         },
-        navigationIcon = { DefaultBackButton(navController) },
+        navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    Icons.Outlined.ArrowBack,
+                    contentDescription = stringResource(R.string.inbox_back),
+                )
+            }
+        },
         actions = {
             IconButton(onClick = {
                 showUnreadOrAllOptions = !showUnreadOrAllOptions
@@ -79,6 +88,7 @@ fun InboxHeader(
 @Composable
 fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null) {
     var title = stringResource(R.string.inbox_inbox)
+    val ctx = LocalContext.current
     if (unreadCount != null && unreadCount > 0) {
         title = "$title ($unreadCount)"
     }
@@ -88,7 +98,7 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = selectedUnreadOrAll.toString(),
+            text = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll),
             style = MaterialTheme.typography.titleMedium,
         )
     }
