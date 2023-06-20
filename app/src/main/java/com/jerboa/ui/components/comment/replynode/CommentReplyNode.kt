@@ -300,6 +300,7 @@ fun CommentReplyNode(
     onSaveClick: (commentReplyView: CommentReplyView) -> Unit,
     onMarkAsReadClick: (commentReplyView: CommentReplyView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onCommentClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
@@ -350,7 +351,7 @@ fun CommentReplyNode(
                 CommentBody(
                     comment = commentReplyView.comment,
                     viewSource = viewSource,
-                    onClick = {},
+                    onClick = { onCommentClick(commentReplyView) },
                     onLongClick = {
                         isActionBarExpanded = !isActionBarExpanded
                     },
