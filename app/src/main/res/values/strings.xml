@@ -70,6 +70,8 @@
     <string name="comment_mention_node_permalink_copied">Permalink Copied</string>
     <string name="comment_mention_node_report_comment">Report Comment</string>
     <string name="comment_mention_node_view_source">View Source</string>
+    <string name="comment_next_parent">Next Parent Comment</string>
+    <string name="comment_previous_parent">Previous Parent Comment</string>
     <string name="comment_node_block">Block %1$s</string>
     <string name="comment_node_copy_permalink">Copy Permalink</string>
     <string name="comment_node_delete">Delete</string>

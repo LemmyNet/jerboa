@@ -8,18 +8,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,11 +33,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.Key
@@ -50,7 +44,6 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -72,20 +65,21 @@ import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
 import com.jerboa.isModerator
 import com.jerboa.newVote
+import com.jerboa.scrollToNextParentComment
+import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun CommentsHeaderTitle(
@@ -139,7 +133,7 @@ fun PostActivity(
 
     val listState = rememberLazyListState()
     var lazyListIndexTracker: Int
-    val parentListStateIndexes = remember { mutableStateListOf<Int>() }
+    val parentListStateIndexes = remember { mutableListOf<Int>() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val scope = rememberCoroutineScope()
 
@@ -184,29 +178,10 @@ fun PostActivity(
             },
         bottomBar = {
             if (showParentCommentNavigationButtons) {
-                BottomAppBar(
-                    containerColor = MaterialTheme.colorScheme.background.copy(alpha = .75f),
-                    modifier = Modifier.height(50.dp),
-                    content = {
-                        IconButton(modifier = Modifier.weight(.5f), onClick = {
-                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
-                        }) {
-                            Icon(
-                                modifier = Modifier.scale(1.5f),
-                                imageVector = Icons.Filled.KeyboardArrowUp,
-                                contentDescription = "Up",
-                            )
-                        }
-                        IconButton(modifier = Modifier.weight(.5f), onClick = {
-                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
-                        }) {
-                            Icon(
-                                modifier = Modifier.scale(1.5f),
-                                imageVector = Icons.Filled.KeyboardArrowDown,
-                                contentDescription = "Down",
-                            )
-                        }
-                    },
+                CommentNavigationBottomAppBar(
+                    scope,
+                    parentListStateIndexes,
+                    listState,
                 )
             }
         },
@@ -574,30 +549,4 @@ fun PostActivity(
             }
         },
     )
-}
-
-private fun scrollToNextParentComment(
-    scope: CoroutineScope,
-    parentListStateIndexes: SnapshotStateList<Int>,
-    listState: LazyListState,
-) {
-    scope.launch {
-        parentListStateIndexes.firstOrNull { parentIndex -> parentIndex > listState.firstVisibleItemIndex }
-            ?.let { nearestNextIndex ->
-                listState.animateScrollToItem(nearestNextIndex)
-            }
-    }
-}
-
-private fun scrollToPreviousParentComment(
-    scope: CoroutineScope,
-    parentListStateIndexes: SnapshotStateList<Int>,
-    listState: LazyListState,
-) {
-    scope.launch {
-        parentListStateIndexes.lastOrNull { parentIndex -> parentIndex < listState.firstVisibleItemIndex }
-            ?.let { nearestPreviousIndex ->
-                listState.animateScrollToItem(nearestPreviousIndex)
-            }
-    }
 }
