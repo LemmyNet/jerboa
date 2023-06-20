@@ -164,9 +164,6 @@ class MainActivity : ComponentActivity() {
                 val privateMessageReplyDependencyContainer = dependencyContainer<PrivateMessageReplyDependencies>()
 
                 AnimatedNavHost(
-                    // Do not provide a route for this NavHost.
-                    // DefaultBackButton requires the route to be null to conclude the the stack is
-                    // no more popable.
                     navController = navController,
                     startDestination = Route.HOME,
                     enterTransition = { enterTransition },
@@ -304,7 +301,7 @@ class MainActivity : ComponentActivity() {
                                 remember(it) { navController.getBackStackEntry(communityGraph) },
                             )
                             val args = Route.CommunityFromUrlArgs(it)
-                            val qualifiedName = "${args.name}@{$args.instance}"
+                            val qualifiedName = "${args.name}@${args.instance}"
                             CommunityActivity(
                                 communityArg = Either.Right(qualifiedName),
                                 communityViewModel = communityViewModel,
