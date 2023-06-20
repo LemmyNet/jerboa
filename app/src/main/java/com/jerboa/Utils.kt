@@ -1187,3 +1187,29 @@ fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<Po
         posts
     }
 }
+
+fun scrollToNextParentComment(
+    scope: CoroutineScope,
+    parentListStateIndexes: List<Int>,
+    listState: LazyListState,
+) {
+    scope.launch {
+        parentListStateIndexes.firstOrNull { parentIndex -> parentIndex > listState.firstVisibleItemIndex }
+            ?.let { nearestNextIndex ->
+                listState.animateScrollToItem(nearestNextIndex)
+            }
+    }
+}
+
+fun scrollToPreviousParentComment(
+    scope: CoroutineScope,
+    parentListStateIndexes: List<Int>,
+    listState: LazyListState,
+) {
+    scope.launch {
+        parentListStateIndexes.lastOrNull { parentIndex -> parentIndex < listState.firstVisibleItemIndex }
+            ?.let { nearestPreviousIndex ->
+                listState.animateScrollToItem(nearestPreviousIndex)
+            }
+    }
+}

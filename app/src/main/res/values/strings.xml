@@ -70,6 +70,8 @@
     <string name="comment_mention_node_permalink_copied">Permalink Copied</string>
     <string name="comment_mention_node_report_comment">Report Comment</string>
     <string name="comment_mention_node_view_source">View Source</string>
+    <string name="comment_next_parent">Next Parent Comment</string>
+    <string name="comment_previous_parent">Previous Parent Comment</string>
     <string name="comment_node_block">Block %1$s</string>
     <string name="comment_node_copy_permalink">Copy Permalink</string>
     <string name="comment_node_delete">Delete</string>
@@ -186,6 +188,8 @@
     <string name="look_and_feel_show_action_bar_for_comments">Show action bar by default for comments</string>
     <string name="look_and_feel_show_navigation_bar">Show navigation bar</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Show voting arrows in list view</string>
+    <string name="look_and_feel_show_parent_comment_navigation_buttons">Show parent comment navigation buttons</string>
+    <string name="look_and_feel_navigate_parent_comments_with_volume_buttons">Navigate parent comments with volume buttons</string>
     <string name="look_and_feel_theme">Theme</string>
     <string name="look_and_feel_theme_black">Black</string>
     <string name="look_and_feel_theme_color">Theme color</string>

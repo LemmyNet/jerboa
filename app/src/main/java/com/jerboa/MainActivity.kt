@@ -460,6 +460,8 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
+                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
                             onClickSortType = { commentSortType ->
                                 postViewModel.updateSortType(commentSortType)
                                 postViewModel.getData(account)
@@ -494,6 +496,8 @@ class MainActivity : ComponentActivity() {
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
+                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
                             onClickSortType = { commentSortType ->
                                 postViewModel.updateSortType(commentSortType)
                                 postViewModel.getData(account)
