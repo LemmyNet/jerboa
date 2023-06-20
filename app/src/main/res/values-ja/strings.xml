@@ -265,7 +265,6 @@
     <string name="postListing_deleted">削除済み</string>
     <string name="postListing_reply">投稿に返信</string>
     <string name="privateMessage_reply">メッセージに返信</string>
-    <string name="voteToggle">投票をトグル</string>
     <string name="topAppBar_back">戻る</string>
     <string name="person_profile_activity_about">ユーザー概要</string>
     <string name="person_profile_activity_posts">ポスト</string>
