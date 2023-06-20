@@ -195,6 +195,15 @@
     <string name="look_and_feel_theme_light">Light</string>
     <string name="look_and_feel_theme_system">System</string>
     <string name="look_and_feel_theme_system_black">System Black</string>
+    <string name="look_and_feel_theme_color_dynamic">Dynamic</string>
+    <string name="look_and_feel_theme_color_beach">Beach</string>
+    <string name="look_and_feel_theme_color_blue">Blue</string>
+    <string name="look_and_feel_theme_color_crimson">Crimson</string>
+    <string name="look_and_feel_theme_color_green">Green</string>
+    <string name="look_and_feel_theme_color_grey">Grey</string>
+    <string name="look_and_feel_theme_color_pink">Pink</string>
+    <string name="look_and_feel_theme_color_purple">Purple</string>
+    <string name="look_and_feel_theme_color_woodland">Woodland</string>
     <string name="look_and_feel_use_custom_tabs">Use custom tabs</string>
     <string name="look_and_feel_use_private_tabs">Use private custom tabs if available</string>
     <string name="markRead">Mark as read</string>
