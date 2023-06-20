@@ -55,9 +55,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -576,7 +580,7 @@ fun HomeHeader(
                     contentDescription = stringResource(R.string.selectSort),
                 )
             }
-            IconButton(onClick = {
+            IconButton(modifier = Modifier.testTag("jerboa:options"), onClick = {
                 showMoreOptions = !showMoreOptions
             }) {
                 Icon(
@@ -609,6 +613,7 @@ fun HomeHeaderPreview() {
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeMoreDialog(
     onDismissRequest: () -> Unit,
@@ -618,6 +623,7 @@ fun HomeMoreDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
         text = {
             Column {
                 IconAndTextDrawerItem(
@@ -627,6 +633,7 @@ fun HomeMoreDialog(
                         onDismissRequest()
                         onClickRefresh()
                     },
+                    modifier = Modifier.testTag("jerboa:refresh"),
                 )
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.home_post_view_mode),

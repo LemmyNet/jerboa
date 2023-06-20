@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.devtools.ksp'
+    id 'androidx.baselineprofile'
 }
 
 android {
@@ -46,10 +47,18 @@ android {
                 signingConfig signingConfigs.release
             }
         }
-
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix ' (DEBUG)'
+        }
+
+        generateProfiles { // use this variant to generate the profiles
+            minifyEnabled false // The startup profiles needs minification off
+            shrinkResources false
+            debuggable false
+            signingConfig signingConfigs.debug
+            proguardFiles 'benchmark-rules.pro' // The baseline profile generator needs obfuscation off
+            applicationIdSuffix = ".benchmark"
         }
     }
     compileOptions {
@@ -134,4 +143,7 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-test-manifest:1.4.3'
     implementation "net.engawapg.lib:zoomable:1.4.3"
     implementation 'androidx.browser:browser:1.5.0'
+
+    implementation 'androidx.profileinstaller:profileinstaller:1.3.1'
+    baselineProfile project(path: ':benchmarks')
 }

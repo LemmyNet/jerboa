@@ -29,10 +29,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavController
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -67,6 +71,7 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommentsHeaderTitle(
     selectedSortType: CommentSortType,
@@ -85,7 +90,11 @@ fun CommentsHeaderTitle(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class,
+)
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
@@ -136,7 +145,8 @@ fun PostActivity(
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true },
         topBar = {
             Column {
                 TopAppBar(
@@ -146,7 +156,10 @@ fun PostActivity(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(
+                            modifier = Modifier.testTag("jerboa:back"),
+                            onClick = { navController.popBackStack() },
+                        ) {
                             Icon(
                                 Icons.Outlined.ArrowBack,
                                 contentDescription = stringResource(R.string.topAppBar_back),
@@ -185,7 +198,8 @@ fun PostActivity(
                             state = listState,
                             modifier = Modifier
                                 .padding(padding)
-                                .simpleVerticalScrollbar(listState),
+                                .simpleVerticalScrollbar(listState)
+                                .testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing") {
                                 PostListing(

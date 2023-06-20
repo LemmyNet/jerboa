@@ -24,6 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jerboa"
         tools:targetApi="33">
+        <profileable android:shell="true"/>
+
 
         <activity
             android:name=".MainActivity"
