@@ -229,7 +229,6 @@ fun PostActivity(
         },
         content = { padding ->
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-                Log.i("awefawef", parentListStateIndexes.size.toString())
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
                 PullRefreshIndicator(
