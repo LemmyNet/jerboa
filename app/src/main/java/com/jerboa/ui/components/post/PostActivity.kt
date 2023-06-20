@@ -185,15 +185,15 @@ fun PostActivity(
                     false
                 }
             },
-    bottomBar = {
-        if (showParentCommentNavigationButtons) {
-            CommentNavigationBottomAppBar(
-                scope,
-                parentListStateIndexes,
-                listState,
-            )
-        }
-    },
+        bottomBar = {
+            if (showParentCommentNavigationButtons) {
+                CommentNavigationBottomAppBar(
+                    scope,
+                    parentListStateIndexes,
+                    listState,
+                )
+            }
+        },
         topBar = {
             Column {
                 TopAppBar(
@@ -229,6 +229,7 @@ fun PostActivity(
         },
         content = { padding ->
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                Log.i("awefawef", parentListStateIndexes.size.toString())
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
                 PullRefreshIndicator(
