@@ -175,12 +175,19 @@ fun PostActivity(
             .focusable()
             .onKeyEvent { keyEvent ->
                 if (navigateParentCommentsWithVolumeButtons) {
-                    if (keyEvent.key == Key.VolumeUp) {
-                        scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
-                    } else if (keyEvent.key == Key.VolumeDown) {
-                        scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                    when (keyEvent.key) {
+                        Key.VolumeUp -> {
+                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                            true
+                        }
+                        Key.VolumeDown -> {
+                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                            true
+                        }
+                        else -> {
+                            false
+                        }
                     }
-                    true
                 } else {
                     false
                 }
