@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -24,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -47,9 +50,12 @@ import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.Account
 import com.jerboa.loginFirstToast
+import com.jerboa.scrollToNextParentComment
+import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
+import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -206,6 +212,38 @@ fun BottomAppBarAllPreview() {
         unreadCount = 0,
         screen = "home",
         showBottomNav = true,
+    )
+}
+
+@Composable
+fun CommentNavigationBottomAppBar(
+    scope: CoroutineScope,
+    parentListStateIndexes: List<Int>,
+    listState: LazyListState,
+) {
+    BottomAppBar(
+        containerColor = MaterialTheme.colorScheme.background.copy(alpha = .75f),
+        modifier = Modifier.height(50.dp),
+        content = {
+            IconButton(modifier = Modifier.weight(.5f), onClick = {
+                scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+            }) {
+                Icon(
+                    modifier = Modifier.scale(1.5f),
+                    imageVector = Icons.Filled.KeyboardArrowUp,
+                    contentDescription = stringResource(R.string.comment_previous_parent),
+                )
+            }
+            IconButton(modifier = Modifier.weight(.5f), onClick = {
+                scrollToNextParentComment(scope, parentListStateIndexes, listState)
+            }) {
+                Icon(
+                    modifier = Modifier.scale(1.5f),
+                    imageVector = Icons.Filled.KeyboardArrowDown,
+                    contentDescription = stringResource(R.string.comment_next_parent),
+                )
+            }
+        },
     )
 }
 

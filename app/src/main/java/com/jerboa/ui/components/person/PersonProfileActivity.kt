@@ -536,6 +536,8 @@ fun UserTabs(
                                 PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
                                 CommentNodes(
                                     nodes = nodes,
+                                    increaseLazyListIndexTracker = {},
+                                    addToParentIndexes = {},
                                     isFlat = true,
                                     isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
                                     listState = listState,

@@ -14,6 +14,8 @@ import com.jerboa.db.Account
 @Composable
 fun CommentNodes(
     nodes: List<CommentNodeData>,
+    increaseLazyListIndexTracker: () -> Unit,
+    addToParentIndexes: () -> Unit,
     isFlat: Boolean,
     isExpanded: (commentId: Int) -> Boolean,
     listState: LazyListState,
@@ -48,6 +50,8 @@ fun CommentNodes(
     LazyColumn(state = listState) {
         commentNodeItems(
             nodes = nodes,
+            increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+            addToParentIndexes = addToParentIndexes,
             isFlat = isFlat,
             isExpanded = isExpanded,
             toggleExpanded = toggleExpanded,
@@ -83,6 +87,8 @@ fun CommentNodes(
 
 fun LazyListScope.commentNodeItems(
     nodes: List<CommentNodeData>,
+    increaseLazyListIndexTracker: () -> Unit,
+    addToParentIndexes: () -> Unit,
     isFlat: Boolean,
     isExpanded: (commentId: Int) -> Boolean,
     toggleExpanded: (commentId: Int) -> Unit,
@@ -116,6 +122,8 @@ fun LazyListScope.commentNodeItems(
     nodes.forEach { node ->
         commentNodeItem(
             node = node,
+            increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+            addToParentIndexes = addToParentIndexes,
             isFlat = isFlat,
             isExpanded = isExpanded,
             toggleExpanded = toggleExpanded,

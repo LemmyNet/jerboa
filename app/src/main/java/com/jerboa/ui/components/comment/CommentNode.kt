@@ -180,6 +180,8 @@ fun CommentBodyPreview() {
 
 fun LazyListScope.commentNodeItem(
     node: CommentNodeData,
+    increaseLazyListIndexTracker: () -> Unit,
+    addToParentIndexes: () -> Unit,
     isFlat: Boolean,
     isExpanded: (commentId: Int) -> Boolean,
     toggleExpanded: (commentId: Int) -> Unit,
@@ -220,8 +222,14 @@ fun LazyListScope.commentNodeItem(
         XXL_PADDING
     }
 
+    if (node.depth == 0) {
+        addToParentIndexes()
+    }
+
     val showMoreChildren = isExpanded(commentId) && node.children.isNullOrEmpty() && node
         .commentView.counts.child_count > 0 && !isFlat
+
+    increaseLazyListIndexTracker()
     item(key = commentId) {
         var viewSource by remember { mutableStateOf(false) }
 
@@ -351,6 +359,7 @@ fun LazyListScope.commentNodeItem(
         }
     }
 
+    increaseLazyListIndexTracker()
     item(key = "${commentId}_show_more_children") {
         AnimatedVisibility(
             visible = showMoreChildren,
@@ -364,6 +373,8 @@ fun LazyListScope.commentNodeItem(
     node.children?.also { nodes ->
         commentNodeItems(
             nodes = nodes,
+            increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+            addToParentIndexes = addToParentIndexes,
             isFlat = isFlat,
             toggleExpanded = toggleExpanded,
             toggleActionBar = toggleActionBar,
@@ -623,6 +634,8 @@ fun CommentNodesPreview() {
     val tree = buildCommentsTree(comments, false)
     CommentNodes(
         nodes = tree,
+        increaseLazyListIndexTracker = {},
+        addToParentIndexes = {},
         isFlat = false,
         isExpanded = { _ -> true },
         toggleExpanded = {},
