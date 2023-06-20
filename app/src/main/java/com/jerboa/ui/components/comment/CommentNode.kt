@@ -22,11 +22,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
@@ -689,7 +689,7 @@ fun CommentOptionsDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.comment_node_goto_comment),
-                    icon = Icons.Outlined.Link,
+                    icon = Icons.Outlined.Forum,
                     onClick = onCommentLinkClick,
                 )
                 IconAndTextDrawerItem(
@@ -707,7 +707,7 @@ fun CommentOptionsDialog(
                 )
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.comment_node_copy_permalink),
-                    icon = Icons.Outlined.ContentCopy,
+                    icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = commentView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
