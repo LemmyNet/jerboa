@@ -276,7 +276,6 @@
     <string name="postListing_deleted">Supprimé</string>
     <string name="postListing_reply">Répondre au message</string>
     <string name="privateMessage_reply">Répondre au message</string>
-    <string name="voteToggle">Changer de vote</string>
     <string name="topAppBar_back">Précédent</string>
     <string name="home_communities">Liste des communautés suivies</string>
     <string name="bottomBar_label_bookmarks">Enregistrés</string>
