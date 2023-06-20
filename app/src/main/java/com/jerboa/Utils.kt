@@ -451,7 +451,7 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
     // without this, we'd end up with something like host/path?thumbnail=...?thumbnail=...
     val path = split[1].replaceAfter('?', "")
 
-    return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
+    return "$host/pictrs/image/${path}thumbnail=$thumbnailSize&format=webp"
 }
 
 fun isImage(url: String): Boolean {
@@ -778,11 +778,16 @@ enum class ThemeMode(val mode: Int) {
     Black(R.string.look_and_feel_theme_black),
 }
 
-enum class ThemeColor {
-    Dynamic,
-    Green,
-    Pink,
-    Blue,
+enum class ThemeColor(val mode: Int) {
+    Dynamic(R.string.look_and_feel_theme_color_dynamic),
+    Beach(R.string.look_and_feel_theme_color_beach),
+    Blue(R.string.look_and_feel_theme_color_blue),
+    Crimson(R.string.look_and_feel_theme_color_crimson),
+    Green(R.string.look_and_feel_theme_color_green),
+    Grey(R.string.look_and_feel_theme_color_grey),
+    Pink(R.string.look_and_feel_theme_color_pink),
+    Purple(R.string.look_and_feel_theme_color_purple),
+    Woodland(R.string.look_and_feel_theme_color_woodland),
 }
 
 enum class PostViewMode(val mode: Int) {
