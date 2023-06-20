@@ -1,0 +1,32 @@
+<!--
+This task runs the base profile generators with the display on
+instead of headless but you will have to manually copy over the generated profiles
+With something like this
+adb -e pull "/storage/emulated/0/Android/media/com.jerboa.benchmarks/BaselineProfileGenerator_startup-baseline-prof-2022-03-08-13-37-55.txt
+-->
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Generate Baseline Profile (show display)" type="GradleRunConfiguration" factoryName="Gradle">
+    <ExternalSystemSettings>
+      <option name="executionName" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      <option name="externalSystemIdString" value="GRADLE" />
+      <option name="scriptParameters" value="-Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile" />
+      <option name="taskDescriptions">
+        <list />
+      </option>
+      <option name="taskNames">
+        <list>
+          <option value=":benchmarks:pixel6Api31BenchmarkAndroidTest" />
+          <option value="--rerun" />
+          <option value="--enable-display" />
+        </list>
+      </option>
+      <option name="vmOptions" />
+    </ExternalSystemSettings>
+    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+    <DebugAllEnabled>false</DebugAllEnabled>
+    <ForceTestExec>false</ForceTestExec>
+    <method v="2" />
+  </configuration>
+</component>

@@ -2,6 +2,7 @@ package com.jerboa.ui.components.home
 
 import android.content.Context
 import android.util.Log
+import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,10 +33,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -64,7 +68,7 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun HomeActivity(
     navController: NavController,
@@ -104,7 +108,8 @@ fun HomeActivity(
         },
         content = {
             Scaffold(
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    .semantics { testTagsAsResourceId = true },
                 snackbarHost = { SnackbarHost(snackbarHostState) },
                 topBar = {
                     MainTopBar(
@@ -180,6 +185,7 @@ fun HomeActivity(
                 },
             )
         },
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
     )
 }
 
@@ -212,6 +218,10 @@ fun MainPostListingsContent(
     }
 
     val loading = homeViewModel.postsRes == ApiState.Loading || homeViewModel.fetchingMore
+
+    ReportDrawnWhen {
+        !loading
+    }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = loading,

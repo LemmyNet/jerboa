@@ -43,7 +43,10 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavController
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -81,6 +84,7 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommentsHeaderTitle(
     selectedSortType: CommentSortType,
@@ -99,7 +103,11 @@ fun CommentsHeaderTitle(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(
+    ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class,
+)
 @Composable
 fun PostActivity(
     postViewModel: PostViewModel,
@@ -160,7 +168,8 @@ fun PostActivity(
     }
 
     Scaffold(
-        modifier = Modifier
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true }
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .focusRequester(focusRequester)
             .focusable()
@@ -176,15 +185,15 @@ fun PostActivity(
                     false
                 }
             },
-        bottomBar = {
-            if (showParentCommentNavigationButtons) {
-                CommentNavigationBottomAppBar(
-                    scope,
-                    parentListStateIndexes,
-                    listState,
-                )
-            }
-        },
+    bottomBar = {
+        if (showParentCommentNavigationButtons) {
+            CommentNavigationBottomAppBar(
+                scope,
+                parentListStateIndexes,
+                listState,
+            )
+        }
+    },
         topBar = {
             Column {
                 TopAppBar(
@@ -194,7 +203,10 @@ fun PostActivity(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(
+                            modifier = Modifier.testTag("jerboa:back"),
+                            onClick = { navController.popBackStack() },
+                        ) {
                             Icon(
                                 Icons.Outlined.ArrowBack,
                                 contentDescription = stringResource(R.string.topAppBar_back),
@@ -235,7 +247,8 @@ fun PostActivity(
                             state = listState,
                             modifier = Modifier
                                 .padding(top = padding.calculateTopPadding())
-                                .simpleVerticalScrollbar(listState),
+                                .simpleVerticalScrollbar(listState)
+                                .testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing") {
                                 PostListing(
@@ -374,6 +387,22 @@ fun PostActivity(
                                     val commentParentId = getCommentParentId(firstComment)
                                     val showContextButton = depth != null && depth > 0
 
+                                    var toggleExpanded = { commentId: Int ->
+                                        if (unExpandedComments.contains(commentId)) {
+                                            unExpandedComments.remove(commentId)
+                                        } else {
+                                            unExpandedComments.add(commentId)
+                                        }
+                                    }
+
+                                    var toggleActionBar = { commentId: Int ->
+                                        if (commentsWithToggledActionBar.contains(commentId)) {
+                                            commentsWithToggledActionBar.remove(commentId)
+                                        } else {
+                                            commentsWithToggledActionBar.add(commentId)
+                                        }
+                                    }
+
                                     item(key = "${postView.post.id}_is_comment_view") {
                                         if (postViewModel.isCommentView()) {
                                             ShowCommentContextButtons(
@@ -404,21 +433,10 @@ fun PostActivity(
                                                 commentId,
                                             )
                                         },
-                                        toggleExpanded = { commentId ->
-                                            if (unExpandedComments.contains(commentId)) {
-                                                unExpandedComments.remove(commentId)
-                                            } else {
-                                                unExpandedComments.add(commentId)
-                                            }
-                                        },
-                                        toggleActionBar = { commentId ->
-                                            if (commentsWithToggledActionBar.contains(commentId)) {
-                                                commentsWithToggledActionBar.remove(commentId)
-                                            } else {
-                                                commentsWithToggledActionBar.add(commentId)
-                                            }
-                                        },
+                                        toggleExpanded = { commentId -> toggleExpanded(commentId) },
+                                        toggleActionBar = { commentId -> toggleActionBar(commentId) },
                                         onMarkAsReadClick = {},
+                                        onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onUpvoteClick = { cv ->
                                             account?.also { acct ->
                                                 postViewModel.likeComment(
@@ -471,6 +489,8 @@ fun PostActivity(
                                         onPersonClick = { personId ->
                                             navController.navigate(route = "profile/$personId")
                                         },
+                                        onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
+                                        onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->
                                             commentEditViewModel.initialize(cv)
                                             navController.navigate("commentEdit")
