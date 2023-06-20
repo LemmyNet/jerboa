@@ -494,6 +494,28 @@ fun UserTabs(
                                 }
                             }
 
+                            // Holds the un-expanded comment ids
+                            val unExpandedComments = remember { mutableStateListOf<Int>() }
+                            val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
+
+                            var toggleExpanded = { commentId: Int ->
+                                if (unExpandedComments.contains(commentId)) {
+                                    unExpandedComments.remove(commentId)
+                                } else {
+                                    unExpandedComments.add(commentId)
+                                }
+                            }
+
+                            var toggleActionBar = { commentId: Int ->
+                                if (commentsWithToggledActionBar.contains(commentId)) {
+                                    commentsWithToggledActionBar.remove(commentId)
+                                } else {
+                                    commentsWithToggledActionBar.add(commentId)
+                                }
+                            }
+
+                            val showActionBarByDefault = true
+
                             // act when end of list reached
                             if (endOfListReached) {
                                 LaunchedEffect(Unit) {
@@ -515,8 +537,14 @@ fun UserTabs(
                                 CommentNodes(
                                     nodes = nodes,
                                     isFlat = true,
+                                    isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
                                     listState = listState,
+                                    toggleExpanded = { commentId -> toggleExpanded(commentId) },
+                                    toggleActionBar = { commentId -> toggleActionBar(commentId) },
                                     onMarkAsReadClick = {},
+                                    onCommentClick = { cv ->
+                                        navController.navigate("comment/${cv.comment.id}")
+                                    },
                                     onUpvoteClick = { cv ->
                                         account?.also { acct ->
                                             personProfileViewModel.likeComment(
@@ -560,6 +588,8 @@ fun UserTabs(
                                     onPersonClick = { personId ->
                                         navController.navigate(route = "profile/$personId")
                                     },
+                                    onHeaderClick = {},
+                                    onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                     onCommunityClick = { community ->
                                         navController.navigate(route = "community/${community.id}")
                                     },
@@ -603,7 +633,9 @@ fun UserTabs(
                                     showPostAndCommunityContext = true,
                                     showCollapsedCommentContent = true,
                                     isCollapsedByParent = false,
-                                    showActionBarByDefault = true,
+                                    showActionBar = { commentId ->
+                                        showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
+                                    },
                                     account = account,
                                     moderators = listOf(),
                                     enableDownVotes = enableDownVotes,

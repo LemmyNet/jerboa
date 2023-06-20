@@ -324,6 +324,22 @@ fun PostActivity(
                                     val commentParentId = getCommentParentId(firstComment)
                                     val showContextButton = depth != null && depth > 0
 
+                                    var toggleExpanded = { commentId: Int ->
+                                        if (unExpandedComments.contains(commentId)) {
+                                            unExpandedComments.remove(commentId)
+                                        } else {
+                                            unExpandedComments.add(commentId)
+                                        }
+                                    }
+
+                                    var toggleActionBar = { commentId: Int ->
+                                        if (commentsWithToggledActionBar.contains(commentId)) {
+                                            commentsWithToggledActionBar.remove(commentId)
+                                        } else {
+                                            commentsWithToggledActionBar.add(commentId)
+                                        }
+                                    }
+
                                     item(key = "${postView.post.id}_is_comment_view") {
                                         if (postViewModel.isCommentView()) {
                                             ShowCommentContextButtons(
@@ -348,21 +364,10 @@ fun PostActivity(
                                                 commentId,
                                             )
                                         },
-                                        toggleExpanded = { commentId ->
-                                            if (unExpandedComments.contains(commentId)) {
-                                                unExpandedComments.remove(commentId)
-                                            } else {
-                                                unExpandedComments.add(commentId)
-                                            }
-                                        },
-                                        toggleActionBar = { commentId ->
-                                            if (commentsWithToggledActionBar.contains(commentId)) {
-                                                commentsWithToggledActionBar.remove(commentId)
-                                            } else {
-                                                commentsWithToggledActionBar.add(commentId)
-                                            }
-                                        },
+                                        toggleExpanded = { commentId -> toggleExpanded(commentId) },
+                                        toggleActionBar = { commentId -> toggleActionBar(commentId) },
                                         onMarkAsReadClick = {},
+                                        onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onUpvoteClick = { cv ->
                                             account?.also { acct ->
                                                 postViewModel.likeComment(
@@ -415,6 +420,8 @@ fun PostActivity(
                                         onPersonClick = { personId ->
                                             navController.navigate(route = "profile/$personId")
                                         },
+                                        onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
+                                        onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->
                                             commentEditViewModel.initialize(cv)
                                             navController.navigate("commentEdit")

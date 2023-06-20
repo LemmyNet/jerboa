@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import com.jerboa.*
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockPerson
+import com.jerboa.datatypes.types.CommentReplyView
 import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.GetPersonMentions
@@ -276,6 +277,35 @@ fun InboxTabs(
                             }
                         },
                     )
+
+                    val goToComment = { crv: CommentReplyView ->
+                        // Go to the parent comment or post instead for context
+                        val parent = getCommentParentId(crv.comment)
+                        val route = if (parent != null) {
+                            "comment/$parent"
+                        } else {
+                            "post/${crv.post.id}"
+                        }
+                        navController.navigate(route)
+                    }
+
+                    val markAsRead = { crv: CommentReplyView ->
+                        account?.also { acct ->
+                            inboxViewModel.markReplyAsRead(
+                                MarkCommentReplyAsRead(
+                                    comment_reply_id = crv.comment_reply.id,
+                                    read = !crv.comment_reply.read,
+                                    auth = acct.jwt,
+                                ),
+                            )
+                            siteViewModel.fetchUnreadCounts(
+                                GetUnreadCount(
+                                    auth = acct.jwt,
+                                ),
+                            )
+                        }
+                    }
+
                     Box(modifier = Modifier.pullRefresh(refreshState)) {
                         PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
                         when (val repliesRes = inboxViewModel.repliesRes) {
@@ -337,37 +367,17 @@ fun InboxTabs(
                                                     )
                                                 }
                                             },
-                                            onMarkAsReadClick = { cr ->
-                                                account?.also { acct ->
-                                                    inboxViewModel.markReplyAsRead(
-                                                        MarkCommentReplyAsRead(
-                                                            comment_reply_id = cr.comment_reply.id,
-                                                            read = !cr.comment_reply.read,
-                                                            auth = acct.jwt,
-                                                        ),
-                                                    )
-                                                    siteViewModel.fetchUnreadCounts(
-                                                        GetUnreadCount(
-                                                            auth = acct.jwt,
-                                                        ),
-                                                    )
-                                                }
-                                            },
+                                            onMarkAsReadClick = { crv -> markAsRead(crv) },
                                             onReportClick = { cv ->
                                                 navController.navigate("commentReport/${cv.comment.id}")
                                             },
-                                            onCommentLinkClick = { cv ->
-                                                // Go to the parent comment or post instead for context
-                                                val parent = getCommentParentId(cv.comment)
-                                                val route = if (parent != null) {
-                                                    "comment/$parent"
-                                                } else {
-                                                    "post/${cv.post.id}"
-                                                }
-                                                navController.navigate(route)
-                                            },
+                                            onCommentLinkClick = goToComment,
                                             onPersonClick = { personId ->
                                                 navController.navigate(route = "profile/$personId")
+                                            },
+                                            onCommentClick = { crv ->
+                                                goToComment(crv)
+                                                markAsRead(crv)
                                             },
                                             onCommunityClick = { community ->
                                                 navController.navigate(route = "community/${community.id}")
