@@ -2,6 +2,7 @@ package com.jerboa.ui.components.home
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerState
@@ -38,6 +39,7 @@ import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
 import com.jerboa.nav.HomeTab
 import com.jerboa.nav.Route
+import com.jerboa.nav.bottomIfKeyboardNotOpen
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -129,10 +131,18 @@ fun HomeActivity(
             Scaffold(
                 snackbarHost = { SnackbarHost(snackbarHostState) },
                 content = { padding ->
+                    // Since we have 2 nested scaffolds, the bottom navigation bar from this scaffold
+                    // hides some content from the nested scaffold. We apply the bottom padding to
+                    // prevent this. However when the keyboard is opened, the bottom navigation bar
+                    // isn't visible and hence this padding also should not be applied. An alternative
+                    // is to apply .imePadding() to this scaffold to make the bottom navigation bar
+                    // also to move up when the keyboard opens.
+                    val bottomPadding by padding.bottomIfKeyboardNotOpen()
+
                     NavHost(
                         navController = bottomNavController,
                         startDestination = HomeTab.Feed.name,
-                        modifier = Modifier.padding(bottom = padding.calculateBottomPadding()),
+                        modifier = Modifier.navigationBarsPadding().padding(bottom = bottomPadding),
                     ) {
                         composable(HomeTab.Feed.name) {
                             FeedActivity(
