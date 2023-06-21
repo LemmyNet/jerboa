@@ -491,7 +491,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_13_14,
                         MIGRATION_14_15,
                         MIGRATION_15_16,
-                        MIGRATION_16_17
+                        MIGRATION_16_17,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

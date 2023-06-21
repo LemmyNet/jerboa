@@ -17,7 +17,7 @@ import androidx.navigation.NavController
 fun SwipeToNavigateBack(
     useSwipeBack: Boolean = false,
     navController: NavController,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     if (useSwipeBack) {
         val startX = remember { mutableStateOf(0f) }
@@ -40,7 +40,7 @@ fun SwipeToNavigateBack(
                             }
                         }
                     }
-                }
+                },
         ) {
             content()
         }
