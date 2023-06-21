@@ -7,9 +7,9 @@ import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -38,7 +38,7 @@ fun SwipeToNavigateBack(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.background),
+                    .background(MaterialTheme.colorScheme.background),
             )
         },
         dismissContent = {
