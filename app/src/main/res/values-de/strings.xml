@@ -301,7 +301,7 @@
     <string name="look_and_feel_theme_color_pink">Pink</string>
     <string name="look_and_feel_theme_color_purple">Lila</string>
     <string name="look_and_feel_theme_color_woodland">Waldland</string>
-    <string name="saved_image">Bild speichern</string>
+    <string name="saved_image">Bild gespeichert</string>
     <string name="saving_image">Bild wird gespeichert...</string>
     <string name="permission_denied">Berechtigung verweigert</string>
     <string name="comment_next_parent">Nächster übergeordneter Kommentar</string>
