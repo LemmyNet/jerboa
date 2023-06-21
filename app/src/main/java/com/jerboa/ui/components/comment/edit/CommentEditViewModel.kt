@@ -38,6 +38,7 @@ class CommentEditViewModel : ViewModel() {
         account: Account,
         personProfileViewModel: PersonProfileViewModel,
         postViewModel: PostViewModel,
+        api: API = API.getInstance(),
     ) {
         viewModelScope.launch {
             commentView.value?.also { cv ->
@@ -50,7 +51,7 @@ class CommentEditViewModel : ViewModel() {
                 editCommentRes = ApiState.Loading
                 editCommentRes =
                     apiWrapper(
-                        API.getInstance().editComment(form),
+                        api.editComment(form),
                     )
                 focusManager.clearFocus()
 
