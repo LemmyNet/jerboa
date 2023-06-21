@@ -151,14 +151,14 @@
     <string name="person_iconAdmin">Является админом</string>
     <string name="person_iconBanned">Был заблокирован</string>
     <string name="person_iconModerator">Является модером</string>
-    <string name="person_profile_activity_about">Подробнее</string>
+    <string name="person_profile_activity_about">О пользователе</string>
     <string name="person_profile_activity_comments">Комментарии</string>
     <string name="person_profile_activity_moderates">Модерирует</string>
     <string name="person_profile_activity_posts">Посты</string>
     <string name="person_profile_back">Назад</string>
     <string name="person_profile_block_person">Заблокировать пользователя</string>
     <string name="person_profile_comments">%1$s комментариев</string>
-    <string name="person_profile_joined">Вы подписались</string>
+    <string name="person_profile_joined">Зарегистрировался</string>
     <string name="person_profile_posts">%1$s постов</string>
     <string name="person_profile_report_person">Пожаловаться на пользователя</string>
     <string name="person_routines_blocked">%1$s Заблокирован</string>
@@ -196,7 +196,7 @@
     <string name="removeBookmark">Удалено из закладок</string>
     <string name="selectSort">Отсортировано по</string>
     <string name="settings_about_about">Подробнее</string>
-    <string name="settings_about_developer_matrix_chatroom">Чат Matrix разработчиков</string>
+    <string name="settings_about_developer_matrix_chatroom">Чат разработчиков на Matrix</string>
     <string name="settings_about_donate_to_jerboa_development">Поддержать разработку Jerboa</string>
     <string name="settings_about_follow_on_mastodon">Следите за нами на Mastodon</string>
     <string name="settings_about_issue_tracker">Сообщить о проблеме</string>
