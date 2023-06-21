@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
+import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
@@ -367,4 +368,28 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
             )
         }
     }
+}
+
+@Composable
+fun ShowOutdatedServerDialog(siteVersion: String, onConfirm: () -> Unit) {
+    AlertDialog(
+        text = {
+            Text(
+                stringResource(
+                    R.string.dialogs_server_version_outdated,
+                    siteVersion,
+                    MINIMUM_API_VERSION,
+                ),
+            )
+        },
+        onDismissRequest = { },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                content = {
+                    Text(stringResource(id = R.string.input_fields_ok))
+                },
+            )
+        },
+    )
 }
