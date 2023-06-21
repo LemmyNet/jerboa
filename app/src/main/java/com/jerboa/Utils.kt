@@ -396,7 +396,6 @@ fun openLink(url: String, navController: NavController, useCustomTab: Boolean, u
 }
 
 var prettyTime = PrettyTime(Locale.getDefault())
-var prettyTimeEnglish = PrettyTime(Locale.ENGLISH)
 val invalidPrettyDateRegex = "^[0123456789 ]+$".toRegex()
 fun formatDuration(date: Date, longTimeFormat: Boolean = false): String {
     if (prettyTime.locale != Locale.getDefault()) {
@@ -407,7 +406,7 @@ fun formatDuration(date: Date, longTimeFormat: Boolean = false): String {
 
     // A bug in PrettyTime means that some languages (pl, ru, uk, kk) will not include any time unit
     if (prettyDate.matches(invalidPrettyDateRegex)) {
-        prettyDate = prettyTimeEnglish.formatDuration(date)
+        prettyDate = prettyTime.format(date)
     }
 
     return if (longTimeFormat) {
