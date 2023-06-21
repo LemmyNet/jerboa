@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.common
 
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -23,24 +24,24 @@ fun SwipeToNavigateBack(
     content: @Composable () -> Unit
 ) {
     if (useSwipeBack) {
-        val offsetX = remember { mutableStateOf(0f) }
+        val startX = remember { mutableStateOf(0f) }
         val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .offset { IntOffset(offsetX.value.roundToInt(), 0) }
                 .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
-                        change.consume()
-                        if (dragAmount.x > 0) {
-                            offsetX.value = dragAmount.x
+                    detectHorizontalDragGestures { change, dragAmount ->
+                        if (change.position.x == 0f) {
+                            startX.value = change.position.x
                         }
 
-                        val swipeThreshold: Dp = (screenWidth.value * 0.8).dp
+                        val deltaX = change.position.x - startX.value
+                        val swipeThreshold: Dp = (screenWidth.value * 0.7).dp
                         when {
-                            offsetX.value > swipeThreshold.value -> {
+                            deltaX >= swipeThreshold.value -> {
                                 navController.navigateUp()
+                                change.consume()
                             }
                         }
                     }
@@ -48,6 +49,7 @@ fun SwipeToNavigateBack(
         ) {
             content()
         }
+
     } else {
         content()
     }
