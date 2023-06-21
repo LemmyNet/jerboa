@@ -67,10 +67,8 @@ fun HomeActivity(
     Log.d("jerboa", "got to home activity")
 
     val scope = rememberCoroutineScope()
-    val postListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
     val bottomNavController = rememberNavController()
@@ -78,14 +76,7 @@ fun HomeActivity(
     // The bottomNavController remembers which route to show. Therefore, the selectedTab also
     // has to be persisted across navigations to ensure that the tab selected is also the route
     // being shown.
-    var selectedTab by rememberSaveable { mutableStateOf(selectTabArg) }
-    LaunchedEffect(account) {
-        // Required for the inbox deeplink.
-        if (selectedTab.needsLogin() && account == null) {
-            selectedTab = Route.HomeArgs.TAB_DEFAULT
-        }
-    }
-
+    var selectedTab by rememberSaveable { mutableStateOf(Route.HomeArgs.TAB_DEFAULT) }
     val onSelectTab = { tab: HomeTab ->
         if (tab.needsLogin() && account == null) {
             feedNavController.toLogin.navigate()
@@ -99,6 +90,7 @@ fun HomeActivity(
 
     val homeViewModel: HomeViewModel = viewModel()
     InitializeRoute {
+        onSelectTab(selectTabArg)
         fetchHomePosts(account, homeViewModel)
     }
 
@@ -141,7 +133,7 @@ fun HomeActivity(
 
                     NavHost(
                         navController = bottomNavController,
-                        startDestination = HomeTab.Feed.name,
+                        startDestination = Route.HomeArgs.TAB_DEFAULT.name,
                         modifier = Modifier.navigationBarsPadding().padding(bottom = bottomPadding),
                     ) {
                         composable(HomeTab.Feed.name) {
