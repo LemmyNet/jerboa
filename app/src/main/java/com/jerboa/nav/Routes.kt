@@ -91,7 +91,7 @@ class Route {
             val INSTANCE_TYPE = NavType.StringType
 
             const val NAME = "name"
-            val NAME_TYPE = NavType.IntType
+            val NAME_TYPE = NavType.StringType
 
             fun makeRoute(instance: String, name: String) = "$instance/c/$name"
             internal val route by lazy { makeRoute(instance = "{$INSTANCE}", name = "{$NAME}") }
@@ -128,7 +128,7 @@ class Route {
             val INSTANCE_TYPE = NavType.StringType
 
             const val NAME = "name"
-            val NAME_TYPE = NavType.IntType
+            val NAME_TYPE = NavType.StringType
 
             fun makeRoute(instance: String, name: String) = "$instance/u/$name"
             internal val route by lazy { makeRoute(instance = "{$INSTANCE}", name = "{$NAME}") }

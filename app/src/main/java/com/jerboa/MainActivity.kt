@@ -285,9 +285,6 @@ class MainActivity : ComponentActivity() {
                         // Only necessary for community deeplinks
                         composable(
                             route = Route.COMMUNITY_FROM_URL,
-                            deepLinks = listOf(
-                                navDeepLink { uriPattern = Route.COMMUNITY_FROM_URL },
-                            ),
                             arguments = listOf(
                                 navArgument(Route.CommunityFromUrlArgs.NAME) {
                                     type = Route.CommunityFromUrlArgs.NAME_TYPE
@@ -331,6 +328,36 @@ class MainActivity : ComponentActivity() {
                                 communityViewModel = communityViewModel,
                                 navController = CommunitySideBarNavController(navController),
                             )
+                        }
+                    }
+
+                    // TODO: Make community sidebar a tab within the community activity so that
+                    //  both the community and the sidebar can use the same view model.
+                    // HACK: Deep linking to nested navigation composable isn't allowed. Community
+                    //  urls opened within the app (for eg. from within the comments) don't need this
+                    //  hack because `openUrl(...)` parses the url and navigates using the app route.
+                    //  This hack is only needed to open community urls from outside the app.
+                    composable(
+                        route = "redirect/${Route.COMMUNITY_FROM_URL}",
+                        deepLinks = listOf(
+                            navDeepLink { uriPattern = Route.COMMUNITY_FROM_URL },
+                        ),
+                        arguments = listOf(
+                            navArgument(Route.CommunityFromUrlArgs.NAME) {
+                                type = Route.CommunityFromUrlArgs.NAME_TYPE
+                            },
+                            navArgument(Route.CommunityFromUrlArgs.INSTANCE) {
+                                type = Route.CommunityFromUrlArgs.INSTANCE_TYPE
+                            },
+                        ),
+                    ) {
+                        val args = Route.CommunityFromUrlArgs(it)
+                        val route = Route.CommunityFromUrlArgs.makeRoute(
+                            instance = args.instance,
+                            name = args.name
+                        )
+                        navController.navigate(route) {
+                            popUpTo(0)
                         }
                     }
 

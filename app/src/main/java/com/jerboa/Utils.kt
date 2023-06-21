@@ -53,6 +53,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
+import com.jerboa.nav.Route
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.person.UserTab
@@ -372,11 +373,13 @@ fun openLink(url: String, navController: NavController, useCustomTab: Boolean, u
     val parsedUrl = parseUrl(url) ?: return
 
     looksLikeUserUrl(parsedUrl)?.let { it ->
-        navController.navigate("${it.first}/u/${it.second}")
+        val route = Route.ProfileFromUrlArgs.makeRoute(instance = it.first, name = it.second)
+        navController.navigate(route)
         return
     }
     looksLikeCommunityUrl(parsedUrl)?.let { it ->
-        navController.navigate("${it.first}/c/${it.second}")
+        val route = Route.CommunityFromUrlArgs.makeRoute(instance = it.first, name = it.second)
+        navController.navigate(route)
         return
     }
 
