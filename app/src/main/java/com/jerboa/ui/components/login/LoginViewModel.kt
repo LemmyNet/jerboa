@@ -12,8 +12,10 @@ import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
+import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.api.apiWrapper
 import com.jerboa.api.retrofitErrorHandler
+import com.jerboa.compareVersions
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.Login
@@ -93,32 +95,49 @@ class LoginViewModel : ViewModel() {
                     ).show()
                 }
                 is ApiState.Success -> {
-                    val luv = siteRes.data.my_user!!.local_user_view
-                    val account = Account(
-                        id = luv.person.id,
-                        name = luv.person.name,
-                        current = true,
-                        instance = instance,
-                        jwt = jwt,
-                        defaultListingType = luv.local_user.default_listing_type.ordinal,
-                        defaultSortType = luv.local_user.default_sort_type.ordinal,
-                    )
+                    val siteVersion = siteRes.data.version
+                    if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0) {
+                        val message = ctx.resources.getString(
+                            R.string.dialogs_server_version_outdated_short,
+                            siteVersion,
+                        )
+                        Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
+                    }
 
-                    homeViewModel.resetPage()
-                    homeViewModel.getPosts(
-                        GetPosts(
-                            type_ = luv.local_user.default_listing_type,
-                            sort = luv.local_user.default_sort_type,
-                            page = homeViewModel.page,
-                            auth = account.jwt,
-                        ),
-                    )
+                    try {
+                        val luv = siteRes.data.my_user!!.local_user_view
+                        val account = Account(
+                            id = luv.person.id,
+                            name = luv.person.name,
+                            current = true,
+                            instance = instance,
+                            jwt = jwt,
+                            defaultListingType = luv.local_user.default_listing_type.ordinal,
+                            defaultSortType = luv.local_user.default_sort_type.ordinal,
+                        )
 
-                    // Remove the default account
-                    accountViewModel.removeCurrent()
+                        homeViewModel.resetPage()
+                        homeViewModel.getPosts(
+                            GetPosts(
+                                type_ = luv.local_user.default_listing_type,
+                                sort = luv.local_user.default_sort_type,
+                                page = homeViewModel.page,
+                                auth = account.jwt,
+                            ),
+                        )
 
-                    // Save that info in the DB
-                    accountViewModel.insert(account)
+                        // Remove the default account
+                        accountViewModel.removeCurrent()
+
+                        // Save that info in the DB
+                        accountViewModel.insert(account)
+                    } catch (e: Exception) {
+                        loading = false
+                        Log.e("login", e.toString())
+                        API.changeLemmyInstance(originalInstance)
+                        this.cancel()
+                        return@launch
+                    }
 
                     loading = false
 

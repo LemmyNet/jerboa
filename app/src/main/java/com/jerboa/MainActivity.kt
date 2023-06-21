@@ -14,6 +14,8 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -22,6 +24,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
+import com.jerboa.api.ApiState
+import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonMentions
@@ -43,6 +47,7 @@ import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.ShowChangelog
+import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.community.CommunityActivity
@@ -126,6 +131,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 val navController = rememberNavController()
                 val ctx = LocalContext.current
+                var serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
                     navController,
@@ -134,6 +140,19 @@ class MainActivity : ComponentActivity() {
                 )
 
                 ShowChangelog(appSettingsViewModel = appSettingsViewModel)
+
+                when (val siteRes = siteViewModel.siteRes) {
+                    is ApiState.Success -> {
+                        val siteVersion = siteRes.data.version
+                        if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0 && !serverVersionOutdatedViewed.value) {
+                            ShowOutdatedServerDialog(
+                                siteVersion = siteVersion,
+                                onConfirm = { serverVersionOutdatedViewed.value = true },
+                            )
+                        }
+                    }
+                    else -> {}
+                }
 
                 NavHost(
                     navController = navController,
