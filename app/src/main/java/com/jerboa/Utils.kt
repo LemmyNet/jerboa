@@ -55,6 +55,7 @@ import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
@@ -1033,6 +1034,18 @@ fun getLocalizedUnreadOrAllName(ctx: Context, unreadOrAll: UnreadOrAll): String 
     val returnString = when (unreadOrAll) {
         UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
         UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
+    }
+    return returnString
+}
+
+/**
+ * Returns localized Strings for InboxTab Enum
+ */
+fun getLocalizedStringForInboxTab(ctx: Context, tab: InboxTab): String {
+    val returnString = when (tab) {
+        InboxTab.Replies -> ctx.getString(R.string.inbox_activity_replies)
+        InboxTab.Mentions -> ctx.getString(R.string.inbox_activity_mentions)
+        InboxTab.Messages -> ctx.getString(R.string.inbox_activity_messages)
     }
     return returnString
 }

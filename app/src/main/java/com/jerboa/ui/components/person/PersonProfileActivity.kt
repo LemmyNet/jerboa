@@ -103,7 +103,7 @@ fun PersonProfileActivity(
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
                         personName = if (savedMode) {
-                            "Saved"
+                            ctx.getString(R.string.bookmarks_activity_saved)
                         } else {
                             person.name
                         },
