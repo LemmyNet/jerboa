@@ -11,16 +11,12 @@ import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,7 +24,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
-import arrow.core.compareTo
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.GetCommunity
@@ -52,6 +47,7 @@ import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.ShowChangelog
+import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.community.CommunityActivity
@@ -149,17 +145,9 @@ class MainActivity : ComponentActivity() {
                     is ApiState.Success -> {
                         val siteVersion = siteRes.data.version
                         if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0 && !serverVersionOutdatedViewed.value) {
-                            AlertDialog(
-                                text = { Text(stringResource(R.string.dialogs_server_version_outdated, siteVersion, MINIMUM_API_VERSION)) },
-                                onDismissRequest = { serverVersionOutdatedViewed.value = true },
-                                confirmButton = {
-                                    Button(
-                                        onClick = { serverVersionOutdatedViewed.value = true },
-                                        content = {
-                                            Text(stringResource(id = R.string.input_fields_ok))
-                                        },
-                                    )
-                                },
+                            ShowOutdatedServerDialog(
+                                siteVersion = siteVersion,
+                                onConfirm = { serverVersionOutdatedViewed.value = true },
                             )
                         }
                     }
