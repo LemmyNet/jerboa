@@ -49,7 +49,6 @@ fun SwipeToNavigateBack(
         ) {
             content()
         }
-
     } else {
         content()
     }
