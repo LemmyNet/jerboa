@@ -36,15 +36,17 @@ fun SwipeToNavigateBack(
                         if (dragAmount.x > 0) {
                             offsetX.value = dragAmount.x
                         }
+
+                        val swipeThreshold: Dp = (screenWidth.value * 0.8).dp
+                        when {
+                            offsetX.value > swipeThreshold.value -> {
+                                navController.navigateUp()
+                            }
+                        }
                     }
                 }
         ) {
             content()
-
-            val swipeThreshold: Dp = (screenWidth.value * 0.8).dp
-            if (offsetX.value > swipeThreshold.value) {
-                navController.navigateUp()
-            }
         }
     } else {
         content()
