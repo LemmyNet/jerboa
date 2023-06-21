@@ -18,6 +18,7 @@ import java.io.InputStream
 
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
+const val MINIMUM_API_VERSION: String = "0.18"
 
 interface API {
     @GET("site")
