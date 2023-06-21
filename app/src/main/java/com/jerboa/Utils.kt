@@ -55,6 +55,7 @@ import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
@@ -447,11 +448,14 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
     }
 
     val host = split[0]
+    var path = split[1]
     // eliminate the query param portion of the path so we can replace it later
     // without this, we'd end up with something like host/path?thumbnail=...?thumbnail=...
-    val path = split[1].replaceAfter('?', "")
+    if ("?" in path) {
+        path = path.replaceAfter('?', "").dropLast(1)
+    }
 
-    return "$host/pictrs/image/${path}thumbnail=$thumbnailSize&format=webp"
+    return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
 }
 
 fun isImage(url: String): Boolean {
@@ -1033,6 +1037,18 @@ fun getLocalizedUnreadOrAllName(ctx: Context, unreadOrAll: UnreadOrAll): String 
     val returnString = when (unreadOrAll) {
         UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
         UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
+    }
+    return returnString
+}
+
+/**
+ * Returns localized Strings for InboxTab Enum
+ */
+fun getLocalizedStringForInboxTab(ctx: Context, tab: InboxTab): String {
+    val returnString = when (tab) {
+        InboxTab.Replies -> ctx.getString(R.string.inbox_activity_replies)
+        InboxTab.Mentions -> ctx.getString(R.string.inbox_activity_mentions)
+        InboxTab.Messages -> ctx.getString(R.string.inbox_activity_messages)
     }
     return returnString
 }
