@@ -49,7 +49,6 @@ import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
-import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyViewModel
 import kotlinx.coroutines.CoroutineScope
