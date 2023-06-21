@@ -87,11 +87,13 @@ fun ScoreAndTime(
     updated: String?,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Int = 0,
+    isNsfw: Boolean = false,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        NsfwBadge(isNsfw)
         CollapsedIndicator(visible = !isExpanded, descendants = collapsedCommentsCount)
         Spacer(modifier = Modifier.padding(end = SMALL_PADDING))
         Text(
@@ -143,4 +145,34 @@ fun CollapsedIndicator(visible: Boolean, descendants: Int) {
 @Composable
 fun CollapsedIndicatorPreview() {
     CollapsedIndicator(visible = true, descendants = 23)
+}
+
+@Composable
+fun NsfwBadge(visible: Boolean) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(MaterialTheme.colorScheme.secondary)
+                    .padding(horizontal = SMALL_PADDING),
+            ) {
+                Text(
+                    text = "NSFW",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun NsfwBadgePreview() {
+    NsfwBadge(visible = true)
 }
