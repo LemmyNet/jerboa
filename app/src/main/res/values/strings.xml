@@ -310,4 +310,8 @@
     <string name="saved_image">Saved image</string>
     <string name="saving_image">Saving image…</string>
     <string name="permission_denied">Permission denied</string>
+    <string name="inbox_activity_replies">Replies</string>
+    <string name="inbox_activity_mentions">Mentions</string>
+    <string name="inbox_activity_messages">Messages</string>
+    <string name="bookmarks_activity_saved">Saved</string>
 </resources>
