@@ -114,6 +114,11 @@ data class AppSettings(
     )
     val usePrivateTabs: Boolean,
     @ColumnInfo(
+        name = "use_swipe_back",
+        defaultValue = "0",
+    )
+    val useSwipeBack: Boolean,
+    @ColumnInfo(
         name = "secure_window",
         defaultValue = "0",
     )
@@ -436,8 +441,17 @@ val MIGRATION_15_16 = object : Migration(15, 16) {
     }
 }
 
+val MIGRATION_16_17 = object : Migration(16, 17) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column use_swipe_back INTEGER NOT NULL default 0",
+        )
+    }
+}
+
 @Database(
-    version = 16,
+    version = 17,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -477,6 +491,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_13_14,
                         MIGRATION_14_15,
                         MIGRATION_15_16,
+                        MIGRATION_16_17
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
