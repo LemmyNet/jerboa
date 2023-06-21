@@ -4,5 +4,6 @@
     <style name="Theme.Jerboa" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/window_background</item>
     </style>
 </resources>

@@ -192,7 +192,7 @@ fun InboxTabs(
     scope: CoroutineScope,
     padding: PaddingValues,
 ) {
-    val tabTitles = InboxTab.values().map { it.toString() }
+    val tabTitles = InboxTab.values().map { getLocalizedStringForInboxTab(ctx, it) }
     val pagerState = rememberPagerState()
 
     Column(

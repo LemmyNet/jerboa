@@ -146,7 +146,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = themeColorState,
-                    items = ThemeColor.values().map { it.name },
+                    items = ThemeColor.values().map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Colorize,
