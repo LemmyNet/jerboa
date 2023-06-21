@@ -84,6 +84,7 @@ import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.MyMarkdownText
+import com.jerboa.ui.components.common.NsfwBadge
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.common.PreviewLines
@@ -196,6 +197,7 @@ fun PostHeaderLine(
                 myVote = myVote,
                 published = postView.post.published,
                 updated = postView.post.updated,
+                isNsfw = nsfwCheck(postView),
             )
         }
         Row {
@@ -983,10 +985,12 @@ fun PostListingList(
     showAvatar: Boolean,
 ) {
     Column(
-        modifier = Modifier.padding(
-            horizontal = MEDIUM_PADDING,
-            vertical = MEDIUM_PADDING,
-        ).testTag("jerboa:post"),
+        modifier = Modifier
+            .padding(
+                horizontal = MEDIUM_PADDING,
+                vertical = MEDIUM_PADDING,
+            )
+            .testTag("jerboa:post"),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -1072,6 +1076,7 @@ fun PostListingList(
                         unreadCount = postView.unread_comments,
                         style = MaterialTheme.typography.bodyMedium,
                     )
+                    NsfwBadge(nsfwCheck(postView))
                 }
             }
             ThumbnailTile(postView)
