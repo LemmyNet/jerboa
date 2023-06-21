@@ -1229,3 +1229,15 @@ fun scrollToPreviousParentComment(
             }
     }
 }
+
+/**
+ * Accepts a string that MAY be an URL, trims any protocol and extracts only the host, removing anything after a :, / or ?
+ */
+fun getHostFromInstanceString(
+    input: String,
+): String {
+    val patternSuffix = Regex("([a-zA-Z]*://)?")
+    val patternAffix = Regex("[:?/].*")
+
+    return input.replaceFirst(patternSuffix, "").replaceFirst(patternAffix, "")
+}

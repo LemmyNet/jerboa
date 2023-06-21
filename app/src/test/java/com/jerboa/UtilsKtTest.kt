@@ -135,6 +135,21 @@ class UtilsKtTest {
     }
 
     @Test
+    fun testGetHostFromInstanceString() {
+        val cases = mapOf(
+            "" to "",
+            "localhost" to "localhost",
+            "https://localhost" to "localhost",
+            "http://localhost" to "localhost",
+            "https://localhost:443" to "localhost",
+            "https://localhost:443/path" to "localhost",
+            "https://localhost:443/path?param" to "localhost",
+            "https://host.tld" to "host.tld",
+        )
+        cases.forEach { (instanceString, exp) -> assertEquals(exp, getHostFromInstanceString(instanceString)) }
+    }
+
+    @Test
     fun testSiFormat() {
         assertEquals("0", siFormat(0))
         assertEquals("1K", siFormat(1000))
