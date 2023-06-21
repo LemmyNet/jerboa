@@ -97,7 +97,11 @@ class LoginViewModel : ViewModel() {
                 is ApiState.Success -> {
                     val siteVersion = siteRes.data.version
                     if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0) {
-                        Toast.makeText(ctx, "Server version too low.", Toast.LENGTH_SHORT).show()
+                        val message = ctx.resources.getString(
+                            R.string.dialogs_server_version_outdated_short,
+                            siteVersion,
+                        )
+                        Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
                     }
 
                     try {
