@@ -48,6 +48,7 @@ class CommentReplyViewModel : ViewModel() {
         focusManager: FocusManager,
         personProfileViewModel: PersonProfileViewModel,
         postViewModel: PostViewModel,
+        api: API = API.getInstance(),
     ) {
         val reply = replyItem!! // This should have been initialized
         val (postId, commentParentId) = when (reply) {
@@ -75,7 +76,7 @@ class CommentReplyViewModel : ViewModel() {
             )
 
             createCommentRes = ApiState.Loading
-            createCommentRes = apiWrapper(API.getInstance().createComment(form))
+            createCommentRes = apiWrapper(api.createComment(form))
 
             when (val res = createCommentRes) {
                 is ApiState.Success -> {
