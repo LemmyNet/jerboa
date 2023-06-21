@@ -451,7 +451,7 @@ class MainActivity : ComponentActivity() {
                             postViewModel.initialize(id = Either.Left(postId))
                             postViewModel.getData(account)
                         }
-                        SwipeToNavigateBack(useSwipeBack = appSettings?.useSwipeBack!!, navController = navController) {
+                        SwipeToNavigateBack(navController = navController) {
                             PostActivity(
                                 postViewModel = postViewModel,
                                 accountViewModel = accountViewModel,
