@@ -67,13 +67,13 @@ const val userPatternFragment: String = """[a-zA-Z0-9_]{3,}"""
  * Pattern to match lemmy's unique community pattern, e.g. !commmunity[@instance]
  */
 val lemmyCommunityPattern: Pattern =
-    Pattern.compile("(?:^|\\s)!($communityPatternFragment)(?:@($instancePatternFragment))?\\b")
+    Pattern.compile("(?<!\\S)!($communityPatternFragment)(?:@($instancePatternFragment))?\\b")
 
 /**
  * Pattern to match lemmy's unique user pattern, e.g. @user[@instance]
  */
 val lemmyUserPattern: Pattern =
-    Pattern.compile("(?:^|\\s)@($userPatternFragment)(?:@($instancePatternFragment))?\\b")
+    Pattern.compile("(?<!\\S)@($userPatternFragment)(?:@($instancePatternFragment))?\\b")
 
 /**
  * Plugin to turn Lemmy-specific URIs into clickable links.
