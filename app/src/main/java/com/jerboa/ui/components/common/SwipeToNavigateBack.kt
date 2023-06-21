@@ -1,10 +1,8 @@
 package com.jerboa.ui.components.common
 
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -12,10 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlin.math.roundToInt
 
 @Composable
 fun SwipeToNavigateBack(
@@ -41,7 +37,6 @@ fun SwipeToNavigateBack(
                         when {
                             deltaX >= swipeThreshold.value -> {
                                 navController.navigateUp()
-                                change.consume()
                             }
                         }
                     }
