@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -24,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -120,6 +122,8 @@ fun CreatePostBody(
     padding: PaddingValues,
     suggestedTitle: String?,
     suggestedTitleLoading: Boolean,
+    isNsfw: Boolean,
+    onIsNsfwChange: (isNsfw: Boolean) -> Unit,
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -237,6 +241,21 @@ fun CreatePostBody(
                     },
             )
         }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(
+                space = 10.dp,
+                alignment = Alignment.Start,
+            ),
+        ) {
+            Text(
+                text = stringResource(R.string.create_post_tag_nsfw),
+            )
+            Switch(
+                checked = isNsfw,
+                onCheckedChange = onIsNsfwChange,
+            )
+        }
     }
 }
 
@@ -267,6 +286,8 @@ fun CreatePostBodyPreview() {
         padding = PaddingValues(),
         suggestedTitle = null,
         suggestedTitleLoading = false,
+        isNsfw = false,
+        onIsNsfwChange = {},
     )
 }
 
@@ -286,5 +307,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         suggestedTitleLoading = false,
         account = null,
         padding = PaddingValues(),
+        isNsfw = false,
+        onIsNsfwChange = {},
     )
 }

@@ -117,6 +117,7 @@
     <string name="create_post_community">Community</string>
     <string name="create_post_copy_suggested_title">copy suggested title: %1$s</string>
     <string name="create_post_create_post">Create post</string>
+    <string name="create_post_tag_nsfw">NSFW:</string>
     <string name="create_report_back">Back</string>
     <string name="create_report_report">Report</string>
     <string name="create_report_type_your_reason">Type your reason</string>
