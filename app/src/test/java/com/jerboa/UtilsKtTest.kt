@@ -5,12 +5,15 @@ import com.jerboa.api.API
 import com.jerboa.ui.theme.SMALL_PADDING
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.ocpsoft.prettytime.PrettyTime
+import org.robolectric.RobolectricTestRunner
 import java.time.Duration
 import java.time.Instant
 import java.util.Date
 import java.util.Locale
 
+@RunWith(RobolectricTestRunner::class)
 class UtilsKtTest {
     @Test
     fun testCalculateCommentOffset() {
@@ -139,6 +142,7 @@ class UtilsKtTest {
         val cases = mapOf(
             "" to "",
             "localhost" to "localhost",
+            "something useless" to "something useless",
             "https://localhost" to "localhost",
             "http://localhost" to "localhost",
             "https://localhost:443" to "localhost",

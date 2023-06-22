@@ -65,6 +65,7 @@ import org.ocpsoft.prettytime.PrettyTime
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
@@ -1237,10 +1238,16 @@ fun scrollToPreviousParentComment(
 fun getHostFromInstanceString(
     input: String,
 ): String {
-    val patternSuffix = Regex("([a-zA-Z]*://)?")
-    val patternAffix = Regex("[:?/].*")
+    if (input.isBlank()) {
+        return input
+    }
 
-    return input.replaceFirst(patternSuffix, "").replaceFirst(patternAffix, "")
+    return try {
+        val uri = URL(input)
+        uri.host.toString()
+    } catch (e: MalformedURLException) {
+        input
+    }
 }
 
 /**
