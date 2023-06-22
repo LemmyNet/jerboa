@@ -501,7 +501,7 @@ class MainActivity : ComponentActivity() {
                                 },
                                 selectedSortType = postViewModel.sortType,
                                 siteViewModel = siteViewModel,
-                          )
+                            )
                         }
                     }
                     composable(
