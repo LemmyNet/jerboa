@@ -120,6 +120,12 @@ data class AppSettings(
     val secureWindow: Boolean,
 )
 
+@Entity
+data class Draft(
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    val message: String,
+)
+
 @Dao
 interface AccountDao {
     @Query("SELECT * FROM account")
@@ -157,6 +163,21 @@ interface AppSettingsDao {
 
     @Query("UPDATE AppSettings set post_view_mode = :postViewMode")
     suspend fun updatePostViewMode(postViewMode: Int)
+}
+
+@Dao
+interface DraftsDao {
+    @Query("SELECT * FROM Draft")
+    fun getAll(): LiveData<List<Draft>>
+
+    @Query("SELECT * FROM Draft")
+    fun getAllSync(): List<Draft>
+
+    @Insert
+    fun insert(draft: Draft)
+
+    @Delete
+    fun delete(draft: Draft)
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -246,6 +267,16 @@ class AppSettingsRepository(
             }
         }
     }
+}
+
+class DraftsRepository(private val draftsDao: DraftsDao) {
+    val allDrafts = draftsDao.getAll()
+
+    fun getAllSync(): List<Draft> = draftsDao.getAllSync()
+
+    fun delete(draft: Draft) = draftsDao.delete(draft)
+
+    fun insert(draft: Draft) = draftsDao.insert(draft)
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -436,14 +467,29 @@ val MIGRATION_15_16 = object : Migration(15, 16) {
     }
 }
 
+val MIGRATION_16_17 = object : Migration(16, 17) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            """
+                CREATE TABLE IF NOT EXISTS Draft(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                    message TEXT NOT NULL
+                )
+                """
+        )
+    }
+}
+
 @Database(
-    version = 16,
-    entities = [Account::class, AppSettings::class],
+    version = 17,
+    entities = [Account::class, AppSettings::class, Draft::class],
     exportSchema = true,
 )
 abstract class AppDB : RoomDatabase() {
     abstract fun accountDao(): AccountDao
     abstract fun appSettingsDao(): AppSettingsDao
+    abstract fun draftsDao(): DraftsDao
 
     companion object {
         @Volatile
@@ -477,6 +523,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_13_14,
                         MIGRATION_14_15,
                         MIGRATION_15_16,
+                        MIGRATION_16_17,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
@@ -563,6 +610,25 @@ class AppSettingsViewModelFactory(private val repository: AppSettingsRepository)
         if (modelClass.isAssignableFrom(AppSettingsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return AppSettingsViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class DraftsViewModel(private val repository: DraftsRepository): ViewModel() {
+    val drafts = repository.allDrafts
+
+    fun delete(draft: Draft) = viewModelScope.launch { repository.delete(draft) }
+
+    fun insert(message: String) = viewModelScope.launch { repository.insert(Draft(0, message)) }
+}
+
+class DraftsViewModelFactory(private val repository: DraftsRepository) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(DraftsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return DraftsViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

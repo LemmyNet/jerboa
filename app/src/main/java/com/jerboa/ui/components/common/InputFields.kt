@@ -8,11 +8,14 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -25,10 +28,12 @@ import androidx.compose.material.icons.outlined.FormatStrikethrough
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Preview
+import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material.icons.outlined.Subscript
 import androidx.compose.material.icons.outlined.Superscript
 import androidx.compose.material.icons.outlined.Title
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,17 +48,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -61,10 +69,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.Account
+import com.jerboa.db.Draft
+import com.jerboa.db.DraftsViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
@@ -80,6 +91,7 @@ fun MarkdownTextField(
     placeholder: String = "",
     focusImmediate: Boolean = true,
     outlined: Boolean = false,
+    draftsViewModel: DraftsViewModel? = null,
 ) {
     val focusRequester = remember { FocusRequester() }
     val imageUploading = rememberSaveable { mutableStateOf(false) }
@@ -87,6 +99,7 @@ fun MarkdownTextField(
 
     var showCreateLink by remember { mutableStateOf(false) }
     var showPreview by remember { mutableStateOf(false) }
+    var showDrafts by remember { mutableStateOf(false) }
 
     if (showCreateLink) {
         CreateLinkDialog(
@@ -103,6 +116,23 @@ fun MarkdownTextField(
         ShowPreviewDialog(
             content = text.text,
             onDismissRequest = { showPreview = false },
+        )
+    }
+
+    if (showDrafts && draftsViewModel != null) {
+        val drafts = draftsViewModel.drafts.observeAsState()
+
+        SavedDraftsDialog(
+            drafts = drafts.value ?: listOf(),
+            onDismiss = { showDrafts = false },
+            onSave = {
+                showDrafts = false
+                if (text.text.isNotBlank()) {
+                    draftsViewModel.insert(text.text)
+                }
+            },
+            onSelect = { onTextChange(TextFieldValue(text.text.plus(it))) },
+            onDelete = { draftsViewModel.delete(it) },
         )
     }
 
@@ -218,6 +248,9 @@ fun MarkdownTextField(
             onPreviewClick = {
                 showPreview = true
             },
+            onDraftsClick = {
+                showDrafts = true
+            }
         )
     }
 
@@ -306,6 +339,74 @@ fun CreateLinkDialog(
 }
 
 @Composable
+private fun DraftItem(message: String, onDelete: () -> Unit, onSelect: (String) -> Unit) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        ClickableText(
+            text = AnnotatedString(message),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.fillMaxWidth(0.9F), // leave room for the button
+        ) { onSelect(message) }
+        Button(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .size((20).dp),
+            onClick = onDelete,
+        ) {
+            Text("x")
+        }
+    }
+}
+
+// @OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SavedDraftsDialog(
+    drafts: List<Draft>,
+    onDismiss: () -> Unit,
+    onSave: () -> Unit,
+    onDelete: (Draft) -> Unit,
+    onSelect: (String) -> Unit,
+) {
+    val drafts by rememberSaveable { mutableStateOf(drafts) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        text = {
+            Column(
+                modifier = Modifier
+                    .padding(MEDIUM_PADDING)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+            ) {
+                Text(
+                    text = stringResource(R.string.input_saved_drafts),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                drafts.forEach { draft ->
+                    DraftItem(
+                        draft.message,
+                        onDelete = { onDelete(draft) },
+                    ) { onSelect(draft.message) }
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(
+                    text = stringResource(R.string.input_fields_cancel),
+                    color = MaterialTheme.colorScheme.onBackground.muted,
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onSave) {
+                Text(text = stringResource(R.string.input_fields_save))
+            }
+        },
+    )
+}
+
+@Composable
 fun ShowPreviewDialog(
     content: String,
     onDismissRequest: () -> Unit,
@@ -339,6 +440,16 @@ fun ShowPreviewDialog(
 @Composable
 fun CreateLinkDialogPreview() {
     CreateLinkDialog(onClickOk = {}, onDismissRequest = {}, value = TextFieldValue(""))
+}
+
+@Preview
+@Composable
+fun SavedDraftsDialogPreview() {
+    val drafts = listOf(
+        Draft(0, "first message is really really long and will go onto multiple lines"),
+        Draft(1, "second message"),
+    );
+    SavedDraftsDialog(drafts = drafts, onDismiss = {}, onDelete = {}, onSelect = {}, onSave = {})
 }
 
 @Composable
@@ -426,6 +537,7 @@ fun simpleMarkdownSurround(
 @Composable
 fun MarkdownHelperBar(
     onPreviewClick: () -> Unit,
+    onDraftsClick: () -> Unit,
     onHeaderClick: () -> Unit,
     onImageClick: () -> Unit,
     onLinkClick: () -> Unit,
@@ -448,6 +560,15 @@ fun MarkdownHelperBar(
             Icon(
                 imageVector = Icons.Outlined.Preview,
                 contentDescription = stringResource(R.string.markdownHelper_preview),
+                tint = MaterialTheme.colorScheme.onBackground.muted,
+            )
+        }
+        IconButton(
+            onClick = onDraftsClick,
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Save,
+                contentDescription = stringResource(R.string.markdownHelper_drafts),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
@@ -566,6 +687,7 @@ fun TextMarkdownBarPreview() {
     MarkdownHelperBar(
         onHeaderClick = {},
         onPreviewClick = {},
+        onDraftsClick = {},
         onImageClick = {},
         onListClick = {},
         onQuoteClick = {},

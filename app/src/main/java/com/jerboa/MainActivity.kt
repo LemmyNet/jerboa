@@ -37,6 +37,9 @@ import com.jerboa.db.AppDB
 import com.jerboa.db.AppSettingsRepository
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.AppSettingsViewModelFactory
+import com.jerboa.db.DraftsRepository
+import com.jerboa.db.DraftsViewModel
+import com.jerboa.db.DraftsViewModelFactory
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
@@ -81,6 +84,7 @@ class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
     val accountRepository by lazy { AccountRepository(database.accountDao()) }
     val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
+    val draftsRepository by lazy { DraftsRepository(database.draftsDao()) }
 }
 
 class MainActivity : ComponentActivity() {
@@ -107,6 +111,9 @@ class MainActivity : ComponentActivity() {
     }
     private val appSettingsViewModel: AppSettingsViewModel by viewModels {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
+    }
+    private val draftsViewModel: DraftsViewModel by viewModels {
+        DraftsViewModelFactory((application as JerboaApplication).draftsRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -521,6 +528,7 @@ class MainActivity : ComponentActivity() {
                             postViewModel = postViewModel,
                             accountViewModel = accountViewModel,
                             personProfileViewModel = personProfileViewModel,
+                            draftsViewModel = draftsViewModel,
                             navController = navController,
                             siteViewModel = siteViewModel,
                             isModerator = isModerator,
@@ -551,6 +559,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             personProfileViewModel = personProfileViewModel,
                             postViewModel = postViewModel,
+                            draftsViewModel = draftsViewModel,
                         )
                     }
                     composable(

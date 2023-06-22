@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.DraftsViewModel
 import com.jerboa.isModerator
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -29,6 +30,7 @@ fun CommentReplyActivity(
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
     siteViewModel: SiteViewModel,
+    draftsViewModel: DraftsViewModel,
     navController: NavController,
     isModerator: Boolean,
 ) {
@@ -98,6 +100,7 @@ fun CommentReplyActivity(
                                 navController.navigate(route = "profile/$personId")
                             },
                             isModerator = isModerator,
+                            draftsViewModel = draftsViewModel,
                             modifier = Modifier
                                 .padding(padding)
                                 .imePadding(),

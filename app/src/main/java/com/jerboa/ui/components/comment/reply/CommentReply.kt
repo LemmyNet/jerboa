@@ -24,6 +24,7 @@ import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.Account
+import com.jerboa.db.DraftsViewModel
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNodeHeader
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeHeader
@@ -279,6 +280,7 @@ fun PostReply(
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     account: Account?,
+    draftsViewModel: DraftsViewModel,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -298,6 +300,7 @@ fun PostReply(
             account = account,
             modifier = Modifier.fillMaxWidth(),
             placeholder = stringResource(R.string.comment_reply_type_your_comment),
+            draftsViewModel = draftsViewModel,
         )
     }
 }

@@ -167,6 +167,8 @@
     <string name="input_fields_insert_link">Insert link</string>
     <string name="input_fields_link">Link</string>
     <string name="input_fields_ok">OK</string>
+    <string name="input_fields_save">Save</string>
+    <string name="input_saved_drafts">Saved Drafts</string>
     <string name="input_fields_text">Text</string>
     <string name="lessOptions">Show less options</string>
     <string name="login_back">Back</string>
@@ -222,6 +224,7 @@
     <string name="markdownHelper_insertList">Insert list</string>
     <string name="markdownHelper_insertQuote">Insert quote</string>
     <string name="markdownHelper_preview">View preview</string>
+    <string name="markdownHelper_drafts">Drafts</string>
     <string name="moreOptions">More options</string>
     <string name="personProfile_viewAvatar">View avatar image</string>
     <string name="personProfile_viewBanner">View banner image</string>

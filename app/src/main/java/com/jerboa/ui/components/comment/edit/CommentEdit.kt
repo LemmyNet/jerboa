@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.db.Account
+import com.jerboa.db.DraftsViewModel
 import com.jerboa.ui.components.common.MarkdownTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,6 +73,7 @@ fun CommentEdit(
     onContentChange: (TextFieldValue) -> Unit,
     account: Account?,
     padding: PaddingValues,
+    draftsViewModel: DraftsViewModel,
 ) {
     val scrollState = rememberScrollState()
 
@@ -87,6 +89,7 @@ fun CommentEdit(
             account = account,
             modifier = Modifier.fillMaxWidth(),
             placeholder = stringResource(R.string.comment_edit_type_your_comment),
+            draftsViewModel = draftsViewModel,
         )
     }
 }

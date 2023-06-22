@@ -12,6 +12,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.DraftsViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostViewModel
@@ -24,6 +25,7 @@ fun CommentEditActivity(
     commentEditViewModel: CommentEditViewModel,
     personProfileViewModel: PersonProfileViewModel,
     postViewModel: PostViewModel,
+    draftsViewModel: DraftsViewModel,
 ) {
     Log.d("jerboa", "got to comment edit activity")
 
@@ -64,6 +66,7 @@ fun CommentEditActivity(
                     account = account,
                     onContentChange = { content = it },
                     padding = padding,
+                    draftsViewModel = draftsViewModel,
                 )
             },
         )
