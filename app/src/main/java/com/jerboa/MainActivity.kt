@@ -47,8 +47,8 @@ import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.ShowChangelog
-import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
+import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.community.CommunityActivity
