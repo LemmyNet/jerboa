@@ -269,7 +269,7 @@ interface API {
                     val newRequest = requestBuilder.build()
                     chain.proceed(newRequest)
                 }
-                .addInterceptor(Interceptor { chain ->
+                .addInterceptor { chain ->
                     // based on https://stackoverflow.com/a/76264357
                     val request = chain.request()
                     val invocation = request.tag(Invocation::class.java)
@@ -277,7 +277,7 @@ interface API {
                     val shouldLogBody: Boolean = disableLog == null
                     interceptor.setLevel(if (shouldLogBody) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE)
                     chain.proceed(request)
-                })
+                }
                 .addInterceptor(interceptor)
                 .build()
 
