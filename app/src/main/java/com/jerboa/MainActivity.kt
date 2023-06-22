@@ -48,6 +48,7 @@ import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
+import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.community.CommunityActivity
@@ -479,27 +480,29 @@ class MainActivity : ComponentActivity() {
                             postViewModel.initialize(id = Either.Left(postId))
                             postViewModel.getData(account)
                         }
-                        PostActivity(
-                            postViewModel = postViewModel,
-                            accountViewModel = accountViewModel,
-                            commentEditViewModel = commentEditViewModel,
-                            commentReplyViewModel = commentReplyViewModel,
-                            postEditViewModel = postEditViewModel,
-                            navController = navController,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
-                            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
-                            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
-                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
-                            onClickSortType = { commentSortType ->
-                                postViewModel.updateSortType(commentSortType)
-                                postViewModel.getData(account)
-                            },
-                            selectedSortType = postViewModel.sortType,
-                            siteViewModel = siteViewModel,
-                        )
+                        SwipeToNavigateBack(navController = navController) {
+                            PostActivity(
+                                postViewModel = postViewModel,
+                                accountViewModel = accountViewModel,
+                                commentEditViewModel = commentEditViewModel,
+                                commentReplyViewModel = commentReplyViewModel,
+                                postEditViewModel = postEditViewModel,
+                                navController = navController,
+                                useCustomTabs = appSettings?.useCustomTabs ?: true,
+                                usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                                showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
+                                showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+                                showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                                showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
+                                navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
+                                onClickSortType = { commentSortType ->
+                                    postViewModel.updateSortType(commentSortType)
+                                    postViewModel.getData(account)
+                                },
+                                selectedSortType = postViewModel.sortType,
+                                siteViewModel = siteViewModel,
+                            )
+                        }
                     }
                     composable(
                         route = "comment/{id}",
