@@ -6,7 +6,6 @@ import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.toastException
 import com.jerboa.util.DisableLog
-import okhttp3.Interceptor
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
