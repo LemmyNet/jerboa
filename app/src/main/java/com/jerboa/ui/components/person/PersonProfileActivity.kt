@@ -76,6 +76,8 @@ fun PersonProfileActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -172,6 +174,8 @@ fun PersonProfileActivity(
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = siteViewModel.enableDownvotes(),
                 showAvatar = siteViewModel.showAvatar(),
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
             )
         },
         bottomBar = {
@@ -228,6 +232,8 @@ fun UserTabs(
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     val tabTitles = if (savedMode) {
         listOf(
@@ -471,6 +477,8 @@ fun UserTabs(
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                     showVotingArrowsInListView = showVotingArrowsInListView,
+                                    useCustomTabs = useCustomTabs,
+                                    usePrivateTabs = usePrivateTabs,
                                 )
                             }
                         }
@@ -498,7 +506,7 @@ fun UserTabs(
                             val unExpandedComments = remember { mutableStateListOf<Int>() }
                             val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
 
-                            var toggleExpanded = { commentId: Int ->
+                            val toggleExpanded = { commentId: Int ->
                                 if (unExpandedComments.contains(commentId)) {
                                     unExpandedComments.remove(commentId)
                                 } else {
@@ -506,7 +514,7 @@ fun UserTabs(
                                 }
                             }
 
-                            var toggleActionBar = { commentId: Int ->
+                            val toggleActionBar = { commentId: Int ->
                                 if (commentsWithToggledActionBar.contains(commentId)) {
                                     commentsWithToggledActionBar.remove(commentId)
                                 } else {
