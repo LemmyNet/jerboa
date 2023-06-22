@@ -482,25 +482,25 @@ class MainActivity : ComponentActivity() {
                         }
                         SwipeToNavigateBack(navController = navController) {
                             PostActivity(
-                              postViewModel = postViewModel,
-                              accountViewModel = accountViewModel,
-                              commentEditViewModel = commentEditViewModel,
-                              commentReplyViewModel = commentReplyViewModel,
-                              postEditViewModel = postEditViewModel,
-                              navController = navController,
-                              useCustomTabs = appSettings?.useCustomTabs ?: true,
-                              usePrivateTabs = appSettings?.usePrivateTabs ?: false,
-                              showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
-                              showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
-                              showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                              showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
-                              navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
-                              onClickSortType = { commentSortType ->
-                                  postViewModel.updateSortType(commentSortType)
-                                  postViewModel.getData(account)
-                              },
-                              selectedSortType = postViewModel.sortType,
-                              siteViewModel = siteViewModel,
+                                postViewModel = postViewModel,
+                                accountViewModel = accountViewModel,
+                                commentEditViewModel = commentEditViewModel,
+                                commentReplyViewModel = commentReplyViewModel,
+                                postEditViewModel = postEditViewModel,
+                                navController = navController,
+                                useCustomTabs = appSettings?.useCustomTabs ?: true,
+                                usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                                showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
+                                showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+                                showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                                showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
+                                navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
+                                onClickSortType = { commentSortType ->
+                                    postViewModel.updateSortType(commentSortType)
+                                    postViewModel.getData(account)
+                                },
+                                selectedSortType = postViewModel.sortType,
+                                siteViewModel = siteViewModel,
                           )
                         }
                     }
