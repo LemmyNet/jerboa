@@ -78,6 +78,8 @@ fun HomeActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Log.d("jerboa", "got to home activity")
 
@@ -135,6 +137,8 @@ fun HomeActivity(
                         navController = navController,
                         postListState = postListState,
                         showVotingArrowsInListView = showVotingArrowsInListView,
+                        useCustomTabs = useCustomTabs,
+                        usePrivateTabs = usePrivateTabs,
                     )
                 },
                 floatingActionButtonPosition = FabPosition.End,
@@ -202,6 +206,8 @@ fun MainPostListingsContent(
     postListState: LazyListState,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     when (val siteRes = siteViewModel.siteRes) {
         ApiState.Loading ->
@@ -358,6 +364,8 @@ fun MainPostListingsContent(
                     enableDownVotes = siteViewModel.enableDownvotes(),
                     showAvatar = siteViewModel.showAvatar(),
                     showVotingArrowsInListView = showVotingArrowsInListView,
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
                 )
             }
 

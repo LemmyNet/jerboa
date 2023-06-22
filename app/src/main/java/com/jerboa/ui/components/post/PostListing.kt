@@ -77,6 +77,7 @@ import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
+import com.jerboa.openLink
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -258,6 +259,8 @@ fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
     account: Account?,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
@@ -269,6 +272,9 @@ fun PostTitleBlock(
         PostTitleAndThumbnail(
             postView = postView,
             account = account,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
+
         )
     }
 }
@@ -336,6 +342,8 @@ fun PostTitleAndImageLink(
 fun PostTitleAndThumbnail(
     postView: PostView,
     account: Account?,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -362,7 +370,11 @@ fun PostTitleAndThumbnail(
                     }
                 }
             }
-            ThumbnailTile(postView = postView)
+            ThumbnailTile(
+                postView = postView,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+            )
         }
     }
 }
@@ -373,6 +385,8 @@ fun PostBody(
     fullBody: Boolean,
     expandedImage: Boolean,
     account: Account?,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     val post = postView.post
     Column(
@@ -382,6 +396,8 @@ fun PostBody(
             postView = postView,
             expandedImage = expandedImage,
             account = account,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
         )
 
         // The metadata card
@@ -432,6 +448,8 @@ fun PreviewStoryTitleAndMetadata() {
         fullBody = false,
         expandedImage = false,
         account = null,
+        useCustomTabs = false,
+        usePrivateTabs = false,
     )
 }
 
@@ -654,6 +672,8 @@ fun PostFooterLinePreview() {
 fun PreviewPostListingCard() {
     PostListing(
         postView = samplePostView,
+        useCustomTabs = false,
+        usePrivateTabs = false,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -681,6 +701,8 @@ fun PreviewPostListingCard() {
 fun PreviewLinkPostListing() {
     PostListing(
         postView = sampleLinkPostView,
+        useCustomTabs = false,
+        usePrivateTabs = false,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -708,6 +730,8 @@ fun PreviewLinkPostListing() {
 fun PreviewImagePostListingCard() {
     PostListing(
         postView = sampleImagePostView,
+        useCustomTabs = false,
+        usePrivateTabs = false,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -735,6 +759,8 @@ fun PreviewImagePostListingCard() {
 fun PreviewImagePostListingSmallCard() {
     PostListing(
         postView = sampleImagePostView,
+        useCustomTabs = false,
+        usePrivateTabs = false,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -762,6 +788,8 @@ fun PreviewImagePostListingSmallCard() {
 fun PreviewLinkNoThumbnailPostListing() {
     PostListing(
         postView = sampleLinkNoThumbnailPostView,
+        useCustomTabs = false,
+        usePrivateTabs = false,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -787,6 +815,8 @@ fun PreviewLinkNoThumbnailPostListing() {
 @Composable
 fun PostListing(
     postView: PostView,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
@@ -857,7 +887,10 @@ fun PostListing(
             expandedImage = true,
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
         )
+
         PostViewMode.SmallCard -> PostListingCard(
             postView = postView,
             instantScores = instantScores.value,
@@ -893,7 +926,10 @@ fun PostListing(
             expandedImage = false,
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
         )
+
         PostViewMode.List -> PostListingList(
             postView = postView,
             instantScores = instantScores.value,
@@ -919,6 +955,8 @@ fun PostListing(
             account = account,
             showVotingArrowsInListView = showVotingArrowsInListView,
             showAvatar = showAvatar,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
         )
     }
 }
@@ -983,6 +1021,8 @@ fun PostListingList(
     account: Account?,
     showVotingArrowsInListView: Boolean,
     showAvatar: Boolean,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1079,7 +1119,11 @@ fun PostListingList(
                     NsfwBadge(nsfwCheck(postView))
                 }
             }
-            ThumbnailTile(postView)
+            ThumbnailTile(
+                postView = postView,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+            )
         }
     }
 }
@@ -1087,6 +1131,8 @@ fun PostListingList(
 @Composable
 private fun ThumbnailTile(
     postView: PostView,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     postView.post.url?.also { url ->
         var showImageDialog by remember { mutableStateOf(false) }
@@ -1095,9 +1141,23 @@ private fun ThumbnailTile(
             ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
         }
 
+        // TODO weird performance issues with using a previously rendered navcontroller
+        val navController = rememberNavController()
+
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
-            .clickable { showImageDialog = true }
+            .clickable {
+                if (isImage(url)) {
+                    showImageDialog = true
+                } else {
+                    openLink(
+                        url = url,
+                        navController = navController,
+                        useCustomTab = useCustomTabs,
+                        usePrivateTab = usePrivateTabs,
+                    )
+                }
+            }
 
         postView.post.thumbnail_url?.also { thumbnail ->
             PictrsThumbnailImage(
@@ -1149,6 +1209,8 @@ fun PostListingListPreview() {
         account = null,
         showVotingArrowsInListView = true,
         showAvatar = true,
+        useCustomTabs = false,
+        usePrivateTabs = false,
     )
 }
 
@@ -1175,6 +1237,8 @@ fun PostListingListWithThumbPreview() {
         account = null,
         showVotingArrowsInListView = true,
         showAvatar = true,
+        useCustomTabs = false,
+        usePrivateTabs = false,
     )
 }
 
@@ -1202,6 +1266,8 @@ fun PostListingCard(
     expandedImage: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1229,6 +1295,8 @@ fun PostListingCard(
             fullBody = fullBody,
             expandedImage = expandedImage,
             account = account,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
         )
 
         // Footer bar
