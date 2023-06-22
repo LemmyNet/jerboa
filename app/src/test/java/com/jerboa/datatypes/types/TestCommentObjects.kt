@@ -39,6 +39,20 @@ object TestCommentObjects {
         child_count = 0,
     )
 
+    val TEST_COMMENT_VIEW =
+        CommentView(
+            comment = TEST_COMMENT,
+            creator = TEST_PERSON,
+            community = TEST_COMMUNITY,
+            counts = TEST_COMMENT_AGGREGATES,
+            post = TEST_POST,
+            creator_blocked = false,
+            creator_banned_from_community = false,
+            my_vote = 1,
+            saved = true,
+            subscribed = SubscribedType.Subscribed,
+        )
+
     val TEST_COMMENT_REPLY_VIEW: CommentReplyView =
         CommentReplyView(
             comment_reply = TEST_COMMENT_REPLY,

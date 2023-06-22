@@ -26,10 +26,13 @@ class CommunityListViewModel : ViewModel() {
     var selectedCommunity: Community? by mutableStateOf(null)
         private set
 
-    fun searchCommunities(form: Search) {
+    fun searchCommunities(
+        form: Search,
+        api: API = API.getInstance(),
+    ) {
         viewModelScope.launch {
             searchRes = ApiState.Loading
-            searchRes = apiWrapper(API.getInstance().search(form.serializeToMap()))
+            searchRes = apiWrapper(api.search(form.serializeToMap()))
         }
     }
 
