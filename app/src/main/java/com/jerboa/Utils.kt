@@ -503,7 +503,7 @@ fun communityNameShown(community: Community): String {
 fun hostName(url: String): String? {
     return try {
         URL(url).host
-    } catch (e: java.net.MalformedURLException) {
+    } catch (e: MalformedURLException) {
         null
     }
 }
@@ -1243,8 +1243,7 @@ fun getHostFromInstanceString(
     }
 
     return try {
-        val uri = URL(input)
-        uri.host.toString()
+        URL(input).host.toString()
     } catch (e: MalformedURLException) {
         input
     }
