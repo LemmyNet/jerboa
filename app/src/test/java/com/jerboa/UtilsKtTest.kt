@@ -3,14 +3,17 @@ package com.jerboa
 import androidx.compose.ui.unit.dp
 import com.jerboa.api.API
 import com.jerboa.ui.theme.SMALL_PADDING
+import junitparams.JUnitParamsRunner
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.ocpsoft.prettytime.PrettyTime
 import java.time.Duration
 import java.time.Instant
 import java.util.Date
 import java.util.Locale
 
+@RunWith(JUnitParamsRunner::class)
 class UtilsKtTest {
     @Test
     fun testCalculateCommentOffset() {
@@ -132,6 +135,22 @@ class UtilsKtTest {
                 3,
             ),
         )
+    }
+
+    @Test
+    fun testGetHostFromInstanceString() {
+        val cases = mapOf(
+            "" to "",
+            "localhost" to "localhost",
+            "something useless" to "something useless",
+            "https://localhost" to "localhost",
+            "http://localhost" to "localhost",
+            "https://localhost:443" to "localhost",
+            "https://localhost:443/path" to "localhost",
+            "https://localhost:443/path?param" to "localhost",
+            "https://host.tld" to "host.tld",
+        )
+        cases.forEach { (instanceString, exp) -> assertEquals(exp, getHostFromInstanceString(instanceString)) }
     }
 
     @Test

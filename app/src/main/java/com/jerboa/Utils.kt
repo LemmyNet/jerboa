@@ -65,6 +65,7 @@ import org.ocpsoft.prettytime.PrettyTime
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
@@ -502,7 +503,7 @@ fun communityNameShown(community: Community): String {
 fun hostName(url: String): String? {
     return try {
         URL(url).host
-    } catch (e: java.net.MalformedURLException) {
+    } catch (e: MalformedURLException) {
         null
     }
 }
@@ -1228,6 +1229,23 @@ fun scrollToPreviousParentComment(
             ?.let { nearestPreviousIndex ->
                 listState.animateScrollToItem(nearestPreviousIndex)
             }
+    }
+}
+
+/**
+ * Accepts a string that MAY be an URL, trims any protocol and extracts only the host, removing anything after a :, / or ?
+ */
+fun getHostFromInstanceString(
+    input: String,
+): String {
+    if (input.isBlank()) {
+        return input
+    }
+
+    return try {
+        URL(input).host.toString()
+    } catch (e: MalformedURLException) {
+        input
     }
 }
 
