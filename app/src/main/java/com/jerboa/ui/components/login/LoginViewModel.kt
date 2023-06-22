@@ -21,6 +21,7 @@ import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.getHostFromInstanceString
 import com.jerboa.serializeToMap
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
@@ -42,7 +43,7 @@ class LoginViewModel : ViewModel() {
         ctx: Context,
     ) {
         val originalInstance = API.currentInstance
-        val api = API.changeLemmyInstance(instance)
+        val api = API.changeLemmyInstance(getHostFromInstanceString(instance))
         var jwt: String
 
         viewModelScope.launch {
