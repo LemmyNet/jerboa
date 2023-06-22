@@ -11,24 +11,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
+import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.components.common.ConsumeReturn
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.community.list.CommunityListReturn
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.CreateEditPostHeader
@@ -47,9 +53,7 @@ data class MetaDataRes(val title: String?, val loading: Boolean)
 @Composable
 fun CreatePostActivity(
     accountViewModel: AccountViewModel,
-    createPostViewModel: CreatePostViewModel,
     navController: NavController,
-    communityListViewModel: CommunityListViewModel,
     initialUrl: String,
     initialBody: String,
     initialImage: Uri?,
@@ -59,7 +63,13 @@ fun CreatePostActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
-    val community = communityListViewModel.selectedCommunity
+
+    val createPostViewModel: CreatePostViewModel = viewModel()
+
+    var selectedCommunity: Community? by remember { mutableStateOf(null) }
+    navController.ConsumeReturn<Community>(CommunityListReturn.COMMUNITY) { community ->
+        selectedCommunity = community
+    }
 
     var name by rememberSaveable { mutableStateOf("") }
     var url by rememberSaveable { mutableStateOf(initialUrl) }
@@ -119,6 +129,31 @@ fun CreatePostActivity(
                                 createPostViewModel,
                                 navController,
                             )
+                        onCreatePostClick = {
+                            account?.also { acct ->
+                                selectedCommunity?.id?.also {
+                                    // Clean up that data
+                                    val nameOut = name.trim()
+                                    val bodyOut = body.text.trim().ifEmpty { null }
+                                    val urlOut = url.trim().ifEmpty { null }
+                                    createPostViewModel.createPost(
+                                        CreatePost(
+                                            name = nameOut,
+                                            community_id = it,
+                                            url = urlOut,
+                                            body = bodyOut,
+                                            auth = acct.jwt,
+                                            nsfw = isNsfw,
+                                        ),
+                                    ) { postId ->
+                                        navController.navigate(
+                                            Route.PostArgs.makeRoute(id = "$postId"),
+                                        ) {
+                                            popUpTo(Route.CREATE_POST) { inclusive = true }
+                                        }
+                                    }
+                                }
+                            }
                         },
                         submitIcon = {
                             CreatePostSubmitIcon(formValid)
@@ -150,6 +185,9 @@ fun CreatePostActivity(
                             }
                         }
                     },
+                    navController = navController,
+                    community = selectedCommunity,
+                    formValid = { formValid = it },
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,
                     sharedImage = initialImage,
@@ -179,36 +217,5 @@ fun CreatePostActivity(
                 )
             },
         )
-    }
-}
-
-fun onSubmitClick(
-    name: String,
-    body: TextFieldValue,
-    url: String,
-    isNsfw: Boolean,
-    account: Account?,
-    communityListViewModel: CommunityListViewModel,
-    createPostViewModel: CreatePostViewModel,
-    navController: NavController,
-) {
-    account?.also { acct ->
-        communityListViewModel.selectedCommunity?.id?.also {
-            // Clean up that data
-            val nameOut = name.trim()
-            val bodyOut = body.text.trim().ifEmpty { null }
-            val urlOut = url.trim().ifEmpty { null }
-            createPostViewModel.createPost(
-                CreatePost(
-                    name = nameOut,
-                    community_id = it,
-                    url = urlOut,
-                    body = bodyOut,
-                    auth = acct.jwt,
-                    nsfw = isNsfw,
-                ),
-                navController,
-            )
-        }
     }
 }

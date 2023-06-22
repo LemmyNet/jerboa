@@ -89,6 +89,8 @@ import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.common.toLogin
+import com.jerboa.ui.components.common.toSiteSideBar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.person.PersonName
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
@@ -343,7 +345,7 @@ fun DrawerAddAccountMode(
         IconAndTextDrawerItem(
             text = stringResource(R.string.home_add_account),
             icon = Icons.Outlined.Add,
-            onClick = { navController.navigate(route = "login") },
+            onClick = { navController.toLogin() },
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
@@ -647,7 +649,7 @@ fun HomeMoreDialog(
                     text = stringResource(R.string.home_site_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
-                        navController.navigate("siteSidebar")
+                        navController.toSiteSideBar()
                         onDismissRequest()
                     },
                 )

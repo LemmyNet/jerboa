@@ -18,9 +18,11 @@ import com.jerboa.datatypes.types.CreateCommentReport
 import com.jerboa.datatypes.types.CreatePostReport
 import com.jerboa.datatypes.types.PostReportResponse
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
-class CreateReportViewModel : ViewModel() {
+class CreateReportViewModel : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
 
     private var commentId by mutableStateOf<Int?>(null)
     private var postId by mutableStateOf<Int?>(null)

@@ -13,6 +13,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.api.ApiState
@@ -23,23 +25,36 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.toCommunity
+import com.jerboa.ui.components.common.toInbox
+import com.jerboa.ui.components.common.toProfile
+import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private var fetchCommunitiesJob: Job? = null
 
+object CommunityListReturn {
+    const val COMMUNITY = "community-list::return(community)"
+}
+
 @Composable
 fun CommunityListActivity(
     navController: NavController,
-    communityListViewModel: CommunityListViewModel,
     accountViewModel: AccountViewModel,
     selectMode: Boolean = false,
 ) {
     Log.d("jerboa", "got to community list activity")
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
+
+    val communityListViewModel: CommunityListViewModel = viewModel()
+
+    // Whenever navigating here, reset the list with your followed communities
+    communityListViewModel.setCommunityListFromFollowed(siteViewModel)
 
     var search by rememberSaveable { mutableStateOf("") }
 
@@ -81,10 +96,12 @@ fun CommunityListActivity(
                             communities = communitiesRes.data.communities,
                             onClickCommunity = { cs ->
                                 if (selectMode) {
-                                    communityListViewModel.selectCommunity(cs)
-                                    navController.navigateUp()
+                                    navController.apply {
+                                        addReturn(CommunityListReturn.COMMUNITY, cs)
+                                        navigateUp()
+                                    }
                                 } else {
-                                    navController.navigate(route = "community/${cs.id}")
+                                    navController.toCommunity(id = cs.id)
                                 }
                             },
                             modifier = Modifier

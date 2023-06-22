@@ -58,6 +58,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxTab
@@ -381,11 +382,13 @@ fun openLink(url: String, navController: NavController, useCustomTab: Boolean, u
     val parsedUrl = parseUrl(url) ?: return
 
     looksLikeUserUrl(parsedUrl)?.let { it ->
-        navController.navigate("${it.first}/u/${it.second}")
+        val route = Route.ProfileFromUrlArgs.makeRoute(instance = it.first, name = it.second)
+        navController.navigate(route)
         return
     }
     looksLikeCommunityUrl(parsedUrl)?.let { it ->
-        navController.navigate("${it.first}/c/${it.second}")
+        val route = Route.CommunityFromUrlArgs.makeRoute(instance = it.first, name = it.second)
+        navController.navigate(route)
         return
     }
 
@@ -720,10 +723,23 @@ fun siFormat(num: Int): String {
 fun fetchInitialData(
     account: Account?,
     siteViewModel: SiteViewModel,
-    homeViewModel: HomeViewModel,
 ) {
     if (account != null) {
         API.changeLemmyInstance(account.instance)
+        siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
+    } else {
+        API.changeLemmyInstance(DEFAULT_INSTANCE)
+    }
+
+    siteViewModel.getSite(
+        GetSite(
+            auth = account?.jwt,
+        ),
+    )
+}
+
+fun fetchHomePosts(account: Account?, homeViewModel: HomeViewModel) {
+    if (account != null) {
         homeViewModel.updateFromAccount(account)
         homeViewModel.resetPage()
         homeViewModel.getPosts(
@@ -733,10 +749,8 @@ fun fetchInitialData(
                 auth = account.jwt,
             ),
         )
-        siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
     } else {
         Log.d("jerboa", "Fetching posts for anonymous user")
-        API.changeLemmyInstance(DEFAULT_INSTANCE)
         homeViewModel.resetPage()
         homeViewModel.getPosts(
             GetPosts(
@@ -745,12 +759,6 @@ fun fetchInitialData(
             ),
         )
     }
-
-    siteViewModel.getSite(
-        GetSite(
-            auth = account?.jwt,
-        ),
-    )
 }
 
 fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
@@ -1237,23 +1245,6 @@ fun scrollToPreviousParentComment(
             ?.let { nearestPreviousIndex ->
                 listState.animateScrollToItem(nearestPreviousIndex)
             }
-    }
-}
-
-/**
- * Accepts a string that MAY be an URL, trims any protocol and extracts only the host, removing anything after a :, / or ?
- */
-fun getHostFromInstanceString(
-    input: String,
-): String {
-    if (input.isBlank()) {
-        return input
-    }
-
-    return try {
-        URL(input).host.toString()
-    } catch (e: MalformedURLException) {
-        input
     }
 }
 

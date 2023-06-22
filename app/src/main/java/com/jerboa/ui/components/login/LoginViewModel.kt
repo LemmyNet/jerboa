@@ -23,7 +23,7 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getHostFromInstanceString
 import com.jerboa.serializeToMap
-import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.common.toHome
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -39,7 +39,6 @@ class LoginViewModel : ViewModel() {
         navController: NavController,
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
-        homeViewModel: HomeViewModel,
         ctx: Context,
     ) {
         val originalInstance = API.currentInstance
@@ -118,11 +117,10 @@ class LoginViewModel : ViewModel() {
                         )
 
                         homeViewModel.resetPage()
-                        homeViewModel.updateFromAccount(account)
                         homeViewModel.getPosts(
                             GetPosts(
-                                type_ = homeViewModel.listingType,
-                                sort = homeViewModel.sortType,
+                                type_ = luv.local_user.default_listing_type,
+                                sort = luv.local_user.default_sort_type,
                                 page = homeViewModel.page,
                                 auth = account.jwt,
                             ),
@@ -143,9 +141,7 @@ class LoginViewModel : ViewModel() {
 
                     loading = false
 
-                    navController.navigate(route = "home") {
-                        popUpTo(0)
-                    }
+                    navController.toHome()
                 }
 
                 else -> {}
