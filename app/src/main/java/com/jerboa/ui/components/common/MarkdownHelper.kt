@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.FontRes
 import androidx.annotation.IdRes
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -41,6 +43,7 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TableAwareMovementMethod
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.html.HtmlPlugin
+import io.noties.markwon.image.AsyncDrawableSpan
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
@@ -169,26 +172,35 @@ object MarkdownHelper {
         val style = MaterialTheme.typography.bodyLarge
         val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 
-        AndroidView(
-            factory = { ctx ->
-                createTextView(
-                    context = ctx,
-                    color = color,
-                    defaultColor = defaultColor,
-                    fontSize = TextUnit.Unspecified,
-                    style = style,
-                    viewId = null,
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                )
-            },
-            update = { textView ->
-                markwon!!.setMarkdown(textView, markdown)
-//            if (disableLinkMovementMethod) {
-//                textView.movementMethod = null
-//            }
-            },
-        )
+        BoxWithConstraints {
+            val canvasWidthMaybe = with(LocalDensity.current) { maxWidth.toPx() }.toInt()
+            val textSizeMaybe = with(LocalDensity.current) { style.fontSize.toPx() }
+
+            AndroidView(
+                factory = { ctx ->
+                    createTextView(
+                        context = ctx,
+                        color = color,
+                        defaultColor = defaultColor,
+                        fontSize = TextUnit.Unspecified,
+                        style = style,
+                        viewId = null,
+                        onClick = onClick,
+                        onLongClick = onLongClick,
+                    )
+                },
+                update = { textView ->
+                    val md = markwon!!.toMarkdown(markdown)
+                    for (img in md.getSpans(0, md.length, AsyncDrawableSpan::class.java)) {
+                        img.drawable.initWithKnownDimensions(canvasWidthMaybe, textSizeMaybe)
+                    }
+                    markwon!!.setParsedMarkdown(textView, md)
+                    //            if (disableLinkMovementMethod) {
+                    //                textView.movementMethod = null
+                    //            }
+                },
+            )
+        }
     }
 
     private fun createTextView(

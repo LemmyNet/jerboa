@@ -32,7 +32,6 @@ import com.jerboa.datatypes.types.GetPersonMentions
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPrivateMessages
 import com.jerboa.datatypes.types.GetReplies
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
@@ -48,6 +47,7 @@ import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
+import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.community.CommunityActivity
@@ -131,7 +131,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 val navController = rememberNavController()
                 val ctx = LocalContext.current
-                var serverVersionOutdatedViewed = remember { mutableStateOf(false) }
+                val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
                     navController,
@@ -183,6 +183,8 @@ class MainActivity : ComponentActivity() {
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                         )
                     }
                     composable(
@@ -223,6 +225,8 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                         )
                     }
                     // Only necessary for community deeplinks
@@ -256,8 +260,8 @@ class MainActivity : ComponentActivity() {
                             communityViewModel.getPosts(
                                 GetPosts(
                                     community_name = name,
-                                    type_ = ListingType.values()[account?.defaultListingType ?: 1],
-                                    sort = SortType.values()[account?.defaultSortType ?: 0],
+                                    type_ = homeViewModel.listingType,
+                                    sort = homeViewModel.sortType,
                                     auth = account?.jwt,
                                 ),
                             )
@@ -272,6 +276,8 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                         )
                     }
                     composable(
@@ -312,6 +318,8 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                         )
                     }
                     // Necessary for deep links
@@ -354,6 +362,8 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                         )
                     }
                     composable(
@@ -469,25 +479,29 @@ class MainActivity : ComponentActivity() {
                             postViewModel.initialize(id = Either.Left(postId))
                             postViewModel.getData(account)
                         }
-                        PostActivity(
-                            postViewModel = postViewModel,
-                            accountViewModel = accountViewModel,
-                            commentEditViewModel = commentEditViewModel,
-                            commentReplyViewModel = commentReplyViewModel,
-                            postEditViewModel = postEditViewModel,
-                            navController = navController,
-                            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
-                            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
-                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
-                            onClickSortType = { commentSortType ->
-                                postViewModel.updateSortType(commentSortType)
-                                postViewModel.getData(account)
-                            },
-                            selectedSortType = postViewModel.sortType,
-                            siteViewModel = siteViewModel,
-                        )
+                        SwipeToNavigateBack(navController = navController) {
+                            PostActivity(
+                                postViewModel = postViewModel,
+                                accountViewModel = accountViewModel,
+                                commentEditViewModel = commentEditViewModel,
+                                commentReplyViewModel = commentReplyViewModel,
+                                postEditViewModel = postEditViewModel,
+                                navController = navController,
+                                useCustomTabs = appSettings?.useCustomTabs ?: true,
+                                usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                                showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
+                                showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+                                showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                                showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
+                                navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
+                                onClickSortType = { commentSortType ->
+                                    postViewModel.updateSortType(commentSortType)
+                                    postViewModel.getData(account)
+                                },
+                                selectedSortType = postViewModel.sortType,
+                                siteViewModel = siteViewModel,
+                            )
+                        }
                     }
                     composable(
                         route = "comment/{id}",
@@ -512,6 +526,8 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -652,6 +668,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             accountSettingsViewModel = accountSettingsViewModel,
+                            homeViewModel = homeViewModel,
                         )
                     }
                     composable(

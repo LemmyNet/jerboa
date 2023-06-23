@@ -66,6 +66,8 @@ fun CommunityActivity(
     accountViewModel: AccountViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -317,6 +319,8 @@ fun CommunityActivity(
                             enableDownVotes = siteViewModel.enableDownvotes(),
                             showAvatar = siteViewModel.showAvatar(),
                             showVotingArrowsInListView = showVotingArrowsInListView,
+                            useCustomTabs = useCustomTabs,
+                            usePrivateTabs = usePrivateTabs,
                         )
                     }
                     else -> {}

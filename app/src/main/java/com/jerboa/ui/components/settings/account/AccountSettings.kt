@@ -79,7 +79,7 @@ fun ImageWithClose(
 fun SettingsForm(
     accountSettingsViewModel: AccountSettingsViewModel,
     siteViewModel: SiteViewModel,
-    account: Account?,
+    account: Account,
     onClickSave: (form: SaveUserSettings) -> Unit,
     padding: PaddingValues,
 ) {
@@ -126,7 +126,7 @@ fun SettingsForm(
         display_name = displayName,
         bio = bio.text,
         email = email,
-        auth = account?.jwt ?: "",
+        auth = account.jwt,
         avatar = avatar,
         banner = banner,
         matrix_user_id = matrixUserId,
@@ -191,9 +191,7 @@ fun SettingsForm(
                 PickImage(onPickedImage = { uri ->
                     val imageIs = imageInputStreamFromUri(ctx, uri)
                     scope.launch {
-                        account?.also { acct ->
-                            avatar = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
-                        }
+                        avatar = uploadPictrsImage(account, imageIs, ctx).orEmpty()
                     }
                 }, showImage = false)
             }
@@ -208,9 +206,7 @@ fun SettingsForm(
                 PickImage(onPickedImage = { uri ->
                     val imageIs = imageInputStreamFromUri(ctx, uri)
                     scope.launch {
-                        account?.also { acct ->
-                            banner = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
-                        }
+                        banner = uploadPictrsImage(account, imageIs, ctx).orEmpty()
                     }
                 }, showImage = false)
             }

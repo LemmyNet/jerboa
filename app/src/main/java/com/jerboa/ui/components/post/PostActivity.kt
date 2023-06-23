@@ -84,7 +84,6 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommentsHeaderTitle(
     selectedSortType: CommentSortType,
@@ -117,6 +116,8 @@ fun PostActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     navController: NavController,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
     showVotingArrowsInListView: Boolean,
@@ -367,6 +368,8 @@ fun PostActivity(
                                     enableDownVotes = siteViewModel.enableDownvotes(),
                                     showAvatar = siteViewModel.showAvatar(),
                                     showVotingArrowsInListView = showVotingArrowsInListView,
+                                    useCustomTabs = useCustomTabs,
+                                    usePrivateTabs = usePrivateTabs,
                                 )
                             }
 
@@ -394,7 +397,7 @@ fun PostActivity(
                                     val commentParentId = getCommentParentId(firstComment)
                                     val showContextButton = depth != null && depth > 0
 
-                                    var toggleExpanded = { commentId: Int ->
+                                    val toggleExpanded = { commentId: Int ->
                                         if (unExpandedComments.contains(commentId)) {
                                             unExpandedComments.remove(commentId)
                                         } else {
@@ -402,7 +405,7 @@ fun PostActivity(
                                         }
                                     }
 
-                                    var toggleActionBar = { commentId: Int ->
+                                    val toggleActionBar = { commentId: Int ->
                                         if (commentsWithToggledActionBar.contains(commentId)) {
                                             commentsWithToggledActionBar.remove(commentId)
                                         } else {

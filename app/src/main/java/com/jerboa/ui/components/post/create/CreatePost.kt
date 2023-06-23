@@ -43,6 +43,7 @@ import com.jerboa.db.Account
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.post.composables.CheckboxIsNsfw
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
@@ -120,6 +121,8 @@ fun CreatePostBody(
     padding: PaddingValues,
     suggestedTitle: String?,
     suggestedTitleLoading: Boolean,
+    isNsfw: Boolean,
+    onIsNsfwChange: (isNsfw: Boolean) -> Unit,
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -237,6 +240,10 @@ fun CreatePostBody(
                     },
             )
         }
+        CheckboxIsNsfw(
+            checked = isNsfw,
+            onCheckedChange = onIsNsfwChange,
+        )
     }
 }
 
@@ -267,6 +274,8 @@ fun CreatePostBodyPreview() {
         padding = PaddingValues(),
         suggestedTitle = null,
         suggestedTitleLoading = false,
+        isNsfw = false,
+        onIsNsfwChange = {},
     )
 }
 
@@ -286,5 +295,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         suggestedTitleLoading = false,
         account = null,
         padding = PaddingValues(),
+        isNsfw = false,
+        onIsNsfwChange = {},
     )
 }
