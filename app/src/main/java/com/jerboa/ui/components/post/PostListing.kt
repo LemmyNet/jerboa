@@ -65,6 +65,7 @@ import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.communityNameShown
+import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
@@ -109,7 +110,6 @@ import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
-import com.jerboa.util.ClipboardCopyHandler
 
 @Composable
 fun PostHeaderLine(
@@ -1429,6 +1429,62 @@ fun PostOptionsDialog(
                         onDismissRequest()
                     },
                 )
+                postView.post.thumbnail_url?.also {
+                    IconAndTextDrawerItem(
+                        text = stringResource(R.string.post_listing_copy_thumbnail_link),
+                        icon = Icons.Outlined.Link,
+                        onClick = {
+                            if (copyToClipboard(ctx, postView.post.thumbnail_url, "thumbnail link")) {
+                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_thumbnail_link_copied), Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                            }
+                            onDismissRequest()
+                        },
+                    )
+                }
+                postView.post.embed_description?.also {
+                    IconAndTextDrawerItem(
+                        text = stringResource(R.string.post_listing_copy_title),
+                        icon = Icons.Outlined.ContentCopy,
+                        onClick = {
+                            if (copyToClipboard(ctx, postView.post.embed_description, "post title")) {
+                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_title_copied), Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                            }
+                            onDismissRequest()
+                        },
+                    )
+                }
+                postView.post.name.also {
+                    IconAndTextDrawerItem(
+                        text = stringResource(R.string.post_listing_copy_name),
+                        icon = Icons.Outlined.ContentCopy,
+                        onClick = {
+                            if (copyToClipboard(ctx, postView.post.name, "post name")) {
+                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_name_copied), Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                            }
+                            onDismissRequest()
+                        },
+                    )
+                }
+                postView.post.body?.also {
+                    IconAndTextDrawerItem(
+                        text = stringResource(R.string.post_listing_copy_text),
+                        icon = Icons.Outlined.ContentCopy,
+                        onClick = {
+                            if (copyToClipboard(ctx, postView.post.body, "post text")) {
+                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_text_copied), Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                            }
+                            onDismissRequest()
+                        },
+                    )
+                }
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.post_listing_report_post),
@@ -1445,19 +1501,6 @@ fun PostOptionsDialog(
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCommunityClick,
                     )
-                    if (postView.post.thumbnail_url != null) {
-                        IconAndTextDrawerItem(
-                            text = stringResource(R.string.post_listing_copy_thumbnail_url),
-                            icon = Icons.Outlined.ContentCopy,
-                            onClick = {
-                                if (ClipboardCopyHandler.copyToClipboard(ctx, postView.post.thumbnail_url, "thumbnail url")) {
-                                    Toast.makeText(ctx, ctx.getString(R.string.post_listing_thumbnail_url_copied), Toast.LENGTH_SHORT).show()
-                                } else {
-                                    Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
-                                }
-                            },
-                        )
-                    }
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(

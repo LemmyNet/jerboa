@@ -38,6 +38,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.VoteType
+import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
@@ -53,7 +54,6 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
-import com.jerboa.util.ClipboardCopyHandler
 
 @Composable
 fun CommentMentionNodeHeader(
@@ -278,11 +278,12 @@ fun CommentReplyNodeOptionsDialog(
                     text = stringResource(R.string.comment_mention_node_copy_comment),
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
-                        if (ClipboardCopyHandler.copyToClipboard(ctx, personMentionView.comment.content, "comment")) {
+                        if (copyToClipboard(ctx, personMentionView.comment.content, "comment")) {
                             Toast.makeText(ctx, ctx.getString(R.string.comment_mention_node_comment_copied), Toast.LENGTH_SHORT).show()
                         } else {
                             Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
                         }
+                        onDismissRequest()
                     },
                 )
                 if (!isCreator) {

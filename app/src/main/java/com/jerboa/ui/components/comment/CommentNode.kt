@@ -61,6 +61,7 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.calculateNewInstantScores
+import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
@@ -83,7 +84,6 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
-import com.jerboa.util.ClipboardCopyHandler
 
 @Composable
 fun CommentNodeHeader(
@@ -725,11 +725,12 @@ fun CommentOptionsDialog(
                     text = stringResource(R.string.comment_node_copy_comment),
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
-                        if (ClipboardCopyHandler.copyToClipboard(ctx, commentView.comment.content, "comment")) {
+                        if (copyToClipboard(ctx, commentView.comment.content, "comment")) {
                             Toast.makeText(ctx, ctx.getString(R.string.comment_node_comment_copied), Toast.LENGTH_SHORT).show()
                         } else {
                             Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
                         }
+                        onDismissRequest()
                     },
                 )
                 if (!isCreator) {
