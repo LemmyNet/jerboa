@@ -15,8 +15,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 33
-        versionCode = 34
-        versionName = "0.0.34"
+        versionCode = 35
+        versionName = "0.0.35"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -25,7 +25,7 @@ android {
         ksp { arg("room.schemaLocation", "$projectDir/schemas") }
     }
 
-    if(project.hasProperty("RELEASE_STORE_FILE")) {
+    if (project.hasProperty("RELEASE_STORE_FILE")) {
         signingConfigs {
             register("release") {
                 storeFile = file(project.property("RELEASE_STORE_FILE")!!)
@@ -42,8 +42,10 @@ android {
 
     buildTypes {
         release {
-            if(project.hasProperty("RELEASE_STORE_FILE")) {
-                signingConfig = signingConfigs.getByName("release")
+            signingConfig = if (project.hasProperty("RELEASE_STORE_FILE")) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
             }
 
             postprocessing {
