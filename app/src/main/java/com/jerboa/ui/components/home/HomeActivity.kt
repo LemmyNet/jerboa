@@ -60,7 +60,6 @@ import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -157,35 +156,6 @@ fun HomeActivity(
                             contentDescription = stringResource(R.string.floating_createPost),
                         )
                     }
-                },
-                bottomBar = {
-                    BottomAppBarAll(
-                        showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
-                        screen = "home",
-                        unreadCount = siteViewModel.getUnreadCountTotal(),
-                        onClickProfile = {
-                            account?.id?.also {
-                                navController.navigate(route = "profile/$it")
-                            } ?: run {
-                                loginFirstToast(ctx)
-                            }
-                        },
-                        onClickInbox = {
-                            account?.also {
-                                navController.navigate(route = "inbox")
-                            } ?: run {
-                                loginFirstToast(ctx)
-                            }
-                        },
-                        onClickSaved = {
-                            account?.id?.also {
-                                navController.navigate(route = "profile/$it?saved=${true}")
-                            } ?: run {
-                                loginFirstToast(ctx)
-                            }
-                        },
-                        navController = navController,
-                    )
                 },
             )
         },

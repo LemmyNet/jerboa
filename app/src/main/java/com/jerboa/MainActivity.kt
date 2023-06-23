@@ -11,6 +11,9 @@ import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -18,20 +21,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPersonDetails
-import com.jerboa.datatypes.types.GetPersonMentions
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPrivateMessages
 import com.jerboa.datatypes.types.GetReplies
+import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
@@ -114,10 +117,9 @@ class MainActivity : ComponentActivity() {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val accountSync = getCurrentAccountSync(accountViewModel)
         fetchInitialData(accountSync, siteViewModel, homeViewModel)
@@ -129,7 +131,7 @@ class MainActivity : ComponentActivity() {
             JerboaTheme(
                 appSettings = appSettings,
             ) {
-                val navController = rememberNavController()
+                val navController = rememberAnimatedNavController()
                 val ctx = LocalContext.current
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
@@ -154,9 +156,13 @@ class MainActivity : ComponentActivity() {
                     else -> {}
                 }
 
-                NavHost(
+                AnimatedNavHost(
                     navController = navController,
-                    startDestination = "home",
+                    startDestination = "home?tab={tab}",
+                    enterTransition = { slideInHorizontally { it } },
+                    exitTransition = { slideOutHorizontally { -it } },
+                    popEnterTransition = { slideInHorizontally { -it } },
+                    popExitTransition = { slideOutHorizontally { it } },
                 ) {
                     composable(
                         route = "login",
@@ -173,18 +179,31 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = "home",
+                        route = "home?tab={tab}",
+                        arguments = listOf(
+                            navArgument(name = "tab") {
+                                type = NavType.StringType
+                                defaultValue = BottomNavTab.Home.name
+                            },
+                        ),
                     ) {
-                        HomeActivity(
+                        val tabName = it.arguments?.getString("tab")?.lowercase()!!
+                        val tab = BottomNavTab.values().firstOrNull { t -> t.name.lowercase() == tabName }
+                        BottomNavActivity(
                             navController = navController,
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            appSettings = appSettings,
+                            communityListViewModel = communityListViewModel,
+                            inboxViewModel = inboxViewModel,
+                            commentReplyViewModel = commentReplyViewModel,
+                            commentEditViewModel = commentEditViewModel,
+                            personProfileViewModel = personProfileViewModel,
+                            privateMessageReplyViewModel = privateMessageReplyViewModel,
+                            initialTab = tab ?: BottomNavTab.Home,
                         )
                     }
                     composable(
@@ -381,8 +400,6 @@ class MainActivity : ComponentActivity() {
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             communityListViewModel = communityListViewModel,
                             selectMode = it.arguments?.getBoolean("select")!!,
                         )
@@ -432,36 +449,9 @@ class MainActivity : ComponentActivity() {
                             navDeepLink { uriPattern = "$instance/inbox" }
                         },
                     ) {
-                        if (account != null) {
-                            LaunchedEffect(Unit) {
-                                inboxViewModel.resetPage()
-                                inboxViewModel.getReplies(
-                                    GetReplies(
-                                        auth = account.jwt,
-                                    ),
-                                )
-                                inboxViewModel.getMentions(
-                                    GetPersonMentions(
-                                        auth = account.jwt,
-                                    ),
-                                )
-                                inboxViewModel.getMessages(
-                                    GetPrivateMessages(
-                                        auth = account.jwt,
-                                    ),
-                                )
-                            }
+                        navController.navigate("home?tab=inbox") {
+                            popUpTo(0)
                         }
-
-                        InboxActivity(
-                            navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
-                            inboxViewModel = inboxViewModel,
-                            accountViewModel = accountViewModel,
-                            commentReplyViewModel = commentReplyViewModel,
-                            siteViewModel = siteViewModel,
-                            privateMessageReplyViewModel = privateMessageReplyViewModel,
-                        )
                     }
                     composable(
                         route = "post/{id}",
