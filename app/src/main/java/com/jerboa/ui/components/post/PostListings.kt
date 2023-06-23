@@ -26,6 +26,7 @@ import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.util.BrowserType
 
 @Composable
 fun PostListings(
@@ -51,8 +52,7 @@ fun PostListings(
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     LazyColumn(
         state = listState,
@@ -93,8 +93,7 @@ fun PostListings(
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = enableDownVotes,
                 showAvatar = showAvatar,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
+                browserType = browserType,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -138,7 +137,6 @@ fun PreviewPostListings() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        browserType = BrowserType.CustomTab,
     )
 }

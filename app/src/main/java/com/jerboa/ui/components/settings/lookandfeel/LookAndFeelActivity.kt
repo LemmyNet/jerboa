@@ -1,14 +1,18 @@
 package com.jerboa.ui.components.settings.lookandfeel
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -33,6 +37,10 @@ import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.DEFAULT_FONT_SIZE
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.ui.theme.ICON_SIZE
+import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.util.BrowserType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,8 +73,7 @@ fun LookAndFeelActivity(
     val navigateParentCommentsWithVolumeButtonsState = rememberBooleanSettingState(
         settings?.navigateParentCommentsWithVolumeButtons ?: false,
     )
-    val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
-    val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)
+    val browserTypeState = rememberIntSettingState(settings?.browserType ?: 0)
 
     val secureWindowState = rememberBooleanSettingState(settings?.secureWindow ?: false)
 
@@ -89,8 +96,7 @@ fun LookAndFeelActivity(
                 showVotingArrowsInListView = showVotingArrowsInListViewState.value,
                 showParentCommentNavigationButtons = showParentCommentNavigationButtonsState.value,
                 navigateParentCommentsWithVolumeButtons = navigateParentCommentsWithVolumeButtonsState.value,
-                useCustomTabs = useCustomTabsState.value,
-                usePrivateTabs = usePrivateTabsState.value,
+                browserType = browserTypeState.value,
                 secureWindow = secureWindowState.value,
             ),
         )
@@ -220,20 +226,41 @@ fun LookAndFeelActivity(
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
-                SettingsCheckbox(
-                    state = useCustomTabsState,
-                    title = {
-                        Text(text = stringResource(id = R.string.look_and_feel_use_custom_tabs))
+                SettingsList(
+                    state = browserTypeState,
+                    items = BrowserType.values().map { stringResource(it.resourceId) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Tab,
+                            contentDescription = null,
+                        )
                     },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    state = usePrivateTabsState,
                     title = {
-                        Text(text = stringResource(id = R.string.look_and_feel_use_private_tabs))
+                        Text(text = stringResource(R.string.browserType_defaultBrowser))
                     },
-                    onCheckedChange = { updateAppSettings() },
+                    onItemSelected = { i, _ ->
+                        browserTypeState.value = BrowserType.values().find { it.id == i }?.id ?: 1
+                        updateAppSettings()
+                    },
                 )
+                AnimatedVisibility(
+                    visible = browserTypeState.value == BrowserType.PrivateCustomTab.id,
+                    modifier = Modifier.padding(LARGE_PADDING),
+
+                ) {
+                    Row {
+                        Icon(
+                            imageVector = Icons.Outlined.Warning,
+                            contentDescription = null,
+                            modifier = Modifier.padding(MEDIUM_PADDING).size(ICON_SIZE),
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = LARGE_PADDING),
+                            text = stringResource(R.string.browserType_privateCustomTab_warning),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                }
                 SettingsCheckbox(
                     state = secureWindowState,
                     title = {

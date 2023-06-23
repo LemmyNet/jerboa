@@ -79,7 +79,6 @@ import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
-import com.jerboa.openLink
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -110,6 +109,8 @@ import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
+import com.jerboa.util.BrowserType
+import com.jerboa.util.openLink
 
 @Composable
 fun PostHeaderLine(
@@ -261,8 +262,7 @@ fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
     account: Account?,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
@@ -274,8 +274,7 @@ fun PostTitleBlock(
         PostTitleAndThumbnail(
             postView = postView,
             account = account,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
+            browserType = browserType,
 
         )
     }
@@ -344,8 +343,7 @@ fun PostTitleAndImageLink(
 fun PostTitleAndThumbnail(
     postView: PostView,
     account: Account?,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -374,8 +372,7 @@ fun PostTitleAndThumbnail(
             }
             ThumbnailTile(
                 postView = postView,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
+                browserType = browserType,
             )
         }
     }
@@ -387,8 +384,7 @@ fun PostBody(
     fullBody: Boolean,
     expandedImage: Boolean,
     account: Account?,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     val post = postView.post
     Column(
@@ -398,8 +394,7 @@ fun PostBody(
             postView = postView,
             expandedImage = expandedImage,
             account = account,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
+            browserType = browserType,
         )
 
         // The metadata card
@@ -450,8 +445,7 @@ fun PreviewStoryTitleAndMetadata() {
         fullBody = false,
         expandedImage = false,
         account = null,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        browserType = BrowserType.CustomTab,
     )
 }
 
@@ -674,8 +668,7 @@ fun PostFooterLinePreview() {
 fun PreviewPostListingCard() {
     PostListing(
         postView = samplePostView,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        browserType = BrowserType.CustomTab,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -703,8 +696,7 @@ fun PreviewPostListingCard() {
 fun PreviewLinkPostListing() {
     PostListing(
         postView = sampleLinkPostView,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        browserType = BrowserType.CustomTab,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -732,37 +724,7 @@ fun PreviewLinkPostListing() {
 fun PreviewImagePostListingCard() {
     PostListing(
         postView = sampleImagePostView,
-        useCustomTabs = false,
-        usePrivateTabs = false,
-        onUpvoteClick = {},
-        onDownvoteClick = {},
-        onReplyClick = {},
-        onPostClick = {},
-        onSaveClick = {},
-        onCommunityClick = {},
-        onEditPostClick = {},
-        onDeletePostClick = {},
-        onReportClick = {},
-        onPersonClick = {},
-        onBlockCommunityClick = {},
-        onBlockCreatorClick = {},
-        isModerator = false,
-        fullBody = false,
-        account = null,
-        postViewMode = PostViewMode.Card,
-        showVotingArrowsInListView = true,
-        enableDownVotes = true,
-        showAvatar = true,
-    )
-}
-
-@Preview
-@Composable
-fun PreviewImagePostListingSmallCard() {
-    PostListing(
-        postView = sampleImagePostView,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        browserType = BrowserType.CustomTab,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -790,8 +752,7 @@ fun PreviewImagePostListingSmallCard() {
 fun PreviewLinkNoThumbnailPostListing() {
     PostListing(
         postView = sampleLinkNoThumbnailPostView,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        browserType = BrowserType.CustomTab,
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
@@ -817,8 +778,7 @@ fun PreviewLinkNoThumbnailPostListing() {
 @Composable
 fun PostListing(
     postView: PostView,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
@@ -889,8 +849,7 @@ fun PostListing(
             expandedImage = true,
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
+            browserType = browserType,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -928,8 +887,7 @@ fun PostListing(
             expandedImage = false,
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
+            browserType = browserType,
         )
 
         PostViewMode.List -> PostListingList(
@@ -957,8 +915,7 @@ fun PostListing(
             account = account,
             showVotingArrowsInListView = showVotingArrowsInListView,
             showAvatar = showAvatar,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
+            browserType = browserType,
         )
     }
 }
@@ -1023,8 +980,7 @@ fun PostListingList(
     account: Account?,
     showVotingArrowsInListView: Boolean,
     showAvatar: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     Column(
         modifier = Modifier
@@ -1123,8 +1079,7 @@ fun PostListingList(
             }
             ThumbnailTile(
                 postView = postView,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
+                browserType = browserType,
             )
         }
     }
@@ -1133,8 +1088,7 @@ fun PostListingList(
 @Composable
 private fun ThumbnailTile(
     postView: PostView,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     postView.post.url?.also { url ->
         var showImageDialog by remember { mutableStateOf(false) }
@@ -1155,8 +1109,7 @@ private fun ThumbnailTile(
                     openLink(
                         url = url,
                         navController = navController,
-                        useCustomTab = useCustomTabs,
-                        usePrivateTab = usePrivateTabs,
+                        browserType = browserType,
                     )
                 }
             }
@@ -1211,8 +1164,7 @@ fun PostListingListPreview() {
         account = null,
         showVotingArrowsInListView = true,
         showAvatar = true,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        browserType = BrowserType.CustomTab,
     )
 }
 
@@ -1239,8 +1191,7 @@ fun PostListingListWithThumbPreview() {
         account = null,
         showVotingArrowsInListView = true,
         showAvatar = true,
-        useCustomTabs = false,
-        usePrivateTabs = false,
+        browserType = BrowserType.CustomTab,
     )
 }
 
@@ -1268,8 +1219,7 @@ fun PostListingCard(
     expandedImage: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     Column(
         modifier = Modifier
@@ -1297,8 +1247,7 @@ fun PostListingCard(
             fullBody = fullBody,
             expandedImage = expandedImage,
             account = account,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
+            browserType = browserType,
         )
 
         // Footer bar

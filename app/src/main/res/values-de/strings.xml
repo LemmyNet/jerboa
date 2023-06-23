@@ -187,7 +187,6 @@
     <string name="look_and_feel_post_view_small_card">Kleine Karten</string>
     <string name="look_and_feel_post_view_list">Liste</string>
     <string name="look_and_feel_show_navigation_bar">Zeige Navigationsleiste</string>
-    <string name="look_and_feel_use_custom_tabs">Angepasste Tabs nutzen</string>
     <string name="settings_activity_settings">Einstellungen</string>
     <string name="settings_activity_look_and_feel">Erscheinungsbild</string>
     <string name="settings_activity_account_settings">%1$s Einstellungen</string>

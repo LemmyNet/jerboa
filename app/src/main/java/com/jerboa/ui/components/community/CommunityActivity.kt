@@ -52,6 +52,7 @@ import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.util.BrowserType
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -64,8 +65,7 @@ fun CommunityActivity(
     accountViewModel: AccountViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     Log.d("jerboa", "got to community activity")
 
@@ -317,8 +317,7 @@ fun CommunityActivity(
                             enableDownVotes = siteViewModel.enableDownvotes(),
                             showAvatar = siteViewModel.showAvatar(),
                             showVotingArrowsInListView = showVotingArrowsInListView,
-                            useCustomTabs = useCustomTabs,
-                            usePrivateTabs = usePrivateTabs,
+                            browserType = browserType,
                         )
                     }
                     else -> {}

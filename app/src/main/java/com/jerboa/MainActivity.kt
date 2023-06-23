@@ -85,6 +85,7 @@ import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
+import com.jerboa.util.BrowserType
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -152,8 +153,7 @@ class MainActivity : ComponentActivity() {
 
                 MarkdownHelper.init(
                     navController,
-                    appSettingsViewModel.appSettings.value?.useCustomTabs ?: true,
-                    appSettingsViewModel.appSettings.value?.usePrivateTabs ?: false,
+                    BrowserType.fromId(appSettings?.browserType ?: 1),
                 )
 
                 ShowChangelog(appSettingsViewModel = appSettingsViewModel)
@@ -250,8 +250,7 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
                         )
                     }
                     // Only necessary for community deeplinks
@@ -301,8 +300,7 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
                         )
                     }
                     composable(
@@ -343,8 +341,7 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
                         )
                     }
                     // Necessary for deep links
@@ -387,8 +384,7 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
                         )
                     }
                     composable(
@@ -509,8 +505,7 @@ class MainActivity : ComponentActivity() {
                                 commentReplyViewModel = commentReplyViewModel,
                                 postEditViewModel = postEditViewModel,
                                 navController = navController,
-                                useCustomTabs = appSettings?.useCustomTabs ?: true,
-                                usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                                browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
                                 showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                                 showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                                 showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -548,8 +543,7 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -698,8 +692,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         AboutActivity(
                             navController = navController,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
                         )
                     }
                 }

@@ -204,8 +204,6 @@
     <string name="look_and_feel_post_view_small_card">Tarjetas Pequeñas</string>
     <string name="look_and_feel_post_view_list">Lista</string>
     <string name="look_and_feel_show_navigation_bar">Mostrar barra de navegación</string>
-    <string name="look_and_feel_use_custom_tabs">Usar pestañas personalizadas</string>
-    <string name="look_and_feel_use_private_tabs">Usar pestañas privadas personalizadas si están disponible</string>
     <string name="settings_activity_settings">Ajustes</string>
     <string name="settings_activity_look_and_feel">Tema y aspecto</string>
     <string name="settings_activity_account_settings">ajustes de %1$s</string>

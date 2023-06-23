@@ -229,7 +229,6 @@
     <string name="look_and_feel_post_view_list">Lijst</string>
     <string name="look_and_feel_show_action_bar_for_comments">Toon standaard de actiebalk voor reacties</string>
     <string name="look_and_feel_show_navigation_bar">Navigatiebalk tonen</string>
-    <string name="look_and_feel_use_custom_tabs">Aangepaste tabbladen gebruiken</string>
     <string name="settings_activity_settings">Instellingen</string>
     <string name="settings_activity_look_and_feel">Uiterlijk</string>
     <string name="settings_activity_account_settings">%1$s instellingen</string>

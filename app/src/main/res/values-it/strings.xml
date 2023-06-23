@@ -190,8 +190,6 @@
     <string name="look_and_feel_theme_light">Chiaro</string>
     <string name="look_and_feel_theme_system">Di sistema</string>
     <string name="look_and_feel_theme_system_black">Di sistema nero</string>
-    <string name="look_and_feel_use_custom_tabs">Usa schede personalizzate</string>
-    <string name="look_and_feel_use_private_tabs">Usa schede personalizzate private se disponibili</string>
     <string name="markRead">Segna come letto</string>
     <string name="markUnread">Segna come non letto</string>
     <string name="markdownHelper_formatBold">Formatta in grassetto</string>

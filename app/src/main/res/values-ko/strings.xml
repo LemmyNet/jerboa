@@ -187,7 +187,6 @@
     <string name="look_and_feel_post_view_small_card">작은 카드</string>
     <string name="look_and_feel_post_view_list">목록</string>
     <string name="look_and_feel_show_navigation_bar">네비게이션 바 보기</string>
-    <string name="look_and_feel_use_custom_tabs">커스텀 탭 사용</string>
     <string name="settings_activity_settings">설정</string>
     <string name="settings_activity_look_and_feel">외양과 느낌</string>
     <string name="settings_activity_account_settings">%1$s 설정</string>

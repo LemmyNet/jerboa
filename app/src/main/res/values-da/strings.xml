@@ -187,7 +187,6 @@
     <string name="look_and_feel_post_view_small_card">Små kort</string>
     <string name="look_and_feel_post_view_list">Listevisning</string>
     <string name="look_and_feel_show_navigation_bar">Vis navigationslinje</string>
-    <string name="look_and_feel_use_custom_tabs">Brug brugerdefinerede faner</string>
     <string name="settings_activity_settings">Indstillinger</string>
     <string name="settings_activity_look_and_feel">Udseende og fornemmelse</string>
     <string name="settings_activity_account_settings">%1$s indstillinger</string>

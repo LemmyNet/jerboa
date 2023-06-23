@@ -182,7 +182,6 @@
     <string name="look_and_feel_post_view_small_card">Cartão Pequeno</string>
     <string name="look_and_feel_post_view_list">Lista</string>
     <string name="look_and_feel_show_navigation_bar">Mostrar barra de navegação</string>
-    <string name="look_and_feel_use_custom_tabs">Usar abas customizadas</string>
     <string name="settings_activity_settings">Configurações</string>
     <string name="settings_activity_look_and_feel">Aparência e comportamento</string>
     <string name="settings_activity_account_settings">Configurações de %1$s</string>

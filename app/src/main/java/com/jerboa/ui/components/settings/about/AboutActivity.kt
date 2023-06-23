@@ -30,8 +30,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
-import com.jerboa.openLink
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.util.BrowserType
+import com.jerboa.util.openLink
 
 const val githubUrl = "https://github.com/dessalines/jerboa"
 const val jerboaMatrixChat = "https://matrix.to/#/#jerboa-dev:matrix.org"
@@ -43,8 +44,7 @@ const val mastodonLink = "https://mastodon.social/@LemmyDev"
 @Composable
 fun AboutActivity(
     navController: NavController,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     Log.d("jerboa", "Got to About activity")
 
@@ -56,7 +56,7 @@ fun AboutActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun openLink(link: String) {
-        openLink(link, navController, useCustomTabs, usePrivateTabs)
+        openLink(link, navController, browserType)
     }
 
     Scaffold(
@@ -72,6 +72,7 @@ fun AboutActivity(
             ) {
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_what_s_new)) },
+
                     subtitle = { Text(stringResource(R.string.settings_about_version, version ?: "")) },
                     icon = {
                         Icon(
@@ -80,7 +81,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", navController, useCustomTabs, usePrivateTabs)
+                        openLink("$githubUrl/blob/main/RELEASES.md", navController, browserType)
                     },
                 )
                 SettingsDivider()
@@ -194,5 +195,5 @@ fun SettingsHeader(
 @Preview
 @Composable
 fun AboutPreview() {
-    AboutActivity(navController = rememberNavController(), useCustomTabs = false, usePrivateTabs = false)
+    AboutActivity(navController = rememberNavController(), browserType = BrowserType.CustomTab)
 }

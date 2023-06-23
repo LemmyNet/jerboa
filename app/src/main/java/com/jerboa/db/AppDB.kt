@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.jerboa.util.BrowserType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -104,15 +105,10 @@ data class AppSettings(
     )
     val navigateParentCommentsWithVolumeButtons: Boolean,
     @ColumnInfo(
-        name = "use_custom_tabs",
-        defaultValue = "1",
+        name = "browser_type",
+        defaultValue = "1", // BrowserType.CustomTab
     )
-    val useCustomTabs: Boolean,
-    @ColumnInfo(
-        name = "use_private_tabs",
-        defaultValue = "0",
-    )
-    val usePrivateTabs: Boolean,
+    val browserType: Int,
     @ColumnInfo(
         name = "secure_window",
         defaultValue = "0",
@@ -436,6 +432,38 @@ val MIGRATION_15_16 = object : Migration(15, 16) {
     }
 }
 
+val MIGRATION_16_17 = object : Migration(16, 17) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        // Save old preferences
+        val oldCustomTabPref = database.query(
+            "SELECT use_custom_tabs FROM AppSettings",
+        ).getInt(0)
+        val oldPrivateTabPref = database.query(
+            "SELECT use_private_tabs FROM AppSettings",
+        ).getInt(0)
+        // Drop old columns
+        database.execSQL("ALTER TABLE AppSettings DROP COLUMN use_custom_tabs")
+        database.execSQL("ALTER TABLE AppSettings DROP COLUMN use_private_tabs")
+        // Add new columns
+        database.execSQL(
+            "ALTER TABLE AppSettings add column browser_type INTEGER NOT NULL default 1",
+        )
+        // Calculate new preference
+        val newBrowserPref = if (oldCustomTabPref == 0) {
+            BrowserType.External.id
+        } else if (oldPrivateTabPref == 1) {
+            BrowserType.PrivateCustomTab.id
+        } else {
+            BrowserType.CustomTab.id
+        }
+        // Set new preference
+        database.execSQL(
+            "UPDATE AppSettings SET browser_type = $newBrowserPref",
+        )
+    }
+}
+
 @Database(
     version = 16,
     entities = [Account::class, AppSettings::class],
@@ -477,6 +505,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_13_14,
                         MIGRATION_14_15,
                         MIGRATION_15_16,
+                        MIGRATION_16_17,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

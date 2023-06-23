@@ -214,8 +214,6 @@
     <string name="look_and_feel_theme_color_pink">Pink</string>
     <string name="look_and_feel_theme_color_purple">Purple</string>
     <string name="look_and_feel_theme_color_woodland">Woodland</string>
-    <string name="look_and_feel_use_custom_tabs">Use custom tabs</string>
-    <string name="look_and_feel_use_private_tabs">Use private custom tabs if available</string>
     <string name="markRead">Mark as read</string>
     <string name="markUnread">Mark as unread</string>
     <string name="markdownHelper_formatBold">Format as bold text</string>
@@ -332,4 +330,10 @@
     <string name="inbox_activity_messages">Messages</string>
     <string name="bookmarks_activity_saved">Saved</string>
     <string name="generic_error">An error has occurred</string>
+    <string name="browserType_defaultBrowser">Default Browser</string>
+    <string name="browserType_external">External browser</string>
+    <string name="browserType_internal">Internal browser</string>
+    <string name="browserType_customTab">Custom tab</string>
+    <string name="browserType_privateCustomTab">Private custom tab</string>
+    <string name="browserType_privateCustomTab_warning">Warning: Private custom tabs are not supported by all browsers. If a browser does not support private custom tabs, links will open in standard custom tabs.</string>
 </resources>

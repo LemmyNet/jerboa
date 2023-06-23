@@ -3,6 +3,7 @@ package com.jerboa
 import androidx.compose.ui.unit.dp
 import com.jerboa.api.API
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.util.parseUrl
 import junitparams.JUnitParamsRunner
 import org.junit.Assert.*
 import org.junit.Test

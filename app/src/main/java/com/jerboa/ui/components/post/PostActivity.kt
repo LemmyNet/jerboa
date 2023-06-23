@@ -83,6 +83,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.util.BrowserType
 
 @Composable
 fun CommentsHeaderTitle(
@@ -116,8 +117,7 @@ fun PostActivity(
     commentReplyViewModel: CommentReplyViewModel,
     postEditViewModel: PostEditViewModel,
     navController: NavController,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
     showVotingArrowsInListView: Boolean,
@@ -368,8 +368,7 @@ fun PostActivity(
                                     enableDownVotes = siteViewModel.enableDownvotes(),
                                     showAvatar = siteViewModel.showAvatar(),
                                     showVotingArrowsInListView = showVotingArrowsInListView,
-                                    useCustomTabs = useCustomTabs,
-                                    usePrivateTabs = usePrivateTabs,
+                                    browserType = browserType,
                                 )
                             }
 

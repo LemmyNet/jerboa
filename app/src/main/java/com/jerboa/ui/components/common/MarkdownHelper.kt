@@ -29,7 +29,8 @@ import androidx.navigation.NavController
 import coil.ImageLoader
 import com.jerboa.R
 import com.jerboa.convertSpToPx
-import com.jerboa.openLink
+import com.jerboa.util.BrowserType
+import com.jerboa.util.openLink
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
@@ -127,7 +128,7 @@ class LemmyLinkPlugin : AbstractMarkwonPlugin() {
 object MarkdownHelper {
     private var markwon: Markwon? = null
 
-    fun init(navController: NavController, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+    fun init(navController: NavController, browserType: BrowserType) {
         val context = navController.context
         val loader = ImageLoader.Builder(context)
             .crossfade(true)
@@ -148,7 +149,7 @@ object MarkdownHelper {
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { _, link ->
-                        openLink(link, navController, useCustomTabs, usePrivateTabs)
+                        openLink(link, navController, browserType)
                     }
                 }
             })

@@ -48,6 +48,7 @@ import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyViewModel
+import com.jerboa.util.BrowserType
 
 enum class BottomNavTab {
     Home, Search, Inbox, Saved, Profile;
@@ -93,6 +94,7 @@ fun BottomNavActivity(
             }
         }
     }
+    val browserType = BrowserType.values()[appSettings?.browserType ?: 1]
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
@@ -148,8 +150,7 @@ fun BottomNavActivity(
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
                                 ?: true,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            browserType = browserType,
                             drawerState = drawerState,
                         )
                     }
@@ -228,8 +229,7 @@ fun BottomNavActivity(
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
                                 ?: true,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            browserType = browserType,
                         )
                     }
 
@@ -261,8 +261,7 @@ fun BottomNavActivity(
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
                                 ?: true,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            browserType = browserType,
                         )
                     }
                 }

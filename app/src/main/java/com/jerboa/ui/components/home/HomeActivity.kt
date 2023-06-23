@@ -62,6 +62,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.util.BrowserType
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -74,8 +75,7 @@ fun HomeActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
     drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to home activity")
@@ -116,8 +116,7 @@ fun HomeActivity(
                 navController = navController,
                 postListState = postListState,
                 showVotingArrowsInListView = showVotingArrowsInListView,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
+                browserType = browserType,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -153,8 +152,7 @@ fun MainPostListingsContent(
     postListState: LazyListState,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
@@ -312,8 +310,7 @@ fun MainPostListingsContent(
                     enableDownVotes = siteViewModel.enableDownvotes(),
                     showAvatar = siteViewModel.showAvatar(),
                     showVotingArrowsInListView = showVotingArrowsInListView,
-                    useCustomTabs = useCustomTabs,
-                    usePrivateTabs = usePrivateTabs,
+                    browserType = browserType,
                 )
             }
 

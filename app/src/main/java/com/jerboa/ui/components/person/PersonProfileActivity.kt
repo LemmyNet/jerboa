@@ -58,6 +58,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.util.BrowserType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -74,8 +75,7 @@ fun PersonProfileActivity(
     postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -167,8 +167,7 @@ fun PersonProfileActivity(
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = siteViewModel.enableDownvotes(),
                 showAvatar = siteViewModel.showAvatar(),
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
+                browserType = browserType,
             )
         },
     )
@@ -198,8 +197,7 @@ fun UserTabs(
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    useCustomTabs: Boolean,
-    usePrivateTabs: Boolean,
+    browserType: BrowserType,
 ) {
     val tabTitles = if (savedMode) {
         listOf(
@@ -443,8 +441,7 @@ fun UserTabs(
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                     showVotingArrowsInListView = showVotingArrowsInListView,
-                                    useCustomTabs = useCustomTabs,
-                                    usePrivateTabs = usePrivateTabs,
+                                    browserType = browserType,
                                 )
                             }
                         }
