@@ -3,7 +3,6 @@ package com.jerboa.ui.components.comment.mentionnode
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Context.CLIPBOARD_SERVICE
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -293,7 +292,6 @@ fun CommentReplyNodeOptionsDialog(
                                 ctx.getString(R.string.comment_mention_node_comment_copied),
                                 Toast.LENGTH_SHORT,
                             ).show()
-
                         } ?: run {
                             Toast.makeText(
                                 ctx,

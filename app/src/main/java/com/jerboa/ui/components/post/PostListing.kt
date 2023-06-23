@@ -1464,7 +1464,6 @@ fun PostOptionsDialog(
                                         ctx.getString(R.string.post_listing_thumbnail_url_copied),
                                         Toast.LENGTH_SHORT,
                                     ).show()
-
                                 } ?: run {
                                     Toast.makeText(
                                         ctx,

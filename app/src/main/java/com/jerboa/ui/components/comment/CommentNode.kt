@@ -739,7 +739,6 @@ fun CommentOptionsDialog(
                                 ctx.getString(R.string.comment_node_comment_copied),
                                 Toast.LENGTH_SHORT,
                             ).show()
-
                         } ?: run {
                             Toast.makeText(
                                 ctx,
