@@ -50,6 +50,7 @@ fun PostEditActivity(
     val pv = postEditViewModel.postView
     var name by rememberSaveable { mutableStateOf(pv?.post?.name.orEmpty()) }
     var url by rememberSaveable { mutableStateOf(pv?.post?.url.orEmpty()) }
+    var isNsfw by rememberSaveable { mutableStateOf(pv?.post?.nsfw ?: false) }
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue(
@@ -84,6 +85,7 @@ fun PostEditActivity(
                                     url = urlOut,
                                     body = bodyOut,
                                     auth = acct.jwt,
+                                    nsfw = isNsfw,
                                 ),
                                 navController = navController,
                                 postViewModel = postViewModel,
@@ -120,6 +122,8 @@ fun PostEditActivity(
                 modifier = Modifier
                     .padding(padding)
                     .imePadding(),
+                isNsfw = isNsfw,
+                onIsNsfwChange = { isNsfw = it },
             )
         },
     )
