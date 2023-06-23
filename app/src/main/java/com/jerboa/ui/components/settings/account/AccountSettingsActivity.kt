@@ -14,6 +14,7 @@ import com.jerboa.R
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,10 +24,11 @@ fun AccountSettingsActivity(
     accountSettingsViewModel: AccountSettingsViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    homeViewModel: HomeViewModel,
 ) {
     Log.d("jerboa", "Got to settings activity")
 
-    val account = getCurrentAccount(accountViewModel = accountViewModel)
+    val account = getCurrentAccount(accountViewModel = accountViewModel)!!
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
@@ -43,6 +45,7 @@ fun AccountSettingsActivity(
                             form,
                             siteViewModel = siteViewModel,
                             account = account,
+                            homeViewModel = homeViewModel,
                         )
                     },
                     siteViewModel = siteViewModel,

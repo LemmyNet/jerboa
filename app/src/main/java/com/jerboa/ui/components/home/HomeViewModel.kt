@@ -23,6 +23,7 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.db.Account
 import com.jerboa.dedupePosts
 import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
@@ -163,6 +164,11 @@ class HomeViewModel : ViewModel() {
             blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
             showBlockPersonToast(blockPersonRes, ctx)
         }
+    }
+
+    fun updateFromAccount(account: Account) {
+        updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
+        updateListingType(ListingType.values().getOrElse(account.defaultListingType) { listingType })
     }
 
     fun updatePost(postView: PostView) {

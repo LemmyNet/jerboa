@@ -118,10 +118,11 @@ class LoginViewModel : ViewModel() {
                         )
 
                         homeViewModel.resetPage()
+                        homeViewModel.updateFromAccount(account)
                         homeViewModel.getPosts(
                             GetPosts(
-                                type_ = luv.local_user.default_listing_type,
-                                sort = luv.local_user.default_sort_type,
+                                type_ = homeViewModel.listingType,
+                                sort = homeViewModel.sortType,
                                 page = homeViewModel.page,
                                 auth = account.jwt,
                             ),
