@@ -60,6 +60,7 @@ fun CreatePostActivity(
             ),
         )
     }
+    var isNsfw by rememberSaveable { mutableStateOf(false) }
     var formValid by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(initialUrl) {
@@ -107,6 +108,7 @@ fun CreatePostActivity(
                                             url = urlOut,
                                             body = bodyOut,
                                             auth = acct.jwt,
+                                            nsfw = isNsfw,
                                         ),
                                         navController,
                                     )
@@ -154,6 +156,8 @@ fun CreatePostActivity(
                     },
                     account = account,
                     padding = padding,
+                    isNsfw = isNsfw,
+                    onIsNsfwChange = { isNsfw = it },
                 )
             },
         )
