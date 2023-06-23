@@ -54,4 +54,23 @@ object TestPostObjects {
         my_vote = 5,
         unread_comments = 3,
     )
+
+    val TEST_GET_POSTS = GetPosts(
+        type_ = ListingType.All,
+        sort = SortType.Active,
+        page = 1,
+        limit = 10,
+        community_id = 15,
+        community_name = "Community",
+        saved_only = false,
+        auth = "validAuth",
+    )
+
+    val TEST_GET_POSTS_RESPONSE = GetPostsResponse(
+        listOf(TEST_POST_VIEW),
+    )
+
+    val TEST_POST_RESPONSE = PostResponse(
+        post_view = TEST_POST_VIEW,
+    )
 }

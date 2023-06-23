@@ -39,4 +39,24 @@ object TestCommunityObjects {
         subscribed = SubscribedType.Subscribed,
         counts = TEST_COMMUNITY_AGGREGATES,
     )
+
+    val TEST_FOLLOW_COMMUNITY = FollowCommunity(
+        community_id = 1,
+        follow = true,
+        auth = "validauth",
+    )
+
+    val TEST_COMMUNITY_RESPONSE = CommunityResponse(
+        community_view = TEST_COMMUNITY_VIEW,
+        discussion_languages = listOf(1, 2),
+    )
+
+    val TEST_GET_COMMUNITY_RESPONSE = GetCommunityResponse(
+        community_view = TEST_COMMUNITY_VIEW,
+        site = null,
+        moderators = emptyList(),
+        online = 4,
+        discussion_languages = listOf(1, 2),
+        default_post_language = 1,
+    )
 }

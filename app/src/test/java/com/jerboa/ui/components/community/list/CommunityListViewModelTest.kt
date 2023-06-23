@@ -2,7 +2,6 @@ package com.jerboa.ui.components.community.list
 
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
-import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.datatypes.types.MyUserInfo
 import com.jerboa.datatypes.types.SearchResponse
@@ -14,7 +13,6 @@ import com.jerboa.ui.components.home.SiteViewModel
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import junitparams.JUnitParamsRunner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,9 +38,6 @@ class CommunityListViewModelTest {
     @Test
     fun testSetCommunityListFromFollowed() = runTest {
         // Prepare
-        mockkStatic("com.jerboa.api.HttpKt")
-        every { apiWrapper<SearchResponse>(any()) } returns ApiState.Success(TEST_SEARCH_RESPONSE)
-
         val api = mockk<API>() {
             coEvery { search(any()) } returns Response.success(TEST_SEARCH_RESPONSE)
         }

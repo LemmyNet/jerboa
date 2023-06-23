@@ -70,30 +70,39 @@ class CommunityViewModel : ViewModel() {
         page += 1
     }
 
-    fun getCommunity(form: GetCommunity) {
+    fun getCommunity(
+        form: GetCommunity,
+        api: API = API.getInstance(),
+    ) {
         viewModelScope.launch {
             communityRes = ApiState.Loading
             communityRes =
                 apiWrapper(
-                    API.getInstance().getCommunity(form.serializeToMap()),
+                    api.getCommunity(form.serializeToMap()),
                 )
         }
     }
 
-    fun getPosts(form: GetPosts) {
+    fun getPosts(
+        form: GetPosts,
+        api: API = API.getInstance(),
+    ) {
         viewModelScope.launch {
             postsRes = ApiState.Loading
             postsRes =
                 apiWrapper(
-                    API.getInstance().getPosts(form.serializeToMap()),
+                    api.getPosts(form.serializeToMap()),
                 )
         }
     }
 
-    fun appendPosts(form: GetPosts) {
+    fun appendPosts(
+        form: GetPosts,
+        api: API = API.getInstance(),
+    ) {
         viewModelScope.launch {
             fetchingMore = true
-            val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+            val more = apiWrapper(api.getPosts(form.serializeToMap()))
             // Only append when both new and existing are Successes
             when (val existing = postsRes) {
                 is ApiState.Success -> {
@@ -119,11 +128,14 @@ class CommunityViewModel : ViewModel() {
         }
     }
 
-    fun followCommunity(form: FollowCommunity) {
+    fun followCommunity(
+        form: FollowCommunity,
+        api: API = API.getInstance(),
+    ) {
         viewModelScope.launch {
             followCommunityRes = ApiState.Loading
             followCommunityRes =
-                apiWrapper(API.getInstance().followCommunity(form))
+                apiWrapper(api.followCommunity(form))
 
             // Copy that response to the communityRes
             when (val followRes = followCommunityRes) {
@@ -144,10 +156,13 @@ class CommunityViewModel : ViewModel() {
         }
     }
 
-    fun likePost(form: CreatePostLike) {
+    fun likePost(
+        form: CreatePostLike,
+        api: API = API.getInstance(),
+    ) {
         viewModelScope.launch {
             likePostRes = ApiState.Loading
-            likePostRes = apiWrapper(API.getInstance().likePost(form))
+            likePostRes = apiWrapper(api.likePost(form))
 
             when (val likeRes = likePostRes) {
                 is ApiState.Success -> {
@@ -159,10 +174,13 @@ class CommunityViewModel : ViewModel() {
         }
     }
 
-    fun savePost(form: SavePost) {
+    fun savePost(
+        form: SavePost,
+        api: API = API.getInstance(),
+    ) {
         viewModelScope.launch {
             savePostRes = ApiState.Loading
-            savePostRes = apiWrapper(API.getInstance().savePost(form))
+            savePostRes = apiWrapper(api.savePost(form))
             when (val saveRes = savePostRes) {
                 is ApiState.Success -> {
                     updatePost(saveRes.data.post_view)
@@ -173,10 +191,13 @@ class CommunityViewModel : ViewModel() {
         }
     }
 
-    fun deletePost(form: DeletePost) {
+    fun deletePost(
+        form: DeletePost,
+        api: API = API.getInstance(),
+    ) {
         viewModelScope.launch {
             deletePostRes = ApiState.Loading
-            deletePostRes = apiWrapper(API.getInstance().deletePost(form))
+            deletePostRes = apiWrapper(api.deletePost(form))
             when (val deletePost = deletePostRes) {
                 is ApiState.Success -> {
                     updatePost(deletePost.data.post_view)
