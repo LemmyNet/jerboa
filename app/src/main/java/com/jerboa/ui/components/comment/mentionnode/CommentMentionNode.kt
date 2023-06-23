@@ -1,8 +1,5 @@
 package com.jerboa.ui.components.comment.mentionnode
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -46,7 +43,6 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.db.Account
-import com.jerboa.findActivity
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
@@ -57,6 +53,7 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
+import com.jerboa.util.ClipboardCopyHandler
 
 @Composable
 fun CommentMentionNodeHeader(
@@ -281,23 +278,10 @@ fun CommentReplyNodeOptionsDialog(
                     text = stringResource(R.string.comment_mention_node_copy_comment),
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
-                        val activity = ctx.findActivity()
-
-                        activity?.let {
-                            val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newPlainText("comment", personMentionView.comment.content)
-                            clipboard.setPrimaryClip(clip)
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.comment_mention_node_comment_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                        } ?: run {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.generic_error),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                        if (ClipboardCopyHandler.copyToClipboard(ctx, personMentionView.comment.content, "comment")) {
+                            Toast.makeText(ctx, ctx.getString(R.string.comment_mention_node_comment_copied), Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
                         }
                     },
                 )

@@ -1,8 +1,5 @@
 package com.jerboa.ui.components.post
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -77,7 +74,6 @@ import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.Account
-import com.jerboa.findActivity
 import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
@@ -113,6 +109,7 @@ import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
+import com.jerboa.util.ClipboardCopyHandler
 
 @Composable
 fun PostHeaderLine(
@@ -1453,23 +1450,10 @@ fun PostOptionsDialog(
                             text = stringResource(R.string.post_listing_copy_thumbnail_url),
                             icon = Icons.Outlined.ContentCopy,
                             onClick = {
-                                val activity = ctx.findActivity()
-
-                                activity?.let {
-                                    val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                    val clip = ClipData.newPlainText("thumbnail url", postView.post.thumbnail_url)
-                                    clipboard.setPrimaryClip(clip)
-                                    Toast.makeText(
-                                        ctx,
-                                        ctx.getString(R.string.post_listing_thumbnail_url_copied),
-                                        Toast.LENGTH_SHORT,
-                                    ).show()
-                                } ?: run {
-                                    Toast.makeText(
-                                        ctx,
-                                        ctx.getString(R.string.generic_error),
-                                        Toast.LENGTH_SHORT,
-                                    ).show()
+                                if (ClipboardCopyHandler.copyToClipboard(ctx, postView.post.thumbnail_url, "thumbnail url")) {
+                                    Toast.makeText(ctx, ctx.getString(R.string.post_listing_thumbnail_url_copied), Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
                                 }
                             },
                         )
