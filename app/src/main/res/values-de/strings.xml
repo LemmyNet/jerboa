@@ -312,5 +312,5 @@
     <string name="inbox_activity_mentions">Erwähnungen</string>
     <string name="inbox_activity_messages">Nachrichten</string>
     <string name="bookmarks_activity_saved">Gespeichert</string>
-    <string name="create_post_tag_nsfw">NSFW:</string>
+    <string name="create_post_tag_nsfw">Markiere Post als NSFW</string>
 </resources>

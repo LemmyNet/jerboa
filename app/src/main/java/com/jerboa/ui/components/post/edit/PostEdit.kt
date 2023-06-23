@@ -4,7 +4,6 @@ package com.jerboa.ui.components.post.edit
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -16,19 +15,18 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.post.composables.CheckboxIsNsfw
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
@@ -149,21 +147,10 @@ fun EditPostBody(
             focusImmediate = false,
             placeholder = stringResource(R.string.post_edit_body_placeholder),
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(
-                space = 10.dp,
-                alignment = Alignment.Start,
-            ),
-        ) {
-            Text(
-                text = stringResource(R.string.create_post_tag_nsfw),
-            )
-            Switch(
-                checked = isNsfw,
-                onCheckedChange = onIsNsfwChange,
-            )
-        }
+        CheckboxIsNsfw(
+            checked = isNsfw,
+            onCheckedChange = onIsNsfwChange,
+        )
     }
 }
 
