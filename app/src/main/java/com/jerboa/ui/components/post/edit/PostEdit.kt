@@ -26,6 +26,7 @@ import com.jerboa.R
 import com.jerboa.db.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.post.composables.CheckboxIsNsfw
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
@@ -91,6 +92,8 @@ fun EditPostBody(
     formValid: (valid: Boolean) -> Unit,
     account: Account?,
     modifier: Modifier = Modifier,
+    isNsfw: Boolean,
+    onIsNsfwChange: (isNsfw: Boolean) -> Unit,
 ) {
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -144,6 +147,10 @@ fun EditPostBody(
             focusImmediate = false,
             placeholder = stringResource(R.string.post_edit_body_placeholder),
         )
+        CheckboxIsNsfw(
+            checked = isNsfw,
+            onCheckedChange = onIsNsfwChange,
+        )
     }
 }
 
@@ -160,5 +167,7 @@ fun EditPostBodyPreview() {
         onPickedImage = {},
         onUrlChange = {},
         account = null,
+        isNsfw = false,
+        onIsNsfwChange = {},
     )
 }

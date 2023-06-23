@@ -720,11 +720,12 @@ fun fetchInitialData(
 ) {
     if (account != null) {
         API.changeLemmyInstance(account.instance)
+        homeViewModel.updateFromAccount(account)
         homeViewModel.resetPage()
         homeViewModel.getPosts(
             GetPosts(
-                type_ = ListingType.values()[account.defaultListingType],
-                sort = SortType.values()[account.defaultSortType],
+                type_ = homeViewModel.listingType,
+                sort = homeViewModel.sortType,
                 auth = account.jwt,
             ),
         )

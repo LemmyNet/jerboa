@@ -32,7 +32,6 @@ import com.jerboa.datatypes.types.GetPersonMentions
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPrivateMessages
 import com.jerboa.datatypes.types.GetReplies
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
@@ -261,8 +260,8 @@ class MainActivity : ComponentActivity() {
                             communityViewModel.getPosts(
                                 GetPosts(
                                     community_name = name,
-                                    type_ = ListingType.values()[account?.defaultListingType ?: 1],
-                                    sort = SortType.values()[account?.defaultSortType ?: 0],
+                                    type_ = homeViewModel.listingType,
+                                    sort = homeViewModel.sortType,
                                     auth = account?.jwt,
                                 ),
                             )
@@ -669,6 +668,7 @@ class MainActivity : ComponentActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             accountSettingsViewModel = accountSettingsViewModel,
+                            homeViewModel = homeViewModel,
                         )
                     }
                     composable(
