@@ -125,6 +125,8 @@ class MainActivity : ComponentActivity() {
 
         val accountSync = getCurrentAccountSync(accountViewModel)
 
+        val browserType = BrowserType.values()[appSettingsViewModel.appSettings.value?.browserType ?: 1]
+
         setContent {
             val ctx = LocalContext.current
 
@@ -151,10 +153,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberAnimatedNavController()
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
-                MarkdownHelper.init(
-                    navController,
-                    BrowserType.fromId(appSettings?.browserType ?: 1),
-                )
+                MarkdownHelper.init(navController, browserType)
 
                 ShowChangelog(appSettingsViewModel = appSettingsViewModel)
 
@@ -250,7 +249,7 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
-                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
+                            browserType = browserType,
                         )
                     }
                     // Only necessary for community deeplinks
@@ -300,7 +299,7 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
-                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
+                            browserType = browserType,
                         )
                     }
                     composable(
@@ -341,7 +340,7 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
-                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
+                            browserType = browserType,
                         )
                     }
                     // Necessary for deep links
@@ -384,7 +383,7 @@ class MainActivity : ComponentActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
                             siteViewModel = siteViewModel,
-                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
+                            browserType = browserType,
                         )
                     }
                     composable(
@@ -505,7 +504,7 @@ class MainActivity : ComponentActivity() {
                                 commentReplyViewModel = commentReplyViewModel,
                                 postEditViewModel = postEditViewModel,
                                 navController = navController,
-                                browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
+                                browserType = browserType,
                                 showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                                 showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                                 showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -543,7 +542,7 @@ class MainActivity : ComponentActivity() {
                             commentReplyViewModel = commentReplyViewModel,
                             postEditViewModel = postEditViewModel,
                             navController = navController,
-                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
+                            browserType = browserType,
                             showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
                             showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
@@ -692,7 +691,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         AboutActivity(
                             navController = navController,
-                            browserType = BrowserType.fromId(appSettings?.browserType ?: 1),
+                            browserType = browserType,
                         )
                     }
                 }

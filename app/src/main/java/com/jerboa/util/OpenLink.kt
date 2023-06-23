@@ -13,18 +13,6 @@ enum class BrowserType(val id: Int, val resourceId: Int) {
     External(0, R.string.browserType_external),
     CustomTab(1, R.string.browserType_customTab),
     PrivateCustomTab(2, R.string.browserType_privateCustomTab),
-    ;
-
-    companion object {
-        fun fromId(id: Int): BrowserType {
-            return when (id) {
-                0 -> BrowserType.External
-                1 -> BrowserType.CustomTab
-                2 -> BrowserType.PrivateCustomTab
-                else -> BrowserType.CustomTab
-            }
-        }
-    }
 }
 
 enum class LinkType {
