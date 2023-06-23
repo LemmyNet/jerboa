@@ -62,7 +62,7 @@ fun CommunityListHeader(
                 },
             ) {
                 Icon(
-                    Icons.Outlined.Close,
+                    Icons.Outlined.ArrowBack,
                     contentDescription = stringResource(R.string.community_list_back),
                 )
             }
