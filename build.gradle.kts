@@ -31,7 +31,8 @@ subprojects {
             if (project.findProperty("com.jerboa.enableComposeCompilerReports") == "true") {
 
                 freeCompilerArgs.addAll(
-                    "-P", "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
                         project.buildDir.absolutePath + "/compose_metrics"
                 )
 
