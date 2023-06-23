@@ -1,5 +1,9 @@
 package com.jerboa.ui.components.comment.mentionnode
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -13,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Link
@@ -42,6 +47,7 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.db.Account
+import com.jerboa.findActivity
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
@@ -270,6 +276,31 @@ fun CommentReplyNodeOptionsDialog(
                             Toast.LENGTH_SHORT,
                         ).show()
                         onDismissRequest()
+                    },
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.comment_mention_node_copy_comment),
+                    icon = Icons.Outlined.ContentCopy,
+                    onClick = {
+                        val activity = ctx.findActivity()
+
+                        activity?.let {
+                            val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("comment", personMentionView.comment.content)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(
+                                ctx,
+                                ctx.getString(R.string.comment_mention_node_comment_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+
+                        } ?: run {
+                            Toast.makeText(
+                                ctx,
+                                ctx.getString(R.string.generic_error),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        }
                     },
                 )
                 if (!isCreator) {

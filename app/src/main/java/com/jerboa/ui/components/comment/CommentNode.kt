@@ -1,5 +1,8 @@
 package com.jerboa.ui.components.comment
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -22,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
@@ -67,6 +71,7 @@ import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
+import com.jerboa.findActivity
 import com.jerboa.isModerator
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
@@ -719,6 +724,32 @@ fun CommentOptionsDialog(
                         onDismissRequest()
                     },
                 )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.comment_node_copy_comment),
+                    icon = Icons.Outlined.ContentCopy,
+                    onClick = {
+                        val activity = ctx.findActivity()
+
+                        activity?.let {
+                            val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("comment", commentView.comment.content)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(
+                                ctx,
+                                ctx.getString(R.string.comment_node_comment_copied),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+
+                        } ?: run {
+                            Toast.makeText(
+                                ctx,
+                                ctx.getString(R.string.generic_error),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        }
+                    },
+                )
+
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.comment_node_report_comment),

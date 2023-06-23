@@ -1,5 +1,8 @@
 package com.jerboa.ui.components.post
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +22,7 @@ import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
@@ -73,6 +77,7 @@ import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.Account
+import com.jerboa.findActivity
 import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
@@ -1443,6 +1448,33 @@ fun PostOptionsDialog(
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCommunityClick,
                     )
+                    if (postView.post.thumbnail_url != null) {
+                        IconAndTextDrawerItem(
+                            text = stringResource(R.string.post_listing_copy_thumbnail_url),
+                            icon = Icons.Outlined.ContentCopy,
+                            onClick = {
+                                val activity = ctx.findActivity()
+
+                                activity?.let {
+                                    val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    val clip = ClipData.newPlainText("thumbnail url", postView.post.thumbnail_url)
+                                    clipboard.setPrimaryClip(clip)
+                                    Toast.makeText(
+                                        ctx,
+                                        ctx.getString(R.string.post_listing_thumbnail_url_copied),
+                                        Toast.LENGTH_SHORT,
+                                    ).show()
+
+                                } ?: run {
+                                    Toast.makeText(
+                                        ctx,
+                                        ctx.getString(R.string.generic_error),
+                                        Toast.LENGTH_SHORT,
+                                    ).show()
+                                }
+                            },
+                        )
+                    }
                 }
                 if (isCreator) {
                     IconAndTextDrawerItem(
