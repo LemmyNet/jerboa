@@ -5,11 +5,13 @@ import android.util.Log
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.toastException
+import com.jerboa.util.DisableLog
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
+import retrofit2.Invocation
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -39,6 +41,7 @@ interface API {
     /**
      * Log into lemmy.
      */
+    @DisableLog
     @POST("user/login")
     suspend fun login(@Body form: Login): Response<LoginResponse>
 
@@ -264,6 +267,15 @@ interface API {
                         .header("User-Agent", "Jerboa")
                     val newRequest = requestBuilder.build()
                     chain.proceed(newRequest)
+                }
+                .addInterceptor { chain ->
+                    // based on https://stackoverflow.com/a/76264357
+                    val request = chain.request()
+                    val invocation = request.tag(Invocation::class.java)
+                    val disableLog = invocation?.method()?.getAnnotation(DisableLog::class.java)
+                    val shouldLogBody: Boolean = disableLog == null
+                    interceptor.setLevel(if (shouldLogBody) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE)
+                    chain.proceed(request)
                 }
                 .addInterceptor(interceptor)
                 .build()
