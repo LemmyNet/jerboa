@@ -152,7 +152,7 @@ fun CreatePostActivity(
                     },
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,
-                    image = initialImage,
+                    selectedImage = initialImage,
                     onPickedImage = { uri ->
                         if (uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)

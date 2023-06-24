@@ -45,6 +45,7 @@ import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.types.Community
 import com.jerboa.db.Account
+import com.jerboa.isImage
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
@@ -108,7 +109,7 @@ fun CreateEditPostBody(
     url: String,
     urlField: InputField,
     onUrlChange: (url: String) -> Unit,
-    image: Uri? = null,
+    selectedImage: Uri? = null,
     onPickedImage: (image: Uri) -> Unit,
     isNsfw: Boolean,
     onIsNsfwChange: (isNsfw: Boolean) -> Unit,
@@ -158,7 +159,8 @@ fun CreateEditPostBody(
 
         PickImage(
             onPickedImage = onPickedImage,
-            url = url,
+            url = if (isImage(url)) url else null,
+            selectedImage = selectedImage,
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.End,
         )

@@ -210,6 +210,7 @@ fun PickImage(
     modifier: Modifier = Modifier,
     onPickedImage: (image: Uri) -> Unit,
     url: String? = null,
+    selectedImage: Uri? = null,
     showImage: Boolean = true,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
 ) {
@@ -221,15 +222,15 @@ fun PickImage(
         mutableStateOf<Bitmap?>(null)
     }
 
-    /*if (image != null) {
-        LaunchedEffect(image) {
-            imageUri = image
+    if (selectedImage != null) {
+        LaunchedEffect(selectedImage) {
+            imageUri = selectedImage
             bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
             Log.d("jerboa", "Uploading image...")
             Log.d("jerboa", imageUri.toString())
-            onPickedImage(image)
+            onPickedImage(selectedImage)
         }
-    }*/
+    }
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent(),
@@ -255,20 +256,22 @@ fun PickImage(
             )
         }
 
-        if (showImage) {
+        if(showImage){
             Spacer(modifier = Modifier.height(SMALL_PADDING))
-            PictrsUrlImage(
-                url = url,
-                nsfw = false,
-            )
 
-            /*
-             bitmap.value?.let { btm ->
-                Image(
-                    bitmap = btm.asImageBitmap(),
-                    contentDescription = stringResource(R.string.pickImage_imagePreview),
+            if (selectedImage != null){
+                bitmap.value?.let { btm ->
+                    Image(
+                        bitmap = btm.asImageBitmap(),
+                        contentDescription = stringResource(R.string.pickImage_imagePreview),
+                    )
+                }
+            } else if (url != null ) {
+                PictrsUrlImage(
+                    url = url,
+                    nsfw = false,
                 )
-            }*/
+            }
         }
     }
 }
