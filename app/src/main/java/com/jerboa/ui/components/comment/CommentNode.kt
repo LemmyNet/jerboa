@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
@@ -796,7 +797,8 @@ fun ShowMoreChildren(
 ) {
     TextButton(
         content = {
-            Text(stringResource(R.string.comment_node_more_replies, commentView.counts.child_count))
+            Text(pluralStringResource(R.plurals.comment_node_more_replies,
+                commentView.counts.child_count, commentView.counts.child_count))
         },
         onClick = { onFetchChildrenClick(commentView) },
     )

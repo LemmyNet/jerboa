@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -597,7 +598,7 @@ fun CommentCount(
         ActionBarButton(
             icon = Icons.Outlined.ChatBubbleOutline,
             contentDescription = null,
-            text = stringResource(R.string.post_listing_comments, comments),
+            text = pluralStringResource(R.plurals.post_listing_comments, comments, comments),
             noClick = true,
             account = account,
             onClick = {}, // This is handled by the whole button click
@@ -626,7 +627,7 @@ fun CommentNewCount(
         Spacer(Modifier.padding(horizontal = spacing))
 
         Text(
-            text = stringResource(R.string.post_listing_new, unread),
+            text = pluralStringResource(R.plurals.post_listing_new, unread, unread),
             style = style,
             color = MaterialTheme.colorScheme.onSurface.muted,
         )
@@ -1106,8 +1107,9 @@ fun PostListingList(
                         DotSpacer(0.dp)
                     }
                     Text(
-                        text = stringResource(
-                            R.string.post_listing_comments_count,
+                        text = pluralStringResource(
+                            R.plurals.post_listing_comments_count,
+                            postView.counts.comments,
                             postView.counts.comments,
                         ),
                         style = MaterialTheme.typography.bodyMedium,

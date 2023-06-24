@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -97,7 +97,8 @@ fun CommunityLink(
             CommunityName(community = community, color = color, style = style)
             usersPerMonth?.also {
                 Text(
-                    text = stringResource(R.string.community_link_users_month, usersPerMonth),
+                    text = pluralStringResource(R.plurals.community_link_users_month, usersPerMonth,
+                        usersPerMonth),
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }

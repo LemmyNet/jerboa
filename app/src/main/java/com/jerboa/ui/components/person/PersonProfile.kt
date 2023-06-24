@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -124,12 +125,14 @@ fun PersonProfileTopSection(
 fun CommentsAndPosts(personView: PersonView) {
     Row {
         Text(
-            text = stringResource(R.string.person_profile_posts, personView.counts.post_count),
+            text = pluralStringResource(R.plurals.person_profile_posts,
+                personView.counts.post_count, personView.counts.post_count),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = stringResource(R.string.person_profile_comments, personView.counts.comment_count),
+            text = pluralStringResource(R.plurals.person_profile_comments,
+                personView.counts.comment_count, personView.counts.comment_count),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }

@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="AppBars_comments">%1$s comments</string>
+    <plurals name="AppBars_comments">
+        <item quantity="one">%1$s comment</item>
+        <item quantity="other">%1$s comments</item>
+    </plurals>
     <string name="AppBars_created">Created</string>
-    <string name="AppBars_posts">%1$s posts</string>
-    <string name="AppBars_users_6_months">%1$s users / 6 months</string>
-    <string name="AppBars_users_day">%1$s users / day</string>
-    <string name="AppBars_users_month">%1$s users / month</string>
-    <string name="AppBars_users_week">%1$s users / week</string>
+    <plurals name="AppBars_posts">
+        <item quantity="one">%1$s post</item>
+        <item quantity="other">%1$s posts</item>
+    </plurals>
+    <plurals name="AppBars_users_6_months">
+        <item quantity="one">%1$s user / 6 months</item>
+        <item quantity="other">%1$s users / 6 months</item>
+    </plurals>
+    <plurals name="AppBars_users_day">
+        <item quantity="one">%1$s user / day</item>
+        <item quantity="other">%1$s users / day</item>
+    </plurals>
+    <plurals name="AppBars_users_month">
+        <item quantity="one">%1$s user / month</item>
+        <item quantity="other">%1$s users / month</item>
+    </plurals>
+    <plurals name="AppBars_users_week">
+        <item quantity="one">%1$s user / week</item>
+        <item quantity="other">%1$s users / week</item>
+    </plurals>
 
     <string name="about_social">Social</string>
 
@@ -96,7 +114,10 @@
     <string name="comment_node_go_to">Go to %1$s</string>
     <string name="comment_node_goto_comment">Goto Comment</string>
     <string name="comment_node_in">"in "</string>
-    <string name="comment_node_more_replies">%1$s more replies</string>
+    <plurals name="comment_node_more_replies">
+        <item quantity="one">%1$s more reply</item>
+        <item quantity="other">%1$s more replies</item>
+    </plurals>
     <string name="comment_node_permalink_copied">Permalink Copied</string>
     <string name="comment_node_report_comment">Report Comment</string>
     <string name="comment_node_restore">Restore</string>
@@ -122,18 +143,24 @@
     <string name="community_community_info">Community Info</string>
     <string name="community_icon">Community icon</string>
     <string name="community_joined">Joined</string>
-    <string name="community_link_users_month">%1$s users / month</string>
+    <plurals name="community_link_users_month">
+        <item quantity="one">%1$s user / month</item>
+        <item quantity="other">%1$s users / month</item>
+    </plurals>
     <string name="community_list_back">Back</string>
-    <string name="community_list_search">Search...</string>
+    <string name="community_list_search">Search…</string>
     <string name="community_pending">Pending</string>
     <string name="community_refresh">Refresh</string>
     <string name="community_sortBy">Sort by</string>
     <string name="community_subscribe">Subscribe</string>
-    <string name="community_users_month">%1$s users / month</string>
+    <plurals name="community_users_month">
+        <item quantity="one">%1$s user / month</item>
+        <item quantity="other">%1$s users / month</item>
+    </plurals>
 
     <string name="createPost_selectCommunity">Select community from list</string>
 
-    <string name="create_post_a_title_here">a title here....</string>
+    <string name="create_post_a_title_here">a title here…</string>
     <string name="create_post_close">Close</string>
     <string name="create_post_community">Community</string>
     <string name="create_post_copy_suggested_title">copy suggested title: %1$s</string>
@@ -286,9 +313,15 @@
     <string name="person_profile_activity_posts">Posts</string>
     <string name="person_profile_back">Back</string>
     <string name="person_profile_block_person">Block Person</string>
-    <string name="person_profile_comments">%1$s comments</string>
+    <plurals name="person_profile_comments">
+        <item quantity="one">%1$s comment</item>
+        <item quantity="other">%1$s comments</item>
+    </plurals>
     <string name="person_profile_joined">Joined</string>
-    <string name="person_profile_posts">%1$s posts</string>
+    <plurals name="person_profile_posts">
+        <item quantity="one">%1$s post</item>
+        <item quantity="other">%1$s posts</item>
+    </plurals>
     <string name="person_profile_report_person">Report Person</string>
     <string name="person_routines_blocked">%1$s Blocked</string>
 
@@ -308,8 +341,14 @@
     <string name="post_edit_close">Close</string>
     <string name="post_edit_edit_post">Edit Post</string>
     <string name="post_listing_block">Block %1$s</string>
-    <string name="post_listing_comments">%1$s comments</string>
-    <string name="post_listing_comments_count">%1$s comments</string>
+    <plurals name="post_listing_comments">
+        <item quantity="one">%1$s comment</item>
+        <item quantity="other">%1$s comments</item>
+    </plurals>
+    <plurals name="post_listing_comments_count">
+        <item quantity="one">%1$s comment</item>
+        <item quantity="other">%1$s comments</item>
+    </plurals>
     <string name="post_listing_copy_link">Copy link</string>
     <string name="post_listing_copy_name">Copy Post Name</string>
     <string name="post_listing_copy_permalink">Copy Permalink</string>
@@ -321,7 +360,10 @@
     <string name="post_listing_go_to">Go to %1$s</string>
     <string name="post_listing_link_copied">Link Copied</string>
     <string name="post_listing_name_copied">Name Copied</string>
-    <string name="post_listing_new">( %1$s new )</string>
+    <plurals name="post_listing_new">
+        <item quantity="one">( %1$s new )</item>
+        <item quantity="other">( %1$s new )</item>
+    </plurals>
     <string name="post_listing_permalink_copied">Permalink Copied</string>
     <string name="post_listing_report_post">Report Post</string>
     <string name="post_listing_restore">Restore</string>

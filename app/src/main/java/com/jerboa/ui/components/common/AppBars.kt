@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -551,32 +552,37 @@ fun CommentsAndPosts(
 ) {
     FlowRow {
         Text(
-            text = stringResource(R.string.AppBars_users_day, siFormat(usersActiveDay)),
+            text = pluralStringResource(R.plurals.AppBars_users_day, usersActiveDay,
+                siFormat(usersActiveDay)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = stringResource(R.string.AppBars_users_week, siFormat(usersActiveWeek)),
+            text = pluralStringResource(R.plurals.AppBars_users_week, usersActiveWeek,
+                siFormat(usersActiveWeek)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = stringResource(R.string.AppBars_users_month, siFormat(usersActiveMonth)),
+            text = pluralStringResource(R.plurals.AppBars_users_month, usersActiveMonth,
+                siFormat(usersActiveMonth)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = stringResource(R.string.AppBars_users_6_months, siFormat(usersActiveHalfYear)),
+            text = pluralStringResource(R.plurals.AppBars_users_6_months, usersActiveHalfYear,
+                siFormat(usersActiveHalfYear)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = stringResource(R.string.AppBars_posts, siFormat(postCount)),
+            text = pluralStringResource(R.plurals.AppBars_posts, postCount, siFormat(postCount)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = stringResource(R.string.AppBars_comments, siFormat(commentCount)),
+            text = pluralStringResource(R.plurals.AppBars_comments, commentCount,
+                siFormat(commentCount)),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }

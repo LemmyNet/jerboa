@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -65,8 +66,9 @@ fun CommunityTopSection(
             }
             Row {
                 Text(
-                    text = stringResource(
-                        R.string.community_users_month,
+                    text = pluralStringResource(
+                        R.plurals.community_users_month,
+                        communityView.counts.users_active_month,
                         communityView.counts.users_active_month,
                     ),
                     style = MaterialTheme.typography.bodyLarge,
