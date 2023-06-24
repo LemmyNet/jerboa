@@ -131,18 +131,36 @@ fun CreateEditPostBody(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
-        PostNameTextField(
+        /**
+         * Post Name / Title TextField
+         */
+        OutlinedTextField(
             value = name,
-            nameField = nameField,
             onValueChange = onNameChange,
+            isError = nameField.hasError,
+            label = {
+                Text(text = nameField.label)
+            },
+            modifier = Modifier.fillMaxWidth(),
         )
 
-        PostUrlTextField(
+        /**
+         * Post URL TextField
+         */
+        OutlinedTextField(
             value = url,
-            urlField = urlField,
             onValueChange = onUrlChange,
+            label = {
+                Text(text = urlField.label)
+            },
+            isError = urlField.hasError,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+            modifier = Modifier.fillMaxWidth(),
         )
 
+        /**
+         * Show title suggestion for web links
+         */
         if (suggestedTitleLoading) {
             CircularProgressIndicator()
         } else {
@@ -156,78 +174,42 @@ fun CreateEditPostBody(
             }
         }
 
+        /**
+         * Pick and upload an image, show a preview
+         */
         PickImage(
             onPickedImage = onImagePicked,
             image = selectedImage,
-            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.End,
+            modifier = Modifier.fillMaxWidth(),
         )
 
-        PostBodyTextField(
+        /**
+         * Markdown field for post body
+         */
+        MarkdownTextField(
             text = body,
             onTextChange = onBodyChange,
+            outlined = true,
             account = account,
+            focusImmediate = false,
+            placeholder = stringResource(R.string.post_edit_body_placeholder),
+            modifier = Modifier.fillMaxWidth(),
         )
 
+        /**
+         * Show community selector if necessary
+         */
         communitySelector()
 
+        /**
+         * Checkbox to mark post NSFW
+         */
         CheckboxIsNsfw(
             checked = isNsfw,
             onCheckedChange = onIsNsfwChange,
         )
     }
-}
-
-@Composable
-fun PostNameTextField(
-    value: String,
-    nameField: InputField,
-    onValueChange: (String) -> Unit,
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        isError = nameField.hasError,
-        label = {
-            Text(text = nameField.label)
-        },
-        modifier = Modifier.fillMaxWidth(),
-    )
-}
-
-@Composable
-fun PostUrlTextField(
-    value: String,
-    urlField: InputField,
-    onValueChange: (String) -> Unit,
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = {
-            Text(text = urlField.label)
-        },
-        isError = urlField.hasError,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
-        modifier = Modifier.fillMaxWidth(),
-    )
-}
-
-@Composable
-fun PostBodyTextField(
-    text: TextFieldValue,
-    onTextChange: (TextFieldValue) -> Unit,
-    account: Account?,
-) {
-    MarkdownTextField(
-        text = text,
-        onTextChange = onTextChange,
-        modifier = Modifier.fillMaxWidth(),
-        outlined = true,
-        account = account,
-        focusImmediate = false,
-        placeholder = stringResource(R.string.post_edit_body_placeholder),
-    )
 }
 
 @Composable
