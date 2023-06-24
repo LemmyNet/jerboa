@@ -228,7 +228,7 @@ fun ColumnScope.PickImage(
         modifier = modifier.align(horizontalAlignment),
         onClick = {
             launcher.launch("image/*")
-        }
+        },
     ) {
         if (isUploadingImage) {
             CircularProgressIndicator(
