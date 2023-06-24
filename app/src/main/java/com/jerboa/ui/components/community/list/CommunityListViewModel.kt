@@ -27,20 +27,16 @@ import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.Instant
 
-class CommunityListViewModelFactory(
-    private val searchHistoryRepository: SearchHistoryRepository,
-    private val appSettingsRepository: AppSettingsRepository,
-) : ViewModelProvider.Factory {
+class CommunityListViewModelFactory(private val repository: SearchHistoryRepository)
+    : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CommunityListViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return CommunityListViewModel(searchHistoryRepository, appSettingsRepository) as T
+            return CommunityListViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
@@ -48,14 +44,8 @@ class CommunityListViewModelFactory(
 
 class CommunityListViewModel(
     private val searchHistoryRepository: SearchHistoryRepository,
-    private val appSettingsRepository: AppSettingsRepository,
 ) : ViewModel(), Initializable {
     override var initialized by mutableStateOf(false)
-    init {
-        viewModelScope.launch {
-            appSettingsRepository.appSettings.observeForever { appSettings.value = it }
-        }
-    }
     var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -63,12 +53,9 @@ class CommunityListViewModel(
         private set
 
     val searchHistory: Flow<List<SearchHistory>> = searchHistoryRepository.history()
-        .filter { appSettings.value?.saveSearchHistory == true }
         .map { history -> history.sortedByDescending { it.timestamp } }
 
     var communities: List<CommunityView> by mutableStateOf(emptyList())
-
-    private val appSettings = MutableStateFlow(appSettingsRepository.appSettings.value)
 
     private var fetchCommunitiesJob: Job? = null
     fun searchCommunities(form: Search, debounce: Boolean = false) {
@@ -77,12 +64,9 @@ class CommunityListViewModel(
             if (debounce) delay(DEBOUNCE_DELAY)
             searchRes = ApiState.Loading
             searchRes = apiWrapper(API.getInstance().search(form.serializeToMap()))
-            form.q.takeIf { query ->
-                appSettings.value?.saveSearchHistory == true && query.isNotEmpty()
-            }?.let { query ->
-                searchHistoryRepository.insert(
-                    SearchHistory(query, Instant.now().epochSecond),
-                )
+            form.q.takeIf { it.isNotEmpty() }?.let { query ->
+
+                searchHistoryRepository.insert(SearchHistory(query, Instant.now().epochSecond))
             }
         }
     }

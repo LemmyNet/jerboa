@@ -90,8 +90,12 @@ import com.jerboa.ui.theme.JerboaTheme
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
     val accountRepository by lazy { AccountRepository(database.accountDao()) }
-    val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
-    val searchHistoryRepository by lazy { SearchHistoryRepository(database.searchHistoryDao()) }
+    val appSettingsRepository by lazy {
+        AppSettingsRepository(database.appSettingsDao(), database.searchHistoryDao())
+    }
+    val searchHistoryRepository by lazy {
+        SearchHistoryRepository(database.searchHistoryDao(), database.appSettingsDao())
+    }
 }
 
 class MainActivity : AppCompatActivity() {
@@ -100,9 +104,7 @@ class MainActivity : AppCompatActivity() {
     private val personProfileViewModel by viewModels<PersonProfileViewModel>()
     private val inboxViewModel by viewModels<InboxViewModel>()
     private val communityListViewModel by viewModels<CommunityListViewModel>() {
-        (application as JerboaApplication).let { app ->
-            CommunityListViewModelFactory(app.searchHistoryRepository, app.appSettingsRepository)
-        }
+        CommunityListViewModelFactory((application as JerboaApplication).searchHistoryRepository)
     }
     private val createPostViewModel by viewModels<CreatePostViewModel>()
     private val commentReplyViewModel by viewModels<CommentReplyViewModel>()

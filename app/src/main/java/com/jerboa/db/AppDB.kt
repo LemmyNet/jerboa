@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -167,6 +168,9 @@ interface SearchHistoryDao {
 
     @Delete(entity = SearchHistory::class)
     suspend fun delete(item: SearchHistory)
+
+    @Query("DELETE FROM SearchHistory")
+    suspend fun clear()
 }
 
 @Dao
@@ -197,6 +201,9 @@ interface AccountDao {
 interface AppSettingsDao {
     @Query("SELECT * FROM AppSettings limit 1")
     fun getSettings(): LiveData<AppSettings>
+
+    @Query("SELECT * FROM AppSettings limit 1")
+    fun settings(): Flow<AppSettings>
 
     @Update
     suspend fun updateAppSettings(appSettings: AppSettings)
@@ -251,10 +258,14 @@ class AccountRepository(private val accountDao: AccountDao) {
 
 class SearchHistoryRepository(
     private val searchHistoryDao: SearchHistoryDao,
+    private val appSettingsDao: AppSettingsDao,
 ) {
     fun history(): Flow<List<SearchHistory>> = searchHistoryDao.history()
 
-    suspend fun insert(item: SearchHistory) = searchHistoryDao.insert(item)
+    suspend fun insert(item: SearchHistory) {
+        if (appSettingsDao.settings().first().saveSearchHistory)
+            searchHistoryDao.insert(item)
+    }
 
     suspend fun delete(item: SearchHistory) = searchHistoryDao.delete(item)
 }
@@ -263,6 +274,7 @@ class SearchHistoryRepository(
 // instead of the whole database, because you only need access to the DAO
 class AppSettingsRepository(
     private val appSettingsDao: AppSettingsDao,
+    private val searchHistoryDao: SearchHistoryDao,
     private val httpClient: OkHttpClient = OkHttpClient(),
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
@@ -277,6 +289,7 @@ class AppSettingsRepository(
     @WorkerThread
     suspend fun update(appSettings: AppSettings) {
         appSettingsDao.updateAppSettings(appSettings)
+        if (!appSettings.saveSearchHistory) searchHistoryDao.clear()
     }
 
     @WorkerThread
