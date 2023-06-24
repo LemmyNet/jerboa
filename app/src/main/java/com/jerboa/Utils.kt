@@ -1,6 +1,8 @@
 package com.jerboa
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
@@ -1266,4 +1268,24 @@ fun compareVersions(a: String, b: String): Int {
         return a.compareTo(b)
     }
     return comparison
+}
+
+/**
+ * Copy a given text to the clipboard, using the Kotlin context
+ *
+ * @param context The app context
+ * @param textToCopy Text to copy to the clipboard
+ * @param clipLabel Label
+ *
+ * @return true if successful, false otherwise
+ */
+fun copyToClipboard(context: Context, textToCopy: CharSequence, clipLabel: CharSequence): Boolean {
+    val activity = context.findActivity()
+    activity?.let {
+        val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(clipLabel, textToCopy)
+        clipboard.setPrimaryClip(clip)
+        return true
+    }
+    return false
 }
