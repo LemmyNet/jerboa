@@ -1,7 +1,6 @@
 
 package com.jerboa.ui.components.post.edit
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Scaffold
@@ -22,7 +21,6 @@ import com.jerboa.datatypes.types.EditPost
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
-import com.jerboa.isImage
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityViewModel
@@ -35,7 +33,6 @@ import com.jerboa.ui.components.post.composables.EditPostSubmitIcon
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 import kotlinx.coroutines.launch
-import java.net.URI
 
 @Composable
 fun PostEditActivity(
@@ -53,7 +50,6 @@ fun PostEditActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
     val pv = postEditViewModel.postView
-    val postIsImage = pv?.post?.url?.let { isImage(it) } ?: run { false }
 
     var name by rememberSaveable { mutableStateOf(pv?.post?.name.orEmpty()) }
     var url by rememberSaveable { mutableStateOf(pv?.post?.url.orEmpty()) }
@@ -69,12 +65,6 @@ fun PostEditActivity(
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
     val formValid = !nameField.hasError && !urlField.hasError
-
-    val image: Uri? = if(postIsImage){
-        Uri.parse(pv!!.post.url)
-    } else {
-        null
-    }
 
     Scaffold(
         topBar = {

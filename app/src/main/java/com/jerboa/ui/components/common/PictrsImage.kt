@@ -41,6 +41,7 @@ import coil.request.ImageRequest
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.decodeUriToBitmap
+import com.jerboa.isImage
 import com.jerboa.pictrsImageThumbnail
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
@@ -256,19 +257,19 @@ fun PickImage(
             )
         }
 
-        if(showImage){
+        if (showImage) {
             Spacer(modifier = Modifier.height(SMALL_PADDING))
 
-            if (selectedImage != null){
+            if (selectedImage != null) {
                 bitmap.value?.let { btm ->
                     Image(
                         bitmap = btm.asImageBitmap(),
                         contentDescription = stringResource(R.string.pickImage_imagePreview),
                     )
                 }
-            } else if (url != null ) {
+            } else if (isImage(url)) {
                 PictrsUrlImage(
-                    url = url,
+                    url = url!!,
                     nsfw = false,
                 )
             }
