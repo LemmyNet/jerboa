@@ -67,6 +67,14 @@ The above command will print the logs of the latest execution of Jerboa (regardl
 That should look like something like this.
 ![example_cmd.png](../../media/example_cmd.png)
 
-Copy the full output and paste it here. (If not possible just include the few lines below `FATAL EXCEPTION: main` )
+Copy the full output. (If not possible just include the few lines below `FATAL EXCEPTION: main` )
+
+Either include it as a file or past it here
+
+```
+<details><summary>LOGS</summary>
+PASTE HERE AND REMOVE THE ABOVE GUIDE
+</details>
+```
 
 </details>
