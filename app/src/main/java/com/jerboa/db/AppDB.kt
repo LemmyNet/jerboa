@@ -14,6 +14,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -144,6 +145,23 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     blurNSFW = true,
 )
 
+@Entity
+data class SearchHistory(
+    @PrimaryKey @ColumnInfo(name = "text") val text: String,
+)
+
+@Dao
+interface SearchHistoryDao {
+    @Query("SELECT * FROM SearchHistory")
+    fun history(): Flow<List<SearchHistory>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE, entity = SearchHistory::class)
+    suspend fun insert(item: SearchHistory)
+
+    @Delete(entity = SearchHistory::class)
+    suspend fun delete(item: SearchHistory)
+}
+
 @Dao
 interface AccountDao {
     @Query("SELECT * FROM account")
@@ -222,6 +240,16 @@ class AccountRepository(private val accountDao: AccountDao) {
     suspend fun delete(account: Account) {
         accountDao.delete(account)
     }
+}
+
+class SearchHistoryRepository(
+    private val searchHistoryDao: SearchHistoryDao,
+) {
+    fun history(): Flow<List<SearchHistory>> = searchHistoryDao.history()
+
+    suspend fun insert(item: SearchHistory) = searchHistoryDao.insert(item)
+
+    suspend fun delete(item: SearchHistory) = searchHistoryDao.delete(item)
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -469,14 +497,28 @@ val MIGRATION_16_17 = object : Migration(16, 17) {
     }
 }
 
+val MIGRATION_17_18 = object : Migration(17, 18) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            """
+                CREATE TABLE IF NOT EXISTS SearchHistory(
+                    history TEXT PRIMARY KEY NOT NULL
+                )
+            """,
+        )
+    }
+}
+
 @Database(
-    version = 17,
-    entities = [Account::class, AppSettings::class],
+    version = 18,
+    entities = [Account::class, AppSettings::class, SearchHistory::class],
     exportSchema = true,
 )
 abstract class AppDB : RoomDatabase() {
     abstract fun accountDao(): AccountDao
     abstract fun appSettingsDao(): AppSettingsDao
+    abstract fun searchHistoryDao(): SearchHistoryDao
 
     companion object {
         @Volatile
@@ -511,6 +553,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_14_15,
                         MIGRATION_15_16,
                         MIGRATION_16_17,
+                        MIGRATION_17_18,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

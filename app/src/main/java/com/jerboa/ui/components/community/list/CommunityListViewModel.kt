@@ -4,32 +4,90 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityAggregates
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.Search
 import com.jerboa.datatypes.types.SearchResponse
 import com.jerboa.datatypes.types.SearchType
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
+import com.jerboa.db.SearchHistory
+import com.jerboa.db.SearchHistoryRepository
 import com.jerboa.serializeToMap
 import com.jerboa.ui.components.common.Initializable
 import com.jerboa.ui.components.home.SiteViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class CommunityListViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class CommunityListViewModelFactory(
+    private val repository: SearchHistoryRepository,
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CommunityListViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return CommunityListViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
 
+class CommunityListViewModel(
+    private val searchHistoryRepository: SearchHistoryRepository,
+) : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
     var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    fun searchCommunities(form: Search) {
-        viewModelScope.launch {
+    var selectedCommunity: Community? by mutableStateOf(null)
+        private set
+
+    val searchHistory: Flow<List<SearchHistory>> = searchHistoryRepository.history()
+
+    var communities: List<CommunityView> by mutableStateOf(emptyList())
+
+    private var fetchCommunitiesJob: Job? = null
+    fun searchCommunities(form: Search, debounce: Boolean = false) {
+        fetchCommunitiesJob?.cancel()
+        fetchCommunitiesJob = viewModelScope.launch {
+            if (debounce) delay(DEBOUNCE_DELAY)
             searchRes = ApiState.Loading
             searchRes = apiWrapper(API.getInstance().search(form.serializeToMap()))
+            form.q.takeIf { it.isNotEmpty() }?.let {
+                searchHistoryRepository.insert(SearchHistory(it))
+            }
         }
+    }
+
+    fun searchAllCommunities(query: String, jwt: String? = null, debounce: Boolean = false) {
+        searchCommunities(
+            Search(
+                q = query,
+                type_ = SearchType.Communities,
+                sort = SortType.TopAll,
+                auth = jwt,
+            ),
+            debounce,
+        )
+    }
+
+    fun resetSearch() {
+        searchRes = ApiState.Empty
+    }
+    suspend fun deleteSearchHistory(item: SearchHistory) {
+        searchHistoryRepository.delete(item)
+    }
+
+    fun selectCommunity(community: Community) {
+        selectedCommunity = community
     }
 
     fun setCommunityListFromFollowed(siteViewModel: SiteViewModel) {
@@ -59,15 +117,7 @@ class CommunityListViewModel : ViewModel(), Initializable {
                         )
                     }
 
-                    searchRes = ApiState.Success(
-                        SearchResponse(
-                            type_ = SearchType.Communities,
-                            communities = followsIntoCommunityViews,
-                            comments = emptyList(),
-                            posts = emptyList(),
-                            users = emptyList(),
-                        ),
-                    )
+                    communities = followsIntoCommunityViews
                 }
             }
 

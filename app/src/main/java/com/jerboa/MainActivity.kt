@@ -15,6 +15,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -39,8 +40,11 @@ import com.jerboa.db.AppDB
 import com.jerboa.db.AppSettingsRepository
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.AppSettingsViewModelFactory
+import com.jerboa.db.SearchHistoryRepository
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
+import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
+import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.CommentEditDeps
 import com.jerboa.ui.components.common.MarkdownHelper
@@ -55,17 +59,24 @@ import com.jerboa.ui.components.common.takeDepsFromRoot
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
+import com.jerboa.ui.components.community.list.CommunityListViewModel
+import com.jerboa.ui.components.community.list.CommunityListViewModelFactory
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
 import com.jerboa.ui.components.inbox.InboxActivity
+import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import com.jerboa.ui.components.person.PersonProfileViewModel
 import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.create.CreatePostActivity
+import com.jerboa.ui.components.post.create.CreatePostViewModel
 import com.jerboa.ui.components.post.edit.PostEditActivity
+import com.jerboa.ui.components.post.edit.PostEditViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
+import com.jerboa.ui.components.report.CreateReportViewModel
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
@@ -80,10 +91,22 @@ class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
     val accountRepository by lazy { AccountRepository(database.accountDao()) }
     val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
+    val searchHistoryRepository by lazy { SearchHistoryRepository(database.searchHistoryDao()) }
 }
 
 class MainActivity : AppCompatActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
+    private val communityViewModel by viewModels<CommunityViewModel>()
+    private val personProfileViewModel by viewModels<PersonProfileViewModel>()
+    private val inboxViewModel by viewModels<InboxViewModel>()
+    private val communityListViewModel by viewModels<CommunityListViewModel>() {
+        CommunityListViewModelFactory((application as JerboaApplication).searchHistoryRepository)
+    }
+    private val createPostViewModel by viewModels<CreatePostViewModel>()
+    private val commentReplyViewModel by viewModels<CommentReplyViewModel>()
+    private val commentEditViewModel by viewModels<CommentEditViewModel>()
+    private val postEditViewModel by viewModels<PostEditViewModel>()
+    private val createReportViewModel by viewModels<CreateReportViewModel>()
     private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
         AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
     }
@@ -350,6 +373,12 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.CommunityListArgs(it)
+                        // Whenever navigating here, reset the list with your followed communities
+                        SideEffect {
+                            communityListViewModel.setCommunityListFromFollowed(siteViewModel)
+                            communityListViewModel.resetSearch()
+                        }
+
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
