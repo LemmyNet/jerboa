@@ -330,4 +330,18 @@
     <string name="inbox_activity_messages">Messages</string>
     <string name="bookmarks_activity_saved">Saved</string>
     <string name="generic_error">An error has occurred</string>
+    <string name="app_language">Language</string>
+    <string name="english_language">English</string>
+    <string name="danish_language">Danish</string>
+    <string name="german_language">German</string>
+    <string name="spanish_language">Spanish</string>
+    <string name="french_language">French</string>
+    <string name="italian_language">Italian</string>
+    <string name="japanese_language">Japanese</string>
+    <string name="korean_language">Korean</string>
+    <string name="dutch_language">Dutch</string>
+    <string name="polish_language">Polish</string>
+    <string name="portuguese_language">Portuguese</string>
+    <string name="russian_language">Russian</string>
+    <string name="northern_sami_language">Northern Sami</string>
 </resources>

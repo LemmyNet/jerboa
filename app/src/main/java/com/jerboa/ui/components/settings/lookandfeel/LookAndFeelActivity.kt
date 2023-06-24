@@ -1,5 +1,7 @@
 package com.jerboa.ui.components.settings.lookandfeel
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberFloatSettingState
@@ -25,6 +28,7 @@ import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsSlider
+import com.jerboa.MainActivity
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.ThemeColor
@@ -32,16 +36,22 @@ import com.jerboa.ThemeMode
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.DEFAULT_FONT_SIZE
+import com.jerboa.findActivity
+import com.jerboa.getAvailableLanguages
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.util.JerboaPreferences
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LookAndFeelActivity(
     navController: NavController,
     appSettingsViewModel: AppSettingsViewModel,
+    context: Context,
 ) {
     Log.d("jerboa", "Got to lookAndFeel activity")
 
+    val availableLanguages = getAvailableLanguages(context)
+    val sortedLanguagesList = availableLanguages.keys.sorted()
     val settings = appSettingsViewModel.appSettings.value
     val themeState = rememberIntSettingState(settings?.theme ?: 0)
     val themeColorState = rememberIntSettingState(settings?.themeColor ?: 0)
@@ -50,6 +60,14 @@ fun LookAndFeelActivity(
             ?: DEFAULT_FONT_SIZE.toFloat(),
     )
     val postViewModeState = rememberIntSettingState(settings?.postViewMode ?: 0)
+    // find key by value
+    val languageState = rememberIntSettingState(
+        sortedLanguagesList.indexOf(
+            availableLanguages.entries.find {
+                it.value == JerboaPreferences(context).getLanguageLocal()
+            }?.key,
+        ),
+    )
     val showBottomNavState = rememberBooleanSettingState(settings?.showBottomNav ?: true)
     val showCollapsedCommentContentState =
         rememberBooleanSettingState(settings?.showCollapsedCommentContent ?: false)
@@ -94,6 +112,17 @@ fun LookAndFeelActivity(
                 secureWindow = secureWindowState.value,
             ),
         )
+    }
+
+    fun changeLanguageTo(language: String, index: Int) {
+        languageState.value = index
+        updateAppSettings()
+        JerboaPreferences(context).setLanguageLocal(availableLanguages[language] ?: "en")
+        val intent = Intent(context, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        startActivity(context, intent, null)
+        context.findActivity()?.finish()
     }
 
     Scaffold(
@@ -176,6 +205,20 @@ fun LookAndFeelActivity(
                     onItemSelected = { i, _ ->
                         postViewModeState.value = i
                         updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    state = languageState,
+                    items = sortedLanguagesList,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Abc,
+                            contentDescription = null,
+                        )
+                    },
+                    title = { Text(text = stringResource(R.string.app_language)) },
+                    onItemSelected = { index, language ->
+                        changeLanguageTo(language, index)
                     },
                 )
                 SettingsCheckbox(

@@ -317,4 +317,18 @@
     <string name="inbox_activity_messages">Mensajes</string>
     <string name="bookmarks_activity_saved">Guardado</string>
     <string name="generic_error">Ha ocurrido un error</string>
+    <string name="app_language">Idioma</string>
+    <string name="english_language">Inglés</string>
+    <string name="danish_language">Danés</string>
+    <string name="german_language">Alemán</string>
+    <string name="spanish_language">Español</string>
+    <string name="french_language">Francés</string>
+    <string name="italian_language">Italiano</string>
+    <string name="japanese_language">Japonés</string>
+    <string name="korean_language">Coreano</string>
+    <string name="dutch_language">Holandés</string>
+    <string name="polish_language">Polaco</string>
+    <string name="portuguese_language">Portugués</string>
+    <string name="russian_language">Ruso</string>
+    <string name="northern_sami_language">Sami del norte</string>
 </resources>

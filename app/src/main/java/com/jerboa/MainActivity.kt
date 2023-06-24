@@ -1,6 +1,7 @@
 package com.jerboa
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -82,6 +83,7 @@ import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
+import com.jerboa.util.JerboaPreferences
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -114,6 +116,8 @@ class MainActivity : ComponentActivity() {
     private val appSettingsViewModel: AppSettingsViewModel by viewModels {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
+
+    lateinit var jerboaPreferences: JerboaPreferences
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -660,6 +664,7 @@ class MainActivity : ComponentActivity() {
                         LookAndFeelActivity(
                             navController = navController,
                             appSettingsViewModel = appSettingsViewModel,
+                            context = baseContext,
                         )
                     }
                     composable(
@@ -688,5 +693,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    override fun attachBaseContext(newBase: Context) {
+        jerboaPreferences = JerboaPreferences(newBase)
+        val lang = jerboaPreferences.getLanguageLocal()
+        super.attachBaseContext(createContextWithLanguage(newBase, lang))
     }
 }

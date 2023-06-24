@@ -7,6 +7,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.media.MediaScannerConnection
@@ -71,6 +72,7 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.math.abs
 import kotlin.math.pow
 
@@ -78,6 +80,24 @@ val gson = Gson()
 
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
+
+fun getAvailableLanguages(context: Context): HashMap<String, String> {
+    return hashMapOf(
+        context.getString(R.string.english_language) to "en",
+        context.getString(R.string.danish_language) to "da",
+        context.getString(R.string.german_language) to "de",
+        context.getString(R.string.spanish_language) to "es",
+        context.getString(R.string.french_language) to "fr",
+        context.getString(R.string.italian_language) to "it",
+        context.getString(R.string.japanese_language) to "ja",
+        context.getString(R.string.korean_language) to "ko",
+        context.getString(R.string.dutch_language) to "nl",
+        context.getString(R.string.polish_language) to "pl",
+        context.getString(R.string.portuguese_language) to "pt",
+        context.getString(R.string.russian_language) to "ru",
+        context.getString(R.string.northern_sami_language) to "se",
+    )
+}
 
 val DEFAULT_LEMMY_INSTANCES = listOf(
     "beehaw.org",
@@ -1288,4 +1308,32 @@ fun copyToClipboard(context: Context, textToCopy: CharSequence, clipLabel: CharS
         return true
     }
     return false
+}
+
+/**
+ * Creates a configuration context with the language passed as parameter
+ * @param context The application context
+ * @param language The language code (Ex: "en" for English)
+ *
+ * @return A new ConfigurationContext with the given language
+ */
+fun createContextWithLanguage(context: Context, language: String): Context {
+    fun getSystemLocale(config: Configuration): Locale {
+        return config.locales.get(0)
+    }
+
+    fun setSystemLocale(config: Configuration, locale: Locale) {
+        config.setLocale(locale)
+    }
+
+    val config = context.resources.configuration
+    val sysLocale: Locale = getSystemLocale(config)
+
+    if (language.isNotBlank() && sysLocale.language != language) {
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        setSystemLocale(config, locale)
+    }
+
+    return context.createConfigurationContext(config)
 }
