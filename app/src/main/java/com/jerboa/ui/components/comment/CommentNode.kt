@@ -797,8 +797,12 @@ fun ShowMoreChildren(
 ) {
     TextButton(
         content = {
-            Text(pluralStringResource(R.plurals.comment_node_more_replies,
-                commentView.counts.child_count, commentView.counts.child_count))
+            Text(
+                pluralStringResource(
+                    R.plurals.comment_node_more_replies,
+                    commentView.counts.child_count,
+                    commentView.counts.child_count),
+            )
         },
         onClick = { onFetchChildrenClick(commentView) },
     )

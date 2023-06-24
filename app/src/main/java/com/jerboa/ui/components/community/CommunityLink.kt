@@ -97,7 +97,9 @@ fun CommunityLink(
             CommunityName(community = community, color = color, style = style)
             usersPerMonth?.also {
                 Text(
-                    text = pluralStringResource(R.plurals.community_link_users_month, usersPerMonth,
+                    text = pluralStringResource(
+                        R.plurals.community_link_users_month,
+                        usersPerMonth,
                         usersPerMonth),
                     color = MaterialTheme.colorScheme.onSurface,
                 )

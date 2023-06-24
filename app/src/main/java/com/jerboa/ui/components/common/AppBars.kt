@@ -552,37 +552,56 @@ fun CommentsAndPosts(
 ) {
     FlowRow {
         Text(
-            text = pluralStringResource(R.plurals.AppBars_users_day, usersActiveDay,
-                siFormat(usersActiveDay)),
+            text = pluralStringResource(
+                R.plurals.AppBars_users_day,
+                usersActiveDay,
+                siFormat(usersActiveDay),
+            ),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = pluralStringResource(R.plurals.AppBars_users_week, usersActiveWeek,
-                siFormat(usersActiveWeek)),
+            text = pluralStringResource(
+                R.plurals.AppBars_users_week,
+                usersActiveWeek,
+                siFormat(usersActiveWeek),
+            ),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = pluralStringResource(R.plurals.AppBars_users_month, usersActiveMonth,
-                siFormat(usersActiveMonth)),
+            text = pluralStringResource(
+                R.plurals.AppBars_users_month,
+                usersActiveMonth,
+                siFormat(usersActiveMonth),
+            ),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = pluralStringResource(R.plurals.AppBars_users_6_months, usersActiveHalfYear,
-                siFormat(usersActiveHalfYear)),
+            text = pluralStringResource(
+                R.plurals.AppBars_users_6_months,
+                usersActiveHalfYear,
+                siFormat(usersActiveHalfYear),
+            ),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = pluralStringResource(R.plurals.AppBars_posts, postCount, siFormat(postCount)),
+            text = pluralStringResource(
+                R.plurals.AppBars_posts,
+                postCount,
+                siFormat(postCount),
+            ),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
         Text(
-            text = pluralStringResource(R.plurals.AppBars_comments, commentCount,
-                siFormat(commentCount)),
+            text = pluralStringResource(
+                R.plurals.AppBars_comments,
+                commentCount,
+                siFormat(commentCount),
+            ),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }
