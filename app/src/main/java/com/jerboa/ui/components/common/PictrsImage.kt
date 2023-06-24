@@ -209,7 +209,7 @@ fun PictrsBannerImage(
 fun PickImage(
     modifier: Modifier = Modifier,
     onPickedImage: (image: Uri) -> Unit,
-    image: Uri? = null,
+    url: String? = null,
     showImage: Boolean = true,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
 ) {
@@ -221,7 +221,7 @@ fun PickImage(
         mutableStateOf<Bitmap?>(null)
     }
 
-    if (image != null) {
+    /*if (image != null) {
         LaunchedEffect(image) {
             imageUri = image
             bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
@@ -229,7 +229,7 @@ fun PickImage(
             Log.d("jerboa", imageUri.toString())
             onPickedImage(image)
         }
-    }
+    }*/
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent(),
@@ -257,12 +257,18 @@ fun PickImage(
 
         if (showImage) {
             Spacer(modifier = Modifier.height(SMALL_PADDING))
-            bitmap.value?.let { btm ->
+            PictrsUrlImage(
+                url = url,
+                nsfw = false,
+            )
+
+            /*
+             bitmap.value?.let { btm ->
                 Image(
                     bitmap = btm.asImageBitmap(),
                     contentDescription = stringResource(R.string.pickImage_imagePreview),
                 )
-            }
+            }*/
         }
     }
 }

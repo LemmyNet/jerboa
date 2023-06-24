@@ -754,6 +754,7 @@ fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
 }
 
 fun decodeUriToBitmap(ctx: Context, uri: Uri): Bitmap? {
+    Log.d("jerboa", "decodeUriToBitmap INPUT: ${uri.toString()}")
     return if (SDK_INT < 28) {
         @Suppress("DEPRECATION")
         MediaStore.Images.Media.getBitmap(ctx.contentResolver, uri)

@@ -158,7 +158,7 @@ fun CreateEditPostBody(
 
         PickImage(
             onPickedImage = onPickedImage,
-            image = image,
+            url = url,
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.End,
         )

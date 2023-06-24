@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.post.create
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
 import android.util.Patterns
@@ -45,7 +44,6 @@ private var fetchSiteMetadataJob: Job? = null
 
 data class MetaDataRes(val title: String?, val loading: Boolean)
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun CreatePostActivity(
     accountViewModel: AccountViewModel,
