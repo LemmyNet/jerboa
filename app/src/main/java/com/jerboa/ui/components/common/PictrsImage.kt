@@ -7,7 +7,7 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -197,7 +197,7 @@ fun PictrsBannerImage(
 }
 
 @Composable
-fun PickImage(
+fun ColumnScope.PickImage(
     modifier: Modifier = Modifier,
     onPickedImage: (image: Uri) -> Unit,
     sharedImage: Uri? = null,
@@ -223,23 +223,22 @@ fun PickImage(
             initiateUpload(it)
         }
     }
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = horizontalAlignment,
-    ) {
-        OutlinedButton(onClick = {
+
+    OutlinedButton(
+        modifier = modifier.align(horizontalAlignment),
+        onClick = {
             launcher.launch("image/*")
-        }) {
-            if (isUploadingImage) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.pictrs_image_upload_image),
-                    color = MaterialTheme.colorScheme.onBackground.muted,
-                )
-            }
+        }
+    ) {
+        if (isUploadingImage) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+            )
+        } else {
+            Text(
+                text = stringResource(R.string.pictrs_image_upload_image),
+                color = MaterialTheme.colorScheme.onBackground.muted,
+            )
         }
     }
 }
