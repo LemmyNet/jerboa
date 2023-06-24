@@ -100,7 +100,9 @@ class MainActivity : AppCompatActivity() {
     private val personProfileViewModel by viewModels<PersonProfileViewModel>()
     private val inboxViewModel by viewModels<InboxViewModel>()
     private val communityListViewModel by viewModels<CommunityListViewModel>() {
-        CommunityListViewModelFactory((application as JerboaApplication).searchHistoryRepository)
+        (application as JerboaApplication).let { app ->
+            CommunityListViewModelFactory(app.searchHistoryRepository, app.appSettingsRepository)
+        }
     }
     private val createPostViewModel by viewModels<CreatePostViewModel>()
     private val commentReplyViewModel by viewModels<CommentReplyViewModel>()

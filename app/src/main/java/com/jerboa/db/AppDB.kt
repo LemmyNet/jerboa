@@ -124,6 +124,11 @@ data class AppSettings(
         defaultValue = "1",
     )
     val blurNSFW: Boolean,
+    @ColumnInfo(
+        name = "save_search_history",
+        defaultValue = "1",
+    )
+    val saveSearchHistory: Boolean,
 )
 
 val APP_SETTINGS_DEFAULT = AppSettings(
@@ -143,11 +148,13 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     usePrivateTabs = false,
     secureWindow = false,
     blurNSFW = true,
+    saveSearchHistory = true,
 )
 
 @Entity
 data class SearchHistory(
     @PrimaryKey @ColumnInfo(name = "text") val text: String,
+    @ColumnInfo(name = "timestamp") val timestamp: Long,
 )
 
 @Dao
@@ -501,9 +508,13 @@ val MIGRATION_17_18 = object : Migration(17, 18) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
+            "ALTER TABLE AppSettings add column save_search_history INTEGER NOT NULL default 1",
+        )
+        database.execSQL(
             """
                 CREATE TABLE IF NOT EXISTS SearchHistory(
                     history TEXT PRIMARY KEY NOT NULL
+                    timestamp INTEGER NOT NULL 
                 )
             """,
         )

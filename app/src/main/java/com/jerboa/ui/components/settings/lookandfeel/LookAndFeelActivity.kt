@@ -89,6 +89,8 @@ fun LookAndFeelActivity(
     val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
     val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
 
+    val saveSearchHistoryState = rememberBooleanSettingState(settings.saveSearchHistory)
+
     val snackbarHostState = remember { SnackbarHostState() }
 
     val scrollState = rememberScrollState()
@@ -112,6 +114,7 @@ fun LookAndFeelActivity(
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
                 blurNSFW = blurNSFW.value,
+                saveSearchHistory = saveSearchHistoryState.value,
             ),
         )
     }
@@ -284,6 +287,13 @@ fun LookAndFeelActivity(
                     state = blurNSFW,
                     title = {
                         Text(stringResource(id = R.string.blur_nsfw))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = saveSearchHistoryState,
+                    title = {
+                        Text(text = "Save search history")
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
