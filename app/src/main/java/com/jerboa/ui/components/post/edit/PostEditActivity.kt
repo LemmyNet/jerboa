@@ -61,7 +61,6 @@ fun PostEditActivity(
             ),
         )
     }
-    var isUploadingImage by rememberSaveable { mutableStateOf(false) }
 
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -114,15 +113,12 @@ fun PostEditActivity(
                 url = url,
                 urlField = urlField,
                 onUrlChange = { url = it },
-                isUploadingImage = isUploadingImage,
                 onImagePicked = { uri ->
                     val imageIs = imageInputStreamFromUri(ctx, uri)
                     scope.launch {
-                        isUploadingImage = true
                         account?.also { acct ->
                             url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                         }
-                        isUploadingImage = false
                     }
                 },
                 account = account,

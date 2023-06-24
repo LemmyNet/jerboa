@@ -109,7 +109,6 @@ fun CreateEditPostBody(
     urlField: InputField,
     onUrlChange: (url: String) -> Unit,
     selectedImage: Uri? = null,
-    isUploadingImage: Boolean = false,
     onImagePicked: (image: Uri) -> Unit,
     isNsfw: Boolean,
     onIsNsfwChange: (isNsfw: Boolean) -> Unit,
@@ -159,9 +158,7 @@ fun CreateEditPostBody(
 
         PickImage(
             onPickedImage = onImagePicked,
-            url = url,
-            selectedImage = selectedImage,
-            isUploadingImage = isUploadingImage,
+            image = selectedImage,
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.End,
         )

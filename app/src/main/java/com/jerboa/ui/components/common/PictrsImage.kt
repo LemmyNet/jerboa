@@ -2,25 +2,33 @@ package com.jerboa.ui.components.common
 
 import BlurTransformation
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -32,13 +40,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
-import com.jerboa.isImage
+import com.jerboa.decodeUriToBitmap
 import com.jerboa.pictrsImageThumbnail
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGER_ICON_SIZE
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.MAX_IMAGE_SIZE
+import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.ui.theme.muted
 
@@ -200,21 +209,25 @@ fun PictrsBannerImage(
 fun PickImage(
     modifier: Modifier = Modifier,
     onPickedImage: (image: Uri) -> Unit,
-    url: String? = null,
-    selectedImage: Uri? = null,
-    isUploadingImage: Boolean = false,
+    image: Uri? = null,
     showImage: Boolean = true,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
 ) {
-    fun initiateUpload(uri: Uri) {
-        Log.d("jerboa", "Uploading image...")
-        Log.d("jerboa", uri.toString())
-        onPickedImage(uri)
+    val ctx = LocalContext.current
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val bitmap = remember {
+        mutableStateOf<Bitmap?>(null)
     }
 
-    if (selectedImage != null) {
-        LaunchedEffect(selectedImage) {
-            initiateUpload(selectedImage)
+    if (image != null) {
+        LaunchedEffect(image) {
+            imageUri = image
+            bitmap.value = decodeUriToBitmap(ctx, imageUri!!)
+            Log.d("jerboa", "Uploading image...")
+            Log.d("jerboa", imageUri.toString())
+            onPickedImage(image)
         }
     }
 
@@ -222,7 +235,11 @@ fun PickImage(
         ActivityResultContracts.GetContent(),
     ) { uri ->
         uri?.let {
-            initiateUpload(it)
+            imageUri = it
+            bitmap.value = decodeUriToBitmap(ctx, it)
+            Log.d("jerboa", "Uploading image...")
+            Log.d("jerboa", imageUri.toString())
+            onPickedImage(it)
         }
     }
     Column(
@@ -232,22 +249,20 @@ fun PickImage(
         OutlinedButton(onClick = {
             launcher.launch("image/*")
         }) {
-            if (isUploadingImage) {
-                // TODO How to resize CircularProgressIndicator and make it the same height as the button?
-                CircularProgressIndicator()
-            } else {
-                Text(
-                    text = stringResource(R.string.pictrs_image_upload_image),
-                    color = MaterialTheme.colorScheme.onBackground.muted,
-                )
-            }
+            Text(
+                text = stringResource(R.string.pictrs_image_upload_image),
+                color = MaterialTheme.colorScheme.onBackground.muted,
+            )
         }
 
-        if (showImage && isImage(url)) {
-            PictrsUrlImage(
-                url = url!!,
-                nsfw = false,
-            )
+        if (showImage) {
+            Spacer(modifier = Modifier.height(SMALL_PADDING))
+            bitmap.value?.let { btm ->
+                Image(
+                    bitmap = btm.asImageBitmap(),
+                    contentDescription = stringResource(R.string.pickImage_imagePreview),
+                )
+            }
         }
     }
 }
