@@ -48,6 +48,8 @@ Download ADB from here [https://adbinstaller.com/](https://adbinstaller.com/)
 
 Unzip it
 
+[(Click here if you wanna know more about ADB)](https://developer.android.com/tools/adb)
+
 ### Connect your phone to your PC
 
 Use a USB cable to connect your phone to your PC
