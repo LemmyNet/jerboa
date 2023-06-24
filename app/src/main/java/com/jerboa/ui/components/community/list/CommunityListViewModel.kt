@@ -31,8 +31,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.Instant
 
-class CommunityListViewModelFactory(private val repository: SearchHistoryRepository)
-    : ViewModelProvider.Factory {
+class CommunityListViewModelFactory(private val repository: SearchHistoryRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CommunityListViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

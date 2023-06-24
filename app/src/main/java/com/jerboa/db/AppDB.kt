@@ -263,8 +263,9 @@ class SearchHistoryRepository(
     fun history(): Flow<List<SearchHistory>> = searchHistoryDao.history()
 
     suspend fun insert(item: SearchHistory) {
-        if (appSettingsDao.settings().first().saveSearchHistory)
+        if (appSettingsDao.settings().first().saveSearchHistory) {
             searchHistoryDao.insert(item)
+        }
     }
 
     suspend fun delete(item: SearchHistory) = searchHistoryDao.delete(item)
