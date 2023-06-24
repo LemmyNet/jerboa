@@ -425,7 +425,7 @@ fun InboxTabs(
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState)) {
+                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
                         PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
                             ApiState.Empty -> ApiEmptyText()
@@ -598,7 +598,7 @@ fun InboxTabs(
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState)) {
+                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
                         PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
                         when (val messagesRes = inboxViewModel.messagesRes) {
                             ApiState.Empty -> ApiEmptyText()
