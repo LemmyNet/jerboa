@@ -39,7 +39,7 @@ class HomeViewModel : ViewModel() {
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     var fetchingMore by mutableStateOf(false)
         private set
@@ -77,7 +77,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun appendPosts(form: GetPosts) {
+    fun appendPosts(form: GetPosts) =
         viewModelScope.launch {
             fetchingMore = true
             val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
@@ -104,7 +104,7 @@ class HomeViewModel : ViewModel() {
                 else -> {}
             }
         }
-    }
+
 
     fun likePost(form: CreatePostLike) {
         viewModelScope.launch {
@@ -168,7 +168,8 @@ class HomeViewModel : ViewModel() {
 
     fun updateFromAccount(account: Account) {
         updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
-        updateListingType(ListingType.values().getOrElse(account.defaultListingType) { listingType })
+        updateListingType(
+            ListingType.values().getOrElse(account.defaultListingType) { listingType })
     }
 
     fun updatePost(postView: PostView) {
@@ -178,6 +179,7 @@ class HomeViewModel : ViewModel() {
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 postsRes = newRes
             }
+
             else -> {}
         }
     }
