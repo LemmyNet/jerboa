@@ -71,6 +71,7 @@ fun CreatePostActivity(
             ),
         )
     }
+    var isUploadingImage by rememberSaveable { mutableStateOf(false) }
 
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -153,13 +154,16 @@ fun CreatePostActivity(
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,
                     selectedImage = initialImage,
-                    onPickedImage = { uri ->
+                    isUploadingImage = isUploadingImage,
+                    onImagePicked = { uri ->
                         if (uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)
                             scope.launch {
+                                isUploadingImage = true
                                 account?.also { acct ->
                                     url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                                 }
+                                isUploadingImage = false
                             }
                         }
                     },

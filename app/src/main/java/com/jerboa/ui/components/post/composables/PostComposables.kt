@@ -109,7 +109,8 @@ fun CreateEditPostBody(
     urlField: InputField,
     onUrlChange: (url: String) -> Unit,
     selectedImage: Uri? = null,
-    onPickedImage: (image: Uri) -> Unit,
+    isUploadingImage: Boolean = false,
+    onImagePicked: (image: Uri) -> Unit,
     isNsfw: Boolean,
     onIsNsfwChange: (isNsfw: Boolean) -> Unit,
     suggestedTitle: String? = null,
@@ -157,9 +158,10 @@ fun CreateEditPostBody(
         }
 
         PickImage(
-            onPickedImage = onPickedImage,
+            onPickedImage = onImagePicked,
             url = url,
             selectedImage = selectedImage,
+            isUploadingImage = isUploadingImage,
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.End,
         )
@@ -341,7 +343,7 @@ fun CreatePostBodyPreview() {
         url = "",
         urlField = InputField(label = "", hasError = false),
         onUrlChange = {},
-        onPickedImage = {},
+        onImagePicked = {},
         account = null,
         padding = PaddingValues(),
         suggestedTitle = null,
@@ -403,7 +405,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         url = "",
         urlField = InputField(label = "", hasError = false),
         onUrlChange = {},
-        onPickedImage = {},
+        onImagePicked = {},
         suggestedTitle = stringResource(R.string.create_post_a_title_here),
         suggestedTitleLoading = false,
         account = null,
@@ -430,7 +432,7 @@ fun EditPostBodyPreview() {
         urlField = InputField(label = "url", hasError = false),
         onBodyChange = {},
         onNameChange = {},
-        onPickedImage = {},
+        onImagePicked = {},
         onUrlChange = {},
         account = null,
         isNsfw = false,
