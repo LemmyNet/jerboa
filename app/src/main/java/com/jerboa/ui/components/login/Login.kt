@@ -113,7 +113,7 @@ fun LoginForm(
     val form = Login(
         username_or_email = username.trim(),
         password = password.take(60),
-        totp_2fa_token = totp.ifBlank { null }
+        totp_2fa_token = totp.ifBlank { null },
     )
 
     Column(
