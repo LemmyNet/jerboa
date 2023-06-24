@@ -330,4 +330,17 @@
     <string name="inbox_activity_messages">Messages</string>
     <string name="bookmarks_activity_saved">Saved</string>
     <string name="generic_error">An error has occurred</string>
+    <string name="lang_en" translatable="false">English</string>
+    <string name="lang_fr" translatable="false">Français</string>
+    <string name="lang_es" translatable="false">Español</string>
+    <string name="lang_da" translatable="false">Dansk</string>
+    <string name="lang_de" translatable="false">Deutsch</string>
+    <string name="lang_it" translatable="false">Italiano</string>
+    <string name="lang_ko" translatable="false">한국어</string>
+    <string name="lang_ja" translatable="false">ジャパニーズ</string>
+    <string name="lang_pt" translatable="false">Português</string>
+    <string name="lang_ru" translatable="false">Pусский</string>
+    <string name="lang_se" translatable="false">Svensk</string>
+    <string name="lang_nl" translatable="false">Nederlands</string>
+    <string name="lang_language">Language</string>
 </resources>

@@ -1289,3 +1289,22 @@ fun copyToClipboard(context: Context, textToCopy: CharSequence, clipLabel: CharS
     }
     return false
 }
+
+/**
+ * Contains a map of names of that language in that language to its BCP 47 format
+ * If you update this also update locales_config.xml
+ */
+val localeOptions = mapOf(
+    R.string.lang_en to "en",
+    R.string.lang_fr to "fr",
+    R.string.lang_es to "es",
+    R.string.lang_da to "da",
+    R.string.lang_de to "de",
+    R.string.lang_it to "it",
+    R.string.lang_ko to "ko",
+    R.string.lang_nl to "nl",
+    R.string.lang_ja to "ja",
+    R.string.lang_pt to "pt",
+    R.string.lang_ru to "ru",
+    R.string.lang_se to "se",
+)
