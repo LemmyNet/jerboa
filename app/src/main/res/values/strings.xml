@@ -317,4 +317,5 @@
     <string name="inbox_activity_mentions">Mentions</string>
     <string name="inbox_activity_messages">Messages</string>
     <string name="bookmarks_activity_saved">Saved</string>
+    <string name="create_edit_post_close">Close</string>
 </resources>
