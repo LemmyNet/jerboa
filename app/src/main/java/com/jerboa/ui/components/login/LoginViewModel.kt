@@ -143,7 +143,9 @@ class LoginViewModel : ViewModel() {
 
                     loading = false
 
-                    navController.navigate(route = "home")
+                    navController.navigate(route = "home") {
+                        popUpTo(0)
+                    }
                 }
 
                 else -> {}

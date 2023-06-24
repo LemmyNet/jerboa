@@ -15,19 +15,15 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -60,7 +56,6 @@ import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -80,116 +75,66 @@ fun HomeActivity(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to home activity")
 
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                content = {
-                    MainDrawer(
-                        siteViewModel = siteViewModel,
-                        navController = navController,
-                        accountViewModel = accountViewModel,
-                        homeViewModel = homeViewModel,
-                        scope = scope,
-                        drawerState = drawerState,
-                        ctx = ctx,
-                    )
-                },
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            MainTopBar(
+                scope = scope,
+                postListState = postListState,
+                drawerState = drawerState,
+                homeViewModel = homeViewModel,
+                appSettingsViewModel = appSettingsViewModel,
+                account = account,
+                navController = navController,
+                scrollBehavior = scrollBehavior,
             )
         },
-        content = {
-            Scaffold(
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .semantics { testTagsAsResourceId = true },
-                snackbarHost = { SnackbarHost(snackbarHostState) },
-                topBar = {
-                    MainTopBar(
-                        scope = scope,
-                        postListState = postListState,
-                        drawerState = drawerState,
-                        homeViewModel = homeViewModel,
-                        appSettingsViewModel = appSettingsViewModel,
-                        account = account,
-                        navController = navController,
-                        scrollBehavior = scrollBehavior,
-                    )
-                },
-                content = { padding ->
-                    MainPostListingsContent(
-                        padding = padding,
-                        homeViewModel = homeViewModel,
-                        siteViewModel = siteViewModel,
-                        postEditViewModel = postEditViewModel,
-                        appSettingsViewModel = appSettingsViewModel,
-                        account = account,
-                        ctx = ctx,
-                        navController = navController,
-                        postListState = postListState,
-                        showVotingArrowsInListView = showVotingArrowsInListView,
-                        useCustomTabs = useCustomTabs,
-                        usePrivateTabs = usePrivateTabs,
-                    )
-                },
-                floatingActionButtonPosition = FabPosition.End,
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {
-                            account?.also {
-                                navController.navigate("createPost")
-                            } ?: run {
-                                loginFirstToast(ctx)
-                            }
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Add,
-                            contentDescription = stringResource(R.string.floating_createPost),
-                        )
+        content = { padding ->
+            MainPostListingsContent(
+                padding = padding,
+                homeViewModel = homeViewModel,
+                siteViewModel = siteViewModel,
+                postEditViewModel = postEditViewModel,
+                appSettingsViewModel = appSettingsViewModel,
+                account = account,
+                ctx = ctx,
+                navController = navController,
+                postListState = postListState,
+                showVotingArrowsInListView = showVotingArrowsInListView,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    account?.also {
+                        navController.navigate("createPost")
+                    } ?: run {
+                        loginFirstToast(ctx)
                     }
                 },
-                bottomBar = {
-                    BottomAppBarAll(
-                        showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
-                        screen = "home",
-                        unreadCount = siteViewModel.getUnreadCountTotal(),
-                        onClickProfile = {
-                            account?.id?.also {
-                                navController.navigate(route = "profile/$it")
-                            } ?: run {
-                                loginFirstToast(ctx)
-                            }
-                        },
-                        onClickInbox = {
-                            account?.also {
-                                navController.navigate(route = "inbox")
-                            } ?: run {
-                                loginFirstToast(ctx)
-                            }
-                        },
-                        onClickSaved = {
-                            account?.id?.also {
-                                navController.navigate(route = "profile/$it?saved=${true}")
-                            } ?: run {
-                                loginFirstToast(ctx)
-                            }
-                        },
-                        navController = navController,
-                    )
-                },
-            )
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = stringResource(R.string.floating_createPost),
+                )
+            }
         },
-        modifier = Modifier.semantics { testTagsAsResourceId = true },
     )
 }
 
@@ -381,9 +326,11 @@ fun MainDrawer(
     accountViewModel: AccountViewModel,
     homeViewModel: HomeViewModel,
     scope: CoroutineScope,
-    ctx: Context,
     drawerState: DrawerState,
+    onSelectTab: ((BottomNavTab) -> Unit)?,
 ) {
+    val ctx = LocalContext.current
+
     val accounts = accountViewModel.allAccounts.value
     val account = getCurrentAccount(accountViewModel)
 
@@ -443,22 +390,32 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onClickProfile = {
-            account?.id?.also {
-                navController.navigate(route = "profile/$it")
-                closeDrawer(scope, drawerState)
+            onSelectTab?.invoke(BottomNavTab.Profile) ?: run {
+                account?.id?.also {
+                    navController.navigate(route = "profile/$it")
+                } ?: run {
+                    loginFirstToast(ctx)
+                }
             }
+            closeDrawer(scope, drawerState)
         },
         onClickSaved = {
-            account?.id?.also {
-                navController.navigate(route = "profile/$it?saved=${true}")
-                closeDrawer(scope, drawerState)
+            onSelectTab?.invoke(BottomNavTab.Saved) ?: run {
+                account?.id?.also {
+                    navController.navigate(route = "profile/$it?saved=${true}")
+                } ?: run {
+                    loginFirstToast(ctx)
+                }
             }
+            closeDrawer(scope, drawerState)
         },
         onClickInbox = {
-            account?.also {
-                navController.navigate(route = "inbox")
-            } ?: run {
-                loginFirstToast(ctx)
+            onSelectTab?.invoke(BottomNavTab.Inbox) ?: run {
+                account?.also {
+                    navController.navigate(route = "inbox")
+                } ?: run {
+                    loginFirstToast(ctx)
+                }
             }
             closeDrawer(scope, drawerState)
         },
@@ -467,7 +424,9 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onClickCommunities = {
-            navController.navigate(route = "communityList")
+            onSelectTab?.invoke(BottomNavTab.Search) ?: run {
+                navController.navigate(route = "communityList")
+            }
             closeDrawer(scope, drawerState)
         },
     )

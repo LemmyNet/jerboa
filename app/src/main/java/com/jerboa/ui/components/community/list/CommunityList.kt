@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.*
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
@@ -55,18 +56,7 @@ fun CommunityListHeader(
                 )
             }
         },
-        navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
-            ) {
-                Icon(
-                    Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.community_list_back),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
     )
 }
 
