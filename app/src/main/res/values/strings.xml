@@ -230,6 +230,7 @@
     <string name="markdownHelper_insertQuote">Insert quote</string>
     <string name="markdownHelper_preview">View preview</string>
     <string name="moreOptions">More options</string>
+    <string name="networkError">Network error</string>
     <string name="personProfile_viewAvatar">View avatar image</string>
     <string name="personProfile_viewBanner">View banner image</string>
     <string name="person_iconAdmin">Is administrator</string>
