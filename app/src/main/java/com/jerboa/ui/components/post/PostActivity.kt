@@ -184,7 +184,7 @@ fun PostActivity(
                     .mapIndexed { index, postView -> index to postView }
                     .firstOrNull { it.second.post.id == postViewModel.id?.swap()?.getOrNull() }
                     ?.first?.let { currIndex ->
-                        if (currIndex + 1 >= res.data.posts.size - 1 ) {
+                        if (currIndex + 1 >= res.data.posts.size - 1) {
                             val nextIndex = res.data.posts.size
                             homeViewModel.nextPage()
                             homeViewModel.appendPosts(
@@ -195,18 +195,20 @@ fun PostActivity(
                                     auth = account?.jwt,
                                 ),
                             ).invokeOnCompletion {
-                                when(val newRes = homeViewModel.postsRes) {
+                                when (val newRes = homeViewModel.postsRes) {
                                     is ApiState.Success -> {
                                         postViewModel.initialize(newRes.data.posts[nextIndex].post.id.left())
                                         postViewModel.getData(account)
                                     }
+
                                     else -> {}
                                 }
                             }
-                        } else if(currIndex >= 0){
+                        } else if (currIndex >= 0) {
                             postViewModel.initialize(res.data.posts[currIndex + 1].post.id.left())
                             postViewModel.getData(account)
-                        } else {}
+                        } else {
+                        }
                     }
             }
         },
@@ -234,7 +236,7 @@ fun PostActivity(
 
     SwipeableActionsBox(
         startActions = listOf(backward),
-        endActions = listOf(forward)
+        endActions = listOf(forward),
     ) {
         Scaffold(
             modifier = Modifier
@@ -250,7 +252,7 @@ fun PostActivity(
                                 scrollToPreviousParentComment(
                                     scope,
                                     parentListStateIndexes,
-                                    listState
+                                    listState,
                                 )
                                 true
                             }
@@ -523,13 +525,13 @@ fun PostActivity(
                                             toggleExpanded = { commentId -> toggleExpanded(commentId) },
                                             toggleActionBar = { commentId ->
                                                 toggleActionBar(
-                                                    commentId
+                                                    commentId,
                                                 )
                                             },
                                             onMarkAsReadClick = {},
                                             onCommentClick = { commentView ->
                                                 toggleExpanded(
-                                                    commentView.comment.id
+                                                    commentView.comment.id,
                                                 )
                                             },
                                             onUpvoteClick = { cv ->
@@ -587,12 +589,12 @@ fun PostActivity(
                                             },
                                             onHeaderClick = { commentView ->
                                                 toggleExpanded(
-                                                    commentView.comment.id
+                                                    commentView.comment.id,
                                                 )
                                             },
                                             onHeaderLongClick = { commentView ->
                                                 toggleActionBar(
-                                                    commentView.comment.id
+                                                    commentView.comment.id,
                                                 )
                                             },
                                             onEditCommentClick = { cv ->
@@ -625,8 +627,7 @@ fun PostActivity(
                                                 postViewModel.fetchMoreChildren(
                                                     commentView = cv,
                                                     account = account,
-
-                                                    )
+                                                )
                                             },
                                             onBlockCreatorClick = { person ->
                                                 account?.also { acct ->

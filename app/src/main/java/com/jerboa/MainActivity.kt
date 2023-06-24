@@ -505,7 +505,7 @@ class MainActivity : ComponentActivity() {
                                 },
                                 selectedSortType = postViewModel.sortType,
                                 siteViewModel = siteViewModel,
-                                homeViewModel = homeViewModel
+                                homeViewModel = homeViewModel,
                             )
                         }
                     }
@@ -545,7 +545,7 @@ class MainActivity : ComponentActivity() {
                             },
                             selectedSortType = postViewModel.sortType,
                             siteViewModel = siteViewModel,
-                            homeViewModel = homeViewModel
+                            homeViewModel = homeViewModel,
                         )
                     }
                     composable(
