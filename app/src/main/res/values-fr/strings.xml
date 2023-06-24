@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="AppBars_comments">%1$s commentaire(s)</string>
+    <plurals name="AppBars_comments">
+        <item quantity="one">%1$s commentaire</item>
+        <item quantity="other">%1$s commentaires</item>
+        <item quantity="many">%1$s de commentaires</item>
+    </plurals>
     <string name="AppBars_created">Créé</string>
-    <string name="AppBars_posts">%1$s publication(s)</string>
-    <string name="AppBars_users_6_months">%1$s utilisateurs/6 mois</string>
-    <string name="AppBars_users_day">%1$s utilisateurs/jour</string>
-    <string name="AppBars_users_month">%1$s utilisateurs/mois</string>
-    <string name="AppBars_users_week">%1$s utilisateurs/semaine</string>
+    <plurals name="AppBars_posts">
+        <item quantity="one">%1$s publication</item>
+        <item quantity="other">%1$s publications</item>
+        <item quantity="many">%1$s de publications</item>
+    </plurals>
+    <plurals name="AppBars_users_6_months">
+        <item quantity="one">%1$s utilisateur/6 mois</item>
+        <item quantity="other">%1$s utilisateurs/6 mois</item>
+        <item quantity="many">%1$s d’utilisateurs/6 mois</item>
+    </plurals>
+    <plurals name="AppBars_users_day">
+        <item quantity="one">%1$s utilisateur/jour</item>
+        <item quantity="other">%1$s utilisateurs/jour</item>
+        <item quantity="many">%1$s d’utilisateurs/jour</item>
+    </plurals>
+    <plurals name="AppBars_users_month">
+        <item quantity="one">%1$s utilisateur/mois</item>
+        <item quantity="other">%1$s utilisateurs/mois</item>
+        <item quantity="many">%1$s d’utilisateurs/mois</item>
+    </plurals>
+    <plurals name="AppBars_users_week">
+        <item quantity="one">%1$s utilisateur/semaine</item>
+        <item quantity="other">%1$s utilisateurs/semaine</item>
+        <item quantity="many">%1$s d’utilisateurs/semaine</item>
+    </plurals>
 
     <string name="about_social">Social</string>
 
@@ -79,6 +103,8 @@
     <string name="comment_edit_edit">Modifier</string>
     <string name="comment_edit_type_your_comment">Saissisez votre commentaire</string>
     <string name="comment_mention_node_block">Bloquer %1$s</string>
+    <string name="comment_mention_node_comment_copied">Commenter le texte copié</string>
+    <string name="comment_mention_node_copy_comment">Copier le texte du commentaire</string>
     <string name="comment_mention_node_copy_permalink">Copier le lien permanent</string>
     <string name="comment_mention_node_go_to">Aller à %1$s</string>
     <string name="comment_mention_node_permalink_copied">Permalien copié</string>
@@ -86,13 +112,19 @@
     <string name="comment_mention_node_view_source">Afficher la source</string>
     <string name="comment_next_parent">Commentaire parent suivant</string>
     <string name="comment_node_block">Bloquer %1$s</string>
-    <string name="comment_node_copy_permalink">Copier le lien permanent</string>
+    <string name="comment_node_comment_copied">Text du commentaire copié</string>
+    <string name="comment_node_copy_comment">Copier le texte du commentaire</string>
+    <string name="comment_node_copy_permalink">Copier le permalien</string>
     <string name="comment_node_delete">Supprimer</string>
     <string name="comment_node_edit">Modifier</string>
     <string name="comment_node_go_to">Aller à %1$s</string>
     <string name="comment_node_goto_comment">Aller au commentaire</string>
     <string name="comment_node_in">"dans "</string>
-    <string name="comment_node_more_replies">%1$s autres réponses</string>
+    <plurals name="comment_node_more_replies">
+        <item quantity="one">%1$s autre réponse</item>
+        <item quantity="other">%1$s autres réponses</item>
+        <item quantity="many">%1$s d’autres réponses</item>
+    </plurals>
     <string name="comment_node_permalink_copied">Permalien copié</string>
     <string name="comment_node_report_comment">Signaler le commentaire</string>
     <string name="comment_node_restore">Restaurer</string>
@@ -118,14 +150,22 @@
     <string name="community_community_info">Informations sur la communauté</string>
     <string name="community_icon">Icône de la communauté</string>
     <string name="community_joined">Rejointe</string>
-    <string name="community_link_users_month">%1$s utilisateurs/mois</string>
+    <plurals name="community_link_users_month">
+        <item quantity="one">%1$s utilisateur/mois</item>
+        <item quantity="other">%1$s utilisateurs/mois</item>
+        <item quantity="many">%1$s d’utilisateurs/mois</item>
+    </plurals>
     <string name="community_list_back">Précédent</string>
     <string name="community_list_search">Rechercher…</string>
     <string name="community_pending">En attente</string>
     <string name="community_refresh">Rafraîchir</string>
     <string name="community_sortBy">Trier par</string>
     <string name="community_subscribe">S’abonner</string>
-    <string name="community_users_month">%1$s utilisateur(s)/mois</string>
+    <plurals name="community_users_month">
+        <item quantity="one">%1$s utilisateur/mois</item>
+        <item quantity="other">%1$s utilisateurs/mois</item>
+        <item quantity="many">%1$s d’utilisateurs/mois</item>
+    </plurals>
 
     <string name="createPost_selectCommunity">Sélectionner une communauté de la liste</string>
 
@@ -134,6 +174,7 @@
     <string name="create_post_community">Communauté</string>
     <string name="create_post_copy_suggested_title">Copier titre suggéré : %1$s</string>
     <string name="create_post_create_post">Créer une publication</string>
+    <string name="create_post_tag_nsfw">Marquer la publication NSFW</string>
     <string name="create_report_back">Précédent</string>
     <string name="create_report_report">Signaler</string>
     <string name="create_report_type_your_reason">Saissisez la raison</string>
@@ -170,7 +211,9 @@
 
     <string name="form_submit">Envoyer</string>
 
-    <string name="homeHeader_filter">Sélection du flux</string>
+    <string name="generic_error">Une erreur est survenue</string>
+
+    <string name="homeHeader_filter">Sélectionnez un flux</string>
 
     <string name="home_add_account">Ajouter un compte</string>
     <string name="home_all">Toutes les communautés</string>
@@ -279,11 +322,19 @@
     <string name="person_profile_activity_posts">Publications</string>
     <string name="person_profile_back">Précédent</string>
     <string name="person_profile_block_person">Bloquer l’utilisateur</string>
-    <string name="person_profile_comments">%1$s commentaires</string>
+    <plurals name="person_profile_comments">
+        <item quantity="one">%1$s commentaire</item>
+        <item quantity="other">%1$s commentaires</item>
+        <item quantity="many">%1$s de commentaires</item>
+    </plurals>
     <string name="person_profile_joined">Profil créé</string>
-    <string name="person_profile_posts">%1$s publication(s)</string>
+    <plurals name="person_profile_posts">
+        <item quantity="one">%1$s publication</item>
+        <item quantity="other">%1$s publications</item>
+        <item quantity="many">%1$s de publications</item>
+    </plurals>
     <string name="person_profile_report_person">Signaler l’utilisateur</string>
-    <string name="person_routines_blocked">%1$s bloquée</string>
+    <string name="person_routines_blocked">%1$s bloqué·e</string>
 
     <string name="pickImage_imagePreview">Aperçu de l’image téléversée</string>
 
@@ -301,18 +352,38 @@
     <string name="post_edit_close">Fermer</string>
     <string name="post_edit_edit_post">Modifier la publication</string>
     <string name="post_listing_block">Bloquer %1$s</string>
-    <string name="post_listing_comments">%1$s commentaires</string>
-    <string name="post_listing_comments_count">%1$s commentaires</string>
+    <plurals name="post_listing_comments">
+        <item quantity="one">%1$s commentaire</item>
+        <item quantity="other">%1$s commentaires</item>
+        <item quantity="many">%1$s de commentaires</item>
+    </plurals>
+    <plurals name="post_listing_comments_count">
+        <item quantity="one">%1$s commentaire</item>
+        <item quantity="other">%1$s commentaires</item>
+        <item quantity="many">%1$s de commentaires</item>
+    </plurals>
     <string name="post_listing_copy_link">Copier le lien</string>
+    <string name="post_listing_copy_name">Copier le nom de la publication</string>
     <string name="post_listing_copy_permalink">Copier le permalien</string>
+    <string name="post_listing_copy_text">Copier le texte de la publication</string>
+    <string name="post_listing_copy_thumbnail_link">Copier le lien de l’aperçu</string>
+    <string name="post_listing_copy_title">Copier le titre de la publication</string>
     <string name="post_listing_delete">Supprimer</string>
     <string name="post_listing_edit">Modifier</string>
     <string name="post_listing_go_to">Aller à %1$s</string>
     <string name="post_listing_link_copied">Lien copié</string>
-    <string name="post_listing_new">(%1$s nouveau(x))</string>
+    <string name="post_listing_name_copied">Nom copié</string>
+    <plurals name="post_listing_new">
+        <item quantity="one">(%1$s nouveau)</item>
+        <item quantity="other">(%1$s nouveaux)</item>
+        <item quantity="many">(%1$s de nouveaux)</item>
+    </plurals>
     <string name="post_listing_permalink_copied">Permalien copié</string>
     <string name="post_listing_report_post">Signaler la publication</string>
     <string name="post_listing_restore">Restaurer</string>
+    <string name="post_listing_text_copied">Texte copié</string>
+    <string name="post_listing_thumbnail_link_copied">Lien de l’aperçu copié</string>
+    <string name="post_listing_title_copied">Titre copié</string>
 
     <string name="privateMessage_reply">Répondre au message</string>
 
