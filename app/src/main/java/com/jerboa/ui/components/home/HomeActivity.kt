@@ -327,8 +327,10 @@ fun MainDrawer(
     homeViewModel: HomeViewModel,
     scope: CoroutineScope,
     drawerState: DrawerState,
-    onSelectTab: (BottomNavTab) -> Unit,
+    onSelectTab: ((BottomNavTab) -> Unit)?,
 ) {
+    val ctx = LocalContext.current
+
     val accounts = accountViewModel.allAccounts.value
     val account = getCurrentAccount(accountViewModel)
 
@@ -388,19 +390,33 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onClickProfile = {
-            account?.id?.also {
-                onSelectTab(BottomNavTab.Profile)
-                closeDrawer(scope, drawerState)
+            onSelectTab?.invoke(BottomNavTab.Saved) ?: run {
+                account?.id?.also {
+                    navController.navigate(route = "profile/$it")
+                } ?: run {
+                    loginFirstToast(ctx)
+                }
             }
+            closeDrawer(scope, drawerState)
         },
         onClickSaved = {
-            account?.id?.also {
-                onSelectTab(BottomNavTab.Saved)
-                closeDrawer(scope, drawerState)
+            onSelectTab?.invoke(BottomNavTab.Saved) ?: run {
+                account?.id?.also {
+                    navController.navigate(route = "profile/$it?saved=${true}")
+                } ?: run {
+                    loginFirstToast(ctx)
+                }
             }
+            closeDrawer(scope, drawerState)
         },
         onClickInbox = {
-            onSelectTab(BottomNavTab.Inbox)
+            onSelectTab?.invoke(BottomNavTab.Inbox) ?: run {
+                account?.also {
+                    navController.navigate(route = "inbox")
+                } ?: run {
+                    loginFirstToast(ctx)
+                }
+            }
             closeDrawer(scope, drawerState)
         },
         onClickSettings = {
@@ -408,7 +424,9 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onClickCommunities = {
-            onSelectTab(BottomNavTab.Search)
+            onSelectTab?.invoke(BottomNavTab.Search) ?: run {
+                navController.navigate(route = "communityList")
+            }
             closeDrawer(scope, drawerState)
         },
     )

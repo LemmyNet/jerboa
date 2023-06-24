@@ -75,7 +75,6 @@ fun BottomNavActivity(
     commentEditViewModel: CommentEditViewModel,
     personProfileViewModel: PersonProfileViewModel,
     privateMessageReplyViewModel: PrivateMessageReplyViewModel,
-    initialTab: BottomNavTab,
 ) {
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
@@ -95,14 +94,6 @@ fun BottomNavActivity(
         }
     }
 
-    var isRouteInitDone by rememberSaveable { mutableStateOf(false) }
-    if (!isRouteInitDone) {
-        LaunchedEffect(Unit) {
-            onSelectTab(initialTab)
-            isRouteInitDone = true
-        }
-    }
-
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     ModalNavigationDrawer(
@@ -118,7 +109,7 @@ fun BottomNavActivity(
                         homeViewModel = homeViewModel,
                         scope = scope,
                         drawerState = drawerState,
-                        onSelectTab = onSelectTab,
+                        onSelectTab = if (appSettings?.showBottomNav == true) onSelectTab else null,
                     )
                 },
             )

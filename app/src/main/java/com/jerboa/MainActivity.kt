@@ -31,6 +31,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPersonDetails
+import com.jerboa.datatypes.types.GetPersonMentions
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPrivateMessages
 import com.jerboa.datatypes.types.GetReplies
@@ -158,7 +159,7 @@ class MainActivity : ComponentActivity() {
 
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "home?tab={tab}",
+                    startDestination = "home",
                     enterTransition = { slideInHorizontally { it } },
                     exitTransition = { slideOutHorizontally { -it } },
                     popEnterTransition = { slideInHorizontally { -it } },
@@ -179,16 +180,8 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = "home?tab={tab}",
-                        arguments = listOf(
-                            navArgument(name = "tab") {
-                                type = NavType.StringType
-                                defaultValue = BottomNavTab.Home.name
-                            },
-                        ),
+                        route = "home",
                     ) {
-                        val tabName = it.arguments?.getString("tab")?.lowercase()!!
-                        val tab = BottomNavTab.values().firstOrNull { t -> t.name.lowercase() == tabName }
                         BottomNavActivity(
                             navController = navController,
                             homeViewModel = homeViewModel,
@@ -203,7 +196,6 @@ class MainActivity : ComponentActivity() {
                             commentEditViewModel = commentEditViewModel,
                             personProfileViewModel = personProfileViewModel,
                             privateMessageReplyViewModel = privateMessageReplyViewModel,
-                            initialTab = tab ?: BottomNavTab.Home,
                         )
                     }
                     composable(
@@ -449,9 +441,35 @@ class MainActivity : ComponentActivity() {
                             navDeepLink { uriPattern = "$instance/inbox" }
                         },
                     ) {
-                        navController.navigate("home?tab=inbox") {
-                            popUpTo(0)
+                        if (account != null) {
+                            LaunchedEffect(Unit) {
+                                inboxViewModel.resetPage()
+                                inboxViewModel.getReplies(
+                                    GetReplies(
+                                        auth = account.jwt,
+                                    ),
+                                )
+                                inboxViewModel.getMentions(
+                                    GetPersonMentions(
+                                        auth = account.jwt,
+                                    ),
+                                )
+                                inboxViewModel.getMessages(
+                                    GetPrivateMessages(
+                                        auth = account.jwt,
+                                    ),
+                                )
+                            }
                         }
+
+                        InboxActivity(
+                            navController = navController,
+                            inboxViewModel = inboxViewModel,
+                            accountViewModel = accountViewModel,
+                            commentReplyViewModel = commentReplyViewModel,
+                            siteViewModel = siteViewModel,
+                            privateMessageReplyViewModel = privateMessageReplyViewModel,
+                        )
                     }
                     composable(
                         route = "post/{id}",
