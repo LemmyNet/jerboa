@@ -326,7 +326,7 @@ fun UserTabs(
                         PullRefreshIndicator(
                             loading,
                             pullRefreshState,
-                            Modifier.align(Alignment.TopCenter),
+                            Modifier.align(Alignment.TopCenter).fillMaxSize(),
                         )
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
                             ApiState.Empty -> ApiEmptyText()
@@ -506,7 +506,7 @@ fun UserTabs(
                                 }
                             }
 
-                            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                            Box(modifier = Modifier.pullRefresh(pullRefreshState).fillMaxSize()) {
                                 PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
                                 CommentNodes(
                                     nodes = nodes,
