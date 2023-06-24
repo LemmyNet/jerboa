@@ -2,8 +2,6 @@ package com.jerboa
 
 import android.app.Application
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +9,9 @@ import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -18,12 +19,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.GetCommunity
@@ -114,10 +115,9 @@ class MainActivity : ComponentActivity() {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val accountSync = getCurrentAccountSync(accountViewModel)
         fetchInitialData(accountSync, siteViewModel, homeViewModel)
@@ -129,7 +129,7 @@ class MainActivity : ComponentActivity() {
             JerboaTheme(
                 appSettings = appSettings,
             ) {
-                val navController = rememberNavController()
+                val navController = rememberAnimatedNavController()
                 val ctx = LocalContext.current
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
@@ -154,9 +154,13 @@ class MainActivity : ComponentActivity() {
                     else -> {}
                 }
 
-                NavHost(
+                AnimatedNavHost(
                     navController = navController,
                     startDestination = "home",
+                    enterTransition = { slideInHorizontally { it } },
+                    exitTransition = { slideOutHorizontally { -it } },
+                    popEnterTransition = { slideInHorizontally { -it } },
+                    popExitTransition = { slideOutHorizontally { it } },
                 ) {
                     composable(
                         route = "login",
@@ -175,16 +179,20 @@ class MainActivity : ComponentActivity() {
                     composable(
                         route = "home",
                     ) {
-                        HomeActivity(
+                        BottomNavActivity(
                             navController = navController,
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            appSettings = appSettings,
+                            communityListViewModel = communityListViewModel,
+                            inboxViewModel = inboxViewModel,
+                            commentReplyViewModel = commentReplyViewModel,
+                            commentEditViewModel = commentEditViewModel,
+                            personProfileViewModel = personProfileViewModel,
+                            privateMessageReplyViewModel = privateMessageReplyViewModel,
                         )
                     }
                     composable(
@@ -381,8 +389,6 @@ class MainActivity : ComponentActivity() {
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             communityListViewModel = communityListViewModel,
                             selectMode = it.arguments?.getBoolean("select")!!,
                         )
@@ -455,7 +461,6 @@ class MainActivity : ComponentActivity() {
 
                         InboxActivity(
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
                             inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
                             commentReplyViewModel = commentReplyViewModel,
