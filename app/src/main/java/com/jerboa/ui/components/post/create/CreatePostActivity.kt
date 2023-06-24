@@ -62,6 +62,7 @@ fun CreatePostActivity(
     }
     var isNsfw by rememberSaveable { mutableStateOf(false) }
     var formValid by rememberSaveable { mutableStateOf(false) }
+    var isUploadingImage by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(initialUrl) {
         if (initialUrl.isNotEmpty()) {
@@ -144,13 +145,16 @@ fun CreatePostActivity(
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,
                     image = initialImage,
+                    isUploadingImage = isUploadingImage,
                     onPickedImage = { uri ->
                         if (uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)
                             scope.launch {
+                                isUploadingImage = true
                                 account?.also { acct ->
                                     url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                                 }
+                                isUploadingImage = false
                             }
                         }
                     },

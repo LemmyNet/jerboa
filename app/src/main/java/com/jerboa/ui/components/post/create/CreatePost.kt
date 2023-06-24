@@ -40,9 +40,11 @@ import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.types.Community
 import com.jerboa.db.Account
+import com.jerboa.isImage
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.components.post.composables.CheckboxIsNsfw
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -113,6 +115,7 @@ fun CreatePostBody(
     url: String,
     onUrlChange: (url: String) -> Unit,
     onPickedImage: (image: Uri) -> Unit,
+    isUploadingImage: Boolean = false,
     image: Uri? = null,
     community: Community? = null,
     navController: NavController = rememberNavController(),
@@ -178,10 +181,18 @@ fun CreatePostBody(
         }
         PickImage(
             onPickedImage = onPickedImage,
-            image = image,
-            modifier = Modifier.fillMaxWidth(),
+            sharedImage = image,
+            isUploadingImage = isUploadingImage,
             horizontalAlignment = Alignment.End,
         )
+
+        if (isImage(url)) {
+            PictrsUrlImage(
+                url = url,
+                nsfw = false,
+            )
+        }
+
         MarkdownTextField(
             text = body,
             onTextChange = onBodyChange,

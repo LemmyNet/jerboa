@@ -59,6 +59,7 @@ fun PostEditActivity(
         )
     }
     var formValid by rememberSaveable { mutableStateOf(true) }
+    var isUploadingImage by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -110,12 +111,15 @@ fun PostEditActivity(
                 url = url,
                 onUrlChange = { url = it },
                 formValid = { formValid = it },
+                isUploadingImage = isUploadingImage,
                 onPickedImage = { uri ->
                     val imageIs = imageInputStreamFromUri(ctx, uri)
                     scope.launch {
+                        isUploadingImage = true
                         account?.also { acct ->
                             url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                         }
+                        isUploadingImage = false
                     }
                 },
                 account = account,

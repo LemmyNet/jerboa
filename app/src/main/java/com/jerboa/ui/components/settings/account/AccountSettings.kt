@@ -144,6 +144,9 @@ fun SettingsForm(
         show_scores = showScores.value,
         discussion_languages = null,
     )
+    var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
+    var isUploadingBanner by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .padding(padding)
@@ -188,12 +191,17 @@ fun SettingsForm(
                     LargerCircularIcon(icon = avatar)
                 }
             } else {
-                PickImage(onPickedImage = { uri ->
-                    val imageIs = imageInputStreamFromUri(ctx, uri)
-                    scope.launch {
-                        avatar = uploadPictrsImage(account, imageIs, ctx).orEmpty()
-                    }
-                }, showImage = false)
+                PickImage(
+                    isUploadingImage = isUploadingAvatar,
+                    onPickedImage = { uri ->
+                        val imageIs = imageInputStreamFromUri(ctx, uri)
+                        scope.launch {
+                            isUploadingAvatar = true
+                            avatar = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            isUploadingAvatar = false
+                        }
+                    },
+                )
             }
         }
         Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -203,12 +211,17 @@ fun SettingsForm(
                     PictrsBannerImage(url = banner)
                 }
             } else {
-                PickImage(onPickedImage = { uri ->
-                    val imageIs = imageInputStreamFromUri(ctx, uri)
-                    scope.launch {
-                        banner = uploadPictrsImage(account, imageIs, ctx).orEmpty()
-                    }
-                }, showImage = false)
+                PickImage(
+                    isUploadingImage = isUploadingBanner,
+                    onPickedImage = { uri ->
+                        val imageIs = imageInputStreamFromUri(ctx, uri)
+                        scope.launch {
+                            isUploadingBanner = true
+                            banner = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            isUploadingBanner = false
+                        }
+                    },
+                )
             }
         }
         SettingsListDropdown(
