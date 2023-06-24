@@ -40,7 +40,6 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
-import com.jerboa.loginFirstToast
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
@@ -50,7 +49,6 @@ import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -85,11 +83,6 @@ fun PersonProfileActivity(
     val postListState = rememberLazyListState()
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
-    val bottomAppBarScreen = if (savedMode) {
-        "saved"
-    } else {
-        "profile"
-    }
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     personProfileViewModel.updateSavedOnly(savedMode)
@@ -176,33 +169,6 @@ fun PersonProfileActivity(
                 showAvatar = siteViewModel.showAvatar(),
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
-            )
-        },
-        bottomBar = {
-            BottomAppBarAll(
-                showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
-                screen = bottomAppBarScreen,
-                unreadCount = siteViewModel.getUnreadCountTotal(),
-                onClickProfile = {
-                    account?.id?.also {
-                        navController.navigate(route = "profile/$it")
-                    }
-                },
-                onClickInbox = {
-                    account?.also {
-                        navController.navigate(route = "inbox")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                onClickSaved = {
-                    account?.id?.also {
-                        navController.navigate(route = "profile/$it?saved=${true}")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                navController = navController,
             )
         },
     )
@@ -360,7 +326,7 @@ fun UserTabs(
                         PullRefreshIndicator(
                             loading,
                             pullRefreshState,
-                            Modifier.align(Alignment.TopCenter),
+                            Modifier.align(Alignment.TopCenter).fillMaxSize(),
                         )
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
                             ApiState.Empty -> ApiEmptyText()
@@ -540,7 +506,7 @@ fun UserTabs(
                                 }
                             }
 
-                            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                            Box(modifier = Modifier.pullRefresh(pullRefreshState).fillMaxSize()) {
                                 PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
                                 CommentNodes(
                                     nodes = nodes,

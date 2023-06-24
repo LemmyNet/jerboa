@@ -41,12 +41,10 @@ import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.loginFirstToast
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -348,35 +346,6 @@ fun CommunityActivity(
 
                 else -> {}
             }
-        },
-        bottomBar = {
-            BottomAppBarAll(
-                showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
-                screen = "communityList",
-                unreadCount = siteViewModel.getUnreadCountTotal(),
-                onClickProfile = {
-                    account?.id?.also {
-                        navController.navigate(route = "profile/$it")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                onClickInbox = {
-                    account?.also {
-                        navController.navigate(route = "inbox")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                onClickSaved = {
-                    account?.id?.also {
-                        navController.navigate(route = "profile/$it?saved=${true}")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                navController = navController,
-            )
         },
     )
 }
