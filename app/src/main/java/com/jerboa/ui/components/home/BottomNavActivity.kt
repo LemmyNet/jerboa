@@ -155,8 +155,10 @@ fun BottomNavActivity(
                     }
 
                     composable(route = BottomNavTab.Search.name) {
-                        // Whenever navigating here, reset the list with your followed communities
-                        communityListViewModel.setCommunityListFromFollowed(siteViewModel)
+                        LaunchedEffect(Unit) {
+                            // Whenever navigating here, reset the list with your followed communities
+                            communityListViewModel.setCommunityListFromFollowed(siteViewModel)
+                        }
 
                         CommunityListActivity(
                             navController = navController,

@@ -390,7 +390,7 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onClickProfile = {
-            onSelectTab?.invoke(BottomNavTab.Saved) ?: run {
+            onSelectTab?.invoke(BottomNavTab.Profile) ?: run {
                 account?.id?.also {
                     navController.navigate(route = "profile/$it")
                 } ?: run {

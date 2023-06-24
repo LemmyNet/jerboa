@@ -2,8 +2,6 @@ package com.jerboa
 
 import android.app.Application
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -35,7 +33,6 @@ import com.jerboa.datatypes.types.GetPersonMentions
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPrivateMessages
 import com.jerboa.datatypes.types.GetReplies
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
