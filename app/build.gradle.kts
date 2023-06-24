@@ -104,7 +104,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:0.30.1")
     implementation("com.google.accompanist:accompanist-flowlayout:0.30.1")
     implementation("com.google.accompanist:accompanist-permissions:0.30.1")
-    implementation "com.google.accompanist:accompanist-navigation-animation:0.30.1"
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.1")
 
     // LiveData
     implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
