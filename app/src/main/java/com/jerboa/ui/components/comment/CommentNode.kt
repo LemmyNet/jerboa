@@ -801,7 +801,8 @@ fun ShowMoreChildren(
                 pluralStringResource(
                     R.plurals.comment_node_more_replies,
                     commentView.counts.child_count,
-                    commentView.counts.child_count),
+                    commentView.counts.child_count,
+                ),
             )
         },
         onClick = { onFetchChildrenClick(commentView) },

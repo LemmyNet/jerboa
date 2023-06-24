@@ -128,7 +128,8 @@ fun CommentsAndPosts(personView: PersonView) {
             text = pluralStringResource(
                 R.plurals.person_profile_posts,
                 personView.counts.post_count,
-                personView.counts.post_count),
+                personView.counts.post_count,
+            ),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
         DotSpacer(style = MaterialTheme.typography.bodyMedium)
@@ -136,7 +137,8 @@ fun CommentsAndPosts(personView: PersonView) {
             text = pluralStringResource(
                 R.plurals.person_profile_comments,
                 personView.counts.comment_count,
-                personView.counts.comment_count),
+                personView.counts.comment_count,
+            ),
             color = MaterialTheme.colorScheme.onBackground.muted,
         )
     }
