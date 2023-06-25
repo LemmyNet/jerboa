@@ -333,4 +333,5 @@
     <string name="inbox_activity_messages">Messages</string>
     <string name="bookmarks_activity_saved">Saved</string>
     <string name="generic_error">An error has occurred</string>
+    <string name="lang_language">Language</string>
 </resources>
