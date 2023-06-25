@@ -1,9 +1,14 @@
 package com.jerboa.ui.components.common
 
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.NavigateBefore
+import androidx.compose.material.icons.outlined.NavigateNext
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import arrow.core.left
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.db.Account
@@ -19,8 +24,14 @@ fun SwipeBetweenPosts(
     account: Account?,
     content: @Composable () -> Unit,
 ) {
-    val forward = SwipeAction(
-        icon = { Text("Next") },
+    val nextPostAction = SwipeAction(
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.NavigateNext,
+                contentDescription = stringResource(id = R.string.post_next),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
         onSwipe = {
             val res = homeViewModel.postsRes
             if (res is ApiState.Success) {
@@ -53,11 +64,16 @@ fun SwipeBetweenPosts(
                     }
             }
         },
-        background = Color.Transparent,
+        background = MaterialTheme.colorScheme.background,
     )
 
-    val backward = SwipeAction(
-        icon = { Text("Next") },
+    val previousPostAction = SwipeAction(
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.NavigateBefore,
+                contentDescription = stringResource(id = R.string.post_previous),
+                tint = MaterialTheme.colorScheme.primary)
+        },
         onSwipe = {
             val res = homeViewModel.postsRes
             if (res is ApiState.Success) {
@@ -72,12 +88,12 @@ fun SwipeBetweenPosts(
                 }
             }
         },
-        background = Color.Transparent,
+        background = MaterialTheme.colorScheme.background,
     )
 
     SwipeableActionsBox(
-        startActions = listOf(backward),
-        endActions = listOf(forward),
+        startActions = listOf(previousPostAction),
+        endActions = listOf(nextPostAction),
     ) {
         content()
     }

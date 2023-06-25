@@ -261,6 +261,8 @@
     <string name="post_edit_body_placeholder">Body</string>
     <string name="post_edit_close">Close</string>
     <string name="post_edit_edit_post">Edit Post</string>
+    <string name="post_next">Next Post</string>
+    <string name="post_previous">Previous Post</string>
     <string name="post_listing_block">Block %1$s</string>
     <string name="post_listing_comments">%1$s comments</string>
     <string name="post_listing_comments_count">%1$s comments</string>
