@@ -506,7 +506,7 @@ class MainActivity : ComponentActivity() {
                             account = account,
                             homeViewModel = homeViewModel,
                             postViewModel = postViewModel,
-                            appSettingsViewModel = appSettingsViewModel
+                            appSettingsViewModel = appSettingsViewModel,
                         ) {
                             PostActivity(
                                 postViewModel = postViewModel,

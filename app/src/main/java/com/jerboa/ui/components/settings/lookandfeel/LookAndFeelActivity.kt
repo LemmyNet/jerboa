@@ -94,7 +94,7 @@ fun LookAndFeelActivity(
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
-                swipeBetweenPosts = swipeBetweenPosts.value
+                swipeBetweenPosts = swipeBetweenPosts.value,
             ),
         )
     }
