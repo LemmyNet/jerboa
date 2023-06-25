@@ -462,12 +462,8 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
     return "$host/pictrs/image/$path?thumbnail=$thumbnailSize&format=webp"
 }
 
-fun isImage(url: String?): Boolean {
-    return if (url != null) {
-        imageRegex.matches(url)
-    } else {
-        false
-    }
+fun isImage(url: String): Boolean {
+    return imageRegex.matches(url)
 }
 
 val imageRegex = Regex(
