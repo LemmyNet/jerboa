@@ -1,0 +1,61 @@
+@file:JvmName("DefaultInstances")
+package com.jerboa
+
+val DEFAULT_LEMMY_INSTANCES = arrayOf(
+    "lemmy.world", // 13699 monthly users
+    "lemmy.ml", // 4164 monthly users
+    "beehaw.org", // 3708 monthly users
+    "feddit.de", // 2300 monthly users
+    "sh.itjust.works", // 2189 monthly users
+    "www.hexbear.net", // 1600 monthly users
+    "lemmy.ca", // 1078 monthly users
+    "lemmynsfw.com", // 1058 monthly users
+    "lemmy.one", // 987 monthly users
+    "lemm.ee", // 972 monthly users
+    "lemmy.fmhy.ml", // 930 monthly users
+    "lemmy.dbzer0.com", // 776 monthly users
+    "lemmy.blahaj.zone", // 758 monthly users
+    "lemmygrad.ml", // 624 monthly users
+    "programming.dev", // 608 monthly users
+    "discuss.tchncs.de", // 560 monthly users
+    "sopuli.xyz", // 556 monthly users
+    "lemmy.sdf.org", // 476 monthly users
+    "midwest.social", // 396 monthly users
+    "vlemmy.net", // 389 monthly users
+    "aussie.zone", // 371 monthly users
+    "startrek.website", // 317 monthly users
+    "feddit.uk", // 286 monthly users
+    "infosec.pub", // 277 monthly users
+    "dormi.zone", // 269 monthly users
+    "feddit.it", // 257 monthly users
+    "pawb.social", // 242 monthly users
+    "feddit.nl", // 197 monthly users
+    "burggit.moe", // 184 monthly users
+    "slrpnk.net", // 176 monthly users
+    "lemmy.nz", // 168 monthly users
+    "delraymisfitsboard.com", // 158 monthly users
+    "feddit.dk", // 158 monthly users
+    "mander.xyz", // 148 monthly users
+    "reddthat.com", // 148 monthly users
+    "feddit.cl", // 123 monthly users
+    "lemmy.zip", // 118 monthly users
+    "lemmy.pt", // 100 monthly users
+    "dataterm.digital", // 86 monthly users
+    "szmer.info", // 85 monthly users
+    "latte.isnot.coffee", // 85 monthly users
+    "monyet.cc", // 85 monthly users
+    "exploding-heads.com", // 83 monthly users
+    "lemmy.eco.br", // 79 monthly users
+    "lemmy.tedomum.net", // 78 monthly users
+    "waveform.social", // 78 monthly users
+    "enterprise.lemmy.ml", // 71 monthly users
+    "pathofexile-discuss.com", // 71 monthly users
+    "iusearchlinux.fyi", // 64 monthly users
+    "yiffit.net", // 61 monthly users
+    "ttrpg.network", // 61 monthly users
+    "lemmyrs.org", // 59 monthly users
+    "sub.wetshaving.social", // 57 monthly users
+    "monero.town", // 54 monthly users
+    "bakchodi.org", // 53 monthly users
+    "geddit.social", // 50 monthly users
+)

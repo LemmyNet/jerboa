@@ -1,11 +1,16 @@
 @file:Suppress("UnstableApiUsage")
 
+
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
 }
+
+apply(from = "get_instances.gradle.kts")
 
 android {
     compileSdk = 33
@@ -23,6 +28,7 @@ android {
             useSupportLibrary = true
         }
         ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+      manifestPlaceholders["deepLinks_manifestPlaceholder"] = genManifestHosts()
     }
 
     if (project.hasProperty("RELEASE_STORE_FILE")) {
@@ -157,4 +163,45 @@ dependencies {
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))
+}
+
+
+fun genManifestHosts(): String {
+
+    val DEFAULT_LEMMY_INSTANCES = arrayOf(
+        "lemmy.world", // 13699 monthly users
+        "lemmy.ml", // 4164 monthly users
+        "beehaw.org", // 3708 monthly users
+        "feddit.de", // 2300 monthly users
+        "sh.itjust.works", // 2189 monthly users
+        "www.hexbear.net", // 1600 monthly users
+    )
+
+    return DEFAULT_LEMMY_INSTANCES.map { "<data android:host=\"$it\"/>" }.joinToString { "\n" }
+}
+
+tasks.register("modifyManifest") {
+    doLast {
+        android.applicationVariants.all { variant ->
+            variant.outputs.forEach { output ->
+                val task = output.processManifestProvider.get()
+                task.
+                task.doLast {
+                    val manifestFile = File (this.outputs.files., "AndroidManifest.xml")
+                    var manifestContent = manifestFile.readText(Charsets.UTF_8)
+
+                    // Perform any modifications to the manifestContent string as needed
+                    // For example, replace a placeholder with a custom value
+                    manifestContent = manifestContent.replace("%CUSTOM_KEY%", "customValue")
+
+                    // Write the modified manifest back to the file
+                    val writeSuccessful = manifestFile.writeText(manifestContent, Charsets.UTF_8, true)
+                    if (!writeSuccessful) {
+                        throw GradleException("Failed to write modified manifest file: ${manifestFile.absolutePath}")
+                    }
+                }
+            }
+            true
+        }
+    }
 }

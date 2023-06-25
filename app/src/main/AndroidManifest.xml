@@ -43,7 +43,7 @@
             android:launchMode="standard"
             android:allowTaskReparenting="true"
             android:windowSoftInputMode="adjustResize"
-            >
+            tools:node="merge">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -65,20 +65,7 @@
               <category android:name="android.intent.category.DEFAULT" />
               <category android:name="android.intent.category.BROWSABLE" />
               <data android:scheme="https"/>
-              <data android:host="beehaw.org"/>
-              <data android:host="feddit.de" />
-              <data android:host="feddit.it" />
-              <data android:host="lemmy.ca" />
-              <data android:host="lemmy.ml" />
-              <data android:host="lemmy.one" />
-              <data android:host="lemmy.world" />
-              <data android:host="lemmygrad.ml" />
-              <data android:host="midwest.social" />
-              <data android:host="mujico.org" />
-              <data android:host="sh.itjust.works" />
-              <data android:host="slrpnk.net" />
-              <data android:host="sopuli.xyz" />
-              <data android:host="szmer.info" />
+                ${deepLinks_manifestPlaceholder}
             </intent-filter>
         </activity>
     </application>

@@ -83,23 +83,6 @@ val gson = Gson()
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
 
-val DEFAULT_LEMMY_INSTANCES = listOf(
-    "beehaw.org",
-    "feddit.de",
-    "feddit.it",
-    "lemmy.ca",
-    "lemmy.ml",
-    "lemmy.one",
-    "lemmy.world",
-    "lemmygrad.ml",
-    "midwest.social",
-    "mujico.org",
-    "sh.itjust.works",
-    "slrpnk.net",
-    "sopuli.xyz",
-    "szmer.info",
-)
-
 // convert a data class to a map
 fun <T> T.serializeToMap(): Map<String, String> {
     return convert()
