@@ -167,9 +167,7 @@ class HomeViewModel : ViewModel() {
 
     fun updateFromAccount(account: Account) {
         updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
-        updateListingType(
-            ListingType.values().getOrElse(account.defaultListingType) { listingType },
-        )
+        updateListingType(ListingType.values().getOrElse(account.defaultListingType) { listingType })
     }
 
     fun updatePost(postView: PostView) {
@@ -179,7 +177,6 @@ class HomeViewModel : ViewModel() {
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 postsRes = newRes
             }
-
             else -> {}
         }
     }
