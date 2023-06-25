@@ -33,11 +33,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
-import com.jerboa.datatypes.api.Login
+import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.onAutofill
-
-val BANNED_INSTANCES = listOf("wolfballs.com")
 
 @Composable
 fun MyTextField(
@@ -94,7 +92,7 @@ fun PasswordField(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LoginForm(
     modifier: Modifier = Modifier,
@@ -104,17 +102,18 @@ fun LoginForm(
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    var totp by rememberSaveable { mutableStateOf("") }
     val instanceOptions = DEFAULT_LEMMY_INSTANCES
     var expanded by remember { mutableStateOf(false) }
     var wasAutofilled by remember { mutableStateOf(false) }
 
     val isValid =
-        instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty() &&
-            !BANNED_INSTANCES.contains(instance)
+        instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()
 
     val form = Login(
         username_or_email = username.trim(),
         password = password.take(60),
+        totp_2fa_token = totp.ifBlank { null },
     )
 
     Column(
@@ -184,6 +183,17 @@ fun LoginForm(
                 },
             password = password,
             onValueChange = { password = it },
+        )
+        MyTextField(
+            modifier = Modifier
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(AutofillType.SmsOtpCode) {
+                    totp = it
+                    wasAutofilled = true
+                },
+            label = stringResource(R.string.login_totp),
+            text = totp,
+            onValueChange = { totp = it },
         )
         Button(
             enabled = isValid && !loading,

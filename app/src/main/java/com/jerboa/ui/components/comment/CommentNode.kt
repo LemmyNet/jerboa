@@ -27,6 +27,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
@@ -60,17 +61,13 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.calculateNewInstantScores
-import com.jerboa.datatypes.Comment
-import com.jerboa.datatypes.CommentView
-import com.jerboa.datatypes.CommunityModeratorView
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.Post
+import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.sampleCommentView
-import com.jerboa.datatypes.sampleCommunitySafe
+import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
+import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.isModerator
 import com.jerboa.isPostCreator
@@ -185,6 +182,8 @@ fun CommentBodyPreview() {
 
 fun LazyListScope.commentNodeItem(
     node: CommentNodeData,
+    increaseLazyListIndexTracker: () -> Unit,
+    addToParentIndexes: () -> Unit,
     isFlat: Boolean,
     isExpanded: (commentId: Int) -> Boolean,
     toggleExpanded: (commentId: Int) -> Unit,
@@ -195,14 +194,17 @@ fun LazyListScope.commentNodeItem(
     onReplyClick: (commentView: CommentView) -> Unit,
     onSaveClick: (commentView: CommentView) -> Unit,
     onMarkAsReadClick: (commentView: CommentView) -> Unit,
+    onCommentClick: (commentView: CommentView) -> Unit,
     onEditCommentClick: (commentView: CommentView) -> Unit,
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onHeaderClick: (commentView: CommentView) -> Unit,
+    onHeaderLongClick: (commentView: CommentView) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     showCollapsedCommentContent: Boolean,
     showPostAndCommunityContext: Boolean = false,
@@ -222,8 +224,14 @@ fun LazyListScope.commentNodeItem(
         XXL_PADDING
     }
 
+    if (node.depth == 0) {
+        addToParentIndexes()
+    }
+
     val showMoreChildren = isExpanded(commentId) && node.children.isNullOrEmpty() && node
         .commentView.counts.child_count > 0 && !isFlat
+
+    increaseLazyListIndexTracker()
     item(key = commentId) {
         var viewSource by remember { mutableStateOf(false) }
 
@@ -278,10 +286,10 @@ fun LazyListScope.commentNodeItem(
                             myVote = instantScores.value.myVote,
                             isModerator = isModerator(commentView.creator, moderators),
                             onClick = {
-                                toggleExpanded(commentId)
+                                onHeaderClick(commentView)
                             },
                             onLongClick = {
-                                toggleActionBar(commentId)
+                                onHeaderLongClick(commentView)
                             },
                             collapsedCommentsCount = node.commentView.counts.child_count,
                             isExpanded = isExpanded(commentId),
@@ -296,9 +304,7 @@ fun LazyListScope.commentNodeItem(
                                 CommentBody(
                                     comment = commentView.comment,
                                     viewSource = viewSource,
-                                    onClick = {
-                                        toggleExpanded(commentId)
-                                    },
+                                    onClick = { onCommentClick(commentView) },
                                     onLongClick = {
                                         toggleActionBar(commentId)
                                     },
@@ -355,6 +361,7 @@ fun LazyListScope.commentNodeItem(
         }
     }
 
+    increaseLazyListIndexTracker()
     item(key = "${commentId}_show_more_children") {
         AnimatedVisibility(
             visible = showMoreChildren,
@@ -368,6 +375,8 @@ fun LazyListScope.commentNodeItem(
     node.children?.also { nodes ->
         commentNodeItems(
             nodes = nodes,
+            increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+            addToParentIndexes = addToParentIndexes,
             isFlat = isFlat,
             toggleExpanded = toggleExpanded,
             toggleActionBar = toggleActionBar,
@@ -376,9 +385,12 @@ fun LazyListScope.commentNodeItem(
             onDownvoteClick = onDownvoteClick,
             onSaveClick = onSaveClick,
             onMarkAsReadClick = onMarkAsReadClick,
+            onCommentClick = onCommentClick,
             onEditCommentClick = onEditCommentClick,
             onDeleteCommentClick = onDeleteCommentClick,
             onPersonClick = onPersonClick,
+            onHeaderClick = onHeaderClick,
+            onHeaderLongClick = onHeaderLongClick,
             onCommunityClick = onCommunityClick,
             onPostClick = onPostClick,
             showPostAndCommunityContext = showPostAndCommunityContext,
@@ -449,8 +461,8 @@ private fun ShowMoreChildrenNode(
 @Composable
 fun PostAndCommunityContextHeader(
     post: Post,
-    community: CommunitySafe,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    community: Community,
+    onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
 ) {
     Column(
@@ -479,7 +491,7 @@ fun PostAndCommunityContextHeader(
 fun PostAndCommunityContextHeaderPreview() {
     PostAndCommunityContextHeader(
         post = samplePost,
-        community = sampleCommunitySafe,
+        community = sampleCommunity,
         onCommunityClick = {},
         onPostClick = {},
     )
@@ -500,7 +512,7 @@ fun CommentFooterLine(
     onDeleteCommentClick: (commentView: CommentView) -> Unit,
     onReportClick: (commentView: CommentView) -> Unit,
     onCommentLinkClick: (commentView: CommentView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
@@ -624,18 +636,26 @@ fun CommentNodesPreview() {
     val tree = buildCommentsTree(comments, false)
     CommentNodes(
         nodes = tree,
+        increaseLazyListIndexTracker = {},
+        addToParentIndexes = {},
         isFlat = false,
+        isExpanded = { _ -> true },
+        toggleExpanded = {},
+        toggleActionBar = {},
         onUpvoteClick = {},
         onDownvoteClick = {},
         onReplyClick = {},
         onFetchChildrenClick = {},
         onSaveClick = {},
         onMarkAsReadClick = {},
+        onCommentClick = {},
         onEditCommentClick = {},
         onDeleteCommentClick = {},
         onReportClick = {},
         onCommentLinkClick = {},
         onPersonClick = {},
+        onHeaderClick = {},
+        onHeaderLongClick = {},
         onCommunityClick = {},
         onBlockCreatorClick = {},
         onPostClick = {},
@@ -643,7 +663,7 @@ fun CommentNodesPreview() {
         listState = rememberLazyListState(),
         isCollapsedByParent = false,
         showCollapsedCommentContent = false,
-        showActionBarByDefault = true,
+        showActionBar = { _ -> true },
         enableDownVotes = true,
         showAvatar = true,
     )
@@ -671,7 +691,7 @@ fun CommentOptionsDialog(
             Column {
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.comment_node_goto_comment),
-                    icon = Icons.Outlined.Link,
+                    icon = Icons.Outlined.Forum,
                     onClick = onCommentLinkClick,
                 )
                 IconAndTextDrawerItem(
@@ -689,7 +709,7 @@ fun CommentOptionsDialog(
                 )
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.comment_node_copy_permalink),
-                    icon = Icons.Outlined.ContentCopy,
+                    icon = Icons.Outlined.Link,
                     onClick = {
                         val permalink = commentView.comment.ap_id
                         localClipboardManager.setText(AnnotatedString(permalink))
@@ -698,6 +718,18 @@ fun CommentOptionsDialog(
                             ctx.getString(R.string.comment_node_permalink_copied),
                             Toast.LENGTH_SHORT,
                         ).show()
+                        onDismissRequest()
+                    },
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.comment_node_copy_comment),
+                    icon = Icons.Outlined.ContentCopy,
+                    onClick = {
+                        if (copyToClipboard(ctx, commentView.comment.content, "comment")) {
+                            Toast.makeText(ctx, ctx.getString(R.string.comment_node_comment_copied), Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                        }
                         onDismissRequest()
                     },
                 )

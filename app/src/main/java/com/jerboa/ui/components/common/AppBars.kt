@@ -16,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
@@ -27,33 +29,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.R
-import com.jerboa.datatypes.PersonSafe
-import com.jerboa.datatypes.api.GetUnreadCountResponse
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
+import com.jerboa.datatypes.types.Person
 import com.jerboa.db.Account
 import com.jerboa.loginFirstToast
+import com.jerboa.scrollToNextParentComment
+import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
+import com.jerboa.ui.components.home.BottomNavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
-import com.jerboa.unreadCountTotal
+import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +75,7 @@ fun SimpleTopAppBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = { navController.popBackStack() }, modifier = Modifier.testTag("jerboa:back")) {
                 Icon(
                     Icons.Outlined.ArrowBack,
                     contentDescription = stringResource(R.string.topAppBar_back),
@@ -82,16 +87,11 @@ fun SimpleTopAppBar(
 
 @Composable
 fun BottomAppBarAll(
-    navController: NavController = rememberNavController(),
-    screen: String,
-    unreadCounts: GetUnreadCountResponse? = null,
+    selectedTab: BottomNavTab,
+    onSelect: (BottomNavTab) -> Unit,
+    unreadCounts: Int,
     showBottomNav: Boolean? = true,
-    onClickSaved: () -> Unit,
-    onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit,
 ) {
-    val totalUnreads = unreadCounts?.let { unreadCountTotal(it) }
-
     if (showBottomNav == true) {
         // Check for preview mode
         if (LocalContext.current is Activity) {
@@ -108,96 +108,60 @@ fun BottomAppBarAll(
         }
 
         NavigationBar {
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Home,
-                        contentDescription = stringResource(R.string.bottomBar_home),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_home),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "home",
-                onClick = {
-                    navController.navigate("home")
-                },
-            )
-
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = stringResource(R.string.bottomBar_search),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_search),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "communityList",
-                onClick = {
-                    navController.navigate("communityList")
-                },
-            )
-            NavigationBarItem(
-                icon = {
-                    InboxIconAndBadge(
-                        iconBadgeCount = totalUnreads,
-                        icon = Icons.Outlined.Email,
-                        contentDescription = stringResource(R.string.bottomBar_inbox),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_inbox),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "inbox",
-                onClick = {
-                    onClickInbox()
-                },
-            )
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Bookmarks,
-                        contentDescription = stringResource(R.string.bottomBar_bookmarks),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_bookmarks),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "saved",
-                onClick = {
-                    onClickSaved()
-                },
-            )
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Person,
-                        contentDescription = stringResource(R.string.bottomBar_profile),
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.bottomBar_label_profile),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                },
-                selected = screen == "profile",
-                onClick = onClickProfile,
-            )
+            for (tab in BottomNavTab.values()) {
+                val selected = tab == selectedTab
+                NavigationBarItem(
+                    icon = {
+                        InboxIconAndBadge(
+                            iconBadgeCount = if (tab == BottomNavTab.Inbox) unreadCounts else null,
+                            icon = if (selected) {
+                                when (tab) {
+                                    BottomNavTab.Home -> Icons.Filled.Home
+                                    BottomNavTab.Search -> Icons.Filled.Search
+                                    BottomNavTab.Inbox -> Icons.Filled.Email
+                                    BottomNavTab.Saved -> Icons.Filled.Bookmarks
+                                    BottomNavTab.Profile -> Icons.Filled.Person
+                                }
+                            } else {
+                                when (tab) {
+                                    BottomNavTab.Home -> Icons.Outlined.Home
+                                    BottomNavTab.Search -> Icons.Outlined.Search
+                                    BottomNavTab.Inbox -> Icons.Outlined.Email
+                                    BottomNavTab.Saved -> Icons.Outlined.Bookmarks
+                                    BottomNavTab.Profile -> Icons.Outlined.Person
+                                }
+                            },
+                            contentDescription = stringResource(
+                                when (tab) {
+                                    BottomNavTab.Home -> R.string.bottomBar_home
+                                    BottomNavTab.Search -> R.string.bottomBar_search
+                                    BottomNavTab.Inbox -> R.string.bottomBar_inbox
+                                    BottomNavTab.Saved -> R.string.bottomBar_bookmarks
+                                    BottomNavTab.Profile -> R.string.bottomBar_profile
+                                },
+                            ),
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(
+                                when (tab) {
+                                    BottomNavTab.Home -> R.string.bottomBar_label_home
+                                    BottomNavTab.Search -> R.string.bottomBar_label_search
+                                    BottomNavTab.Inbox -> R.string.bottomBar_label_inbox
+                                    BottomNavTab.Saved -> R.string.bottomBar_label_bookmarks
+                                    BottomNavTab.Profile -> R.string.bottomBar_label_profile
+                                },
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    },
+                    selected = selected,
+                    onClick = {
+                        onSelect(tab)
+                    },
+                )
+            }
         }
     }
 }
@@ -206,18 +170,49 @@ fun BottomAppBarAll(
 @Composable
 fun BottomAppBarAllPreview() {
     BottomAppBarAll(
-        onClickInbox = {},
-        onClickProfile = {},
-        onClickSaved = {},
-        screen = "home",
+        selectedTab = BottomNavTab.Home,
+        onSelect = {},
+        unreadCounts = 30,
         showBottomNav = true,
+    )
+}
+
+@Composable
+fun CommentNavigationBottomAppBar(
+    scope: CoroutineScope,
+    parentListStateIndexes: List<Int>,
+    listState: LazyListState,
+) {
+    BottomAppBar(
+        containerColor = MaterialTheme.colorScheme.background.copy(alpha = .75f),
+        modifier = Modifier.height(50.dp),
+        content = {
+            IconButton(modifier = Modifier.weight(.5f), onClick = {
+                scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+            }) {
+                Icon(
+                    modifier = Modifier.scale(1.5f),
+                    imageVector = Icons.Filled.KeyboardArrowUp,
+                    contentDescription = stringResource(R.string.comment_previous_parent),
+                )
+            }
+            IconButton(modifier = Modifier.weight(.5f), onClick = {
+                scrollToNextParentComment(scope, parentListStateIndexes, listState)
+            }) {
+                Icon(
+                    modifier = Modifier.scale(1.5f),
+                    imageVector = Icons.Filled.KeyboardArrowDown,
+                    contentDescription = stringResource(R.string.comment_next_parent),
+                )
+            }
+        },
     )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentOrPostNodeHeader(
-    creator: PersonSafe,
+    creator: Person,
     score: Int,
     myVote: Int?,
     published: String,
@@ -287,7 +282,7 @@ fun CommentOrPostNodeHeader(
 @Composable
 fun CommentOrPostNodeHeaderPreview() {
     CommentOrPostNodeHeader(
-        creator = samplePersonSafe,
+        creator = samplePerson,
         score = 23,
         myVote = 1,
         published = samplePost.published,
@@ -475,7 +470,7 @@ fun Sidebar(
                 }
                 TimeAgo(
                     precedingString = stringResource(R.string.AppBars_created),
-                    includeAgo = true,
+                    longTimeFormat = true,
                     published = published,
                 )
                 CommentsAndPosts(
@@ -562,6 +557,7 @@ fun Modifier.simpleVerticalScrollbar(
     val alpha by animateFloatAsState(
         targetValue = targetAlpha,
         animationSpec = tween(durationMillis = duration),
+        label = "animateScrollBar",
     )
 
     return drawWithContent {
@@ -584,4 +580,11 @@ fun Modifier.simpleVerticalScrollbar(
             )
         }
     }
+}
+
+@Composable
+fun LoadingBar(
+    padding: PaddingValues = PaddingValues(0.dp),
+) {
+    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(padding).testTag("jerboa:loading"))
 }

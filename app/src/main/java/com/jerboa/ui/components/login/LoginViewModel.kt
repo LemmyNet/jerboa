@@ -11,15 +11,18 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.api.API
-import com.jerboa.api.fetchPostsWrapper
-import com.jerboa.api.getSiteWrapper
+import com.jerboa.api.ApiState
+import com.jerboa.api.MINIMUM_API_VERSION
+import com.jerboa.api.apiWrapper
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.datatypes.ListingType
-import com.jerboa.datatypes.SortType
-import com.jerboa.datatypes.api.Login
+import com.jerboa.compareVersions
+import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.GetSite
+import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
-import com.jerboa.fetchInitialData
+import com.jerboa.getHostFromInstanceString
+import com.jerboa.serializeToMap
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.cancel
@@ -27,9 +30,7 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
 
-    var jwt: String by mutableStateOf("")
-        private set
-    var loading: Boolean by mutableStateOf(false)
+    var loading by mutableStateOf(false)
         private set
 
     fun login(
@@ -42,7 +43,8 @@ class LoginViewModel : ViewModel() {
         ctx: Context,
     ) {
         val originalInstance = API.currentInstance
-        val api = API.changeLemmyInstance(instance)
+        val api = API.changeLemmyInstance(getHostFromInstanceString(instance))
+        var jwt: String
 
         viewModelScope.launch {
             try {
@@ -80,53 +82,74 @@ class LoginViewModel : ViewModel() {
                 return@launch
             }
 
-            // Refetch the site to get your name and id
+            // Fetch the site to get your name and id
             // Can't do a co-routine within a co-routine
-            siteViewModel.siteRes = getSiteWrapper(auth = jwt, ctx = ctx)
+            val getSiteForm = GetSite(auth = jwt)
+            siteViewModel.siteRes = apiWrapper(API.getInstance().getSite(getSiteForm.serializeToMap()))
 
-            val luv = siteViewModel.siteRes?.my_user!!.local_user_view
-            val account = Account(
-                id = luv.person.id,
-                name = luv.person.name,
-                current = true,
-                instance = instance,
-                jwt = jwt,
-                defaultListingType = luv.local_user.default_listing_type,
-                defaultSortType = luv.local_user.default_sort_type,
-            )
+            when (val siteRes = siteViewModel.siteRes) {
+                is ApiState.Failure -> {
+                    Toast.makeText(
+                        ctx,
+                        siteRes.msg.message,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                is ApiState.Success -> {
+                    val siteVersion = siteRes.data.version
+                    if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0) {
+                        val message = ctx.resources.getString(
+                            R.string.dialogs_server_version_outdated_short,
+                            siteVersion,
+                        )
+                        Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
+                    }
 
-            // Refetch the front page
-            val posts = fetchPostsWrapper(
-                account = account,
-                ctx = ctx,
-                listingType = ListingType.values()[
-                    luv.local_user
-                        .default_listing_type,
-                ],
-                sortType = SortType.values()[
-                    luv.local_user
-                        .default_sort_type,
-                ],
-                page = 1,
-            )
-            homeViewModel.posts.clear()
-            homeViewModel.posts.addAll(posts)
+                    try {
+                        val luv = siteRes.data.my_user!!.local_user_view
+                        val account = Account(
+                            id = luv.person.id,
+                            name = luv.person.name,
+                            current = true,
+                            instance = instance,
+                            jwt = jwt,
+                            defaultListingType = luv.local_user.default_listing_type.ordinal,
+                            defaultSortType = luv.local_user.default_sort_type.ordinal,
+                        )
 
-            // Remove the default account
-            accountViewModel.removeCurrent()
+                        homeViewModel.resetPage()
+                        homeViewModel.updateFromAccount(account)
+                        homeViewModel.getPosts(
+                            GetPosts(
+                                type_ = homeViewModel.listingType,
+                                sort = homeViewModel.sortType,
+                                page = homeViewModel.page,
+                                auth = account.jwt,
+                            ),
+                        )
 
-            // Save that info in the DB
-            accountViewModel.insert(account)
+                        // Remove the default account
+                        accountViewModel.removeCurrent()
 
-            fetchInitialData(
-                account = account,
-                siteViewModel = siteViewModel,
-                homeViewModel = homeViewModel,
-            )
+                        // Save that info in the DB
+                        accountViewModel.insert(account)
+                    } catch (e: Exception) {
+                        loading = false
+                        Log.e("login", e.toString())
+                        API.changeLemmyInstance(originalInstance)
+                        this.cancel()
+                        return@launch
+                    }
 
-            loading = false
+                    loading = false
 
-            navController.navigate(route = "home")
+                    navController.navigate(route = "home") {
+                        popUpTo(0)
+                    }
+                }
+
+                else -> {}
+            }
         }
     }
 }

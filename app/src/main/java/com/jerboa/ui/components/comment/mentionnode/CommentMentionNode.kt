@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Link
@@ -37,10 +38,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.VoteType
-import com.jerboa.datatypes.CommunitySafe
-import com.jerboa.datatypes.PersonMentionView
-import com.jerboa.datatypes.PersonSafe
+import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.samplePersonMentionView
+import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.Person
+import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.db.Account
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
@@ -106,7 +108,7 @@ fun CommentMentionNodeFooterLine(
     onViewSourceClick: () -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
@@ -272,6 +274,18 @@ fun CommentReplyNodeOptionsDialog(
                         onDismissRequest()
                     },
                 )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.comment_mention_node_copy_comment),
+                    icon = Icons.Outlined.ContentCopy,
+                    onClick = {
+                        if (copyToClipboard(ctx, personMentionView.comment.content, "comment")) {
+                            Toast.makeText(ctx, ctx.getString(R.string.comment_mention_node_comment_copied), Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                        }
+                        onDismissRequest()
+                    },
+                )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.comment_mention_node_report_comment),
@@ -302,11 +316,11 @@ fun CommentMentionNode(
     onSaveClick: (personMentionView: PersonMentionView) -> Unit,
     onMarkAsReadClick: (personMentionView: PersonMentionView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    onCommunityClick: (community: CommunitySafe) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
-    onBlockCreatorClick: (creator: PersonSafe) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account?,
     showAvatar: Boolean,
 ) {

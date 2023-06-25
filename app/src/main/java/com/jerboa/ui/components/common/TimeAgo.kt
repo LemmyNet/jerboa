@@ -23,10 +23,9 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
-import com.jerboa.datatypes.samplePersonSafe
+import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
-import com.jerboa.prettyTime
-import com.jerboa.prettyTimeShortener
+import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 import java.time.Instant
@@ -37,9 +36,9 @@ fun TimeAgo(
     published: String,
     updated: String? = null,
     precedingString: String? = null,
-    includeAgo: Boolean = false,
+    longTimeFormat: Boolean = false,
 ) {
-    val publishedPretty = dateStringToPretty(published, includeAgo)
+    val publishedPretty = dateStringToPretty(published, longTimeFormat)
 
     val afterPreceding = precedingString?.let {
         stringResource(R.string.time_ago_ago, it, publishedPretty)
@@ -53,7 +52,7 @@ fun TimeAgo(
         )
 
         updated?.also {
-            val updatedPretty = dateStringToPretty(it, includeAgo)
+            val updatedPretty = dateStringToPretty(it, longTimeFormat)
 
             DotSpacer(
                 padding = SMALL_PADDING,
@@ -69,21 +68,15 @@ fun TimeAgo(
     }
 }
 
-fun dateStringToPretty(dateStr: String, includeAgo: Boolean = false): String {
+fun dateStringToPretty(dateStr: String, longTimeFormat: Boolean = false): String {
     val publishedDate = Date.from(Instant.parse(dateStr + "Z"))
-    val prettyPublished = prettyTime.formatDuration(publishedDate)
-
-    return if (includeAgo) {
-        prettyPublished
-    } else {
-        prettyTimeShortener(prettyPublished)
-    }
+    return formatDuration(publishedDate, longTimeFormat)
 }
 
 @Preview
 @Composable
 fun TimeAgoPreview() {
-    TimeAgo(samplePersonSafe.published, samplePersonSafe.updated)
+    TimeAgo(samplePerson.published, samplePerson.updated)
 }
 
 @Composable
@@ -94,11 +87,13 @@ fun ScoreAndTime(
     updated: String?,
     isExpanded: Boolean = true,
     collapsedCommentsCount: Int = 0,
+    isNsfw: Boolean = false,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        NsfwBadge(isNsfw)
         CollapsedIndicator(visible = !isExpanded, descendants = collapsedCommentsCount)
         Spacer(modifier = Modifier.padding(end = SMALL_PADDING))
         Text(
@@ -150,4 +145,34 @@ fun CollapsedIndicator(visible: Boolean, descendants: Int) {
 @Composable
 fun CollapsedIndicatorPreview() {
     CollapsedIndicator(visible = true, descendants = 23)
+}
+
+@Composable
+fun NsfwBadge(visible: Boolean) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(MaterialTheme.colorScheme.secondary)
+                    .padding(horizontal = SMALL_PADDING),
+            ) {
+                Text(
+                    text = "NSFW",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun NsfwBadgePreview() {
+    NsfwBadge(visible = true)
 }
