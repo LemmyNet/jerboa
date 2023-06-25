@@ -47,6 +47,7 @@ import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
@@ -87,7 +88,8 @@ fun HomeActivity(
     val account = getCurrentAccount(accountViewModel)
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
             .semantics { testTagsAsResourceId = true },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -154,6 +156,7 @@ fun MainPostListingsContent(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
 ) {
+    var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
         ApiState.Loading ->
             LoadingBar(padding)
@@ -162,9 +165,7 @@ fun MainPostListingsContent(
         is ApiState.Failure -> ApiErrorText(siteRes.msg)
         is ApiState.Success -> {
             // TODO can be removed with 0.18.0 release
-            if (siteRes.data.taglines !== null) {
-                Taglines(siteRes.data.taglines)
-            }
+            taglines = siteRes.data.taglines
         }
     }
 
@@ -195,6 +196,7 @@ fun MainPostListingsContent(
         if (loading) {
             LoadingBar(padding = padding)
         }
+
         when (val postsRes = homeViewModel.postsRes) {
             ApiState.Empty -> ApiEmptyText()
             is ApiState.Failure -> ApiErrorText(postsRes.msg)
@@ -204,6 +206,7 @@ fun MainPostListingsContent(
                     padding = padding,
                     posts = postsRes.data.posts,
                     postViewMode = getPostViewMode(appSettingsViewModel),
+                    contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
                     onUpvoteClick = { postView ->
                         account?.also { acct ->
                             homeViewModel.likePost(
