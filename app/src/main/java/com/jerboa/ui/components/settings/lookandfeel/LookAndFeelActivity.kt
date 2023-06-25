@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Colorize
+import androidx.compose.material.icons.outlined.FormatSize
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -17,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
@@ -35,9 +40,9 @@ import com.jerboa.ThemeMode
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.DEFAULT_FONT_SIZE
-import com.jerboa.localeOptions
+import com.jerboa.getLangPreferenceDropdownEntries
+import com.jerboa.matchLocale
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,14 +51,18 @@ fun LookAndFeelActivity(
     appSettingsViewModel: AppSettingsViewModel,
 ) {
     Log.d("jerboa", "Got to lookAndFeel activity")
+    val ctx = LocalContext.current
 
     val settings = appSettingsViewModel.appSettings.value
     val themeState = rememberIntSettingState(settings?.theme ?: 0)
     val themeColorState = rememberIntSettingState(settings?.themeColor ?: 0)
-    val currentAppLocale =
-        AppCompatDelegate.getApplicationLocales().getFirstMatch(localeOptions.values.toTypedArray())
-            ?: Locale.ENGLISH
-    val langState = rememberIntSettingState(localeOptions.values.indexOf(currentAppLocale.language))
+
+    val localeMap = remember {
+        getLangPreferenceDropdownEntries(ctx)
+    }
+
+    val currentAppLocale = matchLocale(localeMap)
+    val langState = rememberIntSettingState(localeMap.keys.indexOf(currentAppLocale))
 
     val fontSizeState = rememberFloatSettingState(
         settings?.fontSize?.toFloat()
@@ -119,7 +128,7 @@ fun LookAndFeelActivity(
             ) {
                 SettingsListDropdown(
                     title = {
-                        Text(text = "Select your language")
+                        Text(text = stringResource(R.string.lang_language))
                     },
                     enabled = true,
                     icon = {
@@ -129,12 +138,10 @@ fun LookAndFeelActivity(
                         )
                     },
                     state = langState,
-                    items = localeOptions.keys.map { stringResource(id = it) },
+                    items = localeMap.values.toList(),
                     onItemSelected = { i, _ ->
                         AppCompatDelegate.setApplicationLocales(
-                            LocaleListCompat.forLanguageTags(
-                                localeOptions.values.elementAt(i),
-                            ),
+                            LocaleListCompat.create(localeMap.keys.elementAt(i)),
                         )
                     },
                 )
