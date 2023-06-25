@@ -71,6 +71,7 @@ fun CreatePostActivity(
             ),
         )
     }
+    var isUploadingImage by rememberSaveable { mutableStateOf(false) }
 
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
@@ -98,11 +99,11 @@ fun CreatePostActivity(
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             topBar = {
-                val loading = when (createPostViewModel.createPostRes) {
-                    ApiState.Loading -> true
-                    else -> false
-                }
                 Column {
+                    val loading = when (createPostViewModel.createPostRes) {
+                        ApiState.Loading -> true
+                        else -> false
+                    }
                     CreateEditPostHeader(
                         navController = navController,
                         formValid = formValid,
@@ -124,7 +125,6 @@ fun CreatePostActivity(
                         },
                         title = stringResource(R.string.create_post_create_post),
                     )
-
                     if (loading) {
                         LoadingBar()
                     }
@@ -152,14 +152,17 @@ fun CreatePostActivity(
                     },
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,
-                    selectedImage = initialImage,
+                    sharedImage = initialImage,
+                    isUploadingImage = isUploadingImage,
                     onImagePicked = { uri ->
                         if (uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)
                             scope.launch {
+                                isUploadingImage = true
                                 account?.also { acct ->
                                     url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
                                 }
+                                isUploadingImage = false
                             }
                         }
                     },

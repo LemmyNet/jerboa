@@ -45,9 +45,11 @@ import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.types.Community
 import com.jerboa.db.Account
+import com.jerboa.isImage
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
+import com.jerboa.ui.components.common.PictrsUrlImage
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
@@ -108,8 +110,9 @@ fun CreateEditPostBody(
     url: String,
     urlField: InputField,
     onUrlChange: (url: String) -> Unit,
-    selectedImage: Uri? = null,
+    sharedImage: Uri? = null,
     onImagePicked: (image: Uri) -> Unit,
+    isUploadingImage: Boolean = false,
     isNsfw: Boolean,
     onIsNsfwChange: (isNsfw: Boolean) -> Unit,
     suggestedTitle: String? = null,
@@ -175,14 +178,21 @@ fun CreateEditPostBody(
         }
 
         /**
-         * Pick and upload an image, show a preview
+         * Pick and upload an image, show a preview if possible
          */
         PickImage(
             onPickedImage = onImagePicked,
-            image = selectedImage,
+            sharedImage = sharedImage,
             horizontalAlignment = Alignment.End,
-            modifier = Modifier.fillMaxWidth(),
+            isUploadingImage = isUploadingImage,
         )
+
+        if (isImage(url)) {
+            PictrsUrlImage(
+                url = url,
+                nsfw = false,
+            )
+        }
 
         /**
          * Markdown field for post body
