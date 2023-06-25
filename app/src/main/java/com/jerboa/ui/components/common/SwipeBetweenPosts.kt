@@ -29,7 +29,7 @@ fun SwipeBetweenPosts(
             Icon(
                 imageVector = Icons.Outlined.NavigateNext,
                 contentDescription = stringResource(id = R.string.post_next),
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
             )
         },
         onSwipe = {
@@ -72,7 +72,8 @@ fun SwipeBetweenPosts(
             Icon(
                 imageVector = Icons.Outlined.NavigateBefore,
                 contentDescription = stringResource(id = R.string.post_previous),
-                tint = MaterialTheme.colorScheme.primary)
+                tint = MaterialTheme.colorScheme.primary,
+            )
         },
         onSwipe = {
             val res = homeViewModel.postsRes
