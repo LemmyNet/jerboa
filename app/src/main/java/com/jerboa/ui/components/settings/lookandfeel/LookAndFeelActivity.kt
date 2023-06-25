@@ -87,7 +87,7 @@ fun LookAndFeelActivity(
     val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
     val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)
 
-    val swipeBetweenPosts = rememberBooleanSettingState(settings?.swipeBetweenPosts ?: false)
+    val allowSwipeBetweenPosts = rememberBooleanSettingState(settings?.swipeBetweenPosts ?: false)
 
     val secureWindowState = rememberBooleanSettingState(settings?.secureWindow ?: false)
 
@@ -113,7 +113,7 @@ fun LookAndFeelActivity(
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
-                swipeBetweenPosts = swipeBetweenPosts.value,
+                swipeBetweenPosts = allowSwipeBetweenPosts.value,
             ),
         )
     }
@@ -283,9 +283,9 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
-                    state = swipeBetweenPosts,
+                    state = allowSwipeBetweenPosts,
                     title = {
-                        Text(text = stringResource(id = R.string.look_and_feel_swipe_between_posts))
+                        Text(text = stringResource(id = R.string.look_and_feel_allow_swipe_between_posts))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

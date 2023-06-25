@@ -119,7 +119,7 @@ data class AppSettings(
     )
     val secureWindow: Boolean,
     @ColumnInfo(
-        name = "swipe_between_posts",
+        name = "allow_swipe_between_posts",
         defaultValue = "0",
     )
     val swipeBetweenPosts: Boolean,
@@ -445,7 +445,7 @@ val MIGRATION_16_17 = object : Migration(16, 17) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
-            "ALTER TABLE AppSettings add column swipe_between_posts INTEGER NOT NULL default 0",
+            "ALTER TABLE AppSettings add column allow_swipe_between_posts INTEGER NOT NULL default 0",
         )
     }
 }
