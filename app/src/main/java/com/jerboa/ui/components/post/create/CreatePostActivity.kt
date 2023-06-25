@@ -15,18 +15,27 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
+import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListViewModel
+import com.jerboa.ui.components.post.composables.CreateEditPostBody
+import com.jerboa.ui.components.post.composables.CreateEditPostHeader
+import com.jerboa.ui.components.post.composables.CreatePostSubmitIcon
+import com.jerboa.ui.components.post.composables.PostCommunitySelector
+import com.jerboa.validatePostName
+import com.jerboa.validateUrl
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -50,9 +59,11 @@ fun CreatePostActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val scope = rememberCoroutineScope()
+    val community = communityListViewModel.selectedCommunity
 
     var name by rememberSaveable { mutableStateOf("") }
     var url by rememberSaveable { mutableStateOf(initialUrl) }
+    var isNsfw by rememberSaveable { mutableStateOf(false) }
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue(
@@ -60,9 +71,11 @@ fun CreatePostActivity(
             ),
         )
     }
-    var isNsfw by rememberSaveable { mutableStateOf(false) }
-    var formValid by rememberSaveable { mutableStateOf(false) }
     var isUploadingImage by rememberSaveable { mutableStateOf(false) }
+
+    val nameField = validatePostName(name)
+    val urlField = validateUrl(url)
+    val formValid = !nameField.hasError && !urlField.hasError && (community !== null)
 
     LaunchedEffect(initialUrl) {
         if (initialUrl.isNotEmpty()) {
@@ -91,44 +104,43 @@ fun CreatePostActivity(
                     else -> false
                 }
                 Column {
-                    CreatePostHeader(
+                    CreateEditPostHeader(
                         navController = navController,
                         formValid = formValid,
                         loading = loading,
-                        onCreatePostClick = {
-                            account?.also { acct ->
-                                communityListViewModel.selectedCommunity?.id?.also {
-                                    // Clean up that data
-                                    val nameOut = name.trim()
-                                    val bodyOut = body.text.trim().ifEmpty { null }
-                                    val urlOut = url.trim().ifEmpty { null }
-                                    createPostViewModel.createPost(
-                                        CreatePost(
-                                            name = nameOut,
-                                            community_id = it,
-                                            url = urlOut,
-                                            body = bodyOut,
-                                            auth = acct.jwt,
-                                            nsfw = isNsfw,
-                                        ),
-                                        navController,
-                                    )
-                                }
-                            }
+                        onSubmitClick = {
+                            onSubmitClick(
+                                name,
+                                body,
+                                url,
+                                isNsfw,
+                                account,
+                                communityListViewModel,
+                                createPostViewModel,
+                                navController,
+                            )
                         },
+                        submitIcon = {
+                            CreatePostSubmitIcon(formValid)
+                        },
+                        title = stringResource(R.string.create_post_create_post),
                     )
+
                     if (loading) {
                         LoadingBar()
                     }
                 }
             },
             content = { padding ->
-                CreatePostBody(
+
+                CreateEditPostBody(
                     name = name,
+                    nameField = nameField,
                     onNameChange = { name = it },
                     body = body,
                     onBodyChange = { body = it },
                     url = url,
+                    urlField = urlField,
                     onUrlChange = { cUrl ->
                         url = cUrl
                         fetchSiteMetadataJob?.cancel()
@@ -144,6 +156,8 @@ fun CreatePostActivity(
                     formValid = { formValid = it },
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,
+                    selectedImage = initialImage,
+                    onImagePicked = { uri ->
                     image = initialImage,
                     isUploadingImage = isUploadingImage,
                     onPickedImage = { uri ->
@@ -162,8 +176,45 @@ fun CreatePostActivity(
                     padding = padding,
                     isNsfw = isNsfw,
                     onIsNsfwChange = { isNsfw = it },
+                    communitySelector = {
+                        PostCommunitySelector(
+                            community = community,
+                            navController = navController,
+                        )
+                    },
                 )
             },
         )
+    }
+}
+
+fun onSubmitClick(
+    name: String,
+    body: TextFieldValue,
+    url: String,
+    isNsfw: Boolean,
+    account: Account?,
+    communityListViewModel: CommunityListViewModel,
+    createPostViewModel: CreatePostViewModel,
+    navController: NavController,
+) {
+    account?.also { acct ->
+        communityListViewModel.selectedCommunity?.id?.also {
+            // Clean up that data
+            val nameOut = name.trim()
+            val bodyOut = body.text.trim().ifEmpty { null }
+            val urlOut = url.trim().ifEmpty { null }
+            createPostViewModel.createPost(
+                CreatePost(
+                    name = nameOut,
+                    community_id = it,
+                    url = urlOut,
+                    body = bodyOut,
+                    auth = acct.jwt,
+                    nsfw = isNsfw,
+                ),
+                navController,
+            )
+        }
     }
 }
