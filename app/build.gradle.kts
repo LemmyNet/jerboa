@@ -115,25 +115,25 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.4.0")
 
     // To use Kotlin annotation processing tool
-    ksp("androidx.room:room-compiler:2.5.1")
+    ksp("androidx.room:room-compiler:2.5.2")
 
-    implementation("androidx.room:room-runtime:2.5.1")
-    annotationProcessor("androidx.room:room-compiler:2.5.1")
+    implementation("androidx.room:room-runtime:2.5.2")
+    annotationProcessor("androidx.room:room-compiler:2.5.2")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.5.1")
+    implementation("androidx.room:room-ktx:2.5.2")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.5.1")
+    testImplementation("androidx.room:room-testing:2.5.2")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
 
     // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:2.5.1")
+    implementation("androidx.room:room-paging:2.5.2")
 
     implementation("io.arrow-kt:arrow-core:1.1.5")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
-    implementation("androidx.compose.material3:material3:1.1.0")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.0")
+    implementation("androidx.compose.material3:material3:1.1.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
     implementation("androidx.compose.material:material-icons-extended:1.4.3")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
     implementation("io.coil-kt:coil-compose:2.4.0")
