@@ -181,6 +181,7 @@
     <string name="login_instance">Instance</string>
     <string name="login_instance_placeholder">ex: lemmy.ml</string>
     <string name="login_login">Login</string>
+    <string name="login_totp">Enter 2FA Token if enabled</string>
     <string name="login_password">Password</string>
     <string name="login_view_model_incorrect_login">Incorrect Login</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s is not a Lemmy Instance</string>
@@ -331,4 +332,5 @@
     <string name="inbox_activity_messages">Messages</string>
     <string name="bookmarks_activity_saved">Saved</string>
     <string name="generic_error">An error has occurred</string>
+    <string name="lang_language">Language</string>
 </resources>
