@@ -16,6 +16,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
+import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
 import androidx.navigation.NavController
 import arrow.core.compareTo
@@ -64,6 +66,8 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -1289,4 +1293,53 @@ fun copyToClipboard(context: Context, textToCopy: CharSequence, clipLabel: CharS
         return true
     }
     return false
+}
+
+fun getLocaleListFromXml(ctx: Context): LocaleListCompat {
+    val tagsList = mutableListOf<CharSequence>()
+    try {
+        val xpp: XmlPullParser = ctx.resources.getXml(R.xml.locales_config)
+        while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
+            if (xpp.eventType == XmlPullParser.START_TAG) {
+                if (xpp.name == "locale") {
+                    tagsList.add(xpp.getAttributeValue(0))
+                }
+            }
+            xpp.next()
+        }
+    } catch (e: XmlPullParserException) {
+        e.printStackTrace()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+
+    return LocaleListCompat.forLanguageTags(tagsList.joinToString(","))
+}
+
+fun getLangPreferenceDropdownEntries(ctx: Context): Map<Locale, String> {
+    val localeList = getLocaleListFromXml(ctx)
+    val map = mutableMapOf<Locale, String>()
+
+    for (a in 0 until localeList.size()) {
+        localeList[a].let {
+            it?.let { it1 -> map.put(it, it.getDisplayName(it)) }
+        }
+    }
+    return map
+}
+
+fun matchLocale(localeMap: Map<Locale, String>): Locale {
+    return Locale.lookup(
+        AppCompatDelegate.getApplicationLocales().convertToLanguageRange(),
+        localeMap.keys.toList(),
+    ) ?: Locale.ENGLISH
+}
+
+fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange> {
+    val l = mutableListOf<Locale.LanguageRange>()
+
+    for (i in 0 until this.size()) {
+        l.add(i, Locale.LanguageRange(this[i]!!.toLanguageTag()))
+    }
+    return l
 }

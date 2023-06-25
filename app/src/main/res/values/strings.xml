@@ -181,6 +181,7 @@
     <string name="login_instance">Instance</string>
     <string name="login_instance_placeholder">ex: lemmy.ml</string>
     <string name="login_login">Login</string>
+    <string name="login_totp">Enter 2FA Token if enabled</string>
     <string name="login_password">Password</string>
     <string name="login_view_model_incorrect_login">Incorrect Login</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s is not a Lemmy Instance</string>
@@ -230,6 +231,7 @@
     <string name="markdownHelper_insertQuote">Insert quote</string>
     <string name="markdownHelper_preview">View preview</string>
     <string name="moreOptions">More options</string>
+    <string name="networkError">Network error</string>
     <string name="personProfile_viewAvatar">View avatar image</string>
     <string name="personProfile_viewBanner">View banner image</string>
     <string name="person_iconAdmin">Is administrator</string>
@@ -331,4 +333,5 @@
     <string name="bookmarks_activity_saved">Saved</string>
     <string name="generic_error">An error has occurred</string>
     <string name="create_edit_post_close">Close</string>
+    <string name="lang_language">Language</string>
 </resources>

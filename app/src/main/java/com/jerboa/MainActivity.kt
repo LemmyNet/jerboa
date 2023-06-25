@@ -5,10 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
-import androidx.activity.ComponentActivity
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -25,6 +27,7 @@ import arrow.core.Either
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.GetCommunity
@@ -56,7 +59,9 @@ import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
-import com.jerboa.ui.components.home.*
+import com.jerboa.ui.components.home.BottomNavActivity
+import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.inbox.InboxViewModel
@@ -89,7 +94,7 @@ class JerboaApplication : Application() {
     val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
 }
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val homeViewModel by viewModels<HomeViewModel>()
     private val postViewModel by viewModels<PostViewModel>()
@@ -120,9 +125,24 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val accountSync = getCurrentAccountSync(accountViewModel)
-        fetchInitialData(accountSync, siteViewModel, homeViewModel)
 
         setContent {
+            val ctx = LocalContext.current
+
+            API.errorHandler = {
+                Log.e("jerboa", it.toString())
+                runOnUiThread {
+                    Toast.makeText(
+                        ctx,
+                        ctx.resources.getString(R.string.networkError),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                null
+            }
+
+            fetchInitialData(accountSync, siteViewModel, homeViewModel)
+
             val account = getCurrentAccount(accountViewModel)
             val appSettings by appSettingsViewModel.appSettings.observeAsState()
 
@@ -130,7 +150,6 @@ class MainActivity : ComponentActivity() {
                 appSettings = appSettings,
             ) {
                 val navController = rememberAnimatedNavController()
-                val ctx = LocalContext.current
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
