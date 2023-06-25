@@ -99,11 +99,11 @@ fun CreatePostActivity(
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             topBar = {
-                val loading = when (createPostViewModel.createPostRes) {
-                    ApiState.Loading -> true
-                    else -> false
-                }
                 Column {
+                    val loading = when (createPostViewModel.createPostRes) {
+                        ApiState.Loading -> true
+                        else -> false
+                    }
                     CreateEditPostHeader(
                         navController = navController,
                         formValid = formValid,
@@ -125,7 +125,6 @@ fun CreatePostActivity(
                         },
                         title = stringResource(R.string.create_post_create_post),
                     )
-
                     if (loading) {
                         LoadingBar()
                     }
@@ -151,16 +150,11 @@ fun CreatePostActivity(
                             }
                         }
                     },
-                    navController = navController,
-                    community = communityListViewModel.selectedCommunity,
-                    formValid = { formValid = it },
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,
-                    selectedImage = initialImage,
-                    onImagePicked = { uri ->
-                    image = initialImage,
+                    sharedImage = initialImage,
                     isUploadingImage = isUploadingImage,
-                    onPickedImage = { uri ->
+                    onImagePicked = { uri ->
                         if (uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)
                             scope.launch {

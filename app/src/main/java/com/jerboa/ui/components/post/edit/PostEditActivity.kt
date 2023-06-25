@@ -124,6 +124,7 @@ fun PostEditActivity(
                         isUploadingImage = false
                     }
                 },
+                isUploadingImage = isUploadingImage,
                 account = account,
                 padding = padding,
                 isNsfw = isNsfw,
