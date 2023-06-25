@@ -49,9 +49,9 @@ import com.jerboa.ui.components.comment.edit.CommentEditViewModel
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.common.MarkdownHelper
+import com.jerboa.ui.components.common.PostSwipeWrapper
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
-import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.community.CommunityActivity
@@ -501,7 +501,13 @@ class MainActivity : ComponentActivity() {
                             postViewModel.initialize(id = Either.Left(postId))
                             postViewModel.getData(account)
                         }
-                        SwipeToNavigateBack(navController = navController) {
+                        PostSwipeWrapper(
+                            navController = navController,
+                            account = account,
+                            homeViewModel = homeViewModel,
+                            postViewModel = postViewModel,
+                            appSettingsViewModel = appSettingsViewModel
+                        ) {
                             PostActivity(
                                 postViewModel = postViewModel,
                                 accountViewModel = accountViewModel,
@@ -522,7 +528,6 @@ class MainActivity : ComponentActivity() {
                                 },
                                 selectedSortType = postViewModel.sortType,
                                 siteViewModel = siteViewModel,
-                                homeViewModel = homeViewModel,
                             )
                         }
                     }
@@ -562,7 +567,6 @@ class MainActivity : ComponentActivity() {
                             },
                             selectedSortType = postViewModel.sortType,
                             siteViewModel = siteViewModel,
-                            homeViewModel = homeViewModel,
                         )
                     }
                     composable(

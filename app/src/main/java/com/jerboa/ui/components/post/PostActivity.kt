@@ -38,7 +38,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
@@ -49,7 +48,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavController
-import arrow.core.left
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -62,7 +60,6 @@ import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.AccountViewModel
@@ -84,11 +81,8 @@ import com.jerboa.ui.components.common.CommentSortOptionsDialog
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditViewModel
-import me.saket.swipe.SwipeAction
-import me.saket.swipe.SwipeableActionsBox
 
 @Composable
 fun CommentsHeaderTitle(
@@ -115,7 +109,6 @@ fun CommentsHeaderTitle(
 )
 @Composable
 fun PostActivity(
-    homeViewModel: HomeViewModel,
     postViewModel: PostViewModel,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
@@ -175,193 +168,292 @@ fun PostActivity(
         focusRequester.requestFocus()
     }
 
-    val forward = SwipeAction(
-        icon = { Text("Next") },
-        onSwipe = {
-            val res = homeViewModel.postsRes
-            if (res is ApiState.Success) {
-                res.data.posts
-                    .mapIndexed { index, postView -> index to postView }
-                    .firstOrNull { it.second.post.id == postViewModel.id?.swap()?.getOrNull() }
-                    ?.first?.let { currIndex ->
-                        if (currIndex + 1 >= res.data.posts.size - 1) {
-                            val nextIndex = res.data.posts.size
-                            homeViewModel.nextPage()
-                            homeViewModel.appendPosts(
-                                GetPosts(
-                                    page = homeViewModel.page,
-                                    sort = homeViewModel.sortType,
-                                    type_ = homeViewModel.listingType,
-                                    auth = account?.jwt,
-                                ),
-                            ).invokeOnCompletion {
-                                when (val newRes = homeViewModel.postsRes) {
-                                    is ApiState.Success -> {
-                                        postViewModel.initialize(newRes.data.posts[nextIndex].post.id.left())
-                                        postViewModel.getData(account)
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true }
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .focusRequester(focusRequester)
+            .focusable()
+            .onKeyEvent { keyEvent ->
+                if (navigateParentCommentsWithVolumeButtons) {
+                    when (keyEvent.key) {
+                        Key.VolumeUp -> {
+                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                            true
+                        }
+                        Key.VolumeDown -> {
+                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                            true
+                        }
+                        else -> {
+                            false
+                        }
+                    }
+                } else {
+                    false
+                }
+            },
+        bottomBar = {
+            if (showParentCommentNavigationButtons) {
+                CommentNavigationBottomAppBar(
+                    scope,
+                    parentListStateIndexes,
+                    listState,
+                )
+            }
+        },
+        topBar = {
+            Column {
+                TopAppBar(
+                    title = {
+                        CommentsHeaderTitle(
+                            selectedSortType = selectedSortType,
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            modifier = Modifier.testTag("jerboa:back"),
+                            onClick = { navController.popBackStack() },
+                        ) {
+                            Icon(
+                                Icons.Outlined.ArrowBack,
+                                contentDescription = stringResource(R.string.topAppBar_back),
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = {
+                            showSortOptions = !showSortOptions
+                        }) {
+                            Icon(
+                                Icons.Outlined.Sort,
+                                contentDescription = stringResource(R.string.selectSort),
+                            )
+                        }
+                    },
+                    scrollBehavior = scrollBehavior,
+                )
+            }
+        },
+        content = { padding ->
+            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                parentListStateIndexes.clear()
+                lazyListIndexTracker = 2
+                PullRefreshIndicator(
+                    postLoading,
+                    pullRefreshState,
+                    Modifier.align(Alignment.TopCenter),
+                )
+                when (val postRes = postViewModel.postRes) {
+                    is ApiState.Loading ->
+                        LoadingBar(padding)
+                    is ApiState.Failure -> ApiErrorText(postRes.msg)
+                    is ApiState.Success -> {
+                        val postView = postRes.data.post_view
+
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier
+                                .padding(top = padding.calculateTopPadding())
+                                .simpleVerticalScrollbar(listState)
+                                .testTag("jerboa:comments"),
+                        ) {
+                            item(key = "${postView.post.id}_listing") {
+                                PostListing(
+                                    postView = postView,
+                                    onUpvoteClick = { pv ->
+                                        account?.also { acct ->
+                                            postViewModel.likePost(
+                                                CreatePostLike(
+                                                    post_id = pv.post.id,
+                                                    score = newVote(
+                                                        postView.my_vote,
+                                                        VoteType.Upvote,
+                                                    ),
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                        // TODO will need to pass in postlistingsviewmodel
+                                        // for the Home page to also be updated
+                                    },
+                                    onDownvoteClick = { pv ->
+                                        account?.also { acct ->
+                                            postViewModel.likePost(
+                                                CreatePostLike(
+                                                    post_id = pv.post.id,
+                                                    score = newVote(
+                                                        postView.my_vote,
+                                                        VoteType.Upvote,
+                                                    ),
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onReplyClick = { pv ->
+                                        commentReplyViewModel.initialize(ReplyItem.PostItem(pv))
+                                        val isModerator = isModerator(pv.creator, postRes.data.moderators)
+                                        navController.navigate("commentReply?isModerator=$isModerator")
+                                    },
+                                    onPostClick = {},
+                                    onSaveClick = { pv ->
+                                        account?.also { acct ->
+                                            postViewModel.savePost(
+                                                SavePost(
+                                                    post_id = pv.post.id,
+                                                    save = !pv.saved,
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onCommunityClick = { community ->
+                                        navController.navigate(route = "community/${community.id}")
+                                    },
+                                    onEditPostClick = { pv ->
+                                        postEditViewModel.initialize(pv)
+                                        navController.navigate("postEdit")
+                                    },
+                                    onDeletePostClick = { pv ->
+                                        account?.also { acct ->
+                                            postViewModel.deletePost(
+                                                DeletePost(
+                                                    post_id = pv.post.id,
+                                                    deleted = pv.post.deleted,
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    onReportClick = { pv ->
+                                        navController.navigate("postReport/${pv.post.id}")
+                                    },
+                                    onPersonClick = { personId ->
+                                        navController.navigate(route = "profile/$personId")
+                                    },
+                                    onBlockCommunityClick = { c ->
+                                        account?.also { acct ->
+                                            postViewModel.blockCommunity(
+                                                BlockCommunity(
+                                                    community_id = c.id,
+                                                    block = true,
+                                                    auth = acct.jwt,
+                                                ),
+                                                ctx,
+                                            )
+                                        }
+                                    },
+                                    onBlockCreatorClick = { person ->
+                                        account?.also { acct ->
+                                            postViewModel.blockPerson(
+                                                BlockPerson(
+                                                    person_id = person.id,
+                                                    block = true,
+                                                    auth = acct.jwt,
+                                                ),
+                                                ctx,
+                                            )
+                                        }
+                                    },
+                                    showReply = true, // Do nothing
+                                    isModerator = isModerator(
+                                        postView.creator,
+                                        postRes.data.moderators,
+                                    ),
+                                    showCommunityName = true,
+                                    fullBody = true,
+                                    account = account,
+                                    postViewMode = PostViewMode.Card,
+                                    enableDownVotes = siteViewModel.enableDownvotes(),
+                                    showAvatar = siteViewModel.showAvatar(),
+                                    showVotingArrowsInListView = showVotingArrowsInListView,
+                                    useCustomTabs = useCustomTabs,
+                                    usePrivateTabs = usePrivateTabs,
+                                )
+                            }
+
+                            when (val commentsRes = postViewModel.commentsRes) {
+                                is ApiState.Loading ->
+                                    item {
+                                        LoadingBar()
                                     }
 
-                                    else -> {}
+                                is ApiState.Failure -> item(key = "error") {
+                                    ApiErrorText(
+                                        commentsRes.msg,
+                                    )
                                 }
-                            }
-                        } else if (currIndex >= 0) {
-                            postViewModel.initialize(res.data.posts[currIndex + 1].post.id.left())
-                            postViewModel.getData(account)
-                        } else {
-                        }
-                    }
-            }
-        },
-        background = Color.Transparent,
-    )
 
-    val backward = SwipeAction(
-        icon = { Text("Next") },
-        onSwipe = {
-            val res = homeViewModel.postsRes
-            if (res is ApiState.Success) {
-                val currIndex = res.data.posts
-                    .mapIndexed { index, postView -> index to postView }
-                    .firstOrNull { it.second.post.id == postViewModel.id?.swap()?.getOrNull() }
-                    ?.first
-                if (currIndex != null && currIndex > 0 && currIndex < res.data.posts.size) {
-                    val nextId = res.data.posts[currIndex - 1].post.id
-                    postViewModel.initialize(nextId.left())
-                    postViewModel.getData(account)
-                }
-            }
-        },
-        background = Color.Transparent,
-    )
+                                is ApiState.Success -> {
+                                    val commentTree = buildCommentsTree(
+                                        commentsRes.data.comments,
+                                        postViewModel.isCommentView(),
+                                    )
 
-    SwipeableActionsBox(
-        startActions = listOf(backward),
-        endActions = listOf(forward),
-    ) {
-        Scaffold(
-            modifier = Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .semantics { testTagsAsResourceId = true }
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .focusRequester(focusRequester)
-                .focusable()
-                .onKeyEvent { keyEvent ->
-                    if (navigateParentCommentsWithVolumeButtons) {
-                        when (keyEvent.key) {
-                            Key.VolumeUp -> {
-                                scrollToPreviousParentComment(
-                                    scope,
-                                    parentListStateIndexes,
-                                    listState,
-                                )
-                                true
-                            }
+                                    val firstComment =
+                                        commentTree.firstOrNull()?.commentView?.comment
+                                    val depth = getDepthFromComment(firstComment)
+                                    val commentParentId = getCommentParentId(firstComment)
+                                    val showContextButton = depth != null && depth > 0
 
-                            Key.VolumeDown -> {
-                                scrollToNextParentComment(scope, parentListStateIndexes, listState)
-                                true
-                            }
+                                    val toggleExpanded = { commentId: Int ->
+                                        if (unExpandedComments.contains(commentId)) {
+                                            unExpandedComments.remove(commentId)
+                                        } else {
+                                            unExpandedComments.add(commentId)
+                                        }
+                                    }
 
-                            else -> {
-                                false
-                            }
-                        }
-                    } else {
-                        false
-                    }
-                },
-            bottomBar = {
-                if (showParentCommentNavigationButtons) {
-                    CommentNavigationBottomAppBar(
-                        scope,
-                        parentListStateIndexes,
-                        listState,
-                    )
-                }
-            },
-            topBar = {
-                Column {
-                    TopAppBar(
-                        title = {
-                            CommentsHeaderTitle(
-                                selectedSortType = selectedSortType,
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(
-                                modifier = Modifier.testTag("jerboa:back"),
-                                onClick = { navController.popBackStack() },
-                            ) {
-                                Icon(
-                                    Icons.Outlined.ArrowBack,
-                                    contentDescription = stringResource(R.string.topAppBar_back),
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(onClick = {
-                                showSortOptions = !showSortOptions
-                            }) {
-                                Icon(
-                                    Icons.Outlined.Sort,
-                                    contentDescription = stringResource(R.string.selectSort),
-                                )
-                            }
-                        },
-                        scrollBehavior = scrollBehavior,
-                    )
-                }
-            },
-            content = { padding ->
-                Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-                    parentListStateIndexes.clear()
-                    lazyListIndexTracker = 2
-                    PullRefreshIndicator(
-                        postLoading,
-                        pullRefreshState,
-                        Modifier.align(Alignment.TopCenter),
-                    )
-                    when (val postRes = postViewModel.postRes) {
-                        is ApiState.Loading ->
-                            LoadingBar(padding)
+                                    val toggleActionBar = { commentId: Int ->
+                                        if (commentsWithToggledActionBar.contains(commentId)) {
+                                            commentsWithToggledActionBar.remove(commentId)
+                                        } else {
+                                            commentsWithToggledActionBar.add(commentId)
+                                        }
+                                    }
 
-                        is ApiState.Failure -> ApiErrorText(postRes.msg)
-                        is ApiState.Success -> {
-                            val postView = postRes.data.post_view
+                                    item(key = "${postView.post.id}_is_comment_view") {
+                                        if (postViewModel.isCommentView()) {
+                                            ShowCommentContextButtons(
+                                                postView.post.id,
+                                                commentParentId = commentParentId,
+                                                showContextButton = showContextButton,
+                                                onPostClick = { id ->
+                                                    navController.navigate("post/$id")
+                                                },
+                                                onCommentClick = { commentId ->
+                                                    navController.navigate("comment/$commentId")
+                                                },
+                                            )
+                                        }
+                                    }
 
-                            LazyColumn(
-                                state = listState,
-                                modifier = Modifier
-                                    .padding(top = padding.calculateTopPadding())
-                                    .simpleVerticalScrollbar(listState)
-                                    .testTag("jerboa:comments"),
-                            ) {
-                                item(key = "${postView.post.id}_listing") {
-                                    PostListing(
-                                        postView = postView,
-                                        onUpvoteClick = { pv ->
-                                            account?.also { acct ->
-                                                postViewModel.likePost(
-                                                    CreatePostLike(
-                                                        post_id = pv.post.id,
-                                                        score = newVote(
-                                                            postView.my_vote,
-                                                            VoteType.Upvote,
-                                                        ),
-                                                        auth = acct.jwt,
-                                                    ),
-                                                )
-                                            }
-                                            // TODO will need to pass in postlistingsviewmodel
-                                            // for the Home page to also be updated
+                                    commentNodeItems(
+                                        nodes = commentTree,
+                                        increaseLazyListIndexTracker = {
+                                            lazyListIndexTracker++
                                         },
-                                        onDownvoteClick = { pv ->
+                                        addToParentIndexes = {
+                                            parentListStateIndexes.add(lazyListIndexTracker)
+                                        },
+                                        isFlat = false,
+                                        isExpanded = { commentId ->
+                                            !unExpandedComments.contains(
+                                                commentId,
+                                            )
+                                        },
+                                        toggleExpanded = { commentId -> toggleExpanded(commentId) },
+                                        toggleActionBar = { commentId -> toggleActionBar(commentId) },
+                                        onMarkAsReadClick = {},
+                                        onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
+                                        onUpvoteClick = { cv ->
                                             account?.also { acct ->
-                                                postViewModel.likePost(
-                                                    CreatePostLike(
-                                                        post_id = pv.post.id,
+                                                postViewModel.likeComment(
+                                                    CreateCommentLike(
+                                                        comment_id = cv.comment.id,
                                                         score = newVote(
-                                                            postView.my_vote,
+                                                            cv.my_vote,
                                                             VoteType.Upvote,
                                                         ),
                                                         auth = acct.jwt,
@@ -369,59 +461,78 @@ fun PostActivity(
                                                 )
                                             }
                                         },
-                                        onReplyClick = { pv ->
-                                            commentReplyViewModel.initialize(ReplyItem.PostItem(pv))
-                                            val isModerator =
-                                                isModerator(pv.creator, postRes.data.moderators)
+                                        onDownvoteClick = { cv ->
+                                            account?.also { acct ->
+                                                postViewModel.likeComment(
+                                                    CreateCommentLike(
+                                                        comment_id = cv.comment.id,
+                                                        score = newVote(
+                                                            cv.my_vote,
+                                                            VoteType.Downvote,
+                                                        ),
+                                                        auth = acct.jwt,
+                                                    ),
+                                                )
+                                            }
+                                        },
+                                        onReplyClick = { cv ->
+                                            commentReplyViewModel.initialize(
+                                                ReplyItem.CommentItem(
+                                                    cv,
+                                                ),
+                                            )
+
+                                            val isModerator = isModerator(cv.creator, postRes.data.moderators)
                                             navController.navigate("commentReply?isModerator=$isModerator")
                                         },
-                                        onPostClick = {},
-                                        onSaveClick = { pv ->
+                                        onSaveClick = { cv ->
                                             account?.also { acct ->
-                                                postViewModel.savePost(
-                                                    SavePost(
-                                                        post_id = pv.post.id,
-                                                        save = !pv.saved,
+                                                postViewModel.saveComment(
+                                                    SaveComment(
+                                                        comment_id = cv.comment.id,
+                                                        save = !cv.saved,
                                                         auth = acct.jwt,
                                                     ),
                                                 )
                                             }
-                                        },
-                                        onCommunityClick = { community ->
-                                            navController.navigate(route = "community/${community.id}")
-                                        },
-                                        onEditPostClick = { pv ->
-                                            postEditViewModel.initialize(pv)
-                                            navController.navigate("postEdit")
-                                        },
-                                        onDeletePostClick = { pv ->
-                                            account?.also { acct ->
-                                                postViewModel.deletePost(
-                                                    DeletePost(
-                                                        post_id = pv.post.id,
-                                                        deleted = pv.post.deleted,
-                                                        auth = acct.jwt,
-                                                    ),
-                                                )
-                                            }
-                                        },
-                                        onReportClick = { pv ->
-                                            navController.navigate("postReport/${pv.post.id}")
                                         },
                                         onPersonClick = { personId ->
                                             navController.navigate(route = "profile/$personId")
                                         },
-                                        onBlockCommunityClick = { c ->
+                                        onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
+                                        onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
+                                        onEditCommentClick = { cv ->
+                                            commentEditViewModel.initialize(cv)
+                                            navController.navigate("commentEdit")
+                                        },
+                                        onDeleteCommentClick = { cv ->
                                             account?.also { acct ->
-                                                postViewModel.blockCommunity(
-                                                    BlockCommunity(
-                                                        community_id = c.id,
-                                                        block = true,
+                                                postViewModel.deleteComment(
+                                                    DeleteComment(
+                                                        comment_id = cv.comment.id,
+                                                        deleted = !cv.comment.deleted,
                                                         auth = acct.jwt,
                                                     ),
-                                                    ctx,
                                                 )
                                             }
+                                        },
+                                        onReportClick = { cv ->
+                                            navController.navigate(
+                                                "commentReport/${
+                                                    cv.comment
+                                                        .id
+                                                }",
+                                            )
+                                        },
+                                        onCommentLinkClick = { cv ->
+                                            navController.navigate("comment/${cv.comment.id}")
+                                        },
+                                        onFetchChildrenClick = { cv ->
+                                            postViewModel.fetchMoreChildren(
+                                                commentView = cv,
+                                                account = account,
+
+                                            )
                                         },
                                         onBlockCreatorClick = { person ->
                                             account?.also { acct ->
@@ -435,244 +546,37 @@ fun PostActivity(
                                                 )
                                             }
                                         },
-                                        showReply = true, // Do nothing
-                                        isModerator = isModerator(
-                                            postView.creator,
-                                            postRes.data.moderators,
-                                        ),
-                                        showCommunityName = true,
-                                        fullBody = true,
+                                        onCommunityClick = { community ->
+                                            navController.navigate(route = "community/${community.id}")
+                                        },
+                                        onPostClick = {}, // Do nothing
                                         account = account,
-                                        postViewMode = PostViewMode.Card,
+                                        moderators = postRes.data.moderators,
                                         enableDownVotes = siteViewModel.enableDownvotes(),
                                         showAvatar = siteViewModel.showAvatar(),
-                                        showVotingArrowsInListView = showVotingArrowsInListView,
-                                        useCustomTabs = useCustomTabs,
-                                        usePrivateTabs = usePrivateTabs,
+                                        isCollapsedByParent = false,
+                                        showCollapsedCommentContent = showCollapsedCommentContent,
+                                        showActionBar = { commentId ->
+                                            showActionBarByDefault xor commentsWithToggledActionBar.contains(
+                                                commentId,
+                                            )
+                                        },
                                     )
                                 }
 
-                                when (val commentsRes = postViewModel.commentsRes) {
-                                    is ApiState.Loading ->
-                                        item {
-                                            LoadingBar()
-                                        }
-
-                                    is ApiState.Failure -> item(key = "error") {
-                                        ApiErrorText(
-                                            commentsRes.msg,
-                                        )
-                                    }
-
-                                    is ApiState.Success -> {
-                                        val commentTree = buildCommentsTree(
-                                            commentsRes.data.comments,
-                                            postViewModel.isCommentView(),
-                                        )
-
-                                        val firstComment =
-                                            commentTree.firstOrNull()?.commentView?.comment
-                                        val depth = getDepthFromComment(firstComment)
-                                        val commentParentId = getCommentParentId(firstComment)
-                                        val showContextButton = depth != null && depth > 0
-
-                                        val toggleExpanded = { commentId: Int ->
-                                            if (unExpandedComments.contains(commentId)) {
-                                                unExpandedComments.remove(commentId)
-                                            } else {
-                                                unExpandedComments.add(commentId)
-                                            }
-                                        }
-
-                                        val toggleActionBar = { commentId: Int ->
-                                            if (commentsWithToggledActionBar.contains(commentId)) {
-                                                commentsWithToggledActionBar.remove(commentId)
-                                            } else {
-                                                commentsWithToggledActionBar.add(commentId)
-                                            }
-                                        }
-
-                                        item(key = "${postView.post.id}_is_comment_view") {
-                                            if (postViewModel.isCommentView()) {
-                                                ShowCommentContextButtons(
-                                                    postView.post.id,
-                                                    commentParentId = commentParentId,
-                                                    showContextButton = showContextButton,
-                                                    onPostClick = { id ->
-                                                        navController.navigate("post/$id")
-                                                    },
-                                                    onCommentClick = { commentId ->
-                                                        navController.navigate("comment/$commentId")
-                                                    },
-                                                )
-                                            }
-                                        }
-
-                                        commentNodeItems(
-                                            nodes = commentTree,
-                                            increaseLazyListIndexTracker = {
-                                                lazyListIndexTracker++
-                                            },
-                                            addToParentIndexes = {
-                                                parentListStateIndexes.add(lazyListIndexTracker)
-                                            },
-                                            isFlat = false,
-                                            isExpanded = { commentId ->
-                                                !unExpandedComments.contains(
-                                                    commentId,
-                                                )
-                                            },
-                                            toggleExpanded = { commentId -> toggleExpanded(commentId) },
-                                            toggleActionBar = { commentId ->
-                                                toggleActionBar(
-                                                    commentId,
-                                                )
-                                            },
-                                            onMarkAsReadClick = {},
-                                            onCommentClick = { commentView ->
-                                                toggleExpanded(
-                                                    commentView.comment.id,
-                                                )
-                                            },
-                                            onUpvoteClick = { cv ->
-                                                account?.also { acct ->
-                                                    postViewModel.likeComment(
-                                                        CreateCommentLike(
-                                                            comment_id = cv.comment.id,
-                                                            score = newVote(
-                                                                cv.my_vote,
-                                                                VoteType.Upvote,
-                                                            ),
-                                                            auth = acct.jwt,
-                                                        ),
-                                                    )
-                                                }
-                                            },
-                                            onDownvoteClick = { cv ->
-                                                account?.also { acct ->
-                                                    postViewModel.likeComment(
-                                                        CreateCommentLike(
-                                                            comment_id = cv.comment.id,
-                                                            score = newVote(
-                                                                cv.my_vote,
-                                                                VoteType.Downvote,
-                                                            ),
-                                                            auth = acct.jwt,
-                                                        ),
-                                                    )
-                                                }
-                                            },
-                                            onReplyClick = { cv ->
-                                                commentReplyViewModel.initialize(
-                                                    ReplyItem.CommentItem(
-                                                        cv,
-                                                    ),
-                                                )
-
-                                                val isModerator =
-                                                    isModerator(cv.creator, postRes.data.moderators)
-                                                navController.navigate("commentReply?isModerator=$isModerator")
-                                            },
-                                            onSaveClick = { cv ->
-                                                account?.also { acct ->
-                                                    postViewModel.saveComment(
-                                                        SaveComment(
-                                                            comment_id = cv.comment.id,
-                                                            save = !cv.saved,
-                                                            auth = acct.jwt,
-                                                        ),
-                                                    )
-                                                }
-                                            },
-                                            onPersonClick = { personId ->
-                                                navController.navigate(route = "profile/$personId")
-                                            },
-                                            onHeaderClick = { commentView ->
-                                                toggleExpanded(
-                                                    commentView.comment.id,
-                                                )
-                                            },
-                                            onHeaderLongClick = { commentView ->
-                                                toggleActionBar(
-                                                    commentView.comment.id,
-                                                )
-                                            },
-                                            onEditCommentClick = { cv ->
-                                                commentEditViewModel.initialize(cv)
-                                                navController.navigate("commentEdit")
-                                            },
-                                            onDeleteCommentClick = { cv ->
-                                                account?.also { acct ->
-                                                    postViewModel.deleteComment(
-                                                        DeleteComment(
-                                                            comment_id = cv.comment.id,
-                                                            deleted = !cv.comment.deleted,
-                                                            auth = acct.jwt,
-                                                        ),
-                                                    )
-                                                }
-                                            },
-                                            onReportClick = { cv ->
-                                                navController.navigate(
-                                                    "commentReport/${
-                                                        cv.comment
-                                                            .id
-                                                    }",
-                                                )
-                                            },
-                                            onCommentLinkClick = { cv ->
-                                                navController.navigate("comment/${cv.comment.id}")
-                                            },
-                                            onFetchChildrenClick = { cv ->
-                                                postViewModel.fetchMoreChildren(
-                                                    commentView = cv,
-                                                    account = account,
-                                                )
-                                            },
-                                            onBlockCreatorClick = { person ->
-                                                account?.also { acct ->
-                                                    postViewModel.blockPerson(
-                                                        BlockPerson(
-                                                            person_id = person.id,
-                                                            block = true,
-                                                            auth = acct.jwt,
-                                                        ),
-                                                        ctx,
-                                                    )
-                                                }
-                                            },
-                                            onCommunityClick = { community ->
-                                                navController.navigate(route = "community/${community.id}")
-                                            },
-                                            onPostClick = {}, // Do nothing
-                                            account = account,
-                                            moderators = postRes.data.moderators,
-                                            enableDownVotes = siteViewModel.enableDownvotes(),
-                                            showAvatar = siteViewModel.showAvatar(),
-                                            isCollapsedByParent = false,
-                                            showCollapsedCommentContent = showCollapsedCommentContent,
-                                            showActionBar = { commentId ->
-                                                showActionBarByDefault xor commentsWithToggledActionBar.contains(
-                                                    commentId,
-                                                )
-                                            },
-                                        )
-                                    }
-
-                                    else -> {}
-                                }
-                                if (showParentCommentNavigationButtons) {
-                                    item {
-                                        Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
-                                    }
+                                else -> {}
+                            }
+                            if (showParentCommentNavigationButtons) {
+                                item {
+                                    Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
                                 }
                             }
                         }
-
-                        else -> {}
                     }
+
+                    else -> {}
                 }
-            },
-        )
-    }
+            }
+        },
+    )
 }
