@@ -950,8 +950,6 @@ fun PostListing(
                 onDownvoteClick(it)
             },
             onPostClick = onPostClick,
-            onCommunityClick = onCommunityClick,
-            onPersonClick = onPersonClick,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
             account = account,
@@ -1016,8 +1014,6 @@ fun PostListingList(
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
-    onCommunityClick: (community: Community) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
     account: Account?,
@@ -1065,7 +1061,8 @@ fun PostListingList(
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,
-                            onClick = onCommunityClick,
+                            onClick = {},
+                            clickable = false,
                             showDefaultIcon = false,
                         )
                         DotSpacer(0.dp)
@@ -1073,7 +1070,8 @@ fun PostListingList(
                     PersonProfileLink(
                         person = postView.creator,
                         isModerator = isModerator,
-                        onClick = onPersonClick,
+                        onClick = {},
+                        clickable = false,
                         color = MaterialTheme.colorScheme.onSurface.muted,
                         showAvatar = showAvatar,
                     )
@@ -1205,8 +1203,6 @@ fun PostListingListPreview() {
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
-        onCommunityClick = {},
-        onPersonClick = {},
         isModerator = false,
         account = null,
         showVotingArrowsInListView = true,
@@ -1233,8 +1229,6 @@ fun PostListingListWithThumbPreview() {
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
-        onCommunityClick = {},
-        onPersonClick = {},
         isModerator = false,
         account = null,
         showVotingArrowsInListView = true,
