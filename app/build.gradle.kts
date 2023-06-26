@@ -7,6 +7,8 @@ plugins {
     id("androidx.baselineprofile")
 }
 
+apply(from = "update_instances.gradle.kts")
+
 android {
     compileSdk = 33
 
