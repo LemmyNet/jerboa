@@ -42,6 +42,7 @@ import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
@@ -100,7 +101,9 @@ fun CommunityActivity(
         val communityName = communityArg.fold({ null }, { it })
 
         communityViewModel.resetPage()
-        communityViewModel.updateSortType(siteViewModel.sortType)
+        account?.let {
+            communityViewModel.updateSortType(SortType.values().getOrElse(account.defaultSortType) { siteViewModel.sortType })
+        }
         communityViewModel.getCommunity(
             form = GetCommunity(
                 id = communityId,

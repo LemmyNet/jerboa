@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -113,7 +114,9 @@ class MainActivity : AppCompatActivity() {
                 null
             }
 
-            fetchInitialData(accountSync, siteViewModel)
+            LaunchedEffect(Unit) {
+                fetchInitialData(accountSync, siteViewModel)
+            }
 
             val appSettings by appSettingsViewModel.appSettings.observeAsState()
 
