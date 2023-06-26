@@ -28,6 +28,7 @@ import arrow.core.Either
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
@@ -80,10 +81,12 @@ fun BottomNavActivity(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
     val homeViewModel: HomeViewModel = viewModel()
-    InitializeRoute(homeViewModel) {
-        homeViewModel.updateSortType(siteViewModel.sortType)
-        homeViewModel.updateListingType(siteViewModel.listingType)
-        fetchHomePosts(account, homeViewModel)
+    if (siteViewModel.siteRes is ApiState.Success) {
+        InitializeRoute(homeViewModel) {
+            homeViewModel.updateSortType(siteViewModel.sortType)
+            homeViewModel.updateListingType(siteViewModel.listingType)
+            fetchHomePosts(account, homeViewModel)
+        }
     }
 
     ModalNavigationDrawer(

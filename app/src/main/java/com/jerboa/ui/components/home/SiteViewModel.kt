@@ -49,6 +49,16 @@ class SiteViewModel : ViewModel() {
         viewModelScope.launch {
             siteRes = ApiState.Loading
             siteRes = apiWrapper(API.getInstance().getSite(form.serializeToMap()))
+
+            when (val res = siteRes) {
+                is ApiState.Success -> {
+                    res.data.my_user?.local_user_view?.local_user?.let {
+                        updateSortType(it.default_sort_type)
+                        updateListingType(it.default_listing_type)
+                    }
+                }
+                else -> {}
+            }
         }
     }
 
