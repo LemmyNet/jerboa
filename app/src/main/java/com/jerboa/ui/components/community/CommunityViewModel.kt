@@ -32,6 +32,7 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class CommunityViewModel : ViewModel(), Initializable {
@@ -53,6 +54,7 @@ class CommunityViewModel : ViewModel(), Initializable {
         mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
+    var refreshing by mutableStateOf(false)
     var fetchingMore by mutableStateOf(false)
         private set
 
@@ -83,8 +85,8 @@ class CommunityViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun getPosts(form: GetPosts) {
-        viewModelScope.launch {
+    fun getPosts(form: GetPosts): Job {
+        return viewModelScope.launch {
             postsRes = ApiState.Loading
             postsRes =
                 apiWrapper(

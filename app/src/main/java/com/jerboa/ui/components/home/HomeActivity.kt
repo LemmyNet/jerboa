@@ -36,6 +36,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -59,6 +61,7 @@ import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.ApiErrorToast
 import com.jerboa.ui.components.common.ConsumeReturn
 import com.jerboa.ui.components.common.CreatePostDeps
 import com.jerboa.ui.components.common.LoadingBar
@@ -77,6 +80,8 @@ import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.common.toSettings
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -190,158 +195,155 @@ fun MainPostListingsContent(
         }
     }
 
-    val loading = homeViewModel.postsRes == ApiState.Loading || homeViewModel.fetchingMore
+    val loading = homeViewModel.postsRes == ApiState.Loading
 
     ReportDrawnWhen {
         !loading
     }
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = loading,
+        refreshing = homeViewModel.refreshing,
         onRefresh = {
-            homeViewModel.resetPage()
-            homeViewModel.getPosts(
-                GetPosts(
-                    page = homeViewModel.page,
-                    sort = homeViewModel.sortType,
-                    type_ = homeViewModel.listingType,
-                    auth = account?.jwt,
-                ),
-            )
+            homeViewModel.refreshPosts(account)
         },
+        // Needs to be lower else it can hide behind the top bar
+        refreshingOffset = 150.dp,
     )
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-        PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
+        // zIndex needed bc some elements of a post get drawn above it.
+        PullRefreshIndicator(homeViewModel.refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100f))
         // Can't be in ApiState.Loading, because of infinite scrolling
         if (loading) {
             LoadingBar(padding = padding)
         }
 
-        when (val postsRes = homeViewModel.postsRes) {
-            ApiState.Empty -> ApiEmptyText()
-            is ApiState.Failure -> ApiErrorText(postsRes.msg)
-            is ApiState.Success -> {
-                PostListings(
-                    listState = postListState,
-                    padding = padding,
-                    posts = postsRes.data.posts,
-                    postViewMode = getPostViewMode(appSettingsViewModel),
-                    contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
-                    onUpvoteClick = { postView ->
-                        account?.also { acct ->
-                            homeViewModel.likePost(
-                                CreatePostLike(
-                                    post_id = postView.post.id,
-                                    score = newVote(
-                                        currentVote = postView.my_vote,
-                                        voteType = VoteType.Upvote,
-                                    ),
-                                    auth = acct.jwt,
-                                ),
-                            )
-                        }
-                    },
-                    onDownvoteClick = { postView ->
-                        account?.also { acct ->
-                            homeViewModel.likePost(
-                                CreatePostLike(
-                                    post_id = postView.post.id,
-                                    score = newVote(
-                                        currentVote = postView.my_vote,
-                                        voteType = VoteType.Downvote,
-                                    ),
-                                    auth = acct.jwt,
-                                ),
-                            )
-                        }
-                    },
-                    onPostClick = { postView ->
-                        navController.toPost(id = postView.post.id)
-                    },
-                    onSaveClick = { postView ->
-                        account?.also { acct ->
-                            homeViewModel.savePost(
-                                SavePost(
-                                    post_id = postView.post.id,
-                                    save = !postView.saved,
-                                    auth = acct.jwt,
-                                ),
-                            )
-                        }
-                    },
-                    onBlockCommunityClick = { community ->
-                        account?.also { acct ->
-                            homeViewModel.blockCommunity(
-                                BlockCommunity(
-                                    community_id = community.id,
-                                    auth = acct.jwt,
-                                    block = true,
-                                ),
-                                ctx = ctx,
-                            )
-                        }
-                    },
-                    onBlockCreatorClick = { creator ->
-                        account?.also { acct ->
-                            homeViewModel.blockPerson(
-                                BlockPerson(
-                                    person_id = creator.id,
-                                    block = true,
-                                    auth = acct.jwt,
-                                ),
-                                ctx = ctx,
-                            )
-                        }
-                    },
-                    onEditPostClick = { postView ->
-                        navController.toPostEdit(
-                            channel = transferPostEditDepsViaRoot,
-                            postView = postView,
-                        )
-                    },
-                    onDeletePostClick = { postView ->
-                        account?.also { acct ->
-                            homeViewModel.deletePost(
-                                DeletePost(
-                                    post_id = postView.post.id,
-                                    deleted = !postView.post.deleted,
-                                    auth = acct.jwt,
-                                ),
-                            )
-                        }
-                    },
-                    onReportClick = { postView ->
-                        navController.toPostReport(id = postView.post.id)
-                    },
-                    onCommunityClick = { community ->
-                        navController.toCommunity(id = community.id)
-                    },
-                    onPersonClick = { personId ->
-                        navController.toProfile(id = personId)
-                    },
-                    isScrolledToEnd = {
-                        homeViewModel.nextPage()
-                        homeViewModel.appendPosts(
-                            GetPosts(
-                                page = homeViewModel.page,
-                                sort = homeViewModel.sortType,
-                                type_ = homeViewModel.listingType,
-                                auth = account?.jwt,
-                            ),
-                        )
-                    },
-                    account = account,
-                    enableDownVotes = siteViewModel.enableDownvotes(),
-                    showAvatar = siteViewModel.showAvatar(),
-                    showVotingArrowsInListView = showVotingArrowsInListView,
-                    useCustomTabs = useCustomTabs,
-                    usePrivateTabs = usePrivateTabs,
-                )
-            }
 
-            else -> {}
+        val posts = when (val postsRes = homeViewModel.postsRes) {
+            is ApiState.Failure -> {
+                ApiErrorToast(postsRes.msg)
+                persistentListOf()
+            }
+            is ApiState.Success -> postsRes.data.posts.toImmutableList()
+            else -> persistentListOf()
         }
+
+        PostListings(
+            listState = postListState,
+            padding = padding,
+            posts = posts,
+            postViewMode = getPostViewMode(appSettingsViewModel),
+            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
+            onUpvoteClick = { postView ->
+                account?.also { acct ->
+                    homeViewModel.likePost(
+                        CreatePostLike(
+                            post_id = postView.post.id,
+                            score = newVote(
+                                currentVote = postView.my_vote,
+                                voteType = VoteType.Upvote,
+                            ),
+                            auth = acct.jwt,
+                        ),
+                    )
+                }
+            },
+            onDownvoteClick = { postView ->
+                account?.also { acct ->
+                    homeViewModel.likePost(
+                        CreatePostLike(
+                            post_id = postView.post.id,
+                            score = newVote(
+                                currentVote = postView.my_vote,
+                                voteType = VoteType.Downvote,
+                            ),
+                            auth = acct.jwt,
+                        ),
+                    )
+                }
+            },
+            onPostClick = { postView ->
+                navController.toPost(id = postView.post.id)
+            },
+            onSaveClick = { postView ->
+                account?.also { acct ->
+                    homeViewModel.savePost(
+                        SavePost(
+                            post_id = postView.post.id,
+                            save = !postView.saved,
+                            auth = acct.jwt,
+                        ),
+                    )
+                }
+            },
+            onBlockCommunityClick = { community ->
+                account?.also { acct ->
+                    homeViewModel.blockCommunity(
+                        BlockCommunity(
+                            community_id = community.id,
+                            auth = acct.jwt,
+                            block = true,
+                        ),
+                        ctx = ctx,
+                    )
+                }
+            },
+            onBlockCreatorClick = { creator ->
+                account?.also { acct ->
+                    homeViewModel.blockPerson(
+                        BlockPerson(
+                            person_id = creator.id,
+                            block = true,
+                            auth = acct.jwt,
+                        ),
+                        ctx = ctx,
+                    )
+                }
+            },
+            onEditPostClick = { postView ->
+                navController.toPostEdit(
+                    channel = transferPostEditDepsViaRoot,
+                    postView = postView,
+                )
+            },
+            onDeletePostClick = { postView ->
+                account?.also { acct ->
+                    homeViewModel.deletePost(
+                        DeletePost(
+                            post_id = postView.post.id,
+                            deleted = !postView.post.deleted,
+                            auth = acct.jwt,
+                        ),
+                    )
+                }
+            },
+            onReportClick = { postView ->
+                navController.toPostReport(id = postView.post.id)
+            },
+            onCommunityClick = { community ->
+                navController.toCommunity(id = community.id)
+            },
+            onPersonClick = { personId ->
+                navController.toProfile(id = personId)
+            },
+            isScrolledToEnd = {
+                homeViewModel.nextPage()
+                homeViewModel.appendPosts(
+                    GetPosts(
+                        page = homeViewModel.page,
+                        sort = homeViewModel.sortType,
+                        type_ = homeViewModel.listingType,
+                        auth = account?.jwt,
+                    ),
+                )
+            },
+            account = account,
+            enableDownVotes = siteViewModel.enableDownvotes(),
+            showAvatar = siteViewModel.showAvatar(),
+            showVotingArrowsInListView = showVotingArrowsInListView,
+            useCustomTabs = useCustomTabs,
+            usePrivateTabs = usePrivateTabs,
+        )
     }
 }
 
@@ -406,15 +408,7 @@ fun MainDrawer(
         },
         onClickListingType = { listingType ->
             homeViewModel.updateListingType(listingType)
-            homeViewModel.resetPage()
-            homeViewModel.getPosts(
-                GetPosts(
-                    page = homeViewModel.page,
-                    sort = homeViewModel.sortType,
-                    type_ = homeViewModel.listingType,
-                    auth = account?.jwt,
-                ),
-            )
+            homeViewModel.resetPosts(account)
             closeDrawer(scope, drawerState)
         },
         onCommunityClick = { community ->
@@ -488,43 +482,19 @@ fun MainTopBar(
             onClickSortType = { sortType ->
                 scrollToTop(scope, postListState)
                 homeViewModel.updateSortType(sortType)
-                homeViewModel.resetPage()
-                homeViewModel.getPosts(
-                    GetPosts(
-                        page = homeViewModel.page,
-                        sort = homeViewModel.sortType,
-                        type_ = homeViewModel.listingType,
-                        auth = account?.jwt,
-                    ),
-                )
+                homeViewModel.resetPosts(account)
             },
             onClickListingType = { listingType ->
                 scrollToTop(scope, postListState)
                 homeViewModel.updateListingType(listingType)
-                homeViewModel.resetPage()
-                homeViewModel.getPosts(
-                    GetPosts(
-                        page = homeViewModel.page,
-                        sort = homeViewModel.sortType,
-                        type_ = homeViewModel.listingType,
-                        auth = account?.jwt,
-                    ),
-                )
+                homeViewModel.resetPosts(account)
             },
             onClickPostViewMode = {
                 appSettingsViewModel.updatedPostViewMode(it.ordinal)
             },
             onClickRefresh = {
                 scrollToTop(scope, postListState)
-                homeViewModel.resetPage()
-                homeViewModel.getPosts(
-                    GetPosts(
-                        page = homeViewModel.page,
-                        sort = homeViewModel.sortType,
-                        type_ = homeViewModel.listingType,
-                        auth = account?.jwt,
-                    ),
-                )
+                homeViewModel.resetPosts(account)
             },
         )
     }

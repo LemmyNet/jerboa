@@ -26,10 +26,12 @@ import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun PostListings(
-    posts: List<PostView>,
+    posts: ImmutableList<PostView>,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -119,7 +121,7 @@ fun PostListings(
 @Composable
 fun PreviewPostListings() {
     PostListings(
-        posts = listOf(samplePostView, sampleLinkPostView),
+        posts = persistentListOf(samplePostView, sampleLinkPostView),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},

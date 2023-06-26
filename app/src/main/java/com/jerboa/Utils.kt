@@ -289,17 +289,12 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     val totalItems = layoutInfo.totalItemsCount
     val lastItemVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index
 
-    val out = if (totalItems > 0) {
+    return if (totalItems > 0) {
         lastItemVisible == totalItems - 1
     } else {
         false
     }
-//    Log.d("jerboa", layoutInfo.visibleItemsInfo.lastOrNull()?.index.toString())
-//    Log.d("jerboa", layoutInfo.totalItemsCount.toString())
-//    Log.d("jerboa", out.toString())
-    return out
 }
-
 /*
  * Parses a "url" and returns a spec-compliant Url:
  *
@@ -1177,13 +1172,8 @@ fun dedupePosts(
     more: List<PostView>,
     existing: List<PostView>,
 ): List<PostView> {
-    val newPostsDeduped = more.filterNot { pv ->
-        existing.map { op -> op.post.id }.contains(
-            pv
-                .post.id,
-        )
-    }
-    return newPostsDeduped
+    val mapIds = existing.map { it.post.id }
+    return more.filterNot { mapIds.contains(it.post.id) }
 }
 
 fun <T> appendData(existing: List<T>, more: List<T>): List<T> {

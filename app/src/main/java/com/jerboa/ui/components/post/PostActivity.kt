@@ -47,6 +47,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import arrow.core.Either
@@ -177,8 +179,6 @@ fun PostActivity(
 
     val selectedSortType = postViewModel.sortType
 
-    val postLoading = postViewModel.postRes == ApiState.Loading
-
     // Holds expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
     val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
@@ -192,10 +192,15 @@ fun PostActivity(
     val scope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = postLoading,
+        refreshing = postViewModel.refreshing,
         onRefresh = {
-            postViewModel.getData(account)
+            postViewModel.refreshing = true
+            postViewModel.getData(account).invokeOnCompletion {
+                postViewModel.refreshing = false
+            }
         },
+        // Needs to be lower else it can hide behind the top bar
+        refreshingOffset = 150.dp,
     )
 
     if (showSortOptions) {
@@ -288,9 +293,10 @@ fun PostActivity(
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
                 PullRefreshIndicator(
-                    postLoading,
+                    postViewModel.refreshing,
                     pullRefreshState,
-                    Modifier.align(Alignment.TopCenter),
+                    // zIndex needed bc some elements of a post get drawn above it.
+                    Modifier.align(Alignment.TopCenter).zIndex(100f),
                 )
                 when (val postRes = postViewModel.postRes) {
                     is ApiState.Loading ->

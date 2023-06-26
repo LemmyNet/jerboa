@@ -32,6 +32,8 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class PersonProfileViewModel : ViewModel(), Initializable {
@@ -53,7 +55,9 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
-    private var fetchingMore by mutableStateOf(false)
+    var fetchingMore by mutableStateOf(false)
+        private set
+    var refreshing by mutableStateOf(false)
 
     var sortType by mutableStateOf(SortType.New)
         private set
@@ -80,8 +84,8 @@ class PersonProfileViewModel : ViewModel(), Initializable {
 
     fun getPersonDetails(
         form: GetPersonDetails,
-    ) {
-        viewModelScope.launch {
+    ): Job {
+        return viewModelScope.launch {
             personDetailsRes = ApiState.Loading
             personDetailsRes =
                 apiWrapper(
@@ -113,7 +117,7 @@ class PersonProfileViewModel : ViewModel(), Initializable {
 
                             val newRes = ApiState.Success(
                                 existing.data.copy(
-                                    posts = appendedPosts,
+                                    posts = appendedPosts.toImmutableList(),
                                     comments = appendedComments,
                                 ),
                             )
@@ -244,7 +248,7 @@ class PersonProfileViewModel : ViewModel(), Initializable {
             is ApiState.Success -> {
                 val newPosts =
                     findAndUpdatePost(existing.data.posts, postView)
-                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts.toImmutableList()))
                 personDetailsRes = newRes
             }
 

@@ -39,6 +39,7 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6
@@ -59,6 +60,7 @@ class PostViewModel : ViewModel(), Initializable {
         private set
 
     private var fetchingMore by mutableStateOf(false)
+    var refreshing by mutableStateOf(false)
 
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
@@ -83,8 +85,8 @@ class PostViewModel : ViewModel(), Initializable {
 
     fun getData(
         account: Account?,
-    ) {
-        viewModelScope.launch {
+    ): Job {
+        return viewModelScope.launch {
             // Set the commentId for the right case
             id?.also { id ->
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import arrow.core.Either
@@ -79,6 +80,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -262,13 +264,14 @@ fun UserTabs(
     }
     val pagerState = rememberPagerState()
 
-    val loading = personProfileViewModel.personDetailsRes == ApiState.Loading
+    val loading = personProfileViewModel.personDetailsRes == ApiState.Loading || personProfileViewModel.fetchingMore
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = loading,
+        refreshing = personProfileViewModel.refreshing,
         onRefresh = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
                 is ApiState.Success -> {
+                    personProfileViewModel.refreshing = true
                     personProfileViewModel.resetPage()
                     personProfileViewModel.getPersonDetails(
                         GetPersonDetails(
@@ -278,7 +281,9 @@ fun UserTabs(
                             saved_only = personProfileViewModel.savedOnly,
                             auth = account?.jwt,
                         ),
-                    )
+                    ).invokeOnCompletion {
+                        personProfileViewModel.refreshing = false
+                    }
                 }
                 else -> {}
             }
@@ -373,19 +378,26 @@ fun UserTabs(
                 }
 
                 UserTab.Posts.ordinal -> {
-                    Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                    Box(modifier = Modifier.pullRefresh(pullRefreshState).fillMaxSize()) {
                         PullRefreshIndicator(
-                            loading,
+                            personProfileViewModel.refreshing,
                             pullRefreshState,
-                            Modifier.align(Alignment.TopCenter).fillMaxSize(),
+                            // zIndex needed bc some elements of a post get drawn above it.
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100f),
                         )
+                        if (loading) {
+                            LoadingBar()
+                        }
+
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                            ApiState.Loading -> LoadingBar()
+                            ApiState.Loading -> {}
                             is ApiState.Success -> {
                                 PostListings(
-                                    posts = profileRes.data.posts,
+                                    posts = profileRes.data.posts.toImmutableList(),
                                     onUpvoteClick = { pv ->
                                         account?.also { acct ->
                                             personProfileViewModel.likePost(
@@ -560,7 +572,17 @@ fun UserTabs(
                             }
 
                             Box(modifier = Modifier.pullRefresh(pullRefreshState).fillMaxSize()) {
-                                PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
+                                PullRefreshIndicator(
+                                    personProfileViewModel.refreshing,
+                                    pullRefreshState,
+                                    // zIndex needed bc some elements of a post get drawn above it.
+                                    Modifier
+                                        .align(Alignment.TopCenter)
+                                        .zIndex(100f),
+                                )
+                                if (loading) {
+                                    LoadingBar()
+                                }
                                 CommentNodes(
                                     nodes = nodes,
                                     increaseLazyListIndexTracker = {},

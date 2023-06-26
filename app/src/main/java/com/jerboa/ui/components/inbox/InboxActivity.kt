@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.*
@@ -254,15 +255,15 @@ fun InboxTabs(
                         }
                     }
 
-                    val loading = when (inboxViewModel.repliesRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val loading = inboxViewModel.repliesRes == ApiState.Loading || inboxViewModel.fetchingMoreReplies
+
+                    var refreshing by remember { mutableStateOf(false) }
 
                     val refreshState = rememberPullRefreshState(
-                        refreshing = loading,
+                        refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
+                                refreshing = true
                                 inboxViewModel.resetPage()
                                 inboxViewModel.getReplies(
                                     GetReplies(
@@ -271,7 +272,7 @@ fun InboxTabs(
                                         page = inboxViewModel.page,
                                         auth = acct.jwt,
                                     ),
-                                )
+                                ).invokeOnCompletion { refreshing = false }
                             }
                         },
                     )
@@ -304,11 +305,21 @@ fun InboxTabs(
                     }
 
                     Box(modifier = Modifier.pullRefresh(refreshState)) {
-                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                        PullRefreshIndicator(
+                            refreshing,
+                            refreshState,
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100F),
+                        )
+
+                        if (loading) {
+                            LoadingBar()
+                        }
                         when (val repliesRes = inboxViewModel.repliesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(repliesRes.msg)
-                            ApiState.Loading -> LoadingBar()
+                            ApiState.Loading -> {}
                             is ApiState.Success -> {
                                 val replies = repliesRes.data.replies
                                 LazyColumn(
@@ -430,15 +441,15 @@ fun InboxTabs(
                         }
                     }
 
-                    val loading = when (inboxViewModel.mentionsRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val loading = inboxViewModel.mentionsRes == ApiState.Loading || inboxViewModel.fetchingMoreMentions
+
+                    var refreshing by remember { mutableStateOf(false) }
 
                     val refreshState = rememberPullRefreshState(
-                        refreshing = loading,
+                        refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
+                                refreshing = true
                                 inboxViewModel.resetPage()
                                 inboxViewModel.getMentions(
                                     GetPersonMentions(
@@ -447,16 +458,27 @@ fun InboxTabs(
                                         page = inboxViewModel.page,
                                         auth = acct.jwt,
                                     ),
-                                )
+                                ).invokeOnCompletion { refreshing = false }
                             }
                         },
                     )
                     Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
-                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                        PullRefreshIndicator(
+                            refreshing,
+                            refreshState,
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100F),
+                        )
+                        if (loading) {
+                            LoadingBar()
+                        }
+
+
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(mentionsRes.msg)
-                            ApiState.Loading -> LoadingBar()
+                            ApiState.Loading -> {}
                             is ApiState.Success -> {
                                 val mentions = mentionsRes.data.mentions
                                 LazyColumn(
@@ -596,15 +618,14 @@ fun InboxTabs(
                         }
                     }
 
-                    val loading = when (inboxViewModel.messagesRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val loading = inboxViewModel.messagesRes == ApiState.Loading || inboxViewModel.fetchingMoreMessages
+                    var refreshing by remember { mutableStateOf(false) }
 
                     val refreshState = rememberPullRefreshState(
-                        refreshing = loading,
+                        refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
+                                refreshing = true
                                 inboxViewModel.resetPage()
                                 inboxViewModel.getMessages(
                                     GetPrivateMessages(
@@ -612,16 +633,26 @@ fun InboxTabs(
                                         page = inboxViewModel.page,
                                         auth = acct.jwt,
                                     ),
-                                )
+                                ).invokeOnCompletion { refreshing = false }
                             }
                         },
                     )
                     Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
-                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                        PullRefreshIndicator(
+                            refreshing,
+                            refreshState,
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100F),
+                        )
+
+                        if (loading) {
+                            LoadingBar()
+                        }
                         when (val messagesRes = inboxViewModel.messagesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(messagesRes.msg)
-                            ApiState.Loading -> LoadingBar()
+                            ApiState.Loading -> {}
                             is ApiState.Success -> {
                                 val messages = messagesRes.data.private_messages
                                 LazyColumn(

@@ -37,6 +37,7 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class InboxViewModel : ViewModel(), Initializable {
@@ -46,17 +47,20 @@ class InboxViewModel : ViewModel(), Initializable {
         ApiState.Empty,
     )
         private set
-    private var fetchingMoreReplies by mutableStateOf(false)
+    var fetchingMoreReplies by mutableStateOf(false)
+        private set
     var mentionsRes: ApiState<GetPersonMentionsResponse> by mutableStateOf(
         ApiState.Empty,
     )
         private set
-    private var fetchingMoreMentions by mutableStateOf(false)
+    var fetchingMoreMentions by mutableStateOf(false)
+         private set
     var messagesRes: ApiState<PrivateMessagesResponse> by mutableStateOf(
         ApiState.Empty,
     )
         private set
-    private var fetchingMoreMessages by mutableStateOf(false)
+    var fetchingMoreMessages by mutableStateOf(false)
+        private set
 
     private var likeReplyRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
@@ -99,8 +103,8 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getReplies(
         form: GetReplies,
-    ) {
-        viewModelScope.launch {
+    ): Job {
+        return viewModelScope.launch {
             repliesRes = ApiState.Loading
             repliesRes = apiWrapper(API.getInstance().getReplies(form.serializeToMap()))
         }
@@ -141,8 +145,8 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getMentions(
         form: GetPersonMentions,
-    ) {
-        viewModelScope.launch {
+    ): Job {
+        return viewModelScope.launch {
             mentionsRes = ApiState.Loading
             mentionsRes = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
         }
@@ -183,8 +187,8 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getMessages(
         form: GetPrivateMessages,
-    ) {
-        viewModelScope.launch {
+    ): Job {
+        return viewModelScope.launch {
             messagesRes = ApiState.Loading
             messagesRes = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
         }

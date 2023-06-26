@@ -30,6 +30,8 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel(), Initializable {
@@ -41,10 +43,10 @@ class HomeViewModel : ViewModel(), Initializable {
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
-    var fetchingMore by mutableStateOf(false)
+
+    var refreshing by mutableStateOf(false)
         private set
 
     var sortType by mutableStateOf(SortType.Active)
@@ -70,8 +72,12 @@ class HomeViewModel : ViewModel(), Initializable {
         page += 1
     }
 
-    fun getPosts(form: GetPosts) {
-        viewModelScope.launch {
+    fun prevPage() {
+        page -= 1
+    }
+
+    fun getPosts(form: GetPosts): Job {
+        return viewModelScope.launch {
             postsRes = ApiState.Loading
             postsRes =
                 apiWrapper(
@@ -82,29 +88,22 @@ class HomeViewModel : ViewModel(), Initializable {
 
     fun appendPosts(form: GetPosts) {
         viewModelScope.launch {
-            fetchingMore = true
-            val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
-            // Only append when both new and existing are Successes
-            when (val existing = postsRes) {
+            if (postsRes !is ApiState.Success) return@launch
+            val oldRes = postsRes as ApiState.Success
+            postsRes = ApiState.Loading
+            nextPage()
+            val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+
+            postsRes = when (newRes) {
                 is ApiState.Success -> {
-                    when (more) {
-                        is ApiState.Success -> {
-                            val newPostsDeduped = dedupePosts(more.data.posts, existing.data.posts)
-                            val appended = appendData(existing.data.posts, newPostsDeduped)
-                            val newPostRes = ApiState.Success(existing.data.copy(posts = appended))
-                            postsRes = newPostRes
-                            fetchingMore = false
-                        }
-
-                        is ApiState.Failure -> {
-                            fetchingMore = false
-                        }
-
-                        else -> {}
-                    }
+                    val newPostsDeduped = dedupePosts(newRes.data.posts, oldRes.data.posts)
+                    val appended = appendData(oldRes.data.posts, newPostsDeduped)
+                    ApiState.Success(oldRes.data.copy(posts = appended))
                 }
-
-                else -> {}
+                else -> {
+                    prevPage()
+                    oldRes
+                }
             }
         }
     }
@@ -178,10 +177,27 @@ class HomeViewModel : ViewModel(), Initializable {
         when (val existing = postsRes) {
             is ApiState.Success -> {
                 val newPosts = findAndUpdatePost(existing.data.posts, postView)
-                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts.toImmutableList()))
                 postsRes = newRes
             }
             else -> {}
         }
+    }
+
+    fun resetPosts(account: Account?): Job {
+        resetPage()
+        return getPosts(
+            GetPosts(
+                page = page,
+                sort = sortType,
+                type_ = listingType,
+                auth = account?.jwt,
+            ),
+        )
+    }
+
+    fun refreshPosts(account: Account?) {
+        refreshing = true
+        resetPosts(account).invokeOnCompletion { refreshing = false }
     }
 }
