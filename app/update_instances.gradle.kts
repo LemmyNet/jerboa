@@ -9,13 +9,17 @@ import org.apache.groovy.json.internal.LazyMap
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
+// All lemmy instances with at least this amount of monthly active users will be included.
+val minimumMAU = 50
+
+
 val endpointUrl = "https://api.fediverse.observer/"
 val instancesFilePath = "src/main/java/com/jerboa/DefaultInstances.kt"
 val manifestPath = "src/main/AndroidManifest.xml"
-val START_TAG = "<!--#INSTANCE_LIST#-->"
+val START_TAG = "<!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->"
 val END_TAG = "<!--#INSTANCE_LIST_END#-->"
-val IDENT = 15
-val minimumMAU = 50
+val IDENT = 14
+
 
 // Some extension methods to make the JsonSlurper output easier to process
 fun LazyMap.getMap(key: String): LazyMap {
