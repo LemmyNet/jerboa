@@ -83,6 +83,7 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun HomeActivity(
     navController: NavController,
+    homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     appSettingsViewModel: AppSettingsViewModel,
@@ -90,7 +91,6 @@ fun HomeActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     drawerState: DrawerState,
-    homeViewModel: HomeViewModel,
 ) {
     Log.d("jerboa", "got to home activity")
     val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
