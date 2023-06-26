@@ -83,23 +83,6 @@ val gson = Gson()
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
 
-val DEFAULT_LEMMY_INSTANCES = listOf(
-    "beehaw.org",
-    "feddit.de",
-    "feddit.it",
-    "lemmy.ca",
-    "lemmy.ml",
-    "lemmy.one",
-    "lemmy.world",
-    "lemmygrad.ml",
-    "midwest.social",
-    "mujico.org",
-    "sh.itjust.works",
-    "slrpnk.net",
-    "sopuli.xyz",
-    "szmer.info",
-)
-
 // convert a data class to a map
 fun <T> T.serializeToMap(): Map<String, String> {
     return convert()
@@ -1320,9 +1303,9 @@ fun getLangPreferenceDropdownEntries(ctx: Context): Map<Locale, String> {
     val localeList = getLocaleListFromXml(ctx)
     val map = mutableMapOf<Locale, String>()
 
-    for (a in 0 until localeList.size()) {
-        localeList[a].let {
-            it?.let { it1 -> map.put(it, it.getDisplayName(it)) }
+    for (i in 0 until localeList.size()) {
+        localeList[i]?.let {
+            map.put(it, it.getDisplayName(it))
         }
     }
     return map
