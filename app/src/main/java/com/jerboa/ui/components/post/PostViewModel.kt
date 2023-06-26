@@ -38,11 +38,13 @@ import com.jerboa.findAndUpdateComment
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6
 
-class PostViewModel : ViewModel() {
+class PostViewModel : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
 
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set

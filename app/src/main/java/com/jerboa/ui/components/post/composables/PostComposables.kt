@@ -50,6 +50,7 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.PictrsUrlImage
+import com.jerboa.ui.components.common.toCommunityList
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
@@ -272,7 +273,7 @@ fun PostCommunitySelector(
                 .height(60.dp)
                 .fillMaxWidth()
                 .clickable {
-                    navController.navigate("communityList?select=true")
+                    navController.toCommunityList(select = true)
                 },
         )
     }

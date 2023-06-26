@@ -24,6 +24,7 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.toCommunitySideBar
 import com.jerboa.ui.theme.*
 
 @Composable
@@ -244,7 +245,7 @@ fun CommunityMoreDialog(
                     text = stringResource(R.string.community_community_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
-                        navController.navigate("communitySidebar")
+                        navController.toCommunitySideBar()
                         onDismissRequest()
                     },
                 )
