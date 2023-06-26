@@ -43,7 +43,7 @@
             android:launchMode="standard"
             android:allowTaskReparenting="true"
             android:windowSoftInputMode="adjustResize"
-            tools:node="merge">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
