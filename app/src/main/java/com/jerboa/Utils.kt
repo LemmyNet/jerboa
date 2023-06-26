@@ -1302,9 +1302,9 @@ fun getLangPreferenceDropdownEntries(ctx: Context): Map<Locale, String> {
     val localeList = getLocaleListFromXml(ctx)
     val map = mutableMapOf<Locale, String>()
 
-    for (a in 0 until localeList.size()) {
-        localeList[a].let {
-            it?.let { it1 -> map.put(it, it.getDisplayName(it)) }
+    for (i in 0 until localeList.size()) {
+        localeList[i]?.let {
+            map.put(it, it.getDisplayName(it))
         }
     }
     return map

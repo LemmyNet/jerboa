@@ -10,6 +10,8 @@
     * [Kotlin](#kotlin)
     * [Code quality](#code-quality)
   * [Adding translations](#adding-translations)
+  * [Updating the instance list](#updating-the-instance-list)
+  * [Generate compose compiler metrics](#generate-compose-compiler-metrics)
 <!-- TOC -->
 
 <!-- prettier-ignore-end -->
@@ -73,3 +75,25 @@ prettier --write "*.md" "*.yml"`
 You can find the translations in the `app/src/main/res/values-{locale}/strings.xml` file.
 You can open it in android studio, right click and click open translations editor or you can
 directly edit the files.
+
+## Updating the instance list
+
+There is a custom gradle task that generates all the lemmy instances that this app directly supports.
+It updates the lemmy instances list in DefaultInstances.kt and the AndroidManifest.
+It uses the fediverse api and filters on the monthly users.
+You can run it by doing
+
+```shell
+ ./gradlew app:updateInstances -no-configuration-cache
+```
+
+## Generate compose compiler metrics
+
+You can generate the compose compiler metrics by executing the following gradle task.
+
+```shell
+./gradlew assembleRelease --rerun-tasks -P com.jerboa.enableComposeCompilerReports=true
+```
+
+Then you will find the metrics in `app/build/compose_metrics` directory.
+See [this link for more information on these metrics](https://github.com/androidx/androidx/blob/androidx-main/compose/compiler/design/compiler-metrics.md)

@@ -293,9 +293,9 @@ fun InboxTabs(
                                     items(
                                         replies,
                                         key = { reply -> reply.comment_reply.id },
-                                    ) { crv ->
+                                    ) { commentReplyView ->
                                         CommentReplyNode(
-                                            commentReplyView = crv,
+                                            commentReplyView = commentReplyView,
                                             onUpvoteClick = { cr ->
                                                 account?.also { acct ->
                                                     inboxViewModel.likeReply(
