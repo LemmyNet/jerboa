@@ -3,8 +3,6 @@ package com.jerboa.ui.components.post.edit
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,24 +11,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.EditPost
 import com.jerboa.datatypes.types.PostView
+import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.community.CommunityViewModel
-import com.jerboa.ui.components.home.HomeViewModel
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.ui.components.post.composables.CreateEditPostBody
+import com.jerboa.ui.components.post.composables.CreateEditPostHeader
+import com.jerboa.ui.components.post.composables.EditPostSubmitIcon
+import com.jerboa.validatePostName
+import com.jerboa.validateUrl
 import kotlinx.coroutines.launch
 
 object PostEditReturn {
@@ -57,7 +59,7 @@ fun PostEditActivity(
 
     var name by rememberSaveable { mutableStateOf(postView.post.name) }
     var url by rememberSaveable { mutableStateOf(postView.post.url.orEmpty()) }
-    var isNsfw by rememberSaveable { mutableStateOf(postView.post.nsfw ?: false) }
+    var isNsfw by rememberSaveable { mutableStateOf(postView.post.nsfw) }
     var body by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue(
@@ -82,35 +84,21 @@ fun PostEditActivity(
                     navController = navController,
                     formValid = formValid,
                     loading = loading,
-                    onEditPostClick = {
-                        account?.also { acct ->
-                            // Clean up that data
-                            val nameOut = name.trim()
-                            val bodyOut = body.text.trim().ifEmpty { null }
-                            val urlOut = url.trim().ifEmpty { null }
-
-                            postEditViewModel.editPost(
-                                form = EditPost(
-                                    post_id = postView.post.id,
-                                    name = nameOut,
-                                    url = urlOut,
-                                    body = bodyOut,
-                                    auth = acct.jwt,
-                                    nsfw = isNsfw,
-                                ),
-                            ) { postView ->
-                                navController.apply {
-                                    addReturn(PostEditReturn.POST_VIEW, postView)
-                                    navigateUp()
-                                }
-                            }
-                        }
-                    },
                     submitIcon = {
                         EditPostSubmitIcon()
                     },
                     title = stringResource(R.string.post_edit_edit_post),
-
+                    onSubmitClick = {
+                        onSubmitClick(
+                            account = account,
+                            name = name,
+                            body = body,
+                            url = url,
+                            postEditViewModel = postEditViewModel,
+                            isNsfw = isNsfw,
+                            navController = navController,
+                        )
+                    },
                 )
                 if (loading) {
                     LoadingBar()
@@ -172,12 +160,12 @@ fun onSubmitClick(
                 body = bodyOut,
                 auth = acct.jwt,
                 nsfw = isNsfw,
-            ) { postView ->
-                navController.apply {
-                    addReturn(PostEditReturn.POST_VIEW, postView)
-                    navigateUp()
-                }
+            ),
+        ) { postView ->
+            navController.apply {
+                addReturn(PostEditReturn.POST_VIEW, postView)
+                navigateUp()
             }
-        )
+        }
     }
 }

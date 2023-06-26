@@ -13,12 +13,9 @@ import com.jerboa.datatypes.types.GetSiteMetadata
 import com.jerboa.datatypes.types.GetSiteMetadataResponse
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.serializeToMap
-import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
-class CreatePostViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
-
+class CreatePostViewModel : ViewModel() {
     var createPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
         private set
     var siteMetadataRes: ApiState<GetSiteMetadataResponse> by mutableStateOf(ApiState.Empty)

@@ -35,7 +35,6 @@ import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListReturn
-import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.CreateEditPostHeader
 import com.jerboa.ui.components.post.composables.CreatePostSubmitIcon
@@ -85,7 +84,7 @@ fun CreatePostActivity(
 
     val nameField = validatePostName(name)
     val urlField = validateUrl(url)
-    val formValid = !nameField.hasError && !urlField.hasError && (community !== null)
+    val formValid = !nameField.hasError && !urlField.hasError && (selectedCommunity !== null)
 
     LaunchedEffect(initialUrl) {
         if (initialUrl.isNotEmpty()) {
@@ -120,40 +119,15 @@ fun CreatePostActivity(
                         loading = loading,
                         onSubmitClick = {
                             onSubmitClick(
-                                name,
-                                body,
-                                url,
-                                isNsfw,
-                                account,
-                                communityListViewModel,
-                                createPostViewModel,
-                                navController,
+                                name = name,
+                                body = body,
+                                url = url,
+                                isNsfw = isNsfw,
+                                account = account,
+                                createPostViewModel = createPostViewModel,
+                                selectedCommunity = selectedCommunity,
+                                navController = navController,
                             )
-                        onCreatePostClick = {
-                            account?.also { acct ->
-                                selectedCommunity?.id?.also {
-                                    // Clean up that data
-                                    val nameOut = name.trim()
-                                    val bodyOut = body.text.trim().ifEmpty { null }
-                                    val urlOut = url.trim().ifEmpty { null }
-                                    createPostViewModel.createPost(
-                                        CreatePost(
-                                            name = nameOut,
-                                            community_id = it,
-                                            url = urlOut,
-                                            body = bodyOut,
-                                            auth = acct.jwt,
-                                            nsfw = isNsfw,
-                                        ),
-                                    ) { postId ->
-                                        navController.navigate(
-                                            Route.PostArgs.makeRoute(id = "$postId"),
-                                        ) {
-                                            popUpTo(Route.CREATE_POST) { inclusive = true }
-                                        }
-                                    }
-                                }
-                            }
                         },
                         submitIcon = {
                             CreatePostSubmitIcon(formValid)
@@ -166,7 +140,6 @@ fun CreatePostActivity(
                 }
             },
             content = { padding ->
-
                 CreateEditPostBody(
                     name = name,
                     nameField = nameField,
@@ -185,9 +158,6 @@ fun CreatePostActivity(
                             }
                         }
                     },
-                    navController = navController,
-                    community = selectedCommunity,
-                    formValid = { formValid = it },
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,
                     sharedImage = initialImage,
@@ -210,12 +180,48 @@ fun CreatePostActivity(
                     onIsNsfwChange = { isNsfw = it },
                     communitySelector = {
                         PostCommunitySelector(
-                            community = community,
+                            community = selectedCommunity,
                             navController = navController,
                         )
                     },
                 )
             },
         )
+    }
+}
+
+fun onSubmitClick(
+    name: String,
+    body: TextFieldValue,
+    url: String,
+    isNsfw: Boolean,
+    account: Account?,
+    selectedCommunity: Community?,
+    createPostViewModel: CreatePostViewModel,
+    navController: NavController,
+) {
+    account?.also { acct ->
+        selectedCommunity?.id?.also {
+            // Clean up that data
+            val nameOut = name.trim()
+            val bodyOut = body.text.trim().ifEmpty { null }
+            val urlOut = url.trim().ifEmpty { null }
+            createPostViewModel.createPost(
+                CreatePost(
+                    name = nameOut,
+                    community_id = it,
+                    url = urlOut,
+                    body = bodyOut,
+                    auth = acct.jwt,
+                    nsfw = isNsfw,
+                ),
+            ) { postId ->
+                navController.navigate(
+                    Route.PostArgs.makeRoute(id = "$postId"),
+                ) {
+                    popUpTo(Route.CREATE_POST) { inclusive = true }
+                }
+            }
+        }
     }
 }
