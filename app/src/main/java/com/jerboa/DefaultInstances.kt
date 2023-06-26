@@ -1,50 +1,50 @@
 package com.jerboa
 
 val DEFAULT_LEMMY_INSTANCES = arrayOf(
-    "lemmy.world", // 13856 monthly users
-    "lemmy.ml", // 4206 monthly users
-    "beehaw.org", // 3730 monthly users
+    "lemmy.world", // 13911 monthly users
+    "lemmy.ml", // 4217 monthly users
+    "beehaw.org", // 3739 monthly users
     "feddit.de", // 2300 monthly users
-    "sh.itjust.works", // 2215 monthly users
-    "www.hexbear.net", // 1603 monthly users
-    "lemmynsfw.com", // 1122 monthly users
-    "lemmy.ca", // 1092 monthly users
+    "sh.itjust.works", // 2221 monthly users
+    "www.hexbear.net", // 1602 monthly users
+    "lemmynsfw.com", // 1126 monthly users
+    "lemmy.ca", // 1095 monthly users
+    "lemm.ee", // 994 monthly users
     "lemmy.one", // 987 monthly users
-    "lemm.ee", // 984 monthly users
-    "lemmy.fmhy.ml", // 944 monthly users
-    "lemmy.dbzer0.com", // 782 monthly users
+    "lemmy.fmhy.ml", // 945 monthly users
+    "lemmy.dbzer0.com", // 784 monthly users
     "lemmy.blahaj.zone", // 769 monthly users
-    "lemmygrad.ml", // 629 monthly users
-    "programming.dev", // 617 monthly users
+    "lemmygrad.ml", // 630 monthly users
+    "programming.dev", // 624 monthly users
     "discuss.tchncs.de", // 564 monthly users
-    "sopuli.xyz", // 561 monthly users
+    "sopuli.xyz", // 563 monthly users
     "lemmy.sdf.org", // 476 monthly users
-    "vlemmy.net", // 398 monthly users
+    "vlemmy.net", // 399 monthly users
     "midwest.social", // 396 monthly users
     "aussie.zone", // 373 monthly users
     "startrek.website", // 317 monthly users
-    "infosec.pub", // 286 monthly users
+    "infosec.pub", // 288 monthly users
     "feddit.uk", // 286 monthly users
     "dormi.zone", // 269 monthly users
     "feddit.it", // 260 monthly users
-    "pawb.social", // 242 monthly users
+    "pawb.social", // 243 monthly users
     "feddit.nl", // 197 monthly users
-    "burggit.moe", // 185 monthly users
-    "slrpnk.net", // 178 monthly users
-    "lemmy.nz", // 166 monthly users
+    "burggit.moe", // 187 monthly users
+    "slrpnk.net", // 179 monthly users
+    "lemmy.nz", // 167 monthly users
     "feddit.dk", // 159 monthly users
     "delraymisfitsboard.com", // 158 monthly users
+    "reddthat.com", // 154 monthly users
     "mander.xyz", // 152 monthly users
-    "reddthat.com", // 152 monthly users
     "feddit.cl", // 123 monthly users
     "lemmy.zip", // 118 monthly users
     "lemmy.pt", // 100 monthly users
     "dataterm.digital", // 86 monthly users
+    "lemmy.eco.br", // 86 monthly users
     "szmer.info", // 85 monthly users
     "latte.isnot.coffee", // 85 monthly users
-    "lemmy.eco.br", // 85 monthly users
     "monyet.cc", // 85 monthly users
-    "exploding-heads.com", // 83 monthly users
+    "exploding-heads.com", // 84 monthly users
     "waveform.social", // 78 monthly users
     "lemmy.tedomum.net", // 76 monthly users
     "enterprise.lemmy.ml", // 72 monthly users

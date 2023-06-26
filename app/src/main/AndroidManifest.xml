@@ -73,8 +73,8 @@
               <data android:host="www.hexbear.net"/>
               <data android:host="lemmynsfw.com"/>
               <data android:host="lemmy.ca"/>
-              <data android:host="lemmy.one"/>
               <data android:host="lemm.ee"/>
+              <data android:host="lemmy.one"/>
               <data android:host="lemmy.fmhy.ml"/>
               <data android:host="lemmy.dbzer0.com"/>
               <data android:host="lemmy.blahaj.zone"/>
@@ -98,15 +98,15 @@
               <data android:host="lemmy.nz"/>
               <data android:host="feddit.dk"/>
               <data android:host="delraymisfitsboard.com"/>
-              <data android:host="mander.xyz"/>
               <data android:host="reddthat.com"/>
+              <data android:host="mander.xyz"/>
               <data android:host="feddit.cl"/>
               <data android:host="lemmy.zip"/>
               <data android:host="lemmy.pt"/>
               <data android:host="dataterm.digital"/>
+              <data android:host="lemmy.eco.br"/>
               <data android:host="szmer.info"/>
               <data android:host="latte.isnot.coffee"/>
-              <data android:host="lemmy.eco.br"/>
               <data android:host="monyet.cc"/>
               <data android:host="exploding-heads.com"/>
               <data android:host="waveform.social"/>

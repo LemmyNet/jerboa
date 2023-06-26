@@ -35,7 +35,7 @@ fun <T> LazyMap.getAs(key: String): T {
     return this[key] as T
 }
 
-// Run this as `./gradlew app:updateInstances -no-configuration-cache`
+// Run this as `./gradlew app:updateInstances --no-configuration-cache`
 tasks.register("updateInstances") {
     description = "Fetches a list of popular Lemmy instances and writes it to the DefaultInstances.kt file"
 
