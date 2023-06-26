@@ -23,6 +23,7 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -50,9 +51,10 @@ fun CommunityListActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val communityListViewModel: CommunityListViewModel = viewModel()
-
-    // Whenever navigating here, reset the list with your followed communities
-    communityListViewModel.setCommunityListFromFollowed(siteViewModel)
+    InitializeRoute(communityListViewModel) {
+        // Whenever navigating here, reset the list with your followed communities
+        communityListViewModel.setCommunityListFromFollowed(siteViewModel)
+    }
 
     var search by rememberSaveable { mutableStateOf("") }
 

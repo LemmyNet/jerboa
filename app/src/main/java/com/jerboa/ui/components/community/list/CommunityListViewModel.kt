@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityAggregates
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.Search
@@ -16,14 +15,14 @@ import com.jerboa.datatypes.types.SearchResponse
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.serializeToMap
+import com.jerboa.ui.components.common.Initializable
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.launch
 
-class CommunityListViewModel : ViewModel() {
-    var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
-        private set
+class CommunityListViewModel : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
 
-    var selectedCommunity: Community? by mutableStateOf(null)
+    var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     fun searchCommunities(form: Search) {
@@ -31,10 +30,6 @@ class CommunityListViewModel : ViewModel() {
             searchRes = ApiState.Loading
             searchRes = apiWrapper(API.getInstance().search(form.serializeToMap()))
         }
-    }
-
-    fun selectCommunity(community: Community) {
-        selectedCommunity = community
     }
 
     fun setCommunityListFromFollowed(siteViewModel: SiteViewModel) {
