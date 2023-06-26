@@ -19,7 +19,7 @@ val manifestPath = "src/main/AndroidManifest.xml"
 val START_TAG = "<!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->"
 val END_TAG = "<!--#INSTANCE_LIST_END#-->"
 val IDENT = 14
-
+val nsfwList = listOf("lemmynsfw.com")
 
 // Some extension methods to make the JsonSlurper output easier to process
 fun LazyMap.getMap(key: String): LazyMap {
@@ -51,7 +51,7 @@ tasks.register("updateInstances") {
                 Pair(name, users ?: 0)
             }
             .filter {
-                it.second >= minimumMAU
+                it.second >= minimumMAU && !nsfwList.contains(it.first)
             }
             .sortedBy {
                 it.second

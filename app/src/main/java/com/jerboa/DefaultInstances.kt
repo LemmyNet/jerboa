@@ -7,7 +7,6 @@ val DEFAULT_LEMMY_INSTANCES = arrayOf(
     "feddit.de", // 2300 monthly users
     "sh.itjust.works", // 2221 monthly users
     "www.hexbear.net", // 1602 monthly users
-    "lemmynsfw.com", // 1126 monthly users
     "lemmy.ca", // 1095 monthly users
     "lemm.ee", // 994 monthly users
     "lemmy.one", // 987 monthly users
