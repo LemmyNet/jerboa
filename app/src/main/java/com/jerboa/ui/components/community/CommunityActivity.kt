@@ -49,7 +49,6 @@ import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.ConsumeReturn
 import com.jerboa.ui.components.common.CreatePostDeps
 import com.jerboa.ui.components.common.InitializeRoute
@@ -60,7 +59,6 @@ import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.rootChannel
 import com.jerboa.ui.components.common.toCommunity
 import com.jerboa.ui.components.common.toCreatePost
-import com.jerboa.ui.components.common.toInbox
 import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
@@ -102,6 +100,7 @@ fun CommunityActivity(
         val communityName = communityArg.fold({ null }, { it })
 
         communityViewModel.resetPage()
+        communityViewModel.updateSortType(siteViewModel.sortType)
         communityViewModel.getCommunity(
             form = GetCommunity(
                 id = communityId,

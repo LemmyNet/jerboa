@@ -13,7 +13,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
@@ -28,8 +27,6 @@ import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toInbox
-import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -46,6 +43,7 @@ fun CommunityListActivity(
     navController: NavController,
     accountViewModel: AccountViewModel,
     selectMode: Boolean = false,
+    siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "got to community list activity")
 

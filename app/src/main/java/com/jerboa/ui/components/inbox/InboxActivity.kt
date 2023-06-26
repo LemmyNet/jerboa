@@ -43,7 +43,6 @@ import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.comment.replynode.CommentReplyNode
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.CommentReplyDeps
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
@@ -55,7 +54,6 @@ import com.jerboa.ui.components.common.toComment
 import com.jerboa.ui.components.common.toCommentReply
 import com.jerboa.ui.components.common.toCommentReport
 import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toInbox
 import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPrivateMessageReply
 import com.jerboa.ui.components.common.toProfile
@@ -68,7 +66,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun InboxActivity(
     navController: NavController,
-    appSettingsViewModel: AppSettingsViewModel,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
 ) {

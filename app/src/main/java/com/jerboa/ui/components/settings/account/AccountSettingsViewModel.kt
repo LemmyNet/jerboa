@@ -14,7 +14,6 @@ import com.jerboa.datatypes.types.LoginResponse
 import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.db.Account
 import com.jerboa.db.AccountRepository
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -28,7 +27,6 @@ class AccountSettingsViewModel(
     fun saveSettings(
         form: SaveUserSettings,
         siteViewModel: SiteViewModel,
-        homeViewModel: HomeViewModel,
         account: Account,
     ) {
         viewModelScope.launch {
@@ -41,7 +39,7 @@ class AccountSettingsViewModel(
 
             val newAccount = async { maybeUpdateAccountSettings(account, form) }.await()
 
-            homeViewModel.updateFromAccount(newAccount)
+            siteViewModel.updateFromAccount(newAccount)
         }
     }
 

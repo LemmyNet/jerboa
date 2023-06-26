@@ -1249,6 +1249,23 @@ fun scrollToPreviousParentComment(
 }
 
 /**
+ * Accepts a string that MAY be an URL, trims any protocol and extracts only the host, removing anything after a :, / or ?
+ */
+fun getHostFromInstanceString(
+    input: String,
+): String {
+    if (input.isBlank()) {
+        return input
+    }
+
+    return try {
+        URL(input).host.toString()
+    } catch (e: MalformedURLException) {
+        input
+    }
+}
+
+/**
  * Compare two version strings.
  *
  * This attempts to do a natural comparison assuming it's a typical semver (e.g. x.y.z),

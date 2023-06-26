@@ -8,23 +8,18 @@ import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
@@ -35,13 +30,6 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
-import com.jerboa.datatypes.types.GetCommunity
-import com.jerboa.datatypes.types.GetPersonDetails
-import com.jerboa.datatypes.types.GetPersonMentions
-import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetPrivateMessages
-import com.jerboa.datatypes.types.GetReplies
-import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
@@ -59,8 +47,6 @@ import com.jerboa.ui.components.common.PrivateMessageDeps
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
-import com.jerboa.ui.components.common.SwipeToNavigateBack
-import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.common.takeDepsFromRoot
 import com.jerboa.ui.components.community.CommunityActivity
@@ -68,7 +54,6 @@ import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
 import com.jerboa.ui.components.inbox.InboxActivity
@@ -106,6 +91,7 @@ class MainActivity : ComponentActivity() {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -128,7 +114,6 @@ class MainActivity : ComponentActivity() {
 
             fetchInitialData(accountSync, siteViewModel)
 
-            val account = getCurrentAccount(accountViewModel)
             val appSettings by appSettingsViewModel.appSettings.observeAsState()
 
             JerboaTheme(
@@ -159,6 +144,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 AnimatedNavHost(
+                    route = Route.Graph.ROOT,
                     navController = navController,
                     startDestination = Route.HOME,
                     enterTransition = { slideInHorizontally { it } },
@@ -180,12 +166,12 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = Route.HOME) {
-                        HomeActivity(
+                        BottomNavActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            appSettings = appSettings,
                         )
                     }
 
@@ -359,7 +345,6 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             selectMode = args.select,
                         )
                     }
@@ -410,7 +395,6 @@ class MainActivity : ComponentActivity() {
                     ) {
                         InboxActivity(
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                         )

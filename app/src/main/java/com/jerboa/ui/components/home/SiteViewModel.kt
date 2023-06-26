@@ -12,6 +12,9 @@ import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.GetUnreadCountResponse
+import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.SortType
+import com.jerboa.db.Account
 import com.jerboa.serializeToMap
 import kotlinx.coroutines.launch
 
@@ -21,6 +24,24 @@ class SiteViewModel : ViewModel() {
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
+
+    var sortType by mutableStateOf(SortType.Active)
+        private set
+    var listingType by mutableStateOf(ListingType.Local)
+        private set
+
+    fun updateSortType(sortType: SortType) {
+        this.sortType = sortType
+    }
+
+    fun updateListingType(listingType: ListingType) {
+        this.listingType = listingType
+    }
+
+    fun updateFromAccount(account: Account) {
+        updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
+        updateListingType(ListingType.values().getOrElse(account.defaultListingType) { listingType })
+    }
 
     fun getSite(
         form: GetSite,

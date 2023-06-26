@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -60,10 +59,8 @@ import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.ConsumeReturn
 import com.jerboa.ui.components.common.CreatePostDeps
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.PostEditDeps
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -93,6 +90,7 @@ fun HomeActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     drawerState: DrawerState,
+    homeViewModel: HomeViewModel,
 ) {
     Log.d("jerboa", "got to home activity")
     val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
@@ -104,16 +102,10 @@ fun HomeActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
 
-    val homeViewModel: HomeViewModel = viewModel()
-
     navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (homeViewModel.initialized) homeViewModel.updatePost(pv)
     }
 
-    InitializeRoute(homeViewModel) {
-        fetchHomePosts(account, homeViewModel)
-    }
-    
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -151,7 +143,10 @@ fun HomeActivity(
             FloatingActionButton(
                 onClick = {
                     account?.also {
-                        navController.navigate("createPost")
+                        navController.toCreatePost(
+                            channel = transferCreatePostDepsViaRoot,
+                            community = null,
+                        )
                     } ?: run {
                         loginFirstToast(ctx)
                     }
@@ -163,7 +158,6 @@ fun HomeActivity(
                 )
             }
         },
-        modifier = Modifier.semantics { testTagsAsResourceId = true },
     )
 }
 
