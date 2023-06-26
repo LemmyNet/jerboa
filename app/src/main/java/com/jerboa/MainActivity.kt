@@ -8,9 +8,9 @@ import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -47,6 +47,7 @@ import com.jerboa.ui.components.common.PrivateMessageDeps
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
+import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.common.takeDepsFromRoot
 import com.jerboa.ui.components.community.CommunityActivity
@@ -79,7 +80,7 @@ class JerboaApplication : Application() {
     val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
 }
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
     private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
         AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
@@ -412,19 +413,21 @@ class MainActivity : ComponentActivity() {
                         ),
                     ) {
                         val args = Route.PostArgs(it)
-                        PostActivity(
-                            id = Either.Left(args.id),
-                            accountViewModel = accountViewModel,
-                            navController = navController,
-                            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
-                            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
-                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
-                            siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
-                        )
+                        SwipeToNavigateBack(navController = navController) {
+                            PostActivity(
+                                id = Either.Left(args.id),
+                                accountViewModel = accountViewModel,
+                                navController = navController,
+                                showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
+                                showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+                                showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                                showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
+                                navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
+                                siteViewModel = siteViewModel,
+                                useCustomTabs = appSettings?.useCustomTabs ?: true,
+                                usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            )
+                        }
                     }
 
                     composable(

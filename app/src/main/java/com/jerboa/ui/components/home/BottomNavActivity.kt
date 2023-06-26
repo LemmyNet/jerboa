@@ -150,7 +150,7 @@ fun BottomNavActivity(
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            selectMode = it.arguments?.getBoolean("select")!!,
+                            selectMode = false,
                             siteViewModel = siteViewModel,
                         )
                     }
