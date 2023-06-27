@@ -58,12 +58,14 @@ import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
+import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.ui.components.post.PostActivity
+import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.create.CreatePostActivity
 import com.jerboa.ui.components.post.edit.PostEditActivity
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
@@ -85,6 +87,7 @@ class JerboaApplication : Application() {
 
 class MainActivity : AppCompatActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
+    private val homeViewModel by viewModels<HomeViewModel>()
     private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
         AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
     }
@@ -175,6 +178,7 @@ class MainActivity : AppCompatActivity() {
                         BottomNavActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
+                            homeViewModel = homeViewModel,
                             siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             appSettings = appSettings,
@@ -418,13 +422,6 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.PostArgs(it)
-                        PostSwipeWrapper(
-                            navController = navController,
-                            account = account,
-                            homeViewModel = homeViewModel,
-                            postViewModel = postViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                        ) {
                             PostActivity(
                                 id = Either.Left(args.id),
                                 accountViewModel = accountViewModel,
@@ -435,10 +432,12 @@ class MainActivity : AppCompatActivity() {
                                 showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
                                 navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
                                 siteViewModel = siteViewModel,
+                                homeViewModel = homeViewModel,
+                                appSettingsViewModel = appSettingsViewModel,
                                 useCustomTabs = appSettings?.useCustomTabs ?: true,
                                 usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                             )
-                        }
+
                     }
 
                     composable(
@@ -465,6 +464,8 @@ class MainActivity : AppCompatActivity() {
                             showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
                             navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
                             siteViewModel = siteViewModel,
+                            homeViewModel = homeViewModel,
+                            appSettingsViewModel = appSettingsViewModel
                         )
                     }
 

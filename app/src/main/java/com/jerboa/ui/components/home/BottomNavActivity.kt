@@ -57,6 +57,7 @@ fun BottomNavActivity(
     navController: NavController,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    homeViewModel: HomeViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings?,
 ) {
@@ -80,7 +81,6 @@ fun BottomNavActivity(
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    val homeViewModel: HomeViewModel = viewModel()
     if (siteViewModel.siteRes is ApiState.Success) {
         InitializeRoute(homeViewModel) {
             homeViewModel.updateSortType(siteViewModel.sortType)
