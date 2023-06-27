@@ -125,6 +125,26 @@ data class AppSettings(
     val blurNSFW: Boolean,
 )
 
+val APP_SETTINGS_DEFAULT = AppSettings(
+    id = 1,
+    fontSize = DEFAULT_FONT_SIZE,
+    theme = 0,
+    themeColor = 0,
+    viewedChangelog = 0,
+    postViewMode = 0,
+    showBottomNav = true,
+    showCollapsedCommentContent = false,
+    showCommentActionBarByDefault = true,
+    showVotingArrowsInListView = true,
+    showParentCommentNavigationButtons = false,
+    navigateParentCommentsWithVolumeButtons = false,
+    useCustomTabs = true,
+    usePrivateTabs = false,
+    secureWindow = false,
+    blurNSFW = true,
+)
+
+
 @Dao
 interface AccountDao {
     @Query("SELECT * FROM account")

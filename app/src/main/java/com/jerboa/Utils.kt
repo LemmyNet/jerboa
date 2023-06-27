@@ -58,6 +58,8 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
+import com.jerboa.db.AppSettings
+import com.jerboa.db.DEFAULT_FONT_SIZE
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
