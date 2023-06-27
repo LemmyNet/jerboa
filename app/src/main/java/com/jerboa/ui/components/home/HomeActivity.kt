@@ -2,7 +2,7 @@ package com.jerboa.ui.components.home
 
 import android.content.Context
 import android.util.Log
-import androidx.activity.compose.ReportDrawnWhen
+import androidx.activity.compose.ReportDrawn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -47,7 +47,6 @@ import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
@@ -56,6 +55,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
+import com.jerboa.isLoading
 import com.jerboa.loginFirstToast
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
@@ -185,21 +185,16 @@ fun MainPostListingsContent(
 
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
-        ApiState.Loading ->
-            LoadingBar(padding)
-
+        ApiState.Loading -> LoadingBar(padding)
         ApiState.Empty -> ApiEmptyText()
         is ApiState.Failure -> ApiErrorText(siteRes.msg)
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
+        else -> {}
     }
 
-    val loading = homeViewModel.postsRes == ApiState.Loading
-
-    ReportDrawnWhen {
-        !loading
-    }
+    ReportDrawn()
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = homeViewModel.refreshing,
@@ -214,10 +209,9 @@ fun MainPostListingsContent(
         // zIndex needed bc some elements of a post get drawn above it.
         PullRefreshIndicator(homeViewModel.refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100f))
         // Can't be in ApiState.Loading, because of infinite scrolling
-        if (loading) {
+        if (homeViewModel.postsRes.isLoading()) {
             LoadingBar(padding = padding)
         }
-
 
         val posts = when (val postsRes = homeViewModel.postsRes) {
             is ApiState.Failure -> {
@@ -225,6 +219,7 @@ fun MainPostListingsContent(
                 persistentListOf()
             }
             is ApiState.Success -> postsRes.data.posts.toImmutableList()
+            is ApiState.Awaiting -> postsRes.data.posts.toImmutableList()
             else -> persistentListOf()
         }
 
@@ -327,15 +322,7 @@ fun MainPostListingsContent(
                 navController.toProfile(id = personId)
             },
             isScrolledToEnd = {
-                homeViewModel.nextPage()
-                homeViewModel.appendPosts(
-                    GetPosts(
-                        page = homeViewModel.page,
-                        sort = homeViewModel.sortType,
-                        type_ = homeViewModel.listingType,
-                        auth = account?.jwt,
-                    ),
-                )
+                homeViewModel.appendPosts(account?.jwt)
             },
             account = account,
             enableDownVotes = siteViewModel.enableDownvotes(),

@@ -42,5 +42,6 @@ fun CommunitySidebarActivity(
         ApiState.Loading -> {
             LoadingBar()
         }
+        else -> {}
     }
 }

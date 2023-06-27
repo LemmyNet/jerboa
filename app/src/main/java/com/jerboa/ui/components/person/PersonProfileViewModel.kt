@@ -21,6 +21,7 @@ import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
+import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
@@ -55,8 +56,6 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
-    var fetchingMore by mutableStateOf(false)
-        private set
     var refreshing by mutableStateOf(false)
 
     var sortType by mutableStateOf(SortType.New)
@@ -78,6 +77,10 @@ class PersonProfileViewModel : ViewModel(), Initializable {
         page += 1
     }
 
+    fun prevPage() {
+        page -= 1
+    }
+
     fun updateSavedOnly(savedOnly: Boolean) {
         this.savedOnly = savedOnly
     }
@@ -95,45 +98,45 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     }
 
     fun appendData(
-        form: GetPersonDetails,
+        profileId: PersonId,
+        jwt: String?,
     ) {
         viewModelScope.launch {
-            fetchingMore = true
-            val more =
-                apiWrapper(
-                    API.getInstance().getPersonDetails(form.serializeToMap()),
-                )
+            val oldRes = personDetailsRes
+            when (oldRes) {
+                is ApiState.Success -> personDetailsRes = ApiState.Awaiting(oldRes.data)
+                else -> return@launch
+            }
 
-            // Only append when both new and existing are Successes
-            when (val existing = personDetailsRes) {
+            nextPage()
+            val form = GetPersonDetails(
+                person_id = profileId,
+                sort = sortType,
+                page = page,
+                saved_only = savedOnly,
+                auth = jwt,
+            )
+            val newRes = apiWrapper(API.getInstance().getPersonDetails(form.serializeToMap()))
+
+            personDetailsRes = when (newRes) {
                 is ApiState.Success -> {
-                    when (more) {
-                        is ApiState.Success -> {
-                            val appendedPosts = existing.data.posts.toMutableList()
-                            appendedPosts.addAll(more.data.posts)
+                    val appendedPosts = oldRes.data.posts.toMutableList()
+                    appendedPosts.addAll(newRes.data.posts)
 
-                            val appendedComments = existing.data.comments.toMutableList()
-                            appendedComments.addAll(more.data.comments)
+                    val appendedComments = oldRes.data.comments.toMutableList()
+                    appendedComments.addAll(newRes.data.comments)
 
-                            val newRes = ApiState.Success(
-                                existing.data.copy(
-                                    posts = appendedPosts.toImmutableList(),
-                                    comments = appendedComments,
-                                ),
-                            )
-                            personDetailsRes = newRes
-                            fetchingMore = false
-                        }
-
-                        is ApiState.Failure -> {
-                            fetchingMore = false
-                        }
-
-                        else -> {}
-                    }
+                    ApiState.Success(
+                        oldRes.data.copy(
+                            posts = appendedPosts,
+                            comments = appendedComments,
+                        ),
+                    )
                 }
-
-                else -> {}
+                else -> {
+                    prevPage()
+                    oldRes
+                }
             }
         }
     }

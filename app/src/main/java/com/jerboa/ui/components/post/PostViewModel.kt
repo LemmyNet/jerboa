@@ -59,7 +59,6 @@ class PostViewModel : ViewModel(), Initializable {
     var sortType by mutableStateOf(CommentSortType.Hot)
         private set
 
-    private var fetchingMore by mutableStateOf(false)
     var refreshing by mutableStateOf(false)
 
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
@@ -133,37 +132,32 @@ class PostViewModel : ViewModel(), Initializable {
         account: Account?,
     ) {
         viewModelScope.launch {
-            when (val existing = commentsRes) {
+            val existing = commentsRes
+            when (existing) {
+                is ApiState.Success -> commentsRes = ApiState.Awaiting(existing.data)
+                else -> return@launch
+            }
+
+            val commentsForm = GetComments(
+                parent_id = commentView.comment.id,
+                max_depth = COMMENTS_DEPTH_MAX,
+                type_ = ListingType.All,
+                auth = account?.jwt,
+            )
+
+            val moreComments =
+                apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
+
+            when (moreComments) {
                 is ApiState.Success -> {
-                    val commentsForm = GetComments(
-                        parent_id = commentView.comment.id,
-                        max_depth = COMMENTS_DEPTH_MAX,
-                        type_ = ListingType.All,
-                        auth = account?.jwt,
-                    )
+                    // Remove the first comment, since it is a parent
+                    val newComments = moreComments.data.comments.toMutableList()
+                    newComments.removeAt(0)
 
-                    val moreComments =
-                        apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
-                    fetchingMore = true
+                    val appended = appendData(existing.data.comments, newComments.toList())
 
-                    when (moreComments) {
-                        is ApiState.Success -> {
-                            // Remove the first comment, since it is a parent
-                            val newComments = moreComments.data.comments.toMutableList()
-                            newComments.removeAt(0)
-
-                            val appended = appendData(existing.data.comments, newComments.toList())
-
-                            val newRes = ApiState.Success(existing.data.copy(comments = appended))
-
-                            commentsRes = newRes
-                            fetchingMore = false
-                        }
-
-                        else -> {}
-                    }
+                    commentsRes = ApiState.Success(existing.data.copy(comments = appended))
                 }
-
                 else -> {}
             }
         }

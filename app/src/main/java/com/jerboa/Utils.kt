@@ -295,6 +295,7 @@ fun LazyListState.isScrolledToEnd(): Boolean {
         false
     }
 }
+
 /*
  * Parses a "url" and returns a spec-compliant Url:
  *
@@ -1182,6 +1183,10 @@ fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
     return appended.toList()
 }
 
+fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
+    return appendData(old, dedupePosts(new, old))
+}
+
 fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
     val foundIndex = posts.indexOfFirst {
         it.post.id == updatedPostView.post.id
@@ -1323,4 +1328,8 @@ fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange>
         l.add(i, Locale.LanguageRange(this[i]!!.toLanguageTag()))
     }
     return l
+}
+
+fun <T> ApiState<T>.isLoading(): Boolean {
+    return this is ApiState.Awaiting || this == ApiState.Loading
 }

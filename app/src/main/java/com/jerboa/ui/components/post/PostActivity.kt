@@ -74,6 +74,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
+import com.jerboa.isLoading
 import com.jerboa.isModerator
 import com.jerboa.newVote
 import com.jerboa.scrollToNextParentComment
@@ -296,7 +297,9 @@ fun PostActivity(
                     postViewModel.refreshing,
                     pullRefreshState,
                     // zIndex needed bc some elements of a post get drawn above it.
-                    Modifier.align(Alignment.TopCenter).zIndex(100f),
+                    Modifier
+                        .align(Alignment.TopCenter)
+                        .zIndex(100f),
                 )
                 when (val postRes = postViewModel.postRes) {
                     is ApiState.Loading ->
@@ -432,19 +435,20 @@ fun PostActivity(
                                 )
                             }
 
-                            when (val commentsRes = postViewModel.commentsRes) {
-                                is ApiState.Loading ->
-                                    item {
-                                        LoadingBar()
-                                    }
+                            if (postViewModel.commentsRes.isLoading()) {
+                                item {
+                                    LoadingBar()
+                                }
+                            }
 
+                            when (val commentsRes = postViewModel.commentsRes) {
                                 is ApiState.Failure -> item(key = "error") {
                                     ApiErrorText(
                                         commentsRes.msg,
                                     )
                                 }
 
-                                is ApiState.Success -> {
+                                is ApiState.Holder -> {
                                     val commentTree = buildCommentsTree(
                                         commentsRes.data.comments,
                                         postViewModel.isCommentView(),

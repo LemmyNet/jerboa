@@ -48,6 +48,7 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.isLoading
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -126,8 +127,6 @@ fun CommunityActivity(
         )
     }
 
-    val loading = communityViewModel.postsRes == ApiState.Loading || communityViewModel.fetchingMore
-
     val pullRefreshState = rememberPullRefreshState(
         refreshing = communityViewModel.refreshing,
         onRefresh = {
@@ -173,6 +172,7 @@ fun CommunityActivity(
                             selectedSortType = communityViewModel.sortType,
                             onClickRefresh = {
                                 scrollToTop(scope, postListState)
+                                communityViewModel.resetPage()
                                 communityViewModel.getPosts(
                                     GetPosts(
                                         community_id = communityId,
@@ -210,6 +210,7 @@ fun CommunityActivity(
                             navController = navController,
                         )
                     }
+                    else -> {}
                 }
             }
         },
@@ -218,13 +219,13 @@ fun CommunityActivity(
                 // zIndex needed bc some elements of a post get drawn above it.
                 PullRefreshIndicator(communityViewModel.refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100F))
                 // Can't be in ApiState.Loading, because of infinite scrolling
-                if (loading) {
+                if (communityViewModel.postsRes.isLoading()) {
                     LoadingBar(padding = padding)
                 }
                 when (val postsRes = communityViewModel.postsRes) {
                     ApiState.Empty -> ApiEmptyText()
                     is ApiState.Failure -> ApiErrorText(postsRes.msg)
-                    is ApiState.Success -> {
+                    is ApiState.Holder -> {
                         PostListings(
                             posts = postsRes.data.posts.toImmutableList(),
                             contentAboveListings = {
@@ -350,15 +351,9 @@ fun CommunityActivity(
                             isScrolledToEnd = {
                                 when (val communityRes = communityViewModel.communityRes) {
                                     is ApiState.Success -> {
-                                        communityViewModel.nextPage()
                                         communityViewModel.appendPosts(
-                                            form =
-                                            GetPosts(
-                                                community_id = communityRes.data.community_view.community.id,
-                                                page = communityViewModel.page,
-                                                sort = communityViewModel.sortType,
-                                                auth = account?.jwt,
-                                            ),
+                                            communityRes.data.community_view.community.id,
+                                            account?.jwt,
                                         )
                                     }
 

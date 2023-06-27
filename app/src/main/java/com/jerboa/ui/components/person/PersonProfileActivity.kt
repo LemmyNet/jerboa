@@ -46,6 +46,7 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getLocalizedStringForUserTab
+import com.jerboa.isLoading
 import com.jerboa.isScrolledToEnd
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
@@ -152,7 +153,20 @@ fun PersonProfileActivity(
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
                 is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                is ApiState.Success -> {
+                ApiState.Loading -> {
+                    // Prevents tabs from jumping around during loading/refreshing
+                    PersonProfileHeader(
+                        scrollBehavior = scrollBehavior,
+                        personName = ctx.getString(R.string.loading),
+                        myProfile = false,
+                        selectedSortType = personProfileViewModel.sortType,
+                        onClickSortType = {},
+                        onBlockPersonClick = {},
+                        onReportPersonClick = {},
+                        navController = navController,
+                    )
+                }
+                is ApiState.Holder -> {
                     val person = profileRes.data.person_view.person
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
@@ -201,7 +215,6 @@ fun PersonProfileActivity(
                         navController = navController,
                     )
                 }
-
                 else -> {}
             }
         },
@@ -264,8 +277,9 @@ fun UserTabs(
     }
     val pagerState = rememberPagerState()
 
-    val loading = personProfileViewModel.personDetailsRes == ApiState.Loading || personProfileViewModel.fetchingMore
+    val loading = personProfileViewModel.personDetailsRes.isLoading()
 
+    // TODO: can only refresh in Posts and Comments but this only refreshes the PersonDetails
     val pullRefreshState = rememberPullRefreshState(
         refreshing = personProfileViewModel.refreshing,
         onRefresh = {
@@ -374,6 +388,7 @@ fun UserTabs(
                                 }
                             }
                         }
+                        else -> {}
                     }
                 }
 
@@ -394,8 +409,7 @@ fun UserTabs(
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                            ApiState.Loading -> {}
-                            is ApiState.Success -> {
+                            is ApiState.Holder -> {
                                 PostListings(
                                     posts = profileRes.data.posts.toImmutableList(),
                                     onUpvoteClick = { pv ->
@@ -491,15 +505,9 @@ fun UserTabs(
                                         }
                                     },
                                     isScrolledToEnd = {
-                                        personProfileViewModel.nextPage()
                                         personProfileViewModel.appendData(
-                                            GetPersonDetails(
-                                                person_id = profileRes.data.person_view.person.id,
-                                                sort = personProfileViewModel.sortType,
-                                                page = personProfileViewModel.page,
-                                                saved_only = personProfileViewModel.savedOnly,
-                                                auth = account?.jwt,
-                                            ),
+                                            profileRes.data.person_view.person.id,
+                                            account?.jwt,
                                         )
                                     },
                                     account = account,
@@ -512,6 +520,7 @@ fun UserTabs(
                                     usePrivateTabs = usePrivateTabs,
                                 )
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -521,7 +530,7 @@ fun UserTabs(
                         ApiState.Empty -> ApiEmptyText()
                         is ApiState.Failure -> ApiErrorText(profileRes.msg)
                         ApiState.Loading -> LoadingBar()
-                        is ApiState.Success -> {
+                        is ApiState.Holder -> {
                             val nodes = commentsToFlatNodes(profileRes.data.comments)
 
                             val listState = rememberLazyListState()
@@ -558,15 +567,9 @@ fun UserTabs(
                             // act when end of list reached
                             if (endOfListReached) {
                                 LaunchedEffect(Unit) {
-                                    personProfileViewModel.nextPage()
                                     personProfileViewModel.appendData(
-                                        GetPersonDetails(
-                                            person_id = profileRes.data.person_view.person.id,
-                                            sort = personProfileViewModel.sortType,
-                                            page = personProfileViewModel.page,
-                                            saved_only = personProfileViewModel.savedOnly,
-                                            auth = account?.jwt,
-                                        ),
+                                        profileRes.data.person_view.person.id,
+                                        account?.jwt,
                                     )
                                 }
                             }

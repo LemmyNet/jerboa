@@ -109,6 +109,7 @@ fun CommunityListActivity(
                                 .imePadding(),
                         )
                     }
+                    else -> {}
                 }
             },
         )

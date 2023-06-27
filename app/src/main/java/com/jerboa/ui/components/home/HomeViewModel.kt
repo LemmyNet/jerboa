@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
-import com.jerboa.appendData
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
@@ -24,13 +23,12 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.Account
-import com.jerboa.dedupePosts
 import com.jerboa.findAndUpdatePost
+import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -86,19 +84,23 @@ class HomeViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun appendPosts(form: GetPosts) {
+    fun appendPosts(jwt: String?) {
         viewModelScope.launch {
-            if (postsRes !is ApiState.Success) return@launch
-            val oldRes = postsRes as ApiState.Success
-            postsRes = ApiState.Loading
+            val oldRes = postsRes
+            when (oldRes) {
+                is ApiState.Success -> postsRes = ApiState.Awaiting(oldRes.data)
+                else -> return@launch
+            }
+
             nextPage()
-            val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+            val newRes = apiWrapper(API.getInstance().getPosts(getForm(jwt).serializeToMap()))
 
             postsRes = when (newRes) {
                 is ApiState.Success -> {
-                    val newPostsDeduped = dedupePosts(newRes.data.posts, oldRes.data.posts)
-                    val appended = appendData(oldRes.data.posts, newPostsDeduped)
-                    ApiState.Success(oldRes.data.copy(posts = appended))
+                    if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
+                        prevPage()
+                    }
+                    ApiState.Success(GetPostsResponse(mergePosts(oldRes.data.posts, newRes.data.posts)))
                 }
                 else -> {
                     prevPage()
@@ -177,7 +179,7 @@ class HomeViewModel : ViewModel(), Initializable {
         when (val existing = postsRes) {
             is ApiState.Success -> {
                 val newPosts = findAndUpdatePost(existing.data.posts, postView)
-                val newRes = ApiState.Success(existing.data.copy(posts = newPosts.toImmutableList()))
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 postsRes = newRes
             }
             else -> {}
@@ -199,5 +201,14 @@ class HomeViewModel : ViewModel(), Initializable {
     fun refreshPosts(account: Account?) {
         refreshing = true
         resetPosts(account).invokeOnCompletion { refreshing = false }
+    }
+
+    fun getForm(jwt: String?): GetPosts {
+        return GetPosts(
+            page = page,
+            sort = sortType,
+            type_ = listingType,
+            auth = jwt,
+        )
     }
 }
