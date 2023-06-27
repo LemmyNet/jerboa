@@ -23,6 +23,9 @@ import com.jerboa.R
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.toAbout
+import com.jerboa.ui.components.common.toAccountSettings
+import com.jerboa.ui.components.common.toLookAndFeel
 
 @Composable
 fun SettingsActivity(
@@ -49,7 +52,7 @@ fun SettingsActivity(
                             contentDescription = null,
                         )
                     },
-                    onClick = { navController.navigate("lookAndFeel") },
+                    onClick = { navController.toLookAndFeel() },
                 )
                 account?.also { acct ->
                     SettingsMenuLink(
@@ -67,7 +70,7 @@ fun SettingsActivity(
                                 contentDescription = null,
                             )
                         },
-                        onClick = { navController.navigate("accountSettings") },
+                        onClick = { navController.toAccountSettings() },
                     )
                 }
                 SettingsMenuLink(
@@ -78,7 +81,7 @@ fun SettingsActivity(
                             contentDescription = null,
                         )
                     },
-                    onClick = { navController.navigate("about") },
+                    onClick = { navController.toAbout() },
                 )
             }
         },

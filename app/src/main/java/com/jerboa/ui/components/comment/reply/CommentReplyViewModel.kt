@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -17,8 +16,7 @@ import com.jerboa.datatypes.types.CreateComment
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.Account
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
 sealed class ReplyItem {
@@ -28,7 +26,8 @@ sealed class ReplyItem {
     class MentionReplyItem(val item: PersonMentionView) : ReplyItem()
 }
 
-class CommentReplyViewModel : ViewModel() {
+class CommentReplyViewModel : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
 
     var createCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -44,10 +43,8 @@ class CommentReplyViewModel : ViewModel() {
     fun createComment(
         content: String,
         account: Account,
-        navController: NavController,
         focusManager: FocusManager,
-        personProfileViewModel: PersonProfileViewModel,
-        postViewModel: PostViewModel,
+        onSuccess: (CommentView) -> Unit,
     ) {
         val reply = replyItem!! // This should have been initialized
         val (postId, commentParentId) = when (reply) {
@@ -82,18 +79,7 @@ class CommentReplyViewModel : ViewModel() {
                     val commentView = res.data.comment_view
 
                     focusManager.clearFocus()
-
-                    // Add to all the views which might have your comment
-                    postViewModel.appendComment(commentView)
-                    when (val personDetailsRes = personProfileViewModel.personDetailsRes) {
-                        is ApiState.Success -> {
-                            if (account.id == personDetailsRes.data.person_view.person.id) {
-                                personProfileViewModel.insertComment(commentView)
-                            }
-                        }
-                        else -> {}
-                    }
-                    navController.navigateUp()
+                    onSuccess(commentView)
                 }
                 else -> {}
             }

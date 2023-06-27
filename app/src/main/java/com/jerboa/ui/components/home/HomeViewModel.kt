@@ -29,9 +29,12 @@ import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
+
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
 

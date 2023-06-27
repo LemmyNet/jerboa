@@ -46,22 +46,37 @@ import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
 import com.jerboa.loginFirstToast
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.ConsumeReturn
+import com.jerboa.ui.components.common.CreatePostDeps
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.PostEditDeps
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
+import com.jerboa.ui.components.common.rootChannel
+import com.jerboa.ui.components.common.toCommunity
+import com.jerboa.ui.components.common.toCommunityList
+import com.jerboa.ui.components.common.toCreatePost
+import com.jerboa.ui.components.common.toInbox
+import com.jerboa.ui.components.common.toPost
+import com.jerboa.ui.components.common.toPostEdit
+import com.jerboa.ui.components.common.toPostReport
+import com.jerboa.ui.components.common.toProfile
+import com.jerboa.ui.components.common.toSettings
 import com.jerboa.ui.components.post.PostListings
-import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.ui.components.post.edit.PostEditReturn
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -71,7 +86,6 @@ fun HomeActivity(
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
@@ -79,6 +93,7 @@ fun HomeActivity(
     drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to home activity")
+    val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
 
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
@@ -86,6 +101,10 @@ fun HomeActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
+
+    navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+        if (homeViewModel.initialized) homeViewModel.updatePost(pv)
+    }
 
     Scaffold(
         modifier = Modifier
@@ -109,7 +128,6 @@ fun HomeActivity(
                 padding = padding,
                 homeViewModel = homeViewModel,
                 siteViewModel = siteViewModel,
-                postEditViewModel = postEditViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 account = account,
                 ctx = ctx,
@@ -125,7 +143,10 @@ fun HomeActivity(
             FloatingActionButton(
                 onClick = {
                     account?.also {
-                        navController.navigate("createPost")
+                        navController.toCreatePost(
+                            channel = transferCreatePostDepsViaRoot,
+                            community = null,
+                        )
                     } ?: run {
                         loginFirstToast(ctx)
                     }
@@ -145,7 +166,6 @@ fun HomeActivity(
 fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
     siteViewModel: SiteViewModel,
-    postEditViewModel: PostEditViewModel,
     account: Account?,
     ctx: Context,
     navController: NavController,
@@ -156,6 +176,8 @@ fun MainPostListingsContent(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
 ) {
+    val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
+
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
         ApiState.Loading ->
@@ -164,7 +186,6 @@ fun MainPostListingsContent(
         ApiState.Empty -> ApiEmptyText()
         is ApiState.Failure -> ApiErrorText(siteRes.msg)
         is ApiState.Success -> {
-            // TODO can be removed with 0.18.0 release
             taglines = siteRes.data.taglines
         }
     }
@@ -236,7 +257,7 @@ fun MainPostListingsContent(
                         }
                     },
                     onPostClick = { postView ->
-                        navController.navigate(route = "post/${postView.post.id}")
+                        navController.toPost(id = postView.post.id)
                     },
                     onSaveClick = { postView ->
                         account?.also { acct ->
@@ -274,8 +295,10 @@ fun MainPostListingsContent(
                         }
                     },
                     onEditPostClick = { postView ->
-                        postEditViewModel.initialize(postView)
-                        navController.navigate("postEdit")
+                        navController.toPostEdit(
+                            channel = transferPostEditDepsViaRoot,
+                            postView = postView,
+                        )
                     },
                     onDeletePostClick = { postView ->
                         account?.also { acct ->
@@ -289,13 +312,13 @@ fun MainPostListingsContent(
                         }
                     },
                     onReportClick = { postView ->
-                        navController.navigate("postReport/${postView.post.id}")
+                        navController.toPostReport(id = postView.post.id)
                     },
                     onCommunityClick = { community ->
-                        navController.navigate(route = "community/${community.id}")
+                        navController.toCommunity(id = community.id)
                     },
                     onPersonClick = { personId ->
-                        navController.navigate(route = "profile/$personId")
+                        navController.toProfile(id = personId)
                     },
                     isScrolledToEnd = {
                         homeViewModel.nextPage()
@@ -350,6 +373,9 @@ fun MainDrawer(
             fetchInitialData(
                 account = acct,
                 siteViewModel = siteViewModel,
+            )
+            fetchHomePosts(
+                account = acct,
                 homeViewModel = homeViewModel,
             )
 
@@ -368,6 +394,9 @@ fun MainDrawer(
                     fetchInitialData(
                         account = updatedList.getOrNull(0),
                         siteViewModel = siteViewModel,
+                    )
+                    fetchHomePosts(
+                        account = updatedList.getOrNull(0),
                         homeViewModel = homeViewModel,
                     )
 
@@ -389,13 +418,13 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onCommunityClick = { community ->
-            navController.navigate(route = "community/${community.id}")
+            navController.toCommunity(id = community.id)
             closeDrawer(scope, drawerState)
         },
         onClickProfile = {
             onSelectTab?.invoke(BottomNavTab.Profile) ?: run {
                 account?.id?.also {
-                    navController.navigate(route = "profile/$it")
+                    navController.toProfile(id = it)
                 } ?: run {
                     loginFirstToast(ctx)
                 }
@@ -405,7 +434,7 @@ fun MainDrawer(
         onClickSaved = {
             onSelectTab?.invoke(BottomNavTab.Saved) ?: run {
                 account?.id?.also {
-                    navController.navigate(route = "profile/$it?saved=${true}")
+                    navController.toProfile(id = it, saved = true)
                 } ?: run {
                     loginFirstToast(ctx)
                 }
@@ -415,7 +444,7 @@ fun MainDrawer(
         onClickInbox = {
             onSelectTab?.invoke(BottomNavTab.Inbox) ?: run {
                 account?.also {
-                    navController.navigate(route = "inbox")
+                    navController.toInbox()
                 } ?: run {
                     loginFirstToast(ctx)
                 }
@@ -423,12 +452,12 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         onClickSettings = {
-            navController.navigate(route = "settings")
+            navController.toSettings()
             closeDrawer(scope, drawerState)
         },
         onClickCommunities = {
             onSelectTab?.invoke(BottomNavTab.Search) ?: run {
-                navController.navigate(route = "communityList")
+                navController.toCommunityList()
             }
             closeDrawer(scope, drawerState)
         },

@@ -12,22 +12,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
-import com.jerboa.isModerator
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.home.SiteViewModel
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.PostViewModel
+
+object CommentReplyReturn {
+    const val COMMENT_VIEW = "comment-reply::return(comment-view)"
+}
 
 @Composable
 fun CommentReplyActivity(
-    commentReplyViewModel: CommentReplyViewModel,
+    replyItem: ReplyItem,
     accountViewModel: AccountViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
     siteViewModel: SiteViewModel,
     navController: NavController,
     isModerator: Boolean,
@@ -35,6 +38,12 @@ fun CommentReplyActivity(
     Log.d("jerboa", "got to comment reply activity")
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
+
+    val commentReplyViewModel: CommentReplyViewModel = viewModel()
+    InitializeRoute(commentReplyViewModel) {
+        commentReplyViewModel.initialize(replyItem)
+    }
+
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue
@@ -58,11 +67,13 @@ fun CommentReplyActivity(
                         commentReplyViewModel.createComment(
                             content = reply.text,
                             account = acct,
-                            navController = navController,
                             focusManager = focusManager,
-                            personProfileViewModel = personProfileViewModel,
-                            postViewModel = postViewModel,
-                        )
+                        ) { cv ->
+                            navController.apply {
+                                addReturn(CommentReplyReturn.COMMENT_VIEW, cv)
+                                navigateUp()
+                            }
+                        }
                     }
                 },
             )
@@ -80,7 +91,7 @@ fun CommentReplyActivity(
                                 reply = reply,
                                 onReplyChange = { reply = it },
                                 onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
+                                    navController.toProfile(id = personId)
                                 },
                                 isModerator = isModerator,
                                 modifier = Modifier
@@ -95,7 +106,7 @@ fun CommentReplyActivity(
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = { personId ->
-                                navController.navigate(route = "profile/$personId")
+                                navController.toProfile(id = personId)
                             },
                             isModerator = isModerator,
                             modifier = Modifier
@@ -110,7 +121,7 @@ fun CommentReplyActivity(
                                 reply = reply,
                                 onReplyChange = { reply = it },
                                 onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
+                                    navController.toProfile(id = personId)
                                 },
                                 modifier = Modifier
                                     .padding(padding)
@@ -125,7 +136,7 @@ fun CommentReplyActivity(
                                 reply = reply,
                                 onReplyChange = { reply = it },
                                 onPersonClick = { personId ->
-                                    navController.navigate(route = "profile/$personId")
+                                    navController.toProfile(id = personId)
                                 },
                                 modifier = Modifier
                                     .padding(padding)
