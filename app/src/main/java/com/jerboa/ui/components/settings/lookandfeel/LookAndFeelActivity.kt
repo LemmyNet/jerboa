@@ -68,26 +68,26 @@ fun LookAndFeelActivity(
         settings.fontSize.toFloat(),
     )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
-    val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav )
+    val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
     val showCollapsedCommentContentState =
-        rememberBooleanSettingState(settings.showCollapsedCommentContent )
+        rememberBooleanSettingState(settings.showCollapsedCommentContent)
     val showCommentActionBarByDefaultState = rememberBooleanSettingState(
-        settings.showCommentActionBarByDefault ,
+        settings.showCommentActionBarByDefault,
     )
     val showVotingArrowsInListViewState = rememberBooleanSettingState(
-        settings.showVotingArrowsInListView ,
+        settings.showVotingArrowsInListView,
     )
     val showParentCommentNavigationButtonsState = rememberBooleanSettingState(
-        settings.showParentCommentNavigationButtons ,
+        settings.showParentCommentNavigationButtons,
     )
     val navigateParentCommentsWithVolumeButtonsState = rememberBooleanSettingState(
-        settings.navigateParentCommentsWithVolumeButtons ,
+        settings.navigateParentCommentsWithVolumeButtons,
     )
-    val useCustomTabsState = rememberBooleanSettingState(settings.useCustomTabs )
-    val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs )
+    val useCustomTabsState = rememberBooleanSettingState(settings.useCustomTabs)
+    val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs)
 
-    val secureWindowState = rememberBooleanSettingState(settings.secureWindow )
-    val blurNSFW = rememberBooleanSettingState(settings.blurNSFW )
+    val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
+    val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
 
     val snackbarHostState = remember { SnackbarHostState() }
 

@@ -49,7 +49,7 @@ fun CircularIcon(
     contentDescription: String?,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
-    blur: Boolean = false
+    blur: Boolean = false,
 ) {
     AsyncImage(
         model = getImageRequest(
@@ -75,7 +75,7 @@ fun LargerCircularIcon(
     modifier: Modifier = Modifier,
     icon: String,
     contentDescription: String? = null,
-    blur: Boolean = false
+    blur: Boolean = false,
 ) {
     CircularIcon(
         modifier = modifier,
@@ -83,7 +83,7 @@ fun LargerCircularIcon(
         contentDescription = contentDescription,
         size = LARGER_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-        blur = blur
+        blur = blur,
     )
 }
 
@@ -188,7 +188,7 @@ fun PictrsBannerImage(
     url: String,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
-    blur: Boolean = false
+    blur: Boolean = false,
 ) {
     AsyncImage(
         model = getImageRequest(

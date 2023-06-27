@@ -32,7 +32,7 @@ fun CommunityTopSection(
     communityView: CommunityView,
     modifier: Modifier = Modifier,
     onClickFollowCommunity: (communityView: CommunityView) -> Unit,
-    blurNSFW: Boolean
+    blurNSFW: Boolean,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,7 +46,7 @@ fun CommunityTopSection(
                 PictrsBannerImage(
                     url = it,
                     modifier = Modifier.height(DRAWER_BANNER_SIZE),
-                    blur = blurNSFW && communityView.community.nsfw
+                    blur = blurNSFW && communityView.community.nsfw,
                 )
             }
             communityView.community.icon?.also {
@@ -120,7 +120,7 @@ fun CommunityTopSectionPreview() {
     CommunityTopSection(
         communityView = sampleCommunityView,
         onClickFollowCommunity = {},
-        blurNSFW = true
+        blurNSFW = true,
     )
 }
 

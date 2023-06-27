@@ -142,7 +142,7 @@ fun PostHeaderLine(
                             size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
                             thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-                            blur = blurNSFW && community.nsfw
+                            blur = blurNSFW && community.nsfw,
                         )
                     }
                 }

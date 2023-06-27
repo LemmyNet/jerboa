@@ -144,7 +144,6 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     blurNSFW = true,
 )
 
-
 @Dao
 interface AccountDao {
     @Query("SELECT * FROM account")

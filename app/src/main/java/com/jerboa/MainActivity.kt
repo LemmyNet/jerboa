@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW =  appSettings.blurNSFW,
+                                blurNSFW = appSettings.blurNSFW,
                             )
                         }
 
@@ -237,9 +237,9 @@ class MainActivity : AppCompatActivity() {
                                 appSettingsViewModel = appSettingsViewModel,
                                 showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                                 siteViewModel = siteViewModel,
-                                useCustomTabs = appSettings.useCustomTabs ,
-                                usePrivateTabs = appSettings.usePrivateTabs ,
-                                blurNSFW =  appSettings.blurNSFW ,
+                                useCustomTabs = appSettings.useCustomTabs,
+                                usePrivateTabs = appSettings.usePrivateTabs,
+                                blurNSFW = appSettings.blurNSFW,
                             )
                         }
 
@@ -301,11 +301,11 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView ,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings.useCustomTabs ,
-                            usePrivateTabs = appSettings.usePrivateTabs ,
-                            blurNSFW = appSettings.blurNSFW ,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 
@@ -332,11 +332,11 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView ,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings.useCustomTabs ,
-                            usePrivateTabs = appSettings.usePrivateTabs ,
-                            blurNSFW = appSettings.blurNSFW ,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 
@@ -355,7 +355,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             selectMode = args.select,
-                            blurNSFW = appSettings.blurNSFW ,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 
@@ -407,7 +407,7 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW ,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 
@@ -428,15 +428,15 @@ class MainActivity : AppCompatActivity() {
                                 id = Either.Left(args.id),
                                 accountViewModel = accountViewModel,
                                 navController = navController,
-                                showCollapsedCommentContent = appSettings.showCollapsedCommentContent ,
-                                showActionBarByDefault = appSettings.showCommentActionBarByDefault ,
-                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView ,
-                                showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons ,
-                                navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons ,
+                                showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+                                showActionBarByDefault = appSettings.showCommentActionBarByDefault,
+                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                                showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
+                                navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                                 siteViewModel = siteViewModel,
-                                useCustomTabs = appSettings.useCustomTabs ,
-                                usePrivateTabs = appSettings.usePrivateTabs ,
-                                blurNSFW =  appSettings.blurNSFW ,
+                                useCustomTabs = appSettings.useCustomTabs,
+                                usePrivateTabs = appSettings.usePrivateTabs,
+                                blurNSFW = appSettings.blurNSFW,
                             )
                         }
                     }
@@ -457,15 +457,15 @@ class MainActivity : AppCompatActivity() {
                             id = Either.Right(args.id),
                             accountViewModel = accountViewModel,
                             navController = navController,
-                            useCustomTabs = appSettings.useCustomTabs ,
-                            usePrivateTabs = appSettings.usePrivateTabs ,
-                            showCollapsedCommentContent = appSettings.showCollapsedCommentContent ,
-                            showActionBarByDefault = appSettings.showCommentActionBarByDefault ,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView ,
-                            showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons ,
-                            navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons ,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+                            showActionBarByDefault = appSettings.showCommentActionBarByDefault,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                            showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
+                            navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW ,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 
@@ -587,8 +587,8 @@ class MainActivity : AppCompatActivity() {
                     composable(route = Route.ABOUT) {
                         AboutActivity(
                             navController = navController,
-                            useCustomTabs = appSettings.useCustomTabs ,
-                            usePrivateTabs = appSettings.usePrivateTabs ,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
                         )
                     }
                 }
