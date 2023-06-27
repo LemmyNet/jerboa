@@ -88,6 +88,7 @@ fun LookAndFeelActivity(
     val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)
 
     val secureWindowState = rememberBooleanSettingState(settings?.secureWindow ?: false)
+    val blurNSFW = rememberBooleanSettingState(settings?.blurNSFW ?: true)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -111,6 +112,7 @@ fun LookAndFeelActivity(
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
+                blurNSFW = blurNSFW.value,
             ),
         )
     }
@@ -276,6 +278,13 @@ fun LookAndFeelActivity(
                     state = secureWindowState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_secure_window))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = blurNSFW,
+                    title = {
+                        Text(stringResource(id = R.string.blur_nsfw))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

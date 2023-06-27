@@ -91,6 +91,7 @@ fun HomeActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     drawerState: DrawerState,
+    blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to home activity")
     val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
@@ -136,6 +137,7 @@ fun HomeActivity(
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -175,6 +177,7 @@ fun MainPostListingsContent(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
 
@@ -337,6 +340,7 @@ fun MainPostListingsContent(
                     showVotingArrowsInListView = showVotingArrowsInListView,
                     useCustomTabs = useCustomTabs,
                     usePrivateTabs = usePrivateTabs,
+                    blurNSFW = blurNSFW,
                 )
             }
 
@@ -354,6 +358,7 @@ fun MainDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
     onSelectTab: ((BottomNavTab) -> Unit)?,
+    blurNSFW: Boolean,
 ) {
     val ctx = LocalContext.current
 
@@ -461,6 +466,7 @@ fun MainDrawer(
             }
             closeDrawer(scope, drawerState)
         },
+        blurNSFW = blurNSFW,
     )
 }
 

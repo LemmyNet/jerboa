@@ -103,6 +103,7 @@ fun BottomNavActivity(
                         scope = scope,
                         drawerState = drawerState,
                         onSelectTab = if (appSettings?.showBottomNav == true) onSelectTab else null,
+                        blurNSFW = appSettingsViewModel.appSettings.value?.blurNSFW ?: true,
                     )
                 },
             )
@@ -143,6 +144,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings?.useCustomTabs ?: true,
                             usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                             drawerState = drawerState,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
 
@@ -152,6 +154,7 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             selectMode = false,
                             siteViewModel = siteViewModel,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
 
@@ -160,6 +163,7 @@ fun BottomNavActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
 
@@ -175,6 +179,7 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings?.useCustomTabs ?: true,
                             usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
 
@@ -190,6 +195,7 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings?.useCustomTabs ?: true,
                             usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
                 }

@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                 fetchInitialData(accountSync, siteViewModel)
             }
 
-            val appSettings by appSettingsViewModel.appSettings.observeAsState()
+            val appSettings by appSettingsViewModel.appSettings.observeAsState() // TODO set default
 
             JerboaTheme(
                 appSettings = appSettings,
@@ -206,6 +206,7 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings?.useCustomTabs ?: true,
                                 usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                                blurNSFW =  appSettings?.blurNSFW ?: true,
                             )
                         }
 
@@ -237,6 +238,7 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings?.useCustomTabs ?: true,
                                 usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                                blurNSFW =  appSettings?.blurNSFW ?: true,
                             )
                         }
 
@@ -302,6 +304,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings?.useCustomTabs ?: true,
                             usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
 
@@ -332,6 +335,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings?.useCustomTabs ?: true,
                             usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
 
@@ -350,6 +354,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             selectMode = args.select,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
 
@@ -401,6 +406,7 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
 
@@ -429,6 +435,7 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings?.useCustomTabs ?: true,
                                 usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                                blurNSFW =  appSettings?.blurNSFW ?: true,
                             )
                         }
                     }
@@ -457,6 +464,7 @@ class MainActivity : AppCompatActivity() {
                             showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
                             navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
                             siteViewModel = siteViewModel,
+                            blurNSFW = appSettings?.blurNSFW ?: true,
                         )
                     }
 

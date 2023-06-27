@@ -141,6 +141,7 @@ fun PostActivity(
     showVotingArrowsInListView: Boolean,
     showParentCommentNavigationButtons: Boolean,
     navigateParentCommentsWithVolumeButtons: Boolean,
+    blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
@@ -423,6 +424,7 @@ fun PostActivity(
                                     showVotingArrowsInListView = showVotingArrowsInListView,
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
+                                    blurNSFW = blurNSFW,
                                 )
                             }
 
@@ -609,6 +611,7 @@ fun PostActivity(
                                                 commentId,
                                             )
                                         },
+                                        blurNSFW = blurNSFW,
                                     )
                                 }
 
