@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -24,7 +23,7 @@ class CreatePostViewModel : ViewModel() {
 
     fun createPost(
         form: CreatePost,
-        navController: NavController,
+        onSuccess: (postId: Int) -> Unit,
     ) {
         viewModelScope.launch {
             createPostRes = ApiState.Loading
@@ -35,8 +34,7 @@ class CreatePostViewModel : ViewModel() {
 
             when (val postRes = createPostRes) {
                 is ApiState.Success -> {
-                    navController.popBackStack()
-                    navController.navigate(route = "post/${postRes.data.post_view.post.id}")
+                    onSuccess(postRes.data.post_view.post.id)
                 }
                 else -> {}
             }

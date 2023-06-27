@@ -11,7 +11,6 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -23,31 +22,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import arrow.core.Either
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.jerboa.datatypes.types.GetPersonDetails
-import com.jerboa.datatypes.types.GetPersonMentions
-import com.jerboa.datatypes.types.GetPrivateMessages
-import com.jerboa.datatypes.types.GetReplies
-import com.jerboa.datatypes.types.SortType
+import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.fetchHomePosts
 import com.jerboa.loginFirstToast
-import com.jerboa.ui.components.comment.edit.CommentEditViewModel
-import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
-import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.inbox.InboxActivity
-import com.jerboa.ui.components.inbox.InboxViewModel
 import com.jerboa.ui.components.person.PersonProfileActivity
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.edit.PostEditViewModel
-import com.jerboa.ui.components.privatemessage.PrivateMessageReplyViewModel
 import com.jerboa.util.BrowserType
 
 enum class BottomNavTab {
@@ -64,18 +56,10 @@ enum class BottomNavTab {
 @Composable
 fun BottomNavActivity(
     navController: NavController,
-    homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    postEditViewModel: PostEditViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings?,
-    communityListViewModel: CommunityListViewModel,
-    inboxViewModel: InboxViewModel,
-    commentReplyViewModel: CommentReplyViewModel,
-    commentEditViewModel: CommentEditViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    privateMessageReplyViewModel: PrivateMessageReplyViewModel,
 ) {
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
@@ -97,6 +81,15 @@ fun BottomNavActivity(
     val browserType = BrowserType.values()[appSettings?.browserType ?: 1]
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    val homeViewModel: HomeViewModel = viewModel()
+    if (siteViewModel.siteRes is ApiState.Success) {
+        InitializeRoute(homeViewModel) {
+            homeViewModel.updateSortType(siteViewModel.sortType)
+            homeViewModel.updateListingType(siteViewModel.listingType)
+            fetchHomePosts(account, homeViewModel)
+        }
+    }
 
     ModalNavigationDrawer(
         gesturesEnabled = selectedTab == BottomNavTab.Home,
@@ -146,7 +139,6 @@ fun BottomNavActivity(
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
                                 ?: true,
@@ -156,75 +148,28 @@ fun BottomNavActivity(
                     }
 
                     composable(route = BottomNavTab.Search.name) {
-                        LaunchedEffect(Unit) {
-                            // Whenever navigating here, reset the list with your followed communities
-                            communityListViewModel.setCommunityListFromFollowed(siteViewModel)
-                        }
-
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            communityListViewModel = communityListViewModel,
-                            selectMode = it.arguments?.getBoolean("select")!!,
+                            selectMode = false,
+                            siteViewModel = siteViewModel,
                         )
                     }
 
                     composable(route = BottomNavTab.Inbox.name) {
-                        if (account != null) {
-                            LaunchedEffect(Unit) {
-                                inboxViewModel.resetPage()
-                                inboxViewModel.getReplies(
-                                    GetReplies(
-                                        auth = account.jwt,
-                                    ),
-                                )
-                                inboxViewModel.getMentions(
-                                    GetPersonMentions(
-                                        auth = account.jwt,
-                                    ),
-                                )
-                                inboxViewModel.getMessages(
-                                    GetPrivateMessages(
-                                        auth = account.jwt,
-                                    ),
-                                )
-                            }
-                        }
-
                         InboxActivity(
                             navController = navController,
-                            inboxViewModel = inboxViewModel,
                             accountViewModel = accountViewModel,
-                            commentReplyViewModel = commentReplyViewModel,
                             siteViewModel = siteViewModel,
-                            privateMessageReplyViewModel = privateMessageReplyViewModel,
                         )
                     }
 
                     composable(route = BottomNavTab.Saved.name) {
-                        val savedMode = true
-                        LaunchedEffect(Unit) {
-                            val personId = account?.id!!
-
-                            personProfileViewModel.resetPage()
-                            personProfileViewModel.getPersonDetails(
-                                GetPersonDetails(
-                                    person_id = personId,
-                                    sort = SortType.New,
-                                    auth = account.jwt,
-                                    saved_only = savedMode,
-                                ),
-                            )
-                        }
-
                         PersonProfileActivity(
-                            savedMode = savedMode,
+                            personArg = Either.Left(account!!.id),
+                            savedMode = true,
                             navController = navController,
-                            personProfileViewModel = personProfileViewModel,
                             accountViewModel = accountViewModel,
-                            commentEditViewModel = commentEditViewModel,
-                            commentReplyViewModel = commentReplyViewModel,
-                            postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
                                 ?: true,
@@ -234,29 +179,11 @@ fun BottomNavActivity(
                     }
 
                     composable(route = BottomNavTab.Profile.name) {
-                        val savedMode = false
-                        LaunchedEffect(Unit) {
-                            val personId = account?.id!!
-
-                            personProfileViewModel.resetPage()
-                            personProfileViewModel.getPersonDetails(
-                                GetPersonDetails(
-                                    person_id = personId,
-                                    sort = SortType.New,
-                                    auth = account.jwt,
-                                    saved_only = savedMode,
-                                ),
-                            )
-                        }
-
                         PersonProfileActivity(
-                            savedMode = savedMode,
+                            personArg = Either.Left(account!!.id),
+                            savedMode = false,
                             navController = navController,
-                            personProfileViewModel = personProfileViewModel,
                             accountViewModel = accountViewModel,
-                            commentEditViewModel = commentEditViewModel,
-                            commentReplyViewModel = commentReplyViewModel,
-                            postEditViewModel = postEditViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
                                 ?: true,

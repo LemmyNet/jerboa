@@ -31,9 +31,12 @@ import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
-class CommunityViewModel : ViewModel() {
+class CommunityViewModel : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
+
     var communityRes: ApiState<GetCommunityResponse> by mutableStateOf(ApiState.Empty)
         private set
 

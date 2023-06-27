@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.media.MediaScannerConnection
@@ -15,6 +16,8 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
@@ -44,7 +47,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
+import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
+import androidx.navigation.NavController
 import arrow.core.compareTo
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -53,6 +58,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxTab
@@ -61,6 +67,8 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -75,23 +83,6 @@ val gson = Gson()
 
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
-
-val DEFAULT_LEMMY_INSTANCES = listOf(
-    "beehaw.org",
-    "feddit.de",
-    "feddit.it",
-    "lemmy.ca",
-    "lemmy.ml",
-    "lemmy.one",
-    "lemmy.world",
-    "lemmygrad.ml",
-    "midwest.social",
-    "mujico.org",
-    "sh.itjust.works",
-    "slrpnk.net",
-    "sopuli.xyz",
-    "szmer.info",
-)
 
 // convert a data class to a map
 fun <T> T.serializeToMap(): Map<String, String> {
@@ -307,6 +298,95 @@ fun LazyListState.isScrolledToEnd(): Boolean {
 //    Log.d("jerboa", layoutInfo.totalItemsCount.toString())
 //    Log.d("jerboa", out.toString())
     return out
+}
+
+/*
+ * Parses a "url" and returns a spec-compliant Url:
+ *
+ * - https://host/path - leave as-is
+ * - http://host/path - leave as-is
+ * - /c/community -> https://currentInstance/c/community
+ * - /c/community@instance -> https://instance/c/community
+ * - !community@instance -> https://instance/c/community
+ * - @user@instance -> https://instance/u/user
+ */
+fun parseUrl(url: String): String? {
+    if (url.startsWith("https://") || url.startsWith("http://")) {
+        return url
+    } else if (url.startsWith("/c/")) {
+        if (url.count({ c -> c == '@' }) == 1) {
+            val (community, host) = url.split("@", limit = 2)
+            return "https://$host$community"
+        }
+        return "https://${API.currentInstance}$url"
+    } else if (url.startsWith("/u/")) {
+        if (url.count({ c -> c == '@' }) == 1) {
+            val (userPath, host) = url.split("@", limit = 2)
+            return "https://$host$userPath"
+        }
+        return "https://${API.currentInstance}$url"
+    } else if (url.startsWith("!")) {
+        if (url.count({ c -> c == '@' }) == 1) {
+            val (community, host) = url.substring(1).split("@", limit = 2)
+            return "https://$host/c/$community"
+        }
+        return "https://${API.currentInstance}/c/${url.substring(1)}"
+    } else if (url.startsWith("@")) {
+        if (url.count({ c -> c == '@' }) == 2) {
+            val (user, host) = url.substring(1).split("@", limit = 2)
+            return "https://$host/u/$user"
+        }
+        return "https://${API.currentInstance}/u/${url.substring(1)}"
+    }
+    return null
+}
+
+fun looksLikeCommunityUrl(url: String): Pair<String, String>? {
+    val pattern = Regex("^https?://([^/]+)/c/([^/&?]+)")
+    val match = pattern.find(url)
+    if (match != null) {
+        val (host, community) = match.destructured
+        return Pair(host, community)
+    }
+    return null
+}
+
+fun looksLikeUserUrl(url: String): Pair<String, String>? {
+    val pattern = Regex("^https?://([^/]+)/u/([^/&?]+)")
+    val match = pattern.find(url)
+    if (match != null) {
+        val (host, user) = match.destructured
+        return Pair(host, user)
+    }
+    return null
+}
+
+fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    val parsedUrl = parseUrl(url) ?: return
+
+    looksLikeUserUrl(parsedUrl)?.let {
+        val route = Route.ProfileFromUrlArgs.makeRoute(instance = it.first, name = it.second)
+        navController.navigate(route)
+        return
+    }
+    looksLikeCommunityUrl(parsedUrl)?.let {
+        val route = Route.CommunityFromUrlArgs.makeRoute(instance = it.first, name = it.second)
+        navController.navigate(route)
+        return
+    }
+
+    if (useCustomTab) {
+        val intent = CustomTabsIntent.Builder()
+            .build().apply {
+                if (usePrivateTab) {
+                    intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+                }
+            }
+        intent.launchUrl(navController.context, Uri.parse(parsedUrl))
+    } else {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(parsedUrl))
+        navController.context.startActivity(intent)
+    }
 }
 
 var prettyTime = PrettyTime(Locale.getDefault())
@@ -626,30 +706,12 @@ fun siFormat(num: Int): String {
 fun fetchInitialData(
     account: Account?,
     siteViewModel: SiteViewModel,
-    homeViewModel: HomeViewModel,
 ) {
     if (account != null) {
         API.changeLemmyInstance(account.instance)
-        homeViewModel.updateFromAccount(account)
-        homeViewModel.resetPage()
-        homeViewModel.getPosts(
-            GetPosts(
-                type_ = homeViewModel.listingType,
-                sort = homeViewModel.sortType,
-                auth = account.jwt,
-            ),
-        )
         siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
     } else {
-        Log.d("jerboa", "Fetching posts for anonymous user")
         API.changeLemmyInstance(DEFAULT_INSTANCE)
-        homeViewModel.resetPage()
-        homeViewModel.getPosts(
-            GetPosts(
-                type_ = ListingType.Local,
-                sort = SortType.Active,
-            ),
-        )
     }
 
     siteViewModel.getSite(
@@ -659,11 +721,35 @@ fun fetchInitialData(
     )
 }
 
+fun fetchHomePosts(account: Account?, homeViewModel: HomeViewModel) {
+    if (account != null) {
+        homeViewModel.updateFromAccount(account)
+        homeViewModel.resetPage()
+        homeViewModel.getPosts(
+            GetPosts(
+                type_ = homeViewModel.listingType,
+                sort = homeViewModel.sortType,
+                auth = account.jwt,
+            ),
+        )
+    } else {
+        Log.d("jerboa", "Fetching posts for anonymous user")
+        homeViewModel.resetPage()
+        homeViewModel.getPosts(
+            GetPosts(
+                type_ = ListingType.Local,
+                sort = SortType.Active,
+            ),
+        )
+    }
+}
+
 fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
     return ctx.contentResolver.openInputStream(uri)!!
 }
 
 fun decodeUriToBitmap(ctx: Context, uri: Uri): Bitmap? {
+    Log.d("jerboa", "decodeUriToBitmap INPUT: $uri")
     return if (SDK_INT < 28) {
         @Suppress("DEPRECATION")
         MediaStore.Images.Media.getBitmap(ctx.contentResolver, uri)
@@ -1198,4 +1284,53 @@ fun copyToClipboard(context: Context, textToCopy: CharSequence, clipLabel: CharS
         return true
     }
     return false
+}
+
+fun getLocaleListFromXml(ctx: Context): LocaleListCompat {
+    val tagsList = mutableListOf<CharSequence>()
+    try {
+        val xpp: XmlPullParser = ctx.resources.getXml(R.xml.locales_config)
+        while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
+            if (xpp.eventType == XmlPullParser.START_TAG) {
+                if (xpp.name == "locale") {
+                    tagsList.add(xpp.getAttributeValue(0))
+                }
+            }
+            xpp.next()
+        }
+    } catch (e: XmlPullParserException) {
+        e.printStackTrace()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+
+    return LocaleListCompat.forLanguageTags(tagsList.joinToString(","))
+}
+
+fun getLangPreferenceDropdownEntries(ctx: Context): Map<Locale, String> {
+    val localeList = getLocaleListFromXml(ctx)
+    val map = mutableMapOf<Locale, String>()
+
+    for (i in 0 until localeList.size()) {
+        localeList[i]?.let {
+            map.put(it, it.getDisplayName(it))
+        }
+    }
+    return map
+}
+
+fun matchLocale(localeMap: Map<Locale, String>): Locale {
+    return Locale.lookup(
+        AppCompatDelegate.getApplicationLocales().convertToLanguageRange(),
+        localeMap.keys.toList(),
+    ) ?: Locale.ENGLISH
+}
+
+fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange> {
+    val l = mutableListOf<Locale.LanguageRange>()
+
+    for (i in 0 until this.size()) {
+        l.add(i, Locale.LanguageRange(this[i]!!.toLanguageTag()))
+    }
+    return l
 }

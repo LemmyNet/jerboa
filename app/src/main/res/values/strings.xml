@@ -330,6 +330,8 @@
     <string name="inbox_activity_messages">Messages</string>
     <string name="bookmarks_activity_saved">Saved</string>
     <string name="generic_error">An error has occurred</string>
+    <string name="create_edit_post_close">Close</string>
+    <string name="lang_language">Language</string>
     <string name="browserType_defaultBrowser">Default Browser</string>
     <string name="browserType_external">External browser</string>
     <string name="browserType_internal">Internal browser</string>
