@@ -44,13 +44,10 @@ import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.CommentEditDeps
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.PostEditDeps
-import com.jerboa.ui.components.common.PostSwipeWrapper
 import com.jerboa.ui.components.common.PrivateMessageDeps
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
-import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.common.takeDepsFromRoot
 import com.jerboa.ui.components.community.CommunityActivity
@@ -65,7 +62,6 @@ import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.ui.components.post.PostActivity
-import com.jerboa.ui.components.post.PostViewModel
 import com.jerboa.ui.components.post.create.CreatePostActivity
 import com.jerboa.ui.components.post.edit.PostEditActivity
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
@@ -422,22 +418,21 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.PostArgs(it)
-                            PostActivity(
-                                id = Either.Left(args.id),
-                                accountViewModel = accountViewModel,
-                                navController = navController,
-                                showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
-                                showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
-                                showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                                showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
-                                navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
-                                siteViewModel = siteViewModel,
-                                homeViewModel = homeViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
-                                useCustomTabs = appSettings?.useCustomTabs ?: true,
-                                usePrivateTabs = appSettings?.usePrivateTabs ?: false,
-                            )
-
+                        PostActivity(
+                            id = Either.Left(args.id),
+                            accountViewModel = accountViewModel,
+                            navController = navController,
+                            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
+                            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
+                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
+                            showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
+                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
+                            siteViewModel = siteViewModel,
+                            homeViewModel = homeViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            useCustomTabs = appSettings?.useCustomTabs ?: true,
+                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                        )
                     }
 
                     composable(
@@ -465,7 +460,7 @@ class MainActivity : AppCompatActivity() {
                             navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
                             siteViewModel = siteViewModel,
                             homeViewModel = homeViewModel,
-                            appSettingsViewModel = appSettingsViewModel
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
 

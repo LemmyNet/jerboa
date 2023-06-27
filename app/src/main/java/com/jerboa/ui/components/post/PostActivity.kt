@@ -238,7 +238,7 @@ fun PostActivity(
                                 scrollToPreviousParentComment(
                                     scope,
                                     parentListStateIndexes,
-                                    listState
+                                    listState,
                                 )
                                 true
                             }
@@ -516,13 +516,13 @@ fun PostActivity(
                                             toggleExpanded = { commentId -> toggleExpanded(commentId) },
                                             toggleActionBar = { commentId ->
                                                 toggleActionBar(
-                                                    commentId
+                                                    commentId,
                                                 )
                                             },
                                             onMarkAsReadClick = {},
                                             onCommentClick = { commentView ->
                                                 toggleExpanded(
-                                                    commentView.comment.id
+                                                    commentView.comment.id,
                                                 )
                                             },
                                             onUpvoteClick = { cv ->
@@ -578,12 +578,12 @@ fun PostActivity(
                                             },
                                             onHeaderClick = { commentView ->
                                                 toggleExpanded(
-                                                    commentView.comment.id
+                                                    commentView.comment.id,
                                                 )
                                             },
                                             onHeaderLongClick = { commentView ->
                                                 toggleActionBar(
-                                                    commentView.comment.id
+                                                    commentView.comment.id,
                                                 )
                                             },
                                             onEditCommentClick = { cv ->
@@ -613,8 +613,7 @@ fun PostActivity(
                                                 postViewModel.fetchMoreChildren(
                                                     commentView = cv,
                                                     account = account,
-
-                                                    )
+                                                )
                                             },
                                             onBlockCreatorClick = { person ->
                                                 account?.also { acct ->
