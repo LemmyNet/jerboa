@@ -218,8 +218,7 @@ fun MainPostListingsContent(
                 ApiErrorToast(postsRes.msg)
                 persistentListOf()
             }
-            is ApiState.Success -> postsRes.data.posts.toImmutableList()
-            is ApiState.Awaiting -> postsRes.data.posts.toImmutableList()
+            is ApiState.Holder -> postsRes.data.posts.toImmutableList()
             else -> persistentListOf()
         }
 

@@ -33,7 +33,6 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -251,7 +250,7 @@ class PersonProfileViewModel : ViewModel(), Initializable {
             is ApiState.Success -> {
                 val newPosts =
                     findAndUpdatePost(existing.data.posts, postView)
-                val newRes = ApiState.Success(existing.data.copy(posts = newPosts.toImmutableList()))
+                val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 personDetailsRes = newRes
             }
 
