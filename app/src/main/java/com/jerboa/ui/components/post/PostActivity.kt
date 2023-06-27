@@ -332,7 +332,7 @@ fun PostActivity(
                                                     post_id = pv.post.id,
                                                     score = newVote(
                                                         postView.my_vote,
-                                                        VoteType.Upvote,
+                                                        VoteType.Downvote,
                                                     ),
                                                     auth = acct.jwt,
                                                 ),
