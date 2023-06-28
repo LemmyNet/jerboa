@@ -27,6 +27,7 @@ pipeline:
       - ./gradlew testDebug
     environment:
       GRADLE_RO_DEP_CACHE: .depcache
+
   notify:
     image: alpine:3
     commands:
