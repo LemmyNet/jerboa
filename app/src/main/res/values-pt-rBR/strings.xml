@@ -218,4 +218,5 @@
     <string name="sorttype_topall">TopAll</string>
     <string name="sorttype_mostcomments">MostComments</string>
     <string name="sorttype_newcomments">NewComments</string>
+    <string name="post_listing_view_source">Ver código-fonte do post</string>
 </resources>

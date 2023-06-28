@@ -282,4 +282,5 @@
     <string name="bottomBar_label_inbox">Inkorg</string>
     <string name="bottomBar_label_bookmarks">Sparad</string>
     <string name="bottomBar_label_profile">Profil</string>
+    <string name="post_listing_view_source">View Post Source</string>
 </resources>

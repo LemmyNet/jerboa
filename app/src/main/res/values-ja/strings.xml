@@ -287,4 +287,5 @@
     <string name="bottomBar_label_profile">ユーザー</string>
     <string name="look_and_feel_show_action_bar_for_comments">コメントでアクションバーを表示</string>
     <string name="look_and_feel_show_voting_arrows_list_view">リスト表示形式で投票矢印を表示</string>
+    <string name="post_listing_view_source">投稿ソースを表示する</string>
 </resources>

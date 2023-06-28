@@ -277,4 +277,5 @@
     <string name="sorttype_topall">전체 최고</string>
     <string name="sorttype_mostcomments">최다 댓글</string>
     <string name="sorttype_newcomments">신규 댓글</string>
+    <string name="post_listing_view_source">게시물 소스 보기</string>
 </resources>
