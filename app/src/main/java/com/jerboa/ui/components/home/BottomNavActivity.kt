@@ -38,6 +38,7 @@ import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
+import com.jerboa.ui.components.community.list.CommunityListViewModel
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 
@@ -59,6 +60,7 @@ fun BottomNavActivity(
     siteViewModel: SiteViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
+    communityListViewModel: CommunityListViewModel,
 ) {
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
@@ -154,6 +156,7 @@ fun BottomNavActivity(
                             selectMode = false,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            communityListViewModel = communityListViewModel,
                         )
                     }
 

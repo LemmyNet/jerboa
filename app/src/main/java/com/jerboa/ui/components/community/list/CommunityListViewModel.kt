@@ -18,7 +18,6 @@ import com.jerboa.datatypes.types.SearchResponse
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.db.AppSettingsRepository
 import com.jerboa.db.SearchHistory
 import com.jerboa.db.SearchHistoryRepository
 import com.jerboa.serializeToMap

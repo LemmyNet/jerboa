@@ -110,6 +110,9 @@
     <string name="community_link_users_month">%1$s users / month</string>
     <string name="community_list_back">Back</string>
     <string name="community_list_search">Search...</string>
+    <string name="community_list_title">Communities</string>
+    <string name="community_list_recent_searches">Recent searches</string>
+    <string name="community_list_delete_search_item">Delete %1$s</string>
     <string name="community_pending">Pending</string>
     <string name="community_refresh">Refresh</string>
     <string name="community_sortBy">Sort by</string>
@@ -335,4 +338,5 @@
     <string name="create_edit_post_close">Close</string>
     <string name="lang_language">Language</string>
     <string name="blur_nsfw">Blur NSFW images</string>
+    <string name="save_search_history">Save search history</string>
 </resources>

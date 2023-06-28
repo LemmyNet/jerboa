@@ -293,7 +293,7 @@ fun LookAndFeelActivity(
                 SettingsCheckbox(
                     state = saveSearchHistoryState,
                     title = {
-                        Text(text = "Save search history")
+                        Text(text = stringResource(R.string.save_search_history))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

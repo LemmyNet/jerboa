@@ -527,7 +527,7 @@ val MIGRATION_17_18 = object : Migration(17, 18) {
         database.execSQL(
             """
                 CREATE TABLE IF NOT EXISTS SearchHistory(
-                    history TEXT PRIMARY KEY NOT NULL
+                    history TEXT PRIMARY KEY NOT NULL,
                     timestamp INTEGER NOT NULL 
                 )
             """,
