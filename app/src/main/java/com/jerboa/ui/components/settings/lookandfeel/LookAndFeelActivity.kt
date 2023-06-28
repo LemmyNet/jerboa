@@ -37,9 +37,9 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
+import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.DEFAULT_FONT_SIZE
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
 import com.jerboa.ui.components.common.SimpleTopAppBar
@@ -53,9 +53,9 @@ fun LookAndFeelActivity(
     Log.d("jerboa", "Got to lookAndFeel activity")
     val ctx = LocalContext.current
 
-    val settings = appSettingsViewModel.appSettings.value
-    val themeState = rememberIntSettingState(settings?.theme ?: 0)
-    val themeColorState = rememberIntSettingState(settings?.themeColor ?: 0)
+    val settings = appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT
+    val themeState = rememberIntSettingState(settings.theme)
+    val themeColorState = rememberIntSettingState(settings.themeColor)
 
     val localeMap = remember {
         getLangPreferenceDropdownEntries(ctx)
@@ -65,31 +65,32 @@ fun LookAndFeelActivity(
     val langState = rememberIntSettingState(localeMap.keys.indexOf(currentAppLocale))
 
     val fontSizeState = rememberFloatSettingState(
-        settings?.fontSize?.toFloat()
-            ?: DEFAULT_FONT_SIZE.toFloat(),
+        settings.fontSize.toFloat(),
     )
-    val postViewModeState = rememberIntSettingState(settings?.postViewMode ?: 0)
-    val showBottomNavState = rememberBooleanSettingState(settings?.showBottomNav ?: true)
+    val postViewModeState = rememberIntSettingState(settings.postViewMode)
+    val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
     val showCollapsedCommentContentState =
-        rememberBooleanSettingState(settings?.showCollapsedCommentContent ?: false)
+        rememberBooleanSettingState(settings.showCollapsedCommentContent)
     val showCommentActionBarByDefaultState = rememberBooleanSettingState(
-        settings?.showCommentActionBarByDefault ?: true,
+        settings.showCommentActionBarByDefault,
     )
     val showVotingArrowsInListViewState = rememberBooleanSettingState(
-        settings?.showVotingArrowsInListView ?: true,
+        settings.showVotingArrowsInListView,
     )
     val showParentCommentNavigationButtonsState = rememberBooleanSettingState(
-        settings?.showParentCommentNavigationButtons ?: true,
+        settings.showParentCommentNavigationButtons,
     )
     val navigateParentCommentsWithVolumeButtonsState = rememberBooleanSettingState(
-        settings?.navigateParentCommentsWithVolumeButtons ?: false,
+        settings.navigateParentCommentsWithVolumeButtons,
     )
-    val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
-    val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)
+    val useCustomTabsState = rememberBooleanSettingState(settings.useCustomTabs)
+    val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs)
+
 
     val allowSwipeBetweenPosts = rememberBooleanSettingState(settings?.swipeBetweenPosts ?: false)
 
-    val secureWindowState = rememberBooleanSettingState(settings?.secureWindow ?: false)
+    val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
+    val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -99,7 +100,7 @@ fun LookAndFeelActivity(
         appSettingsViewModel.update(
             AppSettings(
                 id = 1,
-                viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
+                viewedChangelog = settings.viewedChangelog,
                 theme = themeState.value,
                 themeColor = themeColorState.value,
                 fontSize = fontSizeState.value.toInt(),
@@ -113,8 +114,9 @@ fun LookAndFeelActivity(
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
+                blurNSFW = blurNSFW.value,
                 swipeBetweenPosts = allowSwipeBetweenPosts.value,
-            ),
+                ),
         )
     }
 
@@ -279,6 +281,13 @@ fun LookAndFeelActivity(
                     state = secureWindowState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_secure_window))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = blurNSFW,
+                    title = {
+                        Text(stringResource(id = R.string.blur_nsfw))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

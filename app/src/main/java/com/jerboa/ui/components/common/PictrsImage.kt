@@ -49,33 +49,41 @@ fun CircularIcon(
     contentDescription: String?,
     size: Dp = ICON_SIZE,
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
+    blur: Boolean = false,
 ) {
     AsyncImage(
         model = getImageRequest(
             context = LocalContext.current,
             path = icon,
             size = thumbnailSize,
-            nsfw = false,
+            blur = blur,
         ),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
-        modifier = getBlurredRoundedModifier(
-            modifier = modifier,
-            rounded = true,
-            nsfw = false,
-        ).size(size),
+        modifier = modifier
+            .getBlurredOrRounded(
+                rounded = true,
+                blur = blur,
+            )
+            .size(size),
     )
 }
 
 @Composable
-fun LargerCircularIcon(modifier: Modifier = Modifier, icon: String, contentDescription: String? = null) {
+fun LargerCircularIcon(
+    modifier: Modifier = Modifier,
+    icon: String,
+    contentDescription: String? = null,
+    blur: Boolean = false,
+) {
     CircularIcon(
         modifier = modifier,
         icon = icon,
         contentDescription = contentDescription,
         size = LARGER_ICON_SIZE,
         thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
+        blur = blur,
     )
 }
 
@@ -88,17 +96,16 @@ fun CircularIconPreview() {
     )
 }
 
-fun getBlurredRoundedModifier(
-    modifier: Modifier = Modifier,
-    rounded: Boolean,
-    nsfw: Boolean,
+fun Modifier.getBlurredOrRounded(
+    blur: Boolean,
+    rounded: Boolean = false,
 ): Modifier {
-    var lModifier = modifier
+    var lModifier = this
 
     if (rounded) {
         lModifier = lModifier.clip(RoundedCornerShape(12f))
     }
-    if (nsfw && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    if (blur && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         lModifier = lModifier.blur(radius = 100.dp)
     }
     return lModifier
@@ -108,13 +115,13 @@ fun getImageRequest(
     context: Context,
     path: String,
     size: Int,
-    nsfw: Boolean,
+    blur: Boolean,
 ): ImageRequest {
     val builder = ImageRequest.Builder(context)
         .data(pictrsImageThumbnail(path, size))
         .crossfade(true)
 
-    if (nsfw && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+    if (blur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
         builder.transformations(
             listOf(
                 BlurTransformation(
@@ -131,7 +138,7 @@ fun getImageRequest(
 @Composable
 fun PictrsThumbnailImage(
     thumbnail: String,
-    nsfw: Boolean,
+    blur: Boolean,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
@@ -139,15 +146,14 @@ fun PictrsThumbnailImage(
             context = LocalContext.current,
             path = thumbnail,
             size = THUMBNAIL_SIZE,
-            nsfw = nsfw,
+            blur = blur,
         ),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = getBlurredRoundedModifier(
-            modifier = modifier,
+        modifier = modifier.getBlurredOrRounded(
             rounded = true,
-            nsfw = nsfw,
+            blur = blur,
         ),
     )
 }
@@ -155,7 +161,7 @@ fun PictrsThumbnailImage(
 @Composable
 fun PictrsUrlImage(
     url: String,
-    nsfw: Boolean,
+    blur: Boolean,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
@@ -163,16 +169,17 @@ fun PictrsUrlImage(
             context = LocalContext.current,
             path = url,
             size = MAX_IMAGE_SIZE,
-            nsfw = nsfw,
+            blur = blur,
         ),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.FillWidth,
-        modifier = getBlurredRoundedModifier(
-            modifier = modifier,
-            rounded = false,
-            nsfw = nsfw,
-        ).fillMaxWidth(),
+        modifier = modifier
+            .getBlurredOrRounded(
+                rounded = false,
+                blur = blur,
+            )
+            .fillMaxWidth(),
     )
 }
 
@@ -181,18 +188,23 @@ fun PictrsBannerImage(
     url: String,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
+    blur: Boolean = false,
 ) {
     AsyncImage(
         model = getImageRequest(
             context = LocalContext.current,
             path = url,
             size = MAX_IMAGE_SIZE,
-            nsfw = false,
+            blur = blur,
         ),
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .getBlurredOrRounded(
+                blur = blur,
+            )
+            .fillMaxWidth(),
     )
 }
 

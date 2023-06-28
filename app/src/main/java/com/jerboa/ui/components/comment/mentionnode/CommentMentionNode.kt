@@ -323,6 +323,7 @@ fun CommentMentionNode(
     onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account?,
     showAvatar: Boolean,
+    blurNSFW: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = personMentionView.counts.score
@@ -343,6 +344,7 @@ fun CommentMentionNode(
             community = personMentionView.community,
             onCommunityClick = onCommunityClick,
             onPostClick = onPostClick,
+            blurNSFW = blurNSFW,
         )
         CommentMentionNodeHeader(
             personMentionView = personMentionView,

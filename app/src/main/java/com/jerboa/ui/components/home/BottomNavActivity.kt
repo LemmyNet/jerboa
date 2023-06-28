@@ -58,7 +58,7 @@ fun BottomNavActivity(
     siteViewModel: SiteViewModel,
     homeViewModel: HomeViewModel,
     appSettingsViewModel: AppSettingsViewModel,
-    appSettings: AppSettings?,
+    appSettings: AppSettings,
 ) {
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
@@ -101,7 +101,8 @@ fun BottomNavActivity(
                         homeViewModel = homeViewModel,
                         scope = scope,
                         drawerState = drawerState,
-                        onSelectTab = if (appSettings?.showBottomNav == true) onSelectTab else null,
+                        onSelectTab = if (appSettings.showBottomNav) onSelectTab else null,
+                        blurNSFW = appSettings.blurNSFW,
                     )
                 },
             )
@@ -111,7 +112,7 @@ fun BottomNavActivity(
             Scaffold(
                 bottomBar = {
                     BottomAppBarAll(
-                        showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
+                        showBottomNav = appSettings.showBottomNav,
                         selectedTab = selectedTab,
                         unreadCounts = siteViewModel.getUnreadCountTotal(),
                         onSelect = onSelectTab,
@@ -137,11 +138,11 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
-                                ?: true,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
                             drawerState = drawerState,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 
@@ -151,6 +152,7 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             selectMode = false,
                             siteViewModel = siteViewModel,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 
@@ -159,6 +161,7 @@ fun BottomNavActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 
@@ -169,11 +172,11 @@ fun BottomNavActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
-                                ?: true,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
 
@@ -184,11 +187,11 @@ fun BottomNavActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView
-                                ?: true,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
                         )
                     }
                 }

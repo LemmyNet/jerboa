@@ -191,7 +191,7 @@ fun CreateEditPostBody(
         if (isImage(url)) {
             PictrsUrlImage(
                 url = url,
-                nsfw = false,
+                blur = false,
             )
         }
 

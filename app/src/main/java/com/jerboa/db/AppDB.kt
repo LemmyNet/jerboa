@@ -119,10 +119,36 @@ data class AppSettings(
     )
     val secureWindow: Boolean,
     @ColumnInfo(
+        name = "blur_nsfw",
+        defaultValue = "1",
+    )
+    val blurNSFW: Boolean,
+    @ColumnInfo(
         name = "allow_swipe_between_posts",
         defaultValue = "0",
     )
     val swipeBetweenPosts: Boolean,
+)
+
+
+val APP_SETTINGS_DEFAULT = AppSettings(
+    id = 1,
+    fontSize = DEFAULT_FONT_SIZE,
+    theme = 0,
+    themeColor = 0,
+    viewedChangelog = 0,
+    postViewMode = 0,
+    showBottomNav = true,
+    showCollapsedCommentContent = false,
+    showCommentActionBarByDefault = true,
+    showVotingArrowsInListView = true,
+    showParentCommentNavigationButtons = false,
+    navigateParentCommentsWithVolumeButtons = false,
+    useCustomTabs = true,
+    usePrivateTabs = false,
+    secureWindow = false,
+    blurNSFW = true,
+    swipeBetweenPosts = false
 )
 
 @Dao
@@ -445,13 +471,24 @@ val MIGRATION_16_17 = object : Migration(16, 17) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
+            "ALTER TABLE AppSettings add column blur_nsfw INTEGER NOT NULL default 1",
+        )
+    }
+}
+
+
+
+val MIGRATION_17_18 = object : Migration(17, 18) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
             "ALTER TABLE AppSettings add column allow_swipe_between_posts INTEGER NOT NULL default 0",
         )
     }
 }
 
 @Database(
-    version = 17,
+    version = 18,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -492,6 +529,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_14_15,
                         MIGRATION_15_16,
                         MIGRATION_16_17,
+                        MIGRATION_17_18,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {
