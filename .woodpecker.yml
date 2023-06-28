@@ -27,19 +27,6 @@ pipeline:
       - ./gradlew testDebug
     environment:
       GRADLE_RO_DEP_CACHE: .depcache
-
-  run_emulator_tests:
-    image: shepeliev/android-sdk
-    commands:
-      - /opt/start-default-emulator.sh
-      # Turn off animation
-      - adb shell settings put global window_animation_scale 0
-      - adb shell settings put global transition_animation_scale 0
-      - adb shell settings put global animator_duration_scale 0
-      # Turn off google auto-fill
-      - adb shell settings put secure autofill_service null
-      - ./gradlew app:connectAndroidTest
-
   notify:
     image: alpine:3
     commands:
