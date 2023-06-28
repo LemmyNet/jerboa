@@ -36,8 +36,8 @@ fun CommentEditActivity(
         commentEditViewModel.initialize(commentView)
     }
 
-    var content by rememberSaveable(commentEditViewModel.commentView.value, stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(commentEditViewModel.commentView.value?.comment?.content.orEmpty()))
+    var content by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(commentView.comment.content))
     }
 
     val loading = when (commentEditViewModel.editCommentRes) {
