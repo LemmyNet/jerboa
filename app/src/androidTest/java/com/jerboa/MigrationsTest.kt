@@ -1,9 +1,7 @@
 package com.jerboa
 
 import androidx.room.Room.databaseBuilder
-import androidx.room.migration.AutoMigrationSpec
 import androidx.room.testing.MigrationTestHelper
-import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.jerboa.db.AppDB
