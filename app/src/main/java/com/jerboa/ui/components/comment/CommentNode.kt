@@ -213,6 +213,7 @@ fun LazyListScope.commentNodeItem(
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
+    blurNSFW: Boolean,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -277,6 +278,7 @@ fun LazyListScope.commentNodeItem(
                                 community = commentView.community,
                                 onCommunityClick = onCommunityClick,
                                 onPostClick = onPostClick,
+                                blurNSFW = blurNSFW,
                             )
                         }
                         CommentNodeHeader(
@@ -406,6 +408,7 @@ fun LazyListScope.commentNodeItem(
             showActionBar = showActionBar,
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
+            blurNSFW = blurNSFW,
         )
     }
 }
@@ -464,6 +467,7 @@ fun PostAndCommunityContextHeader(
     community: Community,
     onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
+    blurNSFW: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(top = LARGE_PADDING),
@@ -481,6 +485,7 @@ fun PostAndCommunityContextHeader(
                 community = community,
                 onClick = onCommunityClick,
                 showDefaultIcon = false,
+                blurNSFW = blurNSFW,
             )
         }
     }
@@ -494,6 +499,7 @@ fun PostAndCommunityContextHeaderPreview() {
         community = sampleCommunity,
         onCommunityClick = {},
         onPostClick = {},
+        blurNSFW = true,
     )
 }
 
@@ -666,6 +672,7 @@ fun CommentNodesPreview() {
         showActionBar = { _ -> true },
         enableDownVotes = true,
         showAvatar = true,
+        blurNSFW = true,
     )
 }
 

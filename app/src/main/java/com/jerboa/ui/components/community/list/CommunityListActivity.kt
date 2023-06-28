@@ -45,6 +45,7 @@ fun CommunityListActivity(
     accountViewModel: AccountViewModel,
     selectMode: Boolean = false,
     siteViewModel: SiteViewModel,
+    blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to community list activity")
 
@@ -107,6 +108,7 @@ fun CommunityListActivity(
                             modifier = Modifier
                                 .padding(padding)
                                 .imePadding(),
+                            blurNSFW = blurNSFW,
                         )
                     }
                 }
