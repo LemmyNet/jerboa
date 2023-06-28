@@ -11,7 +11,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 
-
 @RunWith(AndroidJUnit4::class)
 class MigrationsTest {
     private val TEST_DB = "migration-test"
@@ -19,7 +18,7 @@ class MigrationsTest {
     @get:Rule
     val helper: MigrationTestHelper = MigrationTestHelper(
         InstrumentationRegistry.getInstrumentation(),
-        AppDB::class.java.canonicalName
+        AppDB::class.java.canonicalName,
     )
 
     @Test
@@ -35,7 +34,7 @@ class MigrationsTest {
         databaseBuilder(
             InstrumentationRegistry.getInstrumentation().targetContext,
             AppDB::class.java,
-            TEST_DB
+            TEST_DB,
         ).addMigrations(*MIGRATIONS_LIST).build().apply {
             openHelper.writableDatabase.close()
         }
