@@ -5,7 +5,7 @@ pipeline:
       - prettier -c "*.md" "*.yml"
 
   check_formatting:
-    image: cimg/android:2023.05
+    image: cimg/android:2023.06
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew lintKotlin
@@ -13,7 +13,7 @@ pipeline:
       GRADLE_RO_DEP_CACHE: .depcache
 
   build_project:
-    image: cimg/android:2023.05
+    image: cimg/android:2023.06
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew assembleDebug
@@ -21,13 +21,24 @@ pipeline:
       GRADLE_RO_DEP_CACHE: .depcache
 
   run_tests:
-    image: cimg/android:2023.05
+    image: cimg/android:2023.06
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew testDebug
-      - ./gradlew app:connectedAndroidTest
     environment:
       GRADLE_RO_DEP_CACHE: .depcache
+
+  run_emulator_tests:
+    image: shepeliev/android-sdk
+    commands:
+      - /opt/start-default-emulator.sh
+      # Turn off animation
+      - adb shell settings put global window_animation_scale 0
+      - adb shell settings put global transition_animation_scale 0
+      - adb shell settings put global animator_duration_scale 0
+      # Turn off google auto-fill
+      - adb shell settings put secure autofill_service null
+      - ./gradlew app:connectAndroidTest
 
   notify:
     image: alpine:3
