@@ -67,7 +67,7 @@ prettier -c "*.md" "*.yml"`
 To fix the violations
 
 ```shell
-prettier --write "*.md" "*.yml"`
+prettier --write "*.md" "*.yml"
 ```
 
 ## Adding translations
@@ -101,6 +101,7 @@ See [this link for more information on these metrics](https://github.com/android
 ## Testing migrations
 
 If you add a migration to the DB, test it with this gradle task
+
 ```shell
 ./gradlew app:connectAndroidTest
 ```
