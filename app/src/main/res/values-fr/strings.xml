@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa</string>
     <string name="comment_node_goto_comment">Aller au commentaire</string>
     <string name="comment_node_view_source">Afficher la source</string>
     <string name="comment_node_copy_permalink">Copier le lien permanent</string>

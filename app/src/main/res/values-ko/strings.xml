@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa</string>
     <string name="comment_node_goto_comment">댓글로 가기</string>
     <string name="comment_node_go_to">%1$s로 가기</string>
     <string name="comment_node_view_source">원본 보기</string>

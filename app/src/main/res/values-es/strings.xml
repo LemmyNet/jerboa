@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa</string>
     <string name="comment_node_goto_comment">Ir a comentario</string>
     <string name="comment_node_go_to">Ir a %1$s</string>
     <string name="comment_node_view_source">Ver Fuente</string>
