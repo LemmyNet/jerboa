@@ -123,12 +123,7 @@ val sampleMarkdownPost = Post(
     id = 135130,
     name = "This is a markdown post",
     url = null,
-    body = """# Heading 1 
-        |1. First Item
-        |2. Second Item
-        |3. Third item
-        |And a `code` block
-        |""".trimMargin(),
+    body = "# Heading 1  1. First Item  2. Second Item  3. Third item  And a `code` block",
     creator_id = 33401,
     community_id = 14681,
     removed = false,

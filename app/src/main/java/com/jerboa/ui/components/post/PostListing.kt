@@ -441,7 +441,7 @@ fun PostBody(
                             if (viewSource) {
                                 SelectionContainer {
                                     Text(
-                                        text = text
+                                        text = text,
                                     )
                                 }
                             } else {
@@ -1562,7 +1562,7 @@ fun PostOptionsDialog(
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.post_listing_view_source),
                         icon = Icons.Outlined.Description,
-                        onClick = onViewSourceClick
+                        onClick = onViewSourceClick,
                     )
                 }
                 if (!isCreator) {
@@ -1623,6 +1623,6 @@ fun PostOptionsDialogPreview() {
         onDeletePostClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
-        onViewSourceClick = {}
+        onViewSourceClick = {},
     )
 }
