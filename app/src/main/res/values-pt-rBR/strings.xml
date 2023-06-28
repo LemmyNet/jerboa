@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Jerboa para Lemmy</string>
+    <string name="app_name">Jerboa</string>
     <string name="comment_node_goto_comment">Ir ao Comentário</string>
     <string name="comment_node_view_source">Ver Fonte</string>
     <string name="comment_node_copy_permalink">Copiar Link do Comentário</string>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Jerboa dla Lemmy</string>
+    <string name="app_name">Jerboa</string>
     <string name="comment_node_goto_comment">Idź do Komentarza</string>
     <string name="comment_node_go_to">Idź do %1$s</string>
     <string name="comment_node_view_source">Wyświetl Źródło</string>
