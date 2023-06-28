@@ -25,6 +25,7 @@ pipeline:
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew testDebug
+      - ./gradlew app:connectedAndroidTest
     environment:
       GRADLE_RO_DEP_CACHE: .depcache
 
