@@ -22,8 +22,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.ApiErrorText
@@ -97,7 +99,7 @@ fun CommunityListActivity(
                                 ListItem(
                                     headlineContent = {
                                         Text(
-                                            text = "Recent searches",
+                                            text = stringResource(R.string.community_list_recent_searches),
                                             color = MaterialTheme.colorScheme.onBackground,
                                             style = MaterialTheme.typography.labelLarge,
                                         )
@@ -132,7 +134,10 @@ fun CommunityListActivity(
                                             content = {
                                                 Icon(
                                                     Icons.Rounded.Close,
-                                                    contentDescription = "Delete ${it.text}",
+                                                    contentDescription = stringResource(
+                                                        R.string.community_list_delete_search_item,
+                                                        it.text,
+                                                    ),
                                                     tint = MaterialTheme.colorScheme.surfaceTint,
                                                 )
                                             },
@@ -143,7 +148,7 @@ fun CommunityListActivity(
                             ListItem(
                                 headlineContent = {
                                     Text(
-                                        text = "Communities",
+                                        text = stringResource(R.string.community_list_title),
                                         color = MaterialTheme.colorScheme.onBackground,
                                         style = MaterialTheme.typography.labelLarge,
                                     )
