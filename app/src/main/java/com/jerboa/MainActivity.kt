@@ -440,7 +440,7 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings?.useCustomTabs ?: true,
                             usePrivateTabs = appSettings?.usePrivateTabs ?: false,
                             blurNSFW = appSettings.blurNSFW,
-                            )
+                        )
                     }
 
                     composable(

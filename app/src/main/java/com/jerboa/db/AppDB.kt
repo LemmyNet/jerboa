@@ -127,9 +127,8 @@ data class AppSettings(
         name = "allow_swipe_between_posts",
         defaultValue = "0",
     )
-    val swipeBetweenPosts: Boolean,
+    val allowSwipeBetweenPosts: Boolean,
 )
-
 
 val APP_SETTINGS_DEFAULT = AppSettings(
     id = 1,
@@ -148,7 +147,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     usePrivateTabs = false,
     secureWindow = false,
     blurNSFW = true,
-    swipeBetweenPosts = false
+    allowSwipeBetweenPosts = false,
 )
 
 @Dao
@@ -475,8 +474,6 @@ val MIGRATION_16_17 = object : Migration(16, 17) {
         )
     }
 }
-
-
 
 val MIGRATION_17_18 = object : Migration(17, 18) {
     override fun migrate(database: SupportSQLiteDatabase) {

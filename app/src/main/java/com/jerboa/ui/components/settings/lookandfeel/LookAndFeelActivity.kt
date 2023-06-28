@@ -86,8 +86,7 @@ fun LookAndFeelActivity(
     val useCustomTabsState = rememberBooleanSettingState(settings.useCustomTabs)
     val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs)
 
-
-    val allowSwipeBetweenPosts = rememberBooleanSettingState(settings?.swipeBetweenPosts ?: false)
+    val allowSwipeBetweenPosts = rememberBooleanSettingState(settings?.allowSwipeBetweenPosts ?: false)
 
     val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
     val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
@@ -115,8 +114,8 @@ fun LookAndFeelActivity(
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
                 blurNSFW = blurNSFW.value,
-                swipeBetweenPosts = allowSwipeBetweenPosts.value,
-                ),
+                allowSwipeBetweenPosts = allowSwipeBetweenPosts.value,
+            ),
         )
     }
 
