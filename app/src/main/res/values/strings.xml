@@ -7,7 +7,6 @@
     <string name="AppBars_users_month">%1$s users / month</string>
     <string name="AppBars_users_week">%1$s users / week</string>
     <string name="about_social">Social</string>
-    <string name="account_settings_active">Active</string>
     <string name="account_settings_activity_account_settings">Account Settings</string>
     <string name="account_settings_all">All</string>
     <string name="account_settings_avatar">Avatar</string>
@@ -18,13 +17,8 @@
     <string name="account_settings_default_sort_type">Default Sort Type</string>
     <string name="account_settings_display_name">Display Name</string>
     <string name="account_settings_email">Email</string>
-    <string name="account_settings_hot">Hot</string>
     <string name="account_settings_local">Local</string>
     <string name="account_settings_matrix_user">Matrix User</string>
-    <string name="account_settings_mostcomments">MostComments</string>
-    <string name="account_settings_new">New</string>
-    <string name="account_settings_newcomments">NewComments</string>
-    <string name="account_settings_old">Old</string>
     <string name="account_settings_remove_current_avatar">Remove Current Avatar</string>
     <string name="account_settings_save_settings">Save Settings</string>
     <string name="account_settings_send_notifications_to_email">Send Notifications to Email</string>
@@ -35,11 +29,6 @@
     <string name="account_settings_show_read_posts">Show Read Posts</string>
     <string name="account_settings_show_scores">Show Scores</string>
     <string name="account_settings_subscribed">Subscribed</string>
-    <string name="account_settings_topall">TopAll</string>
-    <string name="account_settings_topday">TopDay</string>
-    <string name="account_settings_topmonth">TopMonth</string>
-    <string name="account_settings_topweek">TopWeek</string>
-    <string name="account_settings_topyear">TopYear</string>
     <string name="addBookmark">Add to bookmarks</string>
     <string name="app_bars_dot_spacer">·</string>
     <string name="app_name" translatable="false">Jerboa</string>
@@ -103,12 +92,10 @@
     <string name="comment_unsave">Unsave comment</string>
     <string name="community_back">Back</string>
     <string name="community_block_community">Block Community</string>
-    <string name="community_blocked">%1$s Blocked</string>
     <string name="community_community_info">Community Info</string>
     <string name="community_icon">Community icon</string>
     <string name="community_joined">Joined</string>
     <string name="community_link_users_month">%1$s users / month</string>
-    <string name="community_list_back">Back</string>
     <string name="community_list_search">Search...</string>
     <string name="community_pending">Pending</string>
     <string name="community_refresh">Refresh</string>
@@ -117,7 +104,6 @@
     <string name="community_users_month">%1$s users / month</string>
     <string name="createPost_selectCommunity">Select community from list</string>
     <string name="create_post_a_title_here">a title here....</string>
-    <string name="create_post_close">Close</string>
     <string name="create_post_community">Community</string>
     <string name="create_post_copy_suggested_title">copy suggested title: %1$s</string>
     <string name="create_post_create_post">Create post</string>
@@ -166,7 +152,6 @@
     <string name="home_subscribed">Subscribed</string>
     <string name="home_subscriptions">Subscriptions</string>
     <string name="home_switch_to">Switch to %1$s/%2$s</string>
-    <string name="inbox_back">Back</string>
     <string name="inbox_filter">Filter</string>
     <string name="inbox_inbox">Inbox</string>
     <string name="inbox_markAllRead">Mark all as read</string>
@@ -241,14 +226,11 @@
     <string name="person_profile_activity_comments">Comments</string>
     <string name="person_profile_activity_moderates">Moderates</string>
     <string name="person_profile_activity_posts">Posts</string>
-    <string name="person_profile_back">Back</string>
     <string name="person_profile_block_person">Block Person</string>
     <string name="person_profile_comments">%1$s comments</string>
     <string name="person_profile_joined">Joined</string>
     <string name="person_profile_posts">%1$s posts</string>
     <string name="person_profile_report_person">Report Person</string>
-    <string name="person_routines_blocked">%1$s Blocked</string>
-    <string name="pickImage_imagePreview">Uploaded image preview</string>
     <string name="pictrs_image_upload_image">Upload Image</string>
     <string name="postListing_deleted">Deleted</string>
     <string name="postListing_featuredCommunity">Featured in community</string>
@@ -258,7 +240,6 @@
     <string name="postListing_reply">Reply to post</string>
     <string name="post_activity_comments">Comments</string>
     <string name="post_edit_body_placeholder">Body</string>
-    <string name="post_edit_close">Close</string>
     <string name="post_edit_edit_post">Edit Post</string>
     <string name="post_listing_block">Block %1$s</string>
     <string name="post_listing_comments">%1$s comments</string>
@@ -335,4 +316,16 @@
     <string name="create_edit_post_close">Close</string>
     <string name="lang_language">Language</string>
     <string name="blur_nsfw">Blur NSFW images</string>
+    <string name="sorttype_tophour">TopHour</string>
+    <string name="sorttype_topsixhour">TopSixHour</string>
+    <string name="sorttype_toptwelvehour">TopTwelveHour</string>
+    <string name="sorttype_topthreemonths">TopThreeMonths</string>
+    <string name="sorttype_topsixmonths">TopSixMonths</string>
+    <string name="sorttype_topninemonths">TopNineMonths</string>
+    <string name="dialogs_top_hour">Top Hour</string>
+    <string name="dialogs_top_six_hour">Top Six Hour</string>
+    <string name="dialogs_top_twelve_hour">Top Twelve hour</string>
+    <string name="dialogs_top_three_month">Top Three Months</string>
+    <string name="dialogs_top_six_month">Top Six Months</string>
+    <string name="dialogs_top_nine_month">Top Nine Months</string>
 </resources>

@@ -7,7 +7,6 @@
     <string name="AppBars_users_month">%1$s 사용자 / 월</string>
     <string name="AppBars_users_week">%1$s 사용자 / 주</string>
     <string name="about_social">소셜</string>
-    <string name="account_settings_active">활발</string>
     <string name="account_settings_activity_account_settings">계정 설정</string>
     <string name="account_settings_all">전체</string>
     <string name="account_settings_avatar">아바타</string>
@@ -18,13 +17,8 @@
     <string name="account_settings_default_sort_type">기본 정렬 기준</string>
     <string name="account_settings_display_name">표시 이름</string>
     <string name="account_settings_email">이메일</string>
-    <string name="account_settings_hot">인기</string>
     <string name="account_settings_local">로컬</string>
     <string name="account_settings_matrix_user">Matrix 사용자</string>
-    <string name="account_settings_mostcomments">최다 댓글</string>
-    <string name="account_settings_new">신규</string>
-    <string name="account_settings_newcomments">신규 댓글</string>
-    <string name="account_settings_old">오래됨</string>
     <string name="account_settings_remove_current_avatar">현재 아바타 삭제</string>
     <string name="account_settings_save_settings">설정 저장</string>
     <string name="account_settings_send_notifications_to_email">알림을 이메일로 보내기</string>
@@ -35,11 +29,6 @@
     <string name="account_settings_show_read_posts">읽은 게시물 표시</string>
     <string name="account_settings_show_scores">점수 표시</string>
     <string name="account_settings_subscribed">구독</string>
-    <string name="account_settings_topall">전체 최고</string>
-    <string name="account_settings_topday">일 최고</string>
-    <string name="account_settings_topmonth">월 최고</string>
-    <string name="account_settings_topweek">주 최고</string>
-    <string name="account_settings_topyear">연 최고</string>
     <string name="addBookmark">북마크에 추가</string>
     <string name="app_bars_dot_spacer">·</string>
     <string name="app_name">Jerboa for Lemmy</string>
@@ -103,12 +92,10 @@
     <string name="comment_unsave">댓글 저장 삭제</string>
     <string name="community_back">뒤로</string>
     <string name="community_block_community">커뮤니티 차단</string>
-    <string name="community_blocked">%1$s 차단됨</string>
     <string name="community_community_info">커뮤니티 정보</string>
     <string name="community_icon">커뮤니티 아이콘</string>
     <string name="community_joined">가입함</string>
     <string name="community_link_users_month">%1$s 사용자 / 월</string>
-    <string name="community_list_back">뒤로</string>
     <string name="community_list_search">검색…</string>
     <string name="community_pending">보류 중</string>
     <string name="community_refresh">새로고침</string>
@@ -117,7 +104,6 @@
     <string name="community_users_month">%1$s 사용자 / 월</string>
     <string name="createPost_selectCommunity">목록에서 커뮤니티 선택</string>
     <string name="create_post_a_title_here">여기에 제목....</string>
-    <string name="create_post_close">닫기</string>
     <string name="create_post_community">커뮤니티</string>
     <string name="create_post_copy_suggested_title">추천 제목 복사: %1$s</string>
     <string name="create_post_create_post">게시물 작성</string>
@@ -166,7 +152,6 @@
     <string name="home_subscribed">구독함</string>
     <string name="home_subscriptions">구독</string>
     <string name="home_switch_to">%1$s/%2$s로 전환</string>
-    <string name="inbox_back">뒤로</string>
     <string name="inbox_filter">받은 편지함 필터 선택</string>
     <string name="inbox_inbox">받은 편지함</string>
     <string name="inbox_markAllRead">모두 읽음 처리</string>
@@ -241,14 +226,11 @@
     <string name="person_profile_activity_comments">댓글</string>
     <string name="person_profile_activity_moderates">운영</string>
     <string name="person_profile_activity_posts">게시물</string>
-    <string name="person_profile_back">뒤로</string>
     <string name="person_profile_block_person">사용자 차단</string>
     <string name="person_profile_comments">%1$s 개의 댓글</string>
     <string name="person_profile_joined">가입함</string>
     <string name="person_profile_posts">%1$s 개의 게시물</string>
     <string name="person_profile_report_person">사용자 신고</string>
-    <string name="person_routines_blocked">%1$s 차단됨</string>
-    <string name="pickImage_imagePreview">업로드된 이미지 미리보기</string>
     <string name="pictrs_image_upload_image">이미지 업로드</string>
     <string name="postListing_deleted">삭제됨</string>
     <string name="postListing_featuredCommunity">커뮤니티에서 인기</string>
@@ -258,7 +240,6 @@
     <string name="postListing_reply">게시물에 답장하기</string>
     <string name="post_activity_comments">댓글</string>
     <string name="post_edit_body_placeholder">본문</string>
-    <string name="post_edit_close">닫기</string>
     <string name="post_edit_edit_post">게시물 수정</string>
     <string name="post_listing_block">%1$s 차단</string>
     <string name="post_listing_comments">%1$s 개의 댓글</string>
