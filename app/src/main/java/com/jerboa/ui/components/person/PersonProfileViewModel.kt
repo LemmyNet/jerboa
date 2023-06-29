@@ -31,9 +31,11 @@ import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
-class PersonProfileViewModel : ViewModel() {
+class PersonProfileViewModel : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
 
     var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(
         ApiState.Empty,

@@ -1,6 +1,8 @@
 package com.jerboa
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.ContextWrapper
@@ -14,6 +16,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
@@ -44,6 +47,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
+import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
 import androidx.navigation.NavController
 import arrow.core.compareTo
@@ -54,6 +58,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
+import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxTab
@@ -62,6 +67,8 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -76,23 +83,6 @@ val gson = Gson()
 
 const val DEBOUNCE_DELAY = 1000L
 const val MAX_POST_TITLE_LENGTH = 200
-
-val DEFAULT_LEMMY_INSTANCES = listOf(
-    "beehaw.org",
-    "feddit.de",
-    "feddit.it",
-    "lemmy.ca",
-    "lemmy.ml",
-    "lemmy.one",
-    "lemmy.world",
-    "lemmygrad.ml",
-    "midwest.social",
-    "mujico.org",
-    "sh.itjust.works",
-    "slrpnk.net",
-    "sopuli.xyz",
-    "szmer.info",
-)
 
 // convert a data class to a map
 fun <T> T.serializeToMap(): Map<String, String> {
@@ -375,11 +365,13 @@ fun openLink(url: String, navController: NavController, useCustomTab: Boolean, u
     val parsedUrl = parseUrl(url) ?: return
 
     looksLikeUserUrl(parsedUrl)?.let { it ->
-        navController.navigate("${it.first}/u/${it.second}")
+        val route = Route.ProfileFromUrlArgs.makeRoute(instance = it.first, name = it.second)
+        navController.navigate(route)
         return
     }
     looksLikeCommunityUrl(parsedUrl)?.let { it ->
-        navController.navigate("${it.first}/c/${it.second}")
+        val route = Route.CommunityFromUrlArgs.makeRoute(instance = it.first, name = it.second)
+        navController.navigate(route)
         return
     }
 
@@ -714,29 +706,12 @@ fun siFormat(num: Int): String {
 fun fetchInitialData(
     account: Account?,
     siteViewModel: SiteViewModel,
-    homeViewModel: HomeViewModel,
 ) {
     if (account != null) {
         API.changeLemmyInstance(account.instance)
-        homeViewModel.resetPage()
-        homeViewModel.getPosts(
-            GetPosts(
-                type_ = ListingType.values()[account.defaultListingType],
-                sort = SortType.values()[account.defaultSortType],
-                auth = account.jwt,
-            ),
-        )
         siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
     } else {
-        Log.d("jerboa", "Fetching posts for anonymous user")
         API.changeLemmyInstance(DEFAULT_INSTANCE)
-        homeViewModel.resetPage()
-        homeViewModel.getPosts(
-            GetPosts(
-                type_ = ListingType.Local,
-                sort = SortType.Active,
-            ),
-        )
     }
 
     siteViewModel.getSite(
@@ -746,11 +721,35 @@ fun fetchInitialData(
     )
 }
 
+fun fetchHomePosts(account: Account?, homeViewModel: HomeViewModel) {
+    if (account != null) {
+        homeViewModel.updateFromAccount(account)
+        homeViewModel.resetPage()
+        homeViewModel.getPosts(
+            GetPosts(
+                type_ = homeViewModel.listingType,
+                sort = homeViewModel.sortType,
+                auth = account.jwt,
+            ),
+        )
+    } else {
+        Log.d("jerboa", "Fetching posts for anonymous user")
+        homeViewModel.resetPage()
+        homeViewModel.getPosts(
+            GetPosts(
+                type_ = ListingType.Local,
+                sort = SortType.Active,
+            ),
+        )
+    }
+}
+
 fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
     return ctx.contentResolver.openInputStream(uri)!!
 }
 
 fun decodeUriToBitmap(ctx: Context, uri: Uri): Bitmap? {
+    Log.d("jerboa", "decodeUriToBitmap INPUT: $uri")
     return if (SDK_INT < 28) {
         @Suppress("DEPRECATION")
         MediaStore.Images.Media.getBitmap(ctx.contentResolver, uri)
@@ -1265,4 +1264,73 @@ fun compareVersions(a: String, b: String): Int {
         return a.compareTo(b)
     }
     return comparison
+}
+
+/**
+ * Copy a given text to the clipboard, using the Kotlin context
+ *
+ * @param context The app context
+ * @param textToCopy Text to copy to the clipboard
+ * @param clipLabel Label
+ *
+ * @return true if successful, false otherwise
+ */
+fun copyToClipboard(context: Context, textToCopy: CharSequence, clipLabel: CharSequence): Boolean {
+    val activity = context.findActivity()
+    activity?.let {
+        val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(clipLabel, textToCopy)
+        clipboard.setPrimaryClip(clip)
+        return true
+    }
+    return false
+}
+
+fun getLocaleListFromXml(ctx: Context): LocaleListCompat {
+    val tagsList = mutableListOf<CharSequence>()
+    try {
+        val xpp: XmlPullParser = ctx.resources.getXml(R.xml.locales_config)
+        while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
+            if (xpp.eventType == XmlPullParser.START_TAG) {
+                if (xpp.name == "locale") {
+                    tagsList.add(xpp.getAttributeValue(0))
+                }
+            }
+            xpp.next()
+        }
+    } catch (e: XmlPullParserException) {
+        e.printStackTrace()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+
+    return LocaleListCompat.forLanguageTags(tagsList.joinToString(","))
+}
+
+fun getLangPreferenceDropdownEntries(ctx: Context): Map<Locale, String> {
+    val localeList = getLocaleListFromXml(ctx)
+    val map = mutableMapOf<Locale, String>()
+
+    for (i in 0 until localeList.size()) {
+        localeList[i]?.let {
+            map.put(it, it.getDisplayName(it))
+        }
+    }
+    return map
+}
+
+fun matchLocale(localeMap: Map<Locale, String>): Locale {
+    return Locale.lookup(
+        AppCompatDelegate.getApplicationLocales().convertToLanguageRange(),
+        localeMap.keys.toList(),
+    ) ?: Locale.ENGLISH
+}
+
+fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange> {
+    val l = mutableListOf<Locale.LanguageRange>()
+
+    for (i in 0 until this.size()) {
+        l.add(i, Locale.LanguageRange(this[i]!!.toLanguageTag()))
+    }
+    return l
 }

@@ -5,16 +5,21 @@ import android.util.Log
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.toastException
+import com.jerboa.util.DisableLog
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
+import retrofit2.Invocation
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.io.InputStream
+import okhttp3.Response as HttpResponse
 
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
@@ -39,6 +44,7 @@ interface API {
     /**
      * Log into lemmy.
      */
+    @DisableLog
     @POST("user/login")
     suspend fun login(@Body form: Login): Response<LoginResponse>
 
@@ -235,6 +241,8 @@ interface API {
 
     companion object {
         private var api: API? = null
+        var errorHandler: (Exception) -> Exception? = { it }
+
         var currentInstance: String = DEFAULT_INSTANCE
             private set
 
@@ -264,6 +272,35 @@ interface API {
                         .header("User-Agent", "Jerboa")
                     val newRequest = requestBuilder.build()
                     chain.proceed(newRequest)
+                }
+                .addInterceptor { chain ->
+                    // based on https://stackoverflow.com/a/76264357
+                    val request = chain.request()
+                    val invocation = request.tag(Invocation::class.java)
+                    val disableLog = invocation?.method()?.getAnnotation(DisableLog::class.java)
+                    val shouldLogBody: Boolean = disableLog == null
+                    interceptor.setLevel(if (shouldLogBody) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE)
+                    chain.proceed(request)
+                }
+                // this should probably be a network interceptor,
+                .addInterceptor { chain ->
+                    val request = chain.request()
+                    try {
+                        chain.proceed(request)
+                    } catch (e: Exception) {
+                        val err = errorHandler(e)
+                        if (err != null) {
+                            throw err
+                        }
+
+                        HttpResponse.Builder()
+                            .request(request)
+                            .code(999)
+                            .protocol(Protocol.HTTP_1_1)
+                            .message("connection error")
+                            .body(e.toString().toResponseBody())
+                            .build()
+                    }
                 }
                 .addInterceptor(interceptor)
                 .build()

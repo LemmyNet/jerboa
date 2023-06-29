@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa für Lemmy</string>
     <string name="comment_node_goto_comment">Zum Kommentar</string>
     <string name="comment_node_go_to">Gehe zu %1$s</string>
     <string name="comment_node_view_source">Quelle anzeigen</string>
@@ -312,4 +311,5 @@
     <string name="inbox_activity_mentions">Erwähnungen</string>
     <string name="inbox_activity_messages">Nachrichten</string>
     <string name="bookmarks_activity_saved">Gespeichert</string>
+    <string name="create_post_tag_nsfw">Markiere Post als NSFW</string>
 </resources>

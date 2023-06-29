@@ -92,7 +92,7 @@ fun PasswordField(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LoginForm(
     modifier: Modifier = Modifier,
@@ -102,6 +102,7 @@ fun LoginForm(
     var instance by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    var totp by rememberSaveable { mutableStateOf("") }
     val instanceOptions = DEFAULT_LEMMY_INSTANCES
     var expanded by remember { mutableStateOf(false) }
     var wasAutofilled by remember { mutableStateOf(false) }
@@ -112,6 +113,7 @@ fun LoginForm(
     val form = Login(
         username_or_email = username.trim(),
         password = password.take(60),
+        totp_2fa_token = totp.ifBlank { null },
     )
 
     Column(
@@ -181,6 +183,17 @@ fun LoginForm(
                 },
             password = password,
             onValueChange = { password = it },
+        )
+        MyTextField(
+            modifier = Modifier
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(AutofillType.SmsOtpCode) {
+                    totp = it
+                    wasAutofilled = true
+                },
+            label = stringResource(R.string.login_totp),
+            text = totp,
+            onValueChange = { totp = it },
         )
         Button(
             enabled = isValid && !loading,

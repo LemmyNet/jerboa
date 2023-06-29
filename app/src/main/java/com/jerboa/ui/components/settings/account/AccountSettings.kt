@@ -79,7 +79,7 @@ fun ImageWithClose(
 fun SettingsForm(
     accountSettingsViewModel: AccountSettingsViewModel,
     siteViewModel: SiteViewModel,
-    account: Account?,
+    account: Account,
     onClickSave: (form: SaveUserSettings) -> Unit,
     padding: PaddingValues,
 ) {
@@ -126,7 +126,7 @@ fun SettingsForm(
         display_name = displayName,
         bio = bio.text,
         email = email,
-        auth = account?.jwt ?: "",
+        auth = account.jwt,
         avatar = avatar,
         banner = banner,
         matrix_user_id = matrixUserId,
@@ -144,6 +144,9 @@ fun SettingsForm(
         show_scores = showScores.value,
         discussion_languages = null,
     )
+    var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
+    var isUploadingBanner by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .padding(padding)
@@ -188,14 +191,17 @@ fun SettingsForm(
                     LargerCircularIcon(icon = avatar)
                 }
             } else {
-                PickImage(onPickedImage = { uri ->
-                    val imageIs = imageInputStreamFromUri(ctx, uri)
-                    scope.launch {
-                        account?.also { acct ->
-                            avatar = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                PickImage(
+                    isUploadingImage = isUploadingAvatar,
+                    onPickedImage = { uri ->
+                        val imageIs = imageInputStreamFromUri(ctx, uri)
+                        scope.launch {
+                            isUploadingAvatar = true
+                            avatar = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            isUploadingAvatar = false
                         }
-                    }
-                }, showImage = false)
+                    },
+                )
             }
         }
         Column(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -205,14 +211,17 @@ fun SettingsForm(
                     PictrsBannerImage(url = banner)
                 }
             } else {
-                PickImage(onPickedImage = { uri ->
-                    val imageIs = imageInputStreamFromUri(ctx, uri)
-                    scope.launch {
-                        account?.also { acct ->
-                            banner = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                PickImage(
+                    isUploadingImage = isUploadingBanner,
+                    onPickedImage = { uri ->
+                        val imageIs = imageInputStreamFromUri(ctx, uri)
+                        scope.launch {
+                            isUploadingBanner = true
+                            banner = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            isUploadingBanner = false
                         }
-                    }
-                }, showImage = false)
+                    },
+                )
             }
         }
         SettingsListDropdown(

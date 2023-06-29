@@ -15,34 +15,36 @@ import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.db.Account
 import com.jerboa.db.AccountRepository
 import com.jerboa.ui.components.home.SiteViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class AccountSettingsViewModel(
     private val accountRepository: AccountRepository,
 ) : ViewModel() {
-
     var saveUserSettingsRes: ApiState<LoginResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     fun saveSettings(
         form: SaveUserSettings,
         siteViewModel: SiteViewModel,
-        account: Account?,
+        account: Account,
     ) {
         viewModelScope.launch {
             saveUserSettingsRes = ApiState.Loading
             saveUserSettingsRes = apiWrapper(API.getInstance().saveUserSettings(form))
 
             siteViewModel.getSite(
-                GetSite(
-                    auth = account?.jwt,
-                ),
+                GetSite(auth = account.jwt),
             )
+
+            val newAccount = async { maybeUpdateAccountSettings(account, form) }.await()
+
+            siteViewModel.updateFromAccount(newAccount)
         }
     }
 
 //     TODO Where is this used??
-    private suspend fun maybeUpdateAccountSettings(account: Account, form: SaveUserSettings) {
+    private suspend fun maybeUpdateAccountSettings(account: Account, form: SaveUserSettings): Account {
         val newAccount = account.copy(
             defaultListingType = form.default_listing_type?.ordinal ?: account.defaultListingType,
             defaultSortType = form.default_sort_type?.ordinal ?: account.defaultSortType,
@@ -50,6 +52,7 @@ class AccountSettingsViewModel(
         if (newAccount != account) {
             accountRepository.update(newAccount)
         }
+        return newAccount
     }
 }
 class AccountSettingsViewModelFactory(

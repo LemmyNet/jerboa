@@ -89,6 +89,8 @@ import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.common.toLogin
+import com.jerboa.ui.components.common.toSiteSideBar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.person.PersonName
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
@@ -115,6 +117,7 @@ fun Drawer(
     onClickSettings: () -> Unit,
     onClickCommunities: () -> Unit,
     isOpen: Boolean,
+    blurNSFW: Boolean,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -148,6 +151,7 @@ fun Drawer(
         onClickSaved = onClickSaved,
         onClickSettings = onClickSettings,
         onClickCommunities = onClickCommunities,
+        blurNSFW = blurNSFW,
     )
 }
 
@@ -167,6 +171,7 @@ fun DrawerContent(
     onClickCommunities: () -> Unit,
     myUserInfo: MyUserInfo?,
     unreadCount: Int,
+    blurNSFW: Boolean,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
@@ -192,6 +197,7 @@ fun DrawerContent(
             unreadCount = unreadCount,
             onClickSettings = onClickSettings,
             onClickCommunities = onClickCommunities,
+            blurNSFW = blurNSFW,
         )
     }
 }
@@ -207,6 +213,7 @@ fun DrawerItemsMain(
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     unreadCount: Int,
+    blurNSFW: Boolean,
 ) {
     val listState = rememberLazyListState()
 
@@ -306,6 +313,7 @@ fun DrawerItemsMain(
                     community = follow.community,
                     onClick = onCommunityClick,
                     showDefaultIcon = true,
+                    blurNSFW = blurNSFW,
                 )
             }
         }
@@ -325,6 +333,7 @@ fun DrawerItemsMainPreview() {
         onClickSettings = {},
         onClickCommunities = {},
         unreadCount = 2,
+        blurNSFW = true,
     )
 }
 
@@ -343,7 +352,7 @@ fun DrawerAddAccountMode(
         IconAndTextDrawerItem(
             text = stringResource(R.string.home_add_account),
             icon = Icons.Outlined.Add,
-            onClick = { navController.navigate(route = "login") },
+            onClick = { navController.toLogin() },
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
@@ -647,7 +656,7 @@ fun HomeMoreDialog(
                     text = stringResource(R.string.home_site_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
-                        navController.navigate("siteSidebar")
+                        navController.toSiteSideBar()
                         onDismissRequest()
                     },
                 )

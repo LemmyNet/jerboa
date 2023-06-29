@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.comment.edit
 
 import android.util.Log
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -9,27 +8,37 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.types.CommentView
 import com.jerboa.db.AccountViewModel
+import com.jerboa.ui.components.common.InitializeRoute
+import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.person.PersonProfileViewModel
-import com.jerboa.ui.components.post.PostViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+object CommentEditReturn {
+    const val COMMENT_VIEW = "comment-edit::return(comment-view)"
+}
+
 @Composable
 fun CommentEditActivity(
+    commentView: CommentView,
     accountViewModel: AccountViewModel,
     navController: NavController,
-    commentEditViewModel: CommentEditViewModel,
-    personProfileViewModel: PersonProfileViewModel,
-    postViewModel: PostViewModel,
 ) {
     Log.d("jerboa", "got to comment edit activity")
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    var content by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(commentEditViewModel.commentView.value?.comment?.content.orEmpty())) }
+    val commentEditViewModel: CommentEditViewModel = viewModel()
+    InitializeRoute(commentEditViewModel) {
+        commentEditViewModel.initialize(commentView)
+    }
+
+    var content by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(commentView.comment.content))
+    }
 
     val loading = when (commentEditViewModel.editCommentRes) {
         ApiState.Loading -> true
@@ -48,12 +57,14 @@ fun CommentEditActivity(
                         account?.also { acct ->
                             commentEditViewModel.editComment(
                                 content = content.text,
-                                navController = navController,
                                 focusManager = focusManager,
                                 account = acct,
-                                personProfileViewModel = personProfileViewModel,
-                                postViewModel = postViewModel,
-                            )
+                            ) { commentView ->
+                                navController.apply {
+                                    addReturn(CommentEditReturn.COMMENT_VIEW, commentView)
+                                    navigateUp()
+                                }
+                            }
                         }
                     },
                 )

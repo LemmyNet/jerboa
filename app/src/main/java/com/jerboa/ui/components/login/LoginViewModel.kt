@@ -16,14 +16,13 @@ import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.api.apiWrapper
 import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.compareVersions
-import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getHostFromInstanceString
 import com.jerboa.serializeToMap
-import com.jerboa.ui.components.home.HomeViewModel
+import com.jerboa.ui.components.common.toHome
 import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -39,7 +38,6 @@ class LoginViewModel : ViewModel() {
         navController: NavController,
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
-        homeViewModel: HomeViewModel,
         ctx: Context,
     ) {
         val originalInstance = API.currentInstance
@@ -117,16 +115,6 @@ class LoginViewModel : ViewModel() {
                             defaultSortType = luv.local_user.default_sort_type.ordinal,
                         )
 
-                        homeViewModel.resetPage()
-                        homeViewModel.getPosts(
-                            GetPosts(
-                                type_ = luv.local_user.default_listing_type,
-                                sort = luv.local_user.default_sort_type,
-                                page = homeViewModel.page,
-                                auth = account.jwt,
-                            ),
-                        )
-
                         // Remove the default account
                         accountViewModel.removeCurrent()
 
@@ -142,7 +130,7 @@ class LoginViewModel : ViewModel() {
 
                     loading = false
 
-                    navController.navigate(route = "home")
+                    navController.toHome()
                 }
 
                 else -> {}

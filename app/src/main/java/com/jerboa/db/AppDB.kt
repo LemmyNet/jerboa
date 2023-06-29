@@ -118,6 +118,30 @@ data class AppSettings(
         defaultValue = "0",
     )
     val secureWindow: Boolean,
+    @ColumnInfo(
+        name = "blur_nsfw",
+        defaultValue = "1",
+    )
+    val blurNSFW: Boolean,
+)
+
+val APP_SETTINGS_DEFAULT = AppSettings(
+    id = 1,
+    fontSize = DEFAULT_FONT_SIZE,
+    theme = 0,
+    themeColor = 0,
+    viewedChangelog = 0,
+    postViewMode = 0,
+    showBottomNav = true,
+    showCollapsedCommentContent = false,
+    showCommentActionBarByDefault = true,
+    showVotingArrowsInListView = true,
+    showParentCommentNavigationButtons = false,
+    navigateParentCommentsWithVolumeButtons = false,
+    useCustomTabs = true,
+    usePrivateTabs = false,
+    secureWindow = false,
+    blurNSFW = true,
 )
 
 @Dao
@@ -436,8 +460,17 @@ val MIGRATION_15_16 = object : Migration(15, 16) {
     }
 }
 
+val MIGRATION_16_17 = object : Migration(16, 17) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column blur_nsfw INTEGER NOT NULL default 1",
+        )
+    }
+}
+
 @Database(
-    version = 16,
+    version = 17,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -477,6 +510,7 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_13_14,
                         MIGRATION_14_15,
                         MIGRATION_15_16,
+                        MIGRATION_16_17,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

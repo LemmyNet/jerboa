@@ -42,7 +42,7 @@
     <string name="account_settings_topyear">TopYear</string>
     <string name="addBookmark">Add to bookmarks</string>
     <string name="app_bars_dot_spacer">·</string>
-    <string name="app_name">Jerboa for Lemmy</string>
+    <string name="app_name" translatable="false">Jerboa</string>
     <string name="bottomBar_bookmarks">Go to my bookmarks</string>
     <string name="bottomBar_home">Go home</string>
     <string name="bottomBar_inbox">Go to my inbox</string>
@@ -66,14 +66,17 @@
     <string name="comment_edit_type_your_comment">Type your comment</string>
     <string name="comment_mention_node_block">Block %1$s</string>
     <string name="comment_mention_node_copy_permalink">Copy Permalink</string>
+    <string name="comment_mention_node_copy_comment">Copy Comment Text</string>
     <string name="comment_mention_node_go_to">Go to %1$s</string>
     <string name="comment_mention_node_permalink_copied">Permalink Copied</string>
+    <string name="comment_mention_node_comment_copied">Comment Text Copied</string>
     <string name="comment_mention_node_report_comment">Report Comment</string>
     <string name="comment_mention_node_view_source">View Source</string>
     <string name="comment_next_parent">Next Parent Comment</string>
     <string name="comment_previous_parent">Previous Parent Comment</string>
     <string name="comment_node_block">Block %1$s</string>
     <string name="comment_node_copy_permalink">Copy Permalink</string>
+    <string name="comment_node_copy_comment">Copy Comment Text</string>
     <string name="comment_node_delete">Delete</string>
     <string name="comment_node_edit">Edit</string>
     <string name="comment_node_go_to">Go to %1$s</string>
@@ -81,6 +84,7 @@
     <string name="comment_node_in">"in "</string>
     <string name="comment_node_more_replies">%1$s more replies</string>
     <string name="comment_node_permalink_copied">Permalink Copied</string>
+    <string name="comment_node_comment_copied">Comment Text Copied</string>
     <string name="comment_node_report_comment">Report Comment</string>
     <string name="comment_node_restore">Restore</string>
     <string name="comment_node_view_context">View Context</string>
@@ -117,6 +121,7 @@
     <string name="create_post_community">Community</string>
     <string name="create_post_copy_suggested_title">copy suggested title: %1$s</string>
     <string name="create_post_create_post">Create post</string>
+    <string name="create_post_tag_nsfw">Mark post as NSFW</string>
     <string name="create_report_back">Back</string>
     <string name="create_report_report">Report</string>
     <string name="create_report_type_your_reason">Type your reason</string>
@@ -176,6 +181,7 @@
     <string name="login_instance">Instance</string>
     <string name="login_instance_placeholder">ex: lemmy.ml</string>
     <string name="login_login">Login</string>
+    <string name="login_totp">Enter 2FA Token if enabled</string>
     <string name="login_password">Password</string>
     <string name="login_view_model_incorrect_login">Incorrect Login</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s is not a Lemmy Instance</string>
@@ -225,6 +231,7 @@
     <string name="markdownHelper_insertQuote">Insert quote</string>
     <string name="markdownHelper_preview">View preview</string>
     <string name="moreOptions">More options</string>
+    <string name="networkError">Network error</string>
     <string name="personProfile_viewAvatar">View avatar image</string>
     <string name="personProfile_viewBanner">View banner image</string>
     <string name="person_iconAdmin">Is administrator</string>
@@ -258,12 +265,20 @@
     <string name="post_listing_comments_count">%1$s comments</string>
     <string name="post_listing_copy_link">Copy link</string>
     <string name="post_listing_copy_permalink">Copy Permalink</string>
+    <string name="post_listing_copy_thumbnail_link">Copy Thumbnail Link</string>
+    <string name="post_listing_copy_title">Copy Post Title</string>
+    <string name="post_listing_copy_name">Copy Post Name</string>
+    <string name="post_listing_copy_text">Copy Post Text</string>
     <string name="post_listing_delete">Delete</string>
     <string name="post_listing_edit">Edit</string>
     <string name="post_listing_go_to">Go to %1$s</string>
     <string name="post_listing_link_copied">Link Copied</string>
     <string name="post_listing_new">( %1$s new )</string>
     <string name="post_listing_permalink_copied">Permalink Copied</string>
+    <string name="post_listing_thumbnail_link_copied">Thumbnail Link Copied</string>
+    <string name="post_listing_title_copied">Title Copied</string>
+    <string name="post_listing_name_copied">Name Copied</string>
+    <string name="post_listing_text_copied">Text Copied</string>
     <string name="post_listing_report_post">Report Post</string>
     <string name="post_listing_restore">Restore</string>
     <string name="privateMessage_reply">Reply to message</string>
@@ -316,4 +331,8 @@
     <string name="inbox_activity_mentions">Mentions</string>
     <string name="inbox_activity_messages">Messages</string>
     <string name="bookmarks_activity_saved">Saved</string>
+    <string name="generic_error">An error has occurred</string>
+    <string name="create_edit_post_close">Close</string>
+    <string name="lang_language">Language</string>
+    <string name="blur_nsfw">Blur NSFW images</string>
 </resources>
