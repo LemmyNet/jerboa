@@ -316,5 +316,4 @@
     <string name="inbox_activity_messages">Messages</string>
     <string name="bookmarks_activity_saved">Enregistrés</string>
     <string name="dialogs_server_version_outdated_short">La version du serveur (%1$s) est trop basse.</string>
-    <string name="post_listing_view_source">Voir la source de l\'publication</string>
 </resources>

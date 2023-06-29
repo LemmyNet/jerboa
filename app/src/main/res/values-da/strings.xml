@@ -282,5 +282,4 @@
     <string name="bottomBar_label_inbox">Indbakke</string>
     <string name="bottomBar_label_bookmarks">Bogmærker</string>
     <string name="bottomBar_label_profile">Profil</string>
-    <string name="post_listing_view_source">Vis kildekode for indlæg</string>
 </resources>

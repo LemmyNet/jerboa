@@ -317,5 +317,4 @@
     <string name="inbox_activity_messages">Mensajes</string>
     <string name="bookmarks_activity_saved">Guardado</string>
     <string name="generic_error">Ha ocurrido un error</string>
-    <string name="post_listing_view_source">Ver código fuente del post</string>
 </resources>

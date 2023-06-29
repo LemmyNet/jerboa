@@ -315,6 +315,5 @@
     <string name="inbox_activity_mentions">Упоминания</string>
     <string name="inbox_activity_messages">Сообщения</string>
     <string name="bookmarks_activity_saved">Закладки</string>
-    <string name="post_listing_view_source">Просмотреть исходный код поста</string>
 
 </resources>

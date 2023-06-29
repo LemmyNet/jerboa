@@ -287,5 +287,4 @@
     <string name="bottomBar_label_profile">Profil</string>
     <string name="look_and_feel_show_action_bar_for_comments">Standardowo pokazuj pasek akcji dla komentarzey</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Pokazuj strzałki głosowania w widoku listy</string>
-    <string name="post_listing_view_source">Wyświetl źródło postu</string>
 </resources>
