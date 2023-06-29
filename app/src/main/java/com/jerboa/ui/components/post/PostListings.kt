@@ -55,6 +55,7 @@ fun PostListings(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     LazyColumn(
         state = listState,
@@ -97,6 +98,7 @@ fun PostListings(
                 showAvatar = showAvatar,
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -142,5 +144,6 @@ fun PreviewPostListings() {
         showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
+        blurNSFW = true,
     )
 }

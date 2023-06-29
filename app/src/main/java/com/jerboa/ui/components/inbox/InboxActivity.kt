@@ -69,6 +69,7 @@ fun InboxActivity(
     navController: NavController,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
+    blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -166,6 +167,7 @@ fun InboxActivity(
                 ctx = ctx,
                 account = account,
                 scope = scope,
+                blurNSFW = blurNSFW,
             )
         },
     )
@@ -187,6 +189,7 @@ fun InboxTabs(
     account: Account?,
     scope: CoroutineScope,
     padding: PaddingValues,
+    blurNSFW: Boolean,
 ) {
     val transferPrivateMessageDepsViaRoot = navController.rootChannel<PrivateMessageDeps>()
     val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
@@ -394,6 +397,7 @@ fun InboxTabs(
                                             },
                                             account = account,
                                             showAvatar = siteViewModel.showAvatar(),
+                                            blurNSFW = blurNSFW,
                                         )
                                     }
                                 }
@@ -565,6 +569,7 @@ fun InboxTabs(
                                             },
                                             account = account,
                                             showAvatar = siteViewModel.showAvatar(),
+                                            blurNSFW = blurNSFW,
                                         )
                                     }
                                 }

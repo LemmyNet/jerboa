@@ -72,6 +72,7 @@ fun CommunityLink(
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,
+    blurNSFW: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -88,6 +89,7 @@ fun CommunityLink(
                 contentDescription = null,
                 size = size,
                 thumbnailSize = thumbnailSize,
+                blur = blurNSFW && community.nsfw,
             )
         } ?: run {
             if (showDefaultIcon) {
@@ -115,6 +117,7 @@ fun CommunityLinkLarger(
     community: Community,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
+    blurNSFW: Boolean,
 ) {
     CommunityLink(
         community = community,
@@ -128,6 +131,7 @@ fun CommunityLinkLarger(
             .fillMaxWidth(),
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
+        blurNSFW = blurNSFW,
     )
 }
 
@@ -136,6 +140,7 @@ fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
+    blurNSFW: Boolean,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -150,6 +155,7 @@ fun CommunityLinkLargerWithUserCount(
         style = MaterialTheme.typography.titleLarge,
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
+        blurNSFW = blurNSFW,
     )
 }
 
@@ -160,6 +166,7 @@ fun CommunityLinkPreview() {
         community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
+        blurNSFW = true,
     )
 }
 
@@ -170,5 +177,6 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {},
         showDefaultIcon = true,
+        blurNSFW = true,
     )
 }

@@ -84,6 +84,7 @@ fun CommunityActivity(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
     val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
@@ -244,6 +245,7 @@ fun CommunityActivity(
                                                     )
                                                 }
                                             },
+                                            blurNSFW = blurNSFW,
                                         )
                                     }
 
@@ -370,6 +372,7 @@ fun CommunityActivity(
                             showVotingArrowsInListView = showVotingArrowsInListView,
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
+                            blurNSFW = blurNSFW,
                         )
                     }
                     else -> {}

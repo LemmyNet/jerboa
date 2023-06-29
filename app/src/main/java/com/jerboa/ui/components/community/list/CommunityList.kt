@@ -65,6 +65,7 @@ fun CommunityListings(
     communities: List<CommunityView>,
     onClickCommunity: (community: Community) -> Unit,
     modifier: Modifier = Modifier,
+    blurNSFW: Boolean,
 ) {
     val listState = rememberLazyListState()
 
@@ -82,12 +83,14 @@ fun CommunityListings(
                     community = item.community,
                     onClick = onClickCommunity,
                     showDefaultIcon = true,
+                    blurNSFW = blurNSFW,
                 )
             } else {
                 CommunityLinkLargerWithUserCount(
                     communityView = item,
                     onClick = onClickCommunity,
                     showDefaultIcon = true,
+                    blurNSFW = blurNSFW,
                 )
             }
         }
@@ -101,6 +104,7 @@ fun CommunityListingsPreview() {
     CommunityListings(
         communities = communities,
         onClickCommunity = {},
+        blurNSFW = true,
     )
 }
 

@@ -11,6 +11,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -113,7 +116,17 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
         ),
     ) {
         Box(
-            Modifier.background(backgroundColor.value),
+            Modifier
+                .background(backgroundColor.value)
+                .scrollable(
+                    orientation = Orientation.Vertical,
+                    state = rememberScrollableState(
+                        consumeScrollDelta = {
+                            if (it < -70) onBackRequest()
+                            it
+                        },
+                    ),
+                ),
         ) {
             Image(
                 painter = rememberAsyncImagePainter(url, imageLoader = imageLoader),
@@ -123,10 +136,7 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
                     .zoomable(
                         zoomState = rememberZoomState(),
                         onTap = { showTopBar = !showTopBar },
-                    )
-                    .clickable {
-                        onBackRequest()
-                    },
+                    ),
             )
 
             Row(

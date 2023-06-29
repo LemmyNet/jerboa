@@ -1,3 +1,21 @@
+# Jerboa v0.0.37-alpha Release (2023-06-29)
+
+## What's Changed
+
+- Nav scoped view models by @nahwneeth in https://github.com/dessalines/jerboa/pull/817
+- Fix downvote on post in postview doing a upvote by @MV-GH in https://github.com/dessalines/jerboa/pull/893
+- Fix .zoomable functionality in ImageViewerDialog and add "swipe up to close" by @sockenklaus in https://github.com/dessalines/jerboa/pull/894
+- Add blur option, fix non blurred community icons/banners by @MV-GH in https://github.com/dessalines/jerboa/pull/896
+- Fix edit comment view text is being empty by @MV-GH in https://github.com/dessalines/jerboa/pull/897
+- Update baseline profiles by @MV-GH in https://github.com/dessalines/jerboa/pull/906
+- Change app display name by @Undearius in https://github.com/dessalines/jerboa/pull/904
+
+## New Contributors
+
+- @Undearius made their first contribution in https://github.com/dessalines/jerboa/pull/904
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.36...0.0.37
+
 # Jerboa v0.0.36-alpha Release (2023-06-26)
 
 ## What's Changed

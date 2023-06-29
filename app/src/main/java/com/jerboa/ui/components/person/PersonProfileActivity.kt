@@ -97,6 +97,7 @@ fun PersonProfileActivity(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -234,6 +235,7 @@ fun PersonProfileActivity(
                 showAvatar = siteViewModel.showAvatar(),
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
             )
         },
     )
@@ -262,6 +264,7 @@ fun UserTabs(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
     val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
@@ -384,6 +387,7 @@ fun UserTabs(
                                             navController.toCommunity(id = community.id)
                                         },
                                         showDefaultIcon = true,
+                                        blurNSFW = blurNSFW,
                                     )
                                 }
                             }
@@ -518,6 +522,7 @@ fun UserTabs(
                                     showVotingArrowsInListView = showVotingArrowsInListView,
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
+                                    blurNSFW = blurNSFW,
                                 )
                             }
                             else -> {}
@@ -696,6 +701,7 @@ fun UserTabs(
                                     moderators = listOf(),
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
+                                    blurNSFW = blurNSFW,
                                 )
                             }
                         }
