@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="AppBars_comments">%1$s comments</string>
     <string name="AppBars_created">Created</string>
@@ -6,7 +7,9 @@
     <string name="AppBars_users_day">%1$s users / day</string>
     <string name="AppBars_users_month">%1$s users / month</string>
     <string name="AppBars_users_week">%1$s users / week</string>
+
     <string name="about_social">Social</string>
+
     <string name="account_settings_active">Active</string>
     <string name="account_settings_activity_account_settings">Account Settings</string>
     <string name="account_settings_all">All</string>
@@ -40,9 +43,15 @@
     <string name="account_settings_topmonth">TopMonth</string>
     <string name="account_settings_topweek">TopWeek</string>
     <string name="account_settings_topyear">TopYear</string>
+
     <string name="addBookmark">Add to bookmarks</string>
+
     <string name="app_bars_dot_spacer">·</string>
-    <string name="app_name" translatable="false">Jerboa</string>
+
+    <string name="blur_nsfw">Blur NSFW images</string>
+
+    <string name="bookmarks_activity_saved">Saved</string>
+
     <string name="bottomBar_bookmarks">Go to my bookmarks</string>
     <string name="bottomBar_home">Go home</string>
     <string name="bottomBar_inbox">Go to my inbox</string>
@@ -53,30 +62,36 @@
     <string name="bottomBar_label_search">Search</string>
     <string name="bottomBar_profile">Go to my profile</string>
     <string name="bottomBar_search">Go to search</string>
+
     <string name="commentEdit_save">Save comment edit</string>
+
     <string name="commentFooter_reply">Reply to this comment</string>
+
     <string name="commentMention_link">Go to comment</string>
+
     <string name="commentOrPostHeader_deleted">Post or comment is deleted</string>
+
     <string name="commentReply_link">Go to reply</string>
     <string name="commentReply_send">Send reply</string>
+
     <string name="comment_body_deleted">*Deleted*</string>
     <string name="comment_body_removed">*Removed*</string>
     <string name="comment_edit_back">Back</string>
     <string name="comment_edit_edit">Edit</string>
     <string name="comment_edit_type_your_comment">Type your comment</string>
     <string name="comment_mention_node_block">Block %1$s</string>
-    <string name="comment_mention_node_copy_permalink">Copy Permalink</string>
+    <string name="comment_mention_node_comment_copied">Comment Text Copied</string>
     <string name="comment_mention_node_copy_comment">Copy Comment Text</string>
+    <string name="comment_mention_node_copy_permalink">Copy Permalink</string>
     <string name="comment_mention_node_go_to">Go to %1$s</string>
     <string name="comment_mention_node_permalink_copied">Permalink Copied</string>
-    <string name="comment_mention_node_comment_copied">Comment Text Copied</string>
     <string name="comment_mention_node_report_comment">Report Comment</string>
     <string name="comment_mention_node_view_source">View Source</string>
     <string name="comment_next_parent">Next Parent Comment</string>
-    <string name="comment_previous_parent">Previous Parent Comment</string>
     <string name="comment_node_block">Block %1$s</string>
-    <string name="comment_node_copy_permalink">Copy Permalink</string>
+    <string name="comment_node_comment_copied">Comment Text Copied</string>
     <string name="comment_node_copy_comment">Copy Comment Text</string>
+    <string name="comment_node_copy_permalink">Copy Permalink</string>
     <string name="comment_node_delete">Delete</string>
     <string name="comment_node_edit">Edit</string>
     <string name="comment_node_go_to">Go to %1$s</string>
@@ -84,12 +99,12 @@
     <string name="comment_node_in">"in "</string>
     <string name="comment_node_more_replies">%1$s more replies</string>
     <string name="comment_node_permalink_copied">Permalink Copied</string>
-    <string name="comment_node_comment_copied">Comment Text Copied</string>
     <string name="comment_node_report_comment">Report Comment</string>
     <string name="comment_node_restore">Restore</string>
     <string name="comment_node_view_context">View Context</string>
     <string name="comment_node_view_post">View Post</string>
     <string name="comment_node_view_source">View Source</string>
+    <string name="comment_previous_parent">Previous Parent Comment</string>
     <string name="comment_reply_back">Back</string>
     <string name="comment_reply_node_block">Block %1$s</string>
     <string name="comment_reply_node_copy_permalink">Copy Permalink</string>
@@ -101,6 +116,7 @@
     <string name="comment_reply_type_your_comment">Type your comment</string>
     <string name="comment_save">Save comment</string>
     <string name="comment_unsave">Unsave comment</string>
+
     <string name="community_back">Back</string>
     <string name="community_block_community">Block Community</string>
     <string name="community_blocked">%1$s Blocked</string>
@@ -115,7 +131,10 @@
     <string name="community_sortBy">Sort by</string>
     <string name="community_subscribe">Subscribe</string>
     <string name="community_users_month">%1$s users / month</string>
+
     <string name="createPost_selectCommunity">Select community from list</string>
+
+    <string name="create_edit_post_close">Close</string>
     <string name="create_post_a_title_here">a title here....</string>
     <string name="create_post_close">Close</string>
     <string name="create_post_community">Community</string>
@@ -127,7 +146,9 @@
     <string name="create_report_type_your_reason">Type your reason</string>
     <string name="create_report_view_model_report_created">Report Created</string>
     <string name="create_report_view_model_report_fail">Couldn\'t create report: %1$s</string>
+
     <string name="dialog_moreOptions">More options</string>
+
     <string name="dialogs_active">Active</string>
     <string name="dialogs_all">All</string>
     <string name="dialogs_done">Done</string>
@@ -136,6 +157,9 @@
     <string name="dialogs_most_comments">Most Comments</string>
     <string name="dialogs_new">New</string>
     <string name="dialogs_new_comments">New Comments</string>
+    <string name="dialogs_old">Old</string>
+    <string name="dialogs_server_version_outdated">Server version (%1$s) is under the minimum supported version (%2$s).\n\nPlease inform your administrator and login to another instance, or sign out and use the default instance.</string>
+    <string name="dialogs_server_version_outdated_short">Server version (%1$s) too low.</string>
     <string name="dialogs_subscribed">Subscribed</string>
     <string name="dialogs_top">Top</string>
     <string name="dialogs_top_all_time">Top All Time</string>
@@ -143,13 +167,20 @@
     <string name="dialogs_top_month">Top Month</string>
     <string name="dialogs_top_week">Top Week</string>
     <string name="dialogs_top_year">Top Year</string>
-    <string name="dialogs_old">Old</string>
     <string name="dialogs_unread">Unread</string>
-    <string name="dialogs_server_version_outdated">Server version (%1$s) is under the minimum supported version (%2$s).\n\nPlease inform your administrator and login to another instance, or sign out and use the default instance.</string>
-    <string name="dialogs_server_version_outdated_short">Server version (%1$s) too low.</string>
+
+    <string name="downvote">Downvote</string>
+
+    <string name="downvoted">Downvoted</string>
+
     <string name="floating_createPost">Create post</string>
+
     <string name="form_submit">Submit</string>
+
+    <string name="generic_error">An error has occurred</string>
+
     <string name="homeHeader_filter">Select feed</string>
+
     <string name="home_add_account">Add Account</string>
     <string name="home_all">All</string>
     <string name="home_communities">Communities</string>
@@ -166,28 +197,39 @@
     <string name="home_subscribed">Subscribed</string>
     <string name="home_subscriptions">Subscriptions</string>
     <string name="home_switch_to">Switch to %1$s/%2$s</string>
+
+    <string name="inbox_activity_mentions">Mentions</string>
+    <string name="inbox_activity_messages">Messages</string>
+    <string name="inbox_activity_replies">Replies</string>
     <string name="inbox_back">Back</string>
     <string name="inbox_filter">Filter</string>
     <string name="inbox_inbox">Inbox</string>
     <string name="inbox_markAllRead">Mark all as read</string>
+
     <string name="input_fields_cancel">Cancel</string>
     <string name="input_fields_insert_link">Insert link</string>
     <string name="input_fields_link">Link</string>
     <string name="input_fields_ok">OK</string>
     <string name="input_fields_text">Text</string>
+
+    <string name="lang_language">Language</string>
+
     <string name="lessOptions">Show less options</string>
+
     <string name="login_back">Back</string>
     <string name="login_email_or_username">Email or Username</string>
     <string name="login_instance">Instance</string>
     <string name="login_instance_placeholder">ex: lemmy.ml</string>
     <string name="login_login">Login</string>
-    <string name="login_totp">Enter 2FA Token if enabled</string>
     <string name="login_password">Password</string>
+    <string name="login_totp">Enter 2FA Token if enabled</string>
     <string name="login_view_model_incorrect_login">Incorrect Login</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s is not a Lemmy Instance</string>
+
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Show content for collapsed comments</string>
     <string name="look_and_feel_font_size">Font size: %1$s</string>
     <string name="look_and_feel_look_and_feel">Look and feel</string>
+    <string name="look_and_feel_navigate_parent_comments_with_volume_buttons">Navigate parent comments with volume buttons</string>
     <string name="look_and_feel_post_view">Post View</string>
     <string name="look_and_feel_post_view_card">Card</string>
     <string name="look_and_feel_post_view_list">List</string>
@@ -195,29 +237,31 @@
     <string name="look_and_feel_secure_window">Prevent Screenshots</string>
     <string name="look_and_feel_show_action_bar_for_comments">Show action bar by default for comments</string>
     <string name="look_and_feel_show_navigation_bar">Show navigation bar</string>
-    <string name="look_and_feel_show_voting_arrows_list_view">Show voting arrows in list view</string>
     <string name="look_and_feel_show_parent_comment_navigation_buttons">Show parent comment navigation buttons</string>
-    <string name="look_and_feel_navigate_parent_comments_with_volume_buttons">Navigate parent comments with volume buttons</string>
+    <string name="look_and_feel_show_voting_arrows_list_view">Show voting arrows in list view</string>
     <string name="look_and_feel_theme">Theme</string>
     <string name="look_and_feel_theme_black">Black</string>
     <string name="look_and_feel_theme_color">Theme color</string>
-    <string name="look_and_feel_theme_dark">Dark</string>
-    <string name="look_and_feel_theme_light">Light</string>
-    <string name="look_and_feel_theme_system">System</string>
-    <string name="look_and_feel_theme_system_black">System Black</string>
-    <string name="look_and_feel_theme_color_dynamic">Dynamic</string>
     <string name="look_and_feel_theme_color_beach">Beach</string>
     <string name="look_and_feel_theme_color_blue">Blue</string>
     <string name="look_and_feel_theme_color_crimson">Crimson</string>
+    <string name="look_and_feel_theme_color_dynamic">Dynamic</string>
     <string name="look_and_feel_theme_color_green">Green</string>
     <string name="look_and_feel_theme_color_grey">Grey</string>
     <string name="look_and_feel_theme_color_pink">Pink</string>
     <string name="look_and_feel_theme_color_purple">Purple</string>
     <string name="look_and_feel_theme_color_woodland">Woodland</string>
+    <string name="look_and_feel_theme_dark">Dark</string>
+    <string name="look_and_feel_theme_light">Light</string>
+    <string name="look_and_feel_theme_system">System</string>
+    <string name="look_and_feel_theme_system_black">System Black</string>
     <string name="look_and_feel_use_custom_tabs">Use custom tabs</string>
     <string name="look_and_feel_use_private_tabs">Use private custom tabs if available</string>
+
     <string name="markRead">Mark as read</string>
+
     <string name="markUnread">Mark as unread</string>
+
     <string name="markdownHelper_formatBold">Format as bold text</string>
     <string name="markdownHelper_formatItalic">Format as italic text</string>
     <string name="markdownHelper_formatStrikethrough">Format as strikethrough text</string>
@@ -230,10 +274,16 @@
     <string name="markdownHelper_insertList">Insert list</string>
     <string name="markdownHelper_insertQuote">Insert quote</string>
     <string name="markdownHelper_preview">View preview</string>
+
     <string name="moreOptions">More options</string>
+
     <string name="networkError">Network error</string>
+
+    <string name="permission_denied">Permission denied</string>
+
     <string name="personProfile_viewAvatar">View avatar image</string>
     <string name="personProfile_viewBanner">View banner image</string>
+
     <string name="person_iconAdmin">Is administrator</string>
     <string name="person_iconBanned">Is banned</string>
     <string name="person_iconModerator">Is moderator</string>
@@ -248,14 +298,18 @@
     <string name="person_profile_posts">%1$s posts</string>
     <string name="person_profile_report_person">Report Person</string>
     <string name="person_routines_blocked">%1$s Blocked</string>
+
     <string name="pickImage_imagePreview">Uploaded image preview</string>
+
     <string name="pictrs_image_upload_image">Upload Image</string>
+
     <string name="postListing_deleted">Deleted</string>
     <string name="postListing_featuredCommunity">Featured in community</string>
     <string name="postListing_featuredLocal">Featured locally</string>
     <string name="postListing_goToCommunity">Go to community</string>
     <string name="postListing_locked">Locked</string>
     <string name="postListing_reply">Reply to post</string>
+
     <string name="post_activity_comments">Comments</string>
     <string name="post_edit_body_placeholder">Body</string>
     <string name="post_edit_close">Close</string>
@@ -264,31 +318,40 @@
     <string name="post_listing_comments">%1$s comments</string>
     <string name="post_listing_comments_count">%1$s comments</string>
     <string name="post_listing_copy_link">Copy link</string>
+    <string name="post_listing_copy_name">Copy Post Name</string>
     <string name="post_listing_copy_permalink">Copy Permalink</string>
+    <string name="post_listing_copy_text">Copy Post Text</string>
     <string name="post_listing_copy_thumbnail_link">Copy Thumbnail Link</string>
     <string name="post_listing_copy_title">Copy Post Title</string>
-    <string name="post_listing_copy_name">Copy Post Name</string>
-    <string name="post_listing_copy_text">Copy Post Text</string>
     <string name="post_listing_delete">Delete</string>
     <string name="post_listing_edit">Edit</string>
     <string name="post_listing_go_to">Go to %1$s</string>
     <string name="post_listing_link_copied">Link Copied</string>
+    <string name="post_listing_name_copied">Name Copied</string>
     <string name="post_listing_new">( %1$s new )</string>
     <string name="post_listing_permalink_copied">Permalink Copied</string>
-    <string name="post_listing_thumbnail_link_copied">Thumbnail Link Copied</string>
-    <string name="post_listing_title_copied">Title Copied</string>
-    <string name="post_listing_name_copied">Name Copied</string>
-    <string name="post_listing_text_copied">Text Copied</string>
     <string name="post_listing_report_post">Report Post</string>
     <string name="post_listing_restore">Restore</string>
+    <string name="post_listing_text_copied">Text Copied</string>
+    <string name="post_listing_thumbnail_link_copied">Thumbnail Link Copied</string>
+    <string name="post_listing_title_copied">Title Copied</string>
+
     <string name="privateMessage_reply">Reply to message</string>
+
     <string name="private_message_from">"from "</string>
     <string name="private_message_reply_back">Back</string>
     <string name="private_message_reply_reply">Reply</string>
     <string name="private_message_reply_type_your_message_placeholder">Type your message</string>
     <string name="private_message_to">"to "</string>
+
     <string name="removeBookmark">Remove from bookmarks</string>
+
+    <string name="saved_image">Saved image</string>
+
+    <string name="saving_image">Saving image…</string>
+
     <string name="selectSort">Sort by</string>
+
     <string name="settings_about_about">About</string>
     <string name="settings_about_developer_matrix_chatroom">Developer Matrix chatroom</string>
     <string name="settings_about_donate_to_jerboa_development">Donate to Jerboa development</string>
@@ -306,6 +369,7 @@
     <string name="settings_activity_account_settings">%1$s settings</string>
     <string name="settings_activity_look_and_feel">Look and feel</string>
     <string name="settings_activity_settings">Settings</string>
+
     <string name="sorttype_active">Active</string>
     <string name="sorttype_hot">Hot</string>
     <string name="sorttype_mostcomments">MostComments</string>
@@ -317,22 +381,16 @@
     <string name="sorttype_topmonth">TopMonth</string>
     <string name="sorttype_topweek">TopWeek</string>
     <string name="sorttype_topyear">TopYear</string>
+
     <string name="time_ago_ago">%1$s %2$s ago</string>
+
     <string name="topAppBar_back">Back</string>
-    <string name="utils_login_first">Login first</string>
+
     <string name="upvote">Upvote</string>
-    <string name="downvote">Downvote</string>
+
     <string name="upvoted">Upvoted</string>
-    <string name="downvoted">Downvoted</string>
-    <string name="saved_image">Saved image</string>
-    <string name="saving_image">Saving image…</string>
-    <string name="permission_denied">Permission denied</string>
-    <string name="inbox_activity_replies">Replies</string>
-    <string name="inbox_activity_mentions">Mentions</string>
-    <string name="inbox_activity_messages">Messages</string>
-    <string name="bookmarks_activity_saved">Saved</string>
-    <string name="generic_error">An error has occurred</string>
-    <string name="create_edit_post_close">Close</string>
-    <string name="lang_language">Language</string>
-    <string name="blur_nsfw">Blur NSFW images</string>
+
+    <string name="utils_login_first">Login first</string>
+
+    <string name="app_name" translatable="false">Jerboa</string>
 </resources>
