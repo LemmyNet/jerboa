@@ -105,42 +105,33 @@ class LoginViewModel : ViewModel() {
 
                     try {
                         val luv = siteRes.data.my_user!!.local_user_view
+                        var dlt : Int
+                        var dst : Int
 
                         try {
-                            val account = Account(
-                                id = luv.person.id,
-                                name = luv.person.name,
-                                current = true,
-                                instance = instance,
-                                jwt = jwt,
-                                defaultListingType = luv.local_user.default_listing_type.ordinal,
-                                defaultSortType = luv.local_user.default_sort_type.ordinal,
-                            )
-
-                            // Remove the default account
-                            accountViewModel.removeCurrent()
-
-                            // Save that info in the DB
-                            accountViewModel.insert(account)
-
+                            dlt = luv.local_user.default_listing_type.ordinal
+                            dst = luv.local_user.default_sort_type.ordinal
                             // Lemmy 0.17.x logins fail due to a defaultlisting being null for some reason, fallback to zero
                         } catch (e: NullPointerException) {
-                            val account = Account(
-                                id = luv.person.id,
-                                name = luv.person.name,
-                                current = true,
-                                instance = instance,
-                                jwt = jwt,
-                                defaultListingType = 0,
-                                defaultSortType = 0,
-                            )
-
-                            // Remove the default account
-                            accountViewModel.removeCurrent()
-
-                            // Save that info in the DB
-                            accountViewModel.insert(account)
+                            dlt = 0
+                            dst = 0
                         }
+
+                        val account = Account(
+                            id = luv.person.id,
+                            name = luv.person.name,
+                            current = true,
+                            instance = instance,
+                            jwt = jwt,
+                            defaultListingType = dlt,
+                            defaultSortType = dst,
+                        )
+
+                        // Remove the default account
+                        accountViewModel.removeCurrent()
+
+                        // Save that info in the DB
+                        accountViewModel.insert(account)
                     } catch (e: Exception) {
                         loading = false
                         Log.e("login", e.toString())

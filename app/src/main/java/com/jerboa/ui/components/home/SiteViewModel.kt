@@ -52,14 +52,12 @@ class SiteViewModel : ViewModel() {
 
             when (val res = siteRes) {
                 is ApiState.Success -> {
-                    try {
-                        res.data.my_user?.local_user_view?.local_user?.let {
+                    res.data.my_user?.local_user_view?.local_user?.let {
+                        try {
                             updateSortType(it.default_sort_type)
                             updateListingType(it.default_listing_type)
-                        }
-                        // Lemmy 0.17.x logins fail due to a defaultlisting being null for some reason, fallback to zero
-                    } catch (e: NullPointerException) {
-                        res.data.my_user?.local_user_view?.local_user?.let {
+                        // Lemmy 0.17.x logins fail due to a defaultlisting being null for some reason, use fallback values instead
+                        } catch (e: NullPointerException) {
                             updateSortType(SortType.Active)
                             updateListingType(ListingType.Local)
                         }
