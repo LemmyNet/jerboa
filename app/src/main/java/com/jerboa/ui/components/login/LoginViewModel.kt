@@ -105,8 +105,8 @@ class LoginViewModel : ViewModel() {
 
                     try {
                         val luv = siteRes.data.my_user!!.local_user_view
-                        var dlt : Int
-                        var dst : Int
+                        var dlt: Int
+                        var dst: Int
 
                         try {
                             dlt = luv.local_user.default_listing_type.ordinal

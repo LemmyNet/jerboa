@@ -56,7 +56,7 @@ class SiteViewModel : ViewModel() {
                         try {
                             updateSortType(it.default_sort_type)
                             updateListingType(it.default_listing_type)
-                        // Lemmy 0.17.x logins fail due to a defaultlisting being null for some reason, use fallback values instead
+                            // Lemmy 0.17.x logins fail due to a defaultlisting being null for some reason, use fallback values instead
                         } catch (e: NullPointerException) {
                             updateSortType(SortType.Active)
                             updateListingType(ListingType.Local)
