@@ -17,7 +17,6 @@ import com.jerboa.api.apiWrapper
 import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.compareVersions
 import com.jerboa.datatypes.types.GetSite
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel

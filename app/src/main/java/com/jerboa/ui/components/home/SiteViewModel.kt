@@ -39,8 +39,8 @@ class SiteViewModel : ViewModel() {
     }
 
     fun updateFromAccount(account: Account) {
-        updateSortType(SortType.values().getOrElse(if(account.defaultSortType != null) account.defaultSortType else 0) { sortType })
-        updateListingType(ListingType.values().getOrElse(if(account.defaultListingType != null) account.defaultListingType else 0) { listingType })
+        updateSortType(SortType.values().getOrElse(if (account.defaultSortType != null) account.defaultSortType else 0) { sortType })
+        updateListingType(ListingType.values().getOrElse(if (account.defaultListingType != null) account.defaultListingType else 0) { listingType })
     }
 
     fun getSite(
@@ -53,8 +53,8 @@ class SiteViewModel : ViewModel() {
             when (val res = siteRes) {
                 is ApiState.Success -> {
                     res.data.my_user?.local_user_view?.local_user!!.let {
-                        updateSortType(if(it.default_sort_type != null) it.default_sort_type else SortType.Active)
-                        updateListingType(if(it.default_listing_type != null) it.default_listing_type else ListingType.Local)
+                        updateSortType(if (it.default_sort_type != null) it.default_sort_type else SortType.Active)
+                        updateListingType(if (it.default_listing_type != null) it.default_listing_type else ListingType.Local)
                     }
                 }
                 else -> {}
