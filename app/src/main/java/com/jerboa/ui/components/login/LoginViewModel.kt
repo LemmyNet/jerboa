@@ -106,7 +106,7 @@ class LoginViewModel : ViewModel() {
                     try {
                         val luv = siteRes.data.my_user!!.local_user_view
 
-                        try{
+                        try {
                             val account = Account(
                                 id = luv.person.id,
                                 name = luv.person.name,

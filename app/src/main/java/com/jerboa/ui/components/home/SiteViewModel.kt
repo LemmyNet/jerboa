@@ -52,7 +52,6 @@ class SiteViewModel : ViewModel() {
 
             when (val res = siteRes) {
                 is ApiState.Success -> {
-
                     try {
                         res.data.my_user?.local_user_view?.local_user?.let {
                             updateSortType(it.default_sort_type)
