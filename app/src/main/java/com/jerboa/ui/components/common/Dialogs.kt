@@ -376,7 +376,7 @@ fun ShowOutdatedServerDialog(siteVersion: String, onConfirm: () -> Unit) {
         text = {
             Text(
                 stringResource(
-                    R.string.dialogs_server_version_outdated,
+                    R.string.dialogs_server_version_outdated_warning,
                     siteVersion,
                     MINIMUM_API_VERSION,
                 ),

@@ -17,6 +17,7 @@ import com.jerboa.api.apiWrapper
 import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.compareVersions
 import com.jerboa.datatypes.types.GetSite
+import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
@@ -97,7 +98,7 @@ class LoginViewModel : ViewModel() {
                     val siteVersion = siteRes.data.version
                     if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0) {
                         val message = ctx.resources.getString(
-                            R.string.dialogs_server_version_outdated_short,
+                            R.string.dialogs_server_version_outdated_warning_short,
                             siteVersion,
                         )
                         Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
@@ -105,14 +106,15 @@ class LoginViewModel : ViewModel() {
 
                     try {
                         val luv = siteRes.data.my_user!!.local_user_view
+
                         val account = Account(
                             id = luv.person.id,
                             name = luv.person.name,
                             current = true,
                             instance = instance,
                             jwt = jwt,
-                            defaultListingType = luv.local_user.default_listing_type.ordinal,
-                            defaultSortType = luv.local_user.default_sort_type.ordinal,
+                            defaultListingType = if (luv.local_user.default_listing_type != null) luv.local_user.default_listing_type.ordinal else 0,
+                            defaultSortType = if (luv.local_user.default_listing_type != null) luv.local_user.default_sort_type.ordinal else 0,
                         )
 
                         // Remove the default account

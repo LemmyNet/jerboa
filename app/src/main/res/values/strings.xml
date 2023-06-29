@@ -146,7 +146,9 @@
     <string name="dialogs_old">Old</string>
     <string name="dialogs_unread">Unread</string>
     <string name="dialogs_server_version_outdated">Server version (%1$s) is under the minimum supported version (%2$s).\n\nPlease inform your administrator and login to another instance, or sign out and use the default instance.</string>
+    <string name="dialogs_server_version_outdated_warning">Server version (%1$s) is under the minimum supported version (%2$s).\n\nAll features may not work as expected, and you may experience issues with this app.\n\nTo suppress this message, contact the instance administrator to update, or log in to an updated instance.</string>
     <string name="dialogs_server_version_outdated_short">Server version (%1$s) too low.</string>
+    <string name="dialogs_server_version_outdated_warning_short">Server version (%1$s) is unsupported.</string>
     <string name="floating_createPost">Create post</string>
     <string name="form_submit">Submit</string>
     <string name="homeHeader_filter">Select feed</string>
