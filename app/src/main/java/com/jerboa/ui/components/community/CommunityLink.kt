@@ -70,12 +70,18 @@ fun CommunityLink(
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
     onClick: (community: Community) -> Unit,
+    clickable: Boolean = true,
     showDefaultIcon: Boolean,
+    blurNSFW: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing),
-        modifier = modifier.clickable { onClick(community) },
+        modifier = if (clickable) {
+            modifier.clickable { onClick(community) }
+        } else {
+            modifier
+        },
     ) {
         community.icon?.let {
             CircularIcon(
@@ -83,6 +89,7 @@ fun CommunityLink(
                 contentDescription = null,
                 size = size,
                 thumbnailSize = thumbnailSize,
+                blur = blurNSFW && community.nsfw,
             )
         } ?: run {
             if (showDefaultIcon) {
@@ -114,6 +121,7 @@ fun CommunityLinkLarger(
     community: Community,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
+    blurNSFW: Boolean,
 ) {
     CommunityLink(
         community = community,
@@ -127,6 +135,7 @@ fun CommunityLinkLarger(
             .fillMaxWidth(),
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
+        blurNSFW = blurNSFW,
     )
 }
 
@@ -135,6 +144,7 @@ fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
+    blurNSFW: Boolean,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -149,6 +159,7 @@ fun CommunityLinkLargerWithUserCount(
         style = MaterialTheme.typography.titleLarge,
         onClick = onClick,
         showDefaultIcon = showDefaultIcon,
+        blurNSFW = blurNSFW,
     )
 }
 
@@ -159,6 +170,7 @@ fun CommunityLinkPreview() {
         community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
+        blurNSFW = true,
     )
 }
 
@@ -169,5 +181,6 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {},
         showDefaultIcon = true,
+        blurNSFW = true,
     )
 }

@@ -36,9 +36,11 @@ import com.jerboa.findAndUpdatePrivateMessage
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
-class InboxViewModel : ViewModel() {
+class InboxViewModel : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
 
     var repliesRes: ApiState<GetRepliesResponse> by mutableStateOf(
         ApiState.Empty,

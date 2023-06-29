@@ -123,6 +123,7 @@ fun PostHeaderLine(
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
     showAvatar: Boolean,
+    blurNSFW: Boolean,
 ) {
     val community = postView.community
     Column(modifier = modifier) {
@@ -142,6 +143,7 @@ fun PostHeaderLine(
                             size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
                             thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
+                            blur = blurNSFW && community.nsfw,
                         )
                     }
                 }
@@ -229,6 +231,7 @@ fun PostHeaderLinePreview() {
         onCommunityClick = {},
         onPersonClick = {},
         showAvatar = true,
+        blurNSFW = true,
     )
 }
 
@@ -264,12 +267,14 @@ fun PostTitleBlock(
     account: Account?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
             postView = postView,
+            blurNSFW = blurNSFW,
         )
     } else {
         PostTitleAndThumbnail(
@@ -277,7 +282,7 @@ fun PostTitleBlock(
             account = account,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
-
+            blurNSFW = blurNSFW,
         )
     }
 }
@@ -309,6 +314,7 @@ fun PostName(
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
+    blurNSFW: Boolean,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -336,7 +342,7 @@ fun PostTitleAndImageLink(
         .clickable { showImageDialog = true }
     PictrsUrlImage(
         url = url,
-        nsfw = nsfwCheck(postView),
+        blur = blurNSFW && nsfwCheck(postView),
         modifier = postLinkPicMod,
     )
 }
@@ -347,6 +353,7 @@ fun PostTitleAndThumbnail(
     account: Account?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -377,6 +384,7 @@ fun PostTitleAndThumbnail(
                 postView = postView,
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
             )
         }
     }
@@ -390,6 +398,7 @@ fun PostBody(
     account: Account?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     val post = postView.post
     Column(
@@ -401,6 +410,7 @@ fun PostBody(
             account = account,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
+            blurNSFW = blurNSFW,
         )
 
         // The metadata card
@@ -453,6 +463,7 @@ fun PreviewStoryTitleAndMetadata() {
         account = null,
         useCustomTabs = false,
         usePrivateTabs = false,
+        blurNSFW = true,
     )
 }
 
@@ -696,6 +707,7 @@ fun PreviewPostListingCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
+        blurNSFW = true,
     )
 }
 
@@ -725,6 +737,7 @@ fun PreviewLinkPostListing() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
+        blurNSFW = true,
     )
 }
 
@@ -754,6 +767,7 @@ fun PreviewImagePostListingCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
+        blurNSFW = true,
     )
 }
 
@@ -783,6 +797,7 @@ fun PreviewImagePostListingSmallCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
+        blurNSFW = true,
     )
 }
 
@@ -812,6 +827,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
+        blurNSFW = true,
     )
 }
 
@@ -841,6 +857,7 @@ fun PostListing(
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
+    blurNSFW: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -892,6 +909,7 @@ fun PostListing(
             showAvatar = showAvatar,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
+            blurNSFW = blurNSFW,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -931,6 +949,7 @@ fun PostListing(
             showAvatar = showAvatar,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
+            blurNSFW = blurNSFW,
         )
 
         PostViewMode.List -> PostListingList(
@@ -951,8 +970,6 @@ fun PostListing(
                 onDownvoteClick(it)
             },
             onPostClick = onPostClick,
-            onCommunityClick = onCommunityClick,
-            onPersonClick = onPersonClick,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
             account = account,
@@ -960,6 +977,7 @@ fun PostListing(
             showAvatar = showAvatar,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
+            blurNSFW = blurNSFW,
         )
     }
 }
@@ -1017,8 +1035,6 @@ fun PostListingList(
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
     onPostClick: (postView: PostView) -> Unit,
-    onCommunityClick: (community: Community) -> Unit,
-    onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
     account: Account?,
@@ -1026,6 +1042,7 @@ fun PostListingList(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1066,15 +1083,18 @@ fun PostListingList(
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,
-                            onClick = onCommunityClick,
+                            onClick = {},
+                            clickable = false,
                             showDefaultIcon = false,
+                            blurNSFW = blurNSFW,
                         )
                         DotSpacer(0.dp)
                     }
                     PersonProfileLink(
                         person = postView.creator,
                         isModerator = isModerator,
-                        onClick = onPersonClick,
+                        onClick = {},
+                        clickable = false,
                         color = MaterialTheme.colorScheme.onSurface.muted,
                         showAvatar = showAvatar,
                     )
@@ -1127,6 +1147,7 @@ fun PostListingList(
                 postView = postView,
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
             )
         }
     }
@@ -1137,6 +1158,7 @@ private fun ThumbnailTile(
     postView: PostView,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     postView.post.url?.also { url ->
         var showImageDialog by remember { mutableStateOf(false) }
@@ -1166,7 +1188,7 @@ private fun ThumbnailTile(
         postView.post.thumbnail_url?.also { thumbnail ->
             PictrsThumbnailImage(
                 thumbnail = thumbnail,
-                nsfw = nsfwCheck(postView),
+                blur = blurNSFW && nsfwCheck(postView),
                 modifier = postLinkPicMod,
             )
         } ?: run {
@@ -1207,14 +1229,13 @@ fun PostListingListPreview() {
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
-        onCommunityClick = {},
-        onPersonClick = {},
         isModerator = false,
         account = null,
         showVotingArrowsInListView = true,
         showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
+        blurNSFW = true,
     )
 }
 
@@ -1235,14 +1256,13 @@ fun PostListingListWithThumbPreview() {
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
-        onCommunityClick = {},
-        onPersonClick = {},
         isModerator = false,
         account = null,
         showVotingArrowsInListView = true,
         showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
+        blurNSFW = true,
     )
 }
 
@@ -1272,6 +1292,7 @@ fun PostListingCard(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1291,6 +1312,8 @@ fun PostListingCard(
             showCommunityName = showCommunityName,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showAvatar = showAvatar,
+            blurNSFW = blurNSFW,
+
         )
 
         //  Title + metadata
@@ -1301,6 +1324,7 @@ fun PostListingCard(
             account = account,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
+            blurNSFW = blurNSFW,
         )
 
         // Footer bar
