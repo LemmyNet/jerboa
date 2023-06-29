@@ -1,7 +1,6 @@
 package com.jerboa.ui.components.comment.edit
 
 import android.util.Log
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -22,7 +21,6 @@ object CommentEditReturn {
     const val COMMENT_VIEW = "comment-edit::return(comment-view)"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentEditActivity(
     commentView: CommentView,
@@ -38,7 +36,9 @@ fun CommentEditActivity(
         commentEditViewModel.initialize(commentView)
     }
 
-    var content by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue(commentEditViewModel.commentView.value?.comment?.content.orEmpty())) }
+    var content by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(commentView.comment.content))
+    }
 
     val loading = when (commentEditViewModel.editCommentRes) {
         ApiState.Loading -> true
