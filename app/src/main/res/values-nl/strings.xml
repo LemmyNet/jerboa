@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa voor Lemmy</string>
     <string name="comment_node_goto_comment">Ga naar reactie</string>
     <string name="comment_node_go_to">Ga naar %1$s</string>
     <string name="comment_node_view_source">Bekijk bron</string>
