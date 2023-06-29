@@ -123,7 +123,7 @@ class LoginViewModel : ViewModel() {
                             // Save that info in the DB
                             accountViewModel.insert(account)
 
-                            //Lemmy 0.17.x logins fail due to a defaultlisting being null for some reason, fallback to zero
+                            // Lemmy 0.17.x logins fail due to a defaultlisting being null for some reason, fallback to zero
                         } catch (e: NullPointerException) {
                             val account = Account(
                                 id = luv.person.id,
@@ -141,7 +141,6 @@ class LoginViewModel : ViewModel() {
                             // Save that info in the DB
                             accountViewModel.insert(account)
                         }
-
                     } catch (e: Exception) {
                         loading = false
                         Log.e("login", e.toString())
