@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="AppBars_comments">%1$s commenti</string>
     <string name="AppBars_created">Creata</string>
@@ -6,7 +7,9 @@
     <string name="AppBars_users_day">%1$s utenti / giorno</string>
     <string name="AppBars_users_month">%1$s utenti / mese</string>
     <string name="AppBars_users_week">%1$s utenti / settimana</string>
+
     <string name="about_social">Social</string>
+
     <string name="account_settings_active">Attivi</string>
     <string name="account_settings_activity_account_settings">Impostazioni profilo</string>
     <string name="account_settings_all">Tutti</string>
@@ -40,8 +43,11 @@
     <string name="account_settings_topmonth">Top del mese</string>
     <string name="account_settings_topweek">Top della settimana</string>
     <string name="account_settings_topyear">Top dell\'anno</string>
+
     <string name="addBookmark">Aggiungi ai segnalibri</string>
+
     <string name="app_bars_dot_spacer">·</string>
+
     <string name="bottomBar_bookmarks">Vai ai miei segnalibri</string>
     <string name="bottomBar_home">Vai alla home</string>
     <string name="bottomBar_inbox">Vai alla posta in arrivo</string>
@@ -52,12 +58,18 @@
     <string name="bottomBar_label_search">Cerca</string>
     <string name="bottomBar_profile">Vai al mio profilo</string>
     <string name="bottomBar_search">Vai alla ricerca</string>
+
     <string name="commentEdit_save">Salva le modifiche al commento</string>
+
     <string name="commentFooter_reply">Rispondi a questo commento</string>
+
     <string name="commentMention_link">Vai al commento</string>
+
     <string name="commentOrPostHeader_deleted">Post o commento eliminato</string>
+
     <string name="commentReply_link">Vai alla risposta</string>
     <string name="commentReply_send">Invia risposta</string>
+
     <string name="comment_body_deleted">*Eliminato*</string>
     <string name="comment_body_removed">*Rimosso*</string>
     <string name="comment_edit_back">Indietro</string>
@@ -94,6 +106,7 @@
     <string name="comment_reply_type_your_comment">Digita il commento</string>
     <string name="comment_save">Salva commento</string>
     <string name="comment_unsave">Scarta commento</string>
+
     <string name="community_back">Indietro</string>
     <string name="community_block_community">Blocca comunità</string>
     <string name="community_blocked">%1$s Bloccati</string>
@@ -108,7 +121,9 @@
     <string name="community_sortBy">Ordina per</string>
     <string name="community_subscribe">Partecipa</string>
     <string name="community_users_month">%1$s utenti / mese</string>
+
     <string name="createPost_selectCommunity">Seleziona comunità dalla lista</string>
+
     <string name="create_post_a_title_here">un titolo…</string>
     <string name="create_post_close">Chiudi</string>
     <string name="create_post_community">Comunità</string>
@@ -118,7 +133,9 @@
     <string name="create_report_report">Segnala</string>
     <string name="create_report_type_your_reason">Digita la motivazione</string>
     <string name="create_report_view_model_report_created">Segnalazione creata</string>
+
     <string name="dialog_moreOptions">Mostra più opzioni</string>
+
     <string name="dialogs_active">Attivi</string>
     <string name="dialogs_all">Tutti</string>
     <string name="dialogs_done">Chiudi</string>
@@ -135,9 +152,13 @@
     <string name="dialogs_top_week">Top della settimana</string>
     <string name="dialogs_top_year">Top dell\'anno</string>
     <string name="dialogs_unread">Non letti</string>
+
     <string name="floating_createPost">Crea post</string>
+
     <string name="form_submit">Invia</string>
+
     <string name="homeHeader_filter">Seleziona filtro</string>
+
     <string name="home_add_account">Aggiungi profilo</string>
     <string name="home_all">Tutti</string>
     <string name="home_communities">Comunità</string>
@@ -154,16 +175,20 @@
     <string name="home_subscribed">Iscrizioni</string>
     <string name="home_subscriptions">Iscrizioni</string>
     <string name="home_switch_to">Usa %1$s/%2$s</string>
+
     <string name="inbox_back">Indietro</string>
     <string name="inbox_filter">Seleziona filtro per la posta in arrivo</string>
     <string name="inbox_inbox">Posta in arrivo</string>
     <string name="inbox_markAllRead">Segna tutti come già letti</string>
+
     <string name="input_fields_cancel">Annulla</string>
     <string name="input_fields_insert_link">Inserisci link</string>
     <string name="input_fields_link">Link</string>
     <string name="input_fields_ok">OK</string>
     <string name="input_fields_text">Testo</string>
+
     <string name="lessOptions">Mostra meno opzioni</string>
+
     <string name="login_back">Indietro</string>
     <string name="login_email_or_username">Email o nome utente</string>
     <string name="login_instance">Istanza</string>
@@ -172,6 +197,7 @@
     <string name="login_password">Password</string>
     <string name="login_view_model_incorrect_login">Login errato</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s non è un\'istanza Lemmy</string>
+
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Mostra contenuto per commenti minimizzati</string>
     <string name="look_and_feel_font_size">Dimensione carattere: %1$s</string>
     <string name="look_and_feel_look_and_feel">Aspetto</string>
@@ -191,8 +217,11 @@
     <string name="look_and_feel_theme_system_black">Di sistema nero</string>
     <string name="look_and_feel_use_custom_tabs">Usa schede personalizzate</string>
     <string name="look_and_feel_use_private_tabs">Usa schede personalizzate private se disponibili</string>
+
     <string name="markRead">Segna come letto</string>
+
     <string name="markUnread">Segna come non letto</string>
+
     <string name="markdownHelper_formatBold">Formatta in grassetto</string>
     <string name="markdownHelper_formatItalic">Formatta in corsivo</string>
     <string name="markdownHelper_formatStrikethrough">Formatta come testo barrato</string>
@@ -205,9 +234,12 @@
     <string name="markdownHelper_insertList">Inserisci lista</string>
     <string name="markdownHelper_insertQuote">Inserisci citazione</string>
     <string name="markdownHelper_preview">Mostra anteprima</string>
+
     <string name="moreOptions">Mostra altre opzioni</string>
+
     <string name="personProfile_viewAvatar">Mostra avatar</string>
     <string name="personProfile_viewBanner">Mostra banner</string>
+
     <string name="person_iconAdmin">È amministratore</string>
     <string name="person_iconBanned">È bannato</string>
     <string name="person_iconModerator">È moderatore</string>
@@ -222,14 +254,18 @@
     <string name="person_profile_posts">%1$s post</string>
     <string name="person_profile_report_person">Segnala utente</string>
     <string name="person_routines_blocked">%1$s Bloccati</string>
+
     <string name="pickImage_imagePreview">Anteprima dell\'immagine caricata</string>
+
     <string name="pictrs_image_upload_image">Carica immagine</string>
+
     <string name="postListing_deleted">Eliminato</string>
     <string name="postListing_featuredCommunity">Presente in comunità</string>
     <string name="postListing_featuredLocal">Presente localmente</string>
     <string name="postListing_goToCommunity">Vai alla comunità</string>
     <string name="postListing_locked">Chiuso</string>
     <string name="postListing_reply">Rispondi al post</string>
+
     <string name="post_activity_comments">Commenti</string>
     <string name="post_edit_body_placeholder">Contenuto</string>
     <string name="post_edit_close">Chiudi</string>
@@ -247,14 +283,19 @@
     <string name="post_listing_permalink_copied">Permalink copiato</string>
     <string name="post_listing_report_post">Segnala post</string>
     <string name="post_listing_restore">Ripristina</string>
+
     <string name="privateMessage_reply">Rispondi al messaggio</string>
+
     <string name="private_message_from">"da "</string>
     <string name="private_message_reply_back">Indietro</string>
     <string name="private_message_reply_reply">Rispondi</string>
     <string name="private_message_reply_type_your_message_placeholder">Digita il messaggio</string>
     <string name="private_message_to">"a "</string>
+
     <string name="removeBookmark">Rimuovi dai segnalibri</string>
+
     <string name="selectSort">Scegli il criterio di ordinamento</string>
+
     <string name="settings_about_about">Info</string>
     <string name="settings_about_developer_matrix_chatroom">Chat Matrix degli sviluppatori</string>
     <string name="settings_about_donate_to_jerboa_development">Sostieni lo sviluppo di Jerboa</string>
@@ -272,6 +313,7 @@
     <string name="settings_activity_account_settings">Impostazioni %1$s</string>
     <string name="settings_activity_look_and_feel">Aspetto interfaccia</string>
     <string name="settings_activity_settings">Impostazioni</string>
+
     <string name="sorttype_active">Attivi</string>
     <string name="sorttype_hot">Popolari</string>
     <string name="sorttype_mostcomments">Più commentati</string>
@@ -283,7 +325,10 @@
     <string name="sorttype_topmonth">Top del mese</string>
     <string name="sorttype_topweek">Top della settimana</string>
     <string name="sorttype_topyear">Top dell\'anno</string>
+
     <string name="time_ago_ago">%1$s %2$s fa</string>
+
     <string name="topAppBar_back">Indietro</string>
+
     <string name="utils_login_first">Effettua prima il login</string>
 </resources>
