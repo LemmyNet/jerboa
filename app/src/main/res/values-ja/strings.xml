@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">ジェルボア</string>
     <string name="comment_node_goto_comment">コメントへ行く</string>
     <string name="comment_node_go_to">%1$sへ行く</string>
     <string name="comment_node_view_source">原文を見る</string>
