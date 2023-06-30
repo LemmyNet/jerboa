@@ -291,4 +291,5 @@
     <string name="downvote">Duim omlaag</string>
     <string name="upvoted">Duim omhoog gekregen</string>
     <string name="downvoted">Duim omlaag gekregen</string>
+    <string name="post_listing_view_source">Bekijk bron</string>
 </resources>
