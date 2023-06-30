@@ -423,22 +423,20 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.PostArgs(it)
-                        SwipeToNavigateBack(navController = navController) {
-                            PostActivity(
-                                id = Either.Left(args.id),
-                                accountViewModel = accountViewModel,
-                                navController = navController,
-                                showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
-                                showActionBarByDefault = appSettings.showCommentActionBarByDefault,
-                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
-                                navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
-                                siteViewModel = siteViewModel,
-                                useCustomTabs = appSettings.useCustomTabs,
-                                usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
-                            )
-                        }
+                        PostActivity(
+                            id = Either.Left(args.id),
+                            accountViewModel = accountViewModel,
+                            navController = navController,
+                            showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+                            showActionBarByDefault = appSettings.showCommentActionBarByDefault,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                            showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
+                            navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
+                            siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
+                        )
                     }
 
                     composable(
