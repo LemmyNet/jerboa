@@ -328,4 +328,6 @@
     <string name="dialogs_top_three_month">Top Three Months</string>
     <string name="dialogs_top_six_month">Top Six Months</string>
     <string name="dialogs_top_nine_month">Top Nine Months</string>
+    <string name="post_listing_view_source">View Source</string>
+    <string name="post_listing_view_original">View Original</string>
 </resources>
