@@ -42,7 +42,7 @@
     <string name="account_settings_topyear">TopYear</string>
     <string name="addBookmark">Add to bookmarks</string>
     <string name="app_bars_dot_spacer">·</string>
-    <string name="app_name">Jerboa for Lemmy</string>
+    <string name="app_name" translatable="false">Jerboa</string>
     <string name="bottomBar_bookmarks">Go to my bookmarks</string>
     <string name="bottomBar_home">Go home</string>
     <string name="bottomBar_inbox">Go to my inbox</string>
@@ -338,4 +338,6 @@
     <string name="create_edit_post_close">Close</string>
     <string name="lang_language">Language</string>
     <string name="blur_nsfw">Blur NSFW images</string>
+    <string name="post_listing_view_source">View Source</string>
+    <string name="post_listing_view_original">View Original</string>
 </resources>
