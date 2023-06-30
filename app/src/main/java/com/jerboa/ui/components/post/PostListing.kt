@@ -1628,6 +1628,6 @@ fun PostOptionsDialogPreview() {
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
         onViewSourceClick = {},
-        viewSource = true
+        viewSource = true,
     )
 }
