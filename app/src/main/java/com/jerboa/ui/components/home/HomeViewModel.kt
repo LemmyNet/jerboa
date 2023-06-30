@@ -19,6 +19,7 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
@@ -30,9 +31,11 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
+import com.jerboa.ui.components.common.PostStream
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class HomeViewModel : ViewModel(), Initializable {
+class HomeViewModel : ViewModel(), Initializable, PostStream {
     override var initialized by mutableStateOf(false)
 
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
@@ -79,34 +82,37 @@ class HomeViewModel : ViewModel(), Initializable {
                 )
         }
     }
-
-    fun appendPosts(form: GetPosts) =
-        viewModelScope.launch {
-            fetchingMore = true
-            val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
-            // Only append when both new and existing are Successes
-            when (val existing = postsRes) {
-                is ApiState.Success -> {
-                    when (more) {
-                        is ApiState.Success -> {
-                            val newPostsDeduped = dedupePosts(more.data.posts, existing.data.posts)
-                            val appended = appendData(existing.data.posts, newPostsDeduped)
-                            val newPostRes = ApiState.Success(existing.data.copy(posts = appended))
-                            postsRes = newPostRes
-                            fetchingMore = false
-                        }
-
-                        is ApiState.Failure -> {
-                            fetchingMore = false
-                        }
-
-                        else -> {}
+    private fun fetchMore(form: GetPosts) = runBlocking {
+        fetchingMore = true
+        val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+        // Only append when both new and existing are Successes
+        when (val existing = postsRes) {
+            is ApiState.Success -> {
+                when (more) {
+                    is ApiState.Success -> {
+                        val newPostsDeduped = dedupePosts(more.data.posts, existing.data.posts)
+                        val appended = appendData(existing.data.posts, newPostsDeduped)
+                        val newPostRes = ApiState.Success(existing.data.copy(posts = appended))
+                        postsRes = newPostRes
+                        fetchingMore = false
                     }
-                }
 
-                else -> {}
+                    is ApiState.Failure -> {
+                        fetchingMore = false
+                    }
+
+                    else -> {}
+                }
             }
+
+            else -> {}
         }
+    }
+    fun appendPosts(form: GetPosts) {
+        viewModelScope.launch {
+            fetchMore(form)
+        }
+    }
 
     fun likePost(form: CreatePostLike) {
         viewModelScope.launch {
@@ -170,7 +176,9 @@ class HomeViewModel : ViewModel(), Initializable {
 
     fun updateFromAccount(account: Account) {
         updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
-        updateListingType(ListingType.values().getOrElse(account.defaultListingType) { listingType })
+        updateListingType(
+            ListingType.values().getOrElse(account.defaultListingType) { listingType },
+        )
     }
 
     fun updatePost(postView: PostView) {
@@ -180,7 +188,70 @@ class HomeViewModel : ViewModel(), Initializable {
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 postsRes = newRes
             }
+
             else -> {}
         }
     }
+
+    override fun getNextPost(current: PostId?, account: Account?): PostId? {
+        val res = postsRes
+        return if (res is ApiState.Success) {
+            if (current == null) {
+                res.data.posts.firstOrNull()?.post?.id
+            } else {
+                res.data.posts
+                    .mapIndexed { index, postView -> index to postView }
+                    .firstOrNull { it.second.post.id == current }
+                    ?.first?.let { currIndex ->
+                        if (currIndex + 1 >= res.data.posts.size - 1) {
+                            val nextIndex = res.data.posts.size
+                            nextPage()
+                            fetchMore(
+                                GetPosts(
+                                    page = page,
+                                    sort = sortType,
+                                    type_ = listingType,
+                                    auth = account?.jwt,
+                                ),
+                            )
+                            val newRes = postsRes
+                            if (newRes is ApiState.Success && newRes.data.posts.size > nextIndex) {
+                                newRes.data.posts[nextIndex].post.id
+                            } else {
+                                null
+                            }
+                        } else if (currIndex >= 0) {
+                            res.data.posts[currIndex + 1].post.id
+                        } else {
+                            null
+                        }
+                    }
+            }
+        } else {
+            null
+        }
+    }
+
+    override fun getPreviousPost(current: PostId?, account: Account?): PostId? {
+        val res = postsRes
+        return if (res is ApiState.Success) {
+            if (current == null) {
+                res.data.posts.firstOrNull()?.post?.id
+            } else {
+                val currIndex = res.data.posts
+                    .mapIndexed { index, postView -> index to postView }
+                    .firstOrNull { it.second.post.id == current }
+                    ?.first
+                if (currIndex != null && currIndex > 0 && currIndex < res.data.posts.size) {
+                    res.data.posts[currIndex - 1].post.id
+                } else {
+                    null
+                }
+            }
+        } else {
+            null
+        }
+    }
+
+    override fun isFetchingMore(): Boolean = fetchingMore
 }

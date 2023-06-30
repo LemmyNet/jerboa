@@ -59,8 +59,8 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.rootChannel
 import com.jerboa.ui.components.common.toCommunity
+import com.jerboa.ui.components.common.toCommunityPost
 import com.jerboa.ui.components.common.toCreatePost
-import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
@@ -100,6 +100,8 @@ fun CommunityActivity(
     InitializeRoute(communityViewModel) {
         val communityId = communityArg.fold({ it }, { null })
         val communityName = communityArg.fold({ null }, { it })
+        communityViewModel.communityId = communityId
+        communityViewModel.communityName = communityName
 
         communityViewModel.resetPage()
         account?.let {
@@ -273,7 +275,7 @@ fun CommunityActivity(
                                 }
                             },
                             onPostClick = { postView ->
-                                navController.toPost(id = postView.post.id)
+                                navController.toCommunityPost(id = postView.post.id)
                             },
                             onSaveClick = { postView ->
                                 account?.also { acct ->

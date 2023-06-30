@@ -5,6 +5,7 @@ import androidx.navigation.NavType
 
 object Route {
     object Graph {
+        const val HOME = "graph_post"
         const val ROOT = "graph_root"
         const val COMMUNITY = "graph_community"
     }
@@ -13,8 +14,12 @@ object Route {
     const val INBOX = "inbox"
     const val HOME = "home"
 
+    val POST_FROM_ID = PostArgs.route
+    val POST_FROM_URL = PostArgs.route
+
     val COMMUNITY_FROM_ID = CommunityFromIdArgs.route
     val COMMUNITY_FROM_URL = CommunityFromUrlArgs.route
+    val COMMUNITY_POST = CommunityPostArgs.route
 
     const val COMMUNITY_SIDEBAR = "communitySidebar"
 
@@ -133,6 +138,19 @@ object Route {
             val ID_TYPE = NavType.IntType
 
             fun makeRoute(id: String) = "post/$id"
+            internal val route by lazy { makeRoute(id = "{$ID}") }
+        }
+    }
+
+    class CommunityPostArgs(val id: Int) {
+        constructor(navBackStackEntry: NavBackStackEntry) :
+            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+
+        companion object {
+            const val ID = "id"
+            val ID_TYPE = NavType.IntType
+
+            fun makeRoute(id: String) = "community_post/$id"
             internal val route by lazy { makeRoute(id = "{$ID}") }
         }
     }

@@ -91,6 +91,7 @@ import com.jerboa.ui.components.common.ConsumeReturn
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.PostEditDeps
+import com.jerboa.ui.components.common.PostStream
 import com.jerboa.ui.components.common.PostSwipeWrapper
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.rootChannel
@@ -104,7 +105,6 @@ import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditReturn
 
@@ -136,7 +136,7 @@ fun PostActivity(
     id: Either<PostId, CommentId>,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
-    homeViewModel: HomeViewModel,
+    postStream: PostStream,
     appSettingsViewModel: AppSettingsViewModel,
     navController: NavController,
     useCustomTabs: Boolean,
@@ -221,7 +221,7 @@ fun PostActivity(
     PostSwipeWrapper(
         navController = navController,
         account = getCurrentAccount(accountViewModel = accountViewModel),
-        homeViewModel = homeViewModel,
+        postStream = postStream,
         postViewModel = postViewModel,
         appSettingsViewModel = appSettingsViewModel,
     ) {

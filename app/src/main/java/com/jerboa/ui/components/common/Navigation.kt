@@ -91,6 +91,9 @@ fun NavController.toCreatePost(
 fun NavController.toPost(id: Int) {
     navigate(Route.PostArgs.makeRoute(id = "$id"))
 }
+fun NavController.toCommunityPost(id: Int) {
+    navigate(Route.CommunityPostArgs.makeRoute(id = "$id"))
+}
 
 fun NavController.toComment(id: Int) {
     navigate(Route.CommentArgs.makeRoute(id = "$id"))

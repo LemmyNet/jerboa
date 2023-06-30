@@ -14,6 +14,7 @@ import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
+import com.jerboa.datatypes.types.CommunityId
 import com.jerboa.datatypes.types.CommunityResponse
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
@@ -22,19 +23,23 @@ import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetCommunityResponse
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
+import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.db.Account
 import com.jerboa.dedupePosts
 import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
+import com.jerboa.ui.components.common.PostStream
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class CommunityViewModel : ViewModel(), Initializable {
+class CommunityViewModel : ViewModel(), Initializable, PostStream {
     override var initialized by mutableStateOf(false)
 
     var communityRes: ApiState<GetCommunityResponse> by mutableStateOf(ApiState.Empty)
@@ -52,6 +57,9 @@ class CommunityViewModel : ViewModel(), Initializable {
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
         mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+
+    var communityId: CommunityId? by mutableStateOf(null)
+    var communityName: String? by mutableStateOf(null)
 
     var fetchingMore by mutableStateOf(false)
         private set
@@ -95,30 +103,34 @@ class CommunityViewModel : ViewModel(), Initializable {
 
     fun appendPosts(form: GetPosts) {
         viewModelScope.launch {
-            fetchingMore = true
-            val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
-            // Only append when both new and existing are Successes
-            when (val existing = postsRes) {
-                is ApiState.Success -> {
-                    when (more) {
-                        is ApiState.Success -> {
-                            val newPostsDeduped = dedupePosts(more.data.posts, existing.data.posts)
-                            val appended = appendData(existing.data.posts, newPostsDeduped)
-                            val newPostRes = ApiState.Success(existing.data.copy(posts = appended))
-                            postsRes = newPostRes
-                            fetchingMore = false
-                        }
+            fetchMore(form)
+        }
+    }
 
-                        is ApiState.Failure -> {
-                            fetchingMore = false
-                        }
-
-                        else -> {}
+    private fun fetchMore(form: GetPosts) = runBlocking {
+        fetchingMore = true
+        val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+        // Only append when both new and existing are Successes
+        when (val existing = postsRes) {
+            is ApiState.Success -> {
+                when (more) {
+                    is ApiState.Success -> {
+                        val newPostsDeduped = dedupePosts(more.data.posts, existing.data.posts)
+                        val appended = appendData(existing.data.posts, newPostsDeduped)
+                        val newPostRes = ApiState.Success(existing.data.copy(posts = appended))
+                        postsRes = newPostRes
+                        fetchingMore = false
                     }
-                }
 
-                else -> {}
+                    is ApiState.Failure -> {
+                        fetchingMore = false
+                    }
+
+                    else -> {}
+                }
             }
+
+            else -> {}
         }
     }
 
@@ -240,4 +252,67 @@ class CommunityViewModel : ViewModel(), Initializable {
             else -> {}
         }
     }
+
+    override fun getNextPost(current: PostId?, account: Account?): PostId? {
+        val res = postsRes
+        return if (res is ApiState.Success) {
+            if (current == null) {
+                res.data.posts.firstOrNull()?.post?.id
+            } else {
+                res.data.posts
+                    .mapIndexed { index, postView -> index to postView }
+                    .firstOrNull { it.second.post.id == current }
+                    ?.first?.let { currIndex ->
+                        if (currIndex + 1 >= res.data.posts.size - 1) {
+                            val nextIndex = res.data.posts.size
+                            nextPage()
+                            fetchMore(
+                                GetPosts(
+                                    page = page,
+                                    sort = sortType,
+                                    community_id = communityId,
+                                    community_name = communityName,
+                                    auth = account?.jwt,
+                                ),
+                            )
+                            val newRes = postsRes
+                            if (newRes is ApiState.Success && newRes.data.posts.size > nextIndex) {
+                                newRes.data.posts[nextIndex].post.id
+                            } else {
+                                null
+                            }
+                        } else if (currIndex >= 0) {
+                            res.data.posts[currIndex + 1].post.id
+                        } else {
+                            null
+                        }
+                    }
+            }
+        } else {
+            null
+        }
+    }
+
+    override fun getPreviousPost(current: PostId?, account: Account?): PostId? {
+        val res = postsRes
+        return if (res is ApiState.Success) {
+            if (current == null) {
+                res.data.posts.firstOrNull()?.post?.id
+            } else {
+                val currIndex = res.data.posts
+                    .mapIndexed { index, postView -> index to postView }
+                    .firstOrNull { it.second.post.id == current }
+                    ?.first
+                if (currIndex != null && currIndex > 0 && currIndex < res.data.posts.size) {
+                    res.data.posts[currIndex - 1].post.id
+                } else {
+                    null
+                }
+            }
+        } else {
+            null
+        }
+    }
+
+    override fun isFetchingMore(): Boolean = fetchingMore
 }

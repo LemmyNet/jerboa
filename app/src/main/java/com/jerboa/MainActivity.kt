@@ -84,7 +84,6 @@ class JerboaApplication : Application() {
 
 class MainActivity : AppCompatActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
-    private val homeViewModel by viewModels<HomeViewModel>()
     private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
         AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
     }
@@ -152,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                 AnimatedNavHost(
                     route = Route.Graph.ROOT,
                     navController = navController,
-                    startDestination = Route.HOME,
+                    startDestination = Route.Graph.HOME,
                     enterTransition = { slideInHorizontally { it } },
                     exitTransition = { slideOutHorizontally { -it } },
                     popEnterTransition = { slideInHorizontally { -it } },
@@ -171,15 +170,55 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    composable(route = Route.HOME) {
-                        BottomNavActivity(
-                            navController = navController,
-                            accountViewModel = accountViewModel,
-                            homeViewModel = homeViewModel,
-                            siteViewModel = siteViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                            appSettings = appSettings,
-                        )
+                    navigation(
+                        route = Route.Graph.HOME,
+                        startDestination = Route.HOME,
+                    ) {
+                        composable(route = Route.HOME) {
+                            val homeViewModel: HomeViewModel = viewModel(
+                                remember(it) { navController.getBackStackEntry(Route.Graph.HOME) },
+                            )
+                            BottomNavActivity(
+                                navController = navController,
+                                accountViewModel = accountViewModel,
+                                homeViewModel = homeViewModel,
+                                siteViewModel = siteViewModel,
+                                appSettingsViewModel = appSettingsViewModel,
+                                appSettings = appSettings,
+                            )
+                        }
+                        composable(
+                            route = Route.POST,
+                            deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                                navDeepLink { uriPattern = "$instance/post/{${Route.PostArgs.ID}}" }
+                            },
+                            arguments = listOf(
+                                navArgument(Route.PostArgs.ID) {
+                                    type = Route.PostArgs.ID_TYPE
+                                },
+                            ),
+                        ) {
+                            val args = Route.PostArgs(it)
+                            val homeViewModel: HomeViewModel = viewModel(
+                                remember(it) { navController.getBackStackEntry(Route.Graph.HOME) },
+                            )
+                            PostActivity(
+                                id = Either.Left(args.id),
+                                accountViewModel = accountViewModel,
+                                navController = navController,
+                                showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+                                showActionBarByDefault = appSettings.showCommentActionBarByDefault,
+                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                                showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
+                                navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
+                                siteViewModel = siteViewModel,
+                                postStream = homeViewModel,
+                                appSettingsViewModel = appSettingsViewModel,
+                                useCustomTabs = appSettings.useCustomTabs,
+                                usePrivateTabs = appSettings.usePrivateTabs,
+                                blurNSFW = appSettings.blurNSFW,
+                            )
+                        }
                     }
 
                     navigation(
@@ -253,6 +292,39 @@ class MainActivity : AppCompatActivity() {
                             CommunitySidebarActivity(
                                 communityViewModel = communityViewModel,
                                 navController = navController,
+                            )
+                        }
+
+                        composable(
+                            route = Route.COMMUNITY_POST,
+                            deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                                navDeepLink { uriPattern = "$instance/post/{${Route.PostArgs.ID}}" }
+                            },
+                            arguments = listOf(
+                                navArgument(Route.PostArgs.ID) {
+                                    type = Route.PostArgs.ID_TYPE
+                                },
+                            ),
+                        ) {
+                            val args = Route.PostArgs(it)
+                            val communityViewModel: CommunityViewModel = viewModel(
+                                remember(it) { navController.getBackStackEntry(Route.Graph.COMMUNITY) },
+                            )
+                            PostActivity(
+                                id = Either.Left(args.id),
+                                accountViewModel = accountViewModel,
+                                navController = navController,
+                                showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+                                showActionBarByDefault = appSettings.showCommentActionBarByDefault,
+                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                                showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
+                                navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
+                                siteViewModel = siteViewModel,
+                                postStream = communityViewModel,
+                                appSettingsViewModel = appSettingsViewModel,
+                                useCustomTabs = appSettings.useCustomTabs,
+                                usePrivateTabs = appSettings.usePrivateTabs,
+                                blurNSFW = appSettings.blurNSFW,
                             )
                         }
                     }
@@ -409,66 +481,6 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
-                        )
-                    }
-
-                    composable(
-                        route = Route.POST,
-                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                            navDeepLink { uriPattern = "$instance/post/{${Route.PostArgs.ID}}" }
-                        },
-                        arguments = listOf(
-                            navArgument(Route.PostArgs.ID) {
-                                type = Route.PostArgs.ID_TYPE
-                            },
-                        ),
-                    ) {
-                        val args = Route.PostArgs(it)
-                        PostActivity(
-                            id = Either.Left(args.id),
-                            accountViewModel = accountViewModel,
-                            navController = navController,
-                            showCollapsedCommentContent = appSettings?.showCollapsedCommentContent ?: false,
-                            showActionBarByDefault = appSettings?.showCommentActionBarByDefault ?: true,
-                            showVotingArrowsInListView = appSettings?.showVotingArrowsInListView ?: true,
-                            showParentCommentNavigationButtons = appSettings?.showParentCommentNavigationButtons ?: true,
-                            navigateParentCommentsWithVolumeButtons = appSettings?.navigateParentCommentsWithVolumeButtons ?: false,
-                            siteViewModel = siteViewModel,
-                            homeViewModel = homeViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                            useCustomTabs = appSettings?.useCustomTabs ?: true,
-                            usePrivateTabs = appSettings?.usePrivateTabs ?: false,
-                            blurNSFW = appSettings.blurNSFW,
-                        )
-                    }
-
-                    composable(
-                        route = Route.COMMENT,
-                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                            navDeepLink { uriPattern = "$instance/comment/{${Route.CommentArgs.ID}}" }
-                        },
-                        arguments = listOf(
-                            navArgument(Route.CommentArgs.ID) {
-                                type = Route.CommentArgs.ID_TYPE
-                            },
-                        ),
-                    ) {
-                        val args = Route.CommentArgs(it)
-                        PostActivity(
-                            id = Either.Right(args.id),
-                            accountViewModel = accountViewModel,
-                            navController = navController,
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
-                            showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
-                            showActionBarByDefault = appSettings.showCommentActionBarByDefault,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                            showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
-                            navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
-                            siteViewModel = siteViewModel,
-                            homeViewModel = homeViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             blurNSFW = appSettings.blurNSFW,
                         )
                     }

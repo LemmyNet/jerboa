@@ -4,13 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.jerboa.db.Account
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.post.PostViewModel
 
 @Composable
 fun PostSwipeWrapper(
     navController: NavController,
-    homeViewModel: HomeViewModel,
+    postStream: PostStream,
     postViewModel: PostViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     account: Account?,
@@ -18,7 +17,7 @@ fun PostSwipeWrapper(
 ) {
     if (appSettingsViewModel.appSettings.value?.allowSwipeBetweenPosts == true) {
         SwipeBetweenPosts(
-            homeViewModel = homeViewModel,
+            postStream = postStream,
             postViewModel = postViewModel,
             account = account,
             content = content,
