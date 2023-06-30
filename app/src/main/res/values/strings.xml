@@ -335,5 +335,6 @@
     <string name="create_edit_post_close">Close</string>
     <string name="lang_language">Language</string>
     <string name="blur_nsfw">Blur NSFW images</string>
-    <string name="post_listing_view_source">View Post Source</string>
+    <string name="post_listing_view_source">View Source</string>
+    <string name="post_listing_view_original">View Original</string>
 </resources>

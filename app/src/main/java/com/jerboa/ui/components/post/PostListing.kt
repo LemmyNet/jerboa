@@ -514,6 +514,7 @@ fun PostFooterLine(
     showReply: Boolean = false,
     account: Account?,
     enableDownVotes: Boolean,
+    viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -554,6 +555,7 @@ fun PostFooterLine(
                 onViewSourceClick()
             },
             isCreator = account?.id == postView.creator.id,
+            viewSource = viewSource,
         )
     }
 
@@ -711,6 +713,7 @@ fun PostFooterLinePreview() {
         onBlockCommunityClick = {},
         onViewSourceClick = {},
         enableDownVotes = true,
+        viewSource = false,
     )
 }
 
@@ -1357,7 +1360,6 @@ fun PostListingCard(
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
-
         )
 
         //  Title + metadata
@@ -1392,6 +1394,7 @@ fun PostListingCard(
             account = account,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             enableDownVotes = enableDownVotes,
+            viewSource = viewSource,
         )
     }
 }
@@ -1445,6 +1448,7 @@ fun PostOptionsDialog(
     onBlockCommunityClick: () -> Unit,
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
+    viewSource: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
@@ -1560,7 +1564,7 @@ fun PostOptionsDialog(
                 }
                 postView.post.body?.also {
                     IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_view_source),
+                        text = if (viewSource) stringResource(R.string.post_listing_view_original) else stringResource(R.string.post_listing_view_source),
                         icon = Icons.Outlined.Description,
                         onClick = onViewSourceClick,
                     )
@@ -1624,5 +1628,6 @@ fun PostOptionsDialogPreview() {
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
         onViewSourceClick = {},
+        viewSource = true
     )
 }
