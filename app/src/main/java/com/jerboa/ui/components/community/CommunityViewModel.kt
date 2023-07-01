@@ -85,8 +85,8 @@ class CommunityViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun getPosts(form: GetPosts, state: ApiState<GetPostsResponse> = ApiState.Loading): Job {
-        return viewModelScope.launch {
+    fun getPosts(form: GetPosts, state: ApiState<GetPostsResponse> = ApiState.Loading) {
+        viewModelScope.launch {
             postsRes = state
             postsRes =
                 apiWrapper(
