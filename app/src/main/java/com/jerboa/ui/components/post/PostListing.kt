@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
@@ -69,6 +71,7 @@ import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
+import com.jerboa.datatypes.sampleMarkdownPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
@@ -393,6 +396,7 @@ fun PostTitleAndThumbnail(
 fun PostBody(
     postView: PostView,
     fullBody: Boolean,
+    viewSource: Boolean,
     expandedImage: Boolean,
     account: Account?,
     useCustomTabs: Boolean,
@@ -434,10 +438,18 @@ fun PostBody(
                             modifier = Modifier
                                 .padding(MEDIUM_PADDING),
                         ) {
-                            MyMarkdownText(
-                                markdown = text,
-                                onClick = {},
-                            )
+                            if (viewSource) {
+                                SelectionContainer {
+                                    Text(
+                                        text = text,
+                                    )
+                                }
+                            } else {
+                                MyMarkdownText(
+                                    markdown = text,
+                                    onClick = {},
+                                )
+                            }
                         }
                     } else {
                         PreviewLines(
@@ -458,6 +470,22 @@ fun PreviewStoryTitleAndMetadata() {
     PostBody(
         postView = samplePostView,
         fullBody = false,
+        viewSource = false,
+        expandedImage = false,
+        account = null,
+        useCustomTabs = false,
+        usePrivateTabs = false,
+        blurNSFW = true,
+    )
+}
+
+@Preview
+@Composable
+fun PreviewSourcePost() {
+    PostBody(
+        postView = sampleMarkdownPostView,
+        fullBody = true,
+        viewSource = true,
         expandedImage = false,
         account = null,
         useCustomTabs = false,
@@ -481,10 +509,12 @@ fun PostFooterLine(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
+    onViewSourceClick: () -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
     account: Account?,
     enableDownVotes: Boolean,
+    viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -520,7 +550,12 @@ fun PostFooterLine(
                 showMoreOptions = false
                 onBlockCreatorClick(postView.creator)
             },
+            onViewSourceClick = {
+                showMoreOptions = false
+                onViewSourceClick()
+            },
             isCreator = account?.id == postView.creator.id,
+            viewSource = viewSource,
         )
     }
 
@@ -676,7 +711,9 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
+        onViewSourceClick = {},
         enableDownVotes = true,
+        viewSource = false,
     )
 }
 
@@ -870,6 +907,8 @@ fun PostListing(
         )
     }
 
+    var viewSource by remember { mutableStateOf(false) }
+
     when (postViewMode) {
         PostViewMode.Card -> PostListingCard(
             postView = postView,
@@ -898,6 +937,10 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onViewSourceClick = {
+                viewSource = !viewSource
+            },
+            viewSource = viewSource,
             showReply = showReply,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
@@ -938,6 +981,10 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onViewSourceClick = {
+                viewSource = !viewSource
+            },
+            viewSource = viewSource,
             showReply = showReply,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
@@ -1280,6 +1327,8 @@ fun PostListingCard(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
+    onViewSourceClick: () -> Unit,
+    viewSource: Boolean,
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -1311,13 +1360,13 @@ fun PostListingCard(
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
-
         )
 
         //  Title + metadata
         PostBody(
             postView = postView,
             fullBody = fullBody,
+            viewSource = viewSource,
             expandedImage = expandedImage,
             account = account,
             useCustomTabs = useCustomTabs,
@@ -1340,10 +1389,12 @@ fun PostListingCard(
             onReportClick = onReportClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onViewSourceClick = onViewSourceClick,
             showReply = showReply,
             account = account,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             enableDownVotes = enableDownVotes,
+            viewSource = viewSource,
         )
     }
 }
@@ -1395,7 +1446,9 @@ fun PostOptionsDialog(
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
     onBlockCommunityClick: () -> Unit,
+    onViewSourceClick: () -> Unit,
     isCreator: Boolean,
+    viewSource: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
@@ -1509,6 +1562,13 @@ fun PostOptionsDialog(
                         },
                     )
                 }
+                postView.post.body?.also {
+                    IconAndTextDrawerItem(
+                        text = if (viewSource) stringResource(R.string.post_listing_view_original) else stringResource(R.string.post_listing_view_source),
+                        icon = Icons.Outlined.Description,
+                        onClick = onViewSourceClick,
+                    )
+                }
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.post_listing_report_post),
@@ -1567,5 +1627,7 @@ fun PostOptionsDialogPreview() {
         onDeletePostClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onViewSourceClick = {},
+        viewSource = true,
     )
 }

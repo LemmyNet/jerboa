@@ -34,7 +34,7 @@ import com.jerboa.R
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.datatypes.types.PersonView
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.getLocalizedSortingTypeName
+import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.DotSpacer
@@ -250,7 +250,7 @@ fun PersonProfileHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeName(LocalContext.current, selectedSortType),
+            text = getLocalizedSortingTypeShortName(LocalContext.current, selectedSortType),
             style = MaterialTheme.typography.titleMedium,
         )
     }
