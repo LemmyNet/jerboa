@@ -155,7 +155,7 @@ fun PersonProfileActivity(
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
                 is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                ApiState.Loading -> {
+                ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
@@ -283,7 +283,6 @@ fun UserTabs(
 
     val loading = personProfileViewModel.personDetailsRes.isLoading()
 
-    // TODO: can only refresh in Posts and Comments but this only refreshes the PersonDetails
     val pullRefreshState = rememberPullRefreshState(
         refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
         onRefresh = {
@@ -396,7 +395,9 @@ fun UserTabs(
                 }
 
                 UserTab.Posts.ordinal -> {
-                    Box(modifier = Modifier.pullRefresh(pullRefreshState).fillMaxSize()) {
+                    Box(modifier = Modifier
+                        .pullRefresh(pullRefreshState)
+                        .fillMaxSize()) {
                         PullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
                             pullRefreshState,
@@ -579,9 +580,11 @@ fun UserTabs(
                                 }
                             }
 
-                            Box(modifier = Modifier.pullRefresh(pullRefreshState).fillMaxSize()) {
+                            Box(modifier = Modifier
+                                .pullRefresh(pullRefreshState)
+                                .fillMaxSize()) {
                                 PullRefreshIndicator(
-                                    personProfileViewModel.refreshing,
+                                    personProfileViewModel.personDetailsRes.isRefreshing(),
                                     pullRefreshState,
                                     // zIndex needed bc some elements of a post get drawn above it.
                                     Modifier

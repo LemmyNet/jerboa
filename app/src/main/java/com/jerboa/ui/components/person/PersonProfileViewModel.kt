@@ -56,8 +56,6 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
-    var refreshing by mutableStateOf(false)
-
     var sortType by mutableStateOf(SortType.New)
         private set
     var page by mutableStateOf(1)
