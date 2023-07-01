@@ -76,6 +76,7 @@ import com.jerboa.isModerator
 import com.jerboa.newVote
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
+import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
@@ -409,6 +410,9 @@ fun PostActivity(
                                                 ctx,
                                             )
                                         }
+                                    },
+                                    onShareClick = { url ->
+                                        shareLink(url, ctx)
                                     },
                                     showReply = true, // Do nothing
                                     isModerator = isModerator(
