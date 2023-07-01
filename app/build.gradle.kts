@@ -89,7 +89,7 @@ android {
 }
 
 dependencies {
-    val composeVersion = rootProject.extra["compose_version"]
+    val composeVersion = "1.5.0-beta03"
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.github.alorma:compose-settings-ui-m3:0.27.0")
