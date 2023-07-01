@@ -261,7 +261,7 @@ fun InboxTabs(
                                 inboxViewModel.resetPageReplies()
                                 inboxViewModel.getReplies(
                                     inboxViewModel.getFormReplies(acct.jwt),
-                                    ApiState.Refreshing
+                                    ApiState.Refreshing,
                                 )
                             }
                         },
@@ -428,7 +428,7 @@ fun InboxTabs(
 
                     val loading = inboxViewModel.mentionsRes.isLoading()
 
-                    val refreshing= inboxViewModel.mentionsRes.isRefreshing()
+                    val refreshing = inboxViewModel.mentionsRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
                         refreshing = refreshing,
@@ -442,7 +442,7 @@ fun InboxTabs(
                                         page = inboxViewModel.pageMentions,
                                         auth = acct.jwt,
                                     ),
-                                    ApiState.Refreshing
+                                    ApiState.Refreshing,
                                 )
                             }
                         },
@@ -612,7 +612,7 @@ fun InboxTabs(
                                         page = inboxViewModel.pageMessages,
                                         auth = acct.jwt,
                                     ),
-                                    ApiState.Refreshing
+                                    ApiState.Refreshing,
                                 )
                             }
                         },

@@ -38,7 +38,6 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class InboxViewModel : ViewModel(), Initializable {
@@ -110,9 +109,9 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getReplies(
         form: GetReplies,
-        state: ApiState<GetRepliesResponse> = ApiState.Loading
-    ){
-       viewModelScope.launch {
+        state: ApiState<GetRepliesResponse> = ApiState.Loading,
+    ) {
+        viewModelScope.launch {
             repliesRes = state
             repliesRes = apiWrapper(API.getInstance().getReplies(form.serializeToMap()))
         }
@@ -151,8 +150,8 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getMentions(
         form: GetPersonMentions,
-        state: ApiState<GetPersonMentionsResponse> = ApiState.Loading
-    ){
+        state: ApiState<GetPersonMentionsResponse> = ApiState.Loading,
+    ) {
         viewModelScope.launch {
             mentionsRes = state
             mentionsRes = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
@@ -199,9 +198,9 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getMessages(
         form: GetPrivateMessages,
-        state: ApiState<PrivateMessagesResponse> = ApiState.Loading
-    ){
-         viewModelScope.launch {
+        state: ApiState<PrivateMessagesResponse> = ApiState.Loading,
+    ) {
+        viewModelScope.launch {
             messagesRes = state
             messagesRes = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
         }
