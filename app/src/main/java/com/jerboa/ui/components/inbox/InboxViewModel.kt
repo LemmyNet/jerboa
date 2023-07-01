@@ -110,9 +110,10 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getReplies(
         form: GetReplies,
-    ): Job {
-        return viewModelScope.launch {
-            repliesRes = ApiState.Loading
+        state: ApiState<GetRepliesResponse> = ApiState.Loading
+    ){
+       viewModelScope.launch {
+            repliesRes = state
             repliesRes = apiWrapper(API.getInstance().getReplies(form.serializeToMap()))
         }
     }
@@ -150,9 +151,10 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getMentions(
         form: GetPersonMentions,
-    ): Job {
-        return viewModelScope.launch {
-            mentionsRes = ApiState.Loading
+        state: ApiState<GetPersonMentionsResponse> = ApiState.Loading
+    ){
+        viewModelScope.launch {
+            mentionsRes = state
             mentionsRes = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
         }
     }
@@ -197,9 +199,10 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getMessages(
         form: GetPrivateMessages,
-    ): Job {
-        return viewModelScope.launch {
-            messagesRes = ApiState.Loading
+        state: ApiState<PrivateMessagesResponse> = ApiState.Loading
+    ){
+         viewModelScope.launch {
+            messagesRes = state
             messagesRes = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
         }
     }

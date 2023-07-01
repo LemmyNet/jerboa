@@ -252,19 +252,17 @@ fun InboxTabs(
                         }
                     }
 
-                    val loading = inboxViewModel.repliesRes.isLoading()
-
-                    var refreshing by remember { mutableStateOf(false) }
+                    val refreshing = inboxViewModel.repliesRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
                         refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
-                                refreshing = true
                                 inboxViewModel.resetPageReplies()
                                 inboxViewModel.getReplies(
                                     inboxViewModel.getFormReplies(acct.jwt),
-                                ).invokeOnCompletion { refreshing = false }
+                                    ApiState.Refreshing
+                                )
                             }
                         },
                     )
@@ -305,7 +303,7 @@ fun InboxTabs(
                                 .zIndex(100F),
                         )
 
-                        if (loading) {
+                        if (inboxViewModel.repliesRes.isLoading()) {
                             LoadingBar()
                         }
                         when (val repliesRes = inboxViewModel.repliesRes) {
@@ -430,13 +428,12 @@ fun InboxTabs(
 
                     val loading = inboxViewModel.mentionsRes.isLoading()
 
-                    var refreshing by remember { mutableStateOf(false) }
+                    val refreshing= inboxViewModel.mentionsRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
                         refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
-                                refreshing = true
                                 inboxViewModel.resetPageMentions()
                                 inboxViewModel.getMentions(
                                     GetPersonMentions(
@@ -445,7 +442,8 @@ fun InboxTabs(
                                         page = inboxViewModel.pageMentions,
                                         auth = acct.jwt,
                                     ),
-                                ).invokeOnCompletion { refreshing = false }
+                                    ApiState.Refreshing
+                                )
                             }
                         },
                     )
@@ -601,13 +599,12 @@ fun InboxTabs(
                     }
 
                     val loading = inboxViewModel.messagesRes.isLoading()
-                    var refreshing by remember { mutableStateOf(false) }
+                    val refreshing = inboxViewModel.mentionsRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
                         refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
-                                refreshing = true
                                 inboxViewModel.resetPageMessages()
                                 inboxViewModel.getMessages(
                                     GetPrivateMessages(
@@ -615,7 +612,8 @@ fun InboxTabs(
                                         page = inboxViewModel.pageMessages,
                                         auth = acct.jwt,
                                     ),
-                                ).invokeOnCompletion { refreshing = false }
+                                    ApiState.Refreshing
+                                )
                             }
                         },
                     )
