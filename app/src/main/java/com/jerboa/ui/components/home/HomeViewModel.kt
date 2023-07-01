@@ -29,7 +29,6 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel(), Initializable {
@@ -183,7 +182,7 @@ class HomeViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun resetPosts(account: Account?){
+    fun resetPosts(account: Account?) {
         resetPage()
         getPosts(
             GetPosts(

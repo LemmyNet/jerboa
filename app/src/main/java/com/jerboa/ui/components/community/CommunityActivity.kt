@@ -143,7 +143,7 @@ fun CommunityActivity(
                             sort = communityViewModel.sortType,
                             auth = account?.jwt,
                         ),
-                        ApiState.Refreshing
+                        ApiState.Refreshing,
                     )
                 }
 

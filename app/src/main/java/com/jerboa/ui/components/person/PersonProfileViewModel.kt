@@ -21,7 +21,6 @@ import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
-import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
@@ -34,7 +33,6 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class PersonProfileViewModel : ViewModel(), Initializable {
@@ -85,7 +83,7 @@ class PersonProfileViewModel : ViewModel(), Initializable {
 
     fun getPersonDetails(
         form: GetPersonDetails,
-        state: ApiState<GetPersonDetailsResponse> = ApiState.Loading
+        state: ApiState<GetPersonDetailsResponse> = ApiState.Loading,
     ) {
         viewModelScope.launch {
             personDetailsRes = state

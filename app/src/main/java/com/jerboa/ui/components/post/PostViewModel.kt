@@ -27,7 +27,6 @@ import com.jerboa.datatypes.types.GetComments
 import com.jerboa.datatypes.types.GetCommentsResponse
 import com.jerboa.datatypes.types.GetPost
 import com.jerboa.datatypes.types.GetPostResponse
-import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostResponse
@@ -40,7 +39,6 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6
@@ -82,8 +80,8 @@ class PostViewModel : ViewModel(), Initializable {
 
     fun getData(
         account: Account?,
-        state: ApiState<GetPostResponse> = ApiState.Loading
-    ){
+        state: ApiState<GetPostResponse> = ApiState.Loading,
+    ) {
         viewModelScope.launch {
             // Set the commentId for the right case
             id?.also { id ->

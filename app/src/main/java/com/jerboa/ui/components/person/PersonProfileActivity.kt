@@ -297,7 +297,7 @@ fun UserTabs(
                             saved_only = personProfileViewModel.savedOnly,
                             auth = account?.jwt,
                         ),
-                        ApiState.Refreshing
+                        ApiState.Refreshing,
                     )
                 }
                 else -> {}
@@ -395,9 +395,11 @@ fun UserTabs(
                 }
 
                 UserTab.Posts.ordinal -> {
-                    Box(modifier = Modifier
-                        .pullRefresh(pullRefreshState)
-                        .fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(pullRefreshState)
+                            .fillMaxSize(),
+                    ) {
                         PullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
                             pullRefreshState,
@@ -580,9 +582,11 @@ fun UserTabs(
                                 }
                             }
 
-                            Box(modifier = Modifier
-                                .pullRefresh(pullRefreshState)
-                                .fillMaxSize()) {
+                            Box(
+                                modifier = Modifier
+                                    .pullRefresh(pullRefreshState)
+                                    .fillMaxSize(),
+                            ) {
                                 PullRefreshIndicator(
                                     personProfileViewModel.personDetailsRes.isRefreshing(),
                                     pullRefreshState,
