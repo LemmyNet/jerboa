@@ -76,7 +76,7 @@
     <string name="home_settings">Indstillinger</string>
     <string name="home_subscriptions">Abonnementer</string>
     <string name="home_add_account">Tilføj konto</string>
-    <string name="home_switch_to">Skift til %1$s/%2$s</string>
+    <string name="home_switch_to">Skift til %1$s@%2$s</string>
     <string name="home_sign_out">Log ud</string>
     <string name="home_menu">Menu</string>
     <string name="home_refresh">Opdater</string>

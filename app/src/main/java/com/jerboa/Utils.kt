@@ -484,6 +484,13 @@ fun personNameShown(person: Person, federatedName: Boolean = false): String {
     }
 }
 
+/**
+ * In cases where there should be no ambiguity as to the given Person's federated name.
+ */
+fun federatedNameShown(person: Person): String {
+    return "${person.name}@${hostName(person.actor_id)}"
+}
+
 fun communityNameShown(community: Community): String {
     return if (community.local) {
         community.title

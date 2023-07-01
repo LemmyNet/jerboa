@@ -139,7 +139,7 @@
     <string name="home_site_info">Info istanza</string>
     <string name="home_subscribed">Iscrizioni</string>
     <string name="home_subscriptions">Iscrizioni</string>
-    <string name="home_switch_to">Usa %1$s/%2$s</string>
+    <string name="home_switch_to">Usa %1$s@%2$s</string>
     <string name="inbox_filter">Seleziona filtro per la posta in arrivo</string>
     <string name="inbox_inbox">Posta in arrivo</string>
     <string name="inbox_markAllRead">Segna tutti come già letti</string>

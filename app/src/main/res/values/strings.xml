@@ -151,7 +151,7 @@
     <string name="home_site_info">Site Info</string>
     <string name="home_subscribed">Subscribed</string>
     <string name="home_subscriptions">Subscriptions</string>
-    <string name="home_switch_to">Switch to %1$s/%2$s</string>
+    <string name="home_switch_to">Switch to %1$s@%2$s</string>
     <string name="inbox_filter">Filter</string>
     <string name="inbox_inbox">Inbox</string>
     <string name="inbox_markAllRead">Mark all as read</string>
