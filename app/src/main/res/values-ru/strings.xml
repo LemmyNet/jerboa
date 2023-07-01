@@ -24,12 +24,10 @@
     <string name="comment_unsave">Отменить сохранение комментария</string>
     <string name="community_back">Назад</string>
     <string name="community_block_community">Заблокировать сообщество</string>
-    <string name="community_blocked">%1$s Заблокирован</string>
     <string name="community_community_info">Информация о сообществе</string>
     <string name="community_icon">Иконка сообщества</string>
     <string name="community_joined">Вы присоединились</string>
     <string name="community_link_users_month">%1$s пользователей / месяц</string>
-    <string name="community_list_back">Назад</string>
     <string name="community_list_search">Поиск...</string>
     <string name="community_pending">Запрошено</string>
     <string name="community_refresh">Обновить</string>
@@ -38,7 +36,6 @@
     <string name="community_users_month">%1$s пользователей / месяц</string>
     <string name="createPost_selectCommunity">Выберите сообщество из списка</string>
     <string name="create_post_a_title_here">заголовок тут...</string>
-    <string name="create_post_close">Закрыть</string>
     <string name="create_post_community">Сообщество</string>
     <string name="create_post_copy_suggested_title">скопировать предложенный заголовок: %1$s</string>
     <string name="create_post_create_post">Создать пост</string>
@@ -84,7 +81,6 @@
     <string name="home_subscribed">Подписки</string>
     <string name="home_subscriptions">Подписки</string>
     <string name="home_switch_to">Переключиться на %1$s/%2$s</string>
-    <string name="inbox_back">Назад</string>
     <string name="inbox_filter">Фильтр</string>
     <string name="inbox_inbox">Сообщения</string>
     <string name="inbox_markAllRead">Пометить все как прочитанные</string>
@@ -155,14 +151,11 @@
     <string name="person_profile_activity_comments">Комментарии</string>
     <string name="person_profile_activity_moderates">Модерирует</string>
     <string name="person_profile_activity_posts">Посты</string>
-    <string name="person_profile_back">Назад</string>
     <string name="person_profile_block_person">Заблокировать пользователя</string>
     <string name="person_profile_comments">%1$s комментариев</string>
     <string name="person_profile_joined">Зарегистрировался</string>
     <string name="person_profile_posts">%1$s постов</string>
     <string name="person_profile_report_person">Пожаловаться на пользователя</string>
-    <string name="person_routines_blocked">%1$s Заблокирован</string>
-    <string name="pickImage_imagePreview">Загружено изображение-предпросмотр</string>
     <string name="pictrs_image_upload_image">Загрузить изображение</string>
     <string name="postListing_deleted">Удалено</string>
     <string name="postListing_featuredCommunity">Выделено в сообществе</string>
@@ -172,7 +165,6 @@
     <string name="postListing_reply">Ответить на пост</string>
     <string name="post_activity_comments">Комментарии</string>
     <string name="post_edit_body_placeholder">Тело</string>
-    <string name="post_edit_close">Закрыть</string>
     <string name="post_edit_edit_post">Отредактировать пост</string>
     <string name="post_listing_block">Заблокировать %1$s</string>
     <string name="post_listing_comments">%1$s комментариев</string>
@@ -239,7 +231,6 @@
     <string name="AppBars_users_month">%1$s пользователей / месяц</string>
     <string name="AppBars_users_week">%1$s пользователей / неделя</string>
     <string name="about_social">Социальные сети</string>
-    <string name="account_settings_active">Активное</string>
     <string name="account_settings_activity_account_settings">Настройки аккаунта</string>
     <string name="account_settings_all">Все посты</string>
     <string name="account_settings_avatar">Фотография профиля</string>
@@ -250,13 +241,8 @@
     <string name="account_settings_default_sort_type">Сортировка по умолчанию</string>
     <string name="account_settings_display_name">Отображаемое имя</string>
     <string name="account_settings_email">Email</string>
-    <string name="account_settings_hot">Горячее</string>
     <string name="account_settings_local">Локальные</string>
     <string name="account_settings_matrix_user">Имя пользователя Matrix</string>
-    <string name="account_settings_mostcomments">Самое комментируемое</string>
-    <string name="account_settings_new">Новое</string>
-    <string name="account_settings_newcomments">Недавно прокомментированное</string>
-    <string name="account_settings_old">Старое</string>
     <string name="account_settings_remove_current_avatar">Удалить текущее изображение профиля</string>
     <string name="account_settings_save_settings">Сохранить настройки</string>
     <string name="account_settings_send_notifications_to_email">Отправлять уведомления на электронную почту</string>
@@ -267,11 +253,6 @@
     <string name="account_settings_show_read_posts">Показывать прочтенные посты</string>
     <string name="account_settings_show_scores">Показывать рейтинги</string>
     <string name="account_settings_subscribed">Подписки</string>
-    <string name="account_settings_topall">Лучшее за все время</string>
-    <string name="account_settings_topday">Лучшее за день</string>
-    <string name="account_settings_topmonth">Лучшее за месяц</string>
-    <string name="account_settings_topweek">Лучшее за неделю</string>
-    <string name="account_settings_topyear">Лучшее за  год</string>
     <string name="addBookmark">Добавить в закладки</string>
     <string name="app_bars_dot_spacer">.</string>
     <string name="bottomBar_bookmarks">Перейти в закладки</string>
