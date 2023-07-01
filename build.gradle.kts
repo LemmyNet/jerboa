@@ -5,6 +5,9 @@ buildscript {
         google()
         mavenCentral()
     }
+    extra.apply{
+        set("compose_version", "1.5.0-beta03")
+    }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 plugins {

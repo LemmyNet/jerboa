@@ -89,6 +89,8 @@ android {
 }
 
 dependencies {
+    val composeVersion = rootProject.extra["compose_version"]
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.github.alorma:compose-settings-ui-m3:0.27.0")
 
@@ -103,11 +105,12 @@ dependencies {
     implementation("io.noties.markwon:linkify:4.6.2")
 
     // Accompanist
-    implementation("com.google.accompanist:accompanist-pager:0.30.1")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.30.1")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.30.1")
-    implementation("com.google.accompanist:accompanist-permissions:0.30.1")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.1")
+    val accompanistVersion = "0.31.4-beta"
+    implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-flowlayout:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-permissions:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
 
     // LiveData
     implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
@@ -136,24 +139,24 @@ dependencies {
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
     implementation("androidx.compose.material3:material3:1.1.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
-    implementation("androidx.compose.material:material-icons-extended:1.4.3")
+    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
     implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.navigation:navigation-compose:2.7.0-beta01")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    implementation("androidx.compose.ui:ui:1.4.3")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
+    implementation("androidx.compose.ui:ui:$composeVersion")
+    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     implementation("androidx.activity:activity-compose:1.7.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.3")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.4.3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
+    debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
     implementation("net.engawapg.lib:zoomable:1.4.3")
     implementation("androidx.browser:browser:1.5.0")
 
