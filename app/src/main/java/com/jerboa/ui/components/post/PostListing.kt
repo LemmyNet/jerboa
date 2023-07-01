@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -62,6 +63,7 @@ import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.InstantScores
+import com.jerboa.PostType
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -78,8 +80,8 @@ import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.Account
+import com.jerboa.getPostType
 import com.jerboa.hostName
-import com.jerboa.isImage
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
 import com.jerboa.openLink
@@ -111,7 +113,9 @@ import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
+import com.jerboa.ui.theme.imageHighlight
 import com.jerboa.ui.theme.muted
 
 @Composable
@@ -271,7 +275,7 @@ fun PostTitleBlock(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
 ) {
-    val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
+    val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: run { false }
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
@@ -1208,6 +1212,8 @@ private fun ThumbnailTile(
     postView.post.url?.also { url ->
         var showImageDialog by remember { mutableStateOf(false) }
 
+        val postType = getPostType(url)
+
         if (showImageDialog) {
             ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
         }
@@ -1218,7 +1224,7 @@ private fun ThumbnailTile(
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
             .clickable {
-                if (isImage(url)) {
+                if (postType != PostType.Link) {
                     showImageDialog = true
                 } else {
                     openLink(
@@ -1230,28 +1236,44 @@ private fun ThumbnailTile(
                 }
             }
 
-        postView.post.thumbnail_url?.also { thumbnail ->
-            PictrsThumbnailImage(
-                thumbnail = thumbnail,
-                blur = blurNSFW && nsfwCheck(postView),
-                modifier = postLinkPicMod,
-            )
-        } ?: run {
-            Card(
-                colors = CARD_COLORS,
-                modifier = postLinkPicMod,
-                shape = MaterialTheme.shapes.large,
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize(),
+        Box {
+            postView.post.thumbnail_url?.also { thumbnail ->
+                PictrsThumbnailImage(
+                    thumbnail = thumbnail,
+                    blur = blurNSFW && nsfwCheck(postView),
+                    roundBottomEndCorner = postType != PostType.Link,
+                    modifier = postLinkPicMod,
+                )
+
+            } ?: run {
+                Card(
+                    colors = CARD_COLORS,
+                    modifier = postLinkPicMod,
+                    shape = MaterialTheme.shapes.large,
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Link,
-                        contentDescription = null,
-                        modifier = Modifier.size(LINK_ICON_SIZE),
-                    )
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Link,
+                            contentDescription = null,
+                            modifier = Modifier.size(LINK_ICON_SIZE),
+                        )
+                    }
                 }
+            }
+
+
+            // Display a caret in the bottom right corner to denote this as an image
+            if (postType != PostType.Link) {
+                Icon(
+                    painter = painterResource(id = R.drawable.triangle),
+                    contentDescription = null,
+                    modifier = Modifier.size(THUMBNAIL_CARET_SIZE)
+                        .align(Alignment.BottomEnd),
+                    tint = imageHighlight
+                )
             }
         }
     }

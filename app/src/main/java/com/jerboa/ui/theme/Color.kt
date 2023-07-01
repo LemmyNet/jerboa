@@ -1061,3 +1061,7 @@ val Color.muted @Composable get() = this.copy(alpha = 0.5F)
 
 val CARD_COLORS @Composable
 get() = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
+
+// TODO integrate into theme?
+val imageHighlight: Color
+    get() = Color(0xCCD1D1D1)
