@@ -1331,5 +1331,9 @@ fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange>
 }
 
 fun <T> ApiState<T>.isLoading(): Boolean {
-    return this is ApiState.Awaiting || this == ApiState.Loading
+    return this is ApiState.Appending || this == ApiState.Loading || this == ApiState.Refreshing
+}
+
+fun <T> ApiState<T>.isRefreshing(): Boolean {
+    return this == ApiState.Refreshing
 }

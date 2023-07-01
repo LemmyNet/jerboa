@@ -56,6 +56,7 @@ import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
 import com.jerboa.isLoading
+import com.jerboa.isRefreshing
 import com.jerboa.loginFirstToast
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
@@ -200,7 +201,7 @@ fun MainPostListingsContent(
     ReportDrawn()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = homeViewModel.refreshing,
+        refreshing = homeViewModel.postsRes.isRefreshing(),
         onRefresh = {
             homeViewModel.refreshPosts(account)
         },
@@ -210,7 +211,7 @@ fun MainPostListingsContent(
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         // zIndex needed bc some elements of a post get drawn above it.
-        PullRefreshIndicator(homeViewModel.refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100f))
+        PullRefreshIndicator(homeViewModel.postsRes.isRefreshing(), pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100f))
         // Can't be in ApiState.Loading, because of infinite scrolling
         if (homeViewModel.postsRes.isLoading()) {
             LoadingBar(padding = padding)

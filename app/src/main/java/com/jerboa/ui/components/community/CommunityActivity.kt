@@ -49,6 +49,7 @@ import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.isLoading
+import com.jerboa.isRefreshing
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -129,12 +130,11 @@ fun CommunityActivity(
     }
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = communityViewModel.refreshing,
+        refreshing = communityViewModel.postsRes.isRefreshing(),
         onRefresh = {
             when (val communityRes = communityViewModel.communityRes) {
                 is ApiState.Success -> {
                     communityViewModel.resetPage()
-                    communityViewModel.refreshing = true
                     communityViewModel.getPosts(
                         form =
                         GetPosts(
@@ -143,7 +143,8 @@ fun CommunityActivity(
                             sort = communityViewModel.sortType,
                             auth = account?.jwt,
                         ),
-                    ).invokeOnCompletion { communityViewModel.refreshing = false }
+                        ApiState.Refreshing
+                    )
                 }
 
                 else -> {}
@@ -218,7 +219,7 @@ fun CommunityActivity(
         content = { padding ->
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
                 // zIndex needed bc some elements of a post get drawn above it.
-                PullRefreshIndicator(communityViewModel.refreshing, pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100F))
+                PullRefreshIndicator(communityViewModel.postsRes.isRefreshing(), pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100F))
                 // Can't be in ApiState.Loading, because of infinite scrolling
                 if (communityViewModel.postsRes.isLoading()) {
                     LoadingBar(padding = padding)

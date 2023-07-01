@@ -44,9 +44,6 @@ class HomeViewModel : ViewModel(), Initializable {
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
-    var refreshing by mutableStateOf(false)
-        private set
-
     var sortType by mutableStateOf(SortType.Active)
         private set
     var listingType by mutableStateOf(ListingType.Local)
@@ -74,9 +71,9 @@ class HomeViewModel : ViewModel(), Initializable {
         page -= 1
     }
 
-    fun getPosts(form: GetPosts): Job {
-        return viewModelScope.launch {
-            postsRes = ApiState.Loading
+    fun getPosts(form: GetPosts, state: ApiState<GetPostsResponse> = ApiState.Loading) {
+        viewModelScope.launch {
+            postsRes = state
             postsRes =
                 apiWrapper(
                     API.getInstance().getPosts(form.serializeToMap()),
@@ -88,7 +85,7 @@ class HomeViewModel : ViewModel(), Initializable {
         viewModelScope.launch {
             val oldRes = postsRes
             when (oldRes) {
-                is ApiState.Success -> postsRes = ApiState.Awaiting(oldRes.data)
+                is ApiState.Success -> postsRes = ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 
@@ -186,9 +183,9 @@ class HomeViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun resetPosts(account: Account?): Job {
+    fun resetPosts(account: Account?){
         resetPage()
-        return getPosts(
+        getPosts(
             GetPosts(
                 page = page,
                 sort = sortType,
@@ -199,8 +196,16 @@ class HomeViewModel : ViewModel(), Initializable {
     }
 
     fun refreshPosts(account: Account?) {
-        refreshing = true
-        resetPosts(account).invokeOnCompletion { refreshing = false }
+        resetPage()
+        getPosts(
+            GetPosts(
+                page = page,
+                sort = sortType,
+                type_ = listingType,
+                auth = account?.jwt,
+            ),
+            ApiState.Refreshing,
+        )
     }
 
     fun getForm(jwt: String?): GetPosts {

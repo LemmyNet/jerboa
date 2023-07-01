@@ -76,6 +76,7 @@ import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
 import com.jerboa.isLoading
 import com.jerboa.isModerator
+import com.jerboa.isRefreshing
 import com.jerboa.newVote
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
@@ -194,12 +195,9 @@ fun PostActivity(
     val scope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = postViewModel.refreshing,
+        refreshing = postViewModel.postRes.isRefreshing(),
         onRefresh = {
-            postViewModel.refreshing = true
-            postViewModel.getData(account).invokeOnCompletion {
-                postViewModel.refreshing = false
-            }
+            postViewModel.getData(account, ApiState.Refreshing)
         },
         // Needs to be lower else it can hide behind the top bar
         refreshingOffset = 150.dp,
@@ -295,7 +293,7 @@ fun PostActivity(
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
                 PullRefreshIndicator(
-                    postViewModel.refreshing,
+                    postViewModel.postRes.isRefreshing(),
                     pullRefreshState,
                     // zIndex needed bc some elements of a post get drawn above it.
                     Modifier

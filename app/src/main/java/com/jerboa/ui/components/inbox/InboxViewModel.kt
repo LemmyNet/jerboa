@@ -123,7 +123,7 @@ class InboxViewModel : ViewModel(), Initializable {
         viewModelScope.launch {
             val oldRes = repliesRes
             when (oldRes) {
-                is ApiState.Success -> repliesRes = ApiState.Awaiting(oldRes.data)
+                is ApiState.Success -> repliesRes = ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 
@@ -163,7 +163,7 @@ class InboxViewModel : ViewModel(), Initializable {
         viewModelScope.launch {
             val oldRes = mentionsRes
             when (oldRes) {
-                is ApiState.Success -> mentionsRes = ApiState.Awaiting(oldRes.data)
+                is ApiState.Success -> mentionsRes = ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 
@@ -210,7 +210,7 @@ class InboxViewModel : ViewModel(), Initializable {
         viewModelScope.launch {
             val oldRes = messagesRes
             when (oldRes) {
-                is ApiState.Success -> messagesRes = ApiState.Awaiting(oldRes.data)
+                is ApiState.Success -> messagesRes = ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 

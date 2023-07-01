@@ -21,6 +21,7 @@ import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
+import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
@@ -86,9 +87,10 @@ class PersonProfileViewModel : ViewModel(), Initializable {
 
     fun getPersonDetails(
         form: GetPersonDetails,
-    ): Job {
-        return viewModelScope.launch {
-            personDetailsRes = ApiState.Loading
+        state: ApiState<GetPersonDetailsResponse> = ApiState.Loading
+    ) {
+        viewModelScope.launch {
+            personDetailsRes = state
             personDetailsRes =
                 apiWrapper(
                     API.getInstance().getPersonDetails(form.serializeToMap()),
@@ -103,7 +105,7 @@ class PersonProfileViewModel : ViewModel(), Initializable {
         viewModelScope.launch {
             val oldRes = personDetailsRes
             when (oldRes) {
-                is ApiState.Success -> personDetailsRes = ApiState.Awaiting(oldRes.data)
+                is ApiState.Success -> personDetailsRes = ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 

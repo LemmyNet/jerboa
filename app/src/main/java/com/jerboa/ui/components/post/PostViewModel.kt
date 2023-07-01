@@ -27,6 +27,7 @@ import com.jerboa.datatypes.types.GetComments
 import com.jerboa.datatypes.types.GetCommentsResponse
 import com.jerboa.datatypes.types.GetPost
 import com.jerboa.datatypes.types.GetPostResponse
+import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostResponse
@@ -59,8 +60,6 @@ class PostViewModel : ViewModel(), Initializable {
     var sortType by mutableStateOf(CommentSortType.Hot)
         private set
 
-    var refreshing by mutableStateOf(false)
-
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
@@ -68,8 +67,7 @@ class PostViewModel : ViewModel(), Initializable {
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     fun initialize(
@@ -84,8 +82,9 @@ class PostViewModel : ViewModel(), Initializable {
 
     fun getData(
         account: Account?,
-    ): Job {
-        return viewModelScope.launch {
+        state: ApiState<GetPostResponse> = ApiState.Loading
+    ){
+        viewModelScope.launch {
             // Set the commentId for the right case
             id?.also { id ->
 
@@ -95,7 +94,7 @@ class PostViewModel : ViewModel(), Initializable {
                     GetPost(comment_id = it, auth = account?.jwt)
                 })
 
-                postRes = ApiState.Loading
+                postRes = state
                 postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
 
                 val commentsForm = id.fold({
@@ -134,7 +133,7 @@ class PostViewModel : ViewModel(), Initializable {
         viewModelScope.launch {
             val existing = commentsRes
             when (existing) {
-                is ApiState.Success -> commentsRes = ApiState.Awaiting(existing.data)
+                is ApiState.Success -> commentsRes = ApiState.Appending(existing.data)
                 else -> return@launch
             }
 

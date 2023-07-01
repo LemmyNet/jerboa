@@ -47,6 +47,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isLoading
+import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
@@ -284,11 +285,10 @@ fun UserTabs(
 
     // TODO: can only refresh in Posts and Comments but this only refreshes the PersonDetails
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = personProfileViewModel.refreshing,
+        refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
         onRefresh = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
                 is ApiState.Success -> {
-                    personProfileViewModel.refreshing = true
                     personProfileViewModel.resetPage()
                     personProfileViewModel.getPersonDetails(
                         GetPersonDetails(
@@ -298,9 +298,8 @@ fun UserTabs(
                             saved_only = personProfileViewModel.savedOnly,
                             auth = account?.jwt,
                         ),
-                    ).invokeOnCompletion {
-                        personProfileViewModel.refreshing = false
-                    }
+                        ApiState.Refreshing
+                    )
                 }
                 else -> {}
             }
@@ -399,7 +398,7 @@ fun UserTabs(
                 UserTab.Posts.ordinal -> {
                     Box(modifier = Modifier.pullRefresh(pullRefreshState).fillMaxSize()) {
                         PullRefreshIndicator(
-                            personProfileViewModel.refreshing,
+                            personProfileViewModel.personDetailsRes.isRefreshing(),
                             pullRefreshState,
                             // zIndex needed bc some elements of a post get drawn above it.
                             Modifier
@@ -535,6 +534,7 @@ fun UserTabs(
                         ApiState.Empty -> ApiEmptyText()
                         is ApiState.Failure -> ApiErrorText(profileRes.msg)
                         ApiState.Loading -> LoadingBar()
+                        ApiState.Refreshing -> LoadingBar()
                         is ApiState.Holder -> {
                             val nodes = commentsToFlatNodes(profileRes.data.comments)
 

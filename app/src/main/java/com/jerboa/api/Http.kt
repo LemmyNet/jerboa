@@ -319,9 +319,10 @@ sealed class ApiState<out T> {
 
     abstract class Holder<T>(val data: T) : ApiState<T>()
     class Success<T>(data: T) : Holder<T>(data)
-    class Awaiting<T>(data: T) : Holder<T>(data) // TODO: need better name for this
+    class Appending<T>(data: T) : Holder<T>(data)
     class Failure(val msg: Throwable) : ApiState<Nothing>()
-    object Loading : ApiState<Nothing>() // TODO: maybe object Loading : Awaiting<Unit>(Unit)
+    object Loading : ApiState<Nothing>()
+    object Refreshing : ApiState<Nothing>()
     object Empty : ApiState<Nothing>()
 }
 

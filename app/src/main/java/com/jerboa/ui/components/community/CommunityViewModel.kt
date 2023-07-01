@@ -54,8 +54,6 @@ class CommunityViewModel : ViewModel(), Initializable {
         mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
-    var refreshing by mutableStateOf(false)
-
     var sortType by mutableStateOf(SortType.Active)
         private set
     var page by mutableStateOf(1)
@@ -87,9 +85,9 @@ class CommunityViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun getPosts(form: GetPosts): Job {
+    fun getPosts(form: GetPosts, state: ApiState<GetPostsResponse> = ApiState.Loading): Job {
         return viewModelScope.launch {
-            postsRes = ApiState.Loading
+            postsRes = state
             postsRes =
                 apiWrapper(
                     API.getInstance().getPosts(form.serializeToMap()),
@@ -101,7 +99,7 @@ class CommunityViewModel : ViewModel(), Initializable {
         viewModelScope.launch {
             val oldRes = postsRes
             when (oldRes) {
-                is ApiState.Success -> postsRes = ApiState.Awaiting(oldRes.data)
+                is ApiState.Success -> postsRes = ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 
