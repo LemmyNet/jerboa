@@ -15,7 +15,7 @@ fun PostSwipeWrapper(
     account: Account?,
     content: @Composable () -> Unit,
 ) {
-    if (appSettingsViewModel.appSettings.value?.allowSwipeBetweenPosts == true) {
+    if (appSettingsViewModel.appSettings.value?.allowSwipingBetweenPosts == true) {
         SwipeBetweenPosts(
             postStream = postStream,
             postViewModel = postViewModel,

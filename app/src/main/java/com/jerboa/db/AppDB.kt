@@ -124,10 +124,10 @@ data class AppSettings(
     )
     val blurNSFW: Boolean,
     @ColumnInfo(
-        name = "allow_swipe_between_posts",
+        name = "allow_swiping_between_posts",
         defaultValue = "0",
     )
-    val allowSwipeBetweenPosts: Boolean,
+    val allowSwipingBetweenPosts: Boolean,
 )
 
 val APP_SETTINGS_DEFAULT = AppSettings(
@@ -147,7 +147,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     usePrivateTabs = false,
     secureWindow = false,
     blurNSFW = true,
-    allowSwipeBetweenPosts = false,
+    allowSwipingBetweenPosts = false,
 )
 
 @Dao
@@ -479,7 +479,7 @@ val MIGRATION_17_18 = object : Migration(17, 18) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
-            "ALTER TABLE AppSettings add column allow_swipe_between_posts INTEGER NOT NULL default 0",
+            "ALTER TABLE AppSettings add column allow_swiping_between_posts INTEGER NOT NULL default 0",
         )
     }
 }
