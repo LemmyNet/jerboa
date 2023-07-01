@@ -194,12 +194,7 @@ fun InboxTabs(
     val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
 
     val tabTitles = InboxTab.values().map { getLocalizedStringForInboxTab(ctx, it) }
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        initialPageOffsetFraction = 0f,
-    ) {
-        tabTitles.size
-    }
+    val pagerState = rememberPagerState { tabTitles.size }
 
     Column(
         modifier = Modifier.padding(padding),
@@ -459,7 +454,9 @@ fun InboxTabs(
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
+                    Box(modifier = Modifier
+                        .pullRefresh(refreshState)
+                        .fillMaxSize()) {
                         PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
                             ApiState.Empty -> ApiEmptyText()
@@ -625,7 +622,9 @@ fun InboxTabs(
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
+                    Box(modifier = Modifier
+                        .pullRefresh(refreshState)
+                        .fillMaxSize()) {
                         PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
                         when (val messagesRes = inboxViewModel.messagesRes) {
                             ApiState.Empty -> ApiEmptyText()
