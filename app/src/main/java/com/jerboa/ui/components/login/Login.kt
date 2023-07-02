@@ -225,11 +225,6 @@ fun LoginFormPreview() {
     LoginForm()
 }
 
-@Preview
-@Composable
-fun LoginFormLoadingPreview() {
-    LoginForm(loading = true)
-}
 
 @Composable
 fun LoginHeader(
