@@ -84,7 +84,7 @@ It uses the fediverse api and filters on the monthly users.
 You can run it by doing
 
 ```shell
- ./gradlew app:updateInstances --no-configuration-cache
+ ./gradlew app:updateInstances
 ```
 
 ## Generate compose compiler metrics

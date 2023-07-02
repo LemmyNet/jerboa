@@ -26,8 +26,7 @@ class ScrollCommentsBenchmarks {
     val rule = MacrobenchmarkRule()
 
     @Test
-    fun scrollCommentsCompilationNone() =
-        benchmark(CompilationMode.None())
+    fun scrollCommentsCompilationNone() = benchmark(CompilationMode.None())
 
     @Test
     fun scrollCommentsCompilationBaselineProfiles() =
