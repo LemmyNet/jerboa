@@ -117,6 +117,7 @@ import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.imageHighlight
 import com.jerboa.ui.theme.muted
+import com.jerboa.ui.theme.videoHighlight
 
 @Composable
 fun PostHeaderLine(
@@ -275,7 +276,7 @@ fun PostTitleBlock(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
 ) {
-    val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: run { false }
+    val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
@@ -1272,7 +1273,10 @@ private fun ThumbnailTile(
                     contentDescription = null,
                     modifier = Modifier.size(THUMBNAIL_CARET_SIZE)
                         .align(Alignment.BottomEnd),
-                    tint = imageHighlight
+                    tint = when (postType) {
+                        PostType.Video -> videoHighlight
+                        else -> imageHighlight
+                    }
                 )
             }
         }

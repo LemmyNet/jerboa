@@ -1065,3 +1065,5 @@ get() = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inver
 // TODO integrate into theme?
 val imageHighlight: Color
     get() = Color(0xCCD1D1D1)
+val videoHighlight: Color
+    get() = Color(0xCCC20000)
