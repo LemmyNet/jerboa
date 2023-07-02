@@ -410,8 +410,11 @@ fun DrawerHeader(
             modifier = sizeMod
                 .padding(XL_PADDING),
         ) {
-            AvatarAndAccountName(myPerson, showAvatar)
+            Box(modifier = Modifier.weight(0.9f)) {
+                AvatarAndAccountName(myPerson, showAvatar)
+            }
             Icon(
+                modifier = Modifier.weight(0.1f),
                 imageVector = if (showAccountAddMode) {
                     Icons.Outlined.ExpandLess
                 } else {
