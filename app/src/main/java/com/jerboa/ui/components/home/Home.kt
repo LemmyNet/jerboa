@@ -79,7 +79,7 @@ import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.getLocalizedListingTypeName
-import com.jerboa.getLocalizedSortingTypeName
+import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
@@ -465,7 +465,7 @@ fun HomeHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeName(ctx, selectedSortType),
+            text = getLocalizedSortingTypeShortName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleSmall,
         )
     }

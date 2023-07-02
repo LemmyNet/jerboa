@@ -17,7 +17,7 @@ import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.getLocalizedSortingTypeName
+import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
@@ -219,7 +219,7 @@ fun CommunityHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeName(ctx, selectedSortType),
+            text = getLocalizedSortingTypeShortName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleMedium,
         )
     }
