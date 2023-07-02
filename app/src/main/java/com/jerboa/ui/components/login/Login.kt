@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -29,6 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
@@ -130,7 +133,7 @@ fun LoginForm(
             },
         ) {
             OutlinedTextField(
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier.menuAnchor().width(OutlinedTextFieldDefaults.MinWidth),
                 label = { Text(stringResource(R.string.login_instance)) },
                 placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
                 value = instance,
@@ -141,30 +144,35 @@ fun LoginForm(
                 },
                 keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
             )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                },
-            ) {
-                instanceOptions.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        modifier = Modifier.exposedDropdownSize(),
-                        text = {
-                            Text(text = selectionOption)
-                        },
-                        onClick = {
-                            instance = selectionOption
-                            expanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                    )
+            val filteringOptions = instanceOptions.filter { it.contains(instance, ignoreCase = true) }
+            if (filteringOptions.isNotEmpty()) {
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    },
+                    properties = PopupProperties(focusable = false),
+                    modifier = Modifier.exposedDropdownSize(true),
+                ) {
+                    filteringOptions.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            modifier = Modifier.exposedDropdownSize(),
+                            text = {
+                                Text(text = selectionOption)
+                            },
+                            onClick = {
+                                instance = selectionOption
+                                expanded = false
+                            },
+                        )
+                    }
                 }
             }
         }
 
         MyTextField(
             modifier = Modifier
+                .width(OutlinedTextFieldDefaults.MinWidth)
                 .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
                 .onAutofill(AutofillType.Username, AutofillType.EmailAddress) {
                     username = it
@@ -176,6 +184,7 @@ fun LoginForm(
         )
         PasswordField(
             modifier = Modifier
+                .width(OutlinedTextFieldDefaults.MinWidth)
                 .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
                 .onAutofill(AutofillType.Password) {
                     password = it
@@ -186,6 +195,7 @@ fun LoginForm(
         )
         MyTextField(
             modifier = Modifier
+                .width(OutlinedTextFieldDefaults.MinWidth)
                 .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
                 .onAutofill(AutofillType.SmsOtpCode) {
                     totp = it
@@ -201,7 +211,7 @@ fun LoginForm(
             modifier = Modifier.padding(top = 10.dp),
         ) {
             if (loading) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(modifier = Modifier.size(24.dp))
             } else {
                 Text(stringResource(R.string.login_login))
             }
@@ -213,6 +223,12 @@ fun LoginForm(
 @Composable
 fun LoginFormPreview() {
     LoginForm()
+}
+
+@Preview
+@Composable
+fun LoginFormLoadingPreview() {
+    LoginForm(loading = true)
 }
 
 @Composable
