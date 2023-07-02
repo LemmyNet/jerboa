@@ -202,7 +202,6 @@ val MIGRATION_16_17 = object : Migration(16, 17) {
     }
 }
 
-
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST = arrayOf(
     MIGRATION_1_2,
