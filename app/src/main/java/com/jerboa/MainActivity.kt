@@ -21,13 +21,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import arrow.core.Either
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
             JerboaTheme(
                 appSettings = appSettings,
             ) {
-                val navController = rememberAnimatedNavController()
+                val navController = rememberNavController()
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                     else -> {}
                 }
 
-                AnimatedNavHost(
+                NavHost(
                     route = Route.Graph.ROOT,
                     navController = navController,
                     startDestination = Route.Graph.HOME,

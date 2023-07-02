@@ -134,7 +134,6 @@ fun Drawer(
         onClickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode },
         showAvatar = myUserInfo?.local_user_view?.local_user?.show_avatars ?: true,
     )
-    Divider()
     // Drawer items
     DrawerContent(
         accountViewModel = accountViewModel,
@@ -178,6 +177,7 @@ fun DrawerContent(
         enter = expandVertically(),
         exit = shrinkVertically(),
     ) {
+        Divider()
         DrawerAddAccountMode(
             accountViewModel = accountViewModel,
             navController = navController,
@@ -186,20 +186,19 @@ fun DrawerContent(
         )
     }
 
-    if (!showAccountAddMode) {
-        DrawerItemsMain(
-            myUserInfo = myUserInfo,
-            onClickListingType = onClickListingType,
-            onCommunityClick = onCommunityClick,
-            onClickProfile = onClickProfile,
-            onClickInbox = onClickInbox,
-            onClickSaved = onClickSaved,
-            unreadCount = unreadCount,
-            onClickSettings = onClickSettings,
-            onClickCommunities = onClickCommunities,
-            blurNSFW = blurNSFW,
-        )
-    }
+    Divider()
+    DrawerItemsMain(
+        myUserInfo = myUserInfo,
+        onClickListingType = onClickListingType,
+        onCommunityClick = onCommunityClick,
+        onClickProfile = onClickProfile,
+        onClickInbox = onClickInbox,
+        onClickSaved = onClickSaved,
+        unreadCount = unreadCount,
+        onClickSettings = onClickSettings,
+        onClickCommunities = onClickCommunities,
+        blurNSFW = blurNSFW,
+    )
 }
 
 @Composable
