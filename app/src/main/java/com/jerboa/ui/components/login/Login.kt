@@ -225,7 +225,6 @@ fun LoginFormPreview() {
     LoginForm()
 }
 
-
 @Composable
 fun LoginHeader(
     navController: NavController = rememberNavController(),
