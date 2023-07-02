@@ -88,10 +88,12 @@ fun ImageViewerDialog(url: String, onBackRequest: () -> Unit) {
     val topBarAlpha = animateFloatAsState(
         targetValue = if (showTopBar) 1f else 0f,
         animationSpec = tween(backFadeTime),
+        label = "topBarAlpha",
     )
     val backgroundColor = animateColorAsState(
         targetValue = if (showTopBar) backColorTranslucent else backColor,
         animationSpec = tween(backFadeTime),
+        label = "backgroundColor",
     )
 
     val context = LocalContext.current
