@@ -32,6 +32,7 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
+import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.launch
 
 class CommunityViewModel : ViewModel(), Initializable {
@@ -122,7 +123,7 @@ class CommunityViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun followCommunity(form: FollowCommunity) {
+    fun followCommunity(form: FollowCommunity, onComplete: () -> Unit = {}) {
         viewModelScope.launch {
             followCommunityRes = ApiState.Loading
             followCommunityRes =
@@ -144,6 +145,8 @@ class CommunityViewModel : ViewModel(), Initializable {
 
                 else -> {}
             }
+
+            onComplete()
         }
     }
 
