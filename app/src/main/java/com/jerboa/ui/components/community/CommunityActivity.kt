@@ -40,6 +40,7 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.FollowCommunity
 import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
@@ -232,6 +233,11 @@ fun CommunityActivity(
                                                         form = FollowCommunity(
                                                             community_id = cfv.community.id,
                                                             follow = cfv.subscribed == SubscribedType.NotSubscribed,
+                                                            auth = acct.jwt,
+                                                        ),
+                                                    )
+                                                    siteViewModel.getSite(
+                                                        form = GetSite(
                                                             auth = acct.jwt,
                                                         ),
                                                     )
