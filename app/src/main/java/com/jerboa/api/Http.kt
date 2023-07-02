@@ -270,6 +270,7 @@ interface API {
                     val newRequest = requestBuilder.build()
                     chain.proceed(newRequest)
                 }
+                // this should probably be a network interceptor,
                 .addInterceptor { chain ->
                     val request = chain.request()
                     try {
