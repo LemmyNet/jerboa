@@ -2,6 +2,7 @@ package com.jerboa.ui.components.home
 
 import android.content.Context
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -364,6 +365,10 @@ fun MainDrawer(
 
     val accounts = accountViewModel.allAccounts.value
     val account = getCurrentAccount(accountViewModel)
+
+    BackHandler(drawerState.isOpen) {
+        closeDrawer(scope, drawerState)
+    }
 
     Drawer(
         siteRes = siteViewModel.siteRes,
