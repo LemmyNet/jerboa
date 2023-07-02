@@ -447,8 +447,8 @@ fun AvatarAndAccountName(myPerson: Person?, showAvatar: Boolean) {
                 text = myPerson?.let { federatedNameShown(it) } ?: run { "" },
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.labelSmall,
-                overflow = TextOverflow.Clip,
-                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
             )
         }
     }
