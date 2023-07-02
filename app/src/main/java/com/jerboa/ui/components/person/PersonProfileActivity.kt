@@ -263,7 +263,7 @@ fun UserTabs(
     } else {
         UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
     }
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { tabTitles.size }
 
     val loading = personProfileViewModel.personDetailsRes == ApiState.Loading
 
@@ -315,7 +315,6 @@ fun UserTabs(
             }
         }
         HorizontalPager(
-            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),
