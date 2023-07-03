@@ -77,7 +77,7 @@
     <string name="home_settings">設定</string>
     <string name="home_subscriptions">登録コミュニティ</string>
     <string name="home_add_account">アカウントを連携</string>
-    <string name="home_switch_to">アカウントを%1$s/%2$sに変更</string>
+    <string name="home_switch_to">アカウントを%1$s@%2$sに変更</string>
     <string name="home_sign_out">サインアウト</string>
     <string name="home_menu">メニュー</string>
     <string name="home_refresh">再読み込み</string>

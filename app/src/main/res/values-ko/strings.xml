@@ -150,7 +150,7 @@
     <string name="home_site_info">사이트 정보</string>
     <string name="home_subscribed">구독함</string>
     <string name="home_subscriptions">구독</string>
-    <string name="home_switch_to">%1$s/%2$s로 전환</string>
+    <string name="home_switch_to">%1$s@%2$s로 전환</string>
     <string name="inbox_filter">받은 편지함 필터 선택</string>
     <string name="inbox_inbox">받은 편지함</string>
     <string name="inbox_markAllRead">모두 읽음 처리</string>

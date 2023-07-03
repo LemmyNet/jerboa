@@ -73,7 +73,7 @@
     <string name="home_settings">Configurações</string>
     <string name="home_subscriptions">Participa das Comunidades</string>
     <string name="home_add_account">Adicionar Conta</string>
-    <string name="home_switch_to">Mudar para %1$s/%2$s</string>
+    <string name="home_switch_to">Mudar para %1$s@%2$s</string>
     <string name="home_sign_out">Sair</string>
     <string name="home_menu">Menu</string>
     <string name="home_refresh">Recarregar</string>

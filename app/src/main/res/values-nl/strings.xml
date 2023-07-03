@@ -103,7 +103,7 @@
     <string name="form_submit">Verzend</string>
     <string name="homeHeader_filter">Selecteer feed</string>
     <string name="home_add_account">Account toevoegen</string>
-    <string name="home_switch_to">Overschakelen naar %1$s/%2$s</string>
+    <string name="home_switch_to">Overschakelen naar %1$s@%2$s</string>
     <string name="home_sign_out">Afmelden</string>
     <string name="home_menu">Menu</string>
     <string name="home_refresh">Vernieuwen</string>
