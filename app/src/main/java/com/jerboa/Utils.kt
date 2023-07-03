@@ -835,7 +835,7 @@ enum class PostType {
      * A Video. Should open the built-in video viewer.
      * (Not currently available).
      */
-    Video
+    Video,
 }
 
 @OptIn(ExperimentalFoundationApi::class)

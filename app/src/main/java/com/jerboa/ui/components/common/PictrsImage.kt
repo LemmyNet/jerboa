@@ -156,8 +156,14 @@ fun PictrsThumbnailImage(
             rounded = false,
             blur = blur,
         )
-            .clip(RoundedCornerShape(12f, 12f,
-                if (roundBottomEndCorner) 0f else 12f, 12f)),
+            .clip(
+                RoundedCornerShape(
+                    12f,
+                    12f,
+                    if (roundBottomEndCorner) 0f else 12f,
+                    12f,
+                ),
+            ),
     )
 }
 

@@ -1245,7 +1245,6 @@ private fun ThumbnailTile(
                     roundBottomEndCorner = postType != PostType.Link,
                     modifier = postLinkPicMod,
                 )
-
             } ?: run {
                 Card(
                     colors = CARD_COLORS,
@@ -1265,7 +1264,6 @@ private fun ThumbnailTile(
                 }
             }
 
-
             // Display a caret in the bottom right corner to denote this as an image
             if (postType != PostType.Link) {
                 Icon(
@@ -1276,7 +1274,7 @@ private fun ThumbnailTile(
                     tint = when (postType) {
                         PostType.Video -> videoHighlight
                         else -> imageHighlight
-                    }
+                    },
                 )
             }
         }
