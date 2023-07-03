@@ -108,7 +108,6 @@ import com.jerboa.ui.theme.CARD_COLORS
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.LINK_ICON_SIZE
-import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -125,7 +124,6 @@ fun PostHeaderLine(
     isModerator: Boolean,
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
-    showAvatar: Boolean,
     blurNSFW: Boolean,
 ) {
     val community = postView.community
@@ -134,33 +132,30 @@ fun PostHeaderLine(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(LARGE_PADDING),
-                modifier = Modifier.weight(1f),
-            ) {
-                if (showCommunityName) {
+            Column(verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
+                ) {
                     community.icon?.let {
                         CircularIcon(
                             icon = it,
+                            size = 36.dp,
                             contentDescription = stringResource(R.string.postListing_goToCommunity),
-                            size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
                             thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
                             blur = blurNSFW && community.nsfw,
                         )
                     }
-                }
-                Column(verticalArrangement = Arrangement.spacedBy(SMALL_PADDING)) {
-                    if (showCommunityName) {
-                        CommunityName(
-                            community = postView.community,
-                            modifier = Modifier.clickable { onCommunityClick(community) },
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-                    ) {
+                    Column() {
+                        if (showCommunityName) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)) {
+                                CommunityName(
+                                    community = postView.community,
+                                    modifier = Modifier.clickable { onCommunityClick(community) },
+                                )
+                            }
+                        }
                         PersonProfileLink(
                             person = postView.creator,
                             onClick = onPersonClick,
@@ -169,45 +164,46 @@ fun PostHeaderLine(
                             isModerator = isModerator,
                             isCommunityBanned = postView.creator_banned_from_community,
                             color = MaterialTheme.colorScheme.onSurface.muted,
-                            showAvatar = showAvatar,
+                            showAvatar = false,
                         )
-                        if (postView.post.featured_local) {
-                            DotSpacer(0.dp)
-                            Icon(
-                                imageVector = Icons.Outlined.PushPin,
-                                contentDescription = stringResource(R.string.postListing_featuredLocal),
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
-                            )
-                        }
-                        if (postView.post.featured_community) {
-                            DotSpacer(0.dp)
-                            Icon(
-                                imageVector = Icons.Outlined.PushPin,
-                                contentDescription = stringResource(R.string.postListing_featuredCommunity),
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
-                            )
-                        }
-                        if (postView.post.locked) {
-                            DotSpacer(0.dp)
-                            Icon(
-                                imageVector = Icons.Outlined.CommentsDisabled,
-                                contentDescription = stringResource(R.string.postListing_locked),
-                                tint = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
-                            )
-                        }
                     }
+                    if (postView.post.featured_local) {
+                        DotSpacer(0.dp)
+                        Icon(
+                            imageVector = Icons.Outlined.PushPin,
+                            contentDescription = stringResource(R.string.postListing_featuredLocal),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
+                        )
+                    }
+                    if (postView.post.featured_community) {
+                        DotSpacer(0.dp)
+                        Icon(
+                            imageVector = Icons.Outlined.PushPin,
+                            contentDescription = stringResource(R.string.postListing_featuredCommunity),
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
+                        )
+                    }
+                    if (postView.post.locked) {
+                        DotSpacer(0.dp)
+                        Icon(
+                            imageVector = Icons.Outlined.CommentsDisabled,
+                            contentDescription = stringResource(R.string.postListing_locked),
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(ACTION_BAR_ICON_SIZE),
+                        )
+                    }
+                    Spacer(Modifier.weight(1.0f))
+                    ScoreAndTime(
+                        score = score,
+                        myVote = myVote,
+                        published = postView.post.published,
+                        updated = postView.post.updated,
+                        isNsfw = nsfwCheck(postView),
+                    )
                 }
             }
-            ScoreAndTime(
-                score = score,
-                myVote = myVote,
-                published = postView.post.published,
-                updated = postView.post.updated,
-                isNsfw = nsfwCheck(postView),
-            )
         }
         Row {
             if (postView.post.deleted) {
@@ -233,7 +229,6 @@ fun PostHeaderLinePreview() {
         isModerator = false,
         onCommunityClick = {},
         onPersonClick = {},
-        showAvatar = true,
         blurNSFW = true,
     )
 }
@@ -325,7 +320,7 @@ fun PostTitleAndImageLink(
     Column(
         modifier = Modifier.padding(
             vertical = MEDIUM_PADDING,
-            horizontal = MEDIUM_PADDING,
+            horizontal = LARGE_PADDING,
         ),
 
     ) {
@@ -359,7 +354,7 @@ fun PostTitleAndThumbnail(
     blurNSFW: Boolean,
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
+        modifier = Modifier.padding(horizontal = LARGE_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -431,13 +426,13 @@ fun PostBody(
                 colors = CARD_COLORS,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
-                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                    .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING)
                     .fillMaxWidth(),
                 content = {
                     if (fullBody) {
                         Column(
                             modifier = Modifier
-                                .padding(MEDIUM_PADDING),
+                                .padding(vertical = MEDIUM_PADDING, horizontal = LARGE_PADDING),
                         ) {
                             if (viewSource) {
                                 SelectionContainer {
@@ -649,7 +644,7 @@ fun CommentCount(
         ActionBarButton(
             icon = Icons.Outlined.ChatBubbleOutline,
             contentDescription = null,
-            text = stringResource(R.string.post_listing_comments, comments),
+            text = comments.toString(),
             noClick = true,
             account = account,
             onClick = {}, // This is handled by the whole button click
@@ -962,7 +957,6 @@ fun PostListing(
             account = account,
             expandedImage = true,
             enableDownVotes = enableDownVotes,
-            showAvatar = showAvatar,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
@@ -1007,7 +1001,6 @@ fun PostListing(
             fullBody = false,
             expandedImage = false,
             enableDownVotes = enableDownVotes,
-            showAvatar = showAvatar,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
@@ -1352,67 +1345,67 @@ fun PostListingCard(
     account: Account?,
     expandedImage: Boolean,
     enableDownVotes: Boolean,
-    showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
 ) {
-    Column(
+    Box(
         modifier = Modifier
-            .padding(vertical = MEDIUM_PADDING)
             .clickable { onPostClick(postView) }
             .testTag("jerboa:post"),
-        verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
     ) {
-        // Header
-        PostHeaderLine(
-            postView = postView,
-            myVote = instantScores.myVote,
-            score = instantScores.score,
-            onCommunityClick = onCommunityClick,
-            onPersonClick = onPersonClick,
-            isModerator = isModerator,
-            showCommunityName = showCommunityName,
-            modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
-            showAvatar = showAvatar,
-            blurNSFW = blurNSFW,
-        )
+        Column(
+            modifier = Modifier.padding(vertical = MEDIUM_PADDING),
+            verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
+        ) {
+            // Header
+            PostHeaderLine(
+                postView = postView,
+                myVote = instantScores.myVote,
+                score = instantScores.score,
+                onCommunityClick = onCommunityClick,
+                onPersonClick = onPersonClick,
+                isModerator = isModerator,
+                showCommunityName = showCommunityName,
+                modifier = Modifier.padding(horizontal = LARGE_PADDING),
+                blurNSFW = blurNSFW,
+            )
 
-        //  Title + metadata
-        PostBody(
-            postView = postView,
-            fullBody = fullBody,
-            viewSource = viewSource,
-            expandedImage = expandedImage,
-            account = account,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            blurNSFW = blurNSFW,
-        )
+            //  Title + metadata
+            PostBody(
+                postView = postView,
+                fullBody = fullBody,
+                viewSource = viewSource,
+                expandedImage = expandedImage,
+                account = account,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
+            )
 
-        // Footer bar
-        PostFooterLine(
-            postView = postView,
-            instantScores = instantScores,
-            onUpvoteClick = onUpvoteClick,
-            onDownvoteClick = onDownvoteClick,
-            onSaveClick = onSaveClick,
-            onReplyClick = onReplyClick,
-            onCommunityClick = onCommunityClick,
-            onPersonClick = onPersonClick,
-            onEditPostClick = onEditPostClick,
-            onDeletePostClick = onDeletePostClick,
-            onReportClick = onReportClick,
-            onBlockCommunityClick = onBlockCommunityClick,
-            onBlockCreatorClick = onBlockCreatorClick,
-            onViewSourceClick = onViewSourceClick,
-            onShareClick = onShareClick,
-            showReply = showReply,
-            account = account,
-            modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
-            enableDownVotes = enableDownVotes,
-            viewSource = viewSource,
-        )
+            // Footer bar
+            PostFooterLine(
+                postView = postView,
+                instantScores = instantScores,
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
+                onSaveClick = onSaveClick,
+                onReplyClick = onReplyClick,
+                onCommunityClick = onCommunityClick,
+                onPersonClick = onPersonClick,
+                onEditPostClick = onEditPostClick,
+                onDeletePostClick = onDeletePostClick,
+                onReportClick = onReportClick,
+                onBlockCommunityClick = onBlockCommunityClick,
+                onBlockCreatorClick = onBlockCreatorClick,
+                onViewSourceClick = onViewSourceClick,
+                onShareClick = onShareClick, showReply = showReply,
+                account = account,
+                modifier = Modifier.padding(horizontal = LARGE_PADDING),
+                enableDownVotes = enableDownVotes,
+                viewSource = viewSource,
+            )
+        }
     }
 }
 

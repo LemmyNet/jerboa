@@ -6,7 +6,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -76,33 +78,42 @@ fun PostListings(
                 postView.post.id
             },
         ) { postView ->
-            PostListing(
-                postView = postView,
-                onUpvoteClick = onUpvoteClick,
-                onDownvoteClick = onDownvoteClick,
-                onPostClick = onPostClick,
-                onSaveClick = onSaveClick,
-                onCommunityClick = onCommunityClick,
-                onEditPostClick = onEditPostClick,
-                onDeletePostClick = onDeletePostClick,
-                onReportClick = onReportClick,
-                onPersonClick = onPersonClick,
-                onBlockCommunityClick = onBlockCommunityClick,
-                onBlockCreatorClick = onBlockCreatorClick,
-                onShareClick = onShareClick,
-                isModerator = false,
-                showCommunityName = showCommunityName,
-                fullBody = false,
-                account = account, // TODO can't know with many posts
-                postViewMode = postViewMode,
-                showVotingArrowsInListView = showVotingArrowsInListView,
-                enableDownVotes = enableDownVotes,
-                showAvatar = showAvatar,
-                useCustomTabs = useCustomTabs,
-                usePrivateTabs = usePrivateTabs,
-                blurNSFW = blurNSFW,
-            )
-            Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                ),
+                modifier = Modifier.padding(
+                    top = SMALL_PADDING,
+                    start = SMALL_PADDING,
+                    end = SMALL_PADDING,
+                ),
+            ) {
+                PostListing(
+                    postView = postView,
+                    onUpvoteClick = onUpvoteClick,
+                    onDownvoteClick = onDownvoteClick,
+                    onPostClick = onPostClick,
+                    onSaveClick = onSaveClick,
+                    onCommunityClick = onCommunityClick,
+                    onEditPostClick = onEditPostClick,
+                    onDeletePostClick = onDeletePostClick,
+                    onReportClick = onReportClick,
+                    onPersonClick = onPersonClick,
+                    onBlockCommunityClick = onBlockCommunityClick,
+                    onBlockCreatorClick = onBlockCreatorClick,
+                    onShareClick = onShareClick, isModerator = false,
+                    showCommunityName = showCommunityName,
+                    fullBody = false,
+                    account = account, // TODO can't know with many posts
+                    postViewMode = postViewMode,
+                    showVotingArrowsInListView = showVotingArrowsInListView,
+                    enableDownVotes = enableDownVotes,
+                    showAvatar = showAvatar,
+                    useCustomTabs = useCustomTabs,
+                    usePrivateTabs = usePrivateTabs,
+                    blurNSFW = blurNSFW,
+                )
+            }
         }
     }
 

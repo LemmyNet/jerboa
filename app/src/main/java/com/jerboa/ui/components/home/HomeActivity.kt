@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawn
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -32,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -211,7 +214,18 @@ fun MainPostListingsContent(
         refreshingOffset = 150.dp,
     )
 
-    Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+    Box(
+        modifier = Modifier
+            .pullRefresh(pullRefreshState)
+            .background(
+                Color(
+                    MaterialTheme.colorScheme.outlineVariant.red,
+                    MaterialTheme.colorScheme.outlineVariant.green,
+                    MaterialTheme.colorScheme.outlineVariant.blue,
+                    0.2f,
+                ),
+            ),
+    ) {
         // zIndex needed bc some elements of a post get drawn above it.
         PullRefreshIndicator(homeViewModel.postsRes.isRefreshing(), pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100f))
         // Can't be in ApiState.Loading, because of infinite scrolling
