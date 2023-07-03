@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -133,7 +134,9 @@ fun LoginForm(
             },
         ) {
             OutlinedTextField(
-                modifier = Modifier.menuAnchor().width(OutlinedTextFieldDefaults.MinWidth),
+                modifier = Modifier
+                    .menuAnchor()
+                    .width(OutlinedTextFieldDefaults.MinWidth),
                 label = { Text(stringResource(R.string.login_instance)) },
                 placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
                 value = instance,
@@ -148,9 +151,7 @@ fun LoginForm(
             if (filteringOptions.isNotEmpty()) {
                 DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
-                    },
+                    onDismissRequest = {},
                     properties = PopupProperties(focusable = false),
                     modifier = Modifier.exposedDropdownSize(true),
                 ) {
@@ -210,8 +211,9 @@ fun LoginForm(
             onClick = { onClickLogin(form, instance) },
             modifier = Modifier.padding(top = 10.dp),
         ) {
+
             if (loading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                CircularProgressIndicator(modifier = Modifier.size(LocalTextStyle.current.fontSize.value.dp))
             } else {
                 Text(stringResource(R.string.login_login))
             }
