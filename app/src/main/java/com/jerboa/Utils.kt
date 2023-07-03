@@ -357,6 +357,19 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
     return null
 }
 
+/**
+ * Open a sharesheet for the given URL.
+ */
+fun shareLink(url: String, ctx: Context) {
+    val intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, url)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(intent, null)
+    ctx.startActivity(shareIntent)
+}
+
 fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
     val parsedUrl = parseUrl(url) ?: return
 
