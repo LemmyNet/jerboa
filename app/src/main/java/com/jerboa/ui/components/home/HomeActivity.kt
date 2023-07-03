@@ -2,6 +2,7 @@ package com.jerboa.ui.components.home
 
 import android.content.Context
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,6 +58,7 @@ import com.jerboa.fetchInitialData
 import com.jerboa.loginFirstToast
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
+import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.ConsumeReturn
@@ -323,6 +325,9 @@ fun MainPostListingsContent(
                     onPersonClick = { personId ->
                         navController.toProfile(id = personId)
                     },
+                    onShareClick = { url ->
+                        shareLink(url, ctx)
+                    },
                     isScrolledToEnd = {
                         homeViewModel.nextPage()
                         homeViewModel.appendPosts(
@@ -364,6 +369,10 @@ fun MainDrawer(
 
     val accounts = accountViewModel.allAccounts.value
     val account = getCurrentAccount(accountViewModel)
+
+    BackHandler(drawerState.isOpen) {
+        closeDrawer(scope, drawerState)
+    }
 
     Drawer(
         siteRes = siteViewModel.siteRes,

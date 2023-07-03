@@ -49,6 +49,7 @@ import com.jerboa.isScrolledToEnd
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
+import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
@@ -263,7 +264,7 @@ fun UserTabs(
     } else {
         UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
     }
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { tabTitles.size }
 
     val loading = personProfileViewModel.personDetailsRes == ApiState.Loading
 
@@ -315,7 +316,6 @@ fun UserTabs(
             }
         }
         HorizontalPager(
-            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),
@@ -481,6 +481,9 @@ fun UserTabs(
                                                 ctx = ctx,
                                             )
                                         }
+                                    },
+                                    onShareClick = { url ->
+                                        shareLink(url, ctx)
                                     },
                                     isScrolledToEnd = {
                                         personProfileViewModel.nextPage()

@@ -262,6 +262,8 @@
     <string name="post_listing_text_copied">Text Copied</string>
     <string name="post_listing_report_post">Report Post</string>
     <string name="post_listing_restore">Restore</string>
+    <string name="post_listing_share_link">Share Link</string>
+    <string name="post_listing_share_post">Share Post</string>
     <string name="privateMessage_reply">Reply to message</string>
     <string name="private_message_from">"from "</string>
     <string name="private_message_reply_back">Back</string>
