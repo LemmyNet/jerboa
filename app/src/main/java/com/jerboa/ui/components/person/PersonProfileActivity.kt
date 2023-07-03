@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import arrow.core.Either
@@ -45,6 +46,8 @@ import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getLocalizedStringForUserTab
+import com.jerboa.isLoading
+import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
@@ -80,6 +83,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -152,7 +156,20 @@ fun PersonProfileActivity(
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
                 is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                is ApiState.Success -> {
+                ApiState.Loading, ApiState.Refreshing -> {
+                    // Prevents tabs from jumping around during loading/refreshing
+                    PersonProfileHeader(
+                        scrollBehavior = scrollBehavior,
+                        personName = ctx.getString(R.string.loading),
+                        myProfile = false,
+                        selectedSortType = personProfileViewModel.sortType,
+                        onClickSortType = {},
+                        onBlockPersonClick = {},
+                        onReportPersonClick = {},
+                        navController = navController,
+                    )
+                }
+                is ApiState.Holder -> {
                     val person = profileRes.data.person_view.person
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
@@ -201,7 +218,6 @@ fun PersonProfileActivity(
                         navController = navController,
                     )
                 }
-
                 else -> {}
             }
         },
@@ -266,10 +282,10 @@ fun UserTabs(
     }
     val pagerState = rememberPagerState { tabTitles.size }
 
-    val loading = personProfileViewModel.personDetailsRes == ApiState.Loading
+    val loading = personProfileViewModel.personDetailsRes.isLoading()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = loading,
+        refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
         onRefresh = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
                 is ApiState.Success -> {
@@ -282,6 +298,7 @@ fun UserTabs(
                             saved_only = personProfileViewModel.savedOnly,
                             auth = account?.jwt,
                         ),
+                        ApiState.Refreshing,
                     )
                 }
                 else -> {}
@@ -373,23 +390,34 @@ fun UserTabs(
                                 }
                             }
                         }
+                        else -> {}
                     }
                 }
 
                 UserTab.Posts.ordinal -> {
-                    Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(pullRefreshState)
+                            .fillMaxSize(),
+                    ) {
                         PullRefreshIndicator(
-                            loading,
+                            personProfileViewModel.personDetailsRes.isRefreshing(),
                             pullRefreshState,
-                            Modifier.align(Alignment.TopCenter).fillMaxSize(),
+                            // zIndex needed bc some elements of a post get drawn above it.
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100f),
                         )
+                        if (loading) {
+                            LoadingBar()
+                        }
+
                         when (val profileRes = personProfileViewModel.personDetailsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(profileRes.msg)
-                            ApiState.Loading -> LoadingBar()
-                            is ApiState.Success -> {
+                            is ApiState.Holder -> {
                                 PostListings(
-                                    posts = profileRes.data.posts,
+                                    posts = profileRes.data.posts.toImmutableList(),
                                     onUpvoteClick = { pv ->
                                         account?.also { acct ->
                                             personProfileViewModel.likePost(
@@ -486,15 +514,9 @@ fun UserTabs(
                                         shareLink(url, ctx)
                                     },
                                     isScrolledToEnd = {
-                                        personProfileViewModel.nextPage()
                                         personProfileViewModel.appendData(
-                                            GetPersonDetails(
-                                                person_id = profileRes.data.person_view.person.id,
-                                                sort = personProfileViewModel.sortType,
-                                                page = personProfileViewModel.page,
-                                                saved_only = personProfileViewModel.savedOnly,
-                                                auth = account?.jwt,
-                                            ),
+                                            profileRes.data.person_view.person.id,
+                                            account?.jwt,
                                         )
                                     },
                                     account = account,
@@ -508,6 +530,7 @@ fun UserTabs(
                                     blurNSFW = blurNSFW,
                                 )
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -517,7 +540,8 @@ fun UserTabs(
                         ApiState.Empty -> ApiEmptyText()
                         is ApiState.Failure -> ApiErrorText(profileRes.msg)
                         ApiState.Loading -> LoadingBar()
-                        is ApiState.Success -> {
+                        ApiState.Refreshing -> LoadingBar()
+                        is ApiState.Holder -> {
                             val nodes = commentsToFlatNodes(profileRes.data.comments)
 
                             val listState = rememberLazyListState()
@@ -554,21 +578,29 @@ fun UserTabs(
                             // act when end of list reached
                             if (endOfListReached) {
                                 LaunchedEffect(Unit) {
-                                    personProfileViewModel.nextPage()
                                     personProfileViewModel.appendData(
-                                        GetPersonDetails(
-                                            person_id = profileRes.data.person_view.person.id,
-                                            sort = personProfileViewModel.sortType,
-                                            page = personProfileViewModel.page,
-                                            saved_only = personProfileViewModel.savedOnly,
-                                            auth = account?.jwt,
-                                        ),
+                                        profileRes.data.person_view.person.id,
+                                        account?.jwt,
                                     )
                                 }
                             }
 
-                            Box(modifier = Modifier.pullRefresh(pullRefreshState).fillMaxSize()) {
-                                PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
+                            Box(
+                                modifier = Modifier
+                                    .pullRefresh(pullRefreshState)
+                                    .fillMaxSize(),
+                            ) {
+                                PullRefreshIndicator(
+                                    personProfileViewModel.personDetailsRes.isRefreshing(),
+                                    pullRefreshState,
+                                    // zIndex needed bc some elements of a post get drawn above it.
+                                    Modifier
+                                        .align(Alignment.TopCenter)
+                                        .zIndex(100f),
+                                )
+                                if (loading) {
+                                    LoadingBar()
+                                }
                                 CommentNodes(
                                     nodes = nodes,
                                     increaseLazyListIndexTracker = {},

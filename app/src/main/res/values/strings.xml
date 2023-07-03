@@ -317,6 +317,7 @@
     <string name="generic_error">An error has occurred</string>
     <string name="create_edit_post_close">Close</string>
     <string name="lang_language">Language</string>
+    <string name="loading">Loading</string>
     <string name="blur_nsfw">Blur NSFW images</string>
     <string name="sorttype_tophour">TopHour</string>
     <string name="sorttype_topsixhour">TopSixHour</string>
