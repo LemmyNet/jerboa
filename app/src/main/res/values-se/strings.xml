@@ -76,7 +76,7 @@
     <string name="home_settings">Inställningar</string>
     <string name="home_subscriptions">Prenumerationer</string>
     <string name="home_add_account">Lägg till konto</string>
-    <string name="home_switch_to">Byt till %1$s/%2$s</string>
+    <string name="home_switch_to">Byt till %1$s@%2$s</string>
     <string name="home_sign_out">Logga ut</string>
     <string name="home_menu">Meny</string>
     <string name="home_refresh">Uppdatera</string>
