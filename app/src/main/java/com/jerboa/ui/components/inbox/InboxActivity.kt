@@ -195,7 +195,7 @@ fun InboxTabs(
     val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
 
     val tabTitles = InboxTab.values().map { getLocalizedStringForInboxTab(ctx, it) }
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { tabTitles.size }
 
     Column(
         modifier = Modifier.padding(padding),
@@ -225,7 +225,6 @@ fun InboxTabs(
             },
         )
         HorizontalPager(
-            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),

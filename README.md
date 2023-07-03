@@ -10,9 +10,9 @@
 
 <p align="center">
   <a href="https://github.com/dessalines/jerboa" rel="noopener">
- <img width=200px height=200px src="https://raw.githubusercontent.com/dessalines/jerboa/main/app/src/main/res/jerboa.svg"></a>
+  <img width=200px height=200px src="https://raw.githubusercontent.com/dessalines/jerboa/main/app/src/main/res/jerboa.svg"></a>
 
- <h3 align="center"><a href="https://github.com/dessalines/jerboa">Jerboa</a></h3>
+  <h3 align="center"><a href="https://github.com/dessalines/jerboa">Jerboa</a></h3>
   <p align="center">
     An Android client for <a href="https://github.com/LemmyNet/lemmy">Lemmy</a>, a federated reddit alternative
     <br />
