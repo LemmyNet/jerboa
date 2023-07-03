@@ -33,10 +33,10 @@
     <string name="app_bars_dot_spacer">·</string>
     <string name="bottomBar_bookmarks">Vai ai miei segnalibri</string>
     <string name="bottomBar_home">Vai alla home</string>
-    <string name="bottomBar_inbox">Vai alla posta in arrivo</string>
+    <string name="bottomBar_inbox">Vai alle notifiche</string>
     <string name="bottomBar_label_bookmarks">Salvati</string>
     <string name="bottomBar_label_home">Home</string>
-    <string name="bottomBar_label_inbox">Posta in arrivo</string>
+    <string name="bottomBar_label_inbox">Notifiche</string>
     <string name="bottomBar_label_profile">Profilo</string>
     <string name="bottomBar_label_search">Cerca</string>
     <string name="bottomBar_profile">Vai al mio profilo</string>
