@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -211,7 +210,6 @@ fun LoginForm(
             onClick = { onClickLogin(form, instance) },
             modifier = Modifier.padding(top = 10.dp),
         ) {
-
             if (loading) {
                 CircularProgressIndicator(modifier = Modifier.size(LocalTextStyle.current.fontSize.value.dp))
             } else {
