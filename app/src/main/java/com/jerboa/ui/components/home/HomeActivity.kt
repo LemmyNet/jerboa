@@ -58,6 +58,7 @@ import com.jerboa.fetchInitialData
 import com.jerboa.loginFirstToast
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
+import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.ConsumeReturn
@@ -323,6 +324,9 @@ fun MainPostListingsContent(
                     },
                     onPersonClick = { personId ->
                         navController.toProfile(id = personId)
+                    },
+                    onShareClick = { url ->
+                        shareLink(url, ctx)
                     },
                     isScrolledToEnd = {
                         homeViewModel.nextPage()

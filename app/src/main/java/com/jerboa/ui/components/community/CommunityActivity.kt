@@ -48,6 +48,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
+import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.ConsumeReturn
@@ -341,6 +342,9 @@ fun CommunityActivity(
                                         ctx = ctx,
                                     )
                                 }
+                            },
+                            onShareClick = { url ->
+                                shareLink(url, ctx)
                             },
                             isScrolledToEnd = {
                                 when (val communityRes = communityViewModel.communityRes) {
