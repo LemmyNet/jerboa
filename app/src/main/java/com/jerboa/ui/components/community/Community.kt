@@ -17,12 +17,14 @@ import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.getLocalizedSortingTypeName
+import com.jerboa.getLocalizedSortingTypeShortName
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.toCommunitySideBar
 import com.jerboa.ui.theme.*
 
 @Composable
@@ -30,6 +32,7 @@ fun CommunityTopSection(
     communityView: CommunityView,
     modifier: Modifier = Modifier,
     onClickFollowCommunity: (communityView: CommunityView) -> Unit,
+    blurNSFW: Boolean,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,10 +46,11 @@ fun CommunityTopSection(
                 PictrsBannerImage(
                     url = it,
                     modifier = Modifier.height(DRAWER_BANNER_SIZE),
+                    blur = blurNSFW && communityView.community.nsfw,
                 )
             }
             communityView.community.icon?.also {
-                LargerCircularIcon(icon = it)
+                LargerCircularIcon(icon = it, blur = blurNSFW && communityView.community.nsfw)
             }
         }
         Column(
@@ -116,6 +120,7 @@ fun CommunityTopSectionPreview() {
     CommunityTopSection(
         communityView = sampleCommunityView,
         onClickFollowCommunity = {},
+        blurNSFW = true,
     )
 }
 
@@ -180,14 +185,7 @@ fun CommunityHeader(
                 selectedSortType = selectedSortType,
             )
         },
-        navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(
-                    Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.community_back),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
         actions = {
             IconButton(onClick = {
                 showSortOptions = !showSortOptions
@@ -221,7 +219,7 @@ fun CommunityHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeName(ctx, selectedSortType),
+            text = getLocalizedSortingTypeShortName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleMedium,
         )
     }
@@ -250,7 +248,7 @@ fun CommunityMoreDialog(
                     text = stringResource(R.string.community_community_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
-                        navController.navigate("communitySidebar")
+                        navController.toCommunitySideBar()
                         onDismissRequest()
                     },
                 )

@@ -300,6 +300,7 @@ fun CommentReplyNode(
     onSaveClick: (commentReplyView: CommentReplyView) -> Unit,
     onMarkAsReadClick: (commentReplyView: CommentReplyView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
+    onCommentClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
@@ -307,6 +308,7 @@ fun CommentReplyNode(
     onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account?,
     showAvatar: Boolean,
+    blurNSFW: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = commentReplyView.counts.score
@@ -327,6 +329,7 @@ fun CommentReplyNode(
             community = commentReplyView.community,
             onCommunityClick = onCommunityClick,
             onPostClick = onPostClick,
+            blurNSFW = blurNSFW,
         )
         CommentReplyNodeHeader(
             commentReplyView = commentReplyView,
@@ -350,7 +353,7 @@ fun CommentReplyNode(
                 CommentBody(
                     comment = commentReplyView.comment,
                     viewSource = viewSource,
-                    onClick = {},
+                    onClick = { onCommentClick(commentReplyView) },
                     onLongClick = {
                         isActionBarExpanded = !isActionBarExpanded
                     },

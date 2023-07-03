@@ -1,8 +1,11 @@
 package com.jerboa.ui.components.post
 
 import android.util.Log
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -23,17 +26,30 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import arrow.core.Either
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -41,11 +57,15 @@ import com.jerboa.api.ApiState
 import com.jerboa.buildCommentsTree
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
+import com.jerboa.datatypes.types.CommentId
 import com.jerboa.datatypes.types.CommentSortType
+import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
+import com.jerboa.datatypes.types.PostId
+import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.AccountViewModel
@@ -54,18 +74,37 @@ import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
 import com.jerboa.isModerator
 import com.jerboa.newVote
+import com.jerboa.scrollToNextParentComment
+import com.jerboa.scrollToPreviousParentComment
+import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
-import com.jerboa.ui.components.comment.edit.CommentEditViewModel
-import com.jerboa.ui.components.comment.reply.CommentReplyViewModel
+import com.jerboa.ui.components.comment.edit.CommentEditReturn
+import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.CommentEditDeps
+import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
+import com.jerboa.ui.components.common.CommentReplyDeps
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
+import com.jerboa.ui.components.common.ConsumeReturn
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.PostEditDeps
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.rootChannel
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.common.toComment
+import com.jerboa.ui.components.common.toCommentEdit
+import com.jerboa.ui.components.common.toCommentReply
+import com.jerboa.ui.components.common.toCommentReport
+import com.jerboa.ui.components.common.toCommunity
+import com.jerboa.ui.components.common.toPost
+import com.jerboa.ui.components.common.toPostEdit
+import com.jerboa.ui.components.common.toPostReport
+import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.home.SiteViewModel
-import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.ui.components.post.edit.PostEditReturn
 
 @Composable
 fun CommentsHeaderTitle(
@@ -85,27 +124,60 @@ fun CommentsHeaderTitle(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class,
+)
 @Composable
 fun PostActivity(
-    postViewModel: PostViewModel,
+    id: Either<PostId, CommentId>,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
-    commentEditViewModel: CommentEditViewModel,
-    commentReplyViewModel: CommentReplyViewModel,
-    postEditViewModel: PostEditViewModel,
     navController: NavController,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
     showCollapsedCommentContent: Boolean,
     showActionBarByDefault: Boolean,
     showVotingArrowsInListView: Boolean,
-    onClickSortType: (CommentSortType) -> Unit,
-    selectedSortType: CommentSortType,
+    showParentCommentNavigationButtons: Boolean,
+    navigateParentCommentsWithVolumeButtons: Boolean,
+    blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
+    val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
+    val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
+    val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
 
     val ctx = LocalContext.current
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
+
+    val postViewModel: PostViewModel = viewModel()
+
+    navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+        if (postViewModel.initialized) postViewModel.updatePost(pv)
+    }
+
+    navController.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
+        if (postViewModel.initialized) postViewModel.appendComment(cv)
+    }
+
+    navController.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
+        if (postViewModel.initialized) postViewModel.updateComment(cv)
+    }
+
+    InitializeRoute(postViewModel) {
+        postViewModel.initialize(id = id)
+        postViewModel.getData(account)
+    }
+
+    val onClickSortType = { commentSortType: CommentSortType ->
+        postViewModel.updateSortType(commentSortType)
+        postViewModel.getData(account)
+    }
+
+    val selectedSortType = postViewModel.sortType
 
     val postLoading = postViewModel.postRes == ApiState.Loading
 
@@ -113,9 +185,13 @@ fun PostActivity(
     val unExpandedComments = remember { mutableStateListOf<Int>() }
     val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
     var showSortOptions by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
 
     val listState = rememberLazyListState()
+    var lazyListIndexTracker: Int
+    val parentListStateIndexes = remember { mutableListOf<Int>() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = postLoading,
@@ -135,8 +211,47 @@ fun PostActivity(
         )
     }
 
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .semantics { testTagsAsResourceId = true }
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .focusRequester(focusRequester)
+            .focusable()
+            .onKeyEvent { keyEvent ->
+                if (navigateParentCommentsWithVolumeButtons) {
+                    when (keyEvent.key) {
+                        Key.VolumeUp -> {
+                            scrollToPreviousParentComment(scope, parentListStateIndexes, listState)
+                            true
+                        }
+
+                        Key.VolumeDown -> {
+                            scrollToNextParentComment(scope, parentListStateIndexes, listState)
+                            true
+                        }
+
+                        else -> {
+                            false
+                        }
+                    }
+                } else {
+                    false
+                }
+            },
+        bottomBar = {
+            if (showParentCommentNavigationButtons) {
+                CommentNavigationBottomAppBar(
+                    scope,
+                    parentListStateIndexes,
+                    listState,
+                )
+            }
+        },
         topBar = {
             Column {
                 TopAppBar(
@@ -146,7 +261,10 @@ fun PostActivity(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(
+                            modifier = Modifier.testTag("jerboa:back"),
+                            onClick = { navController.popBackStack() },
+                        ) {
                             Icon(
                                 Icons.Outlined.ArrowBack,
                                 contentDescription = stringResource(R.string.topAppBar_back),
@@ -169,6 +287,8 @@ fun PostActivity(
         },
         content = { padding ->
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                parentListStateIndexes.clear()
+                lazyListIndexTracker = 2
                 PullRefreshIndicator(
                     postLoading,
                     pullRefreshState,
@@ -184,8 +304,9 @@ fun PostActivity(
                         LazyColumn(
                             state = listState,
                             modifier = Modifier
-                                .padding(padding)
-                                .simpleVerticalScrollbar(listState),
+                                .padding(top = padding.calculateTopPadding())
+                                .simpleVerticalScrollbar(listState)
+                                .testTag("jerboa:comments"),
                         ) {
                             item(key = "${postView.post.id}_listing") {
                                 PostListing(
@@ -213,7 +334,7 @@ fun PostActivity(
                                                     post_id = pv.post.id,
                                                     score = newVote(
                                                         postView.my_vote,
-                                                        VoteType.Upvote,
+                                                        VoteType.Downvote,
                                                     ),
                                                     auth = acct.jwt,
                                                 ),
@@ -221,9 +342,12 @@ fun PostActivity(
                                         }
                                     },
                                     onReplyClick = { pv ->
-                                        commentReplyViewModel.initialize(ReplyItem.PostItem(pv))
                                         val isModerator = isModerator(pv.creator, postRes.data.moderators)
-                                        navController.navigate("commentReply?isModerator=$isModerator")
+                                        navController.toCommentReply(
+                                            channel = transferCommentReplyDepsViaRoot,
+                                            replyItem = ReplyItem.PostItem(pv),
+                                            isModerator = isModerator,
+                                        )
                                     },
                                     onPostClick = {},
                                     onSaveClick = { pv ->
@@ -238,11 +362,13 @@ fun PostActivity(
                                         }
                                     },
                                     onCommunityClick = { community ->
-                                        navController.navigate(route = "community/${community.id}")
+                                        navController.toCommunity(id = community.id)
                                     },
                                     onEditPostClick = { pv ->
-                                        postEditViewModel.initialize(pv)
-                                        navController.navigate("postEdit")
+                                        navController.toPostEdit(
+                                            channel = transferPostEditDepsViaRoot,
+                                            postView = pv,
+                                        )
                                     },
                                     onDeletePostClick = { pv ->
                                         account?.also { acct ->
@@ -256,10 +382,10 @@ fun PostActivity(
                                         }
                                     },
                                     onReportClick = { pv ->
-                                        navController.navigate("postReport/${pv.post.id}")
+                                        navController.toPostReport(id = pv.post.id)
                                     },
                                     onPersonClick = { personId ->
-                                        navController.navigate(route = "profile/$personId")
+                                        navController.toProfile(id = personId)
                                     },
                                     onBlockCommunityClick = { c ->
                                         account?.also { acct ->
@@ -285,6 +411,9 @@ fun PostActivity(
                                             )
                                         }
                                     },
+                                    onShareClick = { url ->
+                                        shareLink(url, ctx)
+                                    },
                                     showReply = true, // Do nothing
                                     isModerator = isModerator(
                                         postView.creator,
@@ -297,6 +426,9 @@ fun PostActivity(
                                     enableDownVotes = siteViewModel.enableDownvotes(),
                                     showAvatar = siteViewModel.showAvatar(),
                                     showVotingArrowsInListView = showVotingArrowsInListView,
+                                    useCustomTabs = useCustomTabs,
+                                    usePrivateTabs = usePrivateTabs,
+                                    blurNSFW = blurNSFW,
                                 )
                             }
 
@@ -324,6 +456,22 @@ fun PostActivity(
                                     val commentParentId = getCommentParentId(firstComment)
                                     val showContextButton = depth != null && depth > 0
 
+                                    val toggleExpanded = { commentId: Int ->
+                                        if (unExpandedComments.contains(commentId)) {
+                                            unExpandedComments.remove(commentId)
+                                        } else {
+                                            unExpandedComments.add(commentId)
+                                        }
+                                    }
+
+                                    val toggleActionBar = { commentId: Int ->
+                                        if (commentsWithToggledActionBar.contains(commentId)) {
+                                            commentsWithToggledActionBar.remove(commentId)
+                                        } else {
+                                            commentsWithToggledActionBar.add(commentId)
+                                        }
+                                    }
+
                                     item(key = "${postView.post.id}_is_comment_view") {
                                         if (postViewModel.isCommentView()) {
                                             ShowCommentContextButtons(
@@ -331,10 +479,10 @@ fun PostActivity(
                                                 commentParentId = commentParentId,
                                                 showContextButton = showContextButton,
                                                 onPostClick = { id ->
-                                                    navController.navigate("post/$id")
+                                                    navController.toPost(id = id)
                                                 },
                                                 onCommentClick = { commentId ->
-                                                    navController.navigate("comment/$commentId")
+                                                    navController.toComment(id = commentId)
                                                 },
                                             )
                                         }
@@ -342,27 +490,22 @@ fun PostActivity(
 
                                     commentNodeItems(
                                         nodes = commentTree,
+                                        increaseLazyListIndexTracker = {
+                                            lazyListIndexTracker++
+                                        },
+                                        addToParentIndexes = {
+                                            parentListStateIndexes.add(lazyListIndexTracker)
+                                        },
                                         isFlat = false,
                                         isExpanded = { commentId ->
                                             !unExpandedComments.contains(
                                                 commentId,
                                             )
                                         },
-                                        toggleExpanded = { commentId ->
-                                            if (unExpandedComments.contains(commentId)) {
-                                                unExpandedComments.remove(commentId)
-                                            } else {
-                                                unExpandedComments.add(commentId)
-                                            }
-                                        },
-                                        toggleActionBar = { commentId ->
-                                            if (commentsWithToggledActionBar.contains(commentId)) {
-                                                commentsWithToggledActionBar.remove(commentId)
-                                            } else {
-                                                commentsWithToggledActionBar.add(commentId)
-                                            }
-                                        },
+                                        toggleExpanded = { commentId -> toggleExpanded(commentId) },
+                                        toggleActionBar = { commentId -> toggleActionBar(commentId) },
                                         onMarkAsReadClick = {},
+                                        onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onUpvoteClick = { cv ->
                                             account?.also { acct ->
                                                 postViewModel.likeComment(
@@ -392,14 +535,12 @@ fun PostActivity(
                                             }
                                         },
                                         onReplyClick = { cv ->
-                                            commentReplyViewModel.initialize(
-                                                ReplyItem.CommentItem(
-                                                    cv,
-                                                ),
-                                            )
-
                                             val isModerator = isModerator(cv.creator, postRes.data.moderators)
-                                            navController.navigate("commentReply?isModerator=$isModerator")
+                                            navController.toCommentReply(
+                                                channel = transferCommentReplyDepsViaRoot,
+                                                replyItem = ReplyItem.CommentItem(cv),
+                                                isModerator = isModerator,
+                                            )
                                         },
                                         onSaveClick = { cv ->
                                             account?.also { acct ->
@@ -413,11 +554,15 @@ fun PostActivity(
                                             }
                                         },
                                         onPersonClick = { personId ->
-                                            navController.navigate(route = "profile/$personId")
+                                            navController.toProfile(id = personId)
                                         },
+                                        onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
+                                        onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->
-                                            commentEditViewModel.initialize(cv)
-                                            navController.navigate("commentEdit")
+                                            navController.toCommentEdit(
+                                                channel = transferCommentEditDepsViaRoot,
+                                                commentView = cv,
+                                            )
                                         },
                                         onDeleteCommentClick = { cv ->
                                             account?.also { acct ->
@@ -431,15 +576,10 @@ fun PostActivity(
                                             }
                                         },
                                         onReportClick = { cv ->
-                                            navController.navigate(
-                                                "commentReport/${
-                                                    cv.comment
-                                                        .id
-                                                }",
-                                            )
+                                            navController.toCommentReport(id = cv.comment.id)
                                         },
                                         onCommentLinkClick = { cv ->
-                                            navController.navigate("comment/${cv.comment.id}")
+                                            navController.toComment(id = cv.comment.id)
                                         },
                                         onFetchChildrenClick = { cv ->
                                             postViewModel.fetchMoreChildren(
@@ -461,7 +601,7 @@ fun PostActivity(
                                             }
                                         },
                                         onCommunityClick = { community ->
-                                            navController.navigate(route = "community/${community.id}")
+                                            navController.toCommunity(id = community.id)
                                         },
                                         onPostClick = {}, // Do nothing
                                         account = account,
@@ -475,10 +615,16 @@ fun PostActivity(
                                                 commentId,
                                             )
                                         },
+                                        blurNSFW = blurNSFW,
                                     )
                                 }
 
                                 else -> {}
+                            }
+                            if (showParentCommentNavigationButtons) {
+                                item {
+                                    Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
+                                }
                             }
                         }
                     }

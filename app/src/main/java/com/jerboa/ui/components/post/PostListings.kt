@@ -13,6 +13,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.PostViewMode
@@ -41,6 +42,7 @@ fun PostListings(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
+    onShareClick: (url: String) -> Unit,
     isScrolledToEnd: () -> Unit,
     account: Account?,
     showCommunityName: Boolean = true,
@@ -50,12 +52,16 @@ fun PostListings(
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     LazyColumn(
         state = listState,
         modifier = Modifier
             .padding(padding)
-            .simpleVerticalScrollbar(listState),
+            .simpleVerticalScrollbar(listState)
+            .testTag("jerboa:posts"),
     ) {
         // TODO this should be a .also?
         item {
@@ -81,6 +87,7 @@ fun PostListings(
                 onPersonClick = onPersonClick,
                 onBlockCommunityClick = onBlockCommunityClick,
                 onBlockCreatorClick = onBlockCreatorClick,
+                onShareClick = onShareClick,
                 isModerator = false,
                 showCommunityName = showCommunityName,
                 fullBody = false,
@@ -89,6 +96,9 @@ fun PostListings(
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = enableDownVotes,
                 showAvatar = showAvatar,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -125,6 +135,7 @@ fun PreviewPostListings() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isScrolledToEnd = {},
         account = null,
         listState = rememberLazyListState(),
@@ -132,5 +143,8 @@ fun PreviewPostListings() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
+        useCustomTabs = false,
+        usePrivateTabs = false,
+        blurNSFW = true,
     )
 }

@@ -26,7 +26,7 @@ fun AccountSettingsActivity(
 ) {
     Log.d("jerboa", "Got to settings activity")
 
-    val account = getCurrentAccount(accountViewModel = accountViewModel)
+    val account = getCurrentAccount(accountViewModel = accountViewModel)!!
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(

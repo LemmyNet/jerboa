@@ -28,46 +28,64 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import arrow.core.Either
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
+import com.jerboa.datatypes.types.CommunityId
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.FollowCommunity
+import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.loginFirstToast
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
+import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.ConsumeReturn
+import com.jerboa.ui.components.common.CreatePostDeps
+import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.PostEditDeps
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.community.list.CommunityListViewModel
+import com.jerboa.ui.components.common.rootChannel
+import com.jerboa.ui.components.common.toCommunity
+import com.jerboa.ui.components.common.toCreatePost
+import com.jerboa.ui.components.common.toPost
+import com.jerboa.ui.components.common.toPostEdit
+import com.jerboa.ui.components.common.toPostReport
+import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
-import com.jerboa.ui.components.post.edit.PostEditViewModel
+import com.jerboa.ui.components.post.edit.PostEditReturn
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun CommunityActivity(
+    communityArg: Either<CommunityId, String>,
     navController: NavController,
     communityViewModel: CommunityViewModel,
-    communityListViewModel: CommunityListViewModel,
     siteViewModel: SiteViewModel,
-    postEditViewModel: PostEditViewModel,
     accountViewModel: AccountViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
+    useCustomTabs: Boolean,
+    usePrivateTabs: Boolean,
+    blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
+    val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
+    val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
 
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
@@ -75,6 +93,37 @@ fun CommunityActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+    navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+        if (communityViewModel.initialized) communityViewModel.updatePost(pv)
+    }
+
+    InitializeRoute(communityViewModel) {
+        val communityId = communityArg.fold({ it }, { null })
+        val communityName = communityArg.fold({ null }, { it })
+
+        communityViewModel.resetPage()
+        account?.let {
+            communityViewModel.updateSortType(SortType.values().getOrElse(account.defaultSortType) { siteViewModel.sortType })
+        }
+        communityViewModel.getCommunity(
+            form = GetCommunity(
+                id = communityId,
+                name = communityName,
+                auth = account?.jwt,
+            ),
+        )
+        communityViewModel.getPosts(
+            form =
+            GetPosts(
+                community_id = communityId,
+                community_name = communityName,
+                page = communityViewModel.page,
+                sort = communityViewModel.sortType,
+                auth = account?.jwt,
+            ),
+        )
+    }
 
     val loading = communityViewModel.postsRes == ApiState.Loading || communityViewModel.fetchingMore
 
@@ -189,6 +238,7 @@ fun CommunityActivity(
                                                     )
                                                 }
                                             },
+                                            blurNSFW = blurNSFW,
                                         )
                                     }
 
@@ -224,7 +274,7 @@ fun CommunityActivity(
                                 }
                             },
                             onPostClick = { postView ->
-                                navController.navigate(route = "post/${postView.post.id}")
+                                navController.toPost(id = postView.post.id)
                             },
                             onSaveClick = { postView ->
                                 account?.also { acct ->
@@ -238,8 +288,10 @@ fun CommunityActivity(
                                 }
                             },
                             onEditPostClick = { postView ->
-                                postEditViewModel.initialize(postView)
-                                navController.navigate("postEdit")
+                                navController.toPostEdit(
+                                    channel = transferPostEditDepsViaRoot,
+                                    postView = postView,
+                                )
                             },
                             onDeletePostClick = { postView ->
                                 account?.also { acct ->
@@ -253,13 +305,13 @@ fun CommunityActivity(
                                 }
                             },
                             onReportClick = { postView ->
-                                navController.navigate("postReport/${postView.post.id}")
+                                navController.toPostReport(id = postView.post.id)
                             },
                             onCommunityClick = { community ->
-                                navController.navigate(route = "community/${community.id}")
+                                navController.toCommunity(id = community.id)
                             },
                             onPersonClick = { personId ->
-                                navController.navigate(route = "profile/$personId")
+                                navController.toProfile(id = personId)
                             },
                             onBlockCommunityClick = {
                                 when (val communityRes = communityViewModel.communityRes) {
@@ -291,6 +343,9 @@ fun CommunityActivity(
                                     )
                                 }
                             },
+                            onShareClick = { url ->
+                                shareLink(url, ctx)
+                            },
                             isScrolledToEnd = {
                                 when (val communityRes = communityViewModel.communityRes) {
                                     is ApiState.Success -> {
@@ -317,6 +372,9 @@ fun CommunityActivity(
                             enableDownVotes = siteViewModel.enableDownvotes(),
                             showAvatar = siteViewModel.showAvatar(),
                             showVotingArrowsInListView = showVotingArrowsInListView,
+                            useCustomTabs = useCustomTabs,
+                            usePrivateTabs = usePrivateTabs,
+                            blurNSFW = blurNSFW,
                         )
                     }
                     else -> {}
@@ -330,8 +388,10 @@ fun CommunityActivity(
                     FloatingActionButton(
                         onClick = {
                             account?.also {
-                                communityListViewModel.selectCommunity(communityRes.data.community_view.community)
-                                navController.navigate("createPost")
+                                navController.toCreatePost(
+                                    channel = transferCreatePostDepsViaRoot,
+                                    community = communityRes.data.community_view.community,
+                                )
                             }
                         },
                     ) {
@@ -344,35 +404,6 @@ fun CommunityActivity(
 
                 else -> {}
             }
-        },
-        bottomBar = {
-            BottomAppBarAll(
-                showBottomNav = appSettingsViewModel.appSettings.value?.showBottomNav,
-                screen = "communityList",
-                unreadCount = siteViewModel.getUnreadCountTotal(),
-                onClickProfile = {
-                    account?.id?.also {
-                        navController.navigate(route = "profile/$it")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                onClickInbox = {
-                    account?.also {
-                        navController.navigate(route = "inbox")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                onClickSaved = {
-                    account?.id?.also {
-                        navController.navigate(route = "profile/$it?saved=${true}")
-                    } ?: run {
-                        loginFirstToast(ctx)
-                    }
-                },
-                navController = navController,
-            )
         },
     )
 }

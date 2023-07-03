@@ -29,16 +29,23 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
+import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.getLocalizedSortingTypeLongName
 
 val DONATION_MARKDOWN = """
     ### Support Jerboa
@@ -52,13 +59,7 @@ val DONATION_MARKDOWN = """
 
 """.trimIndent()
 
-val topSortTypes = listOf(
-    SortType.TopDay,
-    SortType.TopWeek,
-    SortType.TopMonth,
-    SortType.TopYear,
-    SortType.TopAll,
-)
+val topSortTypes = SortType.values().filter { it.name.startsWith("Top") }
 
 @Composable
 fun SortTopOptionsDialog(
@@ -66,35 +67,18 @@ fun SortTopOptionsDialog(
     onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
 ) {
+    val ctx = LocalContext.current
     AlertDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_day),
-                    onClick = { onClickSortType(SortType.TopDay) },
-                    highlight = (selectedSortType == SortType.TopDay),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_week),
-                    onClick = { onClickSortType(SortType.TopWeek) },
-                    highlight = (selectedSortType == SortType.TopWeek),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_month),
-                    onClick = { onClickSortType(SortType.TopMonth) },
-                    highlight = (selectedSortType == SortType.TopMonth),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_year),
-                    onClick = { onClickSortType(SortType.TopYear) },
-                    highlight = (selectedSortType == SortType.TopYear),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_all_time),
-                    onClick = { onClickSortType(SortType.TopAll) },
-                    highlight = (selectedSortType == SortType.TopAll),
-                )
+                topSortTypes.forEach {
+                    IconAndTextDrawerItem(
+                        text = getLocalizedSortingTypeLongName(ctx, it),
+                        onClick = { onClickSortType(it) },
+                        highlight = (selectedSortType == it),
+                    )
+                }
             }
         },
         confirmButton = {},
@@ -313,6 +297,7 @@ fun ListingTypeOptionsDialogPreview() {
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
     val changelogViewed = appSettingsViewModel.appSettings.observeAsState().value?.viewedChangelog
@@ -325,7 +310,6 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
 
         if (whatsChangedDialogOpen) {
             val scrollState = rememberScrollState()
-
             val markdown by appSettingsViewModel.changelog.collectAsState()
             LaunchedEffect(appSettingsViewModel) {
                 appSettingsViewModel.updateChangelog()
@@ -350,7 +334,7 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                             whatsChangedDialogOpen = false
                             appSettingsViewModel.markChangelogViewed()
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().testTag("jerboa:changelogbtn"),
                     ) {
                         Text(stringResource(R.string.dialogs_done))
                     }
@@ -359,7 +343,32 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                     whatsChangedDialogOpen = false
                     appSettingsViewModel.markChangelogViewed()
                 },
+                modifier = Modifier.semantics { testTagsAsResourceId = true },
             )
         }
     }
+}
+
+@Composable
+fun ShowOutdatedServerDialog(siteVersion: String, onConfirm: () -> Unit) {
+    AlertDialog(
+        text = {
+            Text(
+                stringResource(
+                    R.string.dialogs_server_version_outdated,
+                    siteVersion,
+                    MINIMUM_API_VERSION,
+                ),
+            )
+        },
+        onDismissRequest = { },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                content = {
+                    Text(stringResource(id = R.string.input_fields_ok))
+                },
+            )
+        },
+    )
 }

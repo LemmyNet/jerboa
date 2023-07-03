@@ -94,6 +94,16 @@ data class AppSettings(
     )
     val showVotingArrowsInListView: Boolean,
     @ColumnInfo(
+        name = "show_parent_comment_navigation_buttons",
+        defaultValue = "1",
+    )
+    val showParentCommentNavigationButtons: Boolean,
+    @ColumnInfo(
+        name = "navigate_parent_comments_with_volume_buttons",
+        defaultValue = "0",
+    )
+    val navigateParentCommentsWithVolumeButtons: Boolean,
+    @ColumnInfo(
         name = "use_custom_tabs",
         defaultValue = "1",
     )
@@ -108,6 +118,30 @@ data class AppSettings(
         defaultValue = "0",
     )
     val secureWindow: Boolean,
+    @ColumnInfo(
+        name = "blur_nsfw",
+        defaultValue = "1",
+    )
+    val blurNSFW: Boolean,
+)
+
+val APP_SETTINGS_DEFAULT = AppSettings(
+    id = 1,
+    fontSize = DEFAULT_FONT_SIZE,
+    theme = 0,
+    themeColor = 0,
+    viewedChangelog = 0,
+    postViewMode = 0,
+    showBottomNav = true,
+    showCollapsedCommentContent = false,
+    showCommentActionBarByDefault = true,
+    showVotingArrowsInListView = true,
+    showParentCommentNavigationButtons = false,
+    navigateParentCommentsWithVolumeButtons = false,
+    useCustomTabs = true,
+    usePrivateTabs = false,
+    secureWindow = false,
+    blurNSFW = true,
 )
 
 @Dao
@@ -414,8 +448,29 @@ val MIGRATION_14_15 = object : Migration(14, 15) {
     }
 }
 
+val MIGRATION_15_16 = object : Migration(15, 16) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column show_parent_comment_navigation_buttons INTEGER NOT NULL default 1",
+        )
+        database.execSQL(
+            "ALTER TABLE AppSettings add column navigate_parent_comments_with_volume_buttons INTEGER NOT NULL default 0",
+        )
+    }
+}
+
+val MIGRATION_16_17 = object : Migration(16, 17) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings add column blur_nsfw INTEGER NOT NULL default 1",
+        )
+    }
+}
+
 @Database(
-    version = 15,
+    version = 17,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -454,6 +509,8 @@ abstract class AppDB : RoomDatabase() {
                         MIGRATION_12_13,
                         MIGRATION_13_14,
                         MIGRATION_14_15,
+                        MIGRATION_15_16,
+                        MIGRATION_16_17,
                     )
                     // Necessary because it can't insert data on creation
                     .addCallback(object : Callback() {

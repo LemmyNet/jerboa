@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa para Lemmy</string>
     <string name="comment_node_goto_comment">Ir ao Comentário</string>
     <string name="comment_node_view_source">Ver Fonte</string>
     <string name="comment_node_copy_permalink">Copiar Link do Comentário</string>
@@ -80,7 +79,6 @@
     <string name="home_refresh">Recarregar</string>
     <string name="home_post_view_mode">Aparência das Publicações</string>
     <string name="home_site_info">Sobre o Site</string>
-    <string name="inbox_back">Voltar</string>
     <string name="inbox_inbox">Caixa de Entrada</string>
     <string name="login_password">Senha</string>
     <string name="login_instance">Instância</string>
@@ -91,17 +89,14 @@
     <string name="person_profile_joined">Chegou</string>
     <string name="person_profile_posts">%1$s publicações</string>
     <string name="person_profile_comments">%1$s comentários</string>
-    <string name="person_profile_back">Voltar</string>
     <string name="person_profile_block_person">Bloquear Pessoa</string>
     <string name="person_profile_report_person">Denunciar Pessoa</string>
     <string name="person_profile_activity_moderates">Moderando</string>
     <string name="create_post_create_post">Fazer uma publicação</string>
-    <string name="create_post_close">Fechar</string>
     <string name="create_post_copy_suggested_title">copiar título sugerido: %1$s</string>
     <string name="create_post_community">Comunidade</string>
     <string name="create_post_a_title_here">um título aqui....</string>
     <string name="post_edit_edit_post">Editar Publicação</string>
-    <string name="post_edit_close">Fechar</string>
     <string name="post_edit_body_placeholder">Conteúdo</string>
     <string name="post_activity_comments">Comentários</string>
     <string name="post_listing_comments">%1$s comentários</string>
@@ -147,16 +142,6 @@
     <string name="account_settings_local">Local</string>
     <string name="account_settings_subscribed">Participando</string>
     <string name="account_settings_default_listing_type">Tipo de Listagem Padrão</string>
-    <string name="account_settings_active">Ativo</string>
-    <string name="account_settings_hot">EmAlta</string>
-    <string name="account_settings_new">Novo</string>
-    <string name="account_settings_topday">Melhor do Dia</string>
-    <string name="account_settings_topweek">Melhor da Semana</string>
-    <string name="account_settings_topmonth">Melhor do Mês</string>
-    <string name="account_settings_topyear">Melhor do Ano</string>
-    <string name="account_settings_topall">Melhor de Sempre</string>
-    <string name="account_settings_mostcomments">Mais Comentários</string>
-    <string name="account_settings_newcomments">Novos Comentários</string>
     <string name="account_settings_default_sort_type">Ordenação Padrão</string>
     <string name="account_settings_show_nsfw">Mostrar conteúdo NSFW</string>
     <string name="account_settings_show_avatars">Mostrar avatares</string>
@@ -187,9 +172,7 @@
     <string name="settings_activity_look_and_feel">Aparência e comportamento</string>
     <string name="settings_activity_account_settings">Configurações de %1$s</string>
     <string name="settings_activity_about">Sobre</string>
-    <string name="community_blocked">Bloqueou %1$s</string>
     <string name="comment_mention_node_permalink_copied">Link do Comentário Copiado</string>
-    <string name="person_routines_blocked">Bloqueou %1$s</string>
     <string name="utils_login_first">Entre com uma conta antes</string>
     <string name="login_view_model_incorrect_login">Login Incorreto</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s não é uma Instância Lemmy</string>

@@ -3,14 +3,17 @@ package com.jerboa
 import androidx.compose.ui.unit.dp
 import com.jerboa.api.API
 import com.jerboa.ui.theme.SMALL_PADDING
+import junitparams.JUnitParamsRunner
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.ocpsoft.prettytime.PrettyTime
 import java.time.Duration
 import java.time.Instant
 import java.util.Date
 import java.util.Locale
 
+@RunWith(JUnitParamsRunner::class)
 class UtilsKtTest {
     @Test
     fun testCalculateCommentOffset() {
@@ -121,10 +124,33 @@ class UtilsKtTest {
         assertEquals(
             "http://localhost:8535/pictrs/image/file.png?thumbnail=3&format=webp",
             pictrsImageThumbnail(
-                "http://localhost:8535/pictrs/image/file.png?thumbnail=3&format=webp",
+                "http://localhost:8535/pictrs/image/file.png",
                 3,
             ),
         )
+        assertEquals(
+            "http://localhost:8535/pictrs/image/file.png?thumbnail=3&format=webp",
+            pictrsImageThumbnail(
+                "http://localhost:8535/pictrs/image/file.png?thumbnail=256&format=jpg",
+                3,
+            ),
+        )
+    }
+
+    @Test
+    fun testGetHostFromInstanceString() {
+        val cases = mapOf(
+            "" to "",
+            "localhost" to "localhost",
+            "something useless" to "something useless",
+            "https://localhost" to "localhost",
+            "http://localhost" to "localhost",
+            "https://localhost:443" to "localhost",
+            "https://localhost:443/path" to "localhost",
+            "https://localhost:443/path?param" to "localhost",
+            "https://host.tld" to "host.tld",
+        )
+        cases.forEach { (instanceString, exp) -> assertEquals(exp, getHostFromInstanceString(instanceString)) }
     }
 
     @Test
@@ -171,5 +197,15 @@ class UtilsKtTest {
 
         val durationString = formatDuration(date, true)
         assertEquals("1 day", durationString)
+    }
+
+    @Test
+    fun compareVersions() {
+        assertEquals(-1, compareVersions("0.0.1", "0.0.2"))
+        assertEquals(1, compareVersions("0.0.10", "0.0.2"))
+        assertEquals(1, compareVersions("0.1.10", "0.1.2"))
+        assertEquals(0, compareVersions("0.1.2", "0.1.2"))
+        assertEquals(-1, compareVersions("0.1.2-alpha1", "0.1.2-beta1"))
+        assertEquals(1, compareVersions("0.1.2-beta1", "0.1.2-alpha2"))
     }
 }

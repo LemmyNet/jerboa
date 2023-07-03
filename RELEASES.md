@@ -1,3 +1,157 @@
+# Jerboa v0.0.37-alpha Release (2023-06-29)
+
+## What's Changed
+
+- Nav scoped view models by @nahwneeth in https://github.com/dessalines/jerboa/pull/817
+- Fix downvote on post in postview doing a upvote by @MV-GH in https://github.com/dessalines/jerboa/pull/893
+- Fix .zoomable functionality in ImageViewerDialog and add "swipe up to close" by @sockenklaus in https://github.com/dessalines/jerboa/pull/894
+- Add blur option, fix non blurred community icons/banners by @MV-GH in https://github.com/dessalines/jerboa/pull/896
+- Fix edit comment view text is being empty by @MV-GH in https://github.com/dessalines/jerboa/pull/897
+- Update baseline profiles by @MV-GH in https://github.com/dessalines/jerboa/pull/906
+- Change app display name by @Undearius in https://github.com/dessalines/jerboa/pull/904
+
+## New Contributors
+
+- @Undearius made their first contribution in https://github.com/dessalines/jerboa/pull/904
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.36...0.0.37
+
+# Jerboa v0.0.36-alpha Release (2023-06-26)
+
+## What's Changed
+
+- Fixing incorrect dk language code. The correct one is da. by @dessalines in https://github.com/dessalines/jerboa/pull/819
+- Fix: Add Account fails when full server uri is used by @sockenklaus in https://github.com/dessalines/jerboa/pull/805
+- Enable swiping on comments to go back to posts by @CharlieGitDB in https://github.com/dessalines/jerboa/pull/785
+- Fix passwords in plaintext on logcat by @CharlieGitDB in https://github.com/dessalines/jerboa/pull/834
+- Make Search Page have consistent back button by @scme0 in https://github.com/dessalines/jerboa/pull/849
+- Fix for scrolling up past images in the comments jerks you back down by @nahwneeth in https://github.com/dessalines/jerboa/pull/845
+- Added switch to mark new posts as NSFW / toggle tag on existing posts by @sockenklaus in https://github.com/dessalines/jerboa/pull/833
+- Update French translation by @julroy67 in https://github.com/dessalines/jerboa/pull/853
+- Fix default sort and listing type to read from db by @beatgammit in https://github.com/dessalines/jerboa/pull/854
+- Copy post and comment information to clipboard by @Noxor11 in https://github.com/dessalines/jerboa/pull/850
+- Convert the groovy gradle files to kotlin DSL by @MV-GH in https://github.com/dessalines/jerboa/pull/858
+- Bottom nav bar and screen transitions by @nahwneeth in https://github.com/dessalines/jerboa/pull/855
+- Switch inbox & profile tabs with swipe gesture even whey they are empty. by @nahwneeth in https://github.com/dessalines/jerboa/pull/861
+- Update bug report to include detailed ways to get logs by @MV-GH in https://github.com/dessalines/jerboa/pull/864
+- Improved Spanish translation by @Noxor11 in https://github.com/dessalines/jerboa/pull/870
+- Catch network errors and show a toast by @beatgammit in https://github.com/dessalines/jerboa/pull/874
+- Include taglines with the scrollable post view by @beatgammit in https://github.com/dessalines/jerboa/pull/875
+- Add totp field to login by @MV-GH in https://github.com/dessalines/jerboa/pull/868
+- Add backwards compatible language picker by @MV-GH in https://github.com/dessalines/jerboa/pull/873
+- Consolidate composables for CreatePost and PostEdit by @sockenklaus in https://github.com/dessalines/jerboa/pull/860
+- QOL Remove unnecessary clickable areas from PostListingList by @lbenedetto in https://github.com/dessalines/jerboa/pull/710
+- Reworked PickImage() composable by @sockenklaus in https://github.com/dessalines/jerboa/pull/877
+- Bump dependencies by @MV-GH in https://github.com/dessalines/jerboa/pull/881
+- Add generate lemmy instance list gradle task by @MV-GH in https://github.com/dessalines/jerboa/pull/884
+
+## New Contributors
+
+- @CharlieGitDB made their first contribution in https://github.com/dessalines/jerboa/pull/785
+- @scme0 made their first contribution in https://github.com/dessalines/jerboa/pull/849
+- @julroy67 made their first contribution in https://github.com/dessalines/jerboa/pull/853
+- @Noxor11 made their first contribution in https://github.com/dessalines/jerboa/pull/850
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.35...0.0.36
+
+# Jerboa v0.0.35-alpha Release (2023-06-22)
+
+## What's Changed
+
+- Revised and added some german translations by @sabieber in https://github.com/dessalines/jerboa/pull/611
+- Fix typo labeling saved as search by @twizmwazin in https://github.com/dessalines/jerboa/pull/608
+- Add more markwon plugins by @twizmwazin in https://github.com/dessalines/jerboa/pull/610
+- Support android 13's per-app language selection, fixes #603 by @twizmwazin in https://github.com/dessalines/jerboa/pull/609
+- Add option to use private custom tabs when available by @twizmwazin in https://github.com/dessalines/jerboa/pull/613
+- Fix accompanist deprecations by @twizmwazin in https://github.com/dessalines/jerboa/pull/475
+- Account Settings: Improves paddings and small layout details by @sabieber in https://github.com/dessalines/jerboa/pull/612
+- Add vertical scroll to about screen by @marcellogalhardo in https://github.com/dessalines/jerboa/pull/618
+- Use image previewer when clicking on images in small cards and list view by @twizmwazin in https://github.com/dessalines/jerboa/pull/614
+- add bottom bar labels for swedish locale by @vijaykramesh in https://github.com/dessalines/jerboa/pull/623
+- Show action bar by default by @beatgammit in https://github.com/dessalines/jerboa/pull/634
+- improve manifest readability of supported instances by @thebino in https://github.com/dessalines/jerboa/pull/656
+- Added comment sorting functionality by @a1studmuffin in https://github.com/dessalines/jerboa/pull/495
+- Polish translation by @OrginalS in https://github.com/dessalines/jerboa/pull/655
+- Added spanish translations by @ArkoSammy12 in https://github.com/dessalines/jerboa/pull/659
+- add danish translations by @vijaykramesh in https://github.com/dessalines/jerboa/pull/666
+- Update Italian translation and sort baseline strings lexicographically by @andreaippo in https://github.com/dessalines/jerboa/pull/630
+- Edit German translation by @femoto in https://github.com/dessalines/jerboa/pull/650
+- Fixing rest of build warnings. by @dessalines in https://github.com/dessalines/jerboa/pull/641
+- Added unit tests for easy-to-test utils by @beatgammit in https://github.com/dessalines/jerboa/pull/629
+- don't have translucent background on image post thumbnail click by @vijaykramesh in https://github.com/dessalines/jerboa/pull/625
+- Fix image upload cancel crash by @noloman in https://github.com/dessalines/jerboa/pull/671
+- Fix numbers and text@text turning into links (#635) by @MV-GH in https://github.com/dessalines/jerboa/pull/677
+- Navigation enhancements: Bottom Navigation, screen transitions, back button by @nahwneeth in https://github.com/dessalines/jerboa/pull/670
+- Handle /c/community@host URLs by @beatgammit in https://github.com/dessalines/jerboa/pull/583
+- Open lemmy-verse links in Jerboa by @twizmwazin in https://github.com/dessalines/jerboa/pull/692
+- Preserving state on orientation change. by @nahwneeth in https://github.com/dessalines/jerboa/pull/690
+- Small Accesibility Tweaks by @scottmmjackson in https://github.com/dessalines/jerboa/pull/674
+- Fix markdown formatting in bug report template by @gxtu in https://github.com/dessalines/jerboa/pull/743
+- Update bug_report.md to include logs by @MV-GH in https://github.com/dessalines/jerboa/pull/702
+- Auto-generate Lemmy-API types. by @dessalines in https://github.com/dessalines/jerboa/pull/657
+- add strings.xml for French by @perepepepa in https://github.com/dessalines/jerboa/pull/638
+- Added Japanese Translation Strings by @ShinyLuxray in https://github.com/dessalines/jerboa/pull/686
+- Handle errors when updating changelog by @marcellogalhardo in https://github.com/dessalines/jerboa/pull/617
+- Add setting (off by default) to prevent screenshots. by @camporter in https://github.com/dessalines/jerboa/pull/685
+- #539 PrettyTime Missing Unit Workaround by @lbenedetto in https://github.com/dessalines/jerboa/pull/687
+- #602 Change post button to be more obvious by @Chris-Kropp in https://github.com/dessalines/jerboa/pull/691
+- Update nl translations by @MV-GH in https://github.com/dessalines/jerboa/pull/706
+- Fix URL in pictrsImageThumbnail by @APraxx in https://github.com/dessalines/jerboa/pull/720
+- Fixes image saving crashing on Android 9 and below by @MV-GH in https://github.com/dessalines/jerboa/pull/696
+- voteToggle unused resource removed from string resources by @scottmmjackson in https://github.com/dessalines/jerboa/pull/699
+- missing monochrome tags for adaptive icons by @JosephGaiser in https://github.com/dessalines/jerboa/pull/728
+- Added close on click functionality to ImageViewerDialog. Solves #736 by @sockenklaus in https://github.com/dessalines/jerboa/pull/738
+- Fix links not working in markdown tables by @MV-GH in https://github.com/dessalines/jerboa/pull/744
+- Fixing test failure. by @dessalines in https://github.com/dessalines/jerboa/pull/762
+- Added blur for Android version older than 12 by @sockenklaus in https://github.com/dessalines/jerboa/pull/746
+- App settings should be visible if the user is not logged in by @yate in https://github.com/dessalines/jerboa/pull/764
+- More Themes (Dark + Light) by @bynatejones in https://github.com/dessalines/jerboa/pull/750
+- Account Settings: Use Alorma Compose Settings Components by @sabieber in https://github.com/dessalines/jerboa/pull/731
+- Add rough rudimentary CONTRIBUTING.md by @MV-GH in https://github.com/dessalines/jerboa/pull/753
+- Add CI dependency caching in between steps by @dessalines in https://github.com/dessalines/jerboa/pull/763
+- fix: Comment replies icon appears in profile #533 by @LufyCZ in https://github.com/dessalines/jerboa/pull/726
+- Remove remaining voteToggle unused translations by @Eskuero in https://github.com/dessalines/jerboa/pull/776
+- Add benchmarks for TypicalUserJourney, Enable baselineprofile generator, and some metrics by @MV-GH in https://github.com/dessalines/jerboa/pull/601
+- Quick comment navigation by @yate in https://github.com/dessalines/jerboa/pull/749
+- Changed icons for "Go to comment" and "Copy permalink" in CommmentOptionsDialog by @sockenklaus in https://github.com/dessalines/jerboa/pull/781
+- Fix bug with pictrs url query param rewriting by @beatgammit in https://github.com/dessalines/jerboa/pull/735
+- Russian translation & Fixes of non-localized strings by @Snow4DV in https://github.com/dessalines/jerboa/pull/794
+- Adds nsfw tag to nsfw posts by @Chris-Kropp in https://github.com/dessalines/jerboa/pull/786
+- Expands german translations by @sabieber in https://github.com/dessalines/jerboa/pull/801
+- Add dynamic splash screen colors by @ddmetz in https://github.com/dessalines/jerboa/pull/800
+- Fix links not working when exclamation mark before it by @MV-GH in https://github.com/dessalines/jerboa/pull/802
+- Check server version against app minimum api version by @beatgammit in https://github.com/dessalines/jerboa/pull/737
+- Fix thumbnail links being treated as images. Fixes #815 by @dessalines in https://github.com/dessalines/jerboa/pull/816
+
+## New Contributors
+
+- @sabieber made their first contribution in https://github.com/dessalines/jerboa/pull/611
+- @marcellogalhardo made their first contribution in https://github.com/dessalines/jerboa/pull/618
+- @vijaykramesh made their first contribution in https://github.com/dessalines/jerboa/pull/623
+- @thebino made their first contribution in https://github.com/dessalines/jerboa/pull/656
+- @OrginalS made their first contribution in https://github.com/dessalines/jerboa/pull/655
+- @ArkoSammy12 made their first contribution in https://github.com/dessalines/jerboa/pull/659
+- @femoto made their first contribution in https://github.com/dessalines/jerboa/pull/650
+- @noloman made their first contribution in https://github.com/dessalines/jerboa/pull/671
+- @nahwneeth made their first contribution in https://github.com/dessalines/jerboa/pull/670
+- @scottmmjackson made their first contribution in https://github.com/dessalines/jerboa/pull/674
+- @gxtu made their first contribution in https://github.com/dessalines/jerboa/pull/743
+- @perepepepa made their first contribution in https://github.com/dessalines/jerboa/pull/638
+- @ShinyLuxray made their first contribution in https://github.com/dessalines/jerboa/pull/686
+- @lbenedetto made their first contribution in https://github.com/dessalines/jerboa/pull/687
+- @Chris-Kropp made their first contribution in https://github.com/dessalines/jerboa/pull/691
+- @APraxx made their first contribution in https://github.com/dessalines/jerboa/pull/720
+- @JosephGaiser made their first contribution in https://github.com/dessalines/jerboa/pull/728
+- @sockenklaus made their first contribution in https://github.com/dessalines/jerboa/pull/738
+- @yate made their first contribution in https://github.com/dessalines/jerboa/pull/764
+- @bynatejones made their first contribution in https://github.com/dessalines/jerboa/pull/750
+- @LufyCZ made their first contribution in https://github.com/dessalines/jerboa/pull/726
+- @Eskuero made their first contribution in https://github.com/dessalines/jerboa/pull/776
+- @Snow4DV made their first contribution in https://github.com/dessalines/jerboa/pull/794
+- @ddmetz made their first contribution in https://github.com/dessalines/jerboa/pull/800
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.34...0.0.35
+
 # Jerboa v0.0.34-alpha Release (2023-06-13)
 
 ## What's Changed

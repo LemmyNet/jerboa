@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa för Lemmy</string>
     <string name="comment_node_goto_comment">Gåtill Kommentar</string>
     <string name="comment_node_go_to">Gå till %1$s</string>
     <string name="comment_node_view_source">Visa Källa</string>
@@ -59,7 +58,6 @@
     <string name="pictrs_image_upload_image">Ladda upp bild</string>
     <string name="time_ago_ago">%1$s %2$s sedan</string>
     <string name="community_list_search">Sök...</string>
-    <string name="community_list_back">Tillbaka</string>
     <string name="community_users_month">%1$s användare / månad</string>
     <string name="community_joined">Gick med i</string>
     <string name="community_subscribe">Gå med i</string>
@@ -84,7 +82,6 @@
     <string name="home_refresh">Uppdatera</string>
     <string name="home_post_view_mode">Visningsläge för inlägg</string>
     <string name="home_site_info">Sidinfo</string>
-    <string name="inbox_back">Tillbaka</string>
     <string name="inbox_inbox">Inkorg</string>
     <string name="login_password">Lösenord</string>
     <string name="login_instance">Instans</string>
@@ -95,17 +92,14 @@
     <string name="person_profile_joined">Gick med i</string>
     <string name="person_profile_posts">%1$s inlägg</string>
     <string name="person_profile_comments">%1$s kommentarer</string>
-    <string name="person_profile_back">Tillbaka</string>
     <string name="person_profile_block_person">Blockera Användare</string>
     <string name="person_profile_report_person">Rapportera Användare</string>
     <string name="person_profile_activity_moderates">Modererar</string>
     <string name="create_post_create_post">Skapa Inlägg</string>
-    <string name="create_post_close">Stäng</string>
     <string name="create_post_copy_suggested_title">kopiera föreslagen titel: %1$s</string>
     <string name="create_post_community">Gemenskap</string>
     <string name="create_post_a_title_here">en titel här....</string>
     <string name="post_edit_edit_post">Redigera Inlägg</string>
-    <string name="post_edit_close">Stäng</string>
     <string name="post_edit_body_placeholder">Huvuddel</string>
     <string name="post_activity_comments">Kommentarer</string>
     <string name="post_listing_comments">%1$s kommentarer</string>
@@ -151,17 +145,6 @@
     <string name="account_settings_local">Lokala</string>
     <string name="account_settings_subscribed">Prenumererade</string>
     <string name="account_settings_default_listing_type">Föredragen Uppställning</string>
-    <string name="account_settings_active">Aktiva</string>
-    <string name="account_settings_hot">Heta</string>
-    <string name="account_settings_new">Nya</string>
-    <string name="account_settings_old">Gamla</string>
-    <string name="account_settings_topday">PoppisIdag</string>
-    <string name="account_settings_topweek">PoppisiVeckan</string>
-    <string name="account_settings_topmonth">PoppisdennaMånad</string>
-    <string name="account_settings_topyear">PoppisiÅr</string>
-    <string name="account_settings_topall">PoppisgenomTiderna</string>
-    <string name="account_settings_mostcomments">MestKommenterade</string>
-    <string name="account_settings_newcomments">NyaKommentarer</string>
     <string name="account_settings_default_sort_type">Föredragen Sortering Enligt</string>
     <string name="account_settings_show_nsfw">Visa Explicit Innehåll (NSFW)</string>
     <string name="account_settings_show_avatars">Visa Profilbilder</string>
@@ -192,9 +175,7 @@
     <string name="settings_activity_look_and_feel">Stil och känsla</string>
     <string name="settings_activity_account_settings">%1$s inställningar</string>
     <string name="settings_activity_about">Om</string>
-    <string name="community_blocked">%1$s Blockerad</string>
     <string name="comment_mention_node_permalink_copied">Permalänk Kopierad</string>
-    <string name="person_routines_blocked">%1$s Blockerad</string>
     <string name="utils_login_first">Logga in först</string>
     <string name="login_view_model_incorrect_login">Felaktiga Inloggningsuppgifter</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s är inte en Lemmy-instans</string>
@@ -220,7 +201,6 @@
     <string name="removeBookmark">Ta bort bokmärke</string>
     <string name="commentFooter_reply">Svara på denna kommentar</string>
     <string name="dialog_moreOptions">Visa fler alternativ</string>
-    <string name="pickImage_imagePreview">Förhandsgranskning av uppladdad bild</string>
     <string name="commentEdit_save">Spara redigerad kommentar</string>
     <string name="commentReply_send">Skicka svar</string>
     <string name="community_sortBy">Sortera efter</string>

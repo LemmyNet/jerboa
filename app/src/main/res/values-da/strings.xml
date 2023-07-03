@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa for Lemmy</string>
     <string name="comment_node_goto_comment">Gå til kommentar</string>
     <string name="comment_node_go_to">Gå til %1$s</string>
     <string name="comment_node_view_source">Vis kilde</string>
@@ -59,7 +58,6 @@
     <string name="pictrs_image_upload_image">Upload billede</string>
     <string name="time_ago_ago">%1$s %2$s siden</string>
     <string name="community_list_search">Søg...</string>
-    <string name="community_list_back">Tilbage</string>
     <string name="community_users_month">%1$s brugere / måned</string>
     <string name="community_joined">Blev medlem af</string>
     <string name="community_subscribe">Bliv medlem af</string>
@@ -84,7 +82,6 @@
     <string name="home_refresh">Opdater</string>
     <string name="home_post_view_mode">Indlægvisningstilstand</string>
     <string name="home_site_info">Sideinfo</string>
-    <string name="inbox_back">Tilbage</string>
     <string name="inbox_inbox">Indbakke</string>
     <string name="login_password">Adgangskode</string>
     <string name="login_instance">Instans</string>
@@ -95,17 +92,14 @@
     <string name="person_profile_joined">Blev medlem af</string>
     <string name="person_profile_posts">%1$s indlæg</string>
     <string name="person_profile_comments">%1$s kommentarer</string>
-    <string name="person_profile_back">Tilbage</string>
     <string name="person_profile_block_person">Bloker bruger</string>
     <string name="person_profile_report_person">Rapportér bruger</string>
     <string name="person_profile_activity_moderates">Modererer</string>
     <string name="create_post_create_post">Opret indlæg</string>
-    <string name="create_post_close">Luk</string>
     <string name="create_post_copy_suggested_title">Kopier foreslået titel: %1$s</string>
     <string name="create_post_community">Fællesskab</string>
     <string name="create_post_a_title_here">En titel her....</string>
     <string name="post_edit_edit_post">Rediger indlæg</string>
-    <string name="post_edit_close">Luk</string>
     <string name="post_edit_body_placeholder">Hovedtekst</string>
     <string name="post_activity_comments">Kommentarer</string>
     <string name="post_listing_comments">%1$s kommentarer</string>
@@ -151,17 +145,6 @@
     <string name="account_settings_local">Lokale</string>
     <string name="account_settings_subscribed">Abonneret</string>
     <string name="account_settings_default_listing_type">Foretrukket Listevisningstype</string>
-    <string name="account_settings_active">Aktive</string>
-    <string name="account_settings_hot">Populære</string>
-    <string name="account_settings_new">Nye</string>
-    <string name="account_settings_old">Gamle</string>
-    <string name="account_settings_topday">Populære i dag</string>
-    <string name="account_settings_topweek">Populære denne uge</string>
-    <string name="account_settings_topmonth">Populære denne måned</string>
-    <string name="account_settings_topyear">Populære i år</string>
-    <string name="account_settings_topall">Populære gennem tiderne</string>
-    <string name="account_settings_mostcomments">Flest kommentarer</string>
-    <string name="account_settings_newcomments">Nye kommentarer</string>
     <string name="account_settings_default_sort_type">Foretrukken sorteringsmetode</string>
     <string name="account_settings_show_nsfw">Vis eksplicit indhold (NSFW)</string>
     <string name="account_settings_show_avatars">Vis profilbilleder</string>
@@ -192,9 +175,7 @@
     <string name="settings_activity_look_and_feel">Udseende og fornemmelse</string>
     <string name="settings_activity_account_settings">%1$s indstillinger</string>
     <string name="settings_activity_about">Om</string>
-    <string name="community_blocked">%1$s Blokeret</string>
     <string name="comment_mention_node_permalink_copied">Permanent link kopieret</string>
-    <string name="person_routines_blocked">%1$s Blokeret</string>
     <string name="utils_login_first">Log ind først</string>
     <string name="login_view_model_incorrect_login">Forkert login</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s er ikke en Lemmy-instans</string>
@@ -220,7 +201,6 @@
     <string name="removeBookmark">Fjern bogmærke</string>
     <string name="commentFooter_reply">Svar på denne kommentar</string>
     <string name="dialog_moreOptions">Vis flere muligheder</string>
-    <string name="pickImage_imagePreview">Forhåndsvisning af uploadet billede</string>
     <string name="commentEdit_save">Gem redigeret kommentar</string>
     <string name="commentReply_send">Send svar</string>
     <string name="community_sortBy">Sorter efter</string>
