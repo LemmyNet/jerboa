@@ -27,7 +27,7 @@ fun generateTypography(baseFontSize: TextUnit): Typography {
             lineHeight = baseFontSize.times(FONT_LARGE_MULTIPLIER),
         ),
         titleLarge = Typography().titleLarge.copy(
-            fontSize = baseFontSize,
+            fontSize = baseFontSize.times(FONT_LARGE_MULTIPLIER),
             lineHeight = baseFontSize.times(FONT_LARGE_MULTIPLIER),
         ),
         titleSmall = Typography().titleSmall.copy(
