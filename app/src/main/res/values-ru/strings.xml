@@ -80,7 +80,7 @@
     <string name="home_site_info">Информация о сайте</string>
     <string name="home_subscribed">Подписки</string>
     <string name="home_subscriptions">Подписки</string>
-    <string name="home_switch_to">Переключиться на %1$s/%2$s</string>
+    <string name="home_switch_to">Переключиться на %1$s@%2$s</string>
     <string name="inbox_filter">Фильтр</string>
     <string name="inbox_inbox">Сообщения</string>
     <string name="inbox_markAllRead">Пометить все как прочитанные</string>

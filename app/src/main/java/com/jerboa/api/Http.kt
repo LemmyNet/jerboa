@@ -304,9 +304,13 @@ interface API {
 }
 
 sealed class ApiState<out T> {
-    class Success<T>(val data: T) : ApiState<T>()
+
+    abstract class Holder<T>(val data: T) : ApiState<T>()
+    class Success<T>(data: T) : Holder<T>(data)
+    class Appending<T>(data: T) : Holder<T>(data)
     class Failure(val msg: Throwable) : ApiState<Nothing>()
     object Loading : ApiState<Nothing>()
+    object Refreshing : ApiState<Nothing>()
     object Empty : ApiState<Nothing>()
 }
 

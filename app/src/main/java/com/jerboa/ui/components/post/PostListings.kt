@@ -26,10 +26,12 @@ import com.jerboa.db.Account
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun PostListings(
-    posts: List<PostView>,
+    posts: ImmutableList<PostView>,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -42,6 +44,7 @@ fun PostListings(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
+    onShareClick: (url: String) -> Unit,
     isScrolledToEnd: () -> Unit,
     account: Account?,
     showCommunityName: Boolean = true,
@@ -86,6 +89,7 @@ fun PostListings(
                 onPersonClick = onPersonClick,
                 onBlockCommunityClick = onBlockCommunityClick,
                 onBlockCreatorClick = onBlockCreatorClick,
+                onShareClick = onShareClick,
                 isModerator = false,
                 showCommunityName = showCommunityName,
                 fullBody = false,
@@ -121,7 +125,7 @@ fun PostListings(
 @Composable
 fun PreviewPostListings() {
     PostListings(
-        posts = listOf(samplePostView, sampleLinkPostView),
+        posts = persistentListOf(samplePostView, sampleLinkPostView),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
@@ -133,6 +137,7 @@ fun PreviewPostListings() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isScrolledToEnd = {},
         account = null,
         listState = rememberLazyListState(),

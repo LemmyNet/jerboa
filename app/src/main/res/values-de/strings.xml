@@ -77,7 +77,7 @@
     <string name="home_settings">Einstellungen</string>
     <string name="home_subscriptions">Abonnements</string>
     <string name="home_add_account">Account hinzufügen</string>
-    <string name="home_switch_to">Wechsele zu %1$s/%2$s</string>
+    <string name="home_switch_to">Wechsele zu %1$s@%2$s</string>
     <string name="home_sign_out">Ausloggen</string>
     <string name="home_menu">Menü</string>
     <string name="home_refresh">Aktualisieren</string>
