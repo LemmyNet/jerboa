@@ -40,7 +40,7 @@ class PrivateMessageReplyViewModel : ViewModel(), Initializable {
         viewModelScope.launch {
             val form = CreatePrivateMessage(
                 content = content,
-                recipient_id = replyItem!!.recipient.id,
+                recipient_id = replyItem!!.creator.id,
                 auth = account.jwt,
 
             )
