@@ -29,9 +29,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.Autofill
 import androidx.compose.ui.autofill.AutofillNode
+import androidx.compose.ui.autofill.AutofillTree
 import androidx.compose.ui.autofill.AutofillType
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -40,8 +41,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalAutofill
-import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -64,6 +63,7 @@ import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
@@ -956,18 +956,15 @@ fun saveBitmapP(
     val mimeTypes = if (mimeType == null) null else arrayOf(mimeType)
     MediaScannerConnection.scanFile(context, arrayOf(dest.absolutePath), mimeTypes, null)
 }
-
 @OptIn(ExperimentalComposeUiApi::class)
-fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> Unit): Modifier = composed {
+fun Modifier.onAutofill(tree: AutofillTree, autofill: Autofill?, autofillTypes: ImmutableList<AutofillType>, onFill: (String) -> Unit): Modifier {
     val autofillNode = AutofillNode(
-        autofillTypes = autofillType.toList(),
+        autofillTypes = autofillTypes,
         onFill = onFill,
     )
-    LocalAutofillTree.current += autofillNode
+    tree += autofillNode
 
-    val autofill = LocalAutofill.current
-
-    this
+    return this
         .onGloballyPositioned {
             autofillNode.boundingBox = it.boundsInWindow()
         }

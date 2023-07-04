@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 
 package com.jerboa.ui.components.login
 
@@ -22,6 +22,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalAutofill
+import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,6 +38,8 @@ import com.jerboa.R
 import com.jerboa.datatypes.types.Login
 import com.jerboa.db.Account
 import com.jerboa.onAutofill
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun MyTextField(
@@ -44,7 +48,10 @@ fun MyTextField(
     placeholder: String? = null,
     text: String,
     onValueChange: (String) -> Unit,
+    autofillTypes: ImmutableList<AutofillType> = persistentListOf(),
 ) {
+    var wasAutofilled by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         value = text,
         onValueChange = onValueChange,
@@ -56,7 +63,11 @@ fun MyTextField(
             keyboardType = KeyboardType.Text,
             autoCorrect = false,
         ),
-        modifier = modifier,
+        modifier = modifier.background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+            .onAutofill(LocalAutofillTree.current, LocalAutofill.current, autofillTypes) {
+                onValueChange(it)
+                wasAutofilled = true
+            },
     )
 }
 
@@ -66,10 +77,16 @@ fun PasswordField(
     password: String,
     onValueChange: (String) -> Unit,
 ) {
+    var wasAutofilled by remember { mutableStateOf(false) }
     var passwordVisibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier
+            .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+            .onAutofill(LocalAutofillTree.current, LocalAutofill.current, persistentListOf(AutofillType.Password)) {
+                onValueChange(it)
+                wasAutofilled = true
+            },
         value = password,
         onValueChange = onValueChange,
         singleLine = true,
@@ -105,7 +122,6 @@ fun LoginForm(
     var totp by rememberSaveable { mutableStateOf("") }
     val instanceOptions = DEFAULT_LEMMY_INSTANCES
     var expanded by remember { mutableStateOf(false) }
-    var wasAutofilled by remember { mutableStateOf(false) }
 
     val isValid =
         instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()
@@ -164,36 +180,20 @@ fun LoginForm(
         }
 
         MyTextField(
-            modifier = Modifier
-                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-                .onAutofill(AutofillType.Username, AutofillType.EmailAddress) {
-                    username = it
-                    wasAutofilled = true
-                },
             label = stringResource(R.string.login_email_or_username),
             text = username,
             onValueChange = { username = it },
+            autofillTypes = persistentListOf(AutofillType.Username, AutofillType.EmailAddress),
         )
         PasswordField(
-            modifier = Modifier
-                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-                .onAutofill(AutofillType.Password) {
-                    password = it
-                    wasAutofilled = true
-                },
             password = password,
             onValueChange = { password = it },
         )
         MyTextField(
-            modifier = Modifier
-                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-                .onAutofill(AutofillType.SmsOtpCode) {
-                    totp = it
-                    wasAutofilled = true
-                },
             label = stringResource(R.string.login_totp),
             text = totp,
             onValueChange = { totp = it },
+            autofillTypes = persistentListOf(AutofillType.SmsOtpCode),
         )
         Button(
             enabled = isValid && !loading,
