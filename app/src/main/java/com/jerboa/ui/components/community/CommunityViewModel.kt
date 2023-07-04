@@ -32,7 +32,6 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
-import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.launch
 
 class CommunityViewModel : ViewModel(), Initializable {
@@ -128,7 +127,7 @@ class CommunityViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun followCommunity(form: FollowCommunity, onComplete: () -> Unit = {}) {
+    fun followCommunity(form: FollowCommunity, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             followCommunityRes = ApiState.Loading
             followCommunityRes =
@@ -142,6 +141,7 @@ class CommunityViewModel : ViewModel(), Initializable {
                         is ApiState.Success -> {
                             val newCRes = cRes.data.copy(community_view = cv)
                             communityRes = ApiState.Success(newCRes)
+                            onSuccess()
                         }
 
                         else -> {}
@@ -151,7 +151,6 @@ class CommunityViewModel : ViewModel(), Initializable {
                 else -> {}
             }
 
-            onComplete()
         }
     }
 

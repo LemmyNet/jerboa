@@ -245,7 +245,7 @@ fun CommunityActivity(
                                                             follow = cfv.subscribed == SubscribedType.NotSubscribed,
                                                             auth = acct.jwt,
                                                         ),
-                                                        onComplete = {
+                                                        onSuccess = {
                                                             siteViewModel.getSite(
                                                                 form = GetSite(
                                                                     auth = acct.jwt,
