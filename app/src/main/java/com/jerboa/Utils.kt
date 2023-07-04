@@ -289,15 +289,11 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     val totalItems = layoutInfo.totalItemsCount
     val lastItemVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index
 
-    val out = if (totalItems > 0) {
+    return if (totalItems > 0) {
         lastItemVisible == totalItems - 1
     } else {
         false
     }
-//    Log.d("jerboa", layoutInfo.visibleItemsInfo.lastOrNull()?.index.toString())
-//    Log.d("jerboa", layoutInfo.totalItemsCount.toString())
-//    Log.d("jerboa", out.toString())
-    return out
 }
 
 /*
@@ -359,6 +355,19 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
         return Pair(host, user)
     }
     return null
+}
+
+/**
+ * Open a sharesheet for the given URL.
+ */
+fun shareLink(url: String, ctx: Context) {
+    val intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, url)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(intent, null)
+    ctx.startActivity(shareIntent)
 }
 
 fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
@@ -482,6 +491,13 @@ fun personNameShown(person: Person, federatedName: Boolean = false): String {
             "$name@${hostName(person.actor_id)}"
         }
     }
+}
+
+/**
+ * In cases where there should be no ambiguity as to the given Person's federated name.
+ */
+fun federatedNameShown(person: Person): String {
+    return "${person.name}@${hostName(person.actor_id)}"
 }
 
 fun communityNameShown(community: Community): String {
@@ -1213,19 +1229,18 @@ fun dedupePosts(
     more: List<PostView>,
     existing: List<PostView>,
 ): List<PostView> {
-    val newPostsDeduped = more.filterNot { pv ->
-        existing.map { op -> op.post.id }.contains(
-            pv
-                .post.id,
-        )
-    }
-    return newPostsDeduped
+    val mapIds = existing.map { it.post.id }
+    return more.filterNot { mapIds.contains(it.post.id) }
 }
 
 fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
     val appended = existing.toMutableList()
     appended.addAll(more)
     return appended.toList()
+}
+
+fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
+    return appendData(old, dedupePosts(new, old))
 }
 
 fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
@@ -1369,4 +1384,12 @@ fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange>
         l.add(i, Locale.LanguageRange(this[i]!!.toLanguageTag()))
     }
     return l
+}
+
+fun <T> ApiState<T>.isLoading(): Boolean {
+    return this is ApiState.Appending || this == ApiState.Loading || this == ApiState.Refreshing
+}
+
+fun <T> ApiState<T>.isRefreshing(): Boolean {
+    return this == ApiState.Refreshing
 }

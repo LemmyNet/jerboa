@@ -111,6 +111,7 @@ fun CommunityListActivity(
                             blurNSFW = blurNSFW,
                         )
                     }
+                    else -> {}
                 }
             },
         )
