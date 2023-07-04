@@ -63,7 +63,8 @@ fun MyTextField(
             keyboardType = KeyboardType.Text,
             autoCorrect = false,
         ),
-        modifier = modifier.background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+        modifier = modifier
+            .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
             .onAutofill(LocalAutofillTree.current, LocalAutofill.current, autofillTypes) {
                 onValueChange(it)
                 wasAutofilled = true
@@ -83,7 +84,11 @@ fun PasswordField(
     OutlinedTextField(
         modifier = modifier
             .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-            .onAutofill(LocalAutofillTree.current, LocalAutofill.current, persistentListOf(AutofillType.Password)) {
+            .onAutofill(
+                LocalAutofillTree.current,
+                LocalAutofill.current,
+                persistentListOf(AutofillType.Password)
+            ) {
                 onValueChange(it)
                 wasAutofilled = true
             },
@@ -109,7 +114,50 @@ fun PasswordField(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun InstancePicker(expanded: Boolean, setExpanded: ((Boolean) -> Unit), instance: String, setInstance: ((String) -> Unit)  ){
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            setExpanded(!expanded)
+        },
+    ) {
+        OutlinedTextField(
+            modifier = Modifier.menuAnchor(),
+            label = { Text(stringResource(R.string.login_instance)) },
+            placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
+            value = instance,
+            singleLine = true,
+            onValueChange = setInstance,
+            trailingIcon = {
+                TrailingIcon(expanded = expanded)
+            },
+            keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                setExpanded(false)
+            },
+        ) {
+            DEFAULT_LEMMY_INSTANCES.forEach { selectionOption ->
+                DropdownMenuItem(
+                    modifier = Modifier.exposedDropdownSize(),
+                    text = {
+                        Text(text = selectionOption)
+                    },
+                    onClick = {
+                        setInstance(selectionOption)
+                        setExpanded(false)
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginForm(
     modifier: Modifier = Modifier,
@@ -120,7 +168,6 @@ fun LoginForm(
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var totp by rememberSaveable { mutableStateOf("") }
-    val instanceOptions = DEFAULT_LEMMY_INSTANCES
     var expanded by remember { mutableStateOf(false) }
 
     val isValid =
@@ -139,45 +186,8 @@ fun LoginForm(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                expanded = !expanded
-            },
-        ) {
-            OutlinedTextField(
-                modifier = Modifier.menuAnchor(),
-                label = { Text(stringResource(R.string.login_instance)) },
-                placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
-                value = instance,
-                singleLine = true,
-                onValueChange = { instance = it },
-                trailingIcon = {
-                    TrailingIcon(expanded = expanded)
-                },
-                keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                },
-            ) {
-                instanceOptions.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        modifier = Modifier.exposedDropdownSize(),
-                        text = {
-                            Text(text = selectionOption)
-                        },
-                        onClick = {
-                            instance = selectionOption
-                            expanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                    )
-                }
-            }
-        }
+
+        InstancePicker(expanded = expanded, {expanded = it}, instance, {instance = it}  )
 
         MyTextField(
             label = stringResource(R.string.login_email_or_username),
