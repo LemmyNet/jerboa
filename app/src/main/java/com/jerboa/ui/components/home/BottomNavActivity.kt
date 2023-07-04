@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
@@ -40,163 +41,170 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import kotlinx.coroutines.launch
 
 enum class BottomNavTab {
-    Home, Search, Inbox, Saved, Profile;
+	Home, Search, Inbox, Saved, Profile;
 
-    fun needsLogin() = this == Inbox || this == Saved || this == Profile
+	fun needsLogin() = this == Inbox || this == Saved || this == Profile
 }
 
 @OptIn(
-    ExperimentalAnimationApi::class,
-    ExperimentalLayoutApi::class,
-    ExperimentalComposeUiApi::class,
+	ExperimentalAnimationApi::class,
+	ExperimentalLayoutApi::class,
+	ExperimentalComposeUiApi::class,
 )
 @Composable
 fun BottomNavActivity(
-    navController: NavController,
-    accountViewModel: AccountViewModel,
-    siteViewModel: SiteViewModel,
-    appSettingsViewModel: AppSettingsViewModel,
-    appSettings: AppSettings,
+	navController: NavController,
+	accountViewModel: AccountViewModel,
+	siteViewModel: SiteViewModel,
+	appSettingsViewModel: AppSettingsViewModel,
+	appSettings: AppSettings,
 ) {
-    val account = getCurrentAccount(accountViewModel)
-    val ctx = LocalContext.current
-    val scope = rememberCoroutineScope()
+	val account = getCurrentAccount(accountViewModel)
+	val ctx = LocalContext.current
+	val scope = rememberCoroutineScope()
 
-    val bottomNavController = rememberAnimatedNavController()
-    var selectedTab by rememberSaveable { mutableStateOf(BottomNavTab.Home) }
-    val onSelectTab = { tab: BottomNavTab ->
-        if (tab.needsLogin() && account == null) {
-            loginFirstToast(ctx)
-        } else {
-            selectedTab = tab
-            bottomNavController.navigate(tab.name) {
-                launchSingleTop = true
-                popUpTo(0) // To make back button close the app.
-            }
-        }
-    }
+	val bottomNavController = rememberAnimatedNavController()
+	var selectedTab by rememberSaveable { mutableStateOf(BottomNavTab.Home) }
+	val onSelectTab = { tab: BottomNavTab ->
+		if (tab.needsLogin() && account == null) {
+			loginFirstToast(ctx)
+		} else {
+			selectedTab = tab
+			bottomNavController.navigate(tab.name) {
+				launchSingleTop = true
+				popUpTo(0) // To make back button close the app.
+			}
+		}
+	}
 
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
+	val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    val homeViewModel: HomeViewModel = viewModel()
-    if (siteViewModel.siteRes is ApiState.Success) {
-        InitializeRoute(homeViewModel) {
-            homeViewModel.updateSortType(siteViewModel.sortType)
-            homeViewModel.updateListingType(siteViewModel.listingType)
-            fetchHomePosts(account, homeViewModel)
-        }
-    }
+	val homeViewModel: HomeViewModel = viewModel()
+	if (siteViewModel.siteRes is ApiState.Success) {
+		InitializeRoute(homeViewModel) {
+			homeViewModel.updateSortType(siteViewModel.sortType)
+			homeViewModel.updateListingType(siteViewModel.listingType)
+			fetchHomePosts(account, homeViewModel)
+		}
+	}
 
-    ModalNavigationDrawer(
-        gesturesEnabled = selectedTab == BottomNavTab.Home,
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                content = {
-                    MainDrawer(
-                        siteViewModel = siteViewModel,
-                        navController = navController,
-                        accountViewModel = accountViewModel,
-                        homeViewModel = homeViewModel,
-                        scope = scope,
-                        drawerState = drawerState,
-                        onSelectTab = if (appSettings.showBottomNav) onSelectTab else null,
-                        blurNSFW = appSettings.blurNSFW,
-                    )
-                },
-            )
-        },
-        modifier = Modifier.semantics { testTagsAsResourceId = true },
-        content = {
-            Scaffold(
-                bottomBar = {
-                    BottomAppBarAll(
-                        showBottomNav = appSettings.showBottomNav,
-                        selectedTab = selectedTab,
-                        unreadCounts = siteViewModel.getUnreadCountTotal(),
-                        onSelect = onSelectTab,
-                    )
-                },
-            ) { padding ->
-                val bottomPadding =
-                    if (selectedTab == BottomNavTab.Search && WindowInsets.isImeVisible) {
-                        0.dp
-                    } else {
-                        padding.calculateBottomPadding()
-                    }
+	BackHandler(enabled = drawerState.isOpen) {
+		scope.launch {
+			drawerState.close()
+		}
+	}
 
-                AnimatedNavHost(
-                    navController = bottomNavController,
-                    startDestination = BottomNavTab.Home.name,
-                    modifier = Modifier.padding(bottom = bottomPadding),
-                ) {
-                    composable(route = BottomNavTab.Home.name) {
-                        HomeActivity(
-                            navController = navController,
-                            homeViewModel = homeViewModel,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
-                            drawerState = drawerState,
-                            blurNSFW = appSettings.blurNSFW,
-                        )
-                    }
+	ModalNavigationDrawer(
+		gesturesEnabled = selectedTab == BottomNavTab.Home,
+		drawerState = drawerState,
+		drawerContent = {
+			ModalDrawerSheet(
+				content = {
+					MainDrawer(
+						siteViewModel = siteViewModel,
+						navController = navController,
+						accountViewModel = accountViewModel,
+						homeViewModel = homeViewModel,
+						scope = scope,
+						drawerState = drawerState,
+						onSelectTab = if (appSettings.showBottomNav) onSelectTab else null,
+						blurNSFW = appSettings.blurNSFW,
+					)
+				},
+			)
+		},
+		modifier = Modifier.semantics { testTagsAsResourceId = true },
+		content = {
+			Scaffold(
+				bottomBar = {
+					BottomAppBarAll(
+						showBottomNav = appSettings.showBottomNav,
+						selectedTab = selectedTab,
+						unreadCounts = siteViewModel.getUnreadCountTotal(),
+						onSelect = onSelectTab,
+					)
+				},
+			) { padding ->
+				val bottomPadding =
+					if (selectedTab == BottomNavTab.Search && WindowInsets.isImeVisible) {
+						0.dp
+					} else {
+						padding.calculateBottomPadding()
+					}
 
-                    composable(route = BottomNavTab.Search.name) {
-                        CommunityListActivity(
-                            navController = navController,
-                            accountViewModel = accountViewModel,
-                            selectMode = false,
-                            siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
-                        )
-                    }
+				AnimatedNavHost(
+					navController = bottomNavController,
+					startDestination = BottomNavTab.Home.name,
+					modifier = Modifier.padding(bottom = bottomPadding),
+				) {
+					composable(route = BottomNavTab.Home.name) {
+						HomeActivity(
+							navController = navController,
+							homeViewModel = homeViewModel,
+							accountViewModel = accountViewModel,
+							siteViewModel = siteViewModel,
+							appSettingsViewModel = appSettingsViewModel,
+							showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+							useCustomTabs = appSettings.useCustomTabs,
+							usePrivateTabs = appSettings.usePrivateTabs,
+							drawerState = drawerState,
+							blurNSFW = appSettings.blurNSFW,
+						)
+					}
 
-                    composable(route = BottomNavTab.Inbox.name) {
-                        InboxActivity(
-                            navController = navController,
-                            accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
-                        )
-                    }
+					composable(route = BottomNavTab.Search.name) {
+						CommunityListActivity(
+							navController = navController,
+							accountViewModel = accountViewModel,
+							selectMode = false,
+							siteViewModel = siteViewModel,
+							blurNSFW = appSettings.blurNSFW,
+						)
+					}
 
-                    composable(route = BottomNavTab.Saved.name) {
-                        PersonProfileActivity(
-                            personArg = Either.Left(account!!.id),
-                            savedMode = true,
-                            navController = navController,
-                            accountViewModel = accountViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                            siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
-                        )
-                    }
+					composable(route = BottomNavTab.Inbox.name) {
+						InboxActivity(
+							navController = navController,
+							accountViewModel = accountViewModel,
+							siteViewModel = siteViewModel,
+							blurNSFW = appSettings.blurNSFW,
+						)
+					}
 
-                    composable(route = BottomNavTab.Profile.name) {
-                        PersonProfileActivity(
-                            personArg = Either.Left(account!!.id),
-                            savedMode = false,
-                            navController = navController,
-                            accountViewModel = accountViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
-                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                            siteViewModel = siteViewModel,
-                            useCustomTabs = appSettings.useCustomTabs,
-                            usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
-                        )
-                    }
-                }
-            }
-        },
-    )
+					composable(route = BottomNavTab.Saved.name) {
+						PersonProfileActivity(
+							personArg = Either.Left(account!!.id),
+							savedMode = true,
+							navController = navController,
+							accountViewModel = accountViewModel,
+							appSettingsViewModel = appSettingsViewModel,
+							showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+							siteViewModel = siteViewModel,
+							useCustomTabs = appSettings.useCustomTabs,
+							usePrivateTabs = appSettings.usePrivateTabs,
+							blurNSFW = appSettings.blurNSFW,
+						)
+					}
+
+					composable(route = BottomNavTab.Profile.name) {
+						PersonProfileActivity(
+							personArg = Either.Left(account!!.id),
+							savedMode = false,
+							navController = navController,
+							accountViewModel = accountViewModel,
+							appSettingsViewModel = appSettingsViewModel,
+							showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+							siteViewModel = siteViewModel,
+							useCustomTabs = appSettings.useCustomTabs,
+							usePrivateTabs = appSettings.usePrivateTabs,
+							blurNSFW = appSettings.blurNSFW,
+						)
+					}
+				}
+			}
+		},
+	)
 }
