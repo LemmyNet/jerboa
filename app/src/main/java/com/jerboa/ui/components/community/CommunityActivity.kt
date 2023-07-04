@@ -251,7 +251,7 @@ fun CommunityActivity(
                                                                     auth = acct.jwt,
                                                                 ),
                                                             )
-                                                        }
+                                                        },
                                                     )
                                                 }
                                             },

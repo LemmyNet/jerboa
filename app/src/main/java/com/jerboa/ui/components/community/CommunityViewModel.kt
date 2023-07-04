@@ -150,7 +150,6 @@ class CommunityViewModel : ViewModel(), Initializable {
 
                 else -> {}
             }
-
         }
     }
 
