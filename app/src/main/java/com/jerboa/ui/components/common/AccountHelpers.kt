@@ -11,7 +11,17 @@ import com.jerboa.db.entity.Account
 
 @Composable
 fun getCurrentAccount(accountViewModel: AccountViewModel): Account? {
-    val currentAccount by accountViewModel.currentAccount.observeAsState()
+    val currentAccount by accountViewModel.currentAccount.observeAsState(
+        initial = Account(
+            -1,
+            false,
+            "",
+            "",
+            "",
+            0,
+            0,
+        ),
+    )
     return currentAccount
 }
 

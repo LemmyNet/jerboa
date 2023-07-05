@@ -113,7 +113,9 @@ class MainActivity : AppCompatActivity() {
             val account = getCurrentAccount(accountViewModel)
 
             LaunchedEffect(account) {
-                fetchInitialData(account, siteViewModel)
+                if (account == null || account.id != -1) {
+                    fetchInitialData(account, siteViewModel)
+                }
             }
 
             val appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory)
