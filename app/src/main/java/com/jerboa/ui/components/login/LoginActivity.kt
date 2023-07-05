@@ -10,6 +10,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +30,7 @@ fun LoginActivity(
     Log.d("jerboa", "Got to login activity")
 
     val snackbarHostState = remember { SnackbarHostState() }
+    val accounts by accountViewModel.allAccounts.observeAsState()
     val ctx = LocalContext.current
 
     val loginViewModel: LoginViewModel = viewModel()
@@ -37,6 +40,7 @@ fun LoginActivity(
         topBar = {
             LoginHeader(
                 navController = navController,
+                accounts = accounts,
             )
         },
         content = { padding ->
