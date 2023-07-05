@@ -198,6 +198,7 @@ fun MainPostListingsContent(
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
+
         else -> {}
     }
 
@@ -214,10 +215,13 @@ fun MainPostListingsContent(
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         // zIndex needed bc some elements of a post get drawn above it.
-        PullRefreshIndicator(homeViewModel.postsRes.isRefreshing(), pullRefreshState,
+        PullRefreshIndicator(
+            homeViewModel.postsRes.isRefreshing(),
+            pullRefreshState,
             Modifier
                 .align(Alignment.TopCenter)
-                .zIndex(100f))
+                .zIndex(100f),
+        )
         // Can't be in ApiState.Loading, because of infinite scrolling
         if (homeViewModel.postsRes.isLoading()) {
             LoadingBar(padding = padding)
@@ -228,6 +232,7 @@ fun MainPostListingsContent(
                 ApiErrorToast(postsRes.msg)
                 persistentListOf()
             }
+
             is ApiState.Holder -> postsRes.data.posts.toImmutableList()
             else -> persistentListOf()
         }

@@ -38,4 +38,3 @@ object AppSettingsViewModelFactory {
         }
     }
 }
-

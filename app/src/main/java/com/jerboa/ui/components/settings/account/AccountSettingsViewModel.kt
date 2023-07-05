@@ -49,7 +49,7 @@ class AccountSettingsViewModel(
     //     TODO Where is this used??
     private suspend fun maybeUpdateAccountSettings(
         account: Account,
-        form: SaveUserSettings
+        form: SaveUserSettings,
     ): Account {
         val newAccount = account.copy(
             defaultListingType = form.default_listing_type?.ordinal ?: account.defaultListingType,

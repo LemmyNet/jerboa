@@ -74,7 +74,6 @@ import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 
-
 class JerboaApplication : Application() {
     lateinit var container: AppDBContainer
 
