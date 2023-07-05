@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import arrow.core.Either
 import com.jerboa.R
@@ -48,6 +49,7 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.newVote
@@ -72,6 +74,7 @@ import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -81,8 +84,8 @@ fun CommunityActivity(
     navController: NavController,
     communityViewModel: CommunityViewModel,
     siteViewModel: SiteViewModel,
-    accountViewModel: AccountViewModel,
-    appSettingsViewModel: AppSettingsViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
+    appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory),
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,

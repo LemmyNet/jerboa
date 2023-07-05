@@ -109,6 +109,7 @@ import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 @Composable
 fun CommentsHeaderTitle(
@@ -137,7 +138,7 @@ fun CommentsHeaderTitle(
 fun PostActivity(
     id: Either<PostId, CommentId>,
     siteViewModel: SiteViewModel,
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     navController: NavController,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,

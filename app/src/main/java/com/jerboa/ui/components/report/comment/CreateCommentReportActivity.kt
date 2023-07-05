@@ -21,12 +21,13 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 import com.jerboa.ui.components.report.CreateReportHeader
 import com.jerboa.ui.components.report.CreateReportViewModel
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateCommentReportActivity(
     commentId: CommentId,
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     navController: NavController,
 ) {
     Log.d("jerboa", "got to create comment report activity")

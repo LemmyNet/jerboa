@@ -16,6 +16,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 object CommentEditReturn {
     const val COMMENT_VIEW = "comment-edit::return(comment-view)"
@@ -24,7 +25,7 @@ object CommentEditReturn {
 @Composable
 fun CommentEditActivity(
     commentView: CommentView,
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     navController: NavController,
 ) {
     Log.d("jerboa", "got to comment edit activity")

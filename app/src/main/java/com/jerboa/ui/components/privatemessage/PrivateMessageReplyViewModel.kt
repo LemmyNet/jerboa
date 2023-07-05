@@ -13,7 +13,7 @@ import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.CreatePrivateMessage
 import com.jerboa.datatypes.types.PrivateMessageResponse
 import com.jerboa.datatypes.types.PrivateMessageView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 

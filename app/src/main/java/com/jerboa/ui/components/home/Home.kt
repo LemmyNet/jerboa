@@ -49,6 +49,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,6 +65,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
@@ -77,8 +79,9 @@ import com.jerboa.datatypes.types.MyUserInfo
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
-import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AccountViewModelFactory
+import com.jerboa.db.entity.Account
 import com.jerboa.federatedNameShown
 import com.jerboa.getLocalizedListingTypeName
 import com.jerboa.getLocalizedSortingTypeShortName
@@ -90,6 +93,7 @@ import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.common.toLogin
 import com.jerboa.ui.components.common.toSiteSideBar
@@ -341,12 +345,13 @@ fun DrawerItemsMainPreview() {
 @Composable
 fun DrawerAddAccountMode(
     navController: NavController = rememberNavController(),
-    accountViewModel: AccountViewModel?,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory),
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
 ) {
-    val accountsWithoutCurrent = accountViewModel?.allAccounts?.value?.toMutableList()
-    val currentAccount = accountsWithoutCurrent?.firstOrNull { it.current }
+    val allAccounts by accountViewModel.allAccounts.observeAsState()
+    val accountsWithoutCurrent = allAccounts?.toMutableList()
+    val currentAccount = getCurrentAccount(accountViewModel = accountViewModel)
     accountsWithoutCurrent?.remove(currentAccount)
 
     Column {
@@ -378,7 +383,6 @@ fun DrawerAddAccountModePreview() {
     DrawerAddAccountMode(
         onSignOutClick = {},
         onSwitchAccountClick = {},
-        accountViewModel = null,
     )
 }
 

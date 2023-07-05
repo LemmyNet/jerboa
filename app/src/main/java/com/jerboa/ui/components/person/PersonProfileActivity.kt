@@ -42,9 +42,10 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
@@ -82,6 +83,7 @@ import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
@@ -93,9 +95,8 @@ fun PersonProfileActivity(
     personArg: Either<PersonId, String>,
     savedMode: Boolean,
     navController: NavController,
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     siteViewModel: SiteViewModel,
-    appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -231,7 +232,6 @@ fun PersonProfileActivity(
                 account = account,
                 scope = scope,
                 postListState = postListState,
-                appSettingsViewModel = appSettingsViewModel,
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = siteViewModel.enableDownvotes(),
                 showAvatar = siteViewModel.showAvatar(),
@@ -260,7 +260,7 @@ fun UserTabs(
     scope: CoroutineScope,
     postListState: LazyListState,
     padding: PaddingValues,
-    appSettingsViewModel: AppSettingsViewModel,
+    appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory),
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,

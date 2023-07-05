@@ -27,6 +27,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,6 +41,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -51,9 +54,10 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
-import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.AppSettingsViewModelFactory
+import com.jerboa.db.entity.Account
 import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
 import com.jerboa.isLoading
@@ -94,7 +98,6 @@ fun HomeActivity(
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -126,7 +129,6 @@ fun HomeActivity(
                 postListState = postListState,
                 drawerState = drawerState,
                 homeViewModel = homeViewModel,
-                appSettingsViewModel = appSettingsViewModel,
                 account = account,
                 navController = navController,
                 scrollBehavior = scrollBehavior,
@@ -137,7 +139,6 @@ fun HomeActivity(
                 padding = padding,
                 homeViewModel = homeViewModel,
                 siteViewModel = siteViewModel,
-                appSettingsViewModel = appSettingsViewModel,
                 account = account,
                 ctx = ctx,
                 navController = navController,
@@ -181,7 +182,7 @@ fun MainPostListingsContent(
     navController: NavController,
     padding: PaddingValues,
     postListState: LazyListState,
-    appSettingsViewModel: AppSettingsViewModel,
+    appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory),
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -213,7 +214,10 @@ fun MainPostListingsContent(
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         // zIndex needed bc some elements of a post get drawn above it.
-        PullRefreshIndicator(homeViewModel.postsRes.isRefreshing(), pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100f))
+        PullRefreshIndicator(homeViewModel.postsRes.isRefreshing(), pullRefreshState,
+            Modifier
+                .align(Alignment.TopCenter)
+                .zIndex(100f))
         // Can't be in ApiState.Loading, because of infinite scrolling
         if (homeViewModel.postsRes.isLoading()) {
             LoadingBar(padding = padding)
@@ -356,7 +360,7 @@ fun MainDrawer(
 ) {
     val ctx = LocalContext.current
 
-    val accounts = accountViewModel.allAccounts.value
+    val accounts by accountViewModel.allAccounts.observeAsState()
     val account = getCurrentAccount(accountViewModel)
 
     BackHandler(drawerState.isOpen) {
@@ -467,7 +471,7 @@ fun MainTopBar(
     postListState: LazyListState,
     drawerState: DrawerState,
     homeViewModel: HomeViewModel,
-    appSettingsViewModel: AppSettingsViewModel,
+    appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory),
     account: Account?,
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,

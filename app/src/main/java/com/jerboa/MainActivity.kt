@@ -20,6 +20,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,11 +34,9 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AccountRepository
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AccountViewModelFactory
-import com.jerboa.db.AppDB
-import com.jerboa.db.AppSettingsRepository
+import com.jerboa.db.AppDBContainer
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
@@ -50,7 +50,7 @@ import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
-import com.jerboa.ui.components.common.getCurrentAccountSync
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.takeDepsFromRoot
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.CommunityViewModel
@@ -71,34 +71,28 @@ import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 
+
 class JerboaApplication : Application() {
-    private val database by lazy { AppDB.getDatabase(this) }
-    val accountRepository by lazy { AccountRepository(database.accountDao()) }
-    val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
+    lateinit var container: AppDBContainer
+
+    override fun onCreate() {
+        super.onCreate()
+        container = AppDBContainer(this)
+    }
 }
+
+fun CreationExtras.jerboaApplication(): JerboaApplication =
+    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as JerboaApplication)
 
 class MainActivity : AppCompatActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
-    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
-        AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
-    }
-    private val accountViewModel: AccountViewModel by viewModels {
-        AccountViewModelFactory((application as JerboaApplication).accountRepository)
-    }
-    private val appSettingsViewModel: AppSettingsViewModel by viewModels {
-        AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
-    }
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val accountSync = getCurrentAccountSync(accountViewModel)
 
         setContent {
             val ctx = LocalContext.current
@@ -115,10 +109,15 @@ class MainActivity : AppCompatActivity() {
                 null
             }
 
-            LaunchedEffect(Unit) {
-                fetchInitialData(accountSync, siteViewModel)
+            val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory)
+
+            val account = getCurrentAccount(accountViewModel)
+
+            LaunchedEffect(account) {
+                fetchInitialData(account, siteViewModel)
             }
 
+            val appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory)
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
 
             JerboaTheme(
@@ -133,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                     appSettings.usePrivateTabs,
                 )
 
-                ShowChangelog(appSettingsViewModel = appSettingsViewModel)
+                ShowChangelog()
 
                 when (val siteRes = siteViewModel.siteRes) {
                     is ApiState.Success -> {
@@ -165,7 +164,6 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         LoginActivity(
                             navController = navController,
-                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                         )
                     }
@@ -173,9 +171,7 @@ class MainActivity : AppCompatActivity() {
                     composable(route = Route.HOME) {
                         BottomNavActivity(
                             navController = navController,
-                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             appSettings = appSettings,
                         )
                     }
@@ -201,8 +197,6 @@ class MainActivity : AppCompatActivity() {
                                 communityArg = Either.Left(args.id),
                                 navController = navController,
                                 communityViewModel = communityViewModel,
-                                accountViewModel = accountViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
                                 showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
@@ -233,8 +227,6 @@ class MainActivity : AppCompatActivity() {
                                 communityArg = Either.Right(qualifiedName),
                                 navController = navController,
                                 communityViewModel = communityViewModel,
-                                accountViewModel = accountViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
                                 showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
@@ -299,8 +291,6 @@ class MainActivity : AppCompatActivity() {
                             personArg = Either.Left(args.id),
                             savedMode = args.saved,
                             navController = navController,
-                            accountViewModel = accountViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
@@ -330,8 +320,6 @@ class MainActivity : AppCompatActivity() {
                             personArg = Either.Right(qualifiedName),
                             savedMode = false,
                             navController = navController,
-                            accountViewModel = accountViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
@@ -352,7 +340,6 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.CommunityListArgs(it)
                         CommunityListActivity(
                             navController = navController,
-                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW,
@@ -389,7 +376,6 @@ class MainActivity : AppCompatActivity() {
 
                         CreatePostActivity(
                             navController = navController,
-                            accountViewModel = accountViewModel,
                             initialUrl = url,
                             initialBody = body,
                             initialImage = image,
@@ -405,7 +391,6 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         InboxActivity(
                             navController = navController,
-                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
                         )
@@ -426,7 +411,6 @@ class MainActivity : AppCompatActivity() {
                         SwipeToNavigateBack(navController = navController) {
                             PostActivity(
                                 id = Either.Left(args.id),
-                                accountViewModel = accountViewModel,
                                 navController = navController,
                                 showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
                                 showActionBarByDefault = appSettings.showCommentActionBarByDefault,
@@ -455,7 +439,6 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.CommentArgs(it)
                         PostActivity(
                             id = Either.Right(args.id),
-                            accountViewModel = accountViewModel,
                             navController = navController,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
@@ -482,7 +465,6 @@ class MainActivity : AppCompatActivity() {
 
                         CommentReplyActivity(
                             replyItem = replyItem,
-                            accountViewModel = accountViewModel,
                             navController = navController,
                             siteViewModel = siteViewModel,
                             isModerator = args.isModerator,
@@ -500,7 +482,6 @@ class MainActivity : AppCompatActivity() {
                         val commentView by navController.takeDepsFromRoot<CommentEditDeps>()
                         CommentEditActivity(
                             commentView = commentView,
-                            accountViewModel = accountViewModel,
                             navController = navController,
                         )
                     }
@@ -509,7 +490,6 @@ class MainActivity : AppCompatActivity() {
                         val postView by navController.takeDepsFromRoot<PostEditDeps>()
                         PostEditActivity(
                             postView = postView,
-                            accountViewModel = accountViewModel,
                             navController = navController,
                         )
                     }
@@ -518,7 +498,6 @@ class MainActivity : AppCompatActivity() {
                         val privateMessage by navController.takeDepsFromRoot<PrivateMessageDeps>()
                         PrivateMessageReplyActivity(
                             privateMessageView = privateMessage,
-                            accountViewModel = accountViewModel,
                             navController = navController,
                             siteViewModel = siteViewModel,
                         )
@@ -535,7 +514,6 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.CommentReportArgs(it)
                         CreateCommentReportActivity(
                             commentId = args.id,
-                            accountViewModel = accountViewModel,
                             navController = navController,
                         )
                     }
@@ -551,7 +529,6 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.PostReportArgs(it)
                         CreatePostReportActivity(
                             postId = args.id,
-                            accountViewModel = accountViewModel,
                             navController = navController,
                         )
                     }
@@ -559,14 +536,12 @@ class MainActivity : AppCompatActivity() {
                     composable(route = Route.SETTINGS) {
                         SettingsActivity(
                             navController = navController,
-                            accountViewModel = accountViewModel,
                         )
                     }
 
                     composable(route = Route.LOOK_AND_FEEL) {
                         LookAndFeelActivity(
                             navController = navController,
-                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
 
@@ -578,9 +553,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         AccountSettingsActivity(
                             navController = navController,
-                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            accountSettingsViewModel = accountSettingsViewModel,
                         )
                     }
 

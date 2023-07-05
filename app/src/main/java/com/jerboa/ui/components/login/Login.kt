@@ -34,7 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
 import com.jerboa.datatypes.types.Login
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.onAutofill
 
 @Composable
@@ -218,7 +218,7 @@ fun LoginFormPreview() {
 @Composable
 fun LoginHeader(
     navController: NavController = rememberNavController(),
-    accounts: List<Account>? = null,
+    account: Account? = null,
 ) {
     TopAppBar(
         title = {
@@ -228,7 +228,7 @@ fun LoginHeader(
         },
         navigationIcon = {
             IconButton(
-                enabled = !accounts.isNullOrEmpty(),
+                enabled = account != null,
                 onClick = {
                     navController.popBackStack()
                 },

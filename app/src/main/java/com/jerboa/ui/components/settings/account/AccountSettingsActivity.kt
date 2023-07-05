@@ -9,6 +9,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.db.AccountViewModel
@@ -20,8 +21,8 @@ import com.jerboa.ui.components.home.SiteViewModel
 @Composable
 fun AccountSettingsActivity(
     navController: NavController,
-    accountSettingsViewModel: AccountSettingsViewModel,
-    accountViewModel: AccountViewModel,
+    accountSettingsViewModel: AccountSettingsViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "Got to settings activity")

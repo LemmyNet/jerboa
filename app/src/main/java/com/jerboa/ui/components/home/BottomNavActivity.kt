@@ -30,8 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettings
-import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.fetchHomePosts
 import com.jerboa.loginFirstToast
 import com.jerboa.ui.components.common.BottomAppBarAll
@@ -40,6 +39,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 enum class BottomNavTab {
     Home, Search, Inbox, Saved, Profile;
@@ -55,9 +55,8 @@ enum class BottomNavTab {
 @Composable
 fun BottomNavActivity(
     navController: NavController,
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     siteViewModel: SiteViewModel,
-    appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
 ) {
     val account = getCurrentAccount(accountViewModel)
@@ -138,7 +137,6 @@ fun BottomNavActivity(
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
@@ -172,7 +170,6 @@ fun BottomNavActivity(
                             savedMode = true,
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
@@ -187,7 +184,6 @@ fun BottomNavActivity(
                             savedMode = false,
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,

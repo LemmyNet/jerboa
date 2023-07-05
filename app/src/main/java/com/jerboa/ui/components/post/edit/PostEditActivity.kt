@@ -21,7 +21,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.EditPost
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.InitializeRoute
@@ -31,6 +31,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.CreateEditPostHeader
 import com.jerboa.ui.components.post.composables.EditPostSubmitIcon
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 import kotlinx.coroutines.launch
@@ -43,7 +44,7 @@ object PostEditReturn {
 @Composable
 fun PostEditActivity(
     postView: PostView,
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     navController: NavController,
 ) {
     Log.d("jerboa", "got to post edit activity")

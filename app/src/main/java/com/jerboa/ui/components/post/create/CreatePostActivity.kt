@@ -27,7 +27,7 @@ import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.components.common.ConsumeReturn
@@ -39,6 +39,7 @@ import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.CreateEditPostHeader
 import com.jerboa.ui.components.post.composables.CreatePostSubmitIcon
 import com.jerboa.ui.components.post.composables.PostCommunitySelector
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 import kotlinx.coroutines.Job
@@ -51,7 +52,7 @@ data class MetaDataRes(val title: String?, val loading: Boolean)
 
 @Composable
 fun CreatePostActivity(
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     navController: NavController,
     initialUrl: String,
     initialBody: String,

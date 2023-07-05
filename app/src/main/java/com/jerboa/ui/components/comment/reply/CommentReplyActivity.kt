@@ -22,6 +22,7 @@ import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 object CommentReplyReturn {
     const val COMMENT_VIEW = "comment-reply::return(comment-view)"
@@ -30,7 +31,7 @@ object CommentReplyReturn {
 @Composable
 fun CommentReplyActivity(
     replyItem: ReplyItem,
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     siteViewModel: SiteViewModel,
     navController: NavController,
     isModerator: Boolean,

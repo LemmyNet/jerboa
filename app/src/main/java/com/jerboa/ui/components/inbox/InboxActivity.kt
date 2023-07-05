@@ -37,7 +37,7 @@ import com.jerboa.datatypes.types.MarkCommentReplyAsRead
 import com.jerboa.datatypes.types.MarkPersonMentionAsRead
 import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.reply.ReplyItem
@@ -60,6 +60,7 @@ import com.jerboa.ui.components.common.toPrivateMessageReply
 import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessage
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -68,7 +69,7 @@ import kotlinx.coroutines.launch
 fun InboxActivity(
     navController: NavController,
     siteViewModel: SiteViewModel,
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to inbox activity")

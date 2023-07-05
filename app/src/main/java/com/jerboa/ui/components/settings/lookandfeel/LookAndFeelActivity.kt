@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberFloatSettingState
@@ -38,8 +39,9 @@ import com.jerboa.R
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AppSettings
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
 import com.jerboa.ui.components.common.SimpleTopAppBar
@@ -48,7 +50,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 @Composable
 fun LookAndFeelActivity(
     navController: NavController,
-    appSettingsViewModel: AppSettingsViewModel,
+    appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory),
 ) {
     Log.d("jerboa", "Got to lookAndFeel activity")
     val ctx = LocalContext.current

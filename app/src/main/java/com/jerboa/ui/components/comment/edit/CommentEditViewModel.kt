@@ -12,7 +12,7 @@ import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.CommentResponse
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.EditComment
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 

@@ -10,8 +10,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,17 +17,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 @Composable
 fun LoginActivity(
     navController: NavController,
-    accountViewModel: AccountViewModel,
+    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "Got to login activity")
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val accounts by accountViewModel.allAccounts.observeAsState()
     val ctx = LocalContext.current
 
     val loginViewModel: LoginViewModel = viewModel()
@@ -39,7 +37,6 @@ fun LoginActivity(
         topBar = {
             LoginHeader(
                 navController = navController,
-                accounts = accounts,
             )
         },
         content = { padding ->
