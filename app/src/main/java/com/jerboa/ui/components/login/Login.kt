@@ -72,6 +72,7 @@ fun MyTextField(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PasswordField(
     modifier: Modifier = Modifier,
@@ -87,7 +88,7 @@ fun PasswordField(
             .onAutofill(
                 LocalAutofillTree.current,
                 LocalAutofill.current,
-                persistentListOf(AutofillType.Password)
+                persistentListOf(AutofillType.Password),
             ) {
                 onValueChange(it)
                 wasAutofilled = true
@@ -115,7 +116,7 @@ fun PasswordField(
 }
 
 @Composable
-fun InstancePicker(expanded: Boolean, setExpanded: ((Boolean) -> Unit), instance: String, setInstance: ((String) -> Unit)  ){
+fun InstancePicker(expanded: Boolean, setExpanded: ((Boolean) -> Unit), instance: String, setInstance: ((String) -> Unit)) {
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = {
@@ -186,8 +187,7 @@ fun LoginForm(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
-        InstancePicker(expanded = expanded, {expanded = it}, instance, {instance = it}  )
+        InstancePicker(expanded = expanded, { expanded = it }, instance, { instance = it })
 
         MyTextField(
             label = stringResource(R.string.login_email_or_username),
