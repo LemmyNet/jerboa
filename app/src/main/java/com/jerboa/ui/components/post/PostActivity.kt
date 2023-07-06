@@ -147,6 +147,7 @@ fun PostActivity(
     showParentCommentNavigationButtons: Boolean,
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
@@ -436,6 +437,7 @@ fun PostActivity(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
+                                    openImageViewer = openImageViewer,
                                 )
                             }
 

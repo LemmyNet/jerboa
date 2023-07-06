@@ -42,6 +42,8 @@ object Route {
     const val ACCOUNT_SETTINGS = "accountSettings"
     const val ABOUT = "about"
 
+    val VIEW = ViewArgs.route
+
     class CommunityFromIdArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(id = navBackStackEntry.arguments?.getInt(ID)!!)
@@ -186,6 +188,19 @@ object Route {
 
             fun makeRoute(id: String) = "postReport/$id"
             internal val route by lazy { makeRoute(id = "{$ID}") }
+        }
+    }
+
+    class ViewArgs(val url: String) {
+        constructor(navBackStackEntry: NavBackStackEntry) :
+            this(url = navBackStackEntry.arguments?.getString(URL)!!)
+
+        companion object {
+            const val URL = "url"
+            val URL_TYPE = NavType.StringType
+
+            fun makeRoute(url: String) = "view/$url"
+            internal val route by lazy { makeRoute(url = "{$URL}") }
         }
     }
 }

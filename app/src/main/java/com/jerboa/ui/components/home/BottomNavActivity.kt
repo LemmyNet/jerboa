@@ -37,6 +37,7 @@ import com.jerboa.loginFirstToast
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
@@ -178,6 +179,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -193,6 +195,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            openImageViewer = navController::toView,
                         )
                     }
                 }

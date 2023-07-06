@@ -88,7 +88,6 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
-import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.NsfwBadge
 import com.jerboa.ui.components.common.PictrsThumbnailImage
@@ -270,6 +269,7 @@ fun PostTitleBlock(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
@@ -277,6 +277,7 @@ fun PostTitleBlock(
         PostTitleAndImageLink(
             postView = postView,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
     } else {
         PostTitleAndThumbnail(
@@ -285,6 +286,7 @@ fun PostTitleBlock(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
     }
 }
@@ -317,6 +319,7 @@ fun PostName(
 fun PostTitleAndImageLink(
     postView: PostView,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -334,14 +337,8 @@ fun PostTitleAndImageLink(
         )
     }
 
-    var showImageDialog by remember { mutableStateOf(false) }
-
-    if (showImageDialog) {
-        ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
-    }
-
     val postLinkPicMod = Modifier
-        .clickable { showImageDialog = true }
+        .clickable { openImageViewer(url) }
     PictrsUrlImage(
         url = url,
         blur = blurNSFW && nsfwCheck(postView),
@@ -356,6 +353,7 @@ fun PostTitleAndThumbnail(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -387,6 +385,7 @@ fun PostTitleAndThumbnail(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                openImageViewer = openImageViewer,
             )
         }
     }
@@ -402,6 +401,7 @@ fun PostBody(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     val post = postView.post
     Column(
@@ -414,6 +414,7 @@ fun PostBody(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
 
         // The metadata card
@@ -476,6 +477,7 @@ fun PreviewStoryTitleAndMetadata() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -491,6 +493,7 @@ fun PreviewSourcePost() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -751,6 +754,7 @@ fun PreviewPostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -782,6 +786,7 @@ fun PreviewLinkPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -813,6 +818,7 @@ fun PreviewImagePostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -844,6 +850,7 @@ fun PreviewImagePostListingSmallCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -875,6 +882,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -906,6 +914,7 @@ fun PostListing(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -965,6 +974,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -1010,6 +1020,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
 
         PostViewMode.List -> PostListingList(
@@ -1038,6 +1049,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
     }
 }
@@ -1104,6 +1116,7 @@ fun PostListingList(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -1208,6 +1221,7 @@ fun PostListingList(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                openImageViewer = openImageViewer,
             )
         }
     }
@@ -1219,14 +1233,9 @@ private fun ThumbnailTile(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
-        var showImageDialog by remember { mutableStateOf(false) }
-
-        if (showImageDialog) {
-            ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
-        }
-
         // TODO weird performance issues with using a previously rendered navcontroller
         val navController = rememberNavController()
 
@@ -1234,7 +1243,7 @@ private fun ThumbnailTile(
             .size(POST_LINK_PIC_SIZE)
             .clickable {
                 if (isImage(url)) {
-                    showImageDialog = true
+                    openImageViewer(url)
                 } else {
                     openLink(
                         url = url,
@@ -1296,6 +1305,7 @@ fun PostListingListPreview() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -1323,6 +1333,7 @@ fun PostListingListWithThumbPreview() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -1356,6 +1367,7 @@ fun PostListingCard(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -1388,6 +1400,7 @@ fun PostListingCard(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
 
         // Footer bar
