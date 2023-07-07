@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -148,6 +150,8 @@ class MainActivity : AppCompatActivity() {
                     else -> {}
                 }
 
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
+
                 NavHost(
                     route = Route.Graph.ROOT,
                     navController = navController,
@@ -177,6 +181,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             appSettings = appSettings,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -306,6 +311,7 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -337,6 +343,7 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -356,6 +363,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -408,6 +416,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 

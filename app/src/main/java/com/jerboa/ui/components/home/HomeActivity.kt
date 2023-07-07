@@ -86,6 +86,7 @@ import com.jerboa.ui.components.post.edit.PostEditReturn
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -122,9 +123,14 @@ fun HomeActivity(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
-                scope = scope,
-                postListState = postListState,
-                drawerState = drawerState,
+                openDrawer = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                },
+                scrollToTop = {
+                    scrollToTop(scope, postListState)
+                },
                 homeViewModel = homeViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 account = account,
@@ -213,7 +219,10 @@ fun MainPostListingsContent(
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         // zIndex needed bc some elements of a post get drawn above it.
-        PullRefreshIndicator(homeViewModel.postsRes.isRefreshing(), pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100f))
+        PullRefreshIndicator(homeViewModel.postsRes.isRefreshing(), pullRefreshState,
+            Modifier
+                .align(Alignment.TopCenter)
+                .zIndex(100f))
         // Can't be in ApiState.Loading, because of infinite scrolling
         if (homeViewModel.postsRes.isLoading()) {
             LoadingBar(padding = padding)
@@ -463,9 +472,8 @@ fun MainDrawer(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
-    scope: CoroutineScope,
-    postListState: LazyListState,
-    drawerState: DrawerState,
+    scrollToTop: () -> Unit,
+    openDrawer: () -> Unit,
     homeViewModel: HomeViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     account: Account?,
@@ -474,20 +482,19 @@ fun MainTopBar(
 ) {
     Column {
         HomeHeader(
-            scope = scope,
+            openDrawer = openDrawer,
             scrollBehavior = scrollBehavior,
-            drawerState = drawerState,
             navController = navController,
             selectedSortType = homeViewModel.sortType,
             selectedListingType = homeViewModel.listingType,
             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
             onClickSortType = { sortType ->
-                scrollToTop(scope, postListState)
+                scrollToTop()
                 homeViewModel.updateSortType(sortType)
                 homeViewModel.resetPosts(account)
             },
             onClickListingType = { listingType ->
-                scrollToTop(scope, postListState)
+                scrollToTop()
                 homeViewModel.updateListingType(listingType)
                 homeViewModel.resetPosts(account)
             },
@@ -495,7 +502,7 @@ fun MainTopBar(
                 appSettingsViewModel.updatedPostViewMode(it.ordinal)
             },
             onClickRefresh = {
-                scrollToTop(scope, postListState)
+                scrollToTop()
                 homeViewModel.resetPosts(account)
             },
         )

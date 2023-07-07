@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -40,6 +41,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import kotlinx.coroutines.launch
 
 enum class BottomNavTab {
     Home, Search, Inbox, Saved, Profile;
@@ -48,7 +50,6 @@ enum class BottomNavTab {
 }
 
 @OptIn(
-    ExperimentalAnimationApi::class,
     ExperimentalLayoutApi::class,
     ExperimentalComposeUiApi::class,
 )
@@ -59,6 +60,7 @@ fun BottomNavActivity(
     siteViewModel: SiteViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
+    drawerState: DrawerState,
 ) {
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
@@ -78,8 +80,6 @@ fun BottomNavActivity(
         }
     }
 
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-
     val homeViewModel: HomeViewModel = viewModel()
     if (siteViewModel.siteRes is ApiState.Success) {
         InitializeRoute(homeViewModel) {
@@ -90,7 +90,7 @@ fun BottomNavActivity(
     }
 
     ModalNavigationDrawer(
-        gesturesEnabled = selectedTab == BottomNavTab.Home,
+        gesturesEnabled = true,
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(
@@ -154,6 +154,7 @@ fun BottomNavActivity(
                             selectMode = false,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -163,6 +164,7 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -178,6 +180,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -193,6 +196,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
                 }

@@ -34,7 +34,7 @@ import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityListHeader(
-    navController: NavController = rememberNavController(),
+    openDrawer: () -> Unit,
     search: String,
     onSearchChange: (search: String) -> Unit,
 ) {
@@ -56,7 +56,14 @@ fun CommunityListHeader(
                 )
             }
         },
-        navigationIcon = { DefaultBackButton(navController) },
+        navigationIcon = {
+            IconButton(onClick = openDrawer) {
+                Icon(
+                    Icons.Outlined.Menu,
+                    contentDescription = stringResource(R.string.home_menu),
+                )
+            }
+        },
     )
 }
 

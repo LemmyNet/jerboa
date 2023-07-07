@@ -493,8 +493,7 @@ fun HomeHeaderTitle(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeHeader(
-    scope: CoroutineScope,
-    drawerState: DrawerState,
+    openDrawer: () -> Unit,
     onClickSortType: (SortType) -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onClickRefresh: () -> Unit,
@@ -579,11 +578,7 @@ fun HomeHeader(
             )
         },
         navigationIcon = {
-            IconButton(onClick = {
-                scope.launch {
-                    drawerState.open()
-                }
-            }) {
+            IconButton(onClick = openDrawer) {
                 Icon(
                     Icons.Outlined.Menu,
                     contentDescription = stringResource(R.string.home_menu),
@@ -624,11 +619,8 @@ fun HomeHeader(
 @Preview
 @Composable
 fun HomeHeaderPreview() {
-    val scope = rememberCoroutineScope()
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
     HomeHeader(
-        scope,
-        drawerState,
+        openDrawer = {},
         onClickSortType = {},
         onClickListingType = {},
         onClickRefresh = {},

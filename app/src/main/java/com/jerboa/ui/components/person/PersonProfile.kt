@@ -160,7 +160,7 @@ fun PersonProfileHeader(
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
     selectedSortType: SortType,
-    navController: NavController = rememberNavController(),
+    openDrawer: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
@@ -215,7 +215,14 @@ fun PersonProfileHeader(
                 selectedSortType = selectedSortType,
             )
         },
-        navigationIcon = { DefaultBackButton(navController) },
+        navigationIcon = {
+            IconButton(onClick = openDrawer) {
+                Icon(
+                    Icons.Outlined.Menu,
+                    contentDescription = stringResource(R.string.home_menu),
+                )
+            }
+        },
         actions = {
             IconButton(onClick = {
                 showSortOptions = !showSortOptions

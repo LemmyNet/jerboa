@@ -470,7 +470,6 @@ val imageRegex = Regex(
 )
 
 // Todo is the scope.launch still necessary?
-@OptIn(ExperimentalMaterial3Api::class)
 fun closeDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
