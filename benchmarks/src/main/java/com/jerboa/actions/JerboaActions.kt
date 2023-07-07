@@ -90,16 +90,24 @@ fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(retry: Boolean = true, tim
         timeout,
     )
     if (retry && !device.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post")))) {
-        openOptions()
+        openMoreOptions()
         clickRefresh()
         waitUntilPostsActuallyVisible(timeout = timeout)
     }
 }
 
-fun MacrobenchmarkScope.openOptions() {
-    device.findOrFailTimeout("jerboa:options", "Options not found", timeout = 2).click()
+fun MacrobenchmarkScope.openMoreOptions() {
+    device.findOrFailTimeout("jerboa:options", "Options not found", timeout = 2_000).click()
 }
 
 fun MacrobenchmarkScope.clickRefresh() {
     device.findOrFailTimeout("jerboa:refresh", "Refresh not found", 2_000).click()
+}
+
+fun MacrobenchmarkScope.openSortOptions() {
+    device.findOrFailTimeout("jerboa:sortoptions").click()
+}
+
+fun MacrobenchmarkScope.clickMostComments() {
+    device.findOrFailTimeout("jerboa:sortoption_mostcomments").click()
 }

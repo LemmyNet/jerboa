@@ -131,6 +131,7 @@ fun ListingTypeOptionsDialog(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SortOptionsDialog(
     onDismissRequest: () -> Unit,
@@ -139,6 +140,7 @@ fun SortOptionsDialog(
     selectedSortType: SortType,
 ) {
     AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onDismissRequest,
         text = {
             Column {
@@ -161,6 +163,7 @@ fun SortOptionsDialog(
                     highlight = (selectedSortType == SortType.New),
                 )
                 IconAndTextDrawerItem(
+                    modifier = Modifier.testTag("jerboa:sortoption_mostcomments"),
                     text = stringResource(R.string.dialogs_most_comments),
                     icon = Icons.Outlined.FormatListNumbered,
                     onClick = { onClickSortType(SortType.MostComments) },
