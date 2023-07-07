@@ -27,6 +27,7 @@ import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Login
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Public
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -237,7 +238,7 @@ fun DrawerItemsMain(
             item {
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.bottomBar_label_search),
-                    icon = Icons.Outlined.List,
+                    icon = Icons.Outlined.Search,
                     onClick = onClickCommunities,
                 )
             }
