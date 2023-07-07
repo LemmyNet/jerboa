@@ -67,7 +67,7 @@ prettier -c "*.md" "*.yml"`
 To fix the violations
 
 ```shell
-prettier --write "*.md" "*.yml"`
+prettier --write "*.md" "*.yml"
 ```
 
 ## Adding translations
@@ -97,3 +97,11 @@ You can generate the compose compiler metrics by executing the following gradle 
 
 Then you will find the metrics in `app/build/compose_metrics` directory.
 See [this link for more information on these metrics](https://github.com/androidx/androidx/blob/androidx-main/compose/compiler/design/compiler-metrics.md)
+
+## Testing migrations
+
+If you add a migration to the DB, test it with this gradle task
+
+```shell
+./gradlew app:connectAndroidTest
+```
