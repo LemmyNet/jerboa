@@ -76,7 +76,7 @@ fun CommunityListings(
         items(
             communities,
             key = { it.community.id },
-            contentType = {"communitylink_${it.counts.users_active_month == 0}"}
+            contentType = { "communitylink_${it.counts.users_active_month == 0}" },
         ) { item ->
             // A hack for the community follower views that were coerced into community views without counts
             if (item.counts.users_active_month == 0) {

@@ -309,7 +309,7 @@ fun DrawerItemsMain(
             items(
                 follows,
                 key = { follow -> follow.community.id },
-                contentType = {"communitylink"},
+                contentType = { "communitylink" },
             ) { follow ->
                 CommunityLinkLarger(
                     community = follow.community,

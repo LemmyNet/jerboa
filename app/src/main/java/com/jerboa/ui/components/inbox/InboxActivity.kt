@@ -319,7 +319,7 @@ fun InboxTabs(
                                     items(
                                         replies,
                                         key = { reply -> reply.comment_reply.id },
-                                        contentType = {"comment"},
+                                        contentType = { "comment" },
                                     ) { commentReplyView ->
                                         CommentReplyNode(
                                             commentReplyView = commentReplyView,
@@ -473,7 +473,7 @@ fun InboxTabs(
                                     items(
                                         mentions,
                                         key = { mention -> mention.person_mention.id },
-                                        contentType = {"mentions"},
+                                        contentType = { "mentions" },
                                     ) { pmv ->
                                         CommentMentionNode(
                                             personMentionView = pmv,
@@ -644,7 +644,7 @@ fun InboxTabs(
                                     items(
                                         messages,
                                         key = { message -> message.private_message.id },
-                                        contentType = {"messages"}
+                                        contentType = { "messages" },
                                     ) { message ->
                                         account?.also { acct ->
                                             PrivateMessage(
