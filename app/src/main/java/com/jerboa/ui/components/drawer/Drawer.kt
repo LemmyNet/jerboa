@@ -18,16 +18,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Login
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Public
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -62,6 +58,7 @@ import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.common.toLogin
 import com.jerboa.ui.components.community.CommunityLinkLarger
+import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonName
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
 import com.jerboa.ui.theme.LARGE_PADDING
@@ -79,15 +76,12 @@ fun Drawer(
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    onClickHome: () -> Unit,
-    onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit,
-    onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
-    onClickCommunities: () -> Unit,
     isOpen: Boolean,
     blurNSFW: Boolean,
     showBottomNav: Boolean,
+    closeDrawer: () -> Unit,
+    onSelectTab: (NavTab) -> Unit,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -115,14 +109,11 @@ fun Drawer(
         onSignOutClick = onSignOutClick,
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
-        onClickProfile = onClickProfile,
-        onClickInbox = onClickInbox,
-        onClickSaved = onClickSaved,
         onClickSettings = onClickSettings,
-        onClickCommunities = onClickCommunities,
         blurNSFW = blurNSFW,
-        onClickHome = onClickHome,
         showBottomNav = showBottomNav,
+        closeDrawer = closeDrawer,
+        onSelectTab = onSelectTab,
     )
 }
 
@@ -135,16 +126,13 @@ fun DrawerContent(
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
-    onClickHome: () -> Unit,
-    onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit,
-    onClickSaved: () -> Unit,
     onClickSettings: () -> Unit,
-    onClickCommunities: () -> Unit,
     myUserInfo: MyUserInfo?,
     unreadCount: Int,
     blurNSFW: Boolean,
     showBottomNav: Boolean,
+    closeDrawer: () -> Unit,
+    onSelectTab: (NavTab) -> Unit,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
@@ -165,32 +153,26 @@ fun DrawerContent(
         myUserInfo = myUserInfo,
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
-        onClickProfile = onClickProfile,
-        onClickInbox = onClickInbox,
-        onClickSaved = onClickSaved,
         unreadCount = unreadCount,
         onClickSettings = onClickSettings,
-        onClickCommunities = onClickCommunities,
         blurNSFW = blurNSFW,
-        onClickHome = onClickHome,
         showBottomNav = showBottomNav,
+        onSelectTab = onSelectTab,
+        closeDrawer = closeDrawer,
     )
 }
 
 @Composable
 fun DrawerItemsMain(
     myUserInfo: MyUserInfo?,
-    onClickHome: () -> Unit,
-    onClickSaved: () -> Unit,
-    onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit,
     onClickSettings: () -> Unit,
-    onClickCommunities: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     unreadCount: Int,
     blurNSFW: Boolean,
     showBottomNav: Boolean,
+    closeDrawer: () -> Unit,
+    onSelectTab: (NavTab) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
@@ -228,49 +210,19 @@ fun DrawerItemsMain(
         }
 
         if (!showBottomNav) {
-            item {
+            items(NavTab.values()) {
                 IconAndTextDrawerItem(
-                    text = stringResource(R.string.bottomBar_label_home),
-                    icon = Icons.Outlined.Home,
-                    onClick = onClickHome,
-                )
-            }
-            item {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.bottomBar_label_search),
-                    icon = Icons.Outlined.Search,
-                    onClick = onClickCommunities,
+                    text = stringResource(it.textId),
+                    icon = it.iconOutlined,
+                    onClick = {
+                        onSelectTab(it)
+                        closeDrawer()
+                    },
+                    iconBadgeCount = if (it == NavTab.Inbox) unreadCount else null,
+                    contentDescription = stringResource(id = it.contentDescriptionId),
                 )
             }
 
-            item {
-                myUserInfo?.also {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.bottomBar_label_inbox),
-                        icon = Icons.Outlined.Email,
-                        onClick = onClickInbox,
-                        iconBadgeCount = unreadCount,
-                    )
-                }
-            }
-            item {
-                myUserInfo?.also {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.bottomBar_label_bookmarks),
-                        icon = Icons.Outlined.Bookmarks,
-                        onClick = onClickSaved,
-                    )
-                }
-            }
-            item {
-                myUserInfo?.also {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.bottomBar_label_profile),
-                        icon = Icons.Outlined.Person,
-                        onClick = onClickProfile,
-                    )
-                }
-            }
             item {
                 Divider()
             }
@@ -317,16 +269,13 @@ fun DrawerItemsMainPreview() {
     DrawerItemsMain(
         myUserInfo = null,
         onClickListingType = {},
-        onClickProfile = {},
-        onClickInbox = {},
         onCommunityClick = {},
-        onClickSaved = {},
         onClickSettings = {},
-        onClickCommunities = {},
-        onClickHome = {},
         unreadCount = 2,
         blurNSFW = true,
         showBottomNav = false,
+        closeDrawer = {},
+        onSelectTab = {},
     )
 }
 
