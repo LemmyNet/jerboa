@@ -441,7 +441,7 @@ fun PostActivity(
                             }
 
                             if (postViewModel.commentsRes.isLoading()) {
-                                item (contentType = "loadingbar") {
+                                item(contentType = "loadingbar") {
                                     LoadingBar()
                                 }
                             }
@@ -481,7 +481,7 @@ fun PostActivity(
                                         }
                                     }
 
-                                    item(key = "${postView.post.id}_is_comment_view", contentType = "contextButtons") { //
+                                    item(key = "${postView.post.id}_is_comment_view", contentType = "contextButtons") {
                                         if (postViewModel.isCommentView()) {
                                             ShowCommentContextButtons(
                                                 postView.post.id,
