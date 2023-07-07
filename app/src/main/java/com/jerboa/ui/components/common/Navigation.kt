@@ -61,7 +61,7 @@ inline fun <reified D> NavController.takeDepsFromRoot(): State<D> {
 
 fun NavController.toLogin() = navigate(Route.LOGIN)
 
-fun NavController.toHome() = navigate(Route.HOME) { popUpTo(0) }
+fun NavController.toHome() = navigate(Route.HOME) { popUpTo(graph.id) }
 
 fun NavController.toInbox() = navigate(Route.INBOX)
 
