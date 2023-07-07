@@ -10,6 +10,7 @@ import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toCommunity
+import com.jerboa.ui.components.common.toHome
 import com.jerboa.ui.components.common.toSettings
 import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.NavTab
@@ -65,6 +66,8 @@ fun MainDrawer(
 
                     if (updatedList.isNotEmpty()) {
                         accountViewModel.setCurrent(updatedList[0].id)
+                    } else { // Could still be on a page that requires a account
+                        navController.toHome()
                     }
                     fetchInitialData(
                         account = updatedList.getOrNull(0),
