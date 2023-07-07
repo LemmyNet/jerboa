@@ -96,7 +96,6 @@ class MainActivity : AppCompatActivity() {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
