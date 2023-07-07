@@ -123,7 +123,6 @@
     <string name="dialogs_new_comments">신규 댓글</string>
     <string name="dialogs_subscribed">구독함</string>
     <string name="dialogs_top">최고</string>
-    <string name="dialogs_top_all_time">전체 최고</string>
     <string name="dialogs_top_day">일 최고</string>
     <string name="dialogs_top_month">월 최고</string>
     <string name="dialogs_top_week">주 최고</string>
@@ -137,14 +136,10 @@
     <string name="homeHeader_filter">목록 필터 선택</string>
     <string name="home_add_account">계정 추가</string>
     <string name="home_all">전체</string>
-    <string name="home_communities">커뮤니티</string>
-    <string name="home_inbox">수신함</string>
     <string name="home_local">로컬</string>
     <string name="home_menu">메뉴</string>
     <string name="home_post_view_mode">게시물 표시 모드</string>
-    <string name="home_profile">프로필</string>
     <string name="home_refresh">새로고침</string>
-    <string name="home_saved">저장됨</string>
     <string name="home_settings">설정</string>
     <string name="home_sign_out">로그아웃</string>
     <string name="home_site_info">사이트 정보</string>

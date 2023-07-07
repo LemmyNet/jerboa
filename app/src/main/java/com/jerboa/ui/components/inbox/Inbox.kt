@@ -21,14 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.getLocalizedUnreadOrAllName
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
-import kotlinx.coroutines.launch
 
 @Composable
 fun InboxHeader(

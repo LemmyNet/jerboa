@@ -115,7 +115,6 @@
     <string name="dialogs_new_comments">Nuovi commenti</string>
     <string name="dialogs_subscribed">Iscrizioni</string>
     <string name="dialogs_top">Top</string>
-    <string name="dialogs_top_all_time">Top di sempre</string>
     <string name="dialogs_top_day">Top del giorno</string>
     <string name="dialogs_top_month">Top del mese</string>
     <string name="dialogs_top_week">Top della settimana</string>
@@ -126,14 +125,10 @@
     <string name="homeHeader_filter">Seleziona filtro</string>
     <string name="home_add_account">Aggiungi profilo</string>
     <string name="home_all">Tutti</string>
-    <string name="home_communities">Comunità</string>
-    <string name="home_inbox">Posta in arrivo</string>
     <string name="home_local">Locali</string>
     <string name="home_menu">Menù</string>
     <string name="home_post_view_mode">Formato post</string>
-    <string name="home_profile">Profilo</string>
     <string name="home_refresh">Aggiorna</string>
-    <string name="home_saved">Salvati</string>
     <string name="home_settings">Impostazioni</string>
     <string name="home_sign_out">Esci</string>
     <string name="home_site_info">Info istanza</string>

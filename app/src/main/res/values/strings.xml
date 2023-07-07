@@ -124,7 +124,6 @@
     <string name="dialogs_new_comments">New Comments</string>
     <string name="dialogs_subscribed">Subscribed</string>
     <string name="dialogs_top">Top</string>
-    <string name="dialogs_top_all_time">Top All Time</string>
     <string name="dialogs_top_day">Top Day</string>
     <string name="dialogs_top_month">Top Month</string>
     <string name="dialogs_top_week">Top Week</string>
@@ -138,14 +137,10 @@
     <string name="homeHeader_filter">Select feed</string>
     <string name="home_add_account">Add Account</string>
     <string name="home_all">All</string>
-    <string name="home_communities">Communities</string>
-    <string name="home_inbox">Inbox</string>
     <string name="home_local">Local</string>
     <string name="home_menu">Menu</string>
     <string name="home_post_view_mode">Post View Mode</string>
-    <string name="home_profile">Profile</string>
     <string name="home_refresh">Refresh</string>
-    <string name="home_saved">Saved</string>
     <string name="home_settings">Settings</string>
     <string name="home_sign_out">Sign Out</string>
     <string name="home_site_info">Site Info</string>

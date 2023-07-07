@@ -1,16 +1,13 @@
 package com.jerboa.ui.components.home
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,9 +36,9 @@ import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
+import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
-import kotlinx.coroutines.launch
 
 enum class BottomNavTab {
     Home, Search, Inbox, Saved, Profile;
@@ -104,6 +101,7 @@ fun BottomNavActivity(
                         drawerState = drawerState,
                         onSelectTab = if (appSettings.showBottomNav) onSelectTab else null,
                         blurNSFW = appSettings.blurNSFW,
+                        showBottomNave = appSettings.showBottomNav,
                     )
                 },
             )

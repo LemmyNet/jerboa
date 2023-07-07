@@ -451,9 +451,11 @@ fun InboxTabs(
                             }
                         },
                     )
-                    Box(modifier = Modifier
-                        .pullRefresh(refreshState)
-                        .fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
+                    ) {
                         PullRefreshIndicator(
                             refreshing,
                             refreshState,
@@ -623,9 +625,11 @@ fun InboxTabs(
                             }
                         },
                     )
-                    Box(modifier = Modifier
-                        .pullRefresh(refreshState)
-                        .fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
+                    ) {
                         PullRefreshIndicator(
                             refreshing,
                             refreshState,
