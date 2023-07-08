@@ -14,7 +14,7 @@ import com.jerboa.datatypes.types.LoginResponse
 import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.db.Account
 import com.jerboa.db.AccountRepository
-import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.model.SiteViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
