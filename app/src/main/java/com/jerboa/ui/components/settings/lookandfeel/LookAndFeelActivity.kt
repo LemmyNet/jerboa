@@ -70,7 +70,7 @@ fun LookAndFeelActivity(
     )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
-    val navBarOnlyIcons = rememberBooleanSettingState(settings.navBarOnlyIcons)
+    val showTextDescriptionsInNavbar = rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
     val showCollapsedCommentContentState =
         rememberBooleanSettingState(settings.showCollapsedCommentContent)
     val showCommentActionBarByDefaultState = rememberBooleanSettingState(
@@ -113,7 +113,7 @@ fun LookAndFeelActivity(
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
-                navBarOnlyIcons = navBarOnlyIcons.value,
+                showTextDescriptionsInNavbar = showTextDescriptionsInNavbar.value,
                 blurNSFW = blurNSFW.value,
             ),
         )
@@ -229,9 +229,9 @@ fun LookAndFeelActivity(
                 )
                 AnimatedVisibility(visible = showBottomNavState.value) {
                     SettingsCheckbox(
-                        state = navBarOnlyIcons,
+                        state = showTextDescriptionsInNavbar,
                         title = {
-                            Text(text = stringResource(R.string.look_and_feel_nav_bar_only_icons))
+                            Text(text = stringResource(R.string.look_and_feel_show_text_descriptions_in_navbar))
                         },
                         onCheckedChange = { updateAppSettings() },
                     )

@@ -180,7 +180,7 @@
     <string name="look_and_feel_secure_window">Prevent Screenshots</string>
     <string name="look_and_feel_show_action_bar_for_comments">Show action bar by default for comments</string>
     <string name="look_and_feel_show_navigation_bar">Show navigation bar</string>
-    <string name="look_and_feel_nav_bar_only_icons">Icon-only navigation bar</string>
+    <string name="look_and_feel_show_text_descriptions_in_navbar">Show text descriptions in navigation bar</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Show voting arrows in list view</string>
     <string name="look_and_feel_show_parent_comment_navigation_buttons">Show parent comment navigation buttons</string>
     <string name="look_and_feel_navigate_parent_comments_with_volume_buttons">Navigate parent comments with volume buttons</string>

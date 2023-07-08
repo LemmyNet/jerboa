@@ -88,7 +88,7 @@ fun BottomAppBarAll(
     selectedTab: BottomNavTab,
     onSelect: (BottomNavTab) -> Unit,
     unreadCounts: Int,
-    onlyIcons: Boolean,
+    showTextDescriptionsInNavbar: Boolean,
     showBottomNav: Boolean? = true,
 ) {
     if (showBottomNav == true) {
@@ -143,7 +143,7 @@ fun BottomAppBarAll(
                     },
                     label =
                     {
-                        if (!onlyIcons) {
+                        if (showTextDescriptionsInNavbar) {
                             Text(
                                 text = stringResource(
                                     when (tab) {
@@ -175,7 +175,7 @@ fun BottomAppBarAllPreview() {
         selectedTab = BottomNavTab.Home,
         onSelect = {},
         unreadCounts = 30,
-        onlyIcons = false,
+        showTextDescriptionsInNavbar = true,
         showBottomNav = true,
     )
 }
