@@ -1,23 +1,21 @@
 package com.jerboa.ui.components.imageviewer
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.webkit.MimeTypeMap
 import android.widget.Toast
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Download
@@ -29,26 +27,27 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.jerboa.R
 import com.jerboa.saveBitmap
 import com.jerboa.saveBitmapP
@@ -61,34 +60,11 @@ import java.net.URL
 
 const val backFadeTime = 300
 
-@Composable
-fun BarIcon(icon: ImageVector, name: String, modifier: Modifier = Modifier, onTap: () -> Unit) {
-    Box(
-        Modifier
-            .size(40.dp)
-            .clickable(onClick = onTap)
-            .then(modifier),
-    ) {
-        Icon(
-            modifier = Modifier.align(Alignment.Center),
-            imageVector = icon,
-            tint = Color.White,
-            contentDescription = name,
-        )
-    }
-}
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ImageViewer(url: String, onBackRequest: () -> Unit) {
     val backColor = MaterialTheme.colorScheme.scrim
-    val backColorTranslucent = MaterialTheme.colorScheme.scrim.copy(alpha = 0.8f)
     var showTopBar by remember { mutableStateOf(true) }
-
-    val backgroundColor by animateColorAsState(
-        targetValue = if (showTopBar) backColorTranslucent else backColor,
-        animationSpec = tween(backFadeTime),
-        label = "backgroundColor",
-    )
 
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .components {
@@ -104,15 +80,37 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
         mutableStateOf(false)
     }
 
+    val systemUiController = rememberSystemUiController()
+
+    val window = (LocalContext.current as Activity).window
+    val controller = WindowCompat.getInsetsController(window, LocalView.current)
+    val oldBarColor = Color(window.statusBarColor)
+    val oldIcons = controller.isAppearanceLightStatusBars
+
+    DisposableEffect(systemUiController) {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = false,
+        )
+
+        onDispose { // Restore previous status bar
+            systemUiController.setStatusBarColor(
+                color = oldBarColor,
+                darkIcons = oldIcons,
+            )
+            systemUiController.isSystemBarsVisible = true
+        }
+    }
+
+    WindowCompat.setDecorFitsSystemWindows(window, false)
     Scaffold(
         topBar = {
             ViewerHeader(showTopBar, onBackRequest, url)
         },
-        content = { pv ->
+        content = {
             Box(
                 Modifier
-                    .background(backgroundColor)
-                    .padding(pv)
+                    .background(backColor)
                     .scrollable(
                         orientation = Orientation.Vertical,
                         state = rememberScrollableState(
@@ -133,7 +131,10 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                         .fillMaxSize()
                         .zoomable(
                             zoomState = rememberZoomState(),
-                            onTap = { showTopBar = !showTopBar },
+                            onTap = {
+                                showTopBar = !showTopBar
+                                systemUiController.isSystemBarsVisible = showTopBar
+                            },
                         ),
                 )
             }
@@ -178,9 +179,8 @@ fun ViewerHeader(
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val onTap: () -> Unit
 
-    if (SDK_INT < 29) {
+    val onTap: () -> Unit = if (SDK_INT < 29) {
         val storagePermissionState = rememberPermissionState(
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         ) {
@@ -189,14 +189,13 @@ fun ViewerHeader(
                     SaveImage(url, context)
                 }
             } else {
-                Toast.makeText(context, context.getString(R.string.permission_denied), Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(context, context.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
             }
         }
 
-        onTap = storagePermissionState::launchPermissionRequest
+        storagePermissionState::launchPermissionRequest
     } else {
-        onTap = {
+        {
             coroutineScope.launch {
                 SaveImage(url, context)
             }
@@ -204,7 +203,7 @@ fun ViewerHeader(
     }
 
     TopAppBar(
-        colors = topAppBarColors(containerColor = Color.Transparent),
+        colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f)),
         modifier = Modifier.alpha(topBarAlpha),
         title = {},
         navigationIcon = {
@@ -219,11 +218,15 @@ fun ViewerHeader(
             }
         },
         actions = {
-            BarIcon(
-                icon = Icons.Outlined.Download,
-                name = "Download",
-                onTap = onTap,
-            )
+            IconButton(
+                onClick = onTap,
+            ) {
+                Icon(
+                    Icons.Outlined.Download,
+                    tint = Color.White,
+                    contentDescription = stringResource(R.string.download),
+                )
+            }
         },
     )
 }
