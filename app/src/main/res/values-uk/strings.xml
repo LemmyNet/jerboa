@@ -162,7 +162,7 @@
     <string name="input_fields_text">Текст</string>
     <string name="lessOptions">Показувати менше налаштувань</string>
     <string name="login_back">Повернутися</string>
-    <string name="login_email_or_username">Адреса електронної пошти або ім'я користувача</string>
+    <string name="login_email_or_username">Адреса електронної пошти або ім\'я користувача</string>
     <string name="login_instance">Примірник (інстанс)</string>
     <string name="login_instance_placeholder">наприклад: lemmy.ml</string>
     <string name="login_login">Увійти</string>
@@ -258,7 +258,7 @@
     <string name="post_listing_permalink_copied">Постійне посилання скопійовано</string>
     <string name="post_listing_thumbnail_link_copied">Посилання на мініатюру скопійовано</string>
     <string name="post_listing_title_copied">Назву скопійовано</string>
-    <string name="post_listing_name_copied">Ім'я скопійовано</string>
+    <string name="post_listing_name_copied">Ім\'я скопійовано</string>
     <string name="post_listing_text_copied">Текст скопійовано</string>
     <string name="post_listing_report_post">Поскаржитися на допис</string>
     <string name="post_listing_restore">Відновити</string>
@@ -324,13 +324,13 @@
     <string name="sorttype_toptwelvehour">Найкраще за 12 годин</string>
     <string name="sorttype_topthreemonths">Найкраще за три місяці</string>
     <string name="sorttype_topsixmonths">Найкраще за шість місяців</string>
-    <string name="sorttype_topninemonths">Найкраще за дев'ять місяців</string>
+    <string name="sorttype_topninemonths">Найкраще за дев\'ять місяців</string>
     <string name="dialogs_top_hour">Найкраще за годину</string>
     <string name="dialogs_top_six_hour">Найкраще за шість годин</string>
     <string name="dialogs_top_twelve_hour">Найкраще за 12 годин</string>
     <string name="dialogs_top_three_month">Найкраще за три місяці</string>
     <string name="dialogs_top_six_month">Найкраще за шість місяців</string>
-    <string name="dialogs_top_nine_month">Найкраще за дев'ять місяців</string>
+    <string name="dialogs_top_nine_month">Найкраще за дев\'ять місяців</string>
     <string name="post_listing_view_source">Переглянути джерельний код</string>
     <string name="post_listing_view_original">Переглянути оригінал</string>
 </resources>
