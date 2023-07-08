@@ -42,13 +42,14 @@ fun CommunityName(
     community: Community,
     color: Color = MaterialTheme.colorScheme.primary,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
 ) {
     Text(
         text = communityNameShown(community),
         style = style,
         color = color,
         modifier = modifier,
-        overflow = TextOverflow.Clip,
+        overflow = overflow,
         maxLines = 1,
     )
 }
