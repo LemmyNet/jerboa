@@ -190,8 +190,8 @@ fun CommentOrPostNodeHeader(
     showAvatar: Boolean,
 ) {
     FlowRow(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(
