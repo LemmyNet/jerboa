@@ -206,7 +206,7 @@ val MIGRATION_17_18 = object : Migration(17, 18) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
-            "ALTER TABLE AppSettings ADD COLUMN show_text_descriptions_in_navbar INTEGER NOT NULL DEFAULT 1"
+            "ALTER TABLE AppSettings ADD COLUMN show_text_descriptions_in_navbar INTEGER NOT NULL DEFAULT 1",
         )
     }
 }
