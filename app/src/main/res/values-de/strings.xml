@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa für Lemmy</string>
     <string name="comment_node_goto_comment">Zum Kommentar</string>
     <string name="comment_node_go_to">Gehe zu %1$s</string>
     <string name="comment_node_view_source">Quelle anzeigen</string>
@@ -78,13 +77,12 @@
     <string name="home_settings">Einstellungen</string>
     <string name="home_subscriptions">Abonnements</string>
     <string name="home_add_account">Account hinzufügen</string>
-    <string name="home_switch_to">Wechsele zu %1$s/%2$s</string>
+    <string name="home_switch_to">Wechsele zu %1$s@%2$s</string>
     <string name="home_sign_out">Ausloggen</string>
     <string name="home_menu">Menü</string>
     <string name="home_refresh">Aktualisieren</string>
     <string name="home_post_view_mode">Beitrags-Ansichts-Modus</string>
     <string name="home_site_info">Seiten-Info</string>
-    <string name="inbox_back">Zurück</string>
     <string name="inbox_inbox">Posteingang</string>
     <string name="login_password">Passwort</string>
     <string name="login_instance">Instanz</string>
@@ -95,17 +93,14 @@
     <string name="person_profile_joined">Beigetreten</string>
     <string name="person_profile_posts">%1$s Beiträge</string>
     <string name="person_profile_comments">%1$s Kommentare</string>
-    <string name="person_profile_back">Zurück</string>
     <string name="person_profile_block_person">Person blockieren</string>
     <string name="person_profile_report_person">Person melden</string>
     <string name="person_profile_activity_moderates">Moderiert</string>
     <string name="create_post_create_post">Beitrag erstellen</string>
-    <string name="create_post_close">Schließen</string>
     <string name="create_post_copy_suggested_title">vorgeschlagenen Titel kopieren: %1$s</string>
     <string name="create_post_community">Community</string>
     <string name="create_post_a_title_here">ein Titel hier…</string>
     <string name="post_edit_edit_post">Beitrag bearbeiten</string>
-    <string name="post_edit_close">Schließen</string>
     <string name="post_edit_body_placeholder">Inhalt</string>
     <string name="post_activity_comments">Kommentare</string>
     <string name="post_listing_comments">%1$s Kommentare</string>
@@ -151,17 +146,6 @@
     <string name="account_settings_local">Lokal</string>
     <string name="account_settings_subscribed">Abonnements</string>
     <string name="account_settings_default_listing_type">Standard-Auflistungstyp</string>
-    <string name="account_settings_active">Aktiv</string>
-    <string name="account_settings_hot">Heiß</string>
-    <string name="account_settings_new">Neu</string>
-    <string name="account_settings_old">Alt</string>
-    <string name="account_settings_topday">Top des Tages</string>
-    <string name="account_settings_topweek">Top der Woche</string>
-    <string name="account_settings_topmonth">Top des Monats</string>
-    <string name="account_settings_topyear">Top des Jahres</string>
-    <string name="account_settings_topall">Top über alles</string>
-    <string name="account_settings_mostcomments">Meiste Kommentare</string>
-    <string name="account_settings_newcomments">Neue Kommentare</string>
     <string name="account_settings_default_sort_type">Standardsortierung</string>
     <string name="account_settings_show_nsfw">Zeige NSFW</string>
     <string name="account_settings_show_avatars">Zeige Avatare</string>
@@ -192,9 +176,7 @@
     <string name="settings_activity_look_and_feel">Erscheinungsbild</string>
     <string name="settings_activity_account_settings">%1$s Einstellungen</string>
     <string name="settings_activity_about">Über</string>
-    <string name="community_blocked">%1$s blockiert</string>
     <string name="comment_mention_node_permalink_copied">Permalink kopiert</string>
-    <string name="person_routines_blocked">%1$s blockiert</string>
     <string name="utils_login_first">Zuerst einloggen</string>
     <string name="login_view_model_incorrect_login">Falscher Login</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s ist keine Lemmy Instanz</string>
@@ -209,7 +191,6 @@
     <string name="post_listing_permalink_copied">Permalink kopiert</string>
     <string name="comment_node_block">Blockiere %1$s</string>
     <string name="comment_reply_node_copy_permalink">Kopiere Permalink</string>
-    <string name="community_list_back">Zurück</string>
     <string name="moreOptions">Zeige mehr Optionen</string>
     <string name="lessOptions">Zeige weniger Optionen</string>
     <string name="bottomBar_home">Gehe zur Startseite</string>
@@ -221,7 +202,6 @@
     <string name="removeBookmark">Aus Lesezeichen entfernen</string>
     <string name="commentFooter_reply">Auf dieses Kommentar antworten</string>
     <string name="dialog_moreOptions">Zeige mehr Optionen</string>
-    <string name="pickImage_imagePreview">Vorschaubild hochgeladen</string>
     <string name="commentEdit_save">Kommentarbearbeitung speichern</string>
     <string name="commentReply_send">Antwort senden</string>
     <string name="community_sortBy">Sortieren nach</string>
@@ -312,4 +292,5 @@
     <string name="inbox_activity_mentions">Erwähnungen</string>
     <string name="inbox_activity_messages">Nachrichten</string>
     <string name="bookmarks_activity_saved">Gespeichert</string>
+    <string name="create_post_tag_nsfw">Markiere Post als NSFW</string>
 </resources>

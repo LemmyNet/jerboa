@@ -6,11 +6,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.jerboa.api.ApiState
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.ui.components.home.SiteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +40,7 @@ fun SiteSidebarActivity(
                 is ApiState.Success -> {
                     SiteSidebar(siteView = siteRes.data.site_view, padding = padding)
                 }
+                else -> {}
             }
         },
     )

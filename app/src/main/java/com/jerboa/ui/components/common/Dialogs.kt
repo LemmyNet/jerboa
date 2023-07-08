@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -44,6 +45,7 @@ import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.getLocalizedSortingTypeLongName
 
 val DONATION_MARKDOWN = """
     ### Support Jerboa
@@ -57,13 +59,7 @@ val DONATION_MARKDOWN = """
 
 """.trimIndent()
 
-val topSortTypes = listOf(
-    SortType.TopDay,
-    SortType.TopWeek,
-    SortType.TopMonth,
-    SortType.TopYear,
-    SortType.TopAll,
-)
+val topSortTypes = SortType.values().filter { it.name.startsWith("Top") }
 
 @Composable
 fun SortTopOptionsDialog(
@@ -71,35 +67,18 @@ fun SortTopOptionsDialog(
     onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
 ) {
+    val ctx = LocalContext.current
     AlertDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_day),
-                    onClick = { onClickSortType(SortType.TopDay) },
-                    highlight = (selectedSortType == SortType.TopDay),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_week),
-                    onClick = { onClickSortType(SortType.TopWeek) },
-                    highlight = (selectedSortType == SortType.TopWeek),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_month),
-                    onClick = { onClickSortType(SortType.TopMonth) },
-                    highlight = (selectedSortType == SortType.TopMonth),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_year),
-                    onClick = { onClickSortType(SortType.TopYear) },
-                    highlight = (selectedSortType == SortType.TopYear),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top_all_time),
-                    onClick = { onClickSortType(SortType.TopAll) },
-                    highlight = (selectedSortType == SortType.TopAll),
-                )
+                topSortTypes.forEach {
+                    IconAndTextDrawerItem(
+                        text = getLocalizedSortingTypeLongName(ctx, it),
+                        onClick = { onClickSortType(it) },
+                        highlight = (selectedSortType == it),
+                    )
+                }
             }
         },
         confirmButton = {},

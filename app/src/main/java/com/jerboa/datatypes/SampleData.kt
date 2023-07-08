@@ -119,6 +119,29 @@ val sampleImagePost = Post(
     language_id = 0,
 )
 
+val sampleMarkdownPost = Post(
+    id = 135130,
+    name = "This is a markdown post",
+    url = null,
+    body = "# Heading 1  1. First Item  2. Second Item  3. Third item  And a `code` block",
+    creator_id = 33401,
+    community_id = 14681,
+    removed = false,
+    locked = false,
+    published = "2022-01-01T09:53:46.904077",
+    updated = null,
+    deleted = false,
+    nsfw = false,
+    featured_local = false,
+    featured_community = false,
+    embed_title = null,
+    embed_description = null,
+    embed_video_url = null,
+    thumbnail_url = null,
+    language_id = 0,
+    ap_id = "https://lemmy.ml/post/135129", local = true,
+)
+
 val samplePerson = Person(
     id = 33401,
     name = "homeless",
@@ -238,6 +261,20 @@ val sampleLinkNoThumbnailPostView = PostView(
 
 val sampleImagePostView = PostView(
     post = sampleImagePost,
+    creator = samplePerson,
+    community = sampleCommunity,
+    creator_banned_from_community = false,
+    counts = samplePostAggregates,
+    subscribed = SubscribedType.NotSubscribed,
+    saved = false,
+    read = false,
+    creator_blocked = false,
+    my_vote = null,
+    unread_comments = 0,
+)
+
+val sampleMarkdownPostView = PostView(
+    post = sampleMarkdownPost,
     creator = samplePerson,
     community = sampleCommunity,
     creator_banned_from_community = false,

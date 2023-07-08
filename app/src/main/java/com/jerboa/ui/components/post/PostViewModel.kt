@@ -38,11 +38,13 @@ import com.jerboa.findAndUpdateComment
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6
 
-class PostViewModel : ViewModel() {
+class PostViewModel : ViewModel(), Initializable {
+    override var initialized by mutableStateOf(false)
 
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -56,8 +58,6 @@ class PostViewModel : ViewModel() {
     var sortType by mutableStateOf(CommentSortType.Hot)
         private set
 
-    private var fetchingMore by mutableStateOf(false)
-
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
@@ -65,8 +65,7 @@ class PostViewModel : ViewModel() {
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     fun initialize(
@@ -81,6 +80,7 @@ class PostViewModel : ViewModel() {
 
     fun getData(
         account: Account?,
+        state: ApiState<GetPostResponse> = ApiState.Loading,
     ) {
         viewModelScope.launch {
             // Set the commentId for the right case
@@ -92,7 +92,7 @@ class PostViewModel : ViewModel() {
                     GetPost(comment_id = it, auth = account?.jwt)
                 })
 
-                postRes = ApiState.Loading
+                postRes = state
                 postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
 
                 val commentsForm = id.fold({
@@ -129,37 +129,32 @@ class PostViewModel : ViewModel() {
         account: Account?,
     ) {
         viewModelScope.launch {
-            when (val existing = commentsRes) {
+            val existing = commentsRes
+            when (existing) {
+                is ApiState.Success -> commentsRes = ApiState.Appending(existing.data)
+                else -> return@launch
+            }
+
+            val commentsForm = GetComments(
+                parent_id = commentView.comment.id,
+                max_depth = COMMENTS_DEPTH_MAX,
+                type_ = ListingType.All,
+                auth = account?.jwt,
+            )
+
+            val moreComments =
+                apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
+
+            when (moreComments) {
                 is ApiState.Success -> {
-                    val commentsForm = GetComments(
-                        parent_id = commentView.comment.id,
-                        max_depth = COMMENTS_DEPTH_MAX,
-                        type_ = ListingType.All,
-                        auth = account?.jwt,
-                    )
+                    // Remove the first comment, since it is a parent
+                    val newComments = moreComments.data.comments.toMutableList()
+                    newComments.removeAt(0)
 
-                    val moreComments =
-                        apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
-                    fetchingMore = true
+                    val appended = appendData(existing.data.comments, newComments.toList())
 
-                    when (moreComments) {
-                        is ApiState.Success -> {
-                            // Remove the first comment, since it is a parent
-                            val newComments = moreComments.data.comments.toMutableList()
-                            newComments.removeAt(0)
-
-                            val appended = appendData(existing.data.comments, newComments.toList())
-
-                            val newRes = ApiState.Success(existing.data.copy(comments = appended))
-
-                            commentsRes = newRes
-                            fetchingMore = false
-                        }
-
-                        else -> {}
-                    }
+                    commentsRes = ApiState.Success(existing.data.copy(comments = appended))
                 }
-
                 else -> {}
             }
         }

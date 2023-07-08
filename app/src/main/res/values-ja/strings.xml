@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">ジェルボア</string>
     <string name="comment_node_goto_comment">コメントへ行く</string>
     <string name="comment_node_go_to">%1$sへ行く</string>
     <string name="comment_node_view_source">原文を見る</string>
@@ -59,7 +58,6 @@
     <string name="pictrs_image_upload_image">画像をアップロード</string>
     <string name="time_ago_ago">%1$s %2$s 前</string>
     <string name="community_list_search">検索...</string>
-    <string name="community_list_back">戻る</string>
     <string name="community_users_month">1ヶ月のユーザー%1$s名</string>
     <string name="community_joined">参加済み</string>
     <string name="community_subscribe">登録</string>
@@ -79,13 +77,12 @@
     <string name="home_settings">設定</string>
     <string name="home_subscriptions">登録コミュニティ</string>
     <string name="home_add_account">アカウントを連携</string>
-    <string name="home_switch_to">アカウントを%1$s/%2$sに変更</string>
+    <string name="home_switch_to">アカウントを%1$s@%2$sに変更</string>
     <string name="home_sign_out">サインアウト</string>
     <string name="home_menu">メニュー</string>
     <string name="home_refresh">再読み込み</string>
     <string name="home_post_view_mode">投稿表示モード</string>
     <string name="home_site_info">サイト情報</string>
-    <string name="inbox_back">戻る</string>
     <string name="inbox_inbox">受信トレイ</string>
     <string name="login_password">パスワード</string>
     <string name="login_instance">サーバー</string>
@@ -96,17 +93,14 @@
     <string name="person_profile_joined">参加</string>
     <string name="person_profile_posts">投稿%1$s件</string>
     <string name="person_profile_comments">コメント%1$s件</string>
-    <string name="person_profile_back">戻る</string>
     <string name="person_profile_block_person">ユーザーをブロック</string>
     <string name="person_profile_report_person">ユーザーを報告</string>
     <string name="person_profile_activity_moderates">管理担当</string>
     <string name="create_post_create_post">投稿を作成</string>
-    <string name="create_post_close">閉じる</string>
     <string name="create_post_copy_suggested_title">お勧めタイトルをコピー: %1$s</string>
     <string name="create_post_community">コミュニティ</string>
     <string name="create_post_a_title_here">タイトルを入力....</string>
     <string name="post_edit_edit_post">投稿を編集</string>
-    <string name="post_edit_close">閉じる</string>
     <string name="post_edit_body_placeholder">本文</string>
     <string name="post_activity_comments">コメント</string>
     <string name="post_listing_comments">コメント%1$s件</string>
@@ -152,17 +146,6 @@
     <string name="account_settings_local">ローカル</string>
     <string name="account_settings_subscribed">登録済み</string>
     <string name="account_settings_default_listing_type">表示タイプの既定</string>
-    <string name="account_settings_active">活発</string>
-    <string name="account_settings_hot">人気</string>
-    <string name="account_settings_new">新しい</string>
-    <string name="account_settings_old">古い</string>
-    <string name="account_settings_topday">日トップ</string>
-    <string name="account_settings_topweek">週トップ</string>
-    <string name="account_settings_topmonth">月トップ</string>
-    <string name="account_settings_topyear">年トップ</string>
-    <string name="account_settings_topall">全トップ</string>
-    <string name="account_settings_mostcomments">コメント多</string>
-    <string name="account_settings_newcomments">コメント新</string>
     <string name="account_settings_default_sort_type">表示順の既定</string>
     <string name="account_settings_show_nsfw">NSFW（閲覧注意）を表示</string>
     <string name="account_settings_show_avatars">アバターを表示</string>
@@ -194,9 +177,7 @@
     <string name="settings_activity_look_and_feel">外見設定</string>
     <string name="settings_activity_account_settings">%1$s 設定</string>
     <string name="settings_activity_about">アプリについて</string>
-    <string name="community_blocked">%1$sをブロックしました</string>
     <string name="comment_mention_node_permalink_copied">元リンクがコピーされました</string>
-    <string name="person_routines_blocked">%1$sをブロックしました</string>
     <string name="utils_login_first">先にログインしてください</string>
     <string name="login_view_model_incorrect_login">ログインが誤っています</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$sはLemmyサーバーではありません</string>
@@ -223,7 +204,6 @@
     <string name="removeBookmark">ブックマークから外す</string>
     <string name="commentFooter_reply">このコメントに返信する</string>
     <string name="dialog_moreOptions">追加オプションを表示</string>
-    <string name="pickImage_imagePreview">画像プレビューをアップロードしました</string>
     <string name="commentEdit_save">コメント編集を保存</string>
     <string name="commentReply_send">返信を送る</string>
     <string name="community_sortBy">並び替え</string>

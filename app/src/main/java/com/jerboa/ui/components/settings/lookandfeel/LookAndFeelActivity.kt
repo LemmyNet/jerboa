@@ -1,12 +1,17 @@
 package com.jerboa.ui.components.settings.lookandfeel
 
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Colorize
+import androidx.compose.material.icons.outlined.FormatSize
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -16,22 +21,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import androidx.navigation.NavController
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberFloatSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsList
+import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.alorma.compose.settings.ui.SettingsSlider
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
+import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.DEFAULT_FONT_SIZE
+import com.jerboa.getLangPreferenceDropdownEntries
+import com.jerboa.matchLocale
 import com.jerboa.ui.components.common.SimpleTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,44 +51,53 @@ fun LookAndFeelActivity(
     appSettingsViewModel: AppSettingsViewModel,
 ) {
     Log.d("jerboa", "Got to lookAndFeel activity")
+    val ctx = LocalContext.current
 
-    val settings = appSettingsViewModel.appSettings.value
-    val themeState = rememberIntSettingState(settings?.theme ?: 0)
-    val themeColorState = rememberIntSettingState(settings?.themeColor ?: 0)
+    val settings = appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT
+    val themeState = rememberIntSettingState(settings.theme)
+    val themeColorState = rememberIntSettingState(settings.themeColor)
+
+    val localeMap = remember {
+        getLangPreferenceDropdownEntries(ctx)
+    }
+
+    val currentAppLocale = matchLocale(localeMap)
+    val langState = rememberIntSettingState(localeMap.keys.indexOf(currentAppLocale))
+
     val fontSizeState = rememberFloatSettingState(
-        settings?.fontSize?.toFloat()
-            ?: DEFAULT_FONT_SIZE.toFloat(),
+        settings.fontSize.toFloat(),
     )
-    val postViewModeState = rememberIntSettingState(settings?.postViewMode ?: 0)
-    val showBottomNavState = rememberBooleanSettingState(settings?.showBottomNav ?: true)
+    val postViewModeState = rememberIntSettingState(settings.postViewMode)
+    val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
     val showCollapsedCommentContentState =
-        rememberBooleanSettingState(settings?.showCollapsedCommentContent ?: false)
+        rememberBooleanSettingState(settings.showCollapsedCommentContent)
     val showCommentActionBarByDefaultState = rememberBooleanSettingState(
-        settings?.showCommentActionBarByDefault ?: true,
+        settings.showCommentActionBarByDefault,
     )
     val showVotingArrowsInListViewState = rememberBooleanSettingState(
-        settings?.showVotingArrowsInListView ?: true,
+        settings.showVotingArrowsInListView,
     )
     val showParentCommentNavigationButtonsState = rememberBooleanSettingState(
-        settings?.showParentCommentNavigationButtons ?: true,
+        settings.showParentCommentNavigationButtons,
     )
     val navigateParentCommentsWithVolumeButtonsState = rememberBooleanSettingState(
-        settings?.navigateParentCommentsWithVolumeButtons ?: false,
+        settings.navigateParentCommentsWithVolumeButtons,
     )
-    val useCustomTabsState = rememberBooleanSettingState(settings?.useCustomTabs ?: true)
-    val usePrivateTabsState = rememberBooleanSettingState(settings?.usePrivateTabs ?: false)
+    val useCustomTabsState = rememberBooleanSettingState(settings.useCustomTabs)
+    val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs)
 
-    val secureWindowState = rememberBooleanSettingState(settings?.secureWindow ?: false)
+    val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
+    val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
 
     val snackbarHostState = remember { SnackbarHostState() }
-	
+
     val scrollState = rememberScrollState()
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
             AppSettings(
                 id = 1,
-                viewedChangelog = appSettingsViewModel.appSettings.value?.viewedChangelog ?: 0,
+                viewedChangelog = settings.viewedChangelog,
                 theme = themeState.value,
                 themeColor = themeColorState.value,
                 fontSize = fontSizeState.value.toInt(),
@@ -92,6 +111,7 @@ fun LookAndFeelActivity(
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
+                blurNSFW = blurNSFW.value,
             ),
         )
     }
@@ -107,6 +127,25 @@ fun LookAndFeelActivity(
                     .verticalScroll(scrollState)
                     .padding(padding),
             ) {
+                SettingsListDropdown(
+                    title = {
+                        Text(text = stringResource(R.string.lang_language))
+                    },
+                    enabled = true,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Language,
+                            contentDescription = stringResource(R.string.lang_language),
+                        )
+                    },
+                    state = langState,
+                    items = localeMap.values.toList(),
+                    onItemSelected = { i, _ ->
+                        AppCompatDelegate.setApplicationLocales(
+                            LocaleListCompat.create(localeMap.keys.elementAt(i)),
+                        )
+                    },
+                )
                 SettingsSlider(
                     modifier = Modifier.padding(top = 10.dp),
                     valueRange = 8f..48f,
@@ -238,6 +277,13 @@ fun LookAndFeelActivity(
                     state = secureWindowState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_secure_window))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = blurNSFW,
+                    title = {
+                        Text(stringResource(id = R.string.blur_nsfw))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

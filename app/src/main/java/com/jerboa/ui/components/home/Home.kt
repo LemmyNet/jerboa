@@ -62,6 +62,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -78,8 +79,9 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.federatedNameShown
 import com.jerboa.getLocalizedListingTypeName
-import com.jerboa.getLocalizedSortingTypeName
+import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
@@ -89,6 +91,8 @@ import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
+import com.jerboa.ui.components.common.toLogin
+import com.jerboa.ui.components.common.toSiteSideBar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.person.PersonName
 import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
@@ -115,6 +119,7 @@ fun Drawer(
     onClickSettings: () -> Unit,
     onClickCommunities: () -> Unit,
     isOpen: Boolean,
+    blurNSFW: Boolean,
 ) {
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
@@ -131,7 +136,6 @@ fun Drawer(
         onClickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode },
         showAvatar = myUserInfo?.local_user_view?.local_user?.show_avatars ?: true,
     )
-    Divider()
     // Drawer items
     DrawerContent(
         accountViewModel = accountViewModel,
@@ -148,6 +152,7 @@ fun Drawer(
         onClickSaved = onClickSaved,
         onClickSettings = onClickSettings,
         onClickCommunities = onClickCommunities,
+        blurNSFW = blurNSFW,
     )
 }
 
@@ -167,12 +172,14 @@ fun DrawerContent(
     onClickCommunities: () -> Unit,
     myUserInfo: MyUserInfo?,
     unreadCount: Int,
+    blurNSFW: Boolean,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
         enter = expandVertically(),
         exit = shrinkVertically(),
     ) {
+        Divider()
         DrawerAddAccountMode(
             accountViewModel = accountViewModel,
             navController = navController,
@@ -181,19 +188,19 @@ fun DrawerContent(
         )
     }
 
-    if (!showAccountAddMode) {
-        DrawerItemsMain(
-            myUserInfo = myUserInfo,
-            onClickListingType = onClickListingType,
-            onCommunityClick = onCommunityClick,
-            onClickProfile = onClickProfile,
-            onClickInbox = onClickInbox,
-            onClickSaved = onClickSaved,
-            unreadCount = unreadCount,
-            onClickSettings = onClickSettings,
-            onClickCommunities = onClickCommunities,
-        )
-    }
+    Divider()
+    DrawerItemsMain(
+        myUserInfo = myUserInfo,
+        onClickListingType = onClickListingType,
+        onCommunityClick = onCommunityClick,
+        onClickProfile = onClickProfile,
+        onClickInbox = onClickInbox,
+        onClickSaved = onClickSaved,
+        unreadCount = unreadCount,
+        onClickSettings = onClickSettings,
+        onClickCommunities = onClickCommunities,
+        blurNSFW = blurNSFW,
+    )
 }
 
 @Composable
@@ -207,6 +214,7 @@ fun DrawerItemsMain(
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     unreadCount: Int,
+    blurNSFW: Boolean,
 ) {
     val listState = rememberLazyListState()
 
@@ -306,6 +314,7 @@ fun DrawerItemsMain(
                     community = follow.community,
                     onClick = onCommunityClick,
                     showDefaultIcon = true,
+                    blurNSFW = blurNSFW,
                 )
             }
         }
@@ -325,6 +334,7 @@ fun DrawerItemsMainPreview() {
         onClickSettings = {},
         onClickCommunities = {},
         unreadCount = 2,
+        blurNSFW = true,
     )
 }
 
@@ -343,11 +353,11 @@ fun DrawerAddAccountMode(
         IconAndTextDrawerItem(
             text = stringResource(R.string.home_add_account),
             icon = Icons.Outlined.Add,
-            onClick = { navController.navigate(route = "login") },
+            onClick = { navController.toLogin() },
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
-                text = stringResource(R.string.home_switch_to, it.instance, it.name),
+                text = stringResource(R.string.home_switch_to, it.name, it.instance),
                 icon = Icons.Outlined.Login,
                 onClick = { onSwitchAccountClick(it) },
             )
@@ -399,8 +409,11 @@ fun DrawerHeader(
             modifier = sizeMod
                 .padding(XL_PADDING),
         ) {
-            AvatarAndAccountName(myPerson, showAvatar)
+            Box(modifier = Modifier.weight(0.9f)) {
+                AvatarAndAccountName(myPerson, showAvatar)
+            }
             Icon(
+                modifier = Modifier.weight(0.1f),
                 imageVector = if (showAccountAddMode) {
                     Icons.Outlined.ExpandLess
                 } else {
@@ -427,11 +440,26 @@ fun AvatarAndAccountName(myPerson: Person?, showAvatar: Boolean) {
                 LargerCircularIcon(icon = it)
             }
         }
-        PersonName(
-            person = myPerson,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
+        Column() {
+            PersonName(
+                person = myPerson,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = myPerson?.let { federatedNameShown(it) } ?: "",
+                color = MaterialTheme.colorScheme.tertiary,
+                style = MaterialTheme.typography.labelSmall,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
+            )
+        }
     }
+}
+
+@Preview
+@Composable
+fun AvatarAndAccountNamePreview() {
+    AvatarAndAccountName(myPerson = samplePerson, showAvatar = true)
 }
 
 @Preview
@@ -456,7 +484,7 @@ fun HomeHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeName(ctx, selectedSortType),
+            text = getLocalizedSortingTypeShortName(ctx, selectedSortType),
             style = MaterialTheme.typography.titleSmall,
         )
     }
@@ -647,7 +675,7 @@ fun HomeMoreDialog(
                     text = stringResource(R.string.home_site_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
-                        navController.navigate("siteSidebar")
+                        navController.toSiteSideBar()
                         onDismissRequest()
                     },
                 )

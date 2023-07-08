@@ -5,20 +5,25 @@ import android.util.Log
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.toastException
+import com.jerboa.util.CustomHttpLoggingInterceptor
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.io.InputStream
+import okhttp3.Response as HttpResponse
 
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
 const val MINIMUM_API_VERSION: String = "0.18"
+val REDACTED_QUERY_PARAMS = setOf("auth")
+val REDACTED_BODY_FIELDS = setOf("jwt", "password")
 
 interface API {
     @GET("site")
@@ -235,6 +240,8 @@ interface API {
 
     companion object {
         private var api: API? = null
+        var errorHandler: (Exception) -> Exception? = { it }
+
         var currentInstance: String = DEFAULT_INSTANCE
             private set
 
@@ -256,8 +263,6 @@ interface API {
         }
 
         private fun buildApi(): API {
-            val interceptor = HttpLoggingInterceptor()
-            interceptor.level = HttpLoggingInterceptor.Level.BODY
             val client: OkHttpClient = OkHttpClient.Builder()
                 .addInterceptor { chain ->
                     val requestBuilder = chain.request().newBuilder()
@@ -265,7 +270,27 @@ interface API {
                     val newRequest = requestBuilder.build()
                     chain.proceed(newRequest)
                 }
-                .addInterceptor(interceptor)
+                // this should probably be a network interceptor,
+                .addInterceptor { chain ->
+                    val request = chain.request()
+                    try {
+                        chain.proceed(request)
+                    } catch (e: Exception) {
+                        val err = errorHandler(e)
+                        if (err != null) {
+                            throw err
+                        }
+
+                        HttpResponse.Builder()
+                            .request(request)
+                            .code(999)
+                            .protocol(Protocol.HTTP_1_1)
+                            .message("connection error")
+                            .body(e.toString().toResponseBody())
+                            .build()
+                    }
+                }
+                .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
                 .build()
 
             return Retrofit.Builder()
@@ -279,9 +304,13 @@ interface API {
 }
 
 sealed class ApiState<out T> {
-    class Success<T>(val data: T) : ApiState<T>()
+
+    abstract class Holder<T>(val data: T) : ApiState<T>()
+    class Success<T>(data: T) : Holder<T>(data)
+    class Appending<T>(data: T) : Holder<T>(data)
     class Failure(val msg: Throwable) : ApiState<Nothing>()
     object Loading : ApiState<Nothing>()
+    object Refreshing : ApiState<Nothing>()
     object Empty : ApiState<Nothing>()
 }
 
