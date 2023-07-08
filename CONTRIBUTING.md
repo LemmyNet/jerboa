@@ -12,6 +12,7 @@
   * [Adding translations](#adding-translations)
   * [Updating the instance list](#updating-the-instance-list)
   * [Generate compose compiler metrics](#generate-compose-compiler-metrics)
+  * [Testing migrations](#testing-migrations)
 <!-- TOC -->
 
 <!-- prettier-ignore-end -->
@@ -61,7 +62,7 @@ You can install prettier either through the plugin, or globally using npm `npm i
 To check for violations
 
 ```shell
-prettier -c "*.md" "*.yml"`
+prettier -c "*.md" "*.yml"
 ```
 
 To fix the violations
