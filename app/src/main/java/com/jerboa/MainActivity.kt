@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -75,6 +76,8 @@ import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -93,6 +96,8 @@ class MainActivity : AppCompatActivity() {
     private val appSettingsViewModel: AppSettingsViewModel by viewModels {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
+
+    private var isBackPressedOnce = false
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,6 +130,22 @@ class MainActivity : AppCompatActivity() {
                 appSettings = appSettings,
             ) {
                 val navController = rememberNavController()
+
+                onBackPressedDispatcher.addCallback(this) {
+                    val isRoot = navController.previousBackStackEntry == null
+                    if (isRoot && isBackPressedOnce) {
+                        finish()
+                    } else if (isRoot) {
+                        Toast.makeText(ctx, ctx.getText(R.string.back_warning), Toast.LENGTH_SHORT).show()
+                        isBackPressedOnce = true
+                        Executors.newSingleThreadScheduledExecutor().schedule({
+                            isBackPressedOnce = false
+                        }, 2, TimeUnit.SECONDS)
+                    } else {
+                        navController.navigateUp()
+                    }
+                }
+
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
