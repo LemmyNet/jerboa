@@ -45,7 +45,7 @@ The code must be formatted to a [common standard](https://pinterest.github.io/kt
 To check for violations
 
 ```shell
-./gradlew lintKotlin`
+./gradlew lintKotlin
 ```
 
 Or just run this to fix them
@@ -75,6 +75,8 @@ prettier --write "*.md" "*.yml"
 You can find the translations in the `app/src/main/res/values-{locale}/strings.xml` file.
 You can open it in android studio, right click and click open translations editor or you can
 directly edit the files.
+
+If you add a new locale. Also add it in `locales_config.xml`. Don't forget to escape `'` in translations.
 
 ## Updating the instance list
 
