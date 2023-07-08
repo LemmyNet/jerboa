@@ -121,6 +121,11 @@ data class AppSettings(
         defaultValue = "1",
     )
     val blurNSFW: Boolean,
+    @ColumnInfo(
+        name = "nav_bar_only_icons",
+        defaultValue = "0",
+    )
+    val navBarOnlyIcons: Boolean,
 )
 
 val APP_SETTINGS_DEFAULT = AppSettings(
@@ -140,6 +145,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     usePrivateTabs = false,
     secureWindow = false,
     blurNSFW = true,
+    navBarOnlyIcons = false,
 )
 
 @Dao

@@ -116,6 +116,7 @@ fun BottomNavActivity(
                         showBottomNav = appSettings.showBottomNav,
                         selectedTab = selectedTab,
                         unreadCounts = siteViewModel.getUnreadCountTotal(),
+                        onlyIcons = appSettings.navBarOnlyIcons,
                         onSelect = onSelectTab,
                     )
                 },

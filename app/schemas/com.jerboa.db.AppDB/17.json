@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 17,
-    "identityHash": "db1317ad3e5b1ed80dac232f729e5890",
+    "identityHash": "6b35fad4850cbc2c67b0a4ebfe829cd6",
     "entities": [
       {
         "tableName": "Account",
@@ -64,7 +64,7 @@
       },
       {
         "tableName": "AppSettings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `font_size` INTEGER NOT NULL DEFAULT 16, `theme` INTEGER NOT NULL DEFAULT 0, `theme_color` INTEGER NOT NULL DEFAULT 0, `viewed_changelog` INTEGER NOT NULL DEFAULT 0, `post_view_mode` INTEGER NOT NULL DEFAULT 0, `show_bottom_nav` INTEGER NOT NULL DEFAULT 1, `show_collapsed_comment_content` INTEGER NOT NULL DEFAULT 0, `show_comment_action_bar_by_default` INTEGER NOT NULL DEFAULT 1, `show_voting_arrows_in_list_view` INTEGER NOT NULL DEFAULT 1, `show_parent_comment_navigation_buttons` INTEGER NOT NULL DEFAULT 1, `navigate_parent_comments_with_volume_buttons` INTEGER NOT NULL DEFAULT 0, `use_custom_tabs` INTEGER NOT NULL DEFAULT 1, `use_private_tabs` INTEGER NOT NULL DEFAULT 0, `secure_window` INTEGER NOT NULL DEFAULT 0, `blur_nsfw` INTEGER NOT NULL DEFAULT 1)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `font_size` INTEGER NOT NULL DEFAULT 16, `theme` INTEGER NOT NULL DEFAULT 0, `theme_color` INTEGER NOT NULL DEFAULT 0, `viewed_changelog` INTEGER NOT NULL DEFAULT 0, `post_view_mode` INTEGER NOT NULL DEFAULT 0, `show_bottom_nav` INTEGER NOT NULL DEFAULT 1, `show_collapsed_comment_content` INTEGER NOT NULL DEFAULT 0, `show_comment_action_bar_by_default` INTEGER NOT NULL DEFAULT 1, `show_voting_arrows_in_list_view` INTEGER NOT NULL DEFAULT 1, `show_parent_comment_navigation_buttons` INTEGER NOT NULL DEFAULT 1, `navigate_parent_comments_with_volume_buttons` INTEGER NOT NULL DEFAULT 0, `use_custom_tabs` INTEGER NOT NULL DEFAULT 1, `use_private_tabs` INTEGER NOT NULL DEFAULT 0, `secure_window` INTEGER NOT NULL DEFAULT 0, `blur_nsfw` INTEGER NOT NULL DEFAULT 1, `nav_bar_only_icons` INTEGER NOT NULL DEFAULT 0)",
         "fields": [
           {
             "fieldPath": "id",
@@ -176,6 +176,13 @@
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "1"
+          },
+          {
+            "fieldPath": "navBarOnlyIcons",
+            "columnName": "nav_bar_only_icons",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -191,7 +198,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'db1317ad3e5b1ed80dac232f729e5890')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6b35fad4850cbc2c67b0a4ebfe829cd6')"
     ]
   }
 }

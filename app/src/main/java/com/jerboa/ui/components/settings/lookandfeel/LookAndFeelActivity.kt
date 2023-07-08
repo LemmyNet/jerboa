@@ -2,6 +2,7 @@ package com.jerboa.ui.components.settings.lookandfeel
 
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -69,6 +70,7 @@ fun LookAndFeelActivity(
     )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
+    val navBarOnlyIcons = rememberBooleanSettingState(settings.navBarOnlyIcons)
     val showCollapsedCommentContentState =
         rememberBooleanSettingState(settings.showCollapsedCommentContent)
     val showCommentActionBarByDefaultState = rememberBooleanSettingState(
@@ -111,6 +113,7 @@ fun LookAndFeelActivity(
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
+                navBarOnlyIcons = navBarOnlyIcons.value,
                 blurNSFW = blurNSFW.value,
             ),
         )
@@ -224,6 +227,15 @@ fun LookAndFeelActivity(
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
+                AnimatedVisibility(visible = showBottomNavState.value) {
+                    SettingsCheckbox(
+                        state = navBarOnlyIcons,
+                        title = {
+                            Text(text = stringResource(R.string.look_and_feel_nav_bar_only_icons))
+                        },
+                        onCheckedChange = { updateAppSettings() },
+                    )
+                }
                 SettingsCheckbox(
                     state = showCollapsedCommentContentState,
                     title = {
