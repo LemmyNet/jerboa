@@ -277,7 +277,7 @@ class AppSettingsRepository(
 }
 
 @Database(
-    version = 17,
+    version = 18,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
