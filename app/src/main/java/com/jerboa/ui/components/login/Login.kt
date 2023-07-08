@@ -146,7 +146,7 @@ fun InstancePicker(expanded: Boolean, setExpanded: ((Boolean) -> Unit), instance
         if (filteringOptions.isNotEmpty()) {
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = {},
+                onDismissRequest = { setExpanded(false) },
                 properties = PopupProperties(focusable = false),
                 modifier = Modifier.exposedDropdownSize(true),
             ) {
@@ -220,7 +220,10 @@ fun LoginForm(
             modifier = Modifier.padding(top = 10.dp),
         ) {
             if (loading) {
-                CircularProgressIndicator(modifier = Modifier.size(LocalTextStyle.current.fontSize.value.dp))
+                CircularProgressIndicator(
+                    modifier = Modifier.size(LocalTextStyle.current.fontSize.value.dp),
+                    strokeWidth = 2.dp,
+                )
             } else {
                 Text(stringResource(R.string.login_login))
             }
