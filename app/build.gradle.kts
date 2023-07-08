@@ -24,8 +24,16 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+        ksp {
+           arg("room.schemaLocation", "$projectDir/schemas")
+        }
     }
+
+    sourceSets {
+        // Adds exported schema location as test app assets.
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+
 
     if (project.hasProperty("RELEASE_STORE_FILE")) {
         signingConfigs {
@@ -131,6 +139,7 @@ dependencies {
     // optional - Test helpers
     testImplementation("androidx.room:room-testing:2.5.2")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
+    androidTestImplementation("androidx.room:room-testing:2.5.2")
 
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:2.5.2")
