@@ -88,7 +88,7 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
     val oldIcons = controller.isAppearanceLightStatusBars
 
     DisposableEffect(systemUiController) {
-        systemUiController.setSystemBarsColor(
+        systemUiController.setStatusBarColor(
             color = Color.Transparent,
             darkIcons = false,
         )
