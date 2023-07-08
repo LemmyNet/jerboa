@@ -50,6 +50,7 @@ import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.PersonProfileViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
@@ -80,7 +81,6 @@ import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.community.CommunityLink
-import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING

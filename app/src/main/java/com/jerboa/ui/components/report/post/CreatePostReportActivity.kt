@@ -17,11 +17,11 @@ import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.PostId
 import com.jerboa.db.AccountViewModel
+import com.jerboa.model.CreateReportViewModel
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 import com.jerboa.ui.components.report.CreateReportHeader
-import com.jerboa.model.CreateReportViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -40,6 +40,7 @@ import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.model.InboxViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.comment.replynode.CommentReplyNode
@@ -59,7 +60,6 @@ import com.jerboa.ui.components.common.toCommunity
 import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPrivateMessageReply
 import com.jerboa.ui.components.common.toProfile
-import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

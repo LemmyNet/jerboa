@@ -20,11 +20,11 @@ import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.AccountViewModel
 import com.jerboa.model.PrivateMessageReplyViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toProfile
-import com.jerboa.model.SiteViewModel
 
 @Composable
 fun PrivateMessageReplyActivity(
