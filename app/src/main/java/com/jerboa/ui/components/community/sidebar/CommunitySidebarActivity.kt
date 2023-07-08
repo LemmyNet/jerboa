@@ -10,7 +10,7 @@ import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.ui.components.community.CommunityViewModel
+import com.jerboa.model.CommunityViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

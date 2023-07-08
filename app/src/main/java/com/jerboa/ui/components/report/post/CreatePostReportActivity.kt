@@ -21,7 +21,7 @@ import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 import com.jerboa.ui.components.report.CreateReportHeader
-import com.jerboa.ui.components.report.CreateReportViewModel
+import com.jerboa.model.CreateReportViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -14,7 +14,7 @@ import com.jerboa.R
 import com.jerboa.db.AccountViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.model.SiteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
