@@ -133,7 +133,7 @@
     <string name="dialogs_unread">Αδιάβαστα</string>
     <string name="dialogs_server_version_outdated">Η έκδοση του διακομιστή (%1$s) είναι παλιότερη από την ελάχιστη υποστηριζόμενη έκδοση (%2$s).\n\nΠαρακαλώ ενημερώστε τον διαχειριστή σας ή συνδεθείτε σε άλλο διακομιστή, ή αποσυνδεθείτε και χρησιμοποιήστε την προεπιλεγμένη έκδοση.</string>
     <string name="dialogs_server_version_outdated_short">Η έκδοση του διακομιστή (%1$s) είναι ξεπερασμένη.</string>
-    <string name="floating_createPost">Δημιουργία ανάρτησης</string>
+    <string name="floating_create_post">Δημιουργία ανάρτησης</string>
     <string name="form_submit">Υποβολή</string>
     <string name="homeHeader_filter">Επιλογή ροής</string>
     <string name="home_add_account">Προσθήκη Λογαριασμού</string>

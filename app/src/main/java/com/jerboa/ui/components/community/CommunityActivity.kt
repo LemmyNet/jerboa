@@ -5,13 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -31,7 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import arrow.core.Either
-import com.jerboa.R
+import com.jerboa.FABActionMode
+import com.jerboa.FABPositionMode
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockCommunity
@@ -47,10 +45,12 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
+import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
+import com.jerboa.loginFirstToast
 import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
@@ -156,6 +156,8 @@ fun CommunityActivity(
         // Needs to be lower else it can hide behind the top bar
         refreshingOffset = 150.dp,
     )
+
+    val fabPosition = FABPositionMode.values()[(appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT).fabPositionMode]
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -393,23 +395,34 @@ fun CommunityActivity(
                 }
             }
         },
-        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButtonPosition = fabPosition.position(),
         floatingActionButton = {
             when (val communityRes = communityViewModel.communityRes) {
                 is ApiState.Success -> {
+                    val mode = FABActionMode.values()[(appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT).fabActionMode]
+
                     FloatingActionButton(
                         onClick = {
-                            account?.also {
-                                navController.toCreatePost(
-                                    channel = transferCreatePostDepsViaRoot,
-                                    community = communityRes.data.community_view.community,
-                                )
+                            when (mode) {
+                                FABActionMode.CreatePost -> {
+                                    account?.also {
+                                        navController.toCreatePost(
+                                            channel = transferCreatePostDepsViaRoot,
+                                            community = communityRes.data.community_view.community,
+                                        )
+                                    } ?: run {
+                                        loginFirstToast(ctx)
+                                    }
+                                }
+                                FABActionMode.GoToTop -> {
+                                    scrollToTop(scope, postListState)
+                                }
                             }
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Outlined.Add,
-                            contentDescription = stringResource(R.string.floating_createPost),
+                            imageVector = mode.icon(),
+                            contentDescription = stringResource(mode.mode),
                         )
                     }
                 }

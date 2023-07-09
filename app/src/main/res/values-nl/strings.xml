@@ -99,7 +99,7 @@
     <string name="home_inbox">Inbox</string>
     <string name="home_settings">Instellingen</string>
     <string name="home_subscriptions">Abonnementen</string>
-    <string name="floating_createPost">Maak bericht</string>
+    <string name="floating_create_post">Maak bericht</string>
     <string name="form_submit">Verzend</string>
     <string name="homeHeader_filter">Selecteer feed</string>
     <string name="home_add_account">Account toevoegen</string>

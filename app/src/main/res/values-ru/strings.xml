@@ -62,7 +62,7 @@
     <string name="dialogs_top_year">Лучшее за год</string>
     <string name="dialogs_old">Старое</string>
     <string name="dialogs_unread">Непрочитанные</string>
-    <string name="floating_createPost">Создать пост</string>
+    <string name="floating_create_post">Создать пост</string>
     <string name="form_submit">Отправить</string>
     <string name="homeHeader_filter">Выберите фильтр постов</string>
     <string name="home_add_account">Добавить аккаунт</string>

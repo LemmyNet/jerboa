@@ -204,7 +204,7 @@
     <string name="commentEdit_save">Spara redigerad kommentar</string>
     <string name="commentReply_send">Skicka svar</string>
     <string name="community_sortBy">Sortera efter</string>
-    <string name="floating_createPost">Skapa inlägg</string>
+    <string name="floating_create_post">Skapa inlägg</string>
     <string name="community_icon">Gemenskapens profilbild</string>
     <string name="form_submit">Skicka in</string>
     <string name="createPost_selectCommunity">Välj gemenskap från listan</string>

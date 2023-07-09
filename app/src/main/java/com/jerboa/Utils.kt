@@ -21,8 +21,12 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ArrowUpward
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
@@ -38,6 +42,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -827,6 +832,36 @@ enum class PostViewMode(val mode: Int) {
      * A list view that has no action bar.
      */
     List(R.string.look_and_feel_post_view_list),
+}
+
+enum class FABActionMode(val mode: Int) {
+    CreatePost(R.string.floating_create_post) {
+        override fun icon(): ImageVector {
+            return Icons.Outlined.Add
+        }
+    },
+    GoToTop(R.string.floating_go_to_top) {
+        override fun icon(): ImageVector {
+            return Icons.Outlined.ArrowUpward
+        }
+    }, ;
+
+    abstract fun icon(): ImageVector
+}
+
+enum class FABPositionMode(val mode: Int) {
+    End(R.string.look_and_feel_fab_position_end) {
+        override fun position(): FabPosition {
+            return FabPosition.End
+        }
+    },
+    Center(R.string.look_and_feel_fab_position_center) {
+        override fun position(): FabPosition {
+            return FabPosition.Center
+        }
+    }, ;
+
+    abstract fun position(): FabPosition
 }
 
 @OptIn(ExperimentalFoundationApi::class)

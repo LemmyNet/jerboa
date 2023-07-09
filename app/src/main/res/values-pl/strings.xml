@@ -207,7 +207,7 @@
     <string name="commentEdit_save">Zapisz edytowany komentarz</string>
     <string name="commentReply_send">Wyślij odpowiedź</string>
     <string name="community_sortBy">Sortuj po</string>
-    <string name="floating_createPost">Stwórz post</string>
+    <string name="floating_create_post">Stwórz post</string>
     <string name="community_icon">Ikonka Społeczności</string>
     <string name="form_submit">Prześlij</string>
     <string name="createPost_selectCommunity">Wybierz społeczności z listy</string>

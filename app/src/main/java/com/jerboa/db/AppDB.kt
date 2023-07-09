@@ -121,6 +121,16 @@ data class AppSettings(
         defaultValue = "1",
     )
     val blurNSFW: Boolean,
+    @ColumnInfo(
+        name = "fab_action_mode",
+        defaultValue = "0",
+    )
+    val fabActionMode: Int,
+    @ColumnInfo(
+        name = "fab_position_mode",
+        defaultValue = "0",
+    )
+    val fabPositionMode: Int,
 )
 
 val APP_SETTINGS_DEFAULT = AppSettings(
@@ -130,6 +140,8 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     themeColor = 0,
     viewedChangelog = 0,
     postViewMode = 0,
+    fabActionMode = 0,
+    fabPositionMode = 0,
     showBottomNav = true,
     showCollapsedCommentContent = false,
     showCommentActionBarByDefault = true,

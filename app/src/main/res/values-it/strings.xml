@@ -121,7 +121,7 @@
     <string name="dialogs_top_week">Top della settimana</string>
     <string name="dialogs_top_year">Top dell\'anno</string>
     <string name="dialogs_unread">Non letti</string>
-    <string name="floating_createPost">Crea post</string>
+    <string name="floating_create_post">Crea post</string>
     <string name="form_submit">Invia</string>
     <string name="homeHeader_filter">Seleziona filtro</string>
     <string name="home_add_account">Aggiungi profilo</string>

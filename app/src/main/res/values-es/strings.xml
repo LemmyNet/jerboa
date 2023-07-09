@@ -228,7 +228,7 @@
     <string name="community_sortBy">Ordenar por</string>
     <string name="dialogs_server_version_outdated">La versión del servidor (%1$s) se encuentra por debajo de la versión mínima soportada (%2$s).</string>
     <string name="dialogs_server_version_outdated_short">La versión del servidor (%1$s) es muy baja.</string>
-    <string name="floating_createPost">Crear post</string>
+    <string name="floating_create_post">Crear post</string>
     <string name="community_icon">Ícono de comunidad</string>
     <string name="form_submit">Enviar</string>
     <string name="createPost_selectCommunity">Seleccionar comunidad desde la lista</string>

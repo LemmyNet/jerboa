@@ -133,7 +133,7 @@
     <string name="dialogs_unread">Непрочитане</string>
     <string name="dialogs_server_version_outdated">Версія сервера (%1$s) менша аніж мінімально підтримувана версія (%2$s).\n\nПовідомте адміністратора та увійдіть в інший примірник (інстанс) або вийдіть із системи та використовуйте примірник за замовчуванням.</string>
     <string name="dialogs_server_version_outdated_short">Версія сервера (%1$s) занадто стара.</string>
-    <string name="floating_createPost">Створити новий допис</string>
+    <string name="floating_create_post">Створити новий допис</string>
     <string name="form_submit">Надіслати</string>
     <string name="homeHeader_filter">Вибрати канал</string>
     <string name="home_add_account">Додати обліковий запис</string>

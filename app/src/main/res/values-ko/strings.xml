@@ -132,7 +132,7 @@
     <string name="dialogs_unread">안읽음</string>
     <string name="dialogs_server_version_outdated">서버의 버전(%1$s)이 최소 지원 버전(%2$s)보다 아래입니다.\n\n관리자에게 알리고 다른 인스턴스로 로그인하거나, 로그아웃 후 기본 인스턴스를 사용하세요.</string>
     <string name="dialogs_server_version_outdated_short">서버 버전(%1$s)이 너무 오래 되었습니다.</string>
-    <string name="floating_createPost">게시물 작성</string>
+    <string name="floating_create_post">게시물 작성</string>
     <string name="form_submit">제출</string>
     <string name="homeHeader_filter">목록 필터 선택</string>
     <string name="home_add_account">계정 추가</string>

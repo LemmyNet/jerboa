@@ -133,7 +133,8 @@
     <string name="dialogs_unread">Unread</string>
     <string name="dialogs_server_version_outdated">Server version (%1$s) is under the minimum supported version (%2$s).\n\nPlease inform your administrator and login to another instance, or sign out and use the default instance.</string>
     <string name="dialogs_server_version_outdated_short">Server version (%1$s) too low.</string>
-    <string name="floating_createPost">Create post</string>
+    <string name="floating_create_post">Create post</string>
+    <string name="floating_go_to_top">Go To Top</string>
     <string name="form_submit">Submit</string>
     <string name="homeHeader_filter">Select feed</string>
     <string name="home_add_account">Add Account</string>
@@ -171,6 +172,10 @@
     <string name="login_view_model_incorrect_login">Incorrect Login</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s is not a Lemmy Instance</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Show content for collapsed comments</string>
+    <string name="look_and_feel_fab_mode">Floating Action Button Mode</string>
+    <string name="look_and_feel_fab_position">Floating Action Button Position</string>
+    <string name="look_and_feel_fab_position_center">Center</string>
+    <string name="look_and_feel_fab_position_end">End</string>
     <string name="look_and_feel_font_size">Font size: %1$s</string>
     <string name="look_and_feel_look_and_feel">Look and feel</string>
     <string name="look_and_feel_post_view">Post View</string>

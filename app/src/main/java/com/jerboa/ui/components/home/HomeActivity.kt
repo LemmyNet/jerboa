@@ -10,14 +10,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -40,7 +37,8 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import com.jerboa.R
+import com.jerboa.FABActionMode
+import com.jerboa.FABPositionMode
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
@@ -51,6 +49,7 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
+import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
@@ -117,6 +116,8 @@ fun HomeActivity(
         if (homeViewModel.initialized) homeViewModel.updatePost(pv)
     }
 
+    val fabPosition = FABPositionMode.values()[(appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT).fabPositionMode]
+
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -150,23 +151,32 @@ fun HomeActivity(
                 blurNSFW = blurNSFW,
             )
         },
-        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButtonPosition = fabPosition.position(),
         floatingActionButton = {
+            val mode = FABActionMode.values()[(appSettingsViewModel.appSettings.value ?: APP_SETTINGS_DEFAULT).fabActionMode]
+
             FloatingActionButton(
                 onClick = {
-                    account?.also {
-                        navController.toCreatePost(
-                            channel = transferCreatePostDepsViaRoot,
-                            community = null,
-                        )
-                    } ?: run {
-                        loginFirstToast(ctx)
+                    when (mode) {
+                        FABActionMode.CreatePost -> {
+                            account?.also {
+                                navController.toCreatePost(
+                                    channel = transferCreatePostDepsViaRoot,
+                                    community = null,
+                                )
+                            } ?: run {
+                                loginFirstToast(ctx)
+                            }
+                        }
+                        FABActionMode.GoToTop -> {
+                            scrollToTop(scope, postListState)
+                        }
                     }
                 },
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = stringResource(R.string.floating_createPost),
+                    imageVector = mode.icon(),
+                    contentDescription = stringResource(mode.mode),
                 )
             }
         },

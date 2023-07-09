@@ -33,6 +33,8 @@ import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.alorma.compose.settings.ui.SettingsSlider
+import com.jerboa.FABActionMode
+import com.jerboa.FABPositionMode
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.ThemeColor
@@ -68,6 +70,8 @@ fun LookAndFeelActivity(
         settings.fontSize.toFloat(),
     )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
+    val fabActionModeState = rememberIntSettingState(settings.fabActionMode)
+    val fabPositionModeState = rememberIntSettingState(settings.fabPositionMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
     val showCollapsedCommentContentState =
         rememberBooleanSettingState(settings.showCollapsedCommentContent)
@@ -102,6 +106,8 @@ fun LookAndFeelActivity(
                 themeColor = themeColorState.value,
                 fontSize = fontSizeState.value.toInt(),
                 postViewMode = postViewModeState.value,
+                fabActionMode = fabActionModeState.value,
+                fabPositionMode = fabPositionModeState.value,
                 showBottomNav = showBottomNavState.value,
                 showCollapsedCommentContent = showCollapsedCommentContentState.value,
                 showCommentActionBarByDefault = showCommentActionBarByDefaultState.value,
@@ -214,6 +220,28 @@ fun LookAndFeelActivity(
                     },
                     onItemSelected = { i, _ ->
                         postViewModeState.value = i
+                        updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_fab_mode))
+                    },
+                    state = fabActionModeState,
+                    items = FABActionMode.values().map { stringResource(it.mode) },
+                    onItemSelected = { i, _ ->
+                        fabActionModeState.value = i
+                        updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_fab_position))
+                    },
+                    state = fabPositionModeState,
+                    items = FABPositionMode.values().map { stringResource(it.mode) },
+                    onItemSelected = { i, _ ->
+                        fabPositionModeState.value = i
                         updateAppSettings()
                     },
                 )
