@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,6 +33,7 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -58,9 +61,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.InstantScores
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -509,6 +509,7 @@ fun PostFooterLine(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
+    onShareClick: (url: String) -> Unit,
     onViewSourceClick: () -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
@@ -549,6 +550,10 @@ fun PostFooterLine(
             onBlockCreatorClick = {
                 showMoreOptions = false
                 onBlockCreatorClick(postView.creator)
+            },
+            onShareClick = { url ->
+                showMoreOptions = false
+                onShareClick(url)
             },
             onViewSourceClick = {
                 showMoreOptions = false
@@ -711,6 +716,7 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
+        onShareClick = {},
         onViewSourceClick = {},
         enableDownVotes = true,
         viewSource = false,
@@ -736,6 +742,7 @@ fun PreviewPostListingCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = true,
         fullBody = false,
         account = null,
@@ -766,6 +773,7 @@ fun PreviewLinkPostListing() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = false,
         fullBody = false,
         account = null,
@@ -796,6 +804,7 @@ fun PreviewImagePostListingCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = false,
         fullBody = false,
         account = null,
@@ -826,6 +835,7 @@ fun PreviewImagePostListingSmallCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = false,
         fullBody = false,
         account = null,
@@ -856,6 +866,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = true,
         fullBody = false,
         account = null,
@@ -884,6 +895,7 @@ fun PostListing(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
+    onShareClick: (url: String) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -937,6 +949,7 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onShareClick = onShareClick,
             onViewSourceClick = {
                 viewSource = !viewSource
             },
@@ -981,6 +994,7 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onShareClick = onShareClick,
             onViewSourceClick = {
                 viewSource = !viewSource
             },
@@ -1074,6 +1088,7 @@ fun PostVotingTile(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PostListingList(
     postView: PostView,
@@ -1122,9 +1137,9 @@ fun PostListingList(
             ) {
                 PostName(postView = postView)
                 FlowRow(
-                    mainAxisAlignment = FlowMainAxisAlignment.Start,
-                    mainAxisSpacing = SMALL_PADDING,
-                    crossAxisAlignment = FlowCrossAxisAlignment.Center,
+                    horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
+                    verticalArrangement = Arrangement.Center,
+
                 ) {
                     if (showCommunityName) {
                         CommunityLink(
@@ -1327,6 +1342,7 @@ fun PostListingCard(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
+    onShareClick: (url: String) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
     showReply: Boolean = false,
@@ -1390,6 +1406,7 @@ fun PostListingCard(
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
             onViewSourceClick = onViewSourceClick,
+            onShareClick = onShareClick,
             showReply = showReply,
             account = account,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -1446,6 +1463,7 @@ fun PostOptionsDialog(
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
     onBlockCommunityClick: () -> Unit,
+    onShareClick: (shareUrl: String) -> Unit,
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
     viewSource: Boolean,
@@ -1569,6 +1587,18 @@ fun PostOptionsDialog(
                         onClick = onViewSourceClick,
                     )
                 }
+                postView.post.url?.also { url ->
+                    IconAndTextDrawerItem(
+                        text = stringResource(R.string.post_listing_share_link),
+                        icon = Icons.Outlined.Share,
+                        onClick = { onShareClick(url) },
+                    )
+                }
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.post_listing_share_post),
+                    icon = Icons.Outlined.Share,
+                    onClick = { onShareClick(postView.post.ap_id) },
+                )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.post_listing_report_post),
@@ -1626,6 +1656,7 @@ fun PostOptionsDialogPreview() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCommunityClick = {},
+        onShareClick = {},
         onBlockCreatorClick = {},
         onViewSourceClick = {},
         viewSource = true,

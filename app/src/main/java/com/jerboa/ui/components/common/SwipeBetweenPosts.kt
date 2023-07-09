@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import arrow.core.left
 import com.jerboa.R
 import com.jerboa.db.Account
-import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.model.PostViewModel
 import kotlinx.coroutines.runBlocking
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox

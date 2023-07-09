@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -43,9 +44,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
@@ -209,7 +207,7 @@ fun CommentNavigationBottomAppBar(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun CommentOrPostNodeHeader(
     creator: Person,
@@ -229,8 +227,8 @@ fun CommentOrPostNodeHeader(
     showAvatar: Boolean,
 ) {
     FlowRow(
-        mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween,
-        crossAxisAlignment = FlowCrossAxisAlignment.Center,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(
@@ -502,6 +500,7 @@ fun Sidebar(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CommentsAndPosts(
     usersActiveDay: Int,

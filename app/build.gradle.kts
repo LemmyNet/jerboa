@@ -17,15 +17,23 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 33
-        versionCode = 37
-        versionName = "0.0.37"
+        versionCode = 38
+        versionName = "0.0.38"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
-        ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+        ksp {
+           arg("room.schemaLocation", "$projectDir/schemas")
+        }
     }
+
+    sourceSets {
+        // Adds exported schema location as test app assets.
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+
 
     if (project.hasProperty("RELEASE_STORE_FILE")) {
         signingConfigs {
@@ -131,6 +139,7 @@ dependencies {
     // optional - Test helpers
     testImplementation("androidx.room:room-testing:2.5.2")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
+    androidTestImplementation("androidx.room:room-testing:2.5.2")
 
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:2.5.2")
@@ -164,4 +173,6 @@ dependencies {
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))
+
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 }

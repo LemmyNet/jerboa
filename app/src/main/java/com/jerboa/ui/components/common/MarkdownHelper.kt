@@ -16,6 +16,7 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.toArgb
@@ -162,6 +163,7 @@ object MarkdownHelper {
         markwon = Markwon.builder(context).build()
     }
 
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     fun CreateMarkdownView(
         markdown: String,
@@ -199,6 +201,7 @@ object MarkdownHelper {
                     //                textView.movementMethod = null
                     //            }
                 },
+                onReset = {},
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.comment.edit
+package com.jerboa.model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

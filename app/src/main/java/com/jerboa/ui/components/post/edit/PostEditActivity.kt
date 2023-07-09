@@ -24,6 +24,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.model.PostEditViewModel
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.addReturn

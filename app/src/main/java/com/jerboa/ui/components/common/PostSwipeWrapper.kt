@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.jerboa.db.Account
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.ui.components.post.PostViewModel
+import com.jerboa.model.PostViewModel
 
 @Composable
 fun PostSwipeWrapper(

@@ -29,9 +29,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.Autofill
 import androidx.compose.ui.autofill.AutofillNode
+import androidx.compose.ui.autofill.AutofillTree
 import androidx.compose.ui.autofill.AutofillType
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -40,8 +41,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalAutofill
-import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -58,12 +57,13 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
+import com.jerboa.model.HomeViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.Route
-import com.jerboa.ui.components.home.HomeViewModel
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
@@ -289,15 +289,11 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     val totalItems = layoutInfo.totalItemsCount
     val lastItemVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index
 
-    val out = if (totalItems > 0) {
+    return if (totalItems > 0) {
         lastItemVisible == totalItems - 1
     } else {
         false
     }
-//    Log.d("jerboa", layoutInfo.visibleItemsInfo.lastOrNull()?.index.toString())
-//    Log.d("jerboa", layoutInfo.totalItemsCount.toString())
-//    Log.d("jerboa", out.toString())
-    return out
 }
 
 /*
@@ -359,6 +355,19 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
         return Pair(host, user)
     }
     return null
+}
+
+/**
+ * Open a sharesheet for the given URL.
+ */
+fun shareLink(url: String, ctx: Context) {
+    val intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, url)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(intent, null)
+    ctx.startActivity(shareIntent)
 }
 
 fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
@@ -482,6 +491,13 @@ fun personNameShown(person: Person, federatedName: Boolean = false): String {
             "$name@${hostName(person.actor_id)}"
         }
     }
+}
+
+/**
+ * In cases where there should be no ambiguity as to the given Person's federated name.
+ */
+fun federatedNameShown(person: Person): String {
+    return "${person.name}@${hostName(person.actor_id)}"
 }
 
 fun communityNameShown(community: Community): String {
@@ -942,16 +958,14 @@ fun saveBitmapP(
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> Unit): Modifier = composed {
+fun Modifier.onAutofill(tree: AutofillTree, autofill: Autofill?, autofillTypes: ImmutableList<AutofillType>, onFill: (String) -> Unit): Modifier {
     val autofillNode = AutofillNode(
-        autofillTypes = autofillType.toList(),
+        autofillTypes = autofillTypes,
         onFill = onFill,
     )
-    LocalAutofillTree.current += autofillNode
+    tree += autofillNode
 
-    val autofill = LocalAutofill.current
-
-    this
+    return this
         .onGloballyPositioned {
             autofillNode.boundingBox = it.boundsInWindow()
         }
@@ -1213,19 +1227,18 @@ fun dedupePosts(
     more: List<PostView>,
     existing: List<PostView>,
 ): List<PostView> {
-    val newPostsDeduped = more.filterNot { pv ->
-        existing.map { op -> op.post.id }.contains(
-            pv
-                .post.id,
-        )
-    }
-    return newPostsDeduped
+    val mapIds = existing.map { it.post.id }
+    return more.filterNot { mapIds.contains(it.post.id) }
 }
 
 fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
     val appended = existing.toMutableList()
     appended.addAll(more)
     return appended.toList()
+}
+
+fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
+    return appendData(old, dedupePosts(new, old))
 }
 
 fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
@@ -1369,4 +1382,12 @@ fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange>
         l.add(i, Locale.LanguageRange(this[i]!!.toLanguageTag()))
     }
     return l
+}
+
+fun <T> ApiState<T>.isLoading(): Boolean {
+    return this is ApiState.Appending || this == ApiState.Loading || this == ApiState.Refreshing
+}
+
+fun <T> ApiState<T>.isRefreshing(): Boolean {
+    return this == ApiState.Refreshing
 }

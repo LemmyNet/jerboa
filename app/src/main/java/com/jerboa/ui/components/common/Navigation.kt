@@ -13,7 +13,7 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.gson
-import com.jerboa.ui.components.comment.reply.ReplyItem
+import com.jerboa.model.ReplyItem
 
 // A view model stored higher up the tree used for moving navigation arguments from one route
 // to another. Since this will be reused, the value inside this should be moved out ASAP.
@@ -61,7 +61,7 @@ inline fun <reified D> NavController.takeDepsFromRoot(): State<D> {
 
 fun NavController.toLogin() = navigate(Route.LOGIN)
 
-fun NavController.toHome() = navigate(Route.HOME) { popUpTo(0) }
+fun NavController.toHome() = navigate(Route.HOME) { popUpTo(graph.id) }
 
 fun NavController.toInbox() = navigate(Route.INBOX)
 

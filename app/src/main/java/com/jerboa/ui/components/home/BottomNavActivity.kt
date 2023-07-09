@@ -23,16 +23,18 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.fetchHomePosts
 import com.jerboa.loginFirstToast
+import com.jerboa.model.HomeViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -64,7 +66,7 @@ fun BottomNavActivity(
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    val bottomNavController = rememberAnimatedNavController()
+    val bottomNavController = rememberNavController()
     var selectedTab by rememberSaveable { mutableStateOf(BottomNavTab.Home) }
     val onSelectTab = { tab: BottomNavTab ->
         if (tab.needsLogin() && account == null) {
@@ -126,7 +128,7 @@ fun BottomNavActivity(
                         padding.calculateBottomPadding()
                     }
 
-                AnimatedNavHost(
+                NavHost(
                     navController = bottomNavController,
                     startDestination = BottomNavTab.Home.name,
                     modifier = Modifier.padding(bottom = bottomPadding),
