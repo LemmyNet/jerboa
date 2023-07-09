@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.community.list
+package com.jerboa.model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +16,6 @@ import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.serializeToMap
 import com.jerboa.ui.components.common.Initializable
-import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.launch
 
 class CommunityListViewModel : ViewModel(), Initializable {

@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.login
+package com.jerboa.model
 
 import android.content.Context
 import android.util.Log
@@ -23,7 +23,6 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.getHostFromInstanceString
 import com.jerboa.serializeToMap
 import com.jerboa.ui.components.common.toHome
-import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
