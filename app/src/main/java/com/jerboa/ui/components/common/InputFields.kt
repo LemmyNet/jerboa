@@ -587,7 +587,6 @@ fun MyMarkdownText(
     color: Color = MaterialTheme.colorScheme.onSurface,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
-    maxLines: Int? = null,
     style: TextStyle = MaterialTheme.typography.bodyLarge,
 ) {
     MarkdownHelper.CreateMarkdownView(
@@ -595,7 +594,6 @@ fun MyMarkdownText(
         color = color,
         onClick = onClick,
         onLongClick = onLongClick,
-        maxLines = maxLines,
         style = style,
         modifier = modifier,
     )

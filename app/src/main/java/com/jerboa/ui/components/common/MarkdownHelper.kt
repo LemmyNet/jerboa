@@ -194,7 +194,6 @@ object MarkdownHelper {
         color: Color = Color.Unspecified,
         onClick: (() -> Unit)? = null,
         onLongClick: (() -> Unit)? = null,
-        maxLines: Int? = null,
         style: TextStyle = MaterialTheme.typography.bodyLarge,
     ) {
         val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
@@ -214,7 +213,6 @@ object MarkdownHelper {
                         viewId = null,
                         onClick = onClick,
                         onLongClick = onLongClick,
-                        maxLines = maxLines ?: Int.MAX_VALUE,
                     )
                 },
                 update = { textView ->
@@ -236,7 +234,6 @@ object MarkdownHelper {
         defaultColor: Color,
         fontSize: TextUnit = TextUnit.Unspecified,
         textAlign: TextAlign? = null,
-        maxLines: Int = Int.MAX_VALUE,
         @FontRes fontResource: Int? = null,
         style: TextStyle,
         @IdRes viewId: Int? = null,
@@ -255,7 +252,6 @@ object MarkdownHelper {
             onClick?.let { setOnClickListener { onClick() } }
             onLongClick?.let { setOnLongClickListener { onLongClick(); true } }
             setTextColor(textColor.toArgb())
-            setMaxLines(maxLines)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 setLineHeight(convertSpToPx(mergedStyle.lineHeight, context))
@@ -332,6 +328,7 @@ object MarkdownHelper {
             width = maxWidth
             layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             this.movementMethod = null
+            this.linksClickable = false
             ellipsize = TextUtils.TruncateAt.END
             setMaxLines(maxLines)
             focusable = NOT_FOCUSABLE
