@@ -2,7 +2,6 @@ package com.jerboa.ui.components.settings.lookandfeel
 
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
