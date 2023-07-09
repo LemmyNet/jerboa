@@ -50,6 +50,7 @@ import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.PersonProfileViewModel
+import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
@@ -58,7 +59,6 @@ import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
-import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentEditDeps
