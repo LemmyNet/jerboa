@@ -114,7 +114,6 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
         }
     }
 
-
     fun likePost(form: CreatePostLike) {
         viewModelScope.launch {
             likePostRes = ApiState.Loading

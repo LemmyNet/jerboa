@@ -45,7 +45,7 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
         private set
 
     private var followCommunityRes: ApiState<CommunityResponse> by
-    mutableStateOf(ApiState.Empty)
+        mutableStateOf(ApiState.Empty)
 
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -54,7 +54,7 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-    mutableStateOf(ApiState.Empty)
+        mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     var communityId: CommunityId? by mutableStateOf(null)
@@ -277,7 +277,7 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
                             communityId?.let {
                                 fetchMore(
                                     it,
-                                    account?.jwt
+                                    account?.jwt,
                                 )
                                 val newRes = postsRes
                                 if (newRes is ApiState.Success && newRes.data.posts.size > nextIndex) {
