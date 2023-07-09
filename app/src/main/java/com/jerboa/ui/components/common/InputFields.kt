@@ -55,7 +55,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -585,16 +584,14 @@ fun MyMarkdownText(
     markdown: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface,
-    onClick: (() -> Unit)? = null,
+    onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
-    style: TextStyle = MaterialTheme.typography.bodyLarge,
 ) {
     MarkdownHelper.CreateMarkdownView(
         markdown = markdown,
         color = color,
         onClick = onClick,
         onLongClick = onLongClick,
-        style = style,
         modifier = modifier,
     )
 }
