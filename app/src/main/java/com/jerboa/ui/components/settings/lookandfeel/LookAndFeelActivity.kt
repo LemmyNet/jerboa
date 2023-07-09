@@ -227,15 +227,14 @@ fun LookAndFeelActivity(
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
-                AnimatedVisibility(visible = showBottomNavState.value) {
-                    SettingsCheckbox(
-                        state = showTextDescriptionsInNavbar,
-                        title = {
-                            Text(text = stringResource(R.string.look_and_feel_show_text_descriptions_in_navbar))
-                        },
-                        onCheckedChange = { updateAppSettings() },
-                    )
-                }
+                SettingsCheckbox(
+                    state = showTextDescriptionsInNavbar,
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_show_text_descriptions_in_navbar))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                    enabled = showBottomNavState.value,
+                )
                 SettingsCheckbox(
                     state = showCollapsedCommentContentState,
                     title = {
