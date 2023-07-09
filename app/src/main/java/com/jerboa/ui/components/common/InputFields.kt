@@ -581,32 +581,14 @@ fun TextMarkdownBarPreview() {
 }
 
 @Composable
-fun PreviewLines(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier,
-    ) {
-        MyMarkdownText(
-            markdown = text,
-            onClick = {},
-            maxLines = 5,
-            style = MaterialTheme.typography.bodyMedium,
-            includeImages = false,
-        )
-    }
-}
-
-@Composable
 fun MyMarkdownText(
     markdown: String,
+    modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     maxLines: Int? = null,
     style: TextStyle = MaterialTheme.typography.bodyLarge,
-    includeImages: Boolean = true,
 ) {
     MarkdownHelper.CreateMarkdownView(
         markdown = markdown,
@@ -615,7 +597,7 @@ fun MyMarkdownText(
         onLongClick = onLongClick,
         maxLines = maxLines,
         style = style,
-        includeImages = includeImages,
+        modifier = modifier,
     )
 }
 
