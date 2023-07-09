@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.home
+package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
@@ -13,16 +13,19 @@ import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
+import com.jerboa.datatypes.types.CommunityId
+import com.jerboa.datatypes.types.CommunityResponse
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
+import com.jerboa.datatypes.types.FollowCommunity
+import com.jerboa.datatypes.types.GetCommunity
+import com.jerboa.datatypes.types.GetCommunityResponse
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.entity.Account
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
@@ -31,8 +34,14 @@ import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel(), Initializable {
+class CommunityViewModel : ViewModel(), Initializable {
     override var initialized by mutableStateOf(false)
+
+    var communityRes: ApiState<GetCommunityResponse> by mutableStateOf(ApiState.Empty)
+        private set
+
+    private var followCommunityRes: ApiState<CommunityResponse> by
+        mutableStateOf(ApiState.Empty)
 
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -40,22 +49,17 @@ class HomeViewModel : ViewModel(), Initializable {
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
+        mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.Active)
-        private set
-    var listingType by mutableStateOf(ListingType.Local)
         private set
     var page by mutableStateOf(1)
         private set
 
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
-    }
-
-    fun updateListingType(listingType: ListingType) {
-        this.listingType = listingType
     }
 
     fun resetPage() {
@@ -70,6 +74,16 @@ class HomeViewModel : ViewModel(), Initializable {
         page -= 1
     }
 
+    fun getCommunity(form: GetCommunity) {
+        viewModelScope.launch {
+            communityRes = ApiState.Loading
+            communityRes =
+                apiWrapper(
+                    API.getInstance().getCommunity(form.serializeToMap()),
+                )
+        }
+    }
+
     fun getPosts(form: GetPosts, state: ApiState<GetPostsResponse> = ApiState.Loading) {
         viewModelScope.launch {
             postsRes = state
@@ -80,7 +94,7 @@ class HomeViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun appendPosts(jwt: String?) {
+    fun appendPosts(id: CommunityId, jwt: String?) {
         viewModelScope.launch {
             val oldRes = postsRes
             when (oldRes) {
@@ -89,7 +103,14 @@ class HomeViewModel : ViewModel(), Initializable {
             }
 
             nextPage()
-            val newRes = apiWrapper(API.getInstance().getPosts(getForm(jwt).serializeToMap()))
+            val form = GetPosts(
+                community_id = id,
+                page = page,
+                sort = sortType,
+                auth = jwt,
+            )
+
+            val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
 
             postsRes = when (newRes) {
                 is ApiState.Success -> {
@@ -102,6 +123,32 @@ class HomeViewModel : ViewModel(), Initializable {
                     prevPage()
                     oldRes
                 }
+            }
+        }
+    }
+
+    fun followCommunity(form: FollowCommunity, onSuccess: () -> Unit = {}) {
+        viewModelScope.launch {
+            followCommunityRes = ApiState.Loading
+            followCommunityRes =
+                apiWrapper(API.getInstance().followCommunity(form))
+
+            // Copy that response to the communityRes
+            when (val followRes = followCommunityRes) {
+                is ApiState.Success -> {
+                    val cv = followRes.data.community_view
+                    when (val cRes = communityRes) {
+                        is ApiState.Success -> {
+                            val newCRes = cRes.data.copy(community_view = cv)
+                            communityRes = ApiState.Success(newCRes)
+                            onSuccess()
+                        }
+
+                        else -> {}
+                    }
+                }
+
+                else -> {}
             }
         }
     }
@@ -154,7 +201,29 @@ class HomeViewModel : ViewModel(), Initializable {
             blockCommunityRes = ApiState.Loading
             blockCommunityRes =
                 apiWrapper(API.getInstance().blockCommunity(form))
-            showBlockCommunityToast(blockCommunityRes, ctx)
+
+            when (val blockCommunity = blockCommunityRes) {
+                is ApiState.Success -> {
+                    showBlockCommunityToast(blockCommunity, ctx)
+
+                    when (val existing = communityRes) {
+                        is ApiState.Success -> {
+                            val newRes =
+                                ApiState.Success(
+                                    existing.data.copy(
+                                        community_view =
+                                        blockCommunity.data.community_view,
+                                    ),
+                                )
+                            communityRes = newRes
+                        }
+
+                        else -> {}
+                    }
+                }
+
+                else -> {}
+            }
         }
     }
 
@@ -166,11 +235,6 @@ class HomeViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun updateFromAccount(account: Account) {
-        updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
-        updateListingType(ListingType.values().getOrElse(account.defaultListingType) { listingType })
-    }
-
     fun updatePost(postView: PostView) {
         when (val existing = postsRes) {
             is ApiState.Success -> {
@@ -178,41 +242,8 @@ class HomeViewModel : ViewModel(), Initializable {
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 postsRes = newRes
             }
+
             else -> {}
         }
-    }
-
-    fun resetPosts(account: Account?) {
-        resetPage()
-        getPosts(
-            GetPosts(
-                page = page,
-                sort = sortType,
-                type_ = listingType,
-                auth = account?.jwt,
-            ),
-        )
-    }
-
-    fun refreshPosts(account: Account?) {
-        resetPage()
-        getPosts(
-            GetPosts(
-                page = page,
-                sort = sortType,
-                type_ = listingType,
-                auth = account?.jwt,
-            ),
-            ApiState.Refreshing,
-        )
-    }
-
-    fun getForm(jwt: String?): GetPosts {
-        return GetPosts(
-            page = page,
-            sort = sortType,
-            type_ = listingType,
-            auth = jwt,
-        )
     }
 }

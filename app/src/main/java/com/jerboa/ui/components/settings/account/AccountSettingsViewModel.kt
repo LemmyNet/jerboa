@@ -17,7 +17,7 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.entity.Account
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
-import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.model.SiteViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 

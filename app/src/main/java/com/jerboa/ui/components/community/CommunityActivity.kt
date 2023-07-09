@@ -53,6 +53,8 @@ import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
+import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.shareLink
@@ -72,7 +74,6 @@ import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory

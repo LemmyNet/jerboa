@@ -18,7 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
-import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.model.LoginViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 @Composable

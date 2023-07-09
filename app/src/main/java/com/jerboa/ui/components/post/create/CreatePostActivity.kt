@@ -30,6 +30,7 @@ import com.jerboa.datatypes.types.GetSiteMetadata
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.model.CreatePostViewModel
 import com.jerboa.ui.components.common.ConsumeReturn
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.Route
