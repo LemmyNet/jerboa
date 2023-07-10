@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.person
+package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue

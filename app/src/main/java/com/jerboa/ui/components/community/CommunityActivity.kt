@@ -42,6 +42,7 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.FollowCommunity
 import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
@@ -50,6 +51,8 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
+import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.shareLink
@@ -69,7 +72,6 @@ import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import kotlinx.collections.immutable.toImmutableList
@@ -244,6 +246,13 @@ fun CommunityActivity(
                                                             follow = cfv.subscribed == SubscribedType.NotSubscribed,
                                                             auth = acct.jwt,
                                                         ),
+                                                        onSuccess = {
+                                                            siteViewModel.getSite(
+                                                                form = GetSite(
+                                                                    auth = acct.jwt,
+                                                                ),
+                                                            )
+                                                        },
                                                     )
                                                 }
                                             },

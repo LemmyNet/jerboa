@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -59,9 +61,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.InstantScores
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -1082,6 +1081,7 @@ fun PostVotingTile(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PostListingList(
     postView: PostView,
@@ -1130,9 +1130,9 @@ fun PostListingList(
             ) {
                 PostName(postView = postView)
                 FlowRow(
-                    mainAxisAlignment = FlowMainAxisAlignment.Start,
-                    mainAxisSpacing = SMALL_PADDING,
-                    crossAxisAlignment = FlowCrossAxisAlignment.Center,
+                    horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
+                    verticalArrangement = Arrangement.Center,
+
                 ) {
                     if (showCommunityName) {
                         CommunityLink(
