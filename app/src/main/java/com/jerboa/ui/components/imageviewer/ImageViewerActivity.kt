@@ -5,6 +5,13 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
+import android.view.View
+import android.view.Window
+import android.view.WindowInsetsController
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+import android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
@@ -36,11 +43,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -88,17 +98,47 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
     val oldIcons = controller.isAppearanceLightStatusBars
 
     DisposableEffect(systemUiController) {
+
+        // Needed to make setting color of nav bar work, it is set for status in theme.xml
+        // but setting TRANSLUCENT_NAVIGATION in theme.xml has other implications
+        // It will make it so that all screens can draw behind it.
+        // Thus we only set it here
+    //    window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+    //    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+          window.clearFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+//        if (SDK_INT >= 30){
+//            window.insetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
+//        } else {
+//            window?.decorView?.let { it.systemUiVisibility = it.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv() }
+//        }
+
+
+
+
+
         systemUiController.setSystemBarsColor(
             color = Color.Transparent,
             darkIcons = false,
         )
+       // window.navigationBarColor = Color.Transparent.toArgb()
+
 
         onDispose { // Restore previous status bar
+
+
+          //  window.addFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+          //  window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+          //  window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
+
             systemUiController.setSystemBarsColor(
                 color = oldBarColor,
                 darkIcons = oldIcons,
             )
             systemUiController.isSystemBarsVisible = true
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,)
+            window.clearFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         }
     }
 
@@ -134,6 +174,11 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                             onTap = {
                                 showTopBar = !showTopBar
                                 systemUiController.isSystemBarsVisible = showTopBar
+                                // Default behavior is that if navigation bar is hidden, the system will "steal" touches
+                                // and show it again upon user's touch. We just want the user to be able to show the
+                                // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
+                                // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
+                                systemUiController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                             },
                         ),
                 )
@@ -235,4 +280,15 @@ fun ViewerHeader(
 @Preview
 fun ImageActivityPreview() {
     ImageViewer(url = "", onBackRequest = { })
+}
+
+private fun hideSystemUI(window: Window, controller: WindowInsetsControllerCompat) {
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    controller.hide(WindowInsetsCompat.Type.systemBars())
+    controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+}
+
+private fun showSystemUI(window: Window, controller: WindowInsetsControllerCompat) {
+    WindowCompat.setDecorFitsSystemWindows(window, true)
+    controller.show(WindowInsetsCompat.Type.systemBars())
 }
