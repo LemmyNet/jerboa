@@ -4,10 +4,15 @@ import android.content.Context
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.TextUtils
 import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
+import android.view.View.NOT_FOCUSABLE
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.FontRes
 import androidx.annotation.IdRes
@@ -16,7 +21,7 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.toArgb
@@ -44,6 +49,7 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TableAwareMovementMethod
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.html.HtmlPlugin
+import io.noties.markwon.html.TagHandlerNoOp
 import io.noties.markwon.image.AsyncDrawableSpan
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
@@ -127,6 +133,7 @@ class LemmyLinkPlugin : AbstractMarkwonPlugin() {
 
 object MarkdownHelper {
     private var markwon: Markwon? = null
+    private var previewMarkwon: Markwon? = null
 
     fun init(navController: NavController, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
         val context = navController.context
@@ -135,22 +142,38 @@ object MarkdownHelper {
             .placeholder(R.drawable.ic_launcher_foreground)
             .build()
 
+        // main markdown parser has coil + html on
         markwon = Markwon.builder(context)
-            .usePlugin(CoilImagesPlugin.create(context, loader))
             // email urls interfere with lemmy links
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
             .usePlugin(LemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
+            .usePlugin(CoilImagesPlugin.create(context, loader))
+            .usePlugin(HtmlPlugin.create())
             // use TableAwareLinkMovementMethod to handle clicks inside tables,
             // wraps LinkMovementMethod internally
             .usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
-            .usePlugin(HtmlPlugin.create())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { _, link ->
                         openLink(link, navController, useCustomTabs, usePrivateTabs)
                     }
+                }
+            })
+            .build()
+
+        // no image parser has html off
+        previewMarkwon = Markwon.builder(context)
+            // email urls interfere with lemmy links
+            .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
+            .usePlugin(LemmyLinkPlugin())
+            .usePlugin(StrikethroughPlugin.create())
+            .usePlugin(TablePlugin.create(context))
+            .usePlugin(HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) })
+            .usePlugin(object : AbstractMarkwonPlugin() {
+                override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+                    builder.linkResolver { _, _ -> }
                 }
             })
             .build()
@@ -161,17 +184,18 @@ object MarkdownHelper {
      */
     fun init(context: Context) {
         markwon = Markwon.builder(context).build()
+        previewMarkwon = Markwon.builder(context).build()
     }
 
-    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     fun CreateMarkdownView(
         markdown: String,
+        modifier: Modifier = Modifier,
         color: Color = Color.Unspecified,
         onClick: (() -> Unit)? = null,
         onLongClick: (() -> Unit)? = null,
+        style: TextStyle = MaterialTheme.typography.bodyLarge,
     ) {
-        val style = MaterialTheme.typography.bodyLarge
         val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 
         BoxWithConstraints {
@@ -197,11 +221,9 @@ object MarkdownHelper {
                         img.drawable.initWithKnownDimensions(canvasWidthMaybe, textSizeMaybe)
                     }
                     markwon!!.setParsedMarkdown(textView, md)
-                    //            if (disableLinkMovementMethod) {
-                    //                textView.movementMethod = null
-                    //            }
                 },
                 onReset = {},
+                modifier = modifier,
             )
         }
     }
@@ -212,7 +234,6 @@ object MarkdownHelper {
         defaultColor: Color,
         fontSize: TextUnit = TextUnit.Unspecified,
         textAlign: TextAlign? = null,
-        maxLines: Int = Int.MAX_VALUE,
         @FontRes fontResource: Int? = null,
         style: TextStyle,
         @IdRes viewId: Int? = null,
@@ -231,7 +252,6 @@ object MarkdownHelper {
             onClick?.let { setOnClickListener { onClick() } }
             onLongClick?.let { setOnLongClickListener { onLongClick(); true } }
             setTextColor(textColor.toArgb())
-            setMaxLines(maxLines)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 setLineHeight(convertSpToPx(mergedStyle.lineHeight, context))
@@ -251,6 +271,67 @@ object MarkdownHelper {
             fontResource?.let { font ->
                 typeface = ResourcesCompat.getFont(context, font)
             }
+        }
+    }
+
+    @Composable
+    fun CreateMarkdownPreview(
+        markdown: String,
+        modifier: Modifier = Modifier,
+        color: Color = MaterialTheme.colorScheme.onSurface,
+        onClick: (() -> Unit)? = null,
+        style: TextStyle,
+        defaultColor: Color,
+    ) {
+        AndroidView(
+            factory = { ctx ->
+                createTextViewPreview(
+                    context = ctx,
+                    color = color,
+                    defaultColor = defaultColor,
+                    fontSize = TextUnit.Unspecified,
+                    style = style,
+                    onClick = onClick,
+                )
+            },
+            update = { textView ->
+                previewMarkwon!!.setMarkdown(textView, markdown)
+            },
+            onReset = {},
+            modifier = modifier,
+        )
+    }
+
+    private fun createTextViewPreview(
+        context: Context,
+        color: Color = Color.Unspecified,
+        defaultColor: Color,
+        fontSize: TextUnit = TextUnit.Unspecified,
+        maxLines: Int = 5,
+        style: TextStyle,
+        onClick: (() -> Unit)? = null,
+    ): TextView {
+        val textColor = color.takeOrElse { style.color.takeOrElse { defaultColor } }
+        val mergedStyle = style.merge(
+            TextStyle(
+                color = textColor,
+                fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
+            ),
+        )
+        return TextView(context).apply {
+            onClick?.let { setOnClickListener { onClick() } }
+            setTextColor(textColor.toArgb())
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                lineHeight = convertSpToPx(mergedStyle.lineHeight, context)
+            }
+            width = maxWidth
+            layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            this.movementMethod = null
+            this.linksClickable = false
+            ellipsize = TextUtils.TruncateAt.END
+            setMaxLines(maxLines)
+            focusable = NOT_FOCUSABLE
         }
     }
 }

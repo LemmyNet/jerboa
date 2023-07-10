@@ -2,6 +2,7 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -78,11 +79,11 @@ class InboxViewModel : ViewModel(), Initializable {
     private var blockPersonRes: ApiState<BlockPersonResponse> by
         mutableStateOf(ApiState.Empty)
 
-    var pageReplies by mutableStateOf(1)
+    var pageReplies by mutableIntStateOf(1)
         private set
-    var pageMentions by mutableStateOf(1)
+    var pageMentions by mutableIntStateOf(1)
         private set
-    var pageMessages by mutableStateOf(1)
+    var pageMessages by mutableIntStateOf(1)
         private set
     var unreadOnly by mutableStateOf(true)
         private set
@@ -98,9 +99,9 @@ class InboxViewModel : ViewModel(), Initializable {
     }
 
     fun resetPages() {
-        pageMentions = 1
-        pageReplies = 1
-        pageMessages = 1
+        resetPageMentions()
+        resetPageMessages()
+        resetPageReplies()
     }
 
     fun updateUnreadOnly(unreadOnly: Boolean) {
@@ -514,6 +515,23 @@ class InboxViewModel : ViewModel(), Initializable {
             unread_only = unreadOnly,
             sort = CommentSortType.New,
             page = pageReplies,
+            auth = jwt,
+        )
+    }
+
+    fun getFormMentions(jwt: String): GetPersonMentions {
+        return GetPersonMentions(
+            unread_only = unreadOnly,
+            sort = CommentSortType.New,
+            page = pageMentions,
+            auth = jwt,
+        )
+    }
+
+    fun getFormMessages(jwt: String): GetPrivateMessages {
+        return GetPrivateMessages(
+            unread_only = unreadOnly,
+            page = pageMessages,
             auth = jwt,
         )
     }
