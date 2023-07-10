@@ -122,6 +122,11 @@ data class AppSettings(
     )
     val blurNSFW: Boolean,
     @ColumnInfo(
+        name = "show_text_descriptions_in_navbar",
+        defaultValue = "1",
+    )
+    val showTextDescriptionsInNavbar: Boolean,
+    @ColumnInfo(
         name = "allow_swiping_between_posts",
         defaultValue = "0",
     )
@@ -145,6 +150,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     usePrivateTabs = false,
     secureWindow = false,
     blurNSFW = true,
+    showTextDescriptionsInNavbar = true,
     allowSwipingBetweenPosts = false,
 )
 
@@ -277,7 +283,7 @@ class AppSettingsRepository(
 }
 
 @Database(
-    version = 18,
+    version = 19,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
