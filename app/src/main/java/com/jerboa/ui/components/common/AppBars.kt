@@ -83,6 +83,7 @@ fun BottomAppBarAll(
     selectedTab: NavTab,
     onSelect: (NavTab) -> Unit,
     unreadCounts: Int,
+    showTextDescriptionsInNavbar: Boolean,
 ) {
     // Check for preview mode
     if (LocalContext.current is Activity) {
@@ -114,10 +115,12 @@ fun BottomAppBarAll(
                     )
                 },
                 label = {
-                    Text(
-                        text = stringResource(tab.textId),
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
+                    if (showTextDescriptionsInNavbar) {
+                        Text(
+                            text = stringResource(tab.textId),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
                 },
                 selected = selected,
                 onClick = {
@@ -135,6 +138,7 @@ fun BottomAppBarAllPreview() {
         selectedTab = NavTab.Home,
         onSelect = {},
         unreadCounts = 30,
+        showTextDescriptionsInNavbar = true,
     )
 }
 
@@ -190,8 +194,8 @@ fun CommentOrPostNodeHeader(
     showAvatar: Boolean,
 ) {
     FlowRow(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(
