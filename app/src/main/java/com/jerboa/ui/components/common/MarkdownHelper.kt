@@ -2,11 +2,7 @@ package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.os.Build
-import android.text.*
-import android.text.style.ClickableSpan
-import android.text.style.URLSpan
 import android.text.util.Linkify
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -31,25 +27,19 @@ import coil.ImageLoader
 import com.jerboa.R
 import com.jerboa.convertSpToPx
 import com.jerboa.openLink
+import com.jerboa.util.MarkwonLemmyLinkPlugin
+import com.jerboa.util.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
-import io.noties.markwon.MarkwonPlugin
-import io.noties.markwon.MarkwonVisitor
-import io.noties.markwon.SpannableBuilder
-import io.noties.markwon.core.CorePlugin
-import io.noties.markwon.core.CorePlugin.OnTextAddedListener
-import io.noties.markwon.core.CoreProps
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TableAwareMovementMethod
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.html.HtmlPlugin
-import io.noties.markwon.image.AsyncDrawableScheduler
 import io.noties.markwon.image.AsyncDrawableSpan
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
-import org.commonmark.node.Link
 import java.util.regex.Pattern
 
 /**
@@ -80,147 +70,6 @@ val lemmyCommunityPattern: Pattern =
 val lemmyUserPattern: Pattern =
     Pattern.compile("(?<!\\S)@($userPatternFragment)(?:@($instancePatternFragment))?\\b")
 
-/**
- * Plugin to turn Lemmy-specific URIs into clickable links.
- */
-class LemmyLinkPlugin : AbstractMarkwonPlugin() {
-    override fun configure(registry: MarkwonPlugin.Registry) {
-        registry.require(CorePlugin::class.java) { it.addOnTextAddedListener(LemmyTextAddedListener()) }
-    }
-
-    private class LemmyTextAddedListener : OnTextAddedListener {
-        override fun onTextAdded(visitor: MarkwonVisitor, text: String, start: Int) {
-            // we will be using the link that is used by markdown (instead of directly applying URLSpan)
-            val spanFactory = visitor.configuration().spansFactory().get(
-                Link::class.java,
-            ) ?: return
-
-            // don't re-use builder (thread safety achieved for
-            // render calls from different threads and ... better performance)
-            val builder = SpannableStringBuilder(text)
-            if (addLinks(builder)) {
-                // target URL span specifically
-                val spans = builder.getSpans(0, builder.length, URLSpan::class.java)
-                if (!spans.isNullOrEmpty()) {
-                    val renderProps = visitor.renderProps()
-                    val spannableBuilder = visitor.builder()
-                    for (span in spans) {
-                        CoreProps.LINK_DESTINATION[renderProps] = span.url
-                        SpannableBuilder.setSpans(
-                            spannableBuilder,
-                            spanFactory.getSpans(visitor.configuration(), renderProps),
-                            start + builder.getSpanStart(span),
-                            start + builder.getSpanEnd(span),
-                        )
-                    }
-                }
-            }
-        }
-
-        fun addLinks(text: Spannable): Boolean {
-            val communityLinkAdded = Linkify.addLinks(text, lemmyCommunityPattern, null)
-            val userLinkAdded = Linkify.addLinks(text, lemmyUserPattern, null)
-
-            return communityLinkAdded || userLinkAdded
-        }
-    }
-}
-
-data class SpoilerTitleSpan(val title: CharSequence)
-class SpoilerCloseSpan()
-class SpoilerPlugin : AbstractMarkwonPlugin() {
-
-    override fun configure(registry: MarkwonPlugin.Registry) {
-        registry.require(CorePlugin::class.java) { it.addOnTextAddedListener(SpoilerTextAddedListener()) }
-    }
-
-    private class SpoilerTextAddedListener : OnTextAddedListener {
-        override fun onTextAdded(visitor: MarkwonVisitor, text: String, start: Int) {
-            val spoilerTitleRegex = Regex("(:::\\s*spoiler\\s*)(.*)")
-            // Find all spoiler "start" lines
-            val spoilerTitles = spoilerTitleRegex.findAll(text)
-
-            for (match in spoilerTitles) {
-                val spoilerTitle = match.groups[2]!!.value
-                visitor.builder().setSpan(SpoilerTitleSpan(spoilerTitle), start, start + match.groups[2]!!.range.last, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-
-            val spoilerCloseRegex = Regex("^(?!.*spoiler).*:::")
-            // Find all spoiler "end" lines
-            val spoilerCloses = spoilerCloseRegex.findAll(text)
-            for (match in spoilerCloses) {
-                visitor.builder().setSpan(SpoilerCloseSpan(), start, start + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-        }
-    }
-
-    override fun afterSetText(textView: TextView) {
-        try {
-            val spanned = SpannableStringBuilder(textView.text)
-            val spoilerTitleSpans = spanned.getSpans(0, spanned.length, SpoilerTitleSpan::class.java)
-            val spoilerCloseSpans = spanned.getSpans(0, spanned.length, SpoilerCloseSpan::class.java)
-
-            spoilerTitleSpans.sortBy { spanned.getSpanStart(it) }
-            spoilerCloseSpans.sortBy { spanned.getSpanStart(it) }
-
-            spoilerTitleSpans.forEachIndexed { index, spoilerTitleSpan ->
-                val spoilerStart = spanned.getSpanStart(spoilerTitleSpan)
-
-                var spoilerEnd = spanned.length
-                if (index < spoilerCloseSpans.size) {
-                    val spoilerCloseSpan = spoilerCloseSpans[index]
-                    spoilerEnd = spanned.getSpanEnd(spoilerCloseSpan)
-                }
-
-                var open = false
-                val getSpoilerTitle = { openParam: Boolean ->
-                    if (openParam) "▼ ${spoilerTitleSpan.title}" else "▶ ${spoilerTitleSpan.title}"
-                }
-
-                val spoilerTitle = getSpoilerTitle(false)
-
-                val spoilerContent = spanned.subSequence(spanned.getSpanEnd(spoilerTitleSpan) + 1, spoilerEnd - 3) as SpannableStringBuilder
-
-                // Remove spoiler content from span
-                spanned.replace(spoilerStart, spoilerEnd, spoilerTitle)
-                // Set span block title
-                spanned.setSpan(spoilerTitle, spoilerStart, spoilerStart + spoilerTitle.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                val wrapper = object : ClickableSpan() {
-                    override fun onClick(p0: View) {
-                        open = !open
-
-                        spanned.replace(spoilerStart, spoilerStart + spoilerTitle.length, getSpoilerTitle(open))
-                        if (open) {
-                            spanned.insert(spoilerStart + spoilerTitle.length, spoilerContent)
-                        } else {
-                            spanned.replace(spoilerStart + spoilerTitle.length, spoilerStart + spoilerTitle.length + spoilerContent.length, "")
-                        }
-
-                        textView.text = spanned
-                        AsyncDrawableScheduler.schedule(textView)
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                    }
-                }
-
-                // Set spoiler block type as ClickableSpan
-                spanned.setSpan(
-                    wrapper,
-                    spoilerStart,
-                    spoilerStart + spoilerTitle.length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
-                )
-
-                textView.text = spanned
-            }
-        } catch (e: Exception) {
-            Log.w("jerboa", "Failed to parse spoiler tag. Format incorrect")
-        }
-    }
-}
-
 object MarkdownHelper {
     private var markwon: Markwon? = null
 
@@ -235,14 +84,14 @@ object MarkdownHelper {
             .usePlugin(CoilImagesPlugin.create(context, loader))
             // email urls interfere with lemmy links
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
-            .usePlugin(LemmyLinkPlugin())
+            .usePlugin(MarkwonLemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
             // use TableAwareLinkMovementMethod to handle clicks inside tables,
             // wraps LinkMovementMethod internally
             .usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
             .usePlugin(HtmlPlugin.create())
-            .usePlugin(SpoilerPlugin())
+            .usePlugin(MarkwonSpoilerPlugin())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { _, link ->
