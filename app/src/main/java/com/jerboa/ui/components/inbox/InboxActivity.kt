@@ -26,11 +26,7 @@ import com.jerboa.*
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.GetPersonMentions
-import com.jerboa.datatypes.types.GetPrivateMessages
-import com.jerboa.datatypes.types.GetReplies
 import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.MarkAllAsRead
 import com.jerboa.datatypes.types.MarkCommentReplyAsRead
@@ -86,19 +82,13 @@ fun InboxActivity(
         if (account != null) {
             inboxViewModel.resetPages()
             inboxViewModel.getReplies(
-                GetReplies(
-                    auth = account.jwt,
-                ),
+                inboxViewModel.getFormReplies(account.jwt),
             )
             inboxViewModel.getMentions(
-                GetPersonMentions(
-                    auth = account.jwt,
-                ),
+                inboxViewModel.getFormMentions(account.jwt),
             )
             inboxViewModel.getMessages(
-                GetPrivateMessages(
-                    auth = account.jwt,
-                ),
+                inboxViewModel.getFormMessages(account.jwt),
             )
         }
     }
@@ -117,27 +107,13 @@ fun InboxActivity(
                         inboxViewModel.resetPages()
                         inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
                         inboxViewModel.getReplies(
-                            GetReplies(
-                                unread_only = inboxViewModel.unreadOnly,
-                                sort = CommentSortType.New,
-                                page = inboxViewModel.pageReplies,
-                                auth = acct.jwt,
-                            ),
+                            inboxViewModel.getFormReplies(acct.jwt),
                         )
                         inboxViewModel.getMentions(
-                            GetPersonMentions(
-                                unread_only = inboxViewModel.unreadOnly,
-                                sort = CommentSortType.New,
-                                page = inboxViewModel.pageMentions,
-                                auth = acct.jwt,
-                            ),
+                            inboxViewModel.getFormMentions(acct.jwt),
                         )
                         inboxViewModel.getMessages(
-                            GetPrivateMessages(
-                                unread_only = inboxViewModel.unreadOnly,
-                                page = inboxViewModel.pageMessages,
-                                auth = acct.jwt,
-                            ),
+                            inboxViewModel.getFormMessages(acct.jwt),
                         )
                     }
                 },
@@ -436,12 +412,7 @@ fun InboxTabs(
                             account?.also { acct ->
                                 inboxViewModel.resetPageMentions()
                                 inboxViewModel.getMentions(
-                                    GetPersonMentions(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        sort = CommentSortType.New,
-                                        page = inboxViewModel.pageMentions,
-                                        auth = acct.jwt,
-                                    ),
+                                    inboxViewModel.getFormMentions(acct.jwt),
                                     ApiState.Refreshing,
                                 )
                             }
@@ -607,11 +578,7 @@ fun InboxTabs(
                             account?.also { acct ->
                                 inboxViewModel.resetPageMessages()
                                 inboxViewModel.getMessages(
-                                    GetPrivateMessages(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        page = inboxViewModel.pageMessages,
-                                        auth = acct.jwt,
-                                    ),
+                                    inboxViewModel.getFormMessages(acct.jwt),
                                     ApiState.Refreshing,
                                 )
                             }
