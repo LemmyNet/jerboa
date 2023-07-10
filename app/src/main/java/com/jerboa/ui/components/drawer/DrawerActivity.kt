@@ -8,13 +8,13 @@ import com.jerboa.closeDrawer
 import com.jerboa.db.AccountViewModel
 import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
+import com.jerboa.model.HomeViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toCommunity
 import com.jerboa.ui.components.common.toHome
 import com.jerboa.ui.components.common.toSettings
-import com.jerboa.ui.components.home.HomeViewModel
 import com.jerboa.ui.components.home.NavTab
-import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
