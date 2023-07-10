@@ -126,7 +126,7 @@ fun BottomNavActivity(
                         drawerState = drawerState,
                         onSelectTab = onSelectTab,
                         blurNSFW = appSettings.blurNSFW,
-                        showBottomNave = appSettings.showBottomNav,
+                        showBottomNav = appSettings.showBottomNav,
                     )
                 },
             )

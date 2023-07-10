@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
 import com.jerboa.db.AccountViewModel
 import com.jerboa.fetchHomePosts
@@ -27,7 +28,7 @@ fun MainDrawer(
     drawerState: DrawerState,
     onSelectTab: (NavTab) -> Unit,
     blurNSFW: Boolean,
-    showBottomNave: Boolean,
+    showBottomNav: Boolean,
 ) {
     val accounts = accountViewModel.allAccounts.value
     val account = getCurrentAccount(accountViewModel)
@@ -37,7 +38,10 @@ fun MainDrawer(
     }
 
     Drawer(
-        siteRes = siteViewModel.siteRes,
+        myUserInfo = when (val res = siteViewModel.siteRes) {
+            is ApiState.Success -> res.data.my_user
+            else -> null
+        },
         unreadCount = siteViewModel.getUnreadCountTotal(),
         accountViewModel = accountViewModel,
         navController = navController,
@@ -96,7 +100,7 @@ fun MainDrawer(
             closeDrawer(scope, drawerState)
         },
         blurNSFW = blurNSFW,
-        showBottomNav = showBottomNave,
+        showBottomNav = showBottomNav,
         onSelectTab = onSelectTab,
         closeDrawer = { closeDrawer(scope, drawerState) },
     )

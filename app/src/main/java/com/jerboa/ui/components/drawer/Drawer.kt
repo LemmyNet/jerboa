@@ -42,10 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
-import com.jerboa.api.ApiState
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.MyUserInfo
 import com.jerboa.datatypes.types.Person
@@ -68,7 +66,7 @@ import com.jerboa.ui.theme.muted
 
 @Composable
 fun Drawer(
-    siteRes: ApiState<GetSiteResponse>,
+    myUserInfo: MyUserInfo?,
     unreadCount: Int,
     navController: NavController = rememberNavController(),
     accountViewModel: AccountViewModel,
@@ -86,11 +84,6 @@ fun Drawer(
     var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
 
     if (!isOpen) showAccountAddMode = false
-
-    val myUserInfo = when (siteRes) {
-        is ApiState.Success -> siteRes.data.my_user
-        else -> null
-    }
 
     DrawerHeader(
         myPerson = myUserInfo?.local_user_view?.person,
