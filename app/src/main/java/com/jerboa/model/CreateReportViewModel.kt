@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.report
+package com.jerboa.model
 
 import android.content.Context
 import android.widget.Toast

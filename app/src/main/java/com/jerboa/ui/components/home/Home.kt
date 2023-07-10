@@ -62,6 +62,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -78,6 +79,7 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.federatedNameShown
 import com.jerboa.getLocalizedListingTypeName
 import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
@@ -355,7 +357,7 @@ fun DrawerAddAccountMode(
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
-                text = stringResource(R.string.home_switch_to, it.instance, it.name),
+                text = stringResource(R.string.home_switch_to, it.name, it.instance),
                 icon = Icons.Outlined.Login,
                 onClick = { onSwitchAccountClick(it) },
             )
@@ -407,8 +409,11 @@ fun DrawerHeader(
             modifier = sizeMod
                 .padding(XL_PADDING),
         ) {
-            AvatarAndAccountName(myPerson, showAvatar)
+            Box(modifier = Modifier.weight(0.9f)) {
+                AvatarAndAccountName(myPerson, showAvatar)
+            }
             Icon(
+                modifier = Modifier.weight(0.1f),
                 imageVector = if (showAccountAddMode) {
                     Icons.Outlined.ExpandLess
                 } else {
@@ -435,11 +440,26 @@ fun AvatarAndAccountName(myPerson: Person?, showAvatar: Boolean) {
                 LargerCircularIcon(icon = it)
             }
         }
-        PersonName(
-            person = myPerson,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
+        Column() {
+            PersonName(
+                person = myPerson,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = myPerson?.let { federatedNameShown(it) } ?: "",
+                color = MaterialTheme.colorScheme.tertiary,
+                style = MaterialTheme.typography.labelSmall,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
+            )
+        }
     }
+}
+
+@Preview
+@Composable
+fun AvatarAndAccountNamePreview() {
+    AvatarAndAccountName(myPerson = samplePerson, showAvatar = true)
 }
 
 @Preview

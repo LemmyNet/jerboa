@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.*
@@ -38,8 +39,10 @@ import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.model.InboxViewModel
+import com.jerboa.model.ReplyItem
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
-import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.comment.replynode.CommentReplyNode
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
@@ -57,7 +60,6 @@ import com.jerboa.ui.components.common.toCommunity
 import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPrivateMessageReply
 import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -82,7 +84,7 @@ fun InboxActivity(
     val inboxViewModel: InboxViewModel = viewModel()
     InitializeRoute(inboxViewModel) {
         if (account != null) {
-            inboxViewModel.resetPage()
+            inboxViewModel.resetPages()
             inboxViewModel.getReplies(
                 GetReplies(
                     auth = account.jwt,
@@ -112,13 +114,13 @@ fun InboxActivity(
                 selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly),
                 onClickUnreadOrAll = { unreadOrAll ->
                     account?.also { acct ->
-                        inboxViewModel.resetPage()
+                        inboxViewModel.resetPages()
                         inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
                         inboxViewModel.getReplies(
                             GetReplies(
                                 unread_only = inboxViewModel.unreadOnly,
                                 sort = CommentSortType.New,
-                                page = inboxViewModel.page,
+                                page = inboxViewModel.pageReplies,
                                 auth = acct.jwt,
                             ),
                         )
@@ -126,14 +128,14 @@ fun InboxActivity(
                             GetPersonMentions(
                                 unread_only = inboxViewModel.unreadOnly,
                                 sort = CommentSortType.New,
-                                page = inboxViewModel.page,
+                                page = inboxViewModel.pageMentions,
                                 auth = acct.jwt,
                             ),
                         )
                         inboxViewModel.getMessages(
                             GetPrivateMessages(
                                 unread_only = inboxViewModel.unreadOnly,
-                                page = inboxViewModel.page,
+                                page = inboxViewModel.pageMessages,
                                 auth = acct.jwt,
                             ),
                         )
@@ -242,37 +244,24 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account?.also { acct ->
-                                inboxViewModel.nextPage()
+                            account?.also {
                                 inboxViewModel.appendReplies(
-                                    GetReplies(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        sort = CommentSortType.New,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    it.jwt,
                                 )
                             }
                         }
                     }
 
-                    val loading = when (inboxViewModel.repliesRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val refreshing = inboxViewModel.repliesRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
-                        refreshing = loading,
+                        refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
-                                inboxViewModel.resetPage()
+                                inboxViewModel.resetPageReplies()
                                 inboxViewModel.getReplies(
-                                    GetReplies(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        sort = CommentSortType.New,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    inboxViewModel.getFormReplies(acct.jwt),
+                                    ApiState.Refreshing,
                                 )
                             }
                         },
@@ -306,12 +295,21 @@ fun InboxTabs(
                     }
 
                     Box(modifier = Modifier.pullRefresh(refreshState)) {
-                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                        PullRefreshIndicator(
+                            refreshing,
+                            refreshState,
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100F),
+                        )
+
+                        if (inboxViewModel.repliesRes.isLoading()) {
+                            LoadingBar()
+                        }
                         when (val repliesRes = inboxViewModel.repliesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(repliesRes.msg)
-                            ApiState.Loading -> LoadingBar()
-                            is ApiState.Success -> {
+                            is ApiState.Holder -> {
                                 val replies = repliesRes.data.replies
                                 LazyColumn(
                                     state = listState,
@@ -402,6 +400,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -419,52 +418,51 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account?.also { acct ->
-                                inboxViewModel.nextPage()
+                            account?.also {
                                 inboxViewModel.appendMentions(
-                                    GetPersonMentions(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        sort = CommentSortType.New,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    it.jwt,
                                 )
                             }
                         }
                     }
 
-                    val loading = when (inboxViewModel.mentionsRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val loading = inboxViewModel.mentionsRes.isLoading()
+
+                    val refreshing = inboxViewModel.mentionsRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
-                        refreshing = loading,
+                        refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
-                                inboxViewModel.resetPage()
+                                inboxViewModel.resetPageMentions()
                                 inboxViewModel.getMentions(
                                     GetPersonMentions(
                                         unread_only = inboxViewModel.unreadOnly,
                                         sort = CommentSortType.New,
-                                        page = inboxViewModel.page,
+                                        page = inboxViewModel.pageMentions,
                                         auth = acct.jwt,
                                     ),
+                                    ApiState.Refreshing,
                                 )
                             }
                         },
                     )
-                    Box(
-                        modifier = Modifier
-                            .pullRefresh(refreshState)
-                            .fillMaxSize(),
-                    ) {
-                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
+                        PullRefreshIndicator(
+                            refreshing,
+                            refreshState,
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100F),
+                        )
+                        if (loading) {
+                            LoadingBar()
+                        }
+
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(mentionsRes.msg)
-                            ApiState.Loading -> LoadingBar()
-                            is ApiState.Success -> {
+                            is ApiState.Holder -> {
                                 val mentions = mentionsRes.data.mentions
                                 LazyColumn(
                                     state = listState,
@@ -574,6 +572,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -591,50 +590,49 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account?.also { acct ->
-                                inboxViewModel.nextPage()
+                            account?.also {
                                 inboxViewModel.appendMessages(
-                                    GetPrivateMessages(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    it.jwt,
                                 )
                             }
                         }
                     }
 
-                    val loading = when (inboxViewModel.messagesRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val loading = inboxViewModel.messagesRes.isLoading()
+                    val refreshing = inboxViewModel.mentionsRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
-                        refreshing = loading,
+                        refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
-                                inboxViewModel.resetPage()
+                                inboxViewModel.resetPageMessages()
                                 inboxViewModel.getMessages(
                                     GetPrivateMessages(
                                         unread_only = inboxViewModel.unreadOnly,
-                                        page = inboxViewModel.page,
+                                        page = inboxViewModel.pageMessages,
                                         auth = acct.jwt,
                                     ),
+                                    ApiState.Refreshing,
                                 )
                             }
                         },
                     )
-                    Box(
-                        modifier = Modifier
-                            .pullRefresh(refreshState)
-                            .fillMaxSize(),
-                    ) {
-                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
+                        PullRefreshIndicator(
+                            refreshing,
+                            refreshState,
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100F),
+                        )
+
+                        if (loading) {
+                            LoadingBar()
+                        }
                         when (val messagesRes = inboxViewModel.messagesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(messagesRes.msg)
-                            ApiState.Loading -> LoadingBar()
-                            is ApiState.Success -> {
+                            is ApiState.Holder -> {
                                 val messages = messagesRes.data.private_messages
                                 LazyColumn(
                                     state = listState,
@@ -680,6 +678,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+                            else -> {}
                         }
                     }
                 }

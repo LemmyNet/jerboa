@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.home
+package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
-import com.jerboa.appendData
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
@@ -24,8 +23,8 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.Account
-import com.jerboa.dedupePosts
 import com.jerboa.findAndUpdatePost
+import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
@@ -41,11 +40,8 @@ class HomeViewModel : ViewModel(), Initializable {
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
-    var fetchingMore by mutableStateOf(false)
-        private set
 
     var sortType by mutableStateOf(SortType.Active)
         private set
@@ -70,9 +66,13 @@ class HomeViewModel : ViewModel(), Initializable {
         page += 1
     }
 
-    fun getPosts(form: GetPosts) {
+    fun prevPage() {
+        page -= 1
+    }
+
+    fun getPosts(form: GetPosts, state: ApiState<GetPostsResponse> = ApiState.Loading) {
         viewModelScope.launch {
-            postsRes = ApiState.Loading
+            postsRes = state
             postsRes =
                 apiWrapper(
                     API.getInstance().getPosts(form.serializeToMap()),
@@ -80,31 +80,28 @@ class HomeViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun appendPosts(form: GetPosts) {
+    fun appendPosts(jwt: String?) {
         viewModelScope.launch {
-            fetchingMore = true
-            val more = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
-            // Only append when both new and existing are Successes
-            when (val existing = postsRes) {
+            val oldRes = postsRes
+            when (oldRes) {
+                is ApiState.Success -> postsRes = ApiState.Appending(oldRes.data)
+                else -> return@launch
+            }
+
+            nextPage()
+            val newRes = apiWrapper(API.getInstance().getPosts(getForm(jwt).serializeToMap()))
+
+            postsRes = when (newRes) {
                 is ApiState.Success -> {
-                    when (more) {
-                        is ApiState.Success -> {
-                            val newPostsDeduped = dedupePosts(more.data.posts, existing.data.posts)
-                            val appended = appendData(existing.data.posts, newPostsDeduped)
-                            val newPostRes = ApiState.Success(existing.data.copy(posts = appended))
-                            postsRes = newPostRes
-                            fetchingMore = false
-                        }
-
-                        is ApiState.Failure -> {
-                            fetchingMore = false
-                        }
-
-                        else -> {}
+                    if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
+                        prevPage()
                     }
+                    ApiState.Success(GetPostsResponse(mergePosts(oldRes.data.posts, newRes.data.posts)))
                 }
-
-                else -> {}
+                else -> {
+                    prevPage()
+                    oldRes
+                }
             }
         }
     }
@@ -183,5 +180,39 @@ class HomeViewModel : ViewModel(), Initializable {
             }
             else -> {}
         }
+    }
+
+    fun resetPosts(account: Account?) {
+        resetPage()
+        getPosts(
+            GetPosts(
+                page = page,
+                sort = sortType,
+                type_ = listingType,
+                auth = account?.jwt,
+            ),
+        )
+    }
+
+    fun refreshPosts(account: Account?) {
+        resetPage()
+        getPosts(
+            GetPosts(
+                page = page,
+                sort = sortType,
+                type_ = listingType,
+                auth = account?.jwt,
+            ),
+            ApiState.Refreshing,
+        )
+    }
+
+    fun getForm(jwt: String?): GetPosts {
+        return GetPosts(
+            page = page,
+            sort = sortType,
+            type_ = listingType,
+            auth = jwt,
+        )
     }
 }
