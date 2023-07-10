@@ -2,7 +2,6 @@ package com.jerboa.ui.components.home
 
 import android.content.Context
 import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,7 +42,6 @@ import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import com.jerboa.closeDrawer
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CreatePostLike
@@ -54,8 +52,6 @@ import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.fetchHomePosts
-import com.jerboa.fetchInitialData
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.loginFirstToast
@@ -75,19 +71,16 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.rootChannel
 import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toCommunityList
 import com.jerboa.ui.components.common.toCreatePost
-import com.jerboa.ui.components.common.toInbox
 import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.common.toSettings
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -124,9 +117,14 @@ fun HomeActivity(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
-                scope = scope,
-                postListState = postListState,
-                drawerState = drawerState,
+                openDrawer = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                },
+                scrollToTop = {
+                    scrollToTop(scope, postListState)
+                },
                 homeViewModel = homeViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 account = account,
@@ -215,7 +213,13 @@ fun MainPostListingsContent(
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         // zIndex needed bc some elements of a post get drawn above it.
-        PullRefreshIndicator(homeViewModel.postsRes.isRefreshing(), pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100f))
+        PullRefreshIndicator(
+            homeViewModel.postsRes.isRefreshing(),
+            pullRefreshState,
+            Modifier
+                .align(Alignment.TopCenter)
+                .zIndex(100f),
+        )
         // Can't be in ApiState.Loading, because of infinite scrolling
         if (homeViewModel.postsRes.isLoading()) {
             LoadingBar(padding = padding)
@@ -345,129 +349,11 @@ fun MainPostListingsContent(
     }
 }
 
-@Composable
-fun MainDrawer(
-    siteViewModel: SiteViewModel,
-    navController: NavController,
-    accountViewModel: AccountViewModel,
-    homeViewModel: HomeViewModel,
-    scope: CoroutineScope,
-    drawerState: DrawerState,
-    onSelectTab: ((BottomNavTab) -> Unit)?,
-    blurNSFW: Boolean,
-) {
-    val ctx = LocalContext.current
-
-    val accounts = accountViewModel.allAccounts.value
-    val account = getCurrentAccount(accountViewModel)
-
-    BackHandler(drawerState.isOpen) {
-        closeDrawer(scope, drawerState)
-    }
-
-    Drawer(
-        siteRes = siteViewModel.siteRes,
-        unreadCount = siteViewModel.getUnreadCountTotal(),
-        accountViewModel = accountViewModel,
-        navController = navController,
-        isOpen = drawerState.isOpen,
-        onSwitchAccountClick = { acct ->
-            accountViewModel.removeCurrent()
-            accountViewModel.setCurrent(acct.id)
-
-            fetchInitialData(
-                account = acct,
-                siteViewModel = siteViewModel,
-            )
-            fetchHomePosts(
-                account = acct,
-                homeViewModel = homeViewModel,
-            )
-
-            closeDrawer(scope, drawerState)
-        },
-        onSignOutClick = {
-            accounts?.also { accts ->
-                account?.also {
-                    accountViewModel.delete(it)
-                    val updatedList = accts.toMutableList()
-                    updatedList.remove(it)
-
-                    if (updatedList.isNotEmpty()) {
-                        accountViewModel.setCurrent(updatedList[0].id)
-                    }
-                    fetchInitialData(
-                        account = updatedList.getOrNull(0),
-                        siteViewModel = siteViewModel,
-                    )
-                    fetchHomePosts(
-                        account = updatedList.getOrNull(0),
-                        homeViewModel = homeViewModel,
-                    )
-
-                    closeDrawer(scope, drawerState)
-                }
-            }
-        },
-        onClickListingType = { listingType ->
-            homeViewModel.updateListingType(listingType)
-            homeViewModel.resetPosts(account)
-            closeDrawer(scope, drawerState)
-        },
-        onCommunityClick = { community ->
-            navController.toCommunity(id = community.id)
-            closeDrawer(scope, drawerState)
-        },
-        onClickProfile = {
-            onSelectTab?.invoke(BottomNavTab.Profile) ?: run {
-                account?.id?.also {
-                    navController.toProfile(id = it)
-                } ?: run {
-                    loginFirstToast(ctx)
-                }
-            }
-            closeDrawer(scope, drawerState)
-        },
-        onClickSaved = {
-            onSelectTab?.invoke(BottomNavTab.Saved) ?: run {
-                account?.id?.also {
-                    navController.toProfile(id = it, saved = true)
-                } ?: run {
-                    loginFirstToast(ctx)
-                }
-            }
-            closeDrawer(scope, drawerState)
-        },
-        onClickInbox = {
-            onSelectTab?.invoke(BottomNavTab.Inbox) ?: run {
-                account?.also {
-                    navController.toInbox()
-                } ?: run {
-                    loginFirstToast(ctx)
-                }
-            }
-            closeDrawer(scope, drawerState)
-        },
-        onClickSettings = {
-            navController.toSettings()
-            closeDrawer(scope, drawerState)
-        },
-        onClickCommunities = {
-            onSelectTab?.invoke(BottomNavTab.Search) ?: run {
-                navController.toCommunityList()
-            }
-            closeDrawer(scope, drawerState)
-        },
-        blurNSFW = blurNSFW,
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
-    scope: CoroutineScope,
-    postListState: LazyListState,
-    drawerState: DrawerState,
+    scrollToTop: () -> Unit,
+    openDrawer: () -> Unit,
     homeViewModel: HomeViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     account: Account?,
@@ -476,20 +362,19 @@ fun MainTopBar(
 ) {
     Column {
         HomeHeader(
-            scope = scope,
+            openDrawer = openDrawer,
             scrollBehavior = scrollBehavior,
-            drawerState = drawerState,
             navController = navController,
             selectedSortType = homeViewModel.sortType,
             selectedListingType = homeViewModel.listingType,
             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
             onClickSortType = { sortType ->
-                scrollToTop(scope, postListState)
+                scrollToTop()
                 homeViewModel.updateSortType(sortType)
                 homeViewModel.resetPosts(account)
             },
             onClickListingType = { listingType ->
-                scrollToTop(scope, postListState)
+                scrollToTop()
                 homeViewModel.updateListingType(listingType)
                 homeViewModel.resetPosts(account)
             },
@@ -497,7 +382,7 @@ fun MainTopBar(
                 appSettingsViewModel.updatedPostViewMode(it.ordinal)
             },
             onClickRefresh = {
-                scrollToTop(scope, postListState)
+                scrollToTop()
                 homeViewModel.resetPosts(account)
             },
         )

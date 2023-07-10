@@ -54,7 +54,6 @@
     <string name="dialogs_top_week">Top Week</string>
     <string name="dialogs_top_month">Top Maand</string>
     <string name="dialogs_top_year">Top Jaar</string>
-    <string name="dialogs_top_all_time">Top Aller Tijden</string>
     <string name="dialogs_subscribed">Geabonneerd</string>
     <string name="dialogs_local">Lokaal</string>
     <string name="dialogs_all">Alles</string>
@@ -93,10 +92,6 @@
     <string name="home_subscribed">Geabonneerd</string>
     <string name="home_local">Lokaal</string>
     <string name="home_all">Alle</string>
-    <string name="home_saved">Opgeslagen</string>
-    <string name="home_profile">Profiel</string>
-    <string name="home_communities">Communities</string>
-    <string name="home_inbox">Inbox</string>
     <string name="home_settings">Instellingen</string>
     <string name="home_subscriptions">Abonnementen</string>
     <string name="floating_createPost">Maak bericht</string>
