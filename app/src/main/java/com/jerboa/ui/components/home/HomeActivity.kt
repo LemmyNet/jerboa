@@ -59,6 +59,8 @@ import com.jerboa.fetchInitialData
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.loginFirstToast
+import com.jerboa.model.HomeViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.scrollToTop
 import com.jerboa.shareLink

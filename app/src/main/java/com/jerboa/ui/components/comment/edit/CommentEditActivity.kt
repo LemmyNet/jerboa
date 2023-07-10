@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.db.AccountViewModel
+import com.jerboa.model.CommentEditViewModel
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount

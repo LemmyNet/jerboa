@@ -34,6 +34,8 @@ import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.fetchHomePosts
 import com.jerboa.loginFirstToast
+import com.jerboa.model.HomeViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -116,6 +118,7 @@ fun BottomNavActivity(
                         showBottomNav = appSettings.showBottomNav,
                         selectedTab = selectedTab,
                         unreadCounts = siteViewModel.getUnreadCountTotal(),
+                        showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
                         onSelect = onSelectTab,
                     )
                 },

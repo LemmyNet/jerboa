@@ -121,6 +121,11 @@ data class AppSettings(
         defaultValue = "1",
     )
     val blurNSFW: Boolean,
+    @ColumnInfo(
+        name = "show_text_descriptions_in_navbar",
+        defaultValue = "1",
+    )
+    val showTextDescriptionsInNavbar: Boolean,
 )
 
 val APP_SETTINGS_DEFAULT = AppSettings(
@@ -140,6 +145,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     usePrivateTabs = false,
     secureWindow = false,
     blurNSFW = true,
+    showTextDescriptionsInNavbar = true,
 )
 
 @Dao
@@ -271,7 +277,7 @@ class AppSettingsRepository(
 }
 
 @Database(
-    version = 17,
+    version = 18,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

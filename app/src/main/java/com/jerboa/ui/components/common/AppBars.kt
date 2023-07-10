@@ -88,6 +88,7 @@ fun BottomAppBarAll(
     selectedTab: BottomNavTab,
     onSelect: (BottomNavTab) -> Unit,
     unreadCounts: Int,
+    showTextDescriptionsInNavbar: Boolean,
     showBottomNav: Boolean? = true,
 ) {
     if (showBottomNav == true) {
@@ -140,19 +141,22 @@ fun BottomAppBarAll(
                             ),
                         )
                     },
-                    label = {
-                        Text(
-                            text = stringResource(
-                                when (tab) {
-                                    BottomNavTab.Home -> R.string.bottomBar_label_home
-                                    BottomNavTab.Search -> R.string.bottomBar_label_search
-                                    BottomNavTab.Inbox -> R.string.bottomBar_label_inbox
-                                    BottomNavTab.Saved -> R.string.bottomBar_label_bookmarks
-                                    BottomNavTab.Profile -> R.string.bottomBar_label_profile
-                                },
-                            ),
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
+                    label =
+                    {
+                        if (showTextDescriptionsInNavbar) {
+                            Text(
+                                text = stringResource(
+                                    when (tab) {
+                                        BottomNavTab.Home -> R.string.bottomBar_label_home
+                                        BottomNavTab.Search -> R.string.bottomBar_label_search
+                                        BottomNavTab.Inbox -> R.string.bottomBar_label_inbox
+                                        BottomNavTab.Saved -> R.string.bottomBar_label_bookmarks
+                                        BottomNavTab.Profile -> R.string.bottomBar_label_profile
+                                    },
+                                ),
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
                     },
                     selected = selected,
                     onClick = {
@@ -171,6 +175,7 @@ fun BottomAppBarAllPreview() {
         selectedTab = BottomNavTab.Home,
         onSelect = {},
         unreadCounts = 30,
+        showTextDescriptionsInNavbar = true,
         showBottomNav = true,
     )
 }
@@ -227,8 +232,8 @@ fun CommentOrPostNodeHeader(
     showAvatar: Boolean,
 ) {
     FlowRow(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(
