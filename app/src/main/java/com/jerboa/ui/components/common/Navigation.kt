@@ -14,7 +14,6 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.gson
 import com.jerboa.model.ReplyItem
-import com.jerboa.ui.components.comment.reply.ReplyItem
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
