@@ -5,8 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
-import android.view.View
-import android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
 import android.webkit.MimeTypeMap
@@ -40,7 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -97,16 +94,14 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.clearFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
+        // Unable to get the bottom navbar transparent without this
+        @Suppress("DEPRECATION")
         window.addFlags(FLAG_TRANSLUCENT_NAVIGATION)
-
 
         systemUiController.setStatusBarColor(
             color = Color.Transparent,
             darkIcons = false,
         )
-
-       window.navigationBarColor = backColor.copy(alpha = 0.2f).toArgb()
-
 
         onDispose { // Restore previous system bars
             WindowCompat.setDecorFitsSystemWindows(window, true)
@@ -118,8 +113,8 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
 
             systemUiController.isSystemBarsVisible = true
             window.addFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            @Suppress("DEPRECATION")
             window.clearFlags(FLAG_TRANSLUCENT_NAVIGATION)
-
         }
     }
 
