@@ -471,7 +471,6 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
-                                openImageViewer = { url -> navController.toView(url) },
                             )
                         }
                     }
@@ -501,7 +500,6 @@ class MainActivity : AppCompatActivity() {
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
-                            openImageViewer = navController::toView,
                         )
                     }
 

@@ -109,6 +109,7 @@ import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
+import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.post.edit.PostEditReturn
 
 @Composable
@@ -148,7 +149,6 @@ fun PostActivity(
     showParentCommentNavigationButtons: Boolean,
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
-    openImageViewer: (url: String) -> Unit,
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
@@ -438,7 +438,7 @@ fun PostActivity(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
-                                    openImageViewer = openImageViewer,
+                                    openImageViewer = navController::toView,
                                 )
                             }
 

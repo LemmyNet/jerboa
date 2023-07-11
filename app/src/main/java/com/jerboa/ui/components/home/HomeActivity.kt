@@ -381,7 +381,7 @@ fun MainTopBar(
                 homeViewModel.resetPosts(account)
             },
             onClickPostViewMode = {
-                appSettingsViewModel.updatedPostViewMode(it.ordinal)
+                appSettingsViewModel.updatePostViewMode(it.ordinal)
             },
             onClickRefresh = {
                 scrollToTop()

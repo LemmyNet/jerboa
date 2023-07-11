@@ -113,7 +113,7 @@ fun PersonProfileActivity(
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val personProfileViewModel: PersonProfileViewModel = viewModel()
+    val personProfileViewModel: PersonProfileViewModel = viewModel(factory = PersonProfileViewModel.Factory)
 
     navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)

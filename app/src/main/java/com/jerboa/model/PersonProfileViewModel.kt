@@ -2,13 +2,21 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jerboa.JerboaApplication
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
+import com.jerboa.convertIntSettingToEnum
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockCommunityResponse
 import com.jerboa.datatypes.types.BlockPerson
@@ -27,6 +35,8 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.db.AppSettingsRepository
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
@@ -35,7 +45,7 @@ import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
-class PersonProfileViewModel : ViewModel(), Initializable {
+class PersonProfileViewModel(private val appSettingsRepository: AppSettingsRepository) : ViewModel(), Initializable {
     override var initialized by mutableStateOf(false)
 
     var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(
@@ -54,15 +64,20 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
-    var sortType by mutableStateOf(SortType.New)
+
+    var sortType by mutableStateOf(convertIntSettingToEnum<SortType>(appSettingsRepository.appSettings) {it.profileSortingMode})
         private set
-    var page by mutableStateOf(1)
+
+    var page by mutableIntStateOf(1)
         private set
     var savedOnly by mutableStateOf(false)
         private set
 
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
+        viewModelScope.launch {
+            appSettingsRepository.updateCommentSortingMode(sortType.ordinal)
+        }
     }
 
     fun resetPage() {
@@ -286,4 +301,22 @@ class PersonProfileViewModel : ViewModel(), Initializable {
             else -> {}
         }
     }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                // Get the Application object from extras
+                val application = checkNotNull(extras[APPLICATION_KEY])
+
+                return PersonProfileViewModel(
+                    (application as JerboaApplication).appSettingsRepository,
+                ) as T
+            }
+        }
+    }
+
 }

@@ -126,6 +126,28 @@ data class AppSettings(
         defaultValue = "1",
     )
     val showTextDescriptionsInNavbar: Boolean,
+
+    // TODO migrations
+    @ColumnInfo(
+        name = "comment_sorting_mode",
+        defaultValue = "0",
+    )
+    val commentSortingMode: Int,
+    @ColumnInfo(
+        name = "profile_sorting_mode",
+        defaultValue = "0",
+    )
+    val savedSortingMode: Int,
+    @ColumnInfo(
+        name = "saved_sorting_mode",
+        defaultValue = "0",
+    )
+    val profileSortingMode: Int,
+    @ColumnInfo(
+        name = "inbox_unread",
+        defaultValue = "0",
+    )
+    val inboxMode: Int,
 )
 
 val APP_SETTINGS_DEFAULT = AppSettings(
@@ -146,6 +168,10 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     secureWindow = false,
     blurNSFW = true,
     showTextDescriptionsInNavbar = true,
+    commentSortingMode = 0,
+    savedSortingMode = 0,
+    profileSortingMode = 0,
+    inboxMode = 0,
 )
 
 @Dao
@@ -185,6 +211,18 @@ interface AppSettingsDao {
 
     @Query("UPDATE AppSettings set post_view_mode = :postViewMode")
     suspend fun updatePostViewMode(postViewMode: Int)
+
+    @Query("UPDATE AppSettings set comment_sorting_mode = :commentSortingMode")
+    suspend fun updateCommentSortingMode(commentSortingMode: Int)
+
+    @Query("UPDATE AppSettings set saved_sorting_mode = :savedSortingMode")
+    suspend fun updateSavedSortingMode(savedSortingMode: Int)
+
+    @Query("UPDATE AppSettings set profile_sorting_mode = :profileSortingMode")
+    suspend fun updateProfileSortingMode(profileSortingMode: Int)
+
+    @Query("UPDATE AppSettings set inbox_unread = :inboxMode")
+    suspend fun updateInboxMode(inboxMode: Int)
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -273,6 +311,26 @@ class AppSettingsRepository(
                 Log.e("jerboa", "Failed to load changelog: $e")
             }
         }
+    }
+
+    @WorkerThread
+    suspend fun updateProfileSortingMode(profileSortingMode: Int) {
+        appSettingsDao.updateProfileSortingMode(profileSortingMode)
+    }
+
+    @WorkerThread
+    suspend fun updateSavedSortingMode(savedSortingMode: Int) {
+        appSettingsDao.updateSavedSortingMode(savedSortingMode)
+    }
+
+    @WorkerThread
+    suspend fun updateCommentSortingMode(commentSortingMode: Int) {
+        appSettingsDao.updateCommentSortingMode(commentSortingMode)
+    }
+
+    @WorkerThread
+    suspend fun updateInboxMode(inboxSortingMode: Int) {
+        appSettingsDao.updateInboxMode(inboxSortingMode)
     }
 }
 
@@ -374,12 +432,29 @@ class AppSettingsViewModel(private val repository: AppSettingsRepository) : View
         repository.markChangelogViewed()
     }
 
-    fun updatedPostViewMode(postViewMode: Int) = viewModelScope.launch {
+    fun updatePostViewMode(postViewMode: Int) = viewModelScope.launch {
         repository.updatePostViewMode(postViewMode)
     }
 
     fun updateChangelog() = viewModelScope.launch {
         repository.updateChangelog()
+    }
+
+    // Todo use these when DB refactor happens
+    fun updateCommentSortingMode(commentSortingMode: Int) = viewModelScope.launch {
+        repository.updateCommentSortingMode(commentSortingMode)
+    }
+
+    fun updateSavedSortingMode(savedSortingMode: Int) = viewModelScope.launch {
+        repository.updateSavedSortingMode(savedSortingMode)
+    }
+
+    fun updateProfileSortingMode(profileSortingMode: Int) = viewModelScope.launch {
+        repository.updateProfileSortingMode(profileSortingMode)
+    }
+
+    fun updateInboxMode(inboxMode: Int) = viewModelScope.launch {
+        repository.updateInboxMode(inboxMode)
     }
 }
 

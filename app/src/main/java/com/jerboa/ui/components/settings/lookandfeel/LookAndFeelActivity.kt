@@ -114,6 +114,10 @@ fun LookAndFeelActivity(
                 secureWindow = secureWindowState.value,
                 showTextDescriptionsInNavbar = showTextDescriptionsInNavbar.value,
                 blurNSFW = blurNSFW.value,
+                inboxMode = settings.inboxMode,
+                commentSortingMode = settings.commentSortingMode,
+                savedSortingMode = settings.savedSortingMode,
+                profileSortingMode = settings.profileSortingMode,
             ),
         )
     }
