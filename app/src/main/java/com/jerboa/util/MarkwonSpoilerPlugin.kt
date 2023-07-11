@@ -16,8 +16,7 @@ import io.noties.markwon.image.AsyncDrawableScheduler
 data class SpoilerTitleSpan(val title: CharSequence)
 class SpoilerCloseSpan
 
-class MarkwonSpoilerPlugin : AbstractMarkwonPlugin() {
-
+class MarkwonSpoilerPlugin(val preview: Boolean) : AbstractMarkwonPlugin() {
     override fun configure(registry: MarkwonPlugin.Registry) {
         registry.require(CorePlugin::class.java) {
             it.addOnTextAddedListener(
@@ -96,26 +95,28 @@ class MarkwonSpoilerPlugin : AbstractMarkwonPlugin() {
 
                 val wrapper = object : ClickableSpan() {
                     override fun onClick(p0: View) {
-                        textView.cancelPendingInputEvents()
-                        open = !open
+                        if (!preview) {
+                            textView.cancelPendingInputEvents()
+                            open = !open
 
-                        spanned.replace(
-                            spoilerStart,
-                            spoilerStart + spoilerTitle.length,
-                            getSpoilerTitle(open),
-                        )
-                        if (open) {
-                            spanned.insert(spoilerStart + spoilerTitle.length, spoilerContent)
-                        } else {
                             spanned.replace(
+                                spoilerStart,
                                 spoilerStart + spoilerTitle.length,
-                                spoilerStart + spoilerTitle.length + spoilerContent.length,
-                                "",
+                                getSpoilerTitle(open),
                             )
-                        }
+                            if (open) {
+                                spanned.insert(spoilerStart + spoilerTitle.length, spoilerContent)
+                            } else {
+                                spanned.replace(
+                                    spoilerStart + spoilerTitle.length,
+                                    spoilerStart + spoilerTitle.length + spoilerContent.length,
+                                    "",
+                                )
+                            }
 
-                        textView.text = spanned
-                        AsyncDrawableScheduler.schedule(textView)
+                            textView.text = spanned
+                            AsyncDrawableScheduler.schedule(textView)
+                        }
                     }
 
                     override fun updateDrawState(ds: TextPaint) {

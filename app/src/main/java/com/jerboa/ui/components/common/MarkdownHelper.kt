@@ -100,7 +100,7 @@ object MarkdownHelper {
             // use TableAwareLinkMovementMethod to handle clicks inside tables,
             // wraps LinkMovementMethod internally
             .usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
-            .usePlugin(MarkwonSpoilerPlugin())
+            .usePlugin(MarkwonSpoilerPlugin(false))
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { _, link ->
@@ -123,7 +123,7 @@ object MarkdownHelper {
                     builder.linkResolver { _, _ -> }
                 }
             })
-            .usePlugin(MarkwonSpoilerPlugin())
+            .usePlugin(MarkwonSpoilerPlugin(true))
             .build()
     }
 
