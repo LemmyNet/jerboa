@@ -26,7 +26,11 @@ import com.jerboa.*
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentReplyView
+import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CreateCommentLike
+import com.jerboa.datatypes.types.GetPersonMentions
+import com.jerboa.datatypes.types.GetPrivateMessages
+import com.jerboa.datatypes.types.GetReplies
 import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.MarkAllAsRead
 import com.jerboa.datatypes.types.MarkCommentReplyAsRead
@@ -64,7 +68,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun InboxActivity(
     navController: NavController,
-    drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     blurNSFW: Boolean,
@@ -83,13 +86,19 @@ fun InboxActivity(
         if (account != null) {
             inboxViewModel.resetPages()
             inboxViewModel.getReplies(
-                inboxViewModel.getFormReplies(account.jwt),
+                GetReplies(
+                    auth = account.jwt,
+                ),
             )
             inboxViewModel.getMentions(
-                inboxViewModel.getFormMentions(account.jwt),
+                GetPersonMentions(
+                    auth = account.jwt,
+                ),
             )
             inboxViewModel.getMessages(
-                inboxViewModel.getFormMessages(account.jwt),
+                GetPrivateMessages(
+                    auth = account.jwt,
+                ),
             )
         }
     }
@@ -101,24 +110,34 @@ fun InboxActivity(
             InboxHeader(
                 scrollBehavior = scrollBehavior,
                 unreadCount = unreadCount,
-                openDrawer = {
-                    scope.launch {
-                        drawerState.open()
-                    }
-                },
+                navController = navController,
                 selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly),
                 onClickUnreadOrAll = { unreadOrAll ->
                     account?.also { acct ->
                         inboxViewModel.resetPages()
                         inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
                         inboxViewModel.getReplies(
-                            inboxViewModel.getFormReplies(acct.jwt),
+                            GetReplies(
+                                unread_only = inboxViewModel.unreadOnly,
+                                sort = CommentSortType.New,
+                                page = inboxViewModel.pageReplies,
+                                auth = acct.jwt,
+                            ),
                         )
                         inboxViewModel.getMentions(
-                            inboxViewModel.getFormMentions(acct.jwt),
+                            GetPersonMentions(
+                                unread_only = inboxViewModel.unreadOnly,
+                                sort = CommentSortType.New,
+                                page = inboxViewModel.pageMentions,
+                                auth = acct.jwt,
+                            ),
                         )
                         inboxViewModel.getMessages(
-                            inboxViewModel.getFormMessages(acct.jwt),
+                            GetPrivateMessages(
+                                unread_only = inboxViewModel.unreadOnly,
+                                page = inboxViewModel.pageMessages,
+                                auth = acct.jwt,
+                            ),
                         )
                     }
                 },
@@ -417,17 +436,18 @@ fun InboxTabs(
                             account?.also { acct ->
                                 inboxViewModel.resetPageMentions()
                                 inboxViewModel.getMentions(
-                                    inboxViewModel.getFormMentions(acct.jwt),
+                                    GetPersonMentions(
+                                        unread_only = inboxViewModel.unreadOnly,
+                                        sort = CommentSortType.New,
+                                        page = inboxViewModel.pageMentions,
+                                        auth = acct.jwt,
+                                    ),
                                     ApiState.Refreshing,
                                 )
                             }
                         },
                     )
-                    Box(
-                        modifier = Modifier
-                            .pullRefresh(refreshState)
-                            .fillMaxSize(),
-                    ) {
+                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
                         PullRefreshIndicator(
                             refreshing,
                             refreshState,
@@ -587,17 +607,17 @@ fun InboxTabs(
                             account?.also { acct ->
                                 inboxViewModel.resetPageMessages()
                                 inboxViewModel.getMessages(
-                                    inboxViewModel.getFormMessages(acct.jwt),
+                                    GetPrivateMessages(
+                                        unread_only = inboxViewModel.unreadOnly,
+                                        page = inboxViewModel.pageMessages,
+                                        auth = acct.jwt,
+                                    ),
                                     ApiState.Refreshing,
                                 )
                             }
                         },
                     )
-                    Box(
-                        modifier = Modifier
-                            .pullRefresh(refreshState)
-                            .fillMaxSize(),
-                    ) {
+                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
                         PullRefreshIndicator(
                             refreshing,
                             refreshState,

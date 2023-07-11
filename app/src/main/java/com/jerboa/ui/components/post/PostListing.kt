@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
@@ -52,7 +50,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -92,11 +89,11 @@ import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.ImageViewerDialog
-import com.jerboa.ui.components.common.MarkdownHelper.CreateMarkdownPreview
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.NsfwBadge
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
+import com.jerboa.ui.components.common.PreviewLines
 import com.jerboa.ui.components.common.ScoreAndTime
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.TimeAgo
@@ -405,7 +402,6 @@ fun PostBody(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    clickBody: () -> Unit = {},
 ) {
     val post = postView.post
     Column(
@@ -456,14 +452,10 @@ fun PostBody(
                             }
                         }
                     } else {
-                        val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
-
-                        CreateMarkdownPreview(
-                            markdown = text,
-                            defaultColor = defaultColor,
-                            onClick = clickBody,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(MEDIUM_PADDING),
+                        PreviewLines(
+                            text = text,
+                            modifier = Modifier
+                                .padding(MEDIUM_PADDING),
                         )
                     }
                 },
@@ -1396,7 +1388,6 @@ fun PostListingCard(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            clickBody = { onPostClick(postView) },
         )
 
         // Footer bar

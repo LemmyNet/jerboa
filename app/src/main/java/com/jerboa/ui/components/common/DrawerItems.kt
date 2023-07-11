@@ -33,7 +33,6 @@ fun IconAndTextDrawerItem(
     onClick: () -> Unit,
     more: Boolean = false,
     highlight: Boolean = false,
-    contentDescription: String? = null,
 ) {
     val spacingMod = Modifier
         .padding(LARGE_PADDING)
@@ -58,7 +57,7 @@ fun IconAndTextDrawerItem(
                     iconBadgeCount = iconBadgeCount,
                     modifier = spacingMod.size(DRAWER_ITEM_SPACING),
                     icon = ico,
-                    contentDescription = contentDescription,
+                    contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }

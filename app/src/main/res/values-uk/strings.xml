@@ -124,6 +124,7 @@
     <string name="dialogs_new_comments">Нові коментарі</string>
     <string name="dialogs_subscribed">Підписки</string>
     <string name="dialogs_top">Нагору</string>
+    <string name="dialogs_top_all_time">Найкраще за весь час</string>
     <string name="dialogs_top_day">Найкраще за день</string>
     <string name="dialogs_top_month">Найкраще за місяць</string>
     <string name="dialogs_top_week">Найкраще за тиждень</string>
@@ -137,10 +138,14 @@
     <string name="homeHeader_filter">Вибрати канал</string>
     <string name="home_add_account">Додати обліковий запис</string>
     <string name="home_all">Усі</string>
+    <string name="home_communities">Спільноти</string>
+    <string name="home_inbox">Вхідні</string>
     <string name="home_local">Місцеві</string>
     <string name="home_menu">Меню</string>
     <string name="home_post_view_mode">Режим перегляду допису</string>
+    <string name="home_profile">Профіль</string>
     <string name="home_refresh">Оновити</string>
+    <string name="home_saved">Збережено</string>
     <string name="home_settings">Налаштування</string>
     <string name="home_sign_out">Вийти</string>
     <string name="home_site_info">Відомості про сайт</string>

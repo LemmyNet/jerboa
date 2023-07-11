@@ -14,8 +14,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -48,7 +53,7 @@ import com.jerboa.loginFirstToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
-import com.jerboa.ui.components.home.NavTab
+import com.jerboa.ui.components.home.BottomNavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
@@ -80,53 +85,85 @@ fun SimpleTopAppBar(
 
 @Composable
 fun BottomAppBarAll(
-    selectedTab: NavTab,
-    onSelect: (NavTab) -> Unit,
+    selectedTab: BottomNavTab,
+    onSelect: (BottomNavTab) -> Unit,
     unreadCounts: Int,
     showTextDescriptionsInNavbar: Boolean,
+    showBottomNav: Boolean? = true,
 ) {
-    // Check for preview mode
-    if (LocalContext.current is Activity) {
-        val window = (LocalContext.current as Activity).window
-        val colorScheme = MaterialTheme.colorScheme
+    if (showBottomNav == true) {
+        // Check for preview mode
+        if (LocalContext.current is Activity) {
+            val window = (LocalContext.current as Activity).window
+            val colorScheme = MaterialTheme.colorScheme
 
-        DisposableEffect(Unit) {
-            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+            DisposableEffect(Unit) {
+                window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
 
-            onDispose {
-                window.navigationBarColor = colorScheme.background.toArgb()
+                onDispose {
+                    window.navigationBarColor = colorScheme.background.toArgb()
+                }
             }
         }
-    }
 
-    NavigationBar {
-        for (tab in NavTab.values()) {
-            val selected = tab == selectedTab
-            NavigationBarItem(
-                icon = {
-                    InboxIconAndBadge(
-                        iconBadgeCount = if (tab == NavTab.Inbox) unreadCounts else null,
-                        icon = if (selected) {
-                            tab.iconFilled
-                        } else {
-                            tab.iconOutlined
-                        },
-                        contentDescription = stringResource(tab.contentDescriptionId),
-                    )
-                },
-                label = {
-                    if (showTextDescriptionsInNavbar) {
-                        Text(
-                            text = stringResource(tab.textId),
-                            color = MaterialTheme.colorScheme.onSurface,
+        NavigationBar {
+            for (tab in BottomNavTab.values()) {
+                val selected = tab == selectedTab
+                NavigationBarItem(
+                    icon = {
+                        InboxIconAndBadge(
+                            iconBadgeCount = if (tab == BottomNavTab.Inbox) unreadCounts else null,
+                            icon = if (selected) {
+                                when (tab) {
+                                    BottomNavTab.Home -> Icons.Filled.Home
+                                    BottomNavTab.Search -> Icons.Filled.Search
+                                    BottomNavTab.Inbox -> Icons.Filled.Email
+                                    BottomNavTab.Saved -> Icons.Filled.Bookmarks
+                                    BottomNavTab.Profile -> Icons.Filled.Person
+                                }
+                            } else {
+                                when (tab) {
+                                    BottomNavTab.Home -> Icons.Outlined.Home
+                                    BottomNavTab.Search -> Icons.Outlined.Search
+                                    BottomNavTab.Inbox -> Icons.Outlined.Email
+                                    BottomNavTab.Saved -> Icons.Outlined.Bookmarks
+                                    BottomNavTab.Profile -> Icons.Outlined.Person
+                                }
+                            },
+                            contentDescription = stringResource(
+                                when (tab) {
+                                    BottomNavTab.Home -> R.string.bottomBar_home
+                                    BottomNavTab.Search -> R.string.bottomBar_search
+                                    BottomNavTab.Inbox -> R.string.bottomBar_inbox
+                                    BottomNavTab.Saved -> R.string.bottomBar_bookmarks
+                                    BottomNavTab.Profile -> R.string.bottomBar_profile
+                                },
+                            ),
                         )
-                    }
-                },
-                selected = selected,
-                onClick = {
-                    onSelect(tab)
-                },
-            )
+                    },
+                    label =
+                    {
+                        if (showTextDescriptionsInNavbar) {
+                            Text(
+                                text = stringResource(
+                                    when (tab) {
+                                        BottomNavTab.Home -> R.string.bottomBar_label_home
+                                        BottomNavTab.Search -> R.string.bottomBar_label_search
+                                        BottomNavTab.Inbox -> R.string.bottomBar_label_inbox
+                                        BottomNavTab.Saved -> R.string.bottomBar_label_bookmarks
+                                        BottomNavTab.Profile -> R.string.bottomBar_label_profile
+                                    },
+                                ),
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    },
+                    selected = selected,
+                    onClick = {
+                        onSelect(tab)
+                    },
+                )
+            }
         }
     }
 }
@@ -135,10 +172,11 @@ fun BottomAppBarAll(
 @Composable
 fun BottomAppBarAllPreview() {
     BottomAppBarAll(
-        selectedTab = NavTab.Home,
+        selectedTab = BottomNavTab.Home,
         onSelect = {},
         unreadCounts = 30,
         showTextDescriptionsInNavbar = true,
+        showBottomNav = true,
     )
 }
 

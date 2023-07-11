@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.outlined.FilterList
-import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,14 +20,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.getLocalizedUnreadOrAllName
+import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
 
 @Composable
 fun InboxHeader(
-    openDrawer: () -> Unit,
+    navController: NavController = rememberNavController(),
     selectedUnreadOrAll: UnreadOrAll,
     onClickUnreadOrAll: (UnreadOrAll) -> Unit,
     onClickMarkAllAsRead: () -> Unit,
@@ -56,14 +58,7 @@ fun InboxHeader(
                 selectedUnreadOrAll = selectedUnreadOrAll,
             )
         },
-        navigationIcon = {
-            IconButton(onClick = openDrawer) {
-                Icon(
-                    Icons.Outlined.Menu,
-                    contentDescription = stringResource(R.string.home_menu),
-                )
-            }
-        },
+        navigationIcon = { DefaultBackButton(navController) },
         actions = {
             IconButton(onClick = {
                 showUnreadOrAllOptions = !showUnreadOrAllOptions

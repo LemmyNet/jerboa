@@ -35,6 +35,7 @@
     <string name="dialogs_top_week">Top hebdomadaire</string>
     <string name="dialogs_top_month">Top mensuel</string>
     <string name="dialogs_top_year">Top annuel</string>
+    <string name="dialogs_top_all_time">Top de tous les temps</string>
     <string name="dialogs_subscribed">Communautés abonnées</string>
     <string name="dialogs_local">Communautés locales</string>
     <string name="dialogs_all">Toutes les communautés</string>
@@ -66,6 +67,9 @@
     <string name="home_subscribed">Communautés abonnées</string>
     <string name="home_local">Communautés locales</string>
     <string name="home_all">Toutes les communautés</string>
+    <string name="home_saved">Publications/commentaires enregistrés</string>
+    <string name="home_profile">Profil</string>
+    <string name="home_inbox">Messages</string>
     <string name="home_settings">Paramètres</string>
     <string name="home_subscriptions">Abonnements</string>
     <string name="home_add_account">Ajouter un compte</string>
@@ -256,6 +260,7 @@
     <string name="postListing_reply">Répondre à la publication</string>
     <string name="privateMessage_reply">Répondre au message</string>
     <string name="topAppBar_back">Précédent</string>
+    <string name="home_communities">Abonnements</string>
     <string name="bottomBar_label_bookmarks">Enregistrés</string>
     <string name="bottomBar_label_home">Accueil</string>
     <string name="bottomBar_label_inbox">Messages</string>

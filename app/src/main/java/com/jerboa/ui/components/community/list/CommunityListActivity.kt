@@ -3,7 +3,6 @@ package com.jerboa.ui.components.community.list
 import android.util.Log
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -48,7 +47,6 @@ fun CommunityListActivity(
     selectMode: Boolean = false,
     siteViewModel: SiteViewModel,
     blurNSFW: Boolean,
-    drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to community list activity")
 
@@ -68,11 +66,7 @@ fun CommunityListActivity(
         Scaffold(
             topBar = {
                 CommunityListHeader(
-                    openDrawer = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
+                    navController = navController,
                     search = search,
                     onSearchChange = {
                         search = it
