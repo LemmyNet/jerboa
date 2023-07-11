@@ -1,3 +1,35 @@
+# Jerboa v0.0.39-alpha Release (2023-07-10)
+
+## What's Changed
+
+- Fix deprecations by @MV-GH in https://github.com/dessalines/jerboa/pull/962
+- Use overloaded AndroidView in MarkdownHelper by @yate in https://github.com/dessalines/jerboa/pull/767
+- Update subscribed communities in sidebar when user subscribes by @twizmwazin in https://github.com/dessalines/jerboa/pull/948
+- Fixes in Greek Translation by @sv1sjp in https://github.com/dessalines/jerboa/pull/971
+- Update strings.xml for `ko` by @meinside in https://github.com/dessalines/jerboa/pull/965
+- Add DB migrations tests by @MV-GH in https://github.com/dessalines/jerboa/pull/899
+- Fix clear backstack not working properly by @MV-GH in https://github.com/dessalines/jerboa/pull/988
+- Fix regression due to deprecations change by @MV-GH in https://github.com/dessalines/jerboa/pull/986
+- Add "..." for too long community names by @MV-GH in https://github.com/dessalines/jerboa/pull/985
+- Improve login form by @MV-GH in https://github.com/dessalines/jerboa/pull/953
+- Fix recompositions due to autofill by @MV-GH in https://github.com/dessalines/jerboa/pull/975
+- Move view models to com.jerboa.model by @twizmwazin in https://github.com/dessalines/jerboa/pull/994
+- Add Ukrainian Language Support to Jerboa - values-uk strings.xml by @Digharatta in https://github.com/dessalines/jerboa/pull/996
+- Update CONTRIBUTION.md by @MV-GH in https://github.com/dessalines/jerboa/pull/997
+- Move more viewmodels into com.jerboa.model package by @twizmwazin in https://github.com/dessalines/jerboa/pull/1000
+- Add toggle in settings to hide descriptions in navbar by @Sir-Photch in https://github.com/dessalines/jerboa/pull/995
+- Update instance list by @MV-GH in https://github.com/dessalines/jerboa/pull/982
+- Fix inbox loading all pages on startup instead of set unread/all mode by @MV-GH in https://github.com/dessalines/jerboa/pull/1007
+- Add markdown preview by @MV-GH in https://github.com/dessalines/jerboa/pull/1002
+- Add drawer to all main tabs and general drawer changes by @MV-GH in https://github.com/dessalines/jerboa/pull/991
+
+## New Contributors
+
+- @Digharatta made their first contribution in https://github.com/dessalines/jerboa/pull/996
+- @Sir-Photch made their first contribution in https://github.com/dessalines/jerboa/pull/995
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.38...0.0.39
+
 # Jerboa v0.0.38-alpha Release (2023-07-03)
 
 ## What's Changed

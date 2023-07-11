@@ -21,12 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.*
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
@@ -34,7 +31,7 @@ import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityListHeader(
-    navController: NavController = rememberNavController(),
+    openDrawer: () -> Unit,
     search: String,
     onSearchChange: (search: String) -> Unit,
 ) {
@@ -56,7 +53,14 @@ fun CommunityListHeader(
                 )
             }
         },
-        navigationIcon = { DefaultBackButton(navController) },
+        navigationIcon = {
+            IconButton(onClick = openDrawer) {
+                Icon(
+                    Icons.Outlined.Menu,
+                    contentDescription = stringResource(R.string.home_menu),
+                )
+            }
+        },
     )
 }
 

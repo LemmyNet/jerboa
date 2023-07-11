@@ -64,6 +64,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun InboxActivity(
     navController: NavController,
+    drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     blurNSFW: Boolean,
@@ -100,7 +101,11 @@ fun InboxActivity(
             InboxHeader(
                 scrollBehavior = scrollBehavior,
                 unreadCount = unreadCount,
-                navController = navController,
+                openDrawer = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                },
                 selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly),
                 onClickUnreadOrAll = { unreadOrAll ->
                     account?.also { acct ->
@@ -418,7 +423,11 @@ fun InboxTabs(
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
+                    ) {
                         PullRefreshIndicator(
                             refreshing,
                             refreshState,
@@ -584,7 +593,11 @@ fun InboxTabs(
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
+                    ) {
                         PullRefreshIndicator(
                             refreshing,
                             refreshState,
