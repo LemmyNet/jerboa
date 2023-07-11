@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.DrawerValue
@@ -58,11 +60,13 @@ import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.common.takeDepsFromRoot
+import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
+import com.jerboa.ui.components.imageviewer.ImageViewer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
@@ -182,10 +186,31 @@ class MainActivity : AppCompatActivity() {
                     route = Route.Graph.ROOT,
                     navController = navController,
                     startDestination = Route.HOME,
-                    enterTransition = { slideInHorizontally { it } },
-                    exitTransition = { slideOutHorizontally { -it } },
-                    popEnterTransition = { slideInHorizontally { -it } },
-                    popExitTransition = { slideOutHorizontally { it } },
+                    enterTransition = {
+                        slideInHorizontally { it }
+                    },
+                    exitTransition =
+                    {
+                        // No animation for image viewer
+                        if (this.targetState.destination.route == Route.VIEW) {
+                            ExitTransition.None
+                        } else {
+                            slideOutHorizontally { -it }
+                        }
+                    },
+                    popEnterTransition = {
+                        // No animation for image viewer
+                        if (this.initialState.destination.route == Route.VIEW) {
+                            EnterTransition.None
+                        } else {
+                            slideInHorizontally { -it }
+                        }
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally {
+                            it
+                        }
+                    },
                 ) {
                     composable(
                         route = Route.LOGIN,
@@ -338,6 +363,7 @@ class MainActivity : AppCompatActivity() {
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -370,6 +396,7 @@ class MainActivity : AppCompatActivity() {
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -472,6 +499,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                openImageViewer = { url -> navController.toView(url) },
                             )
                         }
                     }
@@ -501,6 +529,7 @@ class MainActivity : AppCompatActivity() {
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -625,6 +654,25 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                         )
+                    }
+
+                    composable(
+                        route = Route.VIEW,
+                        arguments = listOf(
+                            navArgument(Route.ViewArgs.URL) {
+                                type = Route.ViewArgs.URL_TYPE
+                            },
+                        ),
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None },
+                        popEnterTransition = { EnterTransition.None },
+                        popExitTransition = { ExitTransition.None },
+                    ) {
+                        val args = Route.ViewArgs(it)
+
+                        ImageViewer(url = args.url) {
+                            navController.popBackStack()
+                        }
                     }
                 }
             }
