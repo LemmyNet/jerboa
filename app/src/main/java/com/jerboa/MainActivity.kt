@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
-import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +15,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -77,8 +77,11 @@ import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import com.jerboa.util.BackConfirmation.addConfirmationDialog
+import com.jerboa.util.BackConfirmation.addConfirmationToast
+import com.jerboa.util.BackConfirmation.disposeConfirmation
+import com.jerboa.util.BackConfirmationMode
+import com.jerboa.util.ShowConfirmationDialog
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -97,7 +100,6 @@ class MainActivity : AppCompatActivity() {
     private val appSettingsViewModel: AppSettingsViewModel by viewModels {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
-    private var isBackPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,19 +131,25 @@ class MainActivity : AppCompatActivity() {
                 appSettings = appSettings,
             ) {
                 val navController = rememberNavController()
+                val showConfirmationDialog = remember { mutableStateOf(false) }
 
-                onBackPressedDispatcher.addCallback(this) {
-                    val isRoot = navController.previousBackStackEntry == null
-                    if (isRoot && isBackPressedOnce) {
-                        finish()
-                    } else if (isRoot) {
-                        Toast.makeText(ctx, ctx.getText(R.string.back_confirmation), Toast.LENGTH_SHORT).show()
-                        isBackPressedOnce = true
-                        Executors.newSingleThreadScheduledExecutor().schedule({
-                            isBackPressedOnce = false
-                        }, 2, TimeUnit.SECONDS)
-                    } else {
-                        navController.navigateUp()
+                if (showConfirmationDialog.value) {
+                    ShowConfirmationDialog({ showConfirmationDialog.value = false }, ::finish)
+                }
+
+                DisposableEffect(appSettings.backConfirmationMode) {
+                    when (BackConfirmationMode.values()[appSettings.backConfirmationMode]) {
+                        BackConfirmationMode.Toast -> {
+                            this@MainActivity.addConfirmationToast(navController, ctx)
+                        }
+                        BackConfirmationMode.Dialog -> {
+                            this@MainActivity.addConfirmationDialog(navController) { showConfirmationDialog.value = true }
+                        }
+                        BackConfirmationMode.None -> {}
+                    }
+
+                    onDispose {
+                        disposeConfirmation()
                     }
                 }
 
