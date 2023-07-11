@@ -95,7 +95,7 @@ class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlug
 
                 val wrapper = object : ClickableSpan() {
                     override fun onClick(p0: View) {
-                        if (!enableInteraction) {
+                        if (enableInteraction) {
                             textView.cancelPendingInputEvents()
                             open = !open
 
