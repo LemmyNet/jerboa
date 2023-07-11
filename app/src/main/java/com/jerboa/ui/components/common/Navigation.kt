@@ -150,3 +150,5 @@ fun NavController.toAccountSettings() = navigate(Route.ACCOUNT_SETTINGS)
 fun NavController.toLookAndFeel() = navigate(Route.LOOK_AND_FEEL)
 
 fun NavController.toAbout() = navigate(Route.ABOUT)
+
+fun NavController.toCrashes() = navigate(Route.CRASHES)

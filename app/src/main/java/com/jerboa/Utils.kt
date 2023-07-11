@@ -22,6 +22,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
@@ -779,6 +781,24 @@ fun scrollToTop(
 ) {
     scope.launch {
         listState.animateScrollToItem(index = 0)
+    }
+}
+
+fun showSnackbar(
+    scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    message: String,
+    actionLabel: String?,
+    withDismissAction: Boolean = false,
+    snackbarDuration: SnackbarDuration,
+) {
+    scope.launch {
+        snackbarHostState.showSnackbar(
+            message,
+            actionLabel,
+            withDismissAction,
+            snackbarDuration,
+        )
     }
 }
 
