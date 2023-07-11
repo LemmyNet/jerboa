@@ -102,6 +102,7 @@ fun PersonProfileActivity(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
+    drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -132,6 +133,12 @@ fun PersonProfileActivity(
                 }
                 else -> {}
             }
+        }
+    }
+
+    fun openDrawer() {
+        scope.launch {
+            drawerState.open()
         }
     }
 
@@ -168,7 +175,7 @@ fun PersonProfileActivity(
                         onClickSortType = {},
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
-                        navController = navController,
+                        openDrawer = ::openDrawer,
                     )
                 }
                 is ApiState.Holder -> {
@@ -217,7 +224,7 @@ fun PersonProfileActivity(
                                 navController.toPostReport(id = firstPost.post.id)
                             }
                         },
-                        navController = navController,
+                        openDrawer = ::openDrawer,
                     )
                 }
                 else -> {}
