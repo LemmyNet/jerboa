@@ -14,12 +14,16 @@ import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.image.AsyncDrawableScheduler
 
 data class SpoilerTitleSpan(val title: CharSequence)
-class SpoilerCloseSpan()
+class SpoilerCloseSpan
 
 class MarkwonSpoilerPlugin : AbstractMarkwonPlugin() {
 
     override fun configure(registry: MarkwonPlugin.Registry) {
-        registry.require(CorePlugin::class.java) { it.addOnTextAddedListener(SpoilerTextAddedListener()) }
+        registry.require(CorePlugin::class.java) {
+            it.addOnTextAddedListener(
+                SpoilerTextAddedListener(),
+            )
+        }
     }
 
     private class SpoilerTextAddedListener : CorePlugin.OnTextAddedListener {
@@ -30,14 +34,20 @@ class MarkwonSpoilerPlugin : AbstractMarkwonPlugin() {
 
             for (match in spoilerTitles) {
                 val spoilerTitle = match.groups[2]!!.value
-                visitor.builder().setSpan(SpoilerTitleSpan(spoilerTitle), start, start + match.groups[2]!!.range.last, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                visitor.builder().setSpan(
+                    SpoilerTitleSpan(spoilerTitle),
+                    start,
+                    start + match.groups[2]!!.range.last,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+                )
             }
 
             val spoilerCloseRegex = Regex("^(?!.*spoiler).*:::")
             // Find all spoiler "end" lines
             val spoilerCloses = spoilerCloseRegex.findAll(text)
             for (match in spoilerCloses) {
-                visitor.builder().setSpan(SpoilerCloseSpan(), start, start + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                visitor.builder()
+                    .setSpan(SpoilerCloseSpan(), start, start + 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
     }
@@ -45,8 +55,10 @@ class MarkwonSpoilerPlugin : AbstractMarkwonPlugin() {
     override fun afterSetText(textView: TextView) {
         try {
             val spanned = SpannableStringBuilder(textView.text)
-            val spoilerTitleSpans = spanned.getSpans(0, spanned.length, SpoilerTitleSpan::class.java)
-            val spoilerCloseSpans = spanned.getSpans(0, spanned.length, SpoilerCloseSpan::class.java)
+            val spoilerTitleSpans =
+                spanned.getSpans(0, spanned.length, SpoilerTitleSpan::class.java)
+            val spoilerCloseSpans =
+                spanned.getSpans(0, spanned.length, SpoilerCloseSpan::class.java)
 
             spoilerTitleSpans.sortBy { spanned.getSpanStart(it) }
             spoilerCloseSpans.sortBy { spanned.getSpanStart(it) }
@@ -67,22 +79,39 @@ class MarkwonSpoilerPlugin : AbstractMarkwonPlugin() {
 
                 val spoilerTitle = getSpoilerTitle(false)
 
-                val spoilerContent = spanned.subSequence(spanned.getSpanEnd(spoilerTitleSpan) + 1, spoilerEnd - 3) as SpannableStringBuilder
+                val spoilerContent = spanned.subSequence(
+                    spanned.getSpanEnd(spoilerTitleSpan) + 1,
+                    spoilerEnd - 3,
+                ) as SpannableStringBuilder
 
                 // Remove spoiler content from span
                 spanned.replace(spoilerStart, spoilerEnd, spoilerTitle)
                 // Set span block title
-                spanned.setSpan(spoilerTitle, spoilerStart, spoilerStart + spoilerTitle.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spanned.setSpan(
+                    spoilerTitle,
+                    spoilerStart,
+                    spoilerStart + spoilerTitle.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+                )
 
                 val wrapper = object : ClickableSpan() {
                     override fun onClick(p0: View) {
+                        textView.cancelPendingInputEvents()
                         open = !open
 
-                        spanned.replace(spoilerStart, spoilerStart + spoilerTitle.length, getSpoilerTitle(open))
+                        spanned.replace(
+                            spoilerStart,
+                            spoilerStart + spoilerTitle.length,
+                            getSpoilerTitle(open),
+                        )
                         if (open) {
                             spanned.insert(spoilerStart + spoilerTitle.length, spoilerContent)
                         } else {
-                            spanned.replace(spoilerStart + spoilerTitle.length, spoilerStart + spoilerTitle.length + spoilerContent.length, "")
+                            spanned.replace(
+                                spoilerStart + spoilerTitle.length,
+                                spoilerStart + spoilerTitle.length + spoilerContent.length,
+                                "",
+                            )
                         }
 
                         textView.text = spanned
