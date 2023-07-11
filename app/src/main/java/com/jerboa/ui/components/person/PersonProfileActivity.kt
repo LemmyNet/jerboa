@@ -101,6 +101,7 @@ fun PersonProfileActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
     drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to person activity")
@@ -246,6 +247,7 @@ fun PersonProfileActivity(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                openImageViewer = openImageViewer,
             )
         },
     )
@@ -275,6 +277,7 @@ fun UserTabs(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
     val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
@@ -370,6 +373,7 @@ fun UserTabs(
                                     PersonProfileTopSection(
                                         personView = profileRes.data.person_view,
                                         showAvatar = showAvatar,
+                                        openImageViewer = openImageViewer,
                                     )
                                 }
                                 val moderates = profileRes.data.moderates
@@ -536,6 +540,7 @@ fun UserTabs(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
+                                    openImageViewer = openImageViewer,
                                 )
                             }
                             else -> {}
