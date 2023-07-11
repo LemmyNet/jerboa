@@ -2,10 +2,7 @@ package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.os.Build
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.TextUtils
-import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
@@ -205,7 +202,7 @@ object MarkdownHelper {
             setTextColor(textColor.toArgb())
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                setLineHeight(convertSpToPx(mergedStyle.lineHeight, context))
+                lineHeight = convertSpToPx(mergedStyle.lineHeight, context)
             }
             width = maxWidth
 
