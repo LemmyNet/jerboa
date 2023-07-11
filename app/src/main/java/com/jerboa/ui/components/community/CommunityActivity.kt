@@ -72,6 +72,7 @@ import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
+import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import kotlinx.collections.immutable.toImmutableList
@@ -387,6 +388,7 @@ fun CommunityActivity(
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW,
+                            openImageViewer = navController::toView,
                         )
                     }
                     else -> {}

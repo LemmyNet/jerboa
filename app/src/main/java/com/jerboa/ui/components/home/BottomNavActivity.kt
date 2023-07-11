@@ -50,6 +50,7 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.BottomAppBarAll
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
@@ -206,6 +207,7 @@ fun BottomNavActivity(
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -221,6 +223,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            openImageViewer = navController::toView,
                             drawerState = drawerState,
                         )
                     }
