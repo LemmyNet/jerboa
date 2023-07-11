@@ -16,7 +16,7 @@ adb -e pull "/storage/emulated/0/Android/media/com.jerboa.benchmarks/BaselinePro
       </option>
       <option name="taskNames">
         <list>
-          <option value=":benchmarks:pixel6Api31BenchmarkAndroidTest" />
+          <option value=":benchmarks:pixel6Api31NonMinifiedBenchmarkAndroidTest" />
           <option value="--rerun" />
           <option value="--enable-display" />
         </list>
