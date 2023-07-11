@@ -191,6 +191,7 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
 

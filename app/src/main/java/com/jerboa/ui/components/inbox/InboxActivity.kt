@@ -35,6 +35,7 @@ import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.model.InboxViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
@@ -67,6 +68,7 @@ fun InboxActivity(
     drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
+    appSettingsViewModel: AppSettingsViewModel,
     blurNSFW: Boolean,
 ) {
     Log.d("jerboa", "got to inbox activity")
@@ -82,6 +84,11 @@ fun InboxActivity(
     InitializeRoute(inboxViewModel) {
         if (account != null) {
             inboxViewModel.resetPages()
+
+            inboxViewModel.updateUnreadOnly(
+                getEnumFromIntSetting<UnreadOrAll>(appSettingsViewModel.appSettings) { it.inboxMode } == UnreadOrAll.Unread,
+            )
+
             inboxViewModel.getReplies(
                 inboxViewModel.getFormReplies(account.jwt),
             )
@@ -111,6 +118,7 @@ fun InboxActivity(
                     account?.also { acct ->
                         inboxViewModel.resetPages()
                         inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
+                        appSettingsViewModel.updateInboxMode(unreadOrAll.ordinal)
                         inboxViewModel.getReplies(
                             inboxViewModel.getFormReplies(acct.jwt),
                         )

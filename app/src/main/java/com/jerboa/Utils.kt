@@ -59,7 +59,6 @@ import com.jerboa.datatypes.types.*
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.Account
 import com.jerboa.db.AppSettings
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.Route
@@ -1394,9 +1393,9 @@ fun <T> ApiState<T>.isRefreshing(): Boolean {
     return this == ApiState.Refreshing
 }
 
-inline fun <reified E : Enum<E>> convertIntSettingToEnum(
+inline fun <reified E : Enum<E>> getEnumFromIntSetting(
     appSettings: LiveData<AppSettings>,
-    getter: (AppSettings) -> Int
+    getter: (AppSettings) -> Int,
 ): E {
     val enums = enumValues<E>()
     val setting = appSettings.value ?: APP_SETTINGS_DEFAULT

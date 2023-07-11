@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.BrightnessHigh
 import androidx.compose.material.icons.outlined.BrightnessLow
 import androidx.compose.material.icons.outlined.FormatListNumbered
 import androidx.compose.material.icons.outlined.History
@@ -159,6 +160,12 @@ fun SortOptionsDialog(
                     icon = Icons.Outlined.BrightnessLow,
                     onClick = { onClickSortType(SortType.New) },
                     highlight = (selectedSortType == SortType.New),
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_old),
+                    icon = Icons.Outlined.BrightnessHigh,
+                    onClick = { onClickSortType(SortType.Old) },
+                    highlight = (selectedSortType == SortType.Old),
                 )
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.dialogs_most_comments),

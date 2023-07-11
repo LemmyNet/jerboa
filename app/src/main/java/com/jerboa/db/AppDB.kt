@@ -131,8 +131,6 @@ data class AppSettings(
         defaultValue = "1",
     )
     val backConfirmationMode: Int,
-
-    // TODO migrations
     @ColumnInfo(
         name = "comment_sorting_mode",
         defaultValue = "0",
@@ -140,17 +138,17 @@ data class AppSettings(
     val commentSortingMode: Int,
     @ColumnInfo(
         name = "profile_sorting_mode",
-        defaultValue = "0",
+        defaultValue = "2",
     )
     val savedSortingMode: Int,
     @ColumnInfo(
         name = "saved_sorting_mode",
-        defaultValue = "0",
+        defaultValue = "2",
     )
     val profileSortingMode: Int,
     @ColumnInfo(
         name = "inbox_unread",
-        defaultValue = "0",
+        defaultValue = "1",
     )
     val inboxMode: Int,
 )
@@ -175,9 +173,9 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     showTextDescriptionsInNavbar = true,
     backConfirmationMode = 1,
     commentSortingMode = 0,
-    savedSortingMode = 0,
-    profileSortingMode = 0,
-    inboxMode = 0,
+    savedSortingMode = 2,
+    profileSortingMode = 2,
+    inboxMode = 1,
 )
 
 @Dao
@@ -341,7 +339,7 @@ class AppSettingsRepository(
 }
 
 @Database(
-    version = 19,
+    version = 20,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
@@ -446,7 +444,6 @@ class AppSettingsViewModel(private val repository: AppSettingsRepository) : View
         repository.updateChangelog()
     }
 
-    // Todo use these when DB refactor happens
     fun updateCommentSortingMode(commentSortingMode: Int) = viewModelScope.launch {
         repository.updateCommentSortingMode(commentSortingMode)
     }

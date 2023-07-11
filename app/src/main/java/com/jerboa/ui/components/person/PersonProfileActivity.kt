@@ -45,6 +45,7 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.getEnumFromIntSetting
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
@@ -113,7 +114,7 @@ fun PersonProfileActivity(
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val personProfileViewModel: PersonProfileViewModel = viewModel(factory = PersonProfileViewModel.Factory)
+    val personProfileViewModel: PersonProfileViewModel = viewModel()
 
     navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)
@@ -148,6 +149,14 @@ fun PersonProfileActivity(
 
         personProfileViewModel.resetPage()
         personProfileViewModel.updateSavedOnly(savedMode)
+
+        personProfileViewModel.updateSortType(
+            getEnumFromIntSetting<SortType>(
+                appSettingsViewModel.appSettings,
+                if (savedMode) { it -> it.savedSortingMode } else { it -> it.profileSortingMode },
+            ),
+        )
+
         personProfileViewModel.getPersonDetails(
             GetPersonDetails(
                 person_id = personId,
@@ -193,6 +202,13 @@ fun PersonProfileActivity(
                             scrollToTop(scope, postListState)
                             personProfileViewModel.resetPage()
                             personProfileViewModel.updateSortType(sortType)
+
+                            if (savedMode) {
+                                appSettingsViewModel.updateSavedSortingMode(sortType.ordinal)
+                            } else {
+                                appSettingsViewModel.updateProfileSortingMode(sortType.ordinal)
+                            }
+
                             personProfileViewModel.getPersonDetails(
                                 GetPersonDetails(
                                     person_id = person.id,

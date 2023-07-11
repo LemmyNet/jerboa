@@ -71,8 +71,10 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
+import com.jerboa.getEnumFromIntSetting
 import com.jerboa.getLocalizedCommentSortTypeName
 import com.jerboa.isLoading
 import com.jerboa.isModerator
@@ -140,6 +142,7 @@ fun PostActivity(
     id: Either<PostId, CommentId>,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
+    appSettingsViewModel: AppSettingsViewModel,
     navController: NavController,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -175,11 +178,7 @@ fun PostActivity(
 
     InitializeRoute(postViewModel) {
         postViewModel.initialize(id = id)
-        postViewModel.getData(account)
-    }
-
-    val onClickSortType = { commentSortType: CommentSortType ->
-        postViewModel.updateSortType(commentSortType)
+        postViewModel.updateSortType(getEnumFromIntSetting<CommentSortType>(appSettingsViewModel.appSettings) { it.commentSortingMode })
         postViewModel.getData(account)
     }
 
@@ -212,7 +211,9 @@ fun PostActivity(
             onDismissRequest = { showSortOptions = false },
             onClickSortType = {
                 showSortOptions = false
-                onClickSortType(it)
+                appSettingsViewModel.updateCommentSortingMode(it.ordinal)
+                postViewModel.updateSortType(it)
+                postViewModel.getData(account)
             },
         )
     }

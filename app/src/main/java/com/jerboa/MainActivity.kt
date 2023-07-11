@@ -470,6 +470,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
 
@@ -499,6 +500,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                appSettingsViewModel = appSettingsViewModel,
                             )
                         }
                     }
@@ -528,6 +530,7 @@ class MainActivity : AppCompatActivity() {
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
 
