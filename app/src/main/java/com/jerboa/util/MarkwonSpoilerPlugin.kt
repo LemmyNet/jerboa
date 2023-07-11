@@ -16,7 +16,7 @@ import io.noties.markwon.image.AsyncDrawableScheduler
 data class SpoilerTitleSpan(val title: CharSequence)
 class SpoilerCloseSpan
 
-class MarkwonSpoilerPlugin(val preview: Boolean) : AbstractMarkwonPlugin() {
+class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlugin() {
     override fun configure(registry: MarkwonPlugin.Registry) {
         registry.require(CorePlugin::class.java) {
             it.addOnTextAddedListener(
@@ -95,7 +95,7 @@ class MarkwonSpoilerPlugin(val preview: Boolean) : AbstractMarkwonPlugin() {
 
                 val wrapper = object : ClickableSpan() {
                     override fun onClick(p0: View) {
-                        if (!preview) {
+                        if (!enableInteraction) {
                             textView.cancelPendingInputEvents()
                             open = !open
 
