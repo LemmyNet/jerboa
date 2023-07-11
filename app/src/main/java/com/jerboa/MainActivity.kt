@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
                     if (isRoot && isBackPressedOnce) {
                         finish()
                     } else if (isRoot) {
-                        Toast.makeText(ctx, ctx.getText(R.string.back_warning), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(ctx, ctx.getText(R.string.back_confirmation), Toast.LENGTH_SHORT).show()
                         isBackPressedOnce = true
                         Executors.newSingleThreadScheduledExecutor().schedule({
                             isBackPressedOnce = false
