@@ -2,11 +2,7 @@ package com.jerboa.ui.components.post
 
 import android.util.Log
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -16,26 +12,9 @@ import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.Key
@@ -48,67 +27,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import arrow.core.Either
-import com.jerboa.PostViewMode
+import com.jerboa.*
 import com.jerboa.R
-import com.jerboa.VoteType
 import com.jerboa.api.ApiState
-import com.jerboa.buildCommentsTree
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CommentId
-import com.jerboa.datatypes.types.CommentSortType
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.PostId
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.*
 import com.jerboa.db.AccountViewModel
-import com.jerboa.getCommentParentId
-import com.jerboa.getDepthFromComment
-import com.jerboa.getLocalizedCommentSortTypeName
-import com.jerboa.isLoading
-import com.jerboa.isModerator
-import com.jerboa.isRefreshing
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
-import com.jerboa.newVote
-import com.jerboa.scrollToNextParentComment
-import com.jerboa.scrollToPreviousParentComment
-import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
-import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.CommentEditDeps
-import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
-import com.jerboa.ui.components.common.CommentReplyDeps
-import com.jerboa.ui.components.common.CommentSortOptionsDialog
-import com.jerboa.ui.components.common.ConsumeReturn
-import com.jerboa.ui.components.common.InitializeRoute
-import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PostEditDeps
-import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.rootChannel
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.common.toComment
-import com.jerboa.ui.components.common.toCommentEdit
-import com.jerboa.ui.components.common.toCommentReply
-import com.jerboa.ui.components.common.toCommentReport
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPostEdit
-import com.jerboa.ui.components.common.toPostReport
-import com.jerboa.ui.components.common.toProfile
+import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.post.edit.PostEditReturn
 
 @Composable
@@ -149,6 +83,7 @@ fun PostActivity(
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
+    markAsReadOnScroll: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
@@ -176,6 +111,20 @@ fun PostActivity(
     InitializeRoute(postViewModel) {
         postViewModel.initialize(id = id)
         postViewModel.getData(account)
+        id.fold({
+            postViewModel.markPostAsRead(
+                MarkPostAsRead(
+                    post_id = it,
+                    read = true,
+<<<<<<< Updated upstream
+                    auth = account!!.jwt
+                )
+=======
+                    auth = account!!.jwt,
+                ),
+>>>>>>> Stashed changes
+            )
+        }, {})
     }
 
     val onClickSortType = { commentSortType: CommentSortType ->
@@ -306,6 +255,7 @@ fun PostActivity(
                 when (val postRes = postViewModel.postRes) {
                     is ApiState.Loading ->
                         LoadingBar(padding)
+
                     is ApiState.Failure -> ApiErrorText(postRes.msg)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
@@ -351,7 +301,8 @@ fun PostActivity(
                                         }
                                     },
                                     onReplyClick = { pv ->
-                                        val isModerator = isModerator(pv.creator, postRes.data.moderators)
+                                        val isModerator =
+                                            isModerator(pv.creator, postRes.data.moderators)
                                         navController.toCommentReply(
                                             channel = transferCommentReplyDepsViaRoot,
                                             replyItem = ReplyItem.PostItem(pv),
@@ -439,6 +390,26 @@ fun PostActivity(
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
                                     openImageViewer = openImageViewer,
+                                    markAsReadOnScroll = markAsReadOnScroll,
+                                    onMarkAsRead = { pv ->
+                                        account?.also { acct ->
+                                            postViewModel.markPostAsRead(
+                                                MarkPostAsRead(
+                                                    post_id = pv.post.id,
+                                                    read = true,
+<<<<<<< Updated upstream
+                                                    auth = acct.jwt
+                                                )
+                                            )
+                                        }
+                                    }
+=======
+                                                    auth = acct.jwt,
+                                                ),
+                                            )
+                                        }
+                                    },
+>>>>>>> Stashed changes
                                 )
                             }
 
@@ -546,7 +517,8 @@ fun PostActivity(
                                             }
                                         },
                                         onReplyClick = { cv ->
-                                            val isModerator = isModerator(cv.creator, postRes.data.moderators)
+                                            val isModerator =
+                                                isModerator(cv.creator, postRes.data.moderators)
                                             navController.toCommentReply(
                                                 channel = transferCommentReplyDepsViaRoot,
                                                 replyItem = ReplyItem.CommentItem(cv),
@@ -568,7 +540,15 @@ fun PostActivity(
                                             navController.toProfile(id = personId)
                                         },
                                         onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
-                                        onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
+                                        onHeaderLongClick = { commentView ->
+                                            toggleActionBar(
+<<<<<<< Updated upstream
+                                                commentView.comment.id
+=======
+                                                commentView.comment.id,
+>>>>>>> Stashed changes
+                                            )
+                                        },
                                         onEditCommentClick = { cv ->
                                             navController.toCommentEdit(
                                                 channel = transferCommentEditDepsViaRoot,
@@ -597,7 +577,7 @@ fun PostActivity(
                                                 commentView = cv,
                                                 account = account,
 
-                                            )
+                                                )
                                         },
                                         onBlockCreatorClick = { person ->
                                             account?.also { acct ->

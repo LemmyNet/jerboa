@@ -4,10 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -29,19 +26,7 @@ import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPersonDetails
-import com.jerboa.datatypes.types.PersonId
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
+import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
@@ -59,27 +44,7 @@ import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
-import com.jerboa.ui.components.common.ApiEmptyText
-import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.CommentEditDeps
-import com.jerboa.ui.components.common.CommentReplyDeps
-import com.jerboa.ui.components.common.ConsumeReturn
-import com.jerboa.ui.components.common.InitializeRoute
-import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PostEditDeps
-import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.common.rootChannel
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.common.toComment
-import com.jerboa.ui.components.common.toCommentEdit
-import com.jerboa.ui.components.common.toCommentReply
-import com.jerboa.ui.components.common.toCommentReport
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPostEdit
-import com.jerboa.ui.components.common.toPostReport
-import com.jerboa.ui.components.common.toProfile
+import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
@@ -103,6 +68,7 @@ fun PersonProfileActivity(
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
     drawerState: DrawerState,
+    markAsReadOnScroll: Boolean,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -131,6 +97,7 @@ fun PersonProfileActivity(
                         personProfileViewModel.insertComment(cv)
                     }
                 }
+
                 else -> {}
             }
         }
@@ -178,6 +145,7 @@ fun PersonProfileActivity(
                         openDrawer = ::openDrawer,
                     )
                 }
+
                 is ApiState.Holder -> {
                     val person = profileRes.data.person_view.person
                     PersonProfileHeader(
@@ -227,6 +195,7 @@ fun PersonProfileActivity(
                         openDrawer = ::openDrawer,
                     )
                 }
+
                 else -> {}
             }
         },
@@ -248,6 +217,7 @@ fun PersonProfileActivity(
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
                 openImageViewer = openImageViewer,
+                markAsReadOnScroll = markAsReadOnScroll,
             )
         },
     )
@@ -278,6 +248,7 @@ fun UserTabs(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
+    markAsReadOnScroll: Boolean,
 ) {
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
     val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
@@ -312,6 +283,7 @@ fun UserTabs(
                         ApiState.Refreshing,
                     )
                 }
+
                 else -> {}
             }
         },
@@ -402,6 +374,7 @@ fun UserTabs(
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -541,8 +514,25 @@ fun UserTabs(
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
                                     openImageViewer = openImageViewer,
+                                    markAsReadOnScroll = markAsReadOnScroll,
+                                    onMarkAsRead = {
+                                        account?.also { acct ->
+                                            personProfileViewModel.markPostAsRead(
+                                                MarkPostAsRead(
+                                                    post_id = it.post.id,
+                                                    read = true,
+<<<<<<< Updated upstream
+                                                    auth = acct.jwt
+=======
+                                                    auth = acct.jwt,
+>>>>>>> Stashed changes
+                                                ),
+                                            )
+                                        }
+                                    },
                                 )
                             }
+
                             else -> {}
                         }
                     }
@@ -568,7 +558,8 @@ fun UserTabs(
 
                             // Holds the un-expanded comment ids
                             val unExpandedComments = remember { mutableStateListOf<Int>() }
-                            val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
+                            val commentsWithToggledActionBar =
+                                remember { mutableStateListOf<Int>() }
 
                             val toggleExpanded = { commentId: Int ->
                                 if (unExpandedComments.contains(commentId)) {
@@ -619,7 +610,15 @@ fun UserTabs(
                                     increaseLazyListIndexTracker = {},
                                     addToParentIndexes = {},
                                     isFlat = true,
-                                    isExpanded = { commentId -> !unExpandedComments.contains(commentId) },
+                                    isExpanded = { commentId ->
+                                        !unExpandedComments.contains(
+<<<<<<< Updated upstream
+                                            commentId
+=======
+                                            commentId,
+>>>>>>> Stashed changes
+                                        )
+                                    },
                                     listState = listState,
                                     toggleExpanded = { commentId -> toggleExpanded(commentId) },
                                     toggleActionBar = { commentId -> toggleActionBar(commentId) },
@@ -718,7 +717,13 @@ fun UserTabs(
                                     showCollapsedCommentContent = true,
                                     isCollapsedByParent = false,
                                     showActionBar = { commentId ->
-                                        showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
+                                        showActionBarByDefault xor commentsWithToggledActionBar.contains(
+<<<<<<< Updated upstream
+                                            commentId
+=======
+                                            commentId,
+>>>>>>> Stashed changes
+                                        )
                                     },
                                     account = account,
                                     moderators = listOf(),

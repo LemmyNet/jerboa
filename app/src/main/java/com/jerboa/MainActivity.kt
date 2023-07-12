@@ -11,18 +11,11 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.*
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -35,32 +28,11 @@ import arrow.core.Either
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
-import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AccountRepository
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AccountViewModelFactory
-import com.jerboa.db.AppDB
-import com.jerboa.db.AppSettingsRepository
-import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.AppSettingsViewModelFactory
-import com.jerboa.model.AccountSettingsViewModel
-import com.jerboa.model.AccountSettingsViewModelFactory
-import com.jerboa.model.CommunityViewModel
-import com.jerboa.model.ReplyItem
-import com.jerboa.model.SiteViewModel
+import com.jerboa.db.*
+import com.jerboa.model.*
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
-import com.jerboa.ui.components.common.CommentEditDeps
-import com.jerboa.ui.components.common.MarkdownHelper
-import com.jerboa.ui.components.common.PostEditDeps
-import com.jerboa.ui.components.common.PrivateMessageDeps
-import com.jerboa.ui.components.common.Route
-import com.jerboa.ui.components.common.ShowChangelog
-import com.jerboa.ui.components.common.ShowOutdatedServerDialog
-import com.jerboa.ui.components.common.SwipeToNavigateBack
-import com.jerboa.ui.components.common.getCurrentAccountSync
-import com.jerboa.ui.components.common.takeDepsFromRoot
-import com.jerboa.ui.components.common.toView
+import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
@@ -146,9 +118,13 @@ class MainActivity : AppCompatActivity() {
                         BackConfirmationMode.Toast -> {
                             this@MainActivity.addConfirmationToast(navController, ctx)
                         }
+
                         BackConfirmationMode.Dialog -> {
-                            this@MainActivity.addConfirmationDialog(navController) { showConfirmationDialog.value = true }
+                            this@MainActivity.addConfirmationDialog(navController) {
+                                showConfirmationDialog.value = true
+                            }
                         }
+
                         BackConfirmationMode.None -> {}
                     }
 
@@ -170,13 +146,22 @@ class MainActivity : AppCompatActivity() {
                 when (val siteRes = siteViewModel.siteRes) {
                     is ApiState.Success -> {
                         val siteVersion = siteRes.data.version
-                        if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0 && !serverVersionOutdatedViewed.value) {
+                        if (compareVersions(
+                                siteVersion,
+<<<<<<< Updated upstream
+                                MINIMUM_API_VERSION
+=======
+                                MINIMUM_API_VERSION,
+>>>>>>> Stashed changes
+                            ) < 0 && !serverVersionOutdatedViewed.value
+                        ) {
                             ShowOutdatedServerDialog(
                                 siteVersion = siteVersion,
                                 onConfirm = { serverVersionOutdatedViewed.value = true },
                             )
                         }
                     }
+
                     else -> {}
                 }
 
@@ -264,6 +249,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             )
                         }
 
@@ -296,6 +282,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             )
                         }
 
@@ -364,6 +351,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
                             openImageViewer = navController::toView,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
 
@@ -397,6 +385,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
                             openImageViewer = navController::toView,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
 
@@ -500,6 +489,7 @@ class MainActivity : AppCompatActivity() {
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
                                 openImageViewer = { url -> navController.toView(url) },
+                                markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             )
                         }
                     }
@@ -507,7 +497,9 @@ class MainActivity : AppCompatActivity() {
                     composable(
                         route = Route.COMMENT,
                         deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                            navDeepLink { uriPattern = "$instance/comment/{${Route.CommentArgs.ID}}" }
+                            navDeepLink {
+                                uriPattern = "$instance/comment/{${Route.CommentArgs.ID}}"
+                            }
                         },
                         arguments = listOf(
                             navArgument(Route.CommentArgs.ID) {
@@ -530,6 +522,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
                             openImageViewer = navController::toView,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
 

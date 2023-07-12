@@ -20,7 +20,7 @@ import java.io.InputStream
 import okhttp3.Response as HttpResponse
 
 const val VERSION = "v3"
-const val DEFAULT_INSTANCE = "lemmy.ml"
+const val DEFAULT_INSTANCE = "voyager.lemmy.ml"
 const val MINIMUM_API_VERSION: String = "0.18"
 val REDACTED_QUERY_PARAMS = setOf("auth")
 val REDACTED_BODY_FIELDS = setOf("jwt", "password")
@@ -52,6 +52,12 @@ interface API {
      */
     @POST("post/like")
     suspend fun likePost(@Body form: CreatePostLike): Response<PostResponse>
+
+    /**
+     * Mark post as read.
+     */
+    @POST("post/mark_as_read")
+    suspend fun markAsRead(@Body form: MarkPostAsRead): Response<PostResponse>
 
     /**
      * Like / vote on a comment.
@@ -290,7 +296,17 @@ interface API {
                             .build()
                     }
                 }
-                .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
+                .addInterceptor(
+                    CustomHttpLoggingInterceptor(
+                        REDACTED_QUERY_PARAMS,
+<<<<<<< Updated upstream
+                        REDACTED_BODY_FIELDS
+                    )
+=======
+                        REDACTED_BODY_FIELDS,
+                    ),
+>>>>>>> Stashed changes
+                )
                 .build()
 
             return Retrofit.Builder()

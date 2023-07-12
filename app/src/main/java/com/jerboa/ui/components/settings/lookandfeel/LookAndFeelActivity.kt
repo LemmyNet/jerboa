@@ -7,18 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Colorize
-import androidx.compose.material.icons.outlined.ExitToApp
-import androidx.compose.material.icons.outlined.FormatSize
-import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material.icons.outlined.ViewList
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,19 +20,12 @@ import androidx.navigation.NavController
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberFloatSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
-import com.alorma.compose.settings.ui.SettingsCheckbox
-import com.alorma.compose.settings.ui.SettingsList
-import com.alorma.compose.settings.ui.SettingsListDropdown
-import com.alorma.compose.settings.ui.SettingsSlider
-import com.jerboa.PostViewMode
+import com.alorma.compose.settings.ui.*
+import com.jerboa.*
 import com.jerboa.R
-import com.jerboa.ThemeColor
-import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.getLangPreferenceDropdownEntries
-import com.jerboa.matchLocale
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.util.BackConfirmationMode
 
@@ -71,7 +54,8 @@ fun LookAndFeelActivity(
     )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
-    val showTextDescriptionsInNavbar = rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
+    val showTextDescriptionsInNavbar =
+        rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
     val showCollapsedCommentContentState =
         rememberBooleanSettingState(settings.showCollapsedCommentContent)
     val showCommentActionBarByDefaultState = rememberBooleanSettingState(
@@ -97,6 +81,8 @@ fun LookAndFeelActivity(
 
     val scrollState = rememberScrollState()
 
+    val markAsReadOnScroll = rememberBooleanSettingState(settings.markAsReadOnScroll)
+
     fun updateAppSettings() {
         appSettingsViewModel.update(
             AppSettings(
@@ -118,6 +104,11 @@ fun LookAndFeelActivity(
                 showTextDescriptionsInNavbar = showTextDescriptionsInNavbar.value,
                 blurNSFW = blurNSFW.value,
                 backConfirmationMode = backConfirmationMode.value,
+<<<<<<< Updated upstream
+                markAsReadOnScroll = markAsReadOnScroll.value
+=======
+                markAsReadOnScroll = markAsReadOnScroll.value,
+>>>>>>> Stashed changes
             ),
         )
     }
@@ -125,7 +116,14 @@ fun LookAndFeelActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), navController = navController)
+            SimpleTopAppBar(
+                text = stringResource(R.string.look_and_feel_look_and_feel),
+<<<<<<< Updated upstream
+                navController = navController
+=======
+                navController = navController,
+>>>>>>> Stashed changes
+            )
         },
         content = { padding ->
             Column(
@@ -316,6 +314,13 @@ fun LookAndFeelActivity(
                             contentDescription = null,
                         )
                     },
+                )
+                SettingsCheckbox(
+                    state = markAsReadOnScroll,
+                    title = {
+                        Text(stringResource(id = R.string.mark_as_read_on_scroll))
+                    },
+                    onCheckedChange = { updateAppSettings() },
                 )
             }
         },

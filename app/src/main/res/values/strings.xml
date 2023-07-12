@@ -337,4 +337,5 @@
     <string name="back_dialog">Show a confirmation dialog on exit</string>
     <string name="exit">Exit</string>
     <string name="back_dialog_title">Are you sure you want to exit?</string>
+    <string name="mark_as_read_on_scroll">Mark as read on scroll</string>
 </resources>

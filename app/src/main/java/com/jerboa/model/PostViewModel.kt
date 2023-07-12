@@ -7,37 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
+import com.jerboa.*
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
-import com.jerboa.appendData
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CommentId
-import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CommentSortType
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetComments
-import com.jerboa.datatypes.types.GetCommentsResponse
-import com.jerboa.datatypes.types.GetPost
-import com.jerboa.datatypes.types.GetPostResponse
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.PostId
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
-import com.jerboa.findAndUpdateComment
-import com.jerboa.serializeToMap
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
@@ -67,6 +42,7 @@ class PostViewModel : ViewModel(), Initializable {
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     fun initialize(
         id: Either<PostId, CommentId>,
@@ -155,6 +131,7 @@ class PostViewModel : ViewModel(), Initializable {
 
                     commentsRes = ApiState.Success(existing.data.copy(comments = appended))
                 }
+
                 else -> {}
             }
         }
@@ -305,6 +282,25 @@ class PostViewModel : ViewModel(), Initializable {
             }
 
             else -> {}
+        }
+    }
+
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
+    fun markPostAsRead(form: MarkPostAsRead) {
+        viewModelScope.launch {
+            markPostRes = ApiState.Loading
+            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+
+            when (val markRes = markPostRes) {
+                is ApiState.Success -> {
+                    updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
         }
     }
 }

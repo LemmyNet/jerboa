@@ -1,30 +1,12 @@
 package com.jerboa.ui.components.home
 
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.isImeVisible
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,10 +29,7 @@ import com.jerboa.fetchHomePosts
 import com.jerboa.loginFirstToast
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.BottomAppBarAll
-import com.jerboa.ui.components.common.InitializeRoute
-import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.toView
+import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
@@ -62,11 +41,56 @@ enum class NavTab(
     val iconFilled: ImageVector,
     val contentDescriptionId: Int,
 ) {
-    Home(R.string.bottomBar_label_home, Icons.Outlined.Home, Icons.Filled.Home, R.string.bottomBar_home),
-    Search(R.string.bottomBar_label_search, Icons.Outlined.Search, Icons.Filled.Search, R.string.bottomBar_search),
-    Inbox(R.string.bottomBar_label_inbox, Icons.Outlined.Email, Icons.Filled.Email, R.string.bottomBar_inbox),
-    Saved(R.string.bottomBar_label_bookmarks, Icons.Outlined.Bookmarks, Icons.Filled.Bookmarks, R.string.bottomBar_bookmarks),
-    Profile(R.string.bottomBar_label_profile, Icons.Outlined.Person, Icons.Filled.Person, R.string.bottomBar_profile),
+    Home(
+        R.string.bottomBar_label_home,
+        Icons.Outlined.Home,
+        Icons.Filled.Home,
+<<<<<<< Updated upstream
+        R.string.bottomBar_home
+=======
+        R.string.bottomBar_home,
+>>>>>>> Stashed changes
+    ),
+    Search(
+        R.string.bottomBar_label_search,
+        Icons.Outlined.Search,
+        Icons.Filled.Search,
+<<<<<<< Updated upstream
+        R.string.bottomBar_search
+=======
+        R.string.bottomBar_search,
+>>>>>>> Stashed changes
+    ),
+    Inbox(
+        R.string.bottomBar_label_inbox,
+        Icons.Outlined.Email,
+        Icons.Filled.Email,
+<<<<<<< Updated upstream
+        R.string.bottomBar_inbox
+=======
+        R.string.bottomBar_inbox,
+>>>>>>> Stashed changes
+    ),
+    Saved(
+        R.string.bottomBar_label_bookmarks,
+        Icons.Outlined.Bookmarks,
+        Icons.Filled.Bookmarks,
+<<<<<<< Updated upstream
+        R.string.bottomBar_bookmarks
+=======
+        R.string.bottomBar_bookmarks,
+>>>>>>> Stashed changes
+    ),
+    Profile(
+        R.string.bottomBar_label_profile,
+        Icons.Outlined.Person,
+        Icons.Filled.Person,
+<<<<<<< Updated upstream
+        R.string.bottomBar_profile
+=======
+        R.string.bottomBar_profile,
+>>>>>>> Stashed changes
+    ),
     ;
 
     fun needsLogin() = this == Inbox || this == Saved || this == Profile
@@ -170,6 +194,11 @@ fun BottomNavActivity(
                             usePrivateTabs = appSettings.usePrivateTabs,
                             drawerState = drawerState,
                             blurNSFW = appSettings.blurNSFW,
+<<<<<<< Updated upstream
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll
+=======
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
+>>>>>>> Stashed changes
                         )
                     }
 
@@ -208,6 +237,7 @@ fun BottomNavActivity(
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
                             openImageViewer = navController::toView,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
 
@@ -225,6 +255,7 @@ fun BottomNavActivity(
                             blurNSFW = appSettings.blurNSFW,
                             openImageViewer = navController::toView,
                             drawerState = drawerState,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
                 }

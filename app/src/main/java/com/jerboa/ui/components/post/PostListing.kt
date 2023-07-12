@@ -2,54 +2,15 @@ package com.jerboa.ui.components.post
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
-import androidx.compose.material.icons.outlined.CommentsDisabled
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Flag
-import androidx.compose.material.icons.outlined.Forum
-import androidx.compose.material.icons.outlined.Link
-import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material.icons.outlined.Textsms
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,50 +32,20 @@ import com.jerboa.VoteType
 import com.jerboa.calculateNewInstantScores
 import com.jerboa.communityNameShown
 import com.jerboa.copyToClipboard
-import com.jerboa.datatypes.sampleImagePostView
-import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
-import com.jerboa.datatypes.sampleLinkPostView
-import com.jerboa.datatypes.sampleMarkdownPostView
-import com.jerboa.datatypes.samplePostView
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.Person
-import com.jerboa.datatypes.types.Post
-import com.jerboa.datatypes.types.PostView
+import com.jerboa.datatypes.*
+import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
 import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
 import com.jerboa.openLink
-import com.jerboa.ui.components.common.ActionBarButton
-import com.jerboa.ui.components.common.CircularIcon
-import com.jerboa.ui.components.common.CommentOrPostNodeHeader
-import com.jerboa.ui.components.common.DotSpacer
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
+import com.jerboa.ui.components.common.*
 import com.jerboa.ui.components.common.MarkdownHelper.CreateMarkdownPreview
-import com.jerboa.ui.components.common.MyMarkdownText
-import com.jerboa.ui.components.common.NsfwBadge
-import com.jerboa.ui.components.common.PictrsThumbnailImage
-import com.jerboa.ui.components.common.PictrsUrlImage
-import com.jerboa.ui.components.common.ScoreAndTime
-import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.ui.components.common.TimeAgo
-import com.jerboa.ui.components.common.VoteGeneric
-import com.jerboa.ui.components.common.scoreColor
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
-import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
-import com.jerboa.ui.theme.CARD_COLORS
-import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
-import com.jerboa.ui.theme.LARGE_PADDING
-import com.jerboa.ui.theme.LINK_ICON_SIZE
-import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
-import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
-import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.XXL_PADDING
-import com.jerboa.ui.theme.muted
+import com.jerboa.ui.theme.*
 
 @Composable
 fun PostHeaderLine(
@@ -333,7 +264,7 @@ fun PostTitleAndImageLink(
             horizontal = MEDIUM_PADDING,
         ),
 
-    ) {
+        ) {
         // Title of the post
         PostName(
             postView = postView,
@@ -457,7 +388,8 @@ fun PostBody(
                             }
                         }
                     } else {
-                        val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+                        val defaultColor: Color =
+                            LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 
                         CreateMarkdownPreview(
                             markdown = text,
@@ -763,6 +695,12 @@ fun PreviewPostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        markAsReadOnScroll = false,
+<<<<<<< Updated upstream
+        onMarkAsRead = {}
+=======
+        onMarkAsRead = {},
+>>>>>>> Stashed changes
     )
 }
 
@@ -795,6 +733,12 @@ fun PreviewLinkPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        markAsReadOnScroll = false,
+<<<<<<< Updated upstream
+        onMarkAsRead = {}
+=======
+        onMarkAsRead = {},
+>>>>>>> Stashed changes
     )
 }
 
@@ -827,6 +771,12 @@ fun PreviewImagePostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        markAsReadOnScroll = false,
+<<<<<<< Updated upstream
+        onMarkAsRead = {}
+=======
+        onMarkAsRead = {},
+>>>>>>> Stashed changes
     )
 }
 
@@ -859,6 +809,12 @@ fun PreviewImagePostListingSmallCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        markAsReadOnScroll = false,
+<<<<<<< Updated upstream
+        onMarkAsRead = {}
+=======
+        onMarkAsRead = {},
+>>>>>>> Stashed changes
     )
 }
 
@@ -891,6 +847,8 @@ fun PreviewLinkNoThumbnailPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        markAsReadOnScroll = false,
+        onMarkAsRead = {},
     )
 }
 
@@ -923,6 +881,8 @@ fun PostListing(
     showAvatar: Boolean,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
+    markAsReadOnScroll: Boolean,
+    onMarkAsRead: (postView: PostView) -> Unit,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -937,6 +897,14 @@ fun PostListing(
     }
 
     var viewSource by remember { mutableStateOf(false) }
+
+    if (markAsReadOnScroll) {
+        DisposableEffect(key1 = postView.post.id) {
+            onDispose {
+                onMarkAsRead(postView)
+            }
+        }
+    }
 
     when (postViewMode) {
         PostViewMode.Card -> PostListingCard(
@@ -1161,7 +1129,7 @@ fun PostListingList(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
                     verticalArrangement = Arrangement.Center,
 
-                ) {
+                    ) {
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,
@@ -1551,10 +1519,35 @@ fun PostOptionsDialog(
                         text = stringResource(R.string.post_listing_copy_thumbnail_link),
                         icon = Icons.Outlined.Link,
                         onClick = {
-                            if (copyToClipboard(ctx, postView.post.thumbnail_url, "thumbnail link")) {
-                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_thumbnail_link_copied), Toast.LENGTH_SHORT).show()
+                            if (copyToClipboard(
+                                    ctx,
+                                    postView.post.thumbnail_url,
+<<<<<<< Updated upstream
+                                    "thumbnail link"
+=======
+                                    "thumbnail link",
+>>>>>>> Stashed changes
+                                )
+                            ) {
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_thumbnail_link_copied),
+<<<<<<< Updated upstream
+                                    Toast.LENGTH_SHORT
+=======
+                                    Toast.LENGTH_SHORT,
+>>>>>>> Stashed changes
+                                ).show()
                             } else {
-                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+<<<<<<< Updated upstream
+                                    Toast.LENGTH_SHORT
+=======
+                                    Toast.LENGTH_SHORT,
+>>>>>>> Stashed changes
+                                ).show()
                             }
                             onDismissRequest()
                         },
@@ -1565,10 +1558,35 @@ fun PostOptionsDialog(
                         text = stringResource(R.string.post_listing_copy_title),
                         icon = Icons.Outlined.ContentCopy,
                         onClick = {
-                            if (copyToClipboard(ctx, postView.post.embed_description, "post title")) {
-                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_title_copied), Toast.LENGTH_SHORT).show()
+                            if (copyToClipboard(
+                                    ctx,
+                                    postView.post.embed_description,
+<<<<<<< Updated upstream
+                                    "post title"
+=======
+                                    "post title",
+>>>>>>> Stashed changes
+                                )
+                            ) {
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_title_copied),
+<<<<<<< Updated upstream
+                                    Toast.LENGTH_SHORT
+=======
+                                    Toast.LENGTH_SHORT,
+>>>>>>> Stashed changes
+                                ).show()
                             } else {
-                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+<<<<<<< Updated upstream
+                                    Toast.LENGTH_SHORT
+=======
+                                    Toast.LENGTH_SHORT,
+>>>>>>> Stashed changes
+                                ).show()
                             }
                             onDismissRequest()
                         },
@@ -1580,9 +1598,25 @@ fun PostOptionsDialog(
                         icon = Icons.Outlined.ContentCopy,
                         onClick = {
                             if (copyToClipboard(ctx, postView.post.name, "post name")) {
-                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_name_copied), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_name_copied),
+<<<<<<< Updated upstream
+                                    Toast.LENGTH_SHORT
+=======
+                                    Toast.LENGTH_SHORT,
+>>>>>>> Stashed changes
+                                ).show()
                             } else {
-                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+<<<<<<< Updated upstream
+                                    Toast.LENGTH_SHORT
+=======
+                                    Toast.LENGTH_SHORT,
+>>>>>>> Stashed changes
+                                ).show()
                             }
                             onDismissRequest()
                         },
@@ -1594,9 +1628,25 @@ fun PostOptionsDialog(
                         icon = Icons.Outlined.ContentCopy,
                         onClick = {
                             if (copyToClipboard(ctx, postView.post.body, "post text")) {
-                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_text_copied), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_text_copied),
+<<<<<<< Updated upstream
+                                    Toast.LENGTH_SHORT
+=======
+                                    Toast.LENGTH_SHORT,
+>>>>>>> Stashed changes
+                                ).show()
                             } else {
-                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+<<<<<<< Updated upstream
+                                    Toast.LENGTH_SHORT
+=======
+                                    Toast.LENGTH_SHORT,
+>>>>>>> Stashed changes
+                                ).show()
                             }
                             onDismissRequest()
                         },
@@ -1604,7 +1654,19 @@ fun PostOptionsDialog(
                 }
                 postView.post.body?.also {
                     IconAndTextDrawerItem(
-                        text = if (viewSource) stringResource(R.string.post_listing_view_original) else stringResource(R.string.post_listing_view_source),
+<<<<<<< Updated upstream
+                        text = if (viewSource) stringResource(R.string.post_listing_view_original) else stringResource(
+                            R.string.post_listing_view_source
+                        ),
+=======
+                        text = if (viewSource) {
+                            stringResource(R.string.post_listing_view_original)
+                        } else {
+                            stringResource(
+                                R.string.post_listing_view_source,
+                            )
+                        },
+>>>>>>> Stashed changes
                         icon = Icons.Outlined.Description,
                         onClick = onViewSourceClick,
                     )

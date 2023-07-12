@@ -6,32 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jerboa.*
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CommentResponse
-import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeleteComment
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPersonDetails
-import com.jerboa.datatypes.types.GetPersonDetailsResponse
-import com.jerboa.datatypes.types.PersonId
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.findAndUpdateComment
-import com.jerboa.findAndUpdatePost
-import com.jerboa.serializeToMap
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
+import com.jerboa.datatypes.types.*
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
@@ -47,12 +26,14 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
+
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.New)
         private set
@@ -130,6 +111,7 @@ class PersonProfileViewModel : ViewModel(), Initializable {
                         ),
                     )
                 }
+
                 else -> {
                     prevPage()
                     oldRes
@@ -284,6 +266,21 @@ class PersonProfileViewModel : ViewModel(), Initializable {
             }
 
             else -> {}
+        }
+    }
+
+    fun markPostAsRead(form: MarkPostAsRead) {
+        viewModelScope.launch {
+            markPostRes = ApiState.Loading
+            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+
+            when (val markRes = markPostRes) {
+                is ApiState.Success -> {
+                    updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
         }
     }
 }

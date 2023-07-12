@@ -5,18 +5,12 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE
 import android.util.Log
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -131,6 +125,11 @@ data class AppSettings(
         defaultValue = "1",
     )
     val backConfirmationMode: Int,
+    @ColumnInfo(
+        name = "markAsReadOnScroll",
+        defaultValue = "0",
+    )
+    val markAsReadOnScroll: Boolean,
 )
 
 val APP_SETTINGS_DEFAULT = AppSettings(
@@ -152,6 +151,11 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     blurNSFW = true,
     showTextDescriptionsInNavbar = true,
     backConfirmationMode = 1,
+<<<<<<< Updated upstream
+    markAsReadOnScroll = false
+=======
+    markAsReadOnScroll = false,
+>>>>>>> Stashed changes
 )
 
 @Dao
@@ -283,7 +287,7 @@ class AppSettingsRepository(
 }
 
 @Database(
-    version = 19,
+    version = 20,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

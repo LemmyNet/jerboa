@@ -9,11 +9,11 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(
             "alter table account add column default_listing_type INTEGER NOT " +
-                "NULL default 0",
+                    "NULL default 0",
         )
         database.execSQL(
             "alter table account add column default_sort_type INTEGER NOT " +
-                "NULL default 0",
+                    "NULL default 0",
         )
     }
 }
@@ -220,6 +220,15 @@ val MIGRATION_18_19 = object : Migration(18, 19) {
     }
 }
 
+val MIGRATION_19_20 = object : Migration(19, 20) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings ADD COLUMN markAsReadOnScroll INTEGER NOT NULL DEFAULT 0",
+        )
+    }
+}
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST = arrayOf(
     MIGRATION_1_2,
@@ -240,4 +249,5 @@ val MIGRATIONS_LIST = arrayOf(
     MIGRATION_16_17,
     MIGRATION_17_18,
     MIGRATION_18_19,
+    MIGRATION_19_20,
 )

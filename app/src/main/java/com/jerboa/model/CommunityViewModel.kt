@@ -6,31 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jerboa.*
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.BlockCommunity
-import com.jerboa.datatypes.types.BlockCommunityResponse
-import com.jerboa.datatypes.types.BlockPerson
-import com.jerboa.datatypes.types.BlockPersonResponse
-import com.jerboa.datatypes.types.CommunityId
-import com.jerboa.datatypes.types.CommunityResponse
-import com.jerboa.datatypes.types.CreatePostLike
-import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.FollowCommunity
-import com.jerboa.datatypes.types.GetCommunity
-import com.jerboa.datatypes.types.GetCommunityResponse
-import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetPostsResponse
-import com.jerboa.datatypes.types.PostResponse
-import com.jerboa.datatypes.types.PostView
-import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.findAndUpdatePost
-import com.jerboa.mergePosts
-import com.jerboa.serializeToMap
-import com.jerboa.showBlockCommunityToast
-import com.jerboa.showBlockPersonToast
+import com.jerboa.datatypes.types.*
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
@@ -41,7 +21,7 @@ class CommunityViewModel : ViewModel(), Initializable {
         private set
 
     private var followCommunityRes: ApiState<CommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
 
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -50,8 +30,9 @@ class CommunityViewModel : ViewModel(), Initializable {
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.Active)
         private set
@@ -117,8 +98,22 @@ class CommunityViewModel : ViewModel(), Initializable {
                     if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
                         prevPage()
                     }
-                    ApiState.Success(GetPostsResponse(mergePosts(oldRes.data.posts, newRes.data.posts)))
+                    ApiState.Success(
+                        GetPostsResponse(
+                            mergePosts(
+                                oldRes.data.posts,
+<<<<<<< Updated upstream
+                                newRes.data.posts
+                            )
+                        )
+=======
+                                newRes.data.posts,
+                            ),
+                        ),
+>>>>>>> Stashed changes
+                    )
                 }
+
                 else -> {
                     prevPage()
                     oldRes
@@ -244,6 +239,21 @@ class CommunityViewModel : ViewModel(), Initializable {
             }
 
             else -> {}
+        }
+    }
+
+    fun markPostAsRead(form: MarkPostAsRead) {
+        viewModelScope.launch {
+            markPostRes = ApiState.Loading
+            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+
+            when (val markRes = markPostRes) {
+                is ApiState.Success -> {
+                    updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
         }
     }
 }
