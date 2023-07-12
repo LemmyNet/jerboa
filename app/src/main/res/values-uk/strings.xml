@@ -11,7 +11,7 @@
     <string name="account_settings_all">Усі</string>
     <string name="account_settings_avatar">Аватар</string>
     <string name="account_settings_banner">Банер</string>
-    <string name="account_settings_bio">Невеличкий життєпис/string>
+    <string name="account_settings_bio">Невеличкий життєпис</string>
     <string name="account_settings_bot_account">Обліковий запис бота</string>
     <string name="account_settings_default_listing_type">Різновид переліку за замовчуванням</string>
     <string name="account_settings_default_sort_type">Порядок впорядкування за замовчуванням</string>
@@ -28,7 +28,7 @@
     <string name="account_settings_show_nsfw">Показувати вміст для дорослих</string>
     <string name="account_settings_show_read_posts">Показувати прочитані дописи</string>
     <string name="account_settings_show_scores">Показувати кількість балів</string>
-    <string name="account_settings_subscribed">Підписки</string>
+    <string name="account_settings_subscribed">Передплачено</string>
     <string name="addBookmark">Додати до закладок</string>
     <string name="app_bars_dot_spacer">·</string>
     <string name="app_name" translatable="false">Джербоа</string>
@@ -100,7 +100,7 @@
     <string name="community_pending">Очікує на розгляд</string>
     <string name="community_refresh">Оновити</string>
     <string name="community_sortBy">Впорядкувати за</string>
-    <string name="community_subscribe">Підписатися</string>
+    <string name="community_subscribe">Передплатити</string>
     <string name="community_users_month">%1$s користувачів за місяць</string>
     <string name="createPost_selectCommunity">Обрати спільноту з переліку</string>
     <string name="create_post_a_title_here">тут назва....</string>
@@ -122,7 +122,7 @@
     <string name="dialogs_most_comments">Найбільш обговорювані</string>
     <string name="dialogs_new">Нові</string>
     <string name="dialogs_new_comments">Нові коментарі</string>
-    <string name="dialogs_subscribed">Підписки</string>
+    <string name="dialogs_subscribed">Передплачено</string>
     <string name="dialogs_top">Відбірні</string>
     <string name="dialogs_top_day">Відбірне за день</string>
     <string name="dialogs_top_month">Відбірне за місяць</string>
@@ -144,8 +144,8 @@
     <string name="home_settings">Налаштування</string>
     <string name="home_sign_out">Вийти</string>
     <string name="home_site_info">Відомості про сайт</string>
-    <string name="home_subscribed">Підписки</string>
-    <string name="home_subscriptions">Підписки</string>
+    <string name="home_subscribed">Передплачено</string>
+    <string name="home_subscriptions">Передплачено</string>
     <string name="home_switch_to">Перемикнутися на %1$s@%2$s</string>
     <string name="inbox_filter">Фільтрувати</string>
     <string name="inbox_inbox">Вхідні</string>
