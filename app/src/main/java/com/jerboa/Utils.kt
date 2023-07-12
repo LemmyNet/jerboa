@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import arrow.core.compareTo
 import com.google.gson.Gson
@@ -57,7 +58,9 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
+import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.Route
@@ -1408,4 +1411,19 @@ fun <T> ApiState<T>.isLoading(): Boolean {
 
 fun <T> ApiState<T>.isRefreshing(): Boolean {
     return this == ApiState.Refreshing
+}
+
+inline fun <reified E : Enum<E>> getEnumFromIntSetting(
+    appSettings: LiveData<AppSettings>,
+    getter: (AppSettings) -> Int,
+): E {
+    val enums = enumValues<E>()
+    val setting = appSettings.value ?: APP_SETTINGS_DEFAULT
+    val index = getter(setting)
+
+    return if (index >= enums.size) { // Fallback to default
+        enums[getter(APP_SETTINGS_DEFAULT)]
+    } else {
+        enums[index]
+    }
 }

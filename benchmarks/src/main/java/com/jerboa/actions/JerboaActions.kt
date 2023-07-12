@@ -84,15 +84,18 @@ fun MacrobenchmarkScope.waitUntilLoadingDone(timeout: Long = 10_000) {
     device.wait(Until.gone(By.res("jerboa:loading")), timeout)
 }
 
-fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(retry: Boolean = true, timeout: Long = 10_000) {
+fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(retry: Boolean = true, timeout: Long = 10_000, depth: Int = 0) {
     device.wait(
         Until.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post"))),
         timeout,
     )
+    if (depth > 10) throw IllegalStateException("Exceed retrial")
+
     if (retry && !device.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post")))) {
         openOptions()
         clickRefresh()
         waitUntilPostsActuallyVisible(timeout = timeout)
+        waitUntilPostsActuallyVisible(timeout = timeout, depth = depth + 1)
     }
 }
 
