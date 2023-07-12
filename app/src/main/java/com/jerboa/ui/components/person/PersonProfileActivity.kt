@@ -63,13 +63,13 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.entity.Account
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.PersonProfileViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel

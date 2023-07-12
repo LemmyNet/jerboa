@@ -49,12 +49,12 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.entity.Account
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.loginFirstToast
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote

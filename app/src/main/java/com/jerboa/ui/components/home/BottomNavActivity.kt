@@ -40,11 +40,11 @@ import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
 import com.jerboa.R
 import com.jerboa.api.ApiState
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.fetchHomePosts
 import com.jerboa.loginFirstToast
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.BottomAppBarAll

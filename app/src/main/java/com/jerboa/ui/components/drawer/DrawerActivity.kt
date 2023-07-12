@@ -3,12 +3,14 @@ package com.jerboa.ui.components.drawer
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
-import com.jerboa.db.AccountViewModel
 import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
+import com.jerboa.model.AccountViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -30,7 +32,7 @@ fun MainDrawer(
     blurNSFW: Boolean,
     showBottomNav: Boolean,
 ) {
-    val accounts = accountViewModel.allAccounts.value
+    val accounts by accountViewModel.allAccounts.observeAsState()
     val account = getCurrentAccount(accountViewModel)
 
     BackHandler(drawerState.isOpen) {

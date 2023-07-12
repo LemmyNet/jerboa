@@ -53,13 +53,13 @@ import com.jerboa.datatypes.types.MarkCommentReplyAsRead
 import com.jerboa.datatypes.types.MarkPersonMentionAsRead
 import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.db.AccountViewModel
 import com.jerboa.db.entity.Account
 import com.jerboa.getCommentParentId
 import com.jerboa.getLocalizedStringForInboxTab
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
+import com.jerboa.model.AccountViewModel
 import com.jerboa.model.InboxViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel

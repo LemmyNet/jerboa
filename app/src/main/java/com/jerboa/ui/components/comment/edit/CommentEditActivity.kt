@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.CommentView
-import com.jerboa.db.AccountViewModel
+import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentEditViewModel
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.addReturn

@@ -38,13 +38,13 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AccountViewModelFactory
 import com.jerboa.db.AppDBContainer
-import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AccountViewModelFactory
+import com.jerboa.model.AppSettingsViewModel
+import com.jerboa.model.AppSettingsViewModelFactory
 import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel

@@ -27,9 +27,9 @@ import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
-import com.jerboa.db.AccountViewModel
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreatePostViewModel
 import com.jerboa.ui.components.common.ConsumeReturn
 import com.jerboa.ui.components.common.LoadingBar

@@ -1,4 +1,4 @@
-package com.jerboa.db
+package com.jerboa.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

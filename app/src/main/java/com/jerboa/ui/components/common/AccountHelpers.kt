@@ -5,9 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import com.jerboa.PostViewMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.entity.Account
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
 
 @Composable
 fun getCurrentAccount(accountViewModel: AccountViewModel): Account? {

@@ -18,7 +18,6 @@ import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.compareVersions
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.Login
-import com.jerboa.db.AccountViewModel
 import com.jerboa.db.entity.Account
 import com.jerboa.getHostFromInstanceString
 import com.jerboa.serializeToMap
