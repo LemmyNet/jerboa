@@ -60,8 +60,8 @@
     <string name="comment_mention_node_comment_copied">Testo copiato</string>
     <string name="comment_mention_node_report_comment">Segnala commento</string>
     <string name="comment_mention_node_view_source">Mostra markdown</string>
-    <string name="comment_next_parent">Vai al prossimo commento padre</string>
-    <string name="comment_previous_parent">Vai al precedente commento padre</string>
+    <string name="comment_next_parent">Vai al commento padre successivo</string>
+    <string name="comment_previous_parent">Vai al commento padre precedente</string>
     <string name="comment_node_block">Blocca %1$s</string>
     <string name="comment_node_copy_permalink">Copia permalink</string>
     <string name="comment_node_copy_comment">Copia testo del commento</string>
