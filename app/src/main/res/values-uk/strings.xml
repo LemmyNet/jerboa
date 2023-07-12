@@ -333,7 +333,7 @@
     <string name="back_confirmation">Клацніть \`Повернутися\' ще раз, щоб вийти</string>
     <string name="no_back_confirmation">Не запитувати підтвердження при виході</string>
     <string name="press_again_confirmation">Клацніть \`Повернутися\' двічі, щоб вийти</string>
-    <string name="confirm_exit">Підтвердіть дію виходу</string>
+    <string name="confirm_exit">Підтвердіть вихід</string>
     <string name="back_dialog">Запитувати підтвердження при виході</string>
     <string name="exit">Вийти</string>
     <string name="back_dialog_title">Ви впевнені, що хочете вийти?</string>
