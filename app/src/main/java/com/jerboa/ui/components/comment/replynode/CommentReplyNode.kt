@@ -41,7 +41,7 @@ import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.datatypes.types.CommentReplyView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton

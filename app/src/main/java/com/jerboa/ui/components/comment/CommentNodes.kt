@@ -9,7 +9,7 @@ import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityModeratorView
 import com.jerboa.datatypes.types.Person
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 
 @Composable
 fun CommentNodes(

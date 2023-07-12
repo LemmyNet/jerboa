@@ -14,7 +14,7 @@ import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.GetUnreadCountResponse
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.serializeToMap
 import kotlinx.coroutines.launch
 
