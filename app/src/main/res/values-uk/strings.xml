@@ -330,9 +330,9 @@
     <string name="post_listing_view_source">Переглянути джерельний код</string>
     <string name="post_listing_view_original">Переглянути оригінал</string>
     <string name="download">Завантажити</string>
-    <string name="back_confirmation">Клацніть \`Повернутися\' ще раз, щоб вийти</string>
+    <string name="back_confirmation">Клацніть \`Повернутися\' ще раз, аби вийти</string>
     <string name="no_back_confirmation">Не запитувати підтвердження при виході</string>
-    <string name="press_again_confirmation">Клацніть \`Повернутися\' двічі, щоб вийти</string>
+    <string name="press_again_confirmation">Клацніть \`Повернутися\' двічі, аби вийти</string>
     <string name="confirm_exit">Підтвердіть вихід</string>
     <string name="back_dialog">Запитувати підтвердження при виході</string>
     <string name="exit">Вийти</string>
