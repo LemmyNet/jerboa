@@ -389,6 +389,7 @@ fun CommunityActivity(
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW,
                             openImageViewer = navController::toView,
+                            navController = navController,
                         )
                     }
                     else -> {}

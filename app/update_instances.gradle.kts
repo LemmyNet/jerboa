@@ -155,7 +155,7 @@ abstract class UpdateInstancesTask: DefaultTask() {
             separator = System.lineSeparator(),
             prefix = System.lineSeparator(),
             postfix = System.lineSeparator(),
-        ) { " ".repeat(INDENT) + "<data android:host=\"$it\"/>" }
+        ) { " ".repeat(INDENT) + "<data android:host=\"$it\" />" }
     }
 }
 

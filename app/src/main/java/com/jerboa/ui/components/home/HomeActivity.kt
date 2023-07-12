@@ -346,6 +346,7 @@ fun MainPostListingsContent(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            navController = navController,
             openImageViewer = navController::toView,
         )
     }
