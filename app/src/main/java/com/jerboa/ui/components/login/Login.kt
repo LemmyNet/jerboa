@@ -256,7 +256,7 @@ fun LoginFormPreview() {
 
 @Composable
 fun LoginHeader(
-    navController: NavController = rememberNavController(),
+    navController: NavController,
     accounts: List<Account>? = null,
 ) {
     TopAppBar(
@@ -284,5 +284,5 @@ fun LoginHeader(
 @Preview
 @Composable
 fun LoginHeaderPreview() {
-    LoginHeader()
+    LoginHeader(navController = rememberNavController())
 }

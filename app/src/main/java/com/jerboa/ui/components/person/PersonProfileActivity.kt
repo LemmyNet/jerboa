@@ -561,6 +561,7 @@ fun UserTabs(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
+                                    navController = navController,
                                     openImageViewer = openImageViewer,
                                 )
                             }
