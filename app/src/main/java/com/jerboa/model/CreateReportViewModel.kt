@@ -17,7 +17,7 @@ import com.jerboa.datatypes.types.CommentReportResponse
 import com.jerboa.datatypes.types.CreateCommentReport
 import com.jerboa.datatypes.types.CreatePostReport
 import com.jerboa.datatypes.types.PostReportResponse
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
