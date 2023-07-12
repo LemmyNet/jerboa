@@ -198,7 +198,6 @@ fun MainPostListingsContent(
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
-
         else -> {}
     }
 
@@ -232,7 +231,6 @@ fun MainPostListingsContent(
                 ApiErrorToast(postsRes.msg)
                 persistentListOf()
             }
-
             is ApiState.Holder -> postsRes.data.posts.toImmutableList()
             else -> persistentListOf()
         }
