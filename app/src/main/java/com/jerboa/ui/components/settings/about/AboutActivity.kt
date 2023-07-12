@@ -32,6 +32,7 @@ import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
 import com.jerboa.openLink
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.ui.components.common.toCrashLogs
 
 const val githubUrl = "https://github.com/dessalines/jerboa"
 const val jerboaMatrixChat = "https://matrix.to/#/#jerboa-dev:matrix.org"
@@ -96,6 +97,16 @@ fun AboutActivity(
                     onClick = {
                         openLink("$githubUrl/issues")
                     },
+                )
+                SettingsMenuLink(
+                    title = { Text(stringResource(R.string.crash_logs)) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Build,
+                            contentDescription = null,
+                        )
+                    },
+                    onClick = { navController.toCrashLogs() },
                 )
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_developer_matrix_chatroom)) },
