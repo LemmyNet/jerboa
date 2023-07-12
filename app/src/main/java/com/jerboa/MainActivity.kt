@@ -74,7 +74,7 @@ import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
-import com.jerboa.ui.components.settings.crashes.CrashesActivity
+import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 
@@ -600,8 +600,8 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    composable(route = Route.CRASHES) {
-                        CrashesActivity(
+                    composable(route = Route.CRASH_LOGS) {
+                        CrashLogsActivity(
                             navController = navController,
                         )
                     }

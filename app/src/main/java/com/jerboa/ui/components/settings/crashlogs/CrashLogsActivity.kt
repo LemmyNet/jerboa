@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.settings.crashes
+package com.jerboa.ui.components.settings.crashlogs
 
 import android.content.Context
 import android.util.Log
@@ -45,31 +45,31 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
-fun CrashesActivity(
+fun CrashLogsActivity(
     navController: NavController,
 ) {
-    Log.d("jerboa", "Got to Crashes activity")
+    Log.d("jerboa", "Got to Crash log activity")
 
     val ctx = LocalContext.current
 
     val crashes = CrashyReporter.getLogsAsStrings()?.toMutableStateList() ?: run { mutableStateListOf() }
 
-    Crashes(ctx = ctx, navController = navController, crashes = crashes)
+    CrashLogs(ctx = ctx, navController = navController, crashes = crashes)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Crashes(ctx: Context, navController: NavController, crashes: MutableList<String>) {
+fun CrashLogs(ctx: Context, navController: NavController, crashes: MutableList<String>) {
     val scope = rememberCoroutineScope()
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val deleteMessage = stringResource(R.string.crashes_all_deleted)
+    val deleteMessage = stringResource(R.string.crash_logs_all_deleted)
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             SimpleTopAppBar(
-                text = stringResource(R.string.crashes),
+                text = stringResource(R.string.crash_logs),
                 navController = navController,
                 actions = {
                     IconButton(
@@ -88,7 +88,7 @@ fun Crashes(ctx: Context, navController: NavController, crashes: MutableList<Str
                     ) {
                         Icon(
                             Icons.Outlined.Delete,
-                            contentDescription = stringResource(R.string.crashes_delete),
+                            contentDescription = stringResource(R.string.crash_logs_delete),
                         )
                     }
                 },
@@ -100,8 +100,8 @@ fun Crashes(ctx: Context, navController: NavController, crashes: MutableList<Str
                     .verticalScroll(rememberScrollState())
                     .padding(padding),
             ) {
-                crashes.forEachIndexed { index, crash ->
-                    CrashItem(ctx = ctx, crash = crash)
+                crashes.forEachIndexed { _, crash ->
+                    CrashLog(ctx = ctx, crash = crash)
                 }
             }
         },
@@ -109,7 +109,7 @@ fun Crashes(ctx: Context, navController: NavController, crashes: MutableList<Str
 }
 
 @Composable
-fun CrashItem(ctx: Context, crash: String) {
+fun CrashLog(ctx: Context, crash: String) {
     var expanded by remember { mutableStateOf(false) }
     val textModifier = Modifier.clickable(onClick = { expanded = !expanded })
 
@@ -126,7 +126,7 @@ fun CrashItem(ctx: Context, crash: String) {
             }) {
                 Icon(
                     Icons.Outlined.ContentCopy,
-                    contentDescription = stringResource(R.string.crashes_copy_text),
+                    contentDescription = stringResource(R.string.crash_logs_copy),
                 )
             }
         }
@@ -149,8 +149,8 @@ fun CrashItem(ctx: Context, crash: String) {
 
 @Preview
 @Composable
-fun CrashesPreview() {
-    Crashes(
+fun CrashLogsPreview() {
+    CrashLogs(
         ctx = LocalContext.current,
         navController = rememberNavController(),
         crashes = mutableListOf(

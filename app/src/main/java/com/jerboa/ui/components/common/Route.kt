@@ -41,7 +41,7 @@ object Route {
     const val LOOK_AND_FEEL = "lookAndFeel"
     const val ACCOUNT_SETTINGS = "accountSettings"
     const val ABOUT = "about"
-    const val CRASHES = "crashes"
+    const val CRASH_LOGS = "crashLogs"
 
     class CommunityFromIdArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :

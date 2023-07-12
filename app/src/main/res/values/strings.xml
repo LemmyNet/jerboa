@@ -102,10 +102,10 @@
     <string name="community_sortBy">Sort by</string>
     <string name="community_subscribe">Subscribe</string>
     <string name="community_users_month">%1$s users / month</string>
-    <string name="crashes">Crashes</string>
-    <string name="crashes_all_deleted">All crashes deleted</string>
-    <string name="crashes_copy_text">Copy crash text</string>
-    <string name="crashes_delete">Delete all crashes</string>
+    <string name="crash_logs">Crash Logs</string>
+    <string name="crash_logs_all_deleted">All crash logs deleted</string>
+    <string name="crash_logs_copy">Copy crash log</string>
+    <string name="crash_logs_delete">Delete all crash logs</string>
     <string name="createPost_selectCommunity">Select community from list</string>
     <string name="create_post_a_title_here">a title here....</string>
     <string name="create_post_community">Community</string>
