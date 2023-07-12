@@ -1,6 +1,7 @@
 package com.jerboa
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -88,6 +89,7 @@ import com.jerboa.util.BackConfirmation.disposeConfirmation
 import com.jerboa.util.BackConfirmationMode
 import com.jerboa.util.ShowConfirmationDialog
 
+
 class JerboaApplication : Application() {
     lateinit var container: AppDBContainer
 
@@ -133,6 +135,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
+
+            @Suppress("SENSELESS_COMPARISON")
+            if(appSettings == null ) {
+                triggerRebirth(ctx)
+            }
+
 
             JerboaTheme(
                 appSettings = appSettings,
