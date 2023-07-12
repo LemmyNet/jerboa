@@ -15,7 +15,7 @@
     <string name="account_settings_bot_account">Обліковий запис бота</string>
     <string name="account_settings_default_listing_type">Різновид переліку за замовчуванням</string>
     <string name="account_settings_default_sort_type">Порядок впорядкування за замовчуванням</string>
-    <string name="account_settings_display_name">Відображувана назва</string>
+    <string name="account_settings_display_name">Відображуване ім\'я</string>
     <string name="account_settings_email">Електронна пошта</string>
     <string name="account_settings_local">Місцеві</string>
     <string name="account_settings_matrix_user">Користувач Матриці</string>
@@ -35,7 +35,7 @@
     <string name="bottomBar_bookmarks">Перейти до моїх закладок</string>
     <string name="bottomBar_home">Перейти до домівки</string>
     <string name="bottomBar_inbox">Перейти до теки «Вхідні»</string>
-    <string name="bottomBar_label_bookmarks">Збережено</string>
+    <string name="bottomBar_label_bookmarks">Збережене</string>
     <string name="bottomBar_label_home">Домівка</string>
     <string name="bottomBar_label_inbox">Вхідні</string>
     <string name="bottomBar_label_profile">Профіль</string>
@@ -123,7 +123,7 @@
     <string name="dialogs_new">Нові</string>
     <string name="dialogs_new_comments">Нові коментарі</string>
     <string name="dialogs_subscribed">Підписки</string>
-    <string name="dialogs_top">Нагору</string>
+    <string name="dialogs_top">Відбірні</string>
     <string name="dialogs_top_day">Відбірне за день</string>
     <string name="dialogs_top_month">Відбірне за місяць</string>
     <string name="dialogs_top_week">Відбірне за тиждень</string>
@@ -218,9 +218,9 @@
     <string name="person_iconBanned">Забанений</string>
     <string name="person_iconModerator">Є модератором</string>
     <string name="person_profile_activity_about">Про суспільця</string>
-    <string name="person_profile_activity_comments">Коментує</string>
+    <string name="person_profile_activity_comments">Коментарі</string>
     <string name="person_profile_activity_moderates">Модерує</string>
-    <string name="person_profile_activity_posts">Дописує</string>
+    <string name="person_profile_activity_posts">Дописи</string>
     <string name="person_profile_block_person">Заблокувати цю особу</string>
     <string name="person_profile_comments">%1$s коментарів</string>
     <string name="person_profile_joined">Приєднався</string>
