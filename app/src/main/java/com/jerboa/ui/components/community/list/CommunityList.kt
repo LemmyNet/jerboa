@@ -1,32 +1,45 @@
 package com.jerboa.ui.components.community.list
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.*
+import com.jerboa.db.SearchHistory
+import com.jerboa.db.SearchHistoryViewModel
+import com.jerboa.model.CommunityListViewModel
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.community.CommunityLinkLargerWithUserCount
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -160,4 +173,65 @@ fun SearchViewPreview() {
         search = "",
         onSearchChange = {},
     )
+}
+
+@Composable
+fun SearchHistoryList(
+    communityListViewModel: CommunityListViewModel = viewModel(),
+    searchHistoryViewModel: SearchHistoryViewModel = viewModel(),
+    history: List<SearchHistory>,
+    onHistoryItemClicked: (SearchHistory) -> Unit,
+    onHistoryItemDeleted: (SearchHistory) -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+    Column {
+        if (history.isNotEmpty()) {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(R.string.community_list_recent_searches),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                },
+            )
+        }
+        history.forEach {
+            ListItem(
+                modifier = Modifier.clickable { onHistoryItemClicked(it) },
+                headlineContent = {
+                    Text(
+                        text = it.searchTerm,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                },
+                trailingContent = {
+                    IconButton(
+                        onClick = { onHistoryItemDeleted(it) },
+                        content = {
+                            Icon(
+                                Icons.Rounded.Close,
+                                contentDescription = stringResource(
+                                    R.string.community_list_delete_search_item,
+                                    it.searchTerm,
+                                ),
+                                tint = MaterialTheme.colorScheme.surfaceTint,
+                            )
+                        },
+                    )
+                },
+            )
+        }
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = stringResource(R.string.community_list_title),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            },
+        )
+
+    }
 }

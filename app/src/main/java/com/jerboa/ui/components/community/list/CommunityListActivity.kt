@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.community.list
 
 import android.util.Log
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
@@ -9,7 +10,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -22,6 +25,7 @@ import com.jerboa.datatypes.types.Search
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.SearchHistoryViewModel
 import com.jerboa.model.CommunityListViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -34,8 +38,6 @@ import com.jerboa.ui.components.common.toCommunity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-private var fetchCommunitiesJob: Job? = null
 
 object CommunityListReturn {
     const val COMMUNITY = "community-list::return(community)"
@@ -60,9 +62,13 @@ fun CommunityListActivity(
         communityListViewModel.setCommunityListFromFollowed(siteViewModel)
     }
 
+    val searchHistoryViewModel: SearchHistoryViewModel = viewModel()
+
     var search by rememberSaveable { mutableStateOf("") }
+    val searchHistory by searchHistoryViewModel.searchHistory.observeAsState()
 
     val scope = rememberCoroutineScope()
+    var fetchCommunitiesJob by remember { mutableStateOf<Job?>(null) }
 
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
@@ -93,7 +99,45 @@ fun CommunityListActivity(
             },
             content = { padding ->
                 when (val communitiesRes = communityListViewModel.searchRes) {
-                    ApiState.Empty -> ApiEmptyText()
+                    ApiState.Empty -> {
+                        Column(
+                            modifier = Modifier
+                                .padding(padding)
+                                .imePadding()
+                        ) {
+                            searchHistory?.let { history ->
+                                SearchHistoryList(
+                                    history = history,
+                                    onHistoryItemClicked = {
+                                        scope.launch {
+                                            search = it.searchTerm
+                                            communityListViewModel.searchAllCommunities(
+                                                it.text,
+                                                account?.jwt,
+                                            )
+                                        }
+                                    },
+                                    onHistoryItemDeleted = {
+                                        scope.launch {
+                                            searchHistoryViewModel.delete(it)
+                                        }
+                                    }
+                                )
+                            }
+                            CommunityListings(
+                                communities = communityListViewModel.communities,
+                                onClickCommunity = { cs ->
+                                    if (selectMode) {
+                                        communityListViewModel.selectCommunity(cs)
+                                        navController.navigateUp()
+                                    } else {
+                                        navController.navigate(route = "community/${cs.id}")
+                                    }
+                                },
+                                blurNSFW = blurNSFW,
+                            )
+                        }
+                    }
                     is ApiState.Failure -> ApiErrorText(communitiesRes.msg)
                     ApiState.Loading -> {
                         LoadingBar(padding)

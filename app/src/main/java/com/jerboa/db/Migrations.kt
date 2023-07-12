@@ -220,6 +220,25 @@ val MIGRATION_18_19 = object : Migration(18, 19) {
     }
 }
 
+val MIGRATION_19_20 = object : Migration(19, 20) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings ADD COLUMN save_search_history INTEGER NOT NULL DEFAULT 1",
+        )
+        database.execSQL(
+            """
+                CREATE TABLE IF NOT EXISTS SearchHistory(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                    account_id INTEGER NOT NULL,
+                    search_term TEXT NOT NULL,
+                    FOREIGN KEY(account_id) REFERENCES Account(id)
+                )
+            """,
+        )
+    }
+}
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST = arrayOf(
     MIGRATION_1_2,
@@ -240,4 +259,5 @@ val MIGRATIONS_LIST = arrayOf(
     MIGRATION_16_17,
     MIGRATION_17_18,
     MIGRATION_18_19,
+    MIGRATION_19_20,
 )

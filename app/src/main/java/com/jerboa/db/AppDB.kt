@@ -8,6 +8,7 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -131,6 +132,11 @@ data class AppSettings(
         defaultValue = "1",
     )
     val backConfirmationMode: Int,
+    @ColumnInfo(
+        name = "save_search_history",
+        defaultValue = "1",
+    )
+    val saveSearchHistory: Boolean,
 )
 
 val APP_SETTINGS_DEFAULT = AppSettings(
@@ -152,6 +158,22 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     blurNSFW = true,
     showTextDescriptionsInNavbar = true,
     backConfirmationMode = 1,
+    saveSearchHistory = true,
+)
+
+@Entity(
+    foreignKeys = [ForeignKey(
+        entity = Account::class,
+        parentColumns = ["id"],
+        childColumns = ["account_id"],
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE,
+    )],
+)
+data class SearchHistory(
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    @ColumnInfo(name = "account_id") val accountId: Int,
+    @ColumnInfo(name = "search_term") val searchTerm: String,
 )
 
 @Dao
@@ -191,6 +213,21 @@ interface AppSettingsDao {
 
     @Query("UPDATE AppSettings set post_view_mode = :postViewMode")
     suspend fun updatePostViewMode(postViewMode: Int)
+}
+
+@Dao
+interface SearchHistoryDao {
+    @Query("SELECT * FROM SearchHistory")
+    fun history(): LiveData<List<SearchHistory>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = SearchHistory::class)
+    suspend fun insert(item: SearchHistory)
+
+    @Delete(entity = SearchHistory::class)
+    suspend fun delete(item: SearchHistory)
+
+    @Query("DELETE FROM SearchHistory")
+    suspend fun clear()
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -238,6 +275,7 @@ class AccountRepository(private val accountDao: AccountDao) {
 // instead of the whole database, because you only need access to the DAO
 class AppSettingsRepository(
     private val appSettingsDao: AppSettingsDao,
+    private val searchHistoryDao: SearchHistoryDao,
     private val httpClient: OkHttpClient = OkHttpClient(),
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
@@ -252,6 +290,9 @@ class AppSettingsRepository(
     @WorkerThread
     suspend fun update(appSettings: AppSettings) {
         appSettingsDao.updateAppSettings(appSettings)
+        if (!appSettings.saveSearchHistory) {
+            searchHistoryDao.clear()
+        }
     }
 
     @WorkerThread
@@ -282,14 +323,29 @@ class AppSettingsRepository(
     }
 }
 
+class SearchHistoryRepository(
+    private val searchHistoryDao: SearchHistoryDao,
+) {
+    fun history(): LiveData<List<SearchHistory>> = searchHistoryDao.history()
+
+    suspend fun insert(item: SearchHistory) {
+        if (appSettingsDao.settings().first().saveSearchHistory) {
+            searchHistoryDao.insert(item)
+        }
+    }
+
+    suspend fun delete(item: SearchHistory) = searchHistoryDao.delete(item)
+}
+
 @Database(
-    version = 19,
-    entities = [Account::class, AppSettings::class],
+    version = 20,
+    entities = [Account::class, AppSettings::class, SearchHistory::class],
     exportSchema = true,
 )
 abstract class AppDB : RoomDatabase() {
     abstract fun accountDao(): AccountDao
     abstract fun appSettingsDao(): AppSettingsDao
+    abstract fun searchHistoryDao(): SearchHistoryDao
 
     companion object {
         @Volatile
@@ -395,6 +451,34 @@ class AppSettingsViewModelFactory(private val repository: AppSettingsRepository)
         if (modelClass.isAssignableFrom(AppSettingsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return AppSettingsViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class SearchHistoryViewModel(private val repository: SearchHistoryRepository) : ViewModel() {
+    val searchHistory = repository.history()
+        .map { history ->
+            history
+                .distinctBy { it.searchTerm }
+                .sortedByDescending { it.id }
+        }
+
+    suspend fun insert(item: SearchHistory) {
+        repository.insert(item)
+    }
+
+    suspend fun delete(item: SearchHistory) {
+        repository.delete(item)
+    }
+}
+
+class SearchHistoryViewModelFactory(private val repository: SearchHistoryRepository) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(SearchHistoryViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return SearchHistoryViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

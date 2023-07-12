@@ -43,6 +43,9 @@ import com.jerboa.db.AppDB
 import com.jerboa.db.AppSettingsRepository
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.AppSettingsViewModelFactory
+import com.jerboa.db.SearchHistoryRepository
+import com.jerboa.db.SearchHistoryViewModel
+import com.jerboa.db.SearchHistoryViewModelFactory
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
 import com.jerboa.model.CommunityViewModel
@@ -90,7 +93,10 @@ import com.jerboa.util.ShowConfirmationDialog
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
     val accountRepository by lazy { AccountRepository(database.accountDao()) }
-    val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
+    val appSettingsRepository by lazy {
+        AppSettingsRepository(database.appSettingsDao(), database.searchHistoryDao())
+    }
+    val searchHistoryRepository by lazy { SearchHistoryRepository(database.searchHistoryDao()) }
 }
 
 class MainActivity : AppCompatActivity() {
@@ -103,6 +109,9 @@ class MainActivity : AppCompatActivity() {
     }
     private val appSettingsViewModel: AppSettingsViewModel by viewModels {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
+    }
+    private val searchHistoryViewModel: SearchHistoryViewModel by viewModels {
+        SearchHistoryViewModelFactory((application as JerboaApplication).searchHistoryRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
