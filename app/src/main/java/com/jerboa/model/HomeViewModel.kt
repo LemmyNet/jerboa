@@ -85,15 +85,9 @@ class HomeViewModel : ViewModel(), Initializable {
                         GetPostsResponse(
                             mergePosts(
                                 oldRes.data.posts,
-<<<<<<< Updated upstream
-                                newRes.data.posts
-                            )
-                        )
-=======
                                 newRes.data.posts,
                             ),
                         ),
->>>>>>> Stashed changes
                     )
                 }
 
@@ -168,12 +162,8 @@ class HomeViewModel : ViewModel(), Initializable {
     fun updateFromAccount(account: Account) {
         updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
         updateListingType(
-<<<<<<< Updated upstream
-            ListingType.values().getOrElse(account.defaultListingType) { listingType })
-=======
             ListingType.values().getOrElse(account.defaultListingType) { listingType },
         )
->>>>>>> Stashed changes
     }
 
     fun updatePost(postView: PostView) {

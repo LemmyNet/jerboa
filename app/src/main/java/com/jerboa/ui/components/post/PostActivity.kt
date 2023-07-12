@@ -116,13 +116,8 @@ fun PostActivity(
                 MarkPostAsRead(
                     post_id = it,
                     read = true,
-<<<<<<< Updated upstream
-                    auth = account!!.jwt
-                )
-=======
                     auth = account!!.jwt,
                 ),
->>>>>>> Stashed changes
             )
         }, {})
     }
@@ -397,19 +392,11 @@ fun PostActivity(
                                                 MarkPostAsRead(
                                                     post_id = pv.post.id,
                                                     read = true,
-<<<<<<< Updated upstream
-                                                    auth = acct.jwt
-                                                )
-                                            )
-                                        }
-                                    }
-=======
                                                     auth = acct.jwt,
                                                 ),
                                             )
                                         }
                                     },
->>>>>>> Stashed changes
                                 )
                             }
 
@@ -542,11 +529,7 @@ fun PostActivity(
                                         onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onHeaderLongClick = { commentView ->
                                             toggleActionBar(
-<<<<<<< Updated upstream
-                                                commentView.comment.id
-=======
                                                 commentView.comment.id,
->>>>>>> Stashed changes
                                             )
                                         },
                                         onEditCommentClick = { cv ->
@@ -577,7 +560,7 @@ fun PostActivity(
                                                 commentView = cv,
                                                 account = account,
 
-                                                )
+                                            )
                                         },
                                         onBlockCreatorClick = { person ->
                                             account?.also { acct ->

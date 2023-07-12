@@ -45,51 +45,31 @@ enum class NavTab(
         R.string.bottomBar_label_home,
         Icons.Outlined.Home,
         Icons.Filled.Home,
-<<<<<<< Updated upstream
-        R.string.bottomBar_home
-=======
         R.string.bottomBar_home,
->>>>>>> Stashed changes
     ),
     Search(
         R.string.bottomBar_label_search,
         Icons.Outlined.Search,
         Icons.Filled.Search,
-<<<<<<< Updated upstream
-        R.string.bottomBar_search
-=======
         R.string.bottomBar_search,
->>>>>>> Stashed changes
     ),
     Inbox(
         R.string.bottomBar_label_inbox,
         Icons.Outlined.Email,
         Icons.Filled.Email,
-<<<<<<< Updated upstream
-        R.string.bottomBar_inbox
-=======
         R.string.bottomBar_inbox,
->>>>>>> Stashed changes
     ),
     Saved(
         R.string.bottomBar_label_bookmarks,
         Icons.Outlined.Bookmarks,
         Icons.Filled.Bookmarks,
-<<<<<<< Updated upstream
-        R.string.bottomBar_bookmarks
-=======
         R.string.bottomBar_bookmarks,
->>>>>>> Stashed changes
     ),
     Profile(
         R.string.bottomBar_label_profile,
         Icons.Outlined.Person,
         Icons.Filled.Person,
-<<<<<<< Updated upstream
-        R.string.bottomBar_profile
-=======
         R.string.bottomBar_profile,
->>>>>>> Stashed changes
     ),
     ;
 
@@ -194,11 +174,7 @@ fun BottomNavActivity(
                             usePrivateTabs = appSettings.usePrivateTabs,
                             drawerState = drawerState,
                             blurNSFW = appSettings.blurNSFW,
-<<<<<<< Updated upstream
-                            markAsReadOnScroll = appSettings.markAsReadOnScroll
-=======
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
->>>>>>> Stashed changes
                         )
                     }
 

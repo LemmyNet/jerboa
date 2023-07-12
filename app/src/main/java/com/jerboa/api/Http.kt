@@ -299,13 +299,8 @@ interface API {
                 .addInterceptor(
                     CustomHttpLoggingInterceptor(
                         REDACTED_QUERY_PARAMS,
-<<<<<<< Updated upstream
-                        REDACTED_BODY_FIELDS
-                    )
-=======
                         REDACTED_BODY_FIELDS,
                     ),
->>>>>>> Stashed changes
                 )
                 .build()
 

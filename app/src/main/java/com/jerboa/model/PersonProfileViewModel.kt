@@ -26,7 +26,7 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-    mutableStateOf(ApiState.Empty)
+        mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)

@@ -148,11 +148,7 @@ class MainActivity : AppCompatActivity() {
                         val siteVersion = siteRes.data.version
                         if (compareVersions(
                                 siteVersion,
-<<<<<<< Updated upstream
-                                MINIMUM_API_VERSION
-=======
                                 MINIMUM_API_VERSION,
->>>>>>> Stashed changes
                             ) < 0 && !serverVersionOutdatedViewed.value
                         ) {
                             ShowOutdatedServerDialog(

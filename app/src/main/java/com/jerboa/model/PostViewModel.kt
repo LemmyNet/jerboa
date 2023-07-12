@@ -285,10 +285,6 @@ class PostViewModel : ViewModel(), Initializable {
         }
     }
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
     fun markPostAsRead(form: MarkPostAsRead) {
         viewModelScope.launch {
             markPostRes = ApiState.Loading

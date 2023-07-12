@@ -21,7 +21,7 @@ class CommunityViewModel : ViewModel(), Initializable {
         private set
 
     private var followCommunityRes: ApiState<CommunityResponse> by
-    mutableStateOf(ApiState.Empty)
+        mutableStateOf(ApiState.Empty)
 
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -30,7 +30,7 @@ class CommunityViewModel : ViewModel(), Initializable {
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-    mutableStateOf(ApiState.Empty)
+        mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
@@ -102,15 +102,9 @@ class CommunityViewModel : ViewModel(), Initializable {
                         GetPostsResponse(
                             mergePosts(
                                 oldRes.data.posts,
-<<<<<<< Updated upstream
-                                newRes.data.posts
-                            )
-                        )
-=======
                                 newRes.data.posts,
                             ),
                         ),
->>>>>>> Stashed changes
                     )
                 }
 

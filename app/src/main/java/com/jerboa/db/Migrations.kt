@@ -9,11 +9,11 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(
             "alter table account add column default_listing_type INTEGER NOT " +
-                    "NULL default 0",
+                "NULL default 0",
         )
         database.execSQL(
             "alter table account add column default_sort_type INTEGER NOT " +
-                    "NULL default 0",
+                "NULL default 0",
         )
     }
 }

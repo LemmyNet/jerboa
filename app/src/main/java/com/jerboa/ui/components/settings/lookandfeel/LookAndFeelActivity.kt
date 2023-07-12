@@ -104,11 +104,7 @@ fun LookAndFeelActivity(
                 showTextDescriptionsInNavbar = showTextDescriptionsInNavbar.value,
                 blurNSFW = blurNSFW.value,
                 backConfirmationMode = backConfirmationMode.value,
-<<<<<<< Updated upstream
-                markAsReadOnScroll = markAsReadOnScroll.value
-=======
                 markAsReadOnScroll = markAsReadOnScroll.value,
->>>>>>> Stashed changes
             ),
         )
     }
@@ -118,11 +114,7 @@ fun LookAndFeelActivity(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.look_and_feel_look_and_feel),
-<<<<<<< Updated upstream
-                navController = navController
-=======
                 navController = navController,
->>>>>>> Stashed changes
             )
         },
         content = { padding ->
@@ -298,6 +290,13 @@ fun LookAndFeelActivity(
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
+                SettingsCheckbox(
+                    state = markAsReadOnScroll,
+                    title = {
+                        Text(stringResource(id = R.string.mark_as_read_on_scroll))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
                 SettingsList(
                     title = {
                         Text(text = stringResource(R.string.confirm_exit))
@@ -314,13 +313,6 @@ fun LookAndFeelActivity(
                             contentDescription = null,
                         )
                     },
-                )
-                SettingsCheckbox(
-                    state = markAsReadOnScroll,
-                    title = {
-                        Text(stringResource(id = R.string.mark_as_read_on_scroll))
-                    },
-                    onCheckedChange = { updateAppSettings() },
                 )
             }
         },

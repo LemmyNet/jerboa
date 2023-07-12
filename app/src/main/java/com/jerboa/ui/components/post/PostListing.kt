@@ -264,7 +264,7 @@ fun PostTitleAndImageLink(
             horizontal = MEDIUM_PADDING,
         ),
 
-        ) {
+    ) {
         // Title of the post
         PostName(
             postView = postView,
@@ -696,11 +696,7 @@ fun PreviewPostListingCard() {
         blurNSFW = true,
         openImageViewer = {},
         markAsReadOnScroll = false,
-<<<<<<< Updated upstream
-        onMarkAsRead = {}
-=======
         onMarkAsRead = {},
->>>>>>> Stashed changes
     )
 }
 
@@ -734,11 +730,7 @@ fun PreviewLinkPostListing() {
         blurNSFW = true,
         openImageViewer = {},
         markAsReadOnScroll = false,
-<<<<<<< Updated upstream
-        onMarkAsRead = {}
-=======
         onMarkAsRead = {},
->>>>>>> Stashed changes
     )
 }
 
@@ -772,11 +764,7 @@ fun PreviewImagePostListingCard() {
         blurNSFW = true,
         openImageViewer = {},
         markAsReadOnScroll = false,
-<<<<<<< Updated upstream
-        onMarkAsRead = {}
-=======
         onMarkAsRead = {},
->>>>>>> Stashed changes
     )
 }
 
@@ -810,11 +798,7 @@ fun PreviewImagePostListingSmallCard() {
         blurNSFW = true,
         openImageViewer = {},
         markAsReadOnScroll = false,
-<<<<<<< Updated upstream
-        onMarkAsRead = {}
-=======
         onMarkAsRead = {},
->>>>>>> Stashed changes
     )
 }
 
@@ -1129,7 +1113,7 @@ fun PostListingList(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
                     verticalArrangement = Arrangement.Center,
 
-                    ) {
+                ) {
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,
@@ -1522,31 +1506,19 @@ fun PostOptionsDialog(
                             if (copyToClipboard(
                                     ctx,
                                     postView.post.thumbnail_url,
-<<<<<<< Updated upstream
-                                    "thumbnail link"
-=======
                                     "thumbnail link",
->>>>>>> Stashed changes
                                 )
                             ) {
                                 Toast.makeText(
                                     ctx,
                                     ctx.getString(R.string.post_listing_thumbnail_link_copied),
-<<<<<<< Updated upstream
-                                    Toast.LENGTH_SHORT
-=======
                                     Toast.LENGTH_SHORT,
->>>>>>> Stashed changes
                                 ).show()
                             } else {
                                 Toast.makeText(
                                     ctx,
                                     ctx.getString(R.string.generic_error),
-<<<<<<< Updated upstream
-                                    Toast.LENGTH_SHORT
-=======
                                     Toast.LENGTH_SHORT,
->>>>>>> Stashed changes
                                 ).show()
                             }
                             onDismissRequest()
@@ -1561,31 +1533,19 @@ fun PostOptionsDialog(
                             if (copyToClipboard(
                                     ctx,
                                     postView.post.embed_description,
-<<<<<<< Updated upstream
-                                    "post title"
-=======
                                     "post title",
->>>>>>> Stashed changes
                                 )
                             ) {
                                 Toast.makeText(
                                     ctx,
                                     ctx.getString(R.string.post_listing_title_copied),
-<<<<<<< Updated upstream
-                                    Toast.LENGTH_SHORT
-=======
                                     Toast.LENGTH_SHORT,
->>>>>>> Stashed changes
                                 ).show()
                             } else {
                                 Toast.makeText(
                                     ctx,
                                     ctx.getString(R.string.generic_error),
-<<<<<<< Updated upstream
-                                    Toast.LENGTH_SHORT
-=======
                                     Toast.LENGTH_SHORT,
->>>>>>> Stashed changes
                                 ).show()
                             }
                             onDismissRequest()
@@ -1601,21 +1561,13 @@ fun PostOptionsDialog(
                                 Toast.makeText(
                                     ctx,
                                     ctx.getString(R.string.post_listing_name_copied),
-<<<<<<< Updated upstream
-                                    Toast.LENGTH_SHORT
-=======
                                     Toast.LENGTH_SHORT,
->>>>>>> Stashed changes
                                 ).show()
                             } else {
                                 Toast.makeText(
                                     ctx,
                                     ctx.getString(R.string.generic_error),
-<<<<<<< Updated upstream
-                                    Toast.LENGTH_SHORT
-=======
                                     Toast.LENGTH_SHORT,
->>>>>>> Stashed changes
                                 ).show()
                             }
                             onDismissRequest()
@@ -1631,21 +1583,13 @@ fun PostOptionsDialog(
                                 Toast.makeText(
                                     ctx,
                                     ctx.getString(R.string.post_listing_text_copied),
-<<<<<<< Updated upstream
-                                    Toast.LENGTH_SHORT
-=======
                                     Toast.LENGTH_SHORT,
->>>>>>> Stashed changes
                                 ).show()
                             } else {
                                 Toast.makeText(
                                     ctx,
                                     ctx.getString(R.string.generic_error),
-<<<<<<< Updated upstream
-                                    Toast.LENGTH_SHORT
-=======
                                     Toast.LENGTH_SHORT,
->>>>>>> Stashed changes
                                 ).show()
                             }
                             onDismissRequest()
@@ -1654,11 +1598,6 @@ fun PostOptionsDialog(
                 }
                 postView.post.body?.also {
                     IconAndTextDrawerItem(
-<<<<<<< Updated upstream
-                        text = if (viewSource) stringResource(R.string.post_listing_view_original) else stringResource(
-                            R.string.post_listing_view_source
-                        ),
-=======
                         text = if (viewSource) {
                             stringResource(R.string.post_listing_view_original)
                         } else {
@@ -1666,7 +1605,6 @@ fun PostOptionsDialog(
                                 R.string.post_listing_view_source,
                             )
                         },
->>>>>>> Stashed changes
                         icon = Icons.Outlined.Description,
                         onClick = onViewSourceClick,
                     )

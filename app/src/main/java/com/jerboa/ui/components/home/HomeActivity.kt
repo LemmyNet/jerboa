@@ -15,9 +15,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -318,19 +316,11 @@ fun MainPostListingsContent(
                         MarkPostAsRead(
                             post_id = postView.post.id,
                             read = true,
-<<<<<<< Updated upstream
-                            auth = acct.jwt
-                        )
-                    )
-                }
-            }
-=======
                             auth = acct.jwt,
                         ),
                     )
                 }
             },
->>>>>>> Stashed changes
         )
     }
 }

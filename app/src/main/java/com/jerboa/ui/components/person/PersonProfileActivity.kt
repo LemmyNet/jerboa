@@ -521,11 +521,7 @@ fun UserTabs(
                                                 MarkPostAsRead(
                                                     post_id = it.post.id,
                                                     read = true,
-<<<<<<< Updated upstream
-                                                    auth = acct.jwt
-=======
                                                     auth = acct.jwt,
->>>>>>> Stashed changes
                                                 ),
                                             )
                                         }
@@ -612,11 +608,7 @@ fun UserTabs(
                                     isFlat = true,
                                     isExpanded = { commentId ->
                                         !unExpandedComments.contains(
-<<<<<<< Updated upstream
-                                            commentId
-=======
                                             commentId,
->>>>>>> Stashed changes
                                         )
                                     },
                                     listState = listState,
@@ -718,11 +710,7 @@ fun UserTabs(
                                     isCollapsedByParent = false,
                                     showActionBar = { commentId ->
                                         showActionBarByDefault xor commentsWithToggledActionBar.contains(
-<<<<<<< Updated upstream
-                                            commentId
-=======
                                             commentId,
->>>>>>> Stashed changes
                                         )
                                     },
                                     account = account,

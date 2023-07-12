@@ -151,11 +151,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     blurNSFW = true,
     showTextDescriptionsInNavbar = true,
     backConfirmationMode = 1,
-<<<<<<< Updated upstream
-    markAsReadOnScroll = false
-=======
     markAsReadOnScroll = false,
->>>>>>> Stashed changes
 )
 
 @Dao

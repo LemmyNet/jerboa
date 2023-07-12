@@ -73,12 +73,8 @@ fun CommunityActivity(
         communityViewModel.resetPage()
         account?.let {
             communityViewModel.updateSortType(
-<<<<<<< Updated upstream
-                SortType.values().getOrElse(account.defaultSortType) { siteViewModel.sortType })
-=======
                 SortType.values().getOrElse(account.defaultSortType) { siteViewModel.sortType },
             )
->>>>>>> Stashed changes
         }
         communityViewModel.getCommunity(
             form = GetCommunity(
@@ -195,11 +191,7 @@ fun CommunityActivity(
                     pullRefreshState,
                     Modifier
                         .align(Alignment.TopCenter)
-<<<<<<< Updated upstream
-                        .zIndex(100F)
-=======
                         .zIndex(100F),
->>>>>>> Stashed changes
                 )
                 // Can't be in ApiState.Loading, because of infinite scrolling
                 if (communityViewModel.postsRes.isLoading()) {
@@ -373,13 +365,8 @@ fun CommunityActivity(
                                         MarkPostAsRead(
                                             post_id = postView.post.id,
                                             read = true,
-<<<<<<< Updated upstream
-                                            auth = acct.jwt
-                                        )
-=======
                                             auth = acct.jwt,
                                         ),
->>>>>>> Stashed changes
                                     )
                                 }
                             },
