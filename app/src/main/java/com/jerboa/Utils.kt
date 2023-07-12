@@ -22,16 +22,16 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.Autofill
 import androidx.compose.ui.autofill.AutofillNode
+import androidx.compose.ui.autofill.AutofillTree
 import androidx.compose.ui.autofill.AutofillType
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -40,8 +40,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalAutofill
-import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -58,12 +56,13 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.Account
+import com.jerboa.model.HomeViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.Route
-import com.jerboa.ui.components.home.HomeViewModel
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
@@ -289,15 +288,11 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     val totalItems = layoutInfo.totalItemsCount
     val lastItemVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index
 
-    val out = if (totalItems > 0) {
+    return if (totalItems > 0) {
         lastItemVisible == totalItems - 1
     } else {
         false
     }
-//    Log.d("jerboa", layoutInfo.visibleItemsInfo.lastOrNull()?.index.toString())
-//    Log.d("jerboa", layoutInfo.totalItemsCount.toString())
-//    Log.d("jerboa", out.toString())
-    return out
 }
 
 /*
@@ -359,6 +354,19 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
         return Pair(host, user)
     }
     return null
+}
+
+/**
+ * Open a sharesheet for the given URL.
+ */
+fun shareLink(url: String, ctx: Context) {
+    val intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, url)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(intent, null)
+    ctx.startActivity(shareIntent)
 }
 
 fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
@@ -461,7 +469,6 @@ val imageRegex = Regex(
 )
 
 // Todo is the scope.launch still necessary?
-@OptIn(ExperimentalMaterial3Api::class)
 fun closeDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
@@ -482,6 +489,13 @@ fun personNameShown(person: Person, federatedName: Boolean = false): String {
             "$name@${hostName(person.actor_id)}"
         }
     }
+}
+
+/**
+ * In cases where there should be no ambiguity as to the given Person's federated name.
+ */
+fun federatedNameShown(person: Person): String {
+    return "${person.name}@${hostName(person.actor_id)}"
 }
 
 fun communityNameShown(community: Community): String {
@@ -942,16 +956,14 @@ fun saveBitmapP(
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> Unit): Modifier = composed {
+fun Modifier.onAutofill(tree: AutofillTree, autofill: Autofill?, autofillTypes: ImmutableList<AutofillType>, onFill: (String) -> Unit): Modifier {
     val autofillNode = AutofillNode(
-        autofillTypes = autofillType.toList(),
+        autofillTypes = autofillTypes,
         onFill = onFill,
     )
-    LocalAutofillTree.current += autofillNode
+    tree += autofillNode
 
-    val autofill = LocalAutofill.current
-
-    this
+    return this
         .onGloballyPositioned {
             autofillNode.boundingBox = it.boundsInWindow()
         }
@@ -977,22 +989,58 @@ fun convertSpToPx(sp: TextUnit, ctx: Context): Int {
  * Returns localized Strings for SortingType Enum
  */
 
-fun getLocalizedSortingTypeName(ctx: Context, sortingType: SortType): String {
-    val returnString = when (sortingType) {
-        SortType.Active -> ctx.getString(R.string.sorttype_active)
-        SortType.Hot -> ctx.getString(R.string.sorttype_hot)
-        SortType.New -> ctx.getString(R.string.sorttype_new)
-        SortType.Old -> ctx.getString(R.string.sorttype_old)
-        SortType.TopDay -> ctx.getString(R.string.sorttype_topday)
-        SortType.TopWeek -> ctx.getString(R.string.sorttype_topweek)
-        SortType.TopMonth -> ctx.getString(R.string.sorttype_topmonth)
-        SortType.TopYear -> ctx.getString(R.string.sorttype_topyear)
-        SortType.TopAll -> ctx.getString(R.string.sorttype_topall)
-        SortType.MostComments -> ctx.getString(R.string.sorttype_mostcomments)
-        SortType.NewComments -> ctx.getString(R.string.sorttype_newcomments)
-    }
-    return returnString
+fun getLocalizedSortingTypeShortName(ctx: Context, sortingType: SortType): String {
+    return ctx.getString(MAP_SORT_TYPE_SHORT_FORM[sortingType] ?: throw IllegalStateException("Someone forgot to update the MAP_SORT_TYPE_SHORT_FORM"))
 }
+
+// ORDER MUST BE THE SAME AS THE ENUM
+val MAP_SORT_TYPE_SHORT_FORM = mapOf(
+    SortType.Active to R.string.sorttype_active,
+    SortType.Hot to R.string.sorttype_hot,
+    SortType.New to R.string.sorttype_new,
+    SortType.Old to R.string.sorttype_old,
+    SortType.TopDay to R.string.sorttype_topday,
+    SortType.TopWeek to R.string.sorttype_topweek,
+    SortType.TopMonth to R.string.sorttype_topmonth,
+    SortType.TopYear to R.string.sorttype_topyear,
+    SortType.TopAll to R.string.sorttype_topall,
+    SortType.MostComments to R.string.sorttype_mostcomments,
+    SortType.NewComments to R.string.sorttype_newcomments,
+    SortType.TopHour to R.string.sorttype_tophour,
+    SortType.TopSixHour to R.string.sorttype_topsixhour,
+    SortType.TopTwelveHour to R.string.sorttype_toptwelvehour,
+    SortType.TopThreeMonths to R.string.sorttype_topthreemonths,
+    SortType.TopSixMonths to R.string.sorttype_topsixmonths,
+    SortType.TopNineMonths to R.string.sorttype_topninemonths,
+)
+
+/**
+ * Returns localized Strings for SortingType Enum
+ */
+
+fun getLocalizedSortingTypeLongName(ctx: Context, sortingType: SortType): String {
+    return ctx.getString(MAP_SORT_TYPE_LONG_FORM[sortingType] ?: throw IllegalStateException("Someone forgot to update the MAP_SORT_TYPE_LONG_FORM"))
+}
+
+val MAP_SORT_TYPE_LONG_FORM = mapOf(
+    SortType.Active to R.string.sorttype_active,
+    SortType.Hot to R.string.sorttype_hot,
+    SortType.New to R.string.sorttype_new,
+    SortType.Old to R.string.sorttype_old,
+    SortType.TopDay to R.string.dialogs_top_day,
+    SortType.TopWeek to R.string.dialogs_top_week,
+    SortType.TopMonth to R.string.dialogs_top_month,
+    SortType.TopYear to R.string.dialogs_top_year,
+    SortType.TopAll to R.string.sorttype_topall,
+    SortType.MostComments to R.string.dialogs_most_comments,
+    SortType.NewComments to R.string.dialogs_new_comments,
+    SortType.TopHour to R.string.dialogs_top_hour,
+    SortType.TopSixHour to R.string.dialogs_top_six_hour,
+    SortType.TopTwelveHour to R.string.dialogs_top_twelve_hour,
+    SortType.TopThreeMonths to R.string.dialogs_top_three_month,
+    SortType.TopSixMonths to R.string.dialogs_top_six_month,
+    SortType.TopNineMonths to R.string.dialogs_top_nine_month,
+)
 
 /**
  * Returns localized Strings for UserTab Enum
@@ -1177,19 +1225,18 @@ fun dedupePosts(
     more: List<PostView>,
     existing: List<PostView>,
 ): List<PostView> {
-    val newPostsDeduped = more.filterNot { pv ->
-        existing.map { op -> op.post.id }.contains(
-            pv
-                .post.id,
-        )
-    }
-    return newPostsDeduped
+    val mapIds = existing.map { it.post.id }
+    return more.filterNot { mapIds.contains(it.post.id) }
 }
 
 fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
     val appended = existing.toMutableList()
     appended.addAll(more)
     return appended.toList()
+}
+
+fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
+    return appendData(old, dedupePosts(new, old))
 }
 
 fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
@@ -1333,4 +1380,12 @@ fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange>
         l.add(i, Locale.LanguageRange(this[i]!!.toLanguageTag()))
     }
     return l
+}
+
+fun <T> ApiState<T>.isLoading(): Boolean {
+    return this is ApiState.Appending || this == ApiState.Loading || this == ApiState.Refreshing
+}
+
+fun <T> ApiState<T>.isRefreshing(): Boolean {
+    return this == ApiState.Refreshing
 }

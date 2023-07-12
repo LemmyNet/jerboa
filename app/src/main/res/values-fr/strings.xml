@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa pour Lemmy</string>
     <string name="comment_node_goto_comment">Aller au commentaire</string>
     <string name="comment_node_view_source">Afficher la source</string>
     <string name="comment_node_copy_permalink">Copier le lien permanent</string>
@@ -13,7 +12,7 @@
     <string name="comment_body_removed">*Supprimé*</string>
     <string name="comment_body_deleted">*Effacé*</string>
     <string name="comment_edit_edit">Modifier</string>
-    <string name="comment_edit_type_your_comment">Saissisez votre commentaire</string>
+    <string name="comment_edit_type_your_comment">Saisissez votre commentaire</string>
     <string name="comment_edit_back">Précédent</string>
     <string name="comment_mention_node_view_source">Afficher la source</string>
     <string name="comment_mention_node_copy_permalink">Copier le lien permanent</string>
@@ -21,7 +20,7 @@
     <string name="comment_mention_node_block">Bloquer %1$s</string>
     <string name="comment_reply_reply">Répondre</string>
     <string name="comment_reply_back">Précédent</string>
-    <string name="comment_reply_type_your_comment">Saissisez votre commentaire</string>
+    <string name="comment_reply_type_your_comment">Saisissez votre commentaire</string>
     <string name="comment_reply_node_view_source">Afficher la source</string>
     <string name="comment_reply_node_report_comment">Signaler le commentaire</string>
     <string name="comment_reply_node_block">Bloquer %1$s</string>
@@ -36,7 +35,6 @@
     <string name="dialogs_top_week">Top hebdomadaire</string>
     <string name="dialogs_top_month">Top mensuel</string>
     <string name="dialogs_top_year">Top annuel</string>
-    <string name="dialogs_top_all_time">Top de tous les temps</string>
     <string name="dialogs_subscribed">Communautés abonnées</string>
     <string name="dialogs_local">Communautés locales</string>
     <string name="dialogs_all">Toutes les communautés</string>
@@ -68,19 +66,15 @@
     <string name="home_subscribed">Communautés abonnées</string>
     <string name="home_local">Communautés locales</string>
     <string name="home_all">Toutes les communautés</string>
-    <string name="home_saved">Publications/commentaires enregistrés</string>
-    <string name="home_profile">Profil</string>
-    <string name="home_inbox">Messages</string>
     <string name="home_settings">Paramètres</string>
     <string name="home_subscriptions">Abonnements</string>
     <string name="home_add_account">Ajouter un compte</string>
-    <string name="home_switch_to">Passer à %1$s/%2$s</string>
-    <string name="home_sign_out">Se déconneceter</string>
+    <string name="home_switch_to">Passer à %1$s@%2$s</string>
+    <string name="home_sign_out">Se déconnecter</string>
     <string name="home_menu">Menu</string>
     <string name="home_refresh">Rafraîchir</string>
     <string name="home_post_view_mode">Mode d’affichage des publications</string>
     <string name="home_site_info">Informations sur l’instance</string>
-    <string name="inbox_back">Précédent</string>
     <string name="inbox_inbox">Boîte de réception</string>
     <string name="login_password">Mot de passe</string>
     <string name="login_instance">Instance</string>
@@ -91,17 +85,14 @@
     <string name="person_profile_joined">Profil créé</string>
     <string name="person_profile_posts">%1$s publication(s)</string>
     <string name="person_profile_comments">%1$s commentaires</string>
-    <string name="person_profile_back">Précédent</string>
     <string name="person_profile_block_person">Bloquer l’utilisateur</string>
     <string name="person_profile_report_person">Signaler l’utilisateur</string>
     <string name="person_profile_activity_moderates">Modérateur</string>
     <string name="create_post_create_post">Créer une publication</string>
-    <string name="create_post_close">Fermer</string>
     <string name="create_post_copy_suggested_title">Copier titre suggéré : %1$s</string>
     <string name="create_post_community">Communauté</string>
     <string name="create_post_a_title_here">Un titre…</string>
     <string name="post_edit_edit_post">Modifier la publication</string>
-    <string name="post_edit_close">Fermer</string>
     <string name="post_edit_body_placeholder">Corps de la publication</string>
     <string name="post_activity_comments">Commentaires</string>
     <string name="post_listing_comments">%1$s commentaires</string>
@@ -119,10 +110,10 @@
     <string name="private_message_from">"de "</string>
     <string name="private_message_reply_reply">Répondre</string>
     <string name="private_message_reply_back">Précédent</string>
-    <string name="private_message_reply_type_your_message_placeholder">Saissisez votre message</string>
+    <string name="private_message_reply_type_your_message_placeholder">Saisissez votre message</string>
     <string name="create_report_report">Signaler</string>
     <string name="create_report_back">Précédent</string>
-    <string name="create_report_type_your_reason">Saissisez la raison</string>
+    <string name="create_report_type_your_reason">Saisissez la raison</string>
     <string name="settings_about_about">À propos</string>
     <string name="settings_about_what_s_new">Quoi de neuf ?</string>
     <string name="settings_about_version">Version %1$s</string>
@@ -147,16 +138,6 @@
     <string name="account_settings_local">Communautés locales</string>
     <string name="account_settings_subscribed">Communautés abonnées</string>
     <string name="account_settings_default_listing_type">Type de liste par défaut</string>
-    <string name="account_settings_active">Actif</string>
-    <string name="account_settings_hot">Tendances</string>
-    <string name="account_settings_new">Nouveaux</string>
-    <string name="account_settings_topday">Top journalier</string>
-    <string name="account_settings_topweek">Top hebdomadaire</string>
-    <string name="account_settings_topmonth">Top mensuel</string>
-    <string name="account_settings_topyear">Top annuel</string>
-    <string name="account_settings_topall">Top de tous les temps</string>
-    <string name="account_settings_mostcomments">Plus commenté</string>
-    <string name="account_settings_newcomments">Nouveaux commentaires</string>
     <string name="account_settings_default_sort_type">Tri par défaut</string>
     <string name="account_settings_show_nsfw">Afficher les publications NSFW</string>
     <string name="account_settings_show_avatars">Afficher les avatars</string>
@@ -187,9 +168,7 @@
     <string name="settings_activity_look_and_feel">Apparence</string>
     <string name="settings_activity_account_settings">Paramètres de %1$s</string>
     <string name="settings_activity_about">À propos</string>
-    <string name="community_blocked">%1$s bloquée</string>
     <string name="comment_mention_node_permalink_copied">Permalien copié</string>
-    <string name="person_routines_blocked">%1$s bloquée</string>
     <string name="utils_login_first">Veuillez vous connecter</string>
     <string name="login_view_model_incorrect_login">Nom d’utilisateur ou mot de passe incorrect</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s n’est pas une instance Lemmy</string>
@@ -223,8 +202,6 @@
     <string name="comment_node_go_to">Aller à %1$s</string>
     <string name="comment_mention_node_go_to">Aller à %1$s</string>
     <string name="comment_reply_node_go_to">Aller à %1$s</string>
-    <string name="account_settings_old">Anciens</string>
-    <string name="community_list_back">Précédent</string>
     <string name="moreOptions">Afficher plus d’options</string>
     <string name="lessOptions">Afficher moins d’options</string>
     <string name="bottomBar_home">Accueil</string>
@@ -236,7 +213,6 @@
     <string name="removeBookmark">Supprimer des favoris</string>
     <string name="commentFooter_reply">Répondre à ce commentaire</string>
     <string name="dialog_moreOptions">Plus d’options</string>
-    <string name="pickImage_imagePreview">Aperçu de l’image téléversée</string>
     <string name="commentEdit_save">Enregistrer les modifications</string>
     <string name="commentReply_send">Envoyer la réponse</string>
     <string name="community_sortBy">Trier par</string>
@@ -280,7 +256,6 @@
     <string name="postListing_reply">Répondre à la publication</string>
     <string name="privateMessage_reply">Répondre au message</string>
     <string name="topAppBar_back">Précédent</string>
-    <string name="home_communities">Abonnements</string>
     <string name="bottomBar_label_bookmarks">Enregistrés</string>
     <string name="bottomBar_label_home">Accueil</string>
     <string name="bottomBar_label_inbox">Messages</string>

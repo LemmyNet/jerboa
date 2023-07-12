@@ -1,3 +1,5 @@
+package com.jerboa.util
+
 /*
 * Thanks to T8RIN for building this class!
 *

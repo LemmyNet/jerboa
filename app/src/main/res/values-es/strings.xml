@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Jerboa para Lemmy</string>
     <string name="comment_node_goto_comment">Ir a comentario</string>
     <string name="comment_node_go_to">Ir a %1$s</string>
     <string name="comment_node_view_source">Ver Fuente</string>
@@ -43,7 +42,6 @@
     <string name="dialogs_top_week">Mejores de la Semana</string>
     <string name="dialogs_top_month">Mejores del mes</string>
     <string name="dialogs_top_year">Mejores del año</string>
-    <string name="dialogs_top_all_time">Mejores de todo el tiempo</string>
     <string name="dialogs_subscribed">Suscritos</string>
     <string name="dialogs_local">Locales</string>
     <string name="dialogs_all">Todos</string>
@@ -64,7 +62,6 @@
     <string name="pictrs_image_upload_image">Subir Imagen</string>
     <string name="time_ago_ago">%1$s hace %2$s</string>
     <string name="community_list_search">Buscar...</string>
-    <string name="community_list_back">Atrás</string>
     <string name="community_users_month">%1$s usuarios / mes</string>
     <string name="community_joined">Unidos</string>
     <string name="community_subscribe">Suscribir</string>
@@ -77,20 +74,15 @@
     <string name="home_subscribed">Suscrito</string>
     <string name="home_local">Locales</string>
     <string name="home_all">Todos</string>
-    <string name="home_saved">Guardados</string>
-    <string name="home_communities">Comunidades</string>
-    <string name="home_profile">Perfil</string>
-    <string name="home_inbox">Bandeja de entrada</string>
     <string name="home_settings">Ajustes</string>
     <string name="home_subscriptions">Suscripciones</string>
     <string name="home_add_account">Agregar cuenta</string>
-    <string name="home_switch_to">Cambiar a %1$s/%2$s</string>
+    <string name="home_switch_to">Cambiar a %1$s@%2$s</string>
     <string name="home_sign_out">Salir de Sesión</string>
     <string name="home_menu">Menú</string>
     <string name="home_refresh">Refrescar</string>
     <string name="home_post_view_mode">Modo de Vista de Publicación</string>
     <string name="home_site_info">Información del Sitio</string>
-    <string name="inbox_back">Atrás</string>
     <string name="inbox_inbox">Bandeja de entrada</string>
     <string name="login_password">Contraseña</string>
     <string name="login_instance">Instancia</string>
@@ -101,17 +93,14 @@
     <string name="person_profile_joined">Unido</string>
     <string name="person_profile_posts">%1$s publicaciones</string>
     <string name="person_profile_comments">%1$s comentarios</string>
-    <string name="person_profile_back">Atrás</string>
     <string name="person_profile_block_person">Bloquear Persona</string>
     <string name="person_profile_report_person">Reportar Persona</string>
     <string name="person_profile_activity_moderates">Modera</string>
     <string name="create_post_create_post">Crear Publicación</string>
-    <string name="create_post_close">Cerrar</string>
     <string name="create_post_copy_suggested_title">copiar título sugerido: %1$s</string>
     <string name="create_post_community">Comunidad</string>
     <string name="create_post_a_title_here">un título aquí....</string>
     <string name="post_edit_edit_post">Editar Publicación</string>
-    <string name="post_edit_close">Cerrar</string>
     <string name="post_edit_body_placeholder">Cuerpo</string>
     <string name="post_activity_comments">Comentarios</string>
     <string name="post_listing_comments">%1$s comentarios</string>
@@ -166,17 +155,6 @@
     <string name="account_settings_local">Locales</string>
     <string name="account_settings_subscribed">Suscritos</string>
     <string name="account_settings_default_listing_type">Tipo de listado por defecto</string>
-    <string name="account_settings_active">Activos</string>
-    <string name="account_settings_hot">Populares</string>
-    <string name="account_settings_new">Nuevos</string>
-    <string name="account_settings_old">Antiguos</string>
-    <string name="account_settings_topday">Mejores del día</string>
-    <string name="account_settings_topweek">Mejores de la semana</string>
-    <string name="account_settings_topmonth">Mejores del mes</string>
-    <string name="account_settings_topyear">Mejores del año</string>
-    <string name="account_settings_topall">Mejores de todo el tiempo</string>
-    <string name="account_settings_mostcomments">Más Comentados</string>
-    <string name="account_settings_newcomments">Con nuevos comentarios</string>
     <string name="account_settings_default_sort_type">Tipo de ordenado por defecto</string>
     <string name="account_settings_show_nsfw">Mostrar NSFW</string>
     <string name="account_settings_show_avatars">Mostrar Avatares</string>
@@ -210,9 +188,7 @@
     <string name="settings_activity_look_and_feel">Tema y aspecto</string>
     <string name="settings_activity_account_settings">ajustes de %1$s</string>
     <string name="settings_activity_about">Acerca de</string>
-    <string name="community_blocked">%1$s Bloqueados</string>
     <string name="comment_mention_node_permalink_copied">Enlace Permanente Copiado</string>
-    <string name="person_routines_blocked">%1$s Bloqueados</string>
     <string name="utils_login_first">Inicia sesión primero</string>
     <string name="login_view_model_incorrect_login">Nombre de usuario y/o contraseña incorrecta</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s no es una Instancia de Lemmy</string>
@@ -242,7 +218,6 @@
     <string name="commentFooter_reply">Responder a este comentario</string>
     <string name="create_report_view_model_report_fail">No se pudo crear el reporte: %1$s</string>
     <string name="dialog_moreOptions">Mostrar más opciones</string>
-    <string name="pickImage_imagePreview">Prevista de la imagen subida</string>
     <string name="commentEdit_save">Guardar ediciones del comentario</string>
     <string name="commentReply_send">Enviar respuesta</string>
     <string name="community_sortBy">Ordenar por</string>

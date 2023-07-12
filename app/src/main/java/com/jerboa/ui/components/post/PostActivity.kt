@@ -47,6 +47,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import arrow.core.Either
@@ -72,15 +74,20 @@ import com.jerboa.db.AccountViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
+import com.jerboa.isLoading
 import com.jerboa.isModerator
+import com.jerboa.isRefreshing
+import com.jerboa.model.PostViewModel
+import com.jerboa.model.ReplyItem
+import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
+import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
 import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
-import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentEditDeps
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
@@ -102,7 +109,6 @@ import com.jerboa.ui.components.common.toPost
 import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.post.edit.PostEditReturn
 
 @Composable
@@ -142,6 +148,7 @@ fun PostActivity(
     showParentCommentNavigationButtons: Boolean,
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
@@ -178,8 +185,6 @@ fun PostActivity(
 
     val selectedSortType = postViewModel.sortType
 
-    val postLoading = postViewModel.postRes == ApiState.Loading
-
     // Holds expanded comment ids
     val unExpandedComments = remember { mutableStateListOf<Int>() }
     val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
@@ -193,10 +198,12 @@ fun PostActivity(
     val scope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = postLoading,
+        refreshing = postViewModel.postRes.isRefreshing(),
         onRefresh = {
-            postViewModel.getData(account)
+            postViewModel.getData(account, ApiState.Refreshing)
         },
+        // Needs to be lower else it can hide behind the top bar
+        refreshingOffset = 150.dp,
     )
 
     if (showSortOptions) {
@@ -289,9 +296,12 @@ fun PostActivity(
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
                 PullRefreshIndicator(
-                    postLoading,
+                    postViewModel.postRes.isRefreshing(),
                     pullRefreshState,
-                    Modifier.align(Alignment.TopCenter),
+                    // zIndex needed bc some elements of a post get drawn above it.
+                    Modifier
+                        .align(Alignment.TopCenter)
+                        .zIndex(100f),
                 )
                 when (val postRes = postViewModel.postRes) {
                     is ApiState.Loading ->
@@ -410,6 +420,9 @@ fun PostActivity(
                                             )
                                         }
                                     },
+                                    onShareClick = { url ->
+                                        shareLink(url, ctx)
+                                    },
                                     showReply = true, // Do nothing
                                     isModerator = isModerator(
                                         postView.creator,
@@ -425,22 +438,24 @@ fun PostActivity(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
+                                    openImageViewer = openImageViewer,
                                 )
                             }
 
-                            when (val commentsRes = postViewModel.commentsRes) {
-                                is ApiState.Loading ->
-                                    item {
-                                        LoadingBar()
-                                    }
+                            if (postViewModel.commentsRes.isLoading()) {
+                                item {
+                                    LoadingBar()
+                                }
+                            }
 
+                            when (val commentsRes = postViewModel.commentsRes) {
                                 is ApiState.Failure -> item(key = "error") {
                                     ApiErrorText(
                                         commentsRes.msg,
                                     )
                                 }
 
-                                is ApiState.Success -> {
+                                is ApiState.Holder -> {
                                     val commentTree = buildCommentsTree(
                                         commentsRes.data.comments,
                                         postViewModel.isCommentView(),

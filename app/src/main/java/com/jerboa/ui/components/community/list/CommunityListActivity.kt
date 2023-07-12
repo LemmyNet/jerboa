@@ -1,43 +1,49 @@
 package com.jerboa.ui.components.community.list
 
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.map
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.R
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.types.Search
+import com.jerboa.datatypes.types.SearchType
+import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.SearchHistory
+import com.jerboa.db.SearchHistoryViewModel
+import com.jerboa.model.CommunityListViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.home.SiteViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-private var fetchCommunitiesJob: Job? = null
 
 object CommunityListReturn {
     const val COMMUNITY = "community-list::return(community)"
@@ -47,38 +53,75 @@ object CommunityListReturn {
 fun CommunityListActivity(
     navController: NavController,
     accountViewModel: AccountViewModel,
-    communityListViewModel: CommunityListViewModel,
     selectMode: Boolean = false,
     siteViewModel: SiteViewModel,
     blurNSFW: Boolean,
+    drawerState: DrawerState,
+    appSettingsViewModel: AppSettingsViewModel,
+    searchHistoryViewModel: SearchHistoryViewModel,
 ) {
     Log.d("jerboa", "got to community list activity")
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
+    val communityListViewModel: CommunityListViewModel = viewModel()
     InitializeRoute(communityListViewModel) {
         // Whenever navigating here, reset the list with your followed communities
         communityListViewModel.setCommunityListFromFollowed(siteViewModel)
     }
 
+    val saveSearchHistory by remember {
+        appSettingsViewModel.appSettings
+            .map { it.saveSearchHistory }
+    }.observeAsState()
+
+    val searchHistory by remember(account) {
+        searchHistoryViewModel.searchHistory
+            .map { history -> history.filter { it.accountId == account?.id }.also {
+                Log.e("WIDGET", "histories $history")
+            } }
+    }.observeAsState()
+
     var search by rememberSaveable { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
+    var fetchCommunitiesJob by remember { mutableStateOf<Job?>(null) }
 
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             topBar = {
                 CommunityListHeader(
-                    navController = navController,
+                    openDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    },
                     search = search,
                     onSearchChange = {
                         search = it
-                        if (it.isEmpty()) {
+                        if (search.isEmpty()) {
                             communityListViewModel.resetSearch()
                             return@CommunityListHeader
                         }
-                        scope.launch {
-                            communityListViewModel.searchAllCommunities(search, account?.jwt, true)
+                        fetchCommunitiesJob?.cancel()
+                        fetchCommunitiesJob = scope.launch {
+                            delay(DEBOUNCE_DELAY)
+                            communityListViewModel.searchCommunities(
+                                form = Search(
+                                    q = search,
+                                    type_ = SearchType.Communities,
+                                    sort = SortType.TopAll,
+                                    auth = account?.jwt,
+                                ),
+                            )
+                            if (saveSearchHistory == true) {
+                                searchHistoryViewModel.insert(
+                                    SearchHistory(
+                                        accountId = account?.id,
+                                        searchTerm = search.trim(),
+                                    )
+                                )
+                            }
                         }
                     },
                 )
@@ -89,59 +132,38 @@ fun CommunityListActivity(
                         Column(
                             modifier = Modifier
                                 .padding(padding)
-                                .imePadding(),
+                                .imePadding()
                         ) {
-                            val history by communityListViewModel.searchHistory.collectAsState(
-                                emptyList(),
-                            )
-                            if (history.isNotEmpty()) {
-                                ListItem(
-                                    headlineContent = {
-                                        Text(
-                                            text = stringResource(R.string.community_list_recent_searches),
-                                            color = MaterialTheme.colorScheme.onBackground,
-                                            style = MaterialTheme.typography.labelLarge,
-                                        )
-                                    },
-                                )
-                            }
-                            history.forEach {
-                                ListItem(
-                                    modifier = Modifier.clickable {
-                                        scope.launch {
-                                            search = it.text
-                                            communityListViewModel.searchAllCommunities(
-                                                it.text,
-                                                account?.jwt,
+                            searchHistory?.let { history ->
+                                SearchHistoryList(
+                                    history = history,
+                                    onHistoryItemClicked = {
+                                        search = it.searchTerm
+                                        fetchCommunitiesJob?.cancel()
+                                        fetchCommunitiesJob = scope.launch {
+                                            communityListViewModel.searchCommunities(
+                                                Search(
+                                                    q = it.searchTerm,
+                                                    type_ = SearchType.Communities,
+                                                    sort = SortType.TopAll,
+                                                    auth = account?.jwt,
+                                                )
                                             )
+                                            if (saveSearchHistory == true) {
+                                                searchHistoryViewModel.insert(
+                                                    SearchHistory(
+                                                        accountId = account?.id,
+                                                        searchTerm = search.trim(),
+                                                    )
+                                                )
+                                            }
                                         }
                                     },
-                                    headlineContent = {
-                                        Text(
-                                            text = it.text,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            style = MaterialTheme.typography.bodyLarge,
-                                        )
-                                    },
-                                    trailingContent = {
-                                        IconButton(
-                                            onClick = {
-                                                scope.launch {
-                                                    communityListViewModel.deleteSearchHistory(it)
-                                                }
-                                            },
-                                            content = {
-                                                Icon(
-                                                    Icons.Rounded.Close,
-                                                    contentDescription = stringResource(
-                                                        R.string.community_list_delete_search_item,
-                                                        it.text,
-                                                    ),
-                                                    tint = MaterialTheme.colorScheme.surfaceTint,
-                                                )
-                                            },
-                                        )
-                                    },
+                                    onHistoryItemDeleted = {
+                                        scope.launch {
+                                            searchHistoryViewModel.delete(it)
+                                        }
+                                    }
                                 )
                             }
                             ListItem(
@@ -157,10 +179,12 @@ fun CommunityListActivity(
                                 communities = communityListViewModel.communities,
                                 onClickCommunity = { cs ->
                                     if (selectMode) {
-                                        communityListViewModel.selectCommunity(cs)
-                                        navController.navigateUp()
+                                        navController.apply {
+                                            addReturn(CommunityListReturn.COMMUNITY, cs)
+                                            navigateUp()
+                                        }
                                     } else {
-                                        navController.navigate(route = "community/${cs.id}")
+                                        navController.toCommunity(id = cs.id)
                                     }
                                 },
                                 blurNSFW = blurNSFW,
@@ -191,6 +215,7 @@ fun CommunityListActivity(
                             blurNSFW = blurNSFW,
                         )
                     }
+                    else -> {}
                 }
             },
         )

@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,6 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
@@ -21,6 +26,7 @@ import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
@@ -29,6 +35,7 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -45,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -56,9 +64,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 import com.jerboa.InstantScores
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -69,6 +74,7 @@ import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
+import com.jerboa.datatypes.sampleMarkdownPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
@@ -85,12 +91,11 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
-import com.jerboa.ui.components.common.ImageViewerDialog
+import com.jerboa.ui.components.common.MarkdownHelper.CreateMarkdownPreview
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.NsfwBadge
 import com.jerboa.ui.components.common.PictrsThumbnailImage
 import com.jerboa.ui.components.common.PictrsUrlImage
-import com.jerboa.ui.components.common.PreviewLines
 import com.jerboa.ui.components.common.ScoreAndTime
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.TimeAgo
@@ -267,6 +272,7 @@ fun PostTitleBlock(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
 
@@ -274,6 +280,7 @@ fun PostTitleBlock(
         PostTitleAndImageLink(
             postView = postView,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
     } else {
         PostTitleAndThumbnail(
@@ -282,6 +289,7 @@ fun PostTitleBlock(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
     }
 }
@@ -314,6 +322,7 @@ fun PostName(
 fun PostTitleAndImageLink(
     postView: PostView,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -331,14 +340,8 @@ fun PostTitleAndImageLink(
         )
     }
 
-    var showImageDialog by remember { mutableStateOf(false) }
-
-    if (showImageDialog) {
-        ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
-    }
-
     val postLinkPicMod = Modifier
-        .clickable { showImageDialog = true }
+        .clickable { openImageViewer(url) }
     PictrsUrlImage(
         url = url,
         blur = blurNSFW && nsfwCheck(postView),
@@ -353,6 +356,7 @@ fun PostTitleAndThumbnail(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -384,6 +388,7 @@ fun PostTitleAndThumbnail(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                openImageViewer = openImageViewer,
             )
         }
     }
@@ -393,11 +398,14 @@ fun PostTitleAndThumbnail(
 fun PostBody(
     postView: PostView,
     fullBody: Boolean,
+    viewSource: Boolean,
     expandedImage: Boolean,
     account: Account?,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
+    clickBody: () -> Unit = {},
 ) {
     val post = postView.post
     Column(
@@ -410,6 +418,7 @@ fun PostBody(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
 
         // The metadata card
@@ -434,16 +443,28 @@ fun PostBody(
                             modifier = Modifier
                                 .padding(MEDIUM_PADDING),
                         ) {
-                            MyMarkdownText(
-                                markdown = text,
-                                onClick = {},
-                            )
+                            if (viewSource) {
+                                SelectionContainer {
+                                    Text(
+                                        text = text,
+                                    )
+                                }
+                            } else {
+                                MyMarkdownText(
+                                    markdown = text,
+                                    onClick = {},
+                                )
+                            }
                         }
                     } else {
-                        PreviewLines(
-                            text = text,
-                            modifier = Modifier
-                                .padding(MEDIUM_PADDING),
+                        val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+
+                        CreateMarkdownPreview(
+                            markdown = text,
+                            defaultColor = defaultColor,
+                            onClick = clickBody,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(MEDIUM_PADDING),
                         )
                     }
                 },
@@ -458,11 +479,29 @@ fun PreviewStoryTitleAndMetadata() {
     PostBody(
         postView = samplePostView,
         fullBody = false,
+        viewSource = false,
         expandedImage = false,
         account = null,
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        openImageViewer = {},
+    )
+}
+
+@Preview
+@Composable
+fun PreviewSourcePost() {
+    PostBody(
+        postView = sampleMarkdownPostView,
+        fullBody = true,
+        viewSource = true,
+        expandedImage = false,
+        account = null,
+        useCustomTabs = false,
+        usePrivateTabs = false,
+        blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -481,10 +520,13 @@ fun PostFooterLine(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
+    onShareClick: (url: String) -> Unit,
+    onViewSourceClick: () -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
     account: Account?,
     enableDownVotes: Boolean,
+    viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -520,7 +562,16 @@ fun PostFooterLine(
                 showMoreOptions = false
                 onBlockCreatorClick(postView.creator)
             },
+            onShareClick = { url ->
+                showMoreOptions = false
+                onShareClick(url)
+            },
+            onViewSourceClick = {
+                showMoreOptions = false
+                onViewSourceClick()
+            },
             isCreator = account?.id == postView.creator.id,
+            viewSource = viewSource,
         )
     }
 
@@ -676,7 +727,10 @@ fun PostFooterLinePreview() {
         onDeletePostClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
+        onShareClick = {},
+        onViewSourceClick = {},
         enableDownVotes = true,
+        viewSource = false,
     )
 }
 
@@ -699,6 +753,7 @@ fun PreviewPostListingCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = true,
         fullBody = false,
         account = null,
@@ -707,6 +762,7 @@ fun PreviewPostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -729,6 +785,7 @@ fun PreviewLinkPostListing() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = false,
         fullBody = false,
         account = null,
@@ -737,6 +794,7 @@ fun PreviewLinkPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -759,6 +817,7 @@ fun PreviewImagePostListingCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = false,
         fullBody = false,
         account = null,
@@ -767,6 +826,7 @@ fun PreviewImagePostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -789,6 +849,7 @@ fun PreviewImagePostListingSmallCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = false,
         fullBody = false,
         account = null,
@@ -797,6 +858,7 @@ fun PreviewImagePostListingSmallCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -819,6 +881,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isModerator = true,
         fullBody = false,
         account = null,
@@ -827,6 +890,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -847,6 +911,7 @@ fun PostListing(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
+    onShareClick: (url: String) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -857,6 +922,7 @@ fun PostListing(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -869,6 +935,8 @@ fun PostListing(
             ),
         )
     }
+
+    var viewSource by remember { mutableStateOf(false) }
 
     when (postViewMode) {
         PostViewMode.Card -> PostListingCard(
@@ -898,6 +966,11 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onShareClick = onShareClick,
+            onViewSourceClick = {
+                viewSource = !viewSource
+            },
+            viewSource = viewSource,
             showReply = showReply,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
@@ -909,6 +982,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -938,6 +1012,11 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onShareClick = onShareClick,
+            onViewSourceClick = {
+                viewSource = !viewSource
+            },
+            viewSource = viewSource,
             showReply = showReply,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
@@ -949,6 +1028,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
 
         PostViewMode.List -> PostListingList(
@@ -977,6 +1057,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
         )
     }
 }
@@ -1027,6 +1108,7 @@ fun PostVotingTile(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PostListingList(
     postView: PostView,
@@ -1042,6 +1124,7 @@ fun PostListingList(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -1075,9 +1158,9 @@ fun PostListingList(
             ) {
                 PostName(postView = postView)
                 FlowRow(
-                    mainAxisAlignment = FlowMainAxisAlignment.Start,
-                    mainAxisSpacing = SMALL_PADDING,
-                    crossAxisAlignment = FlowCrossAxisAlignment.Center,
+                    horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
+                    verticalArrangement = Arrangement.Center,
+
                 ) {
                     if (showCommunityName) {
                         CommunityLink(
@@ -1146,6 +1229,7 @@ fun PostListingList(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                openImageViewer = openImageViewer,
             )
         }
     }
@@ -1157,14 +1241,9 @@ private fun ThumbnailTile(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
-        var showImageDialog by remember { mutableStateOf(false) }
-
-        if (showImageDialog) {
-            ImageViewerDialog(url, onBackRequest = { showImageDialog = false })
-        }
-
         // TODO weird performance issues with using a previously rendered navcontroller
         val navController = rememberNavController()
 
@@ -1172,7 +1251,7 @@ private fun ThumbnailTile(
             .size(POST_LINK_PIC_SIZE)
             .clickable {
                 if (isImage(url)) {
-                    showImageDialog = true
+                    openImageViewer(url)
                 } else {
                     openLink(
                         url = url,
@@ -1234,6 +1313,7 @@ fun PostListingListPreview() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -1261,6 +1341,7 @@ fun PostListingListWithThumbPreview() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
 
@@ -1280,6 +1361,9 @@ fun PostListingCard(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
+    onShareClick: (url: String) -> Unit,
+    onViewSourceClick: () -> Unit,
+    viewSource: Boolean,
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -1291,6 +1375,7 @@ fun PostListingCard(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -1311,18 +1396,20 @@ fun PostListingCard(
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
-
         )
 
         //  Title + metadata
         PostBody(
             postView = postView,
             fullBody = fullBody,
+            viewSource = viewSource,
             expandedImage = expandedImage,
             account = account,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            openImageViewer = openImageViewer,
+            clickBody = { onPostClick(postView) },
         )
 
         // Footer bar
@@ -1340,10 +1427,13 @@ fun PostListingCard(
             onReportClick = onReportClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onViewSourceClick = onViewSourceClick,
+            onShareClick = onShareClick,
             showReply = showReply,
             account = account,
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             enableDownVotes = enableDownVotes,
+            viewSource = viewSource,
         )
     }
 }
@@ -1395,7 +1485,10 @@ fun PostOptionsDialog(
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
     onBlockCommunityClick: () -> Unit,
+    onShareClick: (shareUrl: String) -> Unit,
+    onViewSourceClick: () -> Unit,
     isCreator: Boolean,
+    viewSource: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
@@ -1509,6 +1602,25 @@ fun PostOptionsDialog(
                         },
                     )
                 }
+                postView.post.body?.also {
+                    IconAndTextDrawerItem(
+                        text = if (viewSource) stringResource(R.string.post_listing_view_original) else stringResource(R.string.post_listing_view_source),
+                        icon = Icons.Outlined.Description,
+                        onClick = onViewSourceClick,
+                    )
+                }
+                postView.post.url?.also { url ->
+                    IconAndTextDrawerItem(
+                        text = stringResource(R.string.post_listing_share_link),
+                        icon = Icons.Outlined.Share,
+                        onClick = { onShareClick(url) },
+                    )
+                }
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.post_listing_share_post),
+                    icon = Icons.Outlined.Share,
+                    onClick = { onShareClick(postView.post.ap_id) },
+                )
                 if (!isCreator) {
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.post_listing_report_post),
@@ -1566,6 +1678,9 @@ fun PostOptionsDialogPreview() {
         onEditPostClick = {},
         onDeletePostClick = {},
         onBlockCommunityClick = {},
+        onShareClick = {},
         onBlockCreatorClick = {},
+        onViewSourceClick = {},
+        viewSource = true,
     )
 }

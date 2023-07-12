@@ -13,7 +13,9 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.gson
-import com.jerboa.ui.components.comment.reply.ReplyItem
+import com.jerboa.model.ReplyItem
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 // A view model stored higher up the tree used for moving navigation arguments from one route
 // to another. Since this will be reused, the value inside this should be moved out ASAP.
@@ -61,7 +63,7 @@ inline fun <reified D> NavController.takeDepsFromRoot(): State<D> {
 
 fun NavController.toLogin() = navigate(Route.LOGIN)
 
-fun NavController.toHome() = navigate(Route.HOME) { popUpTo(0) }
+fun NavController.toHome() = navigate(Route.HOME) { popUpTo(graph.id) }
 
 fun NavController.toInbox() = navigate(Route.INBOX)
 
@@ -150,3 +152,8 @@ fun NavController.toAccountSettings() = navigate(Route.ACCOUNT_SETTINGS)
 fun NavController.toLookAndFeel() = navigate(Route.LOOK_AND_FEEL)
 
 fun NavController.toAbout() = navigate(Route.ABOUT)
+
+fun NavController.toView(url: String) {
+    val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.name())
+    navigate(Route.ViewArgs.makeRoute(encodedUrl))
+}

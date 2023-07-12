@@ -2,12 +2,14 @@ package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.os.Build
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.URLSpan
+import android.text.TextUtils
 import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
+import android.view.View.NOT_FOCUSABLE
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.FontRes
 import androidx.annotation.IdRes
@@ -16,6 +18,7 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.toArgb
@@ -30,24 +33,20 @@ import coil.ImageLoader
 import com.jerboa.R
 import com.jerboa.convertSpToPx
 import com.jerboa.openLink
+import com.jerboa.util.MarkwonLemmyLinkPlugin
+import com.jerboa.util.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
-import io.noties.markwon.MarkwonPlugin
-import io.noties.markwon.MarkwonVisitor
-import io.noties.markwon.SpannableBuilder
-import io.noties.markwon.core.CorePlugin
-import io.noties.markwon.core.CorePlugin.OnTextAddedListener
-import io.noties.markwon.core.CoreProps
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TableAwareMovementMethod
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.html.HtmlPlugin
+import io.noties.markwon.html.TagHandlerNoOp
 import io.noties.markwon.image.AsyncDrawableSpan
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
-import org.commonmark.node.Link
 import java.util.regex.Pattern
 
 /**
@@ -78,54 +77,9 @@ val lemmyCommunityPattern: Pattern =
 val lemmyUserPattern: Pattern =
     Pattern.compile("(?<!\\S)@($userPatternFragment)(?:@($instancePatternFragment))?\\b")
 
-/**
- * Plugin to turn Lemmy-specific URIs into clickable links.
- */
-class LemmyLinkPlugin : AbstractMarkwonPlugin() {
-    override fun configure(registry: MarkwonPlugin.Registry) {
-        registry.require(CorePlugin::class.java) { it.addOnTextAddedListener(LemmyTextAddedListener()) }
-    }
-
-    private class LemmyTextAddedListener : OnTextAddedListener {
-        override fun onTextAdded(visitor: MarkwonVisitor, text: String, start: Int) {
-            // we will be using the link that is used by markdown (instead of directly applying URLSpan)
-            val spanFactory = visitor.configuration().spansFactory().get(
-                Link::class.java,
-            ) ?: return
-
-            // don't re-use builder (thread safety achieved for
-            // render calls from different threads and ... better performance)
-            val builder = SpannableStringBuilder(text)
-            if (addLinks(builder)) {
-                // target URL span specifically
-                val spans = builder.getSpans(0, builder.length, URLSpan::class.java)
-                if (!spans.isNullOrEmpty()) {
-                    val renderProps = visitor.renderProps()
-                    val spannableBuilder = visitor.builder()
-                    for (span in spans) {
-                        CoreProps.LINK_DESTINATION[renderProps] = span.url
-                        SpannableBuilder.setSpans(
-                            spannableBuilder,
-                            spanFactory.getSpans(visitor.configuration(), renderProps),
-                            start + builder.getSpanStart(span),
-                            start + builder.getSpanEnd(span),
-                        )
-                    }
-                }
-            }
-        }
-
-        fun addLinks(text: Spannable): Boolean {
-            val communityLinkAdded = Linkify.addLinks(text, lemmyCommunityPattern, null)
-            val userLinkAdded = Linkify.addLinks(text, lemmyUserPattern, null)
-
-            return communityLinkAdded || userLinkAdded
-        }
-    }
-}
-
 object MarkdownHelper {
     private var markwon: Markwon? = null
+    private var previewMarkwon: Markwon? = null
 
     fun init(navController: NavController, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
         val context = navController.context
@@ -134,17 +88,19 @@ object MarkdownHelper {
             .placeholder(R.drawable.ic_launcher_foreground)
             .build()
 
+        // main markdown parser has coil + html on
         markwon = Markwon.builder(context)
-            .usePlugin(CoilImagesPlugin.create(context, loader))
             // email urls interfere with lemmy links
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
-            .usePlugin(LemmyLinkPlugin())
+            .usePlugin(MarkwonLemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
+            .usePlugin(CoilImagesPlugin.create(context, loader))
+            .usePlugin(HtmlPlugin.create())
             // use TableAwareLinkMovementMethod to handle clicks inside tables,
             // wraps LinkMovementMethod internally
             .usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
-            .usePlugin(HtmlPlugin.create())
+            .usePlugin(MarkwonSpoilerPlugin(true))
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { _, link ->
@@ -153,6 +109,22 @@ object MarkdownHelper {
                 }
             })
             .build()
+
+        // no image parser has html off
+        previewMarkwon = Markwon.builder(context)
+            // email urls interfere with lemmy links
+            .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
+            .usePlugin(MarkwonLemmyLinkPlugin())
+            .usePlugin(StrikethroughPlugin.create())
+            .usePlugin(TablePlugin.create(context))
+            .usePlugin(HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) })
+            .usePlugin(object : AbstractMarkwonPlugin() {
+                override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+                    builder.linkResolver { _, _ -> }
+                }
+            })
+            .usePlugin(MarkwonSpoilerPlugin(false))
+            .build()
     }
 
     /*
@@ -160,16 +132,18 @@ object MarkdownHelper {
      */
     fun init(context: Context) {
         markwon = Markwon.builder(context).build()
+        previewMarkwon = Markwon.builder(context).build()
     }
 
     @Composable
     fun CreateMarkdownView(
         markdown: String,
+        modifier: Modifier = Modifier,
         color: Color = Color.Unspecified,
         onClick: (() -> Unit)? = null,
         onLongClick: (() -> Unit)? = null,
+        style: TextStyle = MaterialTheme.typography.bodyLarge,
     ) {
-        val style = MaterialTheme.typography.bodyLarge
         val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 
         BoxWithConstraints {
@@ -195,10 +169,9 @@ object MarkdownHelper {
                         img.drawable.initWithKnownDimensions(canvasWidthMaybe, textSizeMaybe)
                     }
                     markwon!!.setParsedMarkdown(textView, md)
-                    //            if (disableLinkMovementMethod) {
-                    //                textView.movementMethod = null
-                    //            }
                 },
+                onReset = {},
+                modifier = modifier,
             )
         }
     }
@@ -209,7 +182,6 @@ object MarkdownHelper {
         defaultColor: Color,
         fontSize: TextUnit = TextUnit.Unspecified,
         textAlign: TextAlign? = null,
-        maxLines: Int = Int.MAX_VALUE,
         @FontRes fontResource: Int? = null,
         style: TextStyle,
         @IdRes viewId: Int? = null,
@@ -228,10 +200,9 @@ object MarkdownHelper {
             onClick?.let { setOnClickListener { onClick() } }
             onLongClick?.let { setOnLongClickListener { onLongClick(); true } }
             setTextColor(textColor.toArgb())
-            setMaxLines(maxLines)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                setLineHeight(convertSpToPx(mergedStyle.lineHeight, context))
+                lineHeight = convertSpToPx(mergedStyle.lineHeight, context)
             }
             width = maxWidth
 
@@ -248,6 +219,67 @@ object MarkdownHelper {
             fontResource?.let { font ->
                 typeface = ResourcesCompat.getFont(context, font)
             }
+        }
+    }
+
+    @Composable
+    fun CreateMarkdownPreview(
+        markdown: String,
+        modifier: Modifier = Modifier,
+        color: Color = MaterialTheme.colorScheme.onSurface,
+        onClick: (() -> Unit)? = null,
+        style: TextStyle,
+        defaultColor: Color,
+    ) {
+        AndroidView(
+            factory = { ctx ->
+                createTextViewPreview(
+                    context = ctx,
+                    color = color,
+                    defaultColor = defaultColor,
+                    fontSize = TextUnit.Unspecified,
+                    style = style,
+                    onClick = onClick,
+                )
+            },
+            update = { textView ->
+                previewMarkwon!!.setMarkdown(textView, markdown)
+            },
+            onReset = {},
+            modifier = modifier,
+        )
+    }
+
+    private fun createTextViewPreview(
+        context: Context,
+        color: Color = Color.Unspecified,
+        defaultColor: Color,
+        fontSize: TextUnit = TextUnit.Unspecified,
+        maxLines: Int = 5,
+        style: TextStyle,
+        onClick: (() -> Unit)? = null,
+    ): TextView {
+        val textColor = color.takeOrElse { style.color.takeOrElse { defaultColor } }
+        val mergedStyle = style.merge(
+            TextStyle(
+                color = textColor,
+                fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
+            ),
+        )
+        return TextView(context).apply {
+            onClick?.let { setOnClickListener { onClick() } }
+            setTextColor(textColor.toArgb())
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                lineHeight = convertSpToPx(mergedStyle.lineHeight, context)
+            }
+            width = maxWidth
+            layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            this.movementMethod = null
+            this.linksClickable = false
+            ellipsize = TextUtils.TruncateAt.END
+            setMaxLines(maxLines)
+            focusable = NOT_FOCUSABLE
         }
     }
 }

@@ -128,7 +128,7 @@ fun AboutActivity(
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_jerboa),
-                            modifier = Modifier.size(32.dp),
+                            modifier = Modifier.size(24.dp),
                             contentDescription = null,
                         )
                     },

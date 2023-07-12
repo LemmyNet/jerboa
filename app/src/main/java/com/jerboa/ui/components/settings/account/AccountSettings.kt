@@ -20,6 +20,7 @@ import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsListDropdown
+import com.jerboa.MAP_SORT_TYPE_SHORT_FORM
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
@@ -28,8 +29,9 @@ import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.Account
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.model.AccountSettingsViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.*
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -122,6 +124,9 @@ fun SettingsForm(
         rememberBooleanSettingState(luv?.local_user?.show_new_post_notifs ?: false)
     val sendNotificationsToEmail =
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
+    val sortTypeNames = remember {
+        MAP_SORT_TYPE_SHORT_FORM.values.map { ctx.getString(it) }
+    }
     val form = SaveUserSettings(
         display_name = displayName,
         bio = bio.text,
@@ -236,19 +241,7 @@ fun SettingsForm(
         SettingsListDropdown(
             state = defaultSortType,
             title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
-            items = listOf(
-                stringResource(R.string.account_settings_active),
-                stringResource(R.string.account_settings_hot),
-                stringResource(R.string.account_settings_new),
-                stringResource(R.string.account_settings_old),
-                stringResource(R.string.account_settings_topday),
-                stringResource(R.string.account_settings_topweek),
-                stringResource(R.string.account_settings_topmonth),
-                stringResource(R.string.account_settings_topyear),
-                stringResource(R.string.account_settings_topall),
-                stringResource(R.string.account_settings_mostcomments),
-                stringResource(R.string.account_settings_newcomments),
-            ),
+            items = sortTypeNames,
         )
 
         SettingsCheckbox(

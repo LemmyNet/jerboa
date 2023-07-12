@@ -1,3 +1,88 @@
+# Jerboa v0.0.39-alpha Release (2023-07-10)
+
+## What's Changed
+
+- Fix deprecations by @MV-GH in https://github.com/dessalines/jerboa/pull/962
+- Use overloaded AndroidView in MarkdownHelper by @yate in https://github.com/dessalines/jerboa/pull/767
+- Update subscribed communities in sidebar when user subscribes by @twizmwazin in https://github.com/dessalines/jerboa/pull/948
+- Fixes in Greek Translation by @sv1sjp in https://github.com/dessalines/jerboa/pull/971
+- Update strings.xml for `ko` by @meinside in https://github.com/dessalines/jerboa/pull/965
+- Add DB migrations tests by @MV-GH in https://github.com/dessalines/jerboa/pull/899
+- Fix clear backstack not working properly by @MV-GH in https://github.com/dessalines/jerboa/pull/988
+- Fix regression due to deprecations change by @MV-GH in https://github.com/dessalines/jerboa/pull/986
+- Add "..." for too long community names by @MV-GH in https://github.com/dessalines/jerboa/pull/985
+- Improve login form by @MV-GH in https://github.com/dessalines/jerboa/pull/953
+- Fix recompositions due to autofill by @MV-GH in https://github.com/dessalines/jerboa/pull/975
+- Move view models to com.jerboa.model by @twizmwazin in https://github.com/dessalines/jerboa/pull/994
+- Add Ukrainian Language Support to Jerboa - values-uk strings.xml by @Digharatta in https://github.com/dessalines/jerboa/pull/996
+- Update CONTRIBUTION.md by @MV-GH in https://github.com/dessalines/jerboa/pull/997
+- Move more viewmodels into com.jerboa.model package by @twizmwazin in https://github.com/dessalines/jerboa/pull/1000
+- Add toggle in settings to hide descriptions in navbar by @Sir-Photch in https://github.com/dessalines/jerboa/pull/995
+- Update instance list by @MV-GH in https://github.com/dessalines/jerboa/pull/982
+- Fix inbox loading all pages on startup instead of set unread/all mode by @MV-GH in https://github.com/dessalines/jerboa/pull/1007
+- Add markdown preview by @MV-GH in https://github.com/dessalines/jerboa/pull/1002
+- Add drawer to all main tabs and general drawer changes by @MV-GH in https://github.com/dessalines/jerboa/pull/991
+
+## New Contributors
+
+- @Digharatta made their first contribution in https://github.com/dessalines/jerboa/pull/996
+- @Sir-Photch made their first contribution in https://github.com/dessalines/jerboa/pull/995
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.38...0.0.39
+
+# Jerboa v0.0.38-alpha Release (2023-07-03)
+
+## What's Changed
+
+- Edit strings.xml for `ko` by @meinside in https://github.com/dessalines/jerboa/pull/909
+- Remove `app_name` from strings.xml for `ko` by @meinside in https://github.com/dessalines/jerboa/pull/924
+- Adding Show Post Source button by @ZJouba in https://github.com/dessalines/jerboa/pull/901
+- Make updateInstances task compatible with configuration cache by @AppearamidGuy in https://github.com/dessalines/jerboa/pull/915
+- Fix crash 0.37 due to missing SortTypes by @MV-GH in https://github.com/dessalines/jerboa/pull/918
+- Fix jerboa icon resize. by @camporter in https://github.com/dessalines/jerboa/pull/943
+- General small refactors by @MV-GH in https://github.com/dessalines/jerboa/pull/942
+- When drawer is open, close it if back is pressed. by @camporter in https://github.com/dessalines/jerboa/pull/941
+- Fix some FR translation typos by @MKabe in https://github.com/dessalines/jerboa/pull/933
+- Update to compose 1.5.0-beta03 to fix crashes when animationDurationScale is disabled by @MV-GH in https://github.com/dessalines/jerboa/pull/930
+- Fix JWT from being logged by @MV-GH in https://github.com/dessalines/jerboa/pull/946
+- Show main sidebar content even when account switcher is shown by @twizmwazin in https://github.com/dessalines/jerboa/pull/947
+- Add Greek Language Support on Jerboa - values-el strings.xml by @sv1sjp in https://github.com/dessalines/jerboa/pull/944
+- Add ability to share posts. by @camporter in https://github.com/dessalines/jerboa/pull/543
+- Fix some broken Dutch by @frankivo in https://github.com/dessalines/jerboa/pull/961
+- Fix loading indicator and loading bar issues by @MV-GH in https://github.com/dessalines/jerboa/pull/809
+- Replace "Posta in arrivo" with "Notifiche" by @andreaippo in https://github.com/dessalines/jerboa/pull/826
+- Show the users' federated name in drawer. by @camporter in https://github.com/dessalines/jerboa/pull/937
+- Add gitattributes file by @MV-GH in https://github.com/dessalines/jerboa/pull/956
+- Fix private messages being sent to yourself by @MV-GH in https://github.com/dessalines/jerboa/pull/960
+
+## New Contributors
+
+- @ZJouba made their first contribution in https://github.com/dessalines/jerboa/pull/901
+- @AppearamidGuy made their first contribution in https://github.com/dessalines/jerboa/pull/915
+- @MKabe made their first contribution in https://github.com/dessalines/jerboa/pull/933
+- @sv1sjp made their first contribution in https://github.com/dessalines/jerboa/pull/944
+- @frankivo made their first contribution in https://github.com/dessalines/jerboa/pull/961
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.37...0.0.38
+
+# Jerboa v0.0.37-alpha Release (2023-06-29)
+
+## What's Changed
+
+- Nav scoped view models by @nahwneeth in https://github.com/dessalines/jerboa/pull/817
+- Fix downvote on post in postview doing a upvote by @MV-GH in https://github.com/dessalines/jerboa/pull/893
+- Fix .zoomable functionality in ImageViewerDialog and add "swipe up to close" by @sockenklaus in https://github.com/dessalines/jerboa/pull/894
+- Add blur option, fix non blurred community icons/banners by @MV-GH in https://github.com/dessalines/jerboa/pull/896
+- Fix edit comment view text is being empty by @MV-GH in https://github.com/dessalines/jerboa/pull/897
+- Update baseline profiles by @MV-GH in https://github.com/dessalines/jerboa/pull/906
+- Change app display name by @Undearius in https://github.com/dessalines/jerboa/pull/904
+
+## New Contributors
+
+- @Undearius made their first contribution in https://github.com/dessalines/jerboa/pull/904
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.36...0.0.37
+
 # Jerboa v0.0.36-alpha Release (2023-06-26)
 
 ## What's Changed

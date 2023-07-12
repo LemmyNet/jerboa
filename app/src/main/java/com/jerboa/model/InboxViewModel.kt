@@ -1,7 +1,8 @@
-package com.jerboa.ui.components.inbox
+package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
 import com.jerboa.datatypes.types.CommentReplyResponse
 import com.jerboa.datatypes.types.CommentResponse
+import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.GetPersonMentions
 import com.jerboa.datatypes.types.GetPersonMentionsResponse
@@ -46,17 +48,14 @@ class InboxViewModel : ViewModel(), Initializable {
         ApiState.Empty,
     )
         private set
-    private var fetchingMoreReplies by mutableStateOf(false)
     var mentionsRes: ApiState<GetPersonMentionsResponse> by mutableStateOf(
         ApiState.Empty,
     )
         private set
-    private var fetchingMoreMentions by mutableStateOf(false)
     var messagesRes: ApiState<PrivateMessagesResponse> by mutableStateOf(
         ApiState.Empty,
     )
         private set
-    private var fetchingMoreMessages by mutableStateOf(false)
 
     private var likeReplyRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
@@ -80,17 +79,29 @@ class InboxViewModel : ViewModel(), Initializable {
     private var blockPersonRes: ApiState<BlockPersonResponse> by
         mutableStateOf(ApiState.Empty)
 
-    var page by mutableStateOf(1)
+    var pageReplies by mutableIntStateOf(1)
+        private set
+    var pageMentions by mutableIntStateOf(1)
+        private set
+    var pageMessages by mutableIntStateOf(1)
         private set
     var unreadOnly by mutableStateOf(true)
         private set
 
-    fun resetPage() {
-        page = 1
+    fun resetPageMentions() {
+        pageMentions = 1
+    }
+    fun resetPageMessages() {
+        pageMessages = 1
+    }
+    fun resetPageReplies() {
+        pageReplies = 1
     }
 
-    fun nextPage() {
-        page += 1
+    fun resetPages() {
+        resetPageMentions()
+        resetPageMessages()
+        resetPageReplies()
     }
 
     fun updateUnreadOnly(unreadOnly: Boolean) {
@@ -99,127 +110,136 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun getReplies(
         form: GetReplies,
+        state: ApiState<GetRepliesResponse> = ApiState.Loading,
     ) {
         viewModelScope.launch {
-            repliesRes = ApiState.Loading
+            repliesRes = state
             repliesRes = apiWrapper(API.getInstance().getReplies(form.serializeToMap()))
         }
     }
 
     fun appendReplies(
-        form: GetReplies,
+        jwt: String,
     ) {
         viewModelScope.launch {
-            fetchingMoreReplies = true
-            val more = apiWrapper(API.getInstance().getReplies(form.serializeToMap()))
+            val oldRes = repliesRes
+            when (oldRes) {
+                is ApiState.Success -> repliesRes = ApiState.Appending(oldRes.data)
+                else -> return@launch
+            }
 
-            // Only append when both new and existing are Successes
-            when (val existing = repliesRes) {
+            pageReplies += 1
+            val newRes = apiWrapper(API.getInstance().getReplies(getFormReplies(jwt).serializeToMap()))
+
+            repliesRes = when (newRes) {
                 is ApiState.Success -> {
-                    when (more) {
-                        is ApiState.Success -> {
-                            val appended = existing.data.replies.toMutableList()
-                            appended.addAll(more.data.replies)
-                            val newRes = ApiState.Success(existing.data.copy(replies = appended))
-                            repliesRes = newRes
-
-                            fetchingMoreReplies = false
-                        }
-
-                        is ApiState.Failure -> {
-                            fetchingMoreReplies = false
-                        }
-
-                        else -> {}
+                    if (newRes.data.replies.isEmpty()) { // Hit the end of the replies
+                        pageReplies -= 1
                     }
+                    val appended = oldRes.data.replies.toMutableList()
+                    appended.addAll(newRes.data.replies)
+                    ApiState.Success(oldRes.data.copy(replies = appended))
                 }
 
-                else -> {}
+                else -> {
+                    pageReplies -= 1
+                    oldRes
+                }
             }
         }
     }
 
     fun getMentions(
         form: GetPersonMentions,
+        state: ApiState<GetPersonMentionsResponse> = ApiState.Loading,
     ) {
         viewModelScope.launch {
-            mentionsRes = ApiState.Loading
+            mentionsRes = state
             mentionsRes = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
         }
     }
 
     fun appendMentions(
-        form: GetPersonMentions,
+        jwt: String,
     ) {
         viewModelScope.launch {
-            fetchingMoreMentions = true
-            val more = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
+            val oldRes = mentionsRes
+            when (oldRes) {
+                is ApiState.Success -> mentionsRes = ApiState.Appending(oldRes.data)
+                else -> return@launch
+            }
 
-            // Only append when both new and existing are Successes
-            when (val existing = mentionsRes) {
+            pageMentions += 1
+            val form = GetPersonMentions(
+                unread_only = unreadOnly,
+                sort = CommentSortType.New,
+                page = pageMentions,
+                auth = jwt,
+            )
+
+            val newRes = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
+
+            mentionsRes = when (newRes) {
                 is ApiState.Success -> {
-                    when (more) {
-                        is ApiState.Success -> {
-                            val appended = existing.data.mentions.toMutableList()
-                            appended.addAll(more.data.mentions)
-                            val newRes = ApiState.Success(existing.data.copy(mentions = appended))
-                            mentionsRes = newRes
-
-                            fetchingMoreMentions = false
-                        }
-
-                        is ApiState.Failure -> {
-                            fetchingMoreMentions = false
-                        }
-
-                        else -> {}
+                    if (newRes.data.mentions.isEmpty()) { // Hit the end of the replies
+                        pageMentions -= 1
                     }
+                    val appended = oldRes.data.mentions.toMutableList()
+                    appended.addAll(newRes.data.mentions)
+                    ApiState.Success(oldRes.data.copy(mentions = appended))
                 }
 
-                else -> {}
+                else -> {
+                    pageMentions -= 1
+                    oldRes
+                }
             }
         }
     }
 
     fun getMessages(
         form: GetPrivateMessages,
+        state: ApiState<PrivateMessagesResponse> = ApiState.Loading,
     ) {
         viewModelScope.launch {
-            messagesRes = ApiState.Loading
+            messagesRes = state
             messagesRes = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
         }
     }
 
     fun appendMessages(
-        form: GetPrivateMessages,
+        jwt: String,
     ) {
         viewModelScope.launch {
-            fetchingMoreMessages = true
-            val more = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
+            val oldRes = messagesRes
+            when (oldRes) {
+                is ApiState.Success -> messagesRes = ApiState.Appending(oldRes.data)
+                else -> return@launch
+            }
 
-            // Only append when both new and existing are Successes
-            when (val existing = messagesRes) {
+            pageMessages += 1
+            val form = GetPrivateMessages(
+                unread_only = unreadOnly,
+                page = pageMessages,
+                auth = jwt,
+            )
+
+            val newRes = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
+
+            messagesRes = when (newRes) {
                 is ApiState.Success -> {
-                    when (more) {
-                        is ApiState.Success -> {
-                            val appended = existing.data.private_messages.toMutableList()
-                            appended.addAll(more.data.private_messages)
-                            val newRes =
-                                ApiState.Success(existing.data.copy(private_messages = appended))
-                            messagesRes = newRes
-
-                            fetchingMoreMessages = false
-                        }
-
-                        is ApiState.Failure -> {
-                            fetchingMoreMessages = false
-                        }
-
-                        else -> {}
+                    if (newRes.data.private_messages.isEmpty()) { // Hit the end of the replies
+                        pageMessages -= 1
                     }
+                    val appended = oldRes.data.private_messages.toMutableList()
+                    appended.addAll(newRes.data.private_messages)
+                    ApiState.Success(oldRes.data.copy(private_messages = appended))
                 }
 
-                else -> {}
+                else -> {
+                    pageMessages -= 1
+                    oldRes
+                }
             }
         }
     }
@@ -488,5 +508,31 @@ class InboxViewModel : ViewModel(), Initializable {
                 else -> {}
             }
         }
+    }
+
+    fun getFormReplies(jwt: String): GetReplies {
+        return GetReplies(
+            unread_only = unreadOnly,
+            sort = CommentSortType.New,
+            page = pageReplies,
+            auth = jwt,
+        )
+    }
+
+    fun getFormMentions(jwt: String): GetPersonMentions {
+        return GetPersonMentions(
+            unread_only = unreadOnly,
+            sort = CommentSortType.New,
+            page = pageMentions,
+            auth = jwt,
+        )
+    }
+
+    fun getFormMessages(jwt: String): GetPrivateMessages {
+        return GetPrivateMessages(
+            unread_only = unreadOnly,
+            page = pageMessages,
+            auth = jwt,
+        )
     }
 }

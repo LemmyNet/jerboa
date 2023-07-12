@@ -11,9 +11,13 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -21,13 +25,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import arrow.core.Either
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
@@ -40,9 +44,15 @@ import com.jerboa.db.AppSettingsRepository
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.db.SearchHistoryRepository
+import com.jerboa.db.SearchHistoryViewModel
+import com.jerboa.db.SearchHistoryViewModelFactory
+import com.jerboa.model.AccountSettingsViewModel
+import com.jerboa.model.AccountSettingsViewModelFactory
+import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.ReplyItem
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
-import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.CommentEditDeps
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.PostEditDeps
@@ -53,15 +63,13 @@ import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.getCurrentAccountSync
 import com.jerboa.ui.components.common.takeDepsFromRoot
+import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.community.CommunityActivity
-import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
-import com.jerboa.ui.components.community.list.CommunityListViewModel
-import com.jerboa.ui.components.community.list.CommunityListViewModelFactory
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
+import com.jerboa.ui.components.imageviewer.ImageViewer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
@@ -74,10 +82,13 @@ import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
+import com.jerboa.util.BackConfirmation.addConfirmationDialog
+import com.jerboa.util.BackConfirmation.addConfirmationToast
+import com.jerboa.util.BackConfirmation.disposeConfirmation
+import com.jerboa.util.BackConfirmationMode
+import com.jerboa.util.ShowConfirmationDialog
 
 class JerboaApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -85,16 +96,11 @@ class JerboaApplication : Application() {
     val appSettingsRepository by lazy {
         AppSettingsRepository(database.appSettingsDao(), database.searchHistoryDao())
     }
-    val searchHistoryRepository by lazy {
-        SearchHistoryRepository(database.searchHistoryDao(), database.appSettingsDao())
-    }
+    val searchHistoryRepository by lazy { SearchHistoryRepository(database.searchHistoryDao()) }
 }
 
 class MainActivity : AppCompatActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
-    private val communityListViewModel by viewModels<CommunityListViewModel>() {
-        CommunityListViewModelFactory((application as JerboaApplication).searchHistoryRepository)
-    }
     private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
         AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
     }
@@ -104,8 +110,10 @@ class MainActivity : AppCompatActivity() {
     private val appSettingsViewModel: AppSettingsViewModel by viewModels {
         AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
     }
+    private val searchHistoryViewModel: SearchHistoryViewModel by viewModels {
+        SearchHistoryViewModelFactory((application as JerboaApplication).searchHistoryRepository)
+    }
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -135,7 +143,29 @@ class MainActivity : AppCompatActivity() {
             JerboaTheme(
                 appSettings = appSettings,
             ) {
-                val navController = rememberAnimatedNavController()
+                val navController = rememberNavController()
+                val showConfirmationDialog = remember { mutableStateOf(false) }
+
+                if (showConfirmationDialog.value) {
+                    ShowConfirmationDialog({ showConfirmationDialog.value = false }, ::finish)
+                }
+
+                DisposableEffect(appSettings.backConfirmationMode) {
+                    when (BackConfirmationMode.values()[appSettings.backConfirmationMode]) {
+                        BackConfirmationMode.Toast -> {
+                            this@MainActivity.addConfirmationToast(navController, ctx)
+                        }
+                        BackConfirmationMode.Dialog -> {
+                            this@MainActivity.addConfirmationDialog(navController) { showConfirmationDialog.value = true }
+                        }
+                        BackConfirmationMode.None -> {}
+                    }
+
+                    onDispose {
+                        disposeConfirmation()
+                    }
+                }
+
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
@@ -159,14 +189,37 @@ class MainActivity : AppCompatActivity() {
                     else -> {}
                 }
 
-                AnimatedNavHost(
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+                NavHost(
                     route = Route.Graph.ROOT,
                     navController = navController,
                     startDestination = Route.HOME,
-                    enterTransition = { slideInHorizontally { it } },
-                    exitTransition = { slideOutHorizontally { -it } },
-                    popEnterTransition = { slideInHorizontally { -it } },
-                    popExitTransition = { slideOutHorizontally { it } },
+                    enterTransition = {
+                        slideInHorizontally { it }
+                    },
+                    exitTransition =
+                    {
+                        // No animation for image viewer
+                        if (this.targetState.destination.route == Route.VIEW) {
+                            ExitTransition.None
+                        } else {
+                            slideOutHorizontally { -it }
+                        }
+                    },
+                    popEnterTransition = {
+                        // No animation for image viewer
+                        if (this.initialState.destination.route == Route.VIEW) {
+                            EnterTransition.None
+                        } else {
+                            slideInHorizontally { -it }
+                        }
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally {
+                            it
+                        }
+                    },
                 ) {
                     composable(
                         route = Route.LOGIN,
@@ -187,8 +240,9 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            searchHistoryViewModel = searchHistoryViewModel,
                             appSettings = appSettings,
-                            communityListViewModel = communityListViewModel,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -318,6 +372,8 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -349,6 +405,8 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -362,14 +420,15 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.CommunityListArgs(it)
-
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            communityListViewModel = communityListViewModel,
-                            siteViewModel = siteViewModel,
                             selectMode = args.select,
+                            siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
+                            appSettingsViewModel = appSettingsViewModel,
+                            searchHistoryViewModel = searchHistoryViewModel,
                         )
                     }
 
@@ -422,6 +481,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -451,6 +511,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                openImageViewer = { url -> navController.toView(url) },
                             )
                         }
                     }
@@ -480,6 +541,7 @@ class MainActivity : AppCompatActivity() {
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -604,6 +666,25 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                         )
+                    }
+
+                    composable(
+                        route = Route.VIEW,
+                        arguments = listOf(
+                            navArgument(Route.ViewArgs.URL) {
+                                type = Route.ViewArgs.URL_TYPE
+                            },
+                        ),
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None },
+                        popEnterTransition = { EnterTransition.None },
+                        popExitTransition = { ExitTransition.None },
+                    ) {
+                        val args = Route.ViewArgs(it)
+
+                        ImageViewer(url = args.url) {
+                            navController.popBackStack()
+                        }
                     }
                 }
             }
