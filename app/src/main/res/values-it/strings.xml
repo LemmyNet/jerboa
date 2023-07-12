@@ -171,7 +171,7 @@
     <string name="look_and_feel_post_view_card">Scheda</string>
     <string name="look_and_feel_post_view_list">Lista</string>
     <string name="look_and_feel_post_view_small_card">Scheda piccola</string>
-    <string name="look_and_feel_secure_window">Previeni screenshot</string>
+    <string name="look_and_feel_secure_window">Impedisci screenshot</string>
     <string name="look_and_feel_show_action_bar_for_comments">Mostra sempre la barra delle azioni per i commenti</string>
     <string name="look_and_feel_show_navigation_bar">Mostra barra di navigazione </string>
     <string name="look_and_feel_show_voting_arrows_list_view">Mostra frecce per votare in visualizzazione lista</string>
