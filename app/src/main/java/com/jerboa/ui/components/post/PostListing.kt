@@ -1333,7 +1333,7 @@ fun PostListingListPreview() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController()
+        navController = rememberNavController(),
     )
 }
 
