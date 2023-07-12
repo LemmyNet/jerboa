@@ -88,8 +88,8 @@
     <string name="comment_reply_node_view_source">Переглянути джерельний код</string>
     <string name="comment_reply_reply">Відповісти</string>
     <string name="comment_reply_type_your_comment">Введіть тут свій коментар</string>
-    <string name="comment_save">Зберегти коментар</string>
-    <string name="comment_unsave">Скасувати збереження коментаря</string>
+    <string name="comment_save">Зберегти коментар у скрині</string>
+    <string name="comment_unsave">Скасувати збереження коментаря у скрині</string>
     <string name="community_back">Повернутися</string>
     <string name="community_block_community">Заблокувати спільноту</string>
     <string name="community_community_info">Відомості про спільноту</string>
@@ -303,7 +303,7 @@
     <string name="downvote">Мінусувати</string>
     <string name="upvoted">Плюсовано</string>
     <string name="downvoted">Мінусовано</string>
-    <string name="saved_image">Збережене зображення</string>
+    <string name="saved_image">Збережене в скрині зображення</string>
     <string name="saving_image">Зберігаємо зображення...</string>
     <string name="permission_denied">У дозволі відмовлено</string>
     <string name="inbox_activity_replies">Відповіді</string>
