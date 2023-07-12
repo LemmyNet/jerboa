@@ -160,7 +160,7 @@
     <string name="login_instance">Istanza</string>
     <string name="login_instance_placeholder">ad es.: lemmy.ml</string>
     <string name="login_login">Login</string>
-    <string name="login_totp">Inserisci il token 2FA se è abilitato</string>
+    <string name="login_totp">Inserisci il token 2FA, se abilitato</string>
     <string name="login_password">Password</string>
     <string name="login_view_model_incorrect_login">Login errato</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s non è un\'istanza Lemmy</string>
@@ -171,7 +171,7 @@
     <string name="look_and_feel_post_view_card">Scheda</string>
     <string name="look_and_feel_post_view_list">Lista</string>
     <string name="look_and_feel_post_view_small_card">Scheda piccola</string>
-    <string name="look_and_feel_secure_window">Previeni screenshot</string>
+    <string name="look_and_feel_secure_window">Impedisci screenshot</string>
     <string name="look_and_feel_show_action_bar_for_comments">Mostra sempre la barra delle azioni per i commenti</string>
     <string name="look_and_feel_show_navigation_bar">Mostra barra di navigazione </string>
     <string name="look_and_feel_show_voting_arrows_list_view">Mostra frecce per votare in visualizzazione lista</string>
@@ -191,7 +191,7 @@
     <string name="look_and_feel_theme_color_green">Verde</string>
     <string name="look_and_feel_theme_color_grey">Grigio</string>
     <string name="look_and_feel_theme_color_pink">Rosa</string>
-    <string name="look_and_feel_theme_color_purple">VIola</string>
+    <string name="look_and_feel_theme_color_purple">Viola</string>
     <string name="look_and_feel_theme_color_woodland">Bosco</string>
     <string name="look_and_feel_use_custom_tabs">Usa schede personalizzate</string>
     <string name="look_and_feel_use_private_tabs">Usa schede personalizzate private se disponibili</string>
