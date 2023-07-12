@@ -248,7 +248,7 @@ val MIGRATION_19_20 = object : Migration(19, 20) {
                 `backConfirmationMode` INTEGER NOT NULL DEFAULT 1
             )
 
-            """.trimIndent()
+            """.trimIndent(),
         )
 
         database.execSQL(
