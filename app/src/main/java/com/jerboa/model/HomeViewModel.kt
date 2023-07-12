@@ -2,6 +2,7 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -47,7 +48,7 @@ class HomeViewModel : ViewModel(), Initializable {
         private set
     var listingType by mutableStateOf(ListingType.Local)
         private set
-    var page by mutableStateOf(1)
+    var page by mutableIntStateOf(1)
         private set
 
     fun updateSortType(sortType: SortType) {
