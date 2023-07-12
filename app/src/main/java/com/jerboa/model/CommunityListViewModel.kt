@@ -24,6 +24,8 @@ class CommunityListViewModel : ViewModel(), Initializable {
     var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
 
+    var communities: List<CommunityView> by mutableStateOf(emptyList())
+
     fun searchCommunities(form: Search) {
         viewModelScope.launch {
             searchRes = ApiState.Loading
@@ -38,7 +40,7 @@ class CommunityListViewModel : ViewModel(), Initializable {
                     val myFollows = myUserInfo.follows
 
                     // A hack to convert communityFollowerView into CommunityView
-                    val followsIntoCommunityViews = myFollows.map { cfv ->
+                    communities = myFollows.map { cfv ->
                         CommunityView(
                             community = cfv.community,
                             subscribed = SubscribedType.Subscribed,
@@ -57,20 +59,14 @@ class CommunityListViewModel : ViewModel(), Initializable {
                             ),
                         )
                     }
-
-                    searchRes = ApiState.Success(
-                        SearchResponse(
-                            type_ = SearchType.Communities,
-                            communities = followsIntoCommunityViews,
-                            comments = emptyList(),
-                            posts = emptyList(),
-                            users = emptyList(),
-                        ),
-                    )
                 }
             }
 
             else -> {}
         }
+    }
+
+    fun resetSearch() {
+        searchRes = ApiState.Empty
     }
 }

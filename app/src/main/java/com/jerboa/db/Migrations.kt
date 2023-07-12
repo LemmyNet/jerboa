@@ -230,11 +230,17 @@ val MIGRATION_19_20 = object : Migration(19, 20) {
             """
                 CREATE TABLE IF NOT EXISTS SearchHistory(
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-                    account_id INTEGER NOT NULL,
+                    account_id INTEGER,
                     search_term TEXT NOT NULL,
-                    FOREIGN KEY(account_id) REFERENCES Account(id)
+                    FOREIGN KEY(account_id)
+                        REFERENCES Account(id)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE
                 )
             """,
+        )
+        database.execSQL(
+            "CREATE INDEX index_SearchHistory_account_id ON SearchHistory(account_id)"
         )
     }
 }

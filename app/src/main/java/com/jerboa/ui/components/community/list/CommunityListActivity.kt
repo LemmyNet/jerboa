@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -17,18 +19,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.map
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.Search
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.SearchHistory
 import com.jerboa.db.SearchHistoryViewModel
 import com.jerboa.model.CommunityListViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
@@ -51,6 +57,8 @@ fun CommunityListActivity(
     siteViewModel: SiteViewModel,
     blurNSFW: Boolean,
     drawerState: DrawerState,
+    appSettingsViewModel: AppSettingsViewModel,
+    searchHistoryViewModel: SearchHistoryViewModel,
 ) {
     Log.d("jerboa", "got to community list activity")
 
@@ -62,10 +70,19 @@ fun CommunityListActivity(
         communityListViewModel.setCommunityListFromFollowed(siteViewModel)
     }
 
-    val searchHistoryViewModel: SearchHistoryViewModel = viewModel()
+    val saveSearchHistory by remember {
+        appSettingsViewModel.appSettings
+            .map { it.saveSearchHistory }
+    }.observeAsState()
+
+    val searchHistory by remember(account) {
+        searchHistoryViewModel.searchHistory
+            .map { history -> history.filter { it.accountId == account?.id }.also {
+                Log.e("WIDGET", "histories $history")
+            } }
+    }.observeAsState()
 
     var search by rememberSaveable { mutableStateOf("") }
-    val searchHistory by searchHistoryViewModel.searchHistory.observeAsState()
 
     val scope = rememberCoroutineScope()
     var fetchCommunitiesJob by remember { mutableStateOf<Job?>(null) }
@@ -82,6 +99,10 @@ fun CommunityListActivity(
                     search = search,
                     onSearchChange = {
                         search = it
+                        if (search.isEmpty()) {
+                            communityListViewModel.resetSearch()
+                            return@CommunityListHeader
+                        }
                         fetchCommunitiesJob?.cancel()
                         fetchCommunitiesJob = scope.launch {
                             delay(DEBOUNCE_DELAY)
@@ -93,6 +114,14 @@ fun CommunityListActivity(
                                     auth = account?.jwt,
                                 ),
                             )
+                            if (saveSearchHistory == true) {
+                                searchHistoryViewModel.insert(
+                                    SearchHistory(
+                                        accountId = account?.id,
+                                        searchTerm = search.trim(),
+                                    )
+                                )
+                            }
                         }
                     },
                 )
@@ -109,12 +138,25 @@ fun CommunityListActivity(
                                 SearchHistoryList(
                                     history = history,
                                     onHistoryItemClicked = {
-                                        scope.launch {
-                                            search = it.searchTerm
-                                            communityListViewModel.searchAllCommunities(
-                                                it.text,
-                                                account?.jwt,
+                                        search = it.searchTerm
+                                        fetchCommunitiesJob?.cancel()
+                                        fetchCommunitiesJob = scope.launch {
+                                            communityListViewModel.searchCommunities(
+                                                Search(
+                                                    q = it.searchTerm,
+                                                    type_ = SearchType.Communities,
+                                                    sort = SortType.TopAll,
+                                                    auth = account?.jwt,
+                                                )
                                             )
+                                            if (saveSearchHistory == true) {
+                                                searchHistoryViewModel.insert(
+                                                    SearchHistory(
+                                                        accountId = account?.id,
+                                                        searchTerm = search.trim(),
+                                                    )
+                                                )
+                                            }
                                         }
                                     },
                                     onHistoryItemDeleted = {
@@ -124,14 +166,25 @@ fun CommunityListActivity(
                                     }
                                 )
                             }
+                            ListItem(
+                                headlineContent = {
+                                    Text(
+                                        text = stringResource(R.string.community_list_title),
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        style = MaterialTheme.typography.labelLarge,
+                                    )
+                                },
+                            )
                             CommunityListings(
                                 communities = communityListViewModel.communities,
                                 onClickCommunity = { cs ->
                                     if (selectMode) {
-                                        communityListViewModel.selectCommunity(cs)
-                                        navController.navigateUp()
+                                        navController.apply {
+                                            addReturn(CommunityListReturn.COMMUNITY, cs)
+                                            navigateUp()
+                                        }
                                     } else {
-                                        navController.navigate(route = "community/${cs.id}")
+                                        navController.toCommunity(id = cs.id)
                                     }
                                 },
                                 blurNSFW = blurNSFW,

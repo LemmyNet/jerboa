@@ -43,6 +43,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettings
 import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.SearchHistoryViewModel
 import com.jerboa.fetchHomePosts
 import com.jerboa.loginFirstToast
 import com.jerboa.model.HomeViewModel
@@ -84,6 +85,7 @@ fun BottomNavActivity(
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
+    searchHistoryViewModel: SearchHistoryViewModel,
 ) {
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
@@ -177,6 +179,8 @@ fun BottomNavActivity(
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            searchHistoryViewModel = searchHistoryViewModel,
                             selectMode = false,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,

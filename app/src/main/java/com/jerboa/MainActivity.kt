@@ -240,6 +240,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
+                            searchHistoryViewModel = searchHistoryViewModel,
                             appSettings = appSettings,
                             drawerState = drawerState,
                         )
@@ -422,10 +423,12 @@ class MainActivity : AppCompatActivity() {
                         CommunityListActivity(
                             navController = navController,
                             accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
                             selectMode = args.select,
+                            siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
+                            appSettingsViewModel = appSettingsViewModel,
+                            searchHistoryViewModel = searchHistoryViewModel,
                         )
                     }
 

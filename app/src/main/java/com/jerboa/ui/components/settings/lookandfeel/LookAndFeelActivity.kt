@@ -92,6 +92,7 @@ fun LookAndFeelActivity(
     val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
     val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
     val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
+    val saveSearchHistory = rememberBooleanSettingState(settings.saveSearchHistory)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -118,6 +119,7 @@ fun LookAndFeelActivity(
                 showTextDescriptionsInNavbar = showTextDescriptionsInNavbar.value,
                 blurNSFW = blurNSFW.value,
                 backConfirmationMode = backConfirmationMode.value,
+                saveSearchHistory = saveSearchHistory.value,
             ),
         )
     }
@@ -317,6 +319,10 @@ fun LookAndFeelActivity(
                         )
                     },
                 )
+                SettingsCheckbox(
+                    title = { Text(text = stringResource(R.string.save_search_history)) },
+                    state = saveSearchHistory,
+                    onCheckedChange = { updateAppSettings() })
             }
         },
     )

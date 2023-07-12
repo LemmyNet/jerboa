@@ -177,13 +177,10 @@ fun SearchViewPreview() {
 
 @Composable
 fun SearchHistoryList(
-    communityListViewModel: CommunityListViewModel = viewModel(),
-    searchHistoryViewModel: SearchHistoryViewModel = viewModel(),
     history: List<SearchHistory>,
     onHistoryItemClicked: (SearchHistory) -> Unit,
     onHistoryItemDeleted: (SearchHistory) -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
     Column {
         if (history.isNotEmpty()) {
             ListItem(
@@ -223,15 +220,5 @@ fun SearchHistoryList(
                 },
             )
         }
-        ListItem(
-            headlineContent = {
-                Text(
-                    text = stringResource(R.string.community_list_title),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            },
-        )
-
     }
 }

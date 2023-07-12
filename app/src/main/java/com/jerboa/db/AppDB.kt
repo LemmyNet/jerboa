@@ -171,9 +171,9 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     )],
 )
 data class SearchHistory(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "account_id") val accountId: Int,
-    @ColumnInfo(name = "search_term") val searchTerm: String,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "account_id", index = true) val accountId: Int?,
+    @ColumnInfo(name = "search_term",) val searchTerm: String,
 )
 
 @Dao
@@ -223,8 +223,8 @@ interface SearchHistoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE, entity = SearchHistory::class)
     suspend fun insert(item: SearchHistory)
 
-    @Delete(entity = SearchHistory::class)
-    suspend fun delete(item: SearchHistory)
+    @Query("DELETE FROM SearchHistory WHERE account_id = :accountId AND search_term = :searchTerm")
+    suspend fun delete(accountId: Int?, searchTerm: String)
 
     @Query("DELETE FROM SearchHistory")
     suspend fun clear()
@@ -327,14 +327,16 @@ class SearchHistoryRepository(
     private val searchHistoryDao: SearchHistoryDao,
 ) {
     fun history(): LiveData<List<SearchHistory>> = searchHistoryDao.history()
-
-    suspend fun insert(item: SearchHistory) {
-        if (appSettingsDao.settings().first().saveSearchHistory) {
-            searchHistoryDao.insert(item)
+        .map { history ->
+            history
+                .sortedByDescending { it.id }
+                .distinctBy { it.searchTerm }
         }
-    }
 
-    suspend fun delete(item: SearchHistory) = searchHistoryDao.delete(item)
+    suspend fun insert(item: SearchHistory) =
+        searchHistoryDao.insert(item)
+
+    suspend fun delete(item: SearchHistory) = searchHistoryDao.delete(item.accountId, item.searchTerm)
 }
 
 @Database(
@@ -458,11 +460,6 @@ class AppSettingsViewModelFactory(private val repository: AppSettingsRepository)
 
 class SearchHistoryViewModel(private val repository: SearchHistoryRepository) : ViewModel() {
     val searchHistory = repository.history()
-        .map { history ->
-            history
-                .distinctBy { it.searchTerm }
-                .sortedByDescending { it.id }
-        }
 
     suspend fun insert(item: SearchHistory) {
         repository.insert(item)
