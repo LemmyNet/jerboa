@@ -223,6 +223,41 @@ val MIGRATION_18_19 = object : Migration(18, 19) {
 val MIGRATION_19_20 = object : Migration(19, 20) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        // Add new default show_parent_comment_navigation_buttons of 16
+
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS AppSettingsBackup (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `font_size` INTEGER NOT NULL DEFAULT 16, 
+                `theme` INTEGER NOT NULL DEFAULT 0, 
+                `theme_color` INTEGER NOT NULL DEFAULT 0, 
+                `viewed_changelog` INTEGER NOT NULL DEFAULT 0, 
+                `post_view_mode` INTEGER NOT NULL DEFAULT 0, 
+                `show_bottom_nav` INTEGER NOT NULL DEFAULT 1, 
+                `show_collapsed_comment_content` INTEGER NOT NULL DEFAULT 0, 
+                `show_comment_action_bar_by_default` INTEGER NOT NULL DEFAULT 1, 
+                `show_voting_arrows_in_list_view` INTEGER NOT NULL DEFAULT 1, 
+                `show_parent_comment_navigation_buttons` INTEGER NOT NULL DEFAULT 0, 
+                `navigate_parent_comments_with_volume_buttons` INTEGER NOT NULL DEFAULT 0, 
+                `use_custom_tabs` INTEGER NOT NULL DEFAULT 1, 
+                `use_private_tabs` INTEGER NOT NULL DEFAULT 0, 
+                `secure_window` INTEGER NOT NULL DEFAULT 0, 
+                `blur_nsfw` INTEGER NOT NULL DEFAULT 1, 
+                `show_text_descriptions_in_navbar` INTEGER NOT NULL DEFAULT 1, 
+                `backConfirmationMode` INTEGER NOT NULL DEFAULT 1
+            )
+
+            """.trimIndent()
+        )
+
+        database.execSQL(
+            """
+            INSERT INTO AppSettingsBackup SELECT * FROM AppSettings
+            """,
+        )
+        database.execSQL("DROP TABLE AppSettings")
+        database.execSQL("ALTER TABLE AppSettingsBackup RENAME to AppSettings")
     }
 }
 
