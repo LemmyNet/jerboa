@@ -15,7 +15,7 @@ import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.CreateComment
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 

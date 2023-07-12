@@ -20,7 +20,7 @@ import com.jerboa.R
 import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PrivateMessageView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.TimeAgo

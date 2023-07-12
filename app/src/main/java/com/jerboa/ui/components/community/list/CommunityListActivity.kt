@@ -21,7 +21,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.Search
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.AccountViewModel
+import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommunityListViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
