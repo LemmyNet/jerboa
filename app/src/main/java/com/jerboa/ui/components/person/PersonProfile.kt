@@ -36,7 +36,6 @@ import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
-import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -52,16 +51,8 @@ fun PersonProfileTopSection(
     personView: PersonView,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
-    var showImage by remember { mutableStateOf<String?>(null) }
-
-    if (showImage != null) {
-        ImageViewerDialog(
-            url = showImage!!,
-            onBackRequest = { showImage = null },
-        )
-    }
-
     Column {
         Box(
             modifier = modifier.fillMaxWidth(),
@@ -74,7 +65,7 @@ fun PersonProfileTopSection(
                     modifier = Modifier
                         .height(PROFILE_BANNER_SIZE)
                         .clickable {
-                            showImage = personView.person.banner
+                            openImageViewer(personView.person.banner)
                         },
                 )
             }
@@ -85,7 +76,7 @@ fun PersonProfileTopSection(
                             icon = it,
                             contentDescription = stringResource(R.string.personProfile_viewAvatar),
                             modifier = Modifier.clickable {
-                                showImage = personView.person.avatar
+                                openImageViewer(personView.person.avatar)
                             },
                         )
                     }
@@ -145,6 +136,7 @@ fun PersonProfileTopSectionPreview() {
     PersonProfileTopSection(
         personView = samplePersonView,
         showAvatar = true,
+        openImageViewer = {},
     )
 }
 

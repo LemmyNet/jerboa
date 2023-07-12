@@ -126,6 +126,11 @@ data class AppSettings(
         defaultValue = "1",
     )
     val showTextDescriptionsInNavbar: Boolean,
+    @ColumnInfo(
+        name = "backConfirmationMode",
+        defaultValue = "1",
+    )
+    val backConfirmationMode: Int,
 )
 
 val APP_SETTINGS_DEFAULT = AppSettings(
@@ -146,6 +151,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     secureWindow = false,
     blurNSFW = true,
     showTextDescriptionsInNavbar = true,
+    backConfirmationMode = 1,
 )
 
 @Dao
@@ -277,7 +283,7 @@ class AppSettingsRepository(
 }
 
 @Database(
-    version = 18,
+    version = 19,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

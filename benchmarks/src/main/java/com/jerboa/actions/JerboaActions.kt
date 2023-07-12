@@ -97,7 +97,16 @@ fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(retry: Boolean = true, tim
 }
 
 fun MacrobenchmarkScope.openOptions() {
-    device.findOrFailTimeout("jerboa:options", "Options not found", timeout = 2).click()
+    var options = device.findTimeout("jerboa:options", timeout = 2_000)
+
+    if (options == null) {
+        val feed = device.findOrFailTimeout("jerboa:posts", "Posts not found", 2_000)
+        feed.setGestureMargin(device.displayWidth / 5)
+        feed.fling(Direction.UP)
+        options = device.findOrFailTimeout("jerboa:options")
+    }
+
+    options.click()
 }
 
 fun MacrobenchmarkScope.clickRefresh() {

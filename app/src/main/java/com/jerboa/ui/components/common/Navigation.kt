@@ -14,6 +14,8 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.gson
 import com.jerboa.model.ReplyItem
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 // A view model stored higher up the tree used for moving navigation arguments from one route
 // to another. Since this will be reused, the value inside this should be moved out ASAP.
@@ -152,3 +154,8 @@ fun NavController.toLookAndFeel() = navigate(Route.LOOK_AND_FEEL)
 fun NavController.toAbout() = navigate(Route.ABOUT)
 
 fun NavController.toCrashLogs() = navigate(Route.CRASH_LOGS)
+
+fun NavController.toView(url: String) {
+    val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.name())
+    navigate(Route.ViewArgs.makeRoute(encodedUrl))
+}

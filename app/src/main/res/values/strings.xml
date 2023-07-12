@@ -333,4 +333,12 @@
     <string name="dialogs_top_nine_month">Top Nine Months</string>
     <string name="post_listing_view_source">View Source</string>
     <string name="post_listing_view_original">View Original</string>
+    <string name="download">Download</string>
+    <string name="back_confirmation">Press back again to exit</string>
+    <string name="no_back_confirmation">Do not ask for confirmation to exit</string>
+    <string name="press_again_confirmation">Press back twice to exit</string>
+    <string name="confirm_exit">Confirm exit action</string>
+    <string name="back_dialog">Show a confirmation dialog on exit</string>
+    <string name="exit">Exit</string>
+    <string name="back_dialog_title">Are you sure you want to exit?</string>
 </resources>
