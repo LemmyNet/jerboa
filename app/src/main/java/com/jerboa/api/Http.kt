@@ -3,7 +3,7 @@ package com.jerboa.api
 import android.content.Context
 import android.util.Log
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.toastException
 import com.jerboa.util.CustomHttpLoggingInterceptor
 import okhttp3.MultipartBody

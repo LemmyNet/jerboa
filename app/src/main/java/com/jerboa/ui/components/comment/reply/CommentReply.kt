@@ -23,7 +23,7 @@ import com.jerboa.datatypes.types.CommentReplyView
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNodeHeader
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeHeader

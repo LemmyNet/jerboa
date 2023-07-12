@@ -16,7 +16,7 @@ import com.jerboa.datatypes.samplePostView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING

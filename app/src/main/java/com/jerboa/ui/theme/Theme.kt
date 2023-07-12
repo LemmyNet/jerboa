@@ -18,7 +18,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
-import com.jerboa.db.AppSettings
+import com.jerboa.db.entity.AppSettings
 
 @Composable
 fun JerboaTheme(
