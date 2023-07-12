@@ -290,9 +290,9 @@ class MainActivity : AppCompatActivity() {
                             CommunityActivity(
                                 communityArg = Either.Right(qualifiedName),
                                 navController = navController,
+                                communityViewModel = communityViewModel,
                                 accountViewModel = accountViewModel,
                                 appSettingsViewModel = appSettingsViewModel,
-                                communityViewModel = communityViewModel,
                                 showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
@@ -548,8 +548,8 @@ class MainActivity : AppCompatActivity() {
 
                         CommentReplyActivity(
                             replyItem = replyItem,
-                            navController = navController,
                             accountViewModel = accountViewModel,
+                            navController = navController,
                             siteViewModel = siteViewModel,
                             isModerator = args.isModerator,
                         )
