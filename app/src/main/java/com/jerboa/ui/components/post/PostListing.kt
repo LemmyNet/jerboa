@@ -81,7 +81,7 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance

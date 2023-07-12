@@ -68,7 +68,7 @@ import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.isModerator
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton

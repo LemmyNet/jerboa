@@ -44,8 +44,8 @@ import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.getLocalizedSortingTypeLongName
+import com.jerboa.model.AppSettingsViewModel
 
 val DONATION_MARKDOWN = """
     ### Support Jerboa

@@ -43,7 +43,7 @@ import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PersonMentionView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton

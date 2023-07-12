@@ -47,10 +47,10 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote

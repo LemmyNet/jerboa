@@ -6,7 +6,9 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.ManageAccounts
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -20,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
-import com.jerboa.db.AccountViewModel
+import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toAbout
