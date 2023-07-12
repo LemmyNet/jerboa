@@ -130,6 +130,15 @@
               <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="com.crazylegend.crashyreporter.initializer.CrashyInitializer"
+                android:value="androidx.startup" />
+        </provider>
     </application>
 
 </manifest>

@@ -153,6 +153,8 @@ fun NavController.toLookAndFeel() = navigate(Route.LOOK_AND_FEEL)
 
 fun NavController.toAbout() = navigate(Route.ABOUT)
 
+fun NavController.toCrashLogs() = navigate(Route.CRASH_LOGS)
+
 fun NavController.toView(url: String) {
     val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.name())
     navigate(Route.ViewArgs.makeRoute(encodedUrl))
