@@ -25,12 +25,11 @@ import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 @Composable
 fun PrivateMessageReplyActivity(
     privateMessageView: PrivateMessageView,
-    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
+    accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     navController: NavController,
 ) {

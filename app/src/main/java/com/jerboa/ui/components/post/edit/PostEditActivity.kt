@@ -32,7 +32,6 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.CreateEditPostHeader
 import com.jerboa.ui.components.post.composables.EditPostSubmitIcon
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 import kotlinx.coroutines.launch
@@ -45,7 +44,7 @@ object PostEditReturn {
 @Composable
 fun PostEditActivity(
     postView: PostView,
-    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
+    accountViewModel: AccountViewModel,
     navController: NavController,
 ) {
     Log.d("jerboa", "got to post edit activity")

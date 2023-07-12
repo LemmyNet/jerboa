@@ -6,7 +6,9 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.ManageAccounts
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -17,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
@@ -27,12 +28,11 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toAbout
 import com.jerboa.ui.components.common.toAccountSettings
 import com.jerboa.ui.components.common.toLookAndFeel
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 @Composable
 fun SettingsActivity(
     navController: NavController,
-    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
+    accountViewModel: AccountViewModel,
 ) {
     Log.d("jerboa", "Got to settings activity")
 

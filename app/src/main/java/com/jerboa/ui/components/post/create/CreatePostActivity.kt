@@ -40,7 +40,6 @@ import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.CreateEditPostHeader
 import com.jerboa.ui.components.post.composables.CreatePostSubmitIcon
 import com.jerboa.ui.components.post.composables.PostCommunitySelector
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 import kotlinx.coroutines.Job
@@ -53,7 +52,7 @@ data class MetaDataRes(val title: String?, val loading: Boolean)
 
 @Composable
 fun CreatePostActivity(
-    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
+    accountViewModel: AccountViewModel,
     navController: NavController,
     initialUrl: String,
     initialBody: String,

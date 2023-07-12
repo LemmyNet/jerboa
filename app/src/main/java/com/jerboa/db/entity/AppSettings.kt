@@ -83,4 +83,14 @@ data class AppSettings(
         defaultValue = "1",
     )
     val blurNSFW: Boolean,
+    @ColumnInfo(
+        name = "show_text_descriptions_in_navbar",
+        defaultValue = "1",
+    )
+    val showTextDescriptionsInNavbar: Boolean,
+    @ColumnInfo(
+        name = "backConfirmationMode",
+        defaultValue = "1",
+    )
+    val backConfirmationMode: Int,
 )

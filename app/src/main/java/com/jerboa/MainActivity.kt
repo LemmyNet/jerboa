@@ -107,6 +107,9 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val ctx = LocalContext.current
+            val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory)
+            val appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory)
+            val accountSettingsViewModel: AccountSettingsViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory)
 
             API.errorHandler = {
                 Log.e("jerboa", it.toString())
@@ -120,8 +123,6 @@ class MainActivity : AppCompatActivity() {
                 null
             }
 
-            val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory)
-
             val account = getCurrentAccount(accountViewModel)
 
             LaunchedEffect(account) {
@@ -130,7 +131,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory)
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
 
             JerboaTheme(
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
                     appSettings.usePrivateTabs,
                 )
 
-                ShowChangelog()
+                ShowChangelog(appSettingsViewModel = appSettingsViewModel)
 
                 when (val siteRes = siteViewModel.siteRes) {
                     is ApiState.Success -> {
@@ -222,6 +222,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         LoginActivity(
                             navController = navController,
+                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                         )
                     }
@@ -229,7 +230,9 @@ class MainActivity : AppCompatActivity() {
                     composable(route = Route.HOME) {
                         BottomNavActivity(
                             navController = navController,
+                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
                             appSettings = appSettings,
                             drawerState = drawerState,
                         )
@@ -256,6 +259,8 @@ class MainActivity : AppCompatActivity() {
                                 communityArg = Either.Left(args.id),
                                 navController = navController,
                                 communityViewModel = communityViewModel,
+                                accountViewModel = accountViewModel,
+                                appSettingsViewModel = appSettingsViewModel,
                                 showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
@@ -285,6 +290,8 @@ class MainActivity : AppCompatActivity() {
                             CommunityActivity(
                                 communityArg = Either.Right(qualifiedName),
                                 navController = navController,
+                                accountViewModel = accountViewModel,
+                                appSettingsViewModel = appSettingsViewModel,
                                 communityViewModel = communityViewModel,
                                 showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                                 siteViewModel = siteViewModel,
@@ -350,6 +357,8 @@ class MainActivity : AppCompatActivity() {
                             personArg = Either.Left(args.id),
                             savedMode = args.saved,
                             navController = navController,
+                            accountViewModel = accountViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
@@ -381,6 +390,8 @@ class MainActivity : AppCompatActivity() {
                             personArg = Either.Right(qualifiedName),
                             savedMode = false,
                             navController = navController,
+                            accountViewModel = accountViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
@@ -403,6 +414,7 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.CommunityListArgs(it)
                         CommunityListActivity(
                             navController = navController,
+                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW,
@@ -440,6 +452,7 @@ class MainActivity : AppCompatActivity() {
 
                         CreatePostActivity(
                             navController = navController,
+                            accountViewModel = accountViewModel,
                             initialUrl = url,
                             initialBody = body,
                             initialImage = image,
@@ -455,6 +468,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         InboxActivity(
                             navController = navController,
+                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
@@ -476,6 +490,7 @@ class MainActivity : AppCompatActivity() {
                         SwipeToNavigateBack(navController = navController) {
                             PostActivity(
                                 id = Either.Left(args.id),
+                                accountViewModel = accountViewModel,
                                 navController = navController,
                                 showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
                                 showActionBarByDefault = appSettings.showCommentActionBarByDefault,
@@ -505,6 +520,7 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.CommentArgs(it)
                         PostActivity(
                             id = Either.Right(args.id),
+                            accountViewModel = accountViewModel,
                             navController = navController,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
@@ -533,6 +549,7 @@ class MainActivity : AppCompatActivity() {
                         CommentReplyActivity(
                             replyItem = replyItem,
                             navController = navController,
+                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             isModerator = args.isModerator,
                         )
@@ -549,6 +566,7 @@ class MainActivity : AppCompatActivity() {
                         val commentView by navController.takeDepsFromRoot<CommentEditDeps>()
                         CommentEditActivity(
                             commentView = commentView,
+                            accountViewModel = accountViewModel,
                             navController = navController,
                         )
                     }
@@ -557,6 +575,7 @@ class MainActivity : AppCompatActivity() {
                         val postView by navController.takeDepsFromRoot<PostEditDeps>()
                         PostEditActivity(
                             postView = postView,
+                            accountViewModel = accountViewModel,
                             navController = navController,
                         )
                     }
@@ -565,6 +584,7 @@ class MainActivity : AppCompatActivity() {
                         val privateMessage by navController.takeDepsFromRoot<PrivateMessageDeps>()
                         PrivateMessageReplyActivity(
                             privateMessageView = privateMessage,
+                            accountViewModel = accountViewModel,
                             navController = navController,
                             siteViewModel = siteViewModel,
                         )
@@ -581,6 +601,7 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.CommentReportArgs(it)
                         CreateCommentReportActivity(
                             commentId = args.id,
+                            accountViewModel = accountViewModel,
                             navController = navController,
                         )
                     }
@@ -596,6 +617,7 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.PostReportArgs(it)
                         CreatePostReportActivity(
                             postId = args.id,
+                            accountViewModel = accountViewModel,
                             navController = navController,
                         )
                     }
@@ -603,12 +625,14 @@ class MainActivity : AppCompatActivity() {
                     composable(route = Route.SETTINGS) {
                         SettingsActivity(
                             navController = navController,
+                            accountViewModel = accountViewModel,
                         )
                     }
 
                     composable(route = Route.LOOK_AND_FEEL) {
                         LookAndFeelActivity(
                             navController = navController,
+                            appSettingsViewModel = appSettingsViewModel,
                         )
                     }
 
@@ -620,7 +644,9 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         AccountSettingsActivity(
                             navController = navController,
+                            accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            accountSettingsViewModel = accountSettingsViewModel,
                         )
                     }
 

@@ -37,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
@@ -46,7 +45,6 @@ import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.getLocalizedSortingTypeLongName
 
 val DONATION_MARKDOWN = """
@@ -301,7 +299,7 @@ fun ListingTypeOptionsDialogPreview() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory)) {
+fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
     val changelogViewed = appSettingsViewModel.appSettings.observeAsState().value?.viewedChangelog
 
     // Make sure its initialized

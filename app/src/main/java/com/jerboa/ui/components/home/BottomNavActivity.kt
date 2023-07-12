@@ -41,6 +41,7 @@ import arrow.core.Either
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.db.AccountViewModel
+import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.fetchHomePosts
 import com.jerboa.loginFirstToast
@@ -54,7 +55,6 @@ import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 enum class NavTab(
     val textId: Int,
@@ -79,8 +79,9 @@ enum class NavTab(
 @Composable
 fun BottomNavActivity(
     navController: NavController,
-    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
+    accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
 ) {
@@ -163,6 +164,7 @@ fun BottomNavActivity(
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
@@ -200,6 +202,7 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
@@ -216,6 +219,7 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
                             siteViewModel = siteViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,

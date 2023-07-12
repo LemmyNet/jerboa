@@ -63,7 +63,7 @@ class AccountSettingsViewModel(
 object AccountSettingsViewModelFactory {
     val Factory = viewModelFactory {
         initializer {
-            AccountViewModel(jerboaApplication().container.accountRepository)
+            AccountSettingsViewModel(jerboaApplication().container.accountRepository)
         }
     }
 }

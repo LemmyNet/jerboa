@@ -26,8 +26,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -40,7 +38,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -54,7 +51,6 @@ import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.AccountViewModel
 import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.AppSettingsViewModelFactory
 import com.jerboa.db.entity.Account
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
@@ -94,6 +90,7 @@ fun HomeActivity(
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -130,6 +127,7 @@ fun HomeActivity(
                     scrollToTop(scope, postListState)
                 },
                 homeViewModel = homeViewModel,
+                appSettingsViewModel = appSettingsViewModel,
                 account = account,
                 navController = navController,
                 scrollBehavior = scrollBehavior,
@@ -140,6 +138,7 @@ fun HomeActivity(
                 padding = padding,
                 homeViewModel = homeViewModel,
                 siteViewModel = siteViewModel,
+                appSettingsViewModel = appSettingsViewModel,
                 account = account,
                 ctx = ctx,
                 navController = navController,
@@ -183,7 +182,7 @@ fun MainPostListingsContent(
     navController: NavController,
     padding: PaddingValues,
     postListState: LazyListState,
-    appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory),
+    appSettingsViewModel: AppSettingsViewModel,
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -360,7 +359,7 @@ fun MainTopBar(
     scrollToTop: () -> Unit,
     openDrawer: () -> Unit,
     homeViewModel: HomeViewModel,
-    appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory),
+    appSettingsViewModel: AppSettingsViewModel,
     account: Account?,
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,

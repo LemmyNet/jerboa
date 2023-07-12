@@ -31,7 +31,6 @@ import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -45,7 +44,7 @@ object CommunityListReturn {
 @Composable
 fun CommunityListActivity(
     navController: NavController,
-    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
+    accountViewModel: AccountViewModel,
     selectMode: Boolean = false,
     siteViewModel: SiteViewModel,
     blurNSFW: Boolean,

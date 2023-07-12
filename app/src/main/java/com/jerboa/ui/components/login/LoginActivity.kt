@@ -20,12 +20,11 @@ import androidx.navigation.NavController
 import com.jerboa.db.AccountViewModel
 import com.jerboa.model.LoginViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
 
 @Composable
 fun LoginActivity(
     navController: NavController,
-    accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
+    accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
 ) {
     Log.d("jerboa", "Got to login activity")
