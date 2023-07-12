@@ -695,8 +695,6 @@ fun PreviewPostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        markAsReadOnScroll = false,
-        onMarkAsRead = {},
     )
 }
 
@@ -729,8 +727,6 @@ fun PreviewLinkPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        markAsReadOnScroll = false,
-        onMarkAsRead = {},
     )
 }
 
@@ -763,8 +759,6 @@ fun PreviewImagePostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        markAsReadOnScroll = false,
-        onMarkAsRead = {},
     )
 }
 
@@ -797,8 +791,6 @@ fun PreviewImagePostListingSmallCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        markAsReadOnScroll = false,
-        onMarkAsRead = {},
     )
 }
 
@@ -831,8 +823,6 @@ fun PreviewLinkNoThumbnailPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        markAsReadOnScroll = false,
-        onMarkAsRead = {},
     )
 }
 
@@ -865,8 +855,6 @@ fun PostListing(
     showAvatar: Boolean,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
-    markAsReadOnScroll: Boolean,
-    onMarkAsRead: (postView: PostView) -> Unit,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -881,14 +869,6 @@ fun PostListing(
     }
 
     var viewSource by remember { mutableStateOf(false) }
-
-    if (markAsReadOnScroll) {
-        DisposableEffect(key1 = postView.post.id) {
-            onDispose {
-                onMarkAsRead(postView)
-            }
-        }
-    }
 
     when (postViewMode) {
         PostViewMode.Card -> PostListingCard(

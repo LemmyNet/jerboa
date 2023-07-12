@@ -83,7 +83,6 @@ fun PostActivity(
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
-    markAsReadOnScroll: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
@@ -385,18 +384,6 @@ fun PostActivity(
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
                                     openImageViewer = openImageViewer,
-                                    markAsReadOnScroll = markAsReadOnScroll,
-                                    onMarkAsRead = { pv ->
-                                        account?.also { acct ->
-                                            postViewModel.markPostAsRead(
-                                                MarkPostAsRead(
-                                                    post_id = pv.post.id,
-                                                    read = true,
-                                                    auth = acct.jwt,
-                                                ),
-                                            )
-                                        }
-                                    },
                                 )
                             }
 

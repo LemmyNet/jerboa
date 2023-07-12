@@ -5,11 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material3.Divider
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,12 +67,9 @@ fun PostListings(
             contentAboveListings()
         }
         // List of items
-        items(
+        itemsIndexed(
             posts,
-            key = { postView ->
-                postView.post.id
-            },
-        ) { postView ->
+        ) { index, postView ->
             PostListing(
                 postView = postView,
                 onUpvoteClick = onUpvoteClick,
@@ -103,9 +96,17 @@ fun PostListings(
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
                 openImageViewer = openImageViewer,
-                markAsReadOnScroll = markAsReadOnScroll,
-                onMarkAsRead = onMarkAsRead,
-            )
+            ).let {
+                if (!postView.read && markAsReadOnScroll) {
+                    DisposableEffect(key1 = postView.post.id) {
+                        onDispose {
+                            if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
+                                onMarkAsRead(postView)
+                            }
+                        }
+                    }
+                }
+            }
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
     }
