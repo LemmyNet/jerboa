@@ -2,10 +2,7 @@ package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.os.Build
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.TextUtils
-import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
@@ -36,15 +33,11 @@ import coil.ImageLoader
 import com.jerboa.R
 import com.jerboa.convertSpToPx
 import com.jerboa.openLink
+import com.jerboa.util.MarkwonLemmyLinkPlugin
+import com.jerboa.util.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
-import io.noties.markwon.MarkwonPlugin
-import io.noties.markwon.MarkwonVisitor
-import io.noties.markwon.SpannableBuilder
-import io.noties.markwon.core.CorePlugin
-import io.noties.markwon.core.CorePlugin.OnTextAddedListener
-import io.noties.markwon.core.CoreProps
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TableAwareMovementMethod
 import io.noties.markwon.ext.tables.TablePlugin
@@ -54,7 +47,6 @@ import io.noties.markwon.image.AsyncDrawableSpan
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
-import org.commonmark.node.Link
 import java.util.regex.Pattern
 
 /**
@@ -85,52 +77,6 @@ val lemmyCommunityPattern: Pattern =
 val lemmyUserPattern: Pattern =
     Pattern.compile("(?<!\\S)@($userPatternFragment)(?:@($instancePatternFragment))?\\b")
 
-/**
- * Plugin to turn Lemmy-specific URIs into clickable links.
- */
-class LemmyLinkPlugin : AbstractMarkwonPlugin() {
-    override fun configure(registry: MarkwonPlugin.Registry) {
-        registry.require(CorePlugin::class.java) { it.addOnTextAddedListener(LemmyTextAddedListener()) }
-    }
-
-    private class LemmyTextAddedListener : OnTextAddedListener {
-        override fun onTextAdded(visitor: MarkwonVisitor, text: String, start: Int) {
-            // we will be using the link that is used by markdown (instead of directly applying URLSpan)
-            val spanFactory = visitor.configuration().spansFactory().get(
-                Link::class.java,
-            ) ?: return
-
-            // don't re-use builder (thread safety achieved for
-            // render calls from different threads and ... better performance)
-            val builder = SpannableStringBuilder(text)
-            if (addLinks(builder)) {
-                // target URL span specifically
-                val spans = builder.getSpans(0, builder.length, URLSpan::class.java)
-                if (!spans.isNullOrEmpty()) {
-                    val renderProps = visitor.renderProps()
-                    val spannableBuilder = visitor.builder()
-                    for (span in spans) {
-                        CoreProps.LINK_DESTINATION[renderProps] = span.url
-                        SpannableBuilder.setSpans(
-                            spannableBuilder,
-                            spanFactory.getSpans(visitor.configuration(), renderProps),
-                            start + builder.getSpanStart(span),
-                            start + builder.getSpanEnd(span),
-                        )
-                    }
-                }
-            }
-        }
-
-        fun addLinks(text: Spannable): Boolean {
-            val communityLinkAdded = Linkify.addLinks(text, lemmyCommunityPattern, null)
-            val userLinkAdded = Linkify.addLinks(text, lemmyUserPattern, null)
-
-            return communityLinkAdded || userLinkAdded
-        }
-    }
-}
-
 object MarkdownHelper {
     private var markwon: Markwon? = null
     private var previewMarkwon: Markwon? = null
@@ -146,7 +92,7 @@ object MarkdownHelper {
         markwon = Markwon.builder(context)
             // email urls interfere with lemmy links
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
-            .usePlugin(LemmyLinkPlugin())
+            .usePlugin(MarkwonLemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
             .usePlugin(CoilImagesPlugin.create(context, loader))
@@ -154,6 +100,7 @@ object MarkdownHelper {
             // use TableAwareLinkMovementMethod to handle clicks inside tables,
             // wraps LinkMovementMethod internally
             .usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
+            .usePlugin(MarkwonSpoilerPlugin(true))
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { _, link ->
@@ -167,7 +114,7 @@ object MarkdownHelper {
         previewMarkwon = Markwon.builder(context)
             // email urls interfere with lemmy links
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
-            .usePlugin(LemmyLinkPlugin())
+            .usePlugin(MarkwonLemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
             .usePlugin(HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) })
@@ -176,6 +123,7 @@ object MarkdownHelper {
                     builder.linkResolver { _, _ -> }
                 }
             })
+            .usePlugin(MarkwonSpoilerPlugin(false))
             .build()
     }
 
@@ -254,7 +202,7 @@ object MarkdownHelper {
             setTextColor(textColor.toArgb())
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                setLineHeight(convertSpToPx(mergedStyle.lineHeight, context))
+                lineHeight = convertSpToPx(mergedStyle.lineHeight, context)
             }
             width = maxWidth
 
