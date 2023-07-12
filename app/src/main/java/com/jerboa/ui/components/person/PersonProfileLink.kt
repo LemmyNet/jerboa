@@ -102,6 +102,13 @@ fun PersonProfileLink(
                     tint = Color.Red,
                 )
             }
+            if (person.bot_account) {
+                Icon(
+                    imageVector = Icons.Outlined.SmartToy,
+                    contentDescription = stringResource(R.string.person_iconBot),
+                    tint = MaterialTheme.colorScheme.tertiary,
+                )
+            }
         }
         PersonName(
             person = person,
