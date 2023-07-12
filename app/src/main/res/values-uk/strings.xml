@@ -11,7 +11,7 @@
     <string name="account_settings_all">Усі</string>
     <string name="account_settings_avatar">Аватар</string>
     <string name="account_settings_banner">Банер</string>
-    <string name="account_settings_bio">Біографія</string>
+    <string name="account_settings_bio">Невеличкий життєпис/string>
     <string name="account_settings_bot_account">Обліковий запис бота</string>
     <string name="account_settings_default_listing_type">Різновид переліку за замовчуванням</string>
     <string name="account_settings_default_sort_type">Порядок впорядкування за замовчуванням</string>
@@ -96,7 +96,7 @@
     <string name="community_icon">Значок спільноти</string>
     <string name="community_joined">Приєднався</string>
     <string name="community_link_users_month">%1$s користувачів за місяць</string>
-    <string name="community_list_search">Шукаємо...</string>
+    <string name="community_list_search">Що ви шукаєте?</string>
     <string name="community_pending">Очікує на розгляд</string>
     <string name="community_refresh">Оновити</string>
     <string name="community_sortBy">Впорядкувати за</string>
@@ -282,7 +282,7 @@
     <string name="settings_about_version">Версія: %1$s</string>
     <string name="settings_about_what_s_new">Що нового</string>
     <string name="settings_activity_about">Про нас</string>
-    <string name="settings_activity_account_settings">налаштування %1$s</string>
+    <string name="settings_activity_account_settings">Налаштування %1$s</string>
     <string name="settings_activity_look_and_feel">Вигляд і поведінка</string>
     <string name="settings_activity_settings">Налаштування</string>
     <string name="sorttype_active">Жваві</string>
