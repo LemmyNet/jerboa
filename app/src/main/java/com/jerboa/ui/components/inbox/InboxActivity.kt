@@ -45,11 +45,7 @@ import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.GetPersonMentions
-import com.jerboa.datatypes.types.GetPrivateMessages
-import com.jerboa.datatypes.types.GetReplies
 import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.MarkAllAsRead
 import com.jerboa.datatypes.types.MarkCommentReplyAsRead
@@ -64,11 +60,11 @@ import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.InboxViewModel
+import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
-import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.comment.replynode.CommentReplyNode
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
@@ -96,6 +92,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun InboxActivity(
     navController: NavController,
+    drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory),
     blurNSFW: Boolean,
@@ -114,19 +111,13 @@ fun InboxActivity(
         if (account != null) {
             inboxViewModel.resetPages()
             inboxViewModel.getReplies(
-                GetReplies(
-                    auth = account.jwt,
-                ),
+                inboxViewModel.getFormReplies(account.jwt),
             )
             inboxViewModel.getMentions(
-                GetPersonMentions(
-                    auth = account.jwt,
-                ),
+                inboxViewModel.getFormMentions(account.jwt),
             )
             inboxViewModel.getMessages(
-                GetPrivateMessages(
-                    auth = account.jwt,
-                ),
+                inboxViewModel.getFormMessages(account.jwt),
             )
         }
     }
@@ -138,34 +129,24 @@ fun InboxActivity(
             InboxHeader(
                 scrollBehavior = scrollBehavior,
                 unreadCount = unreadCount,
-                navController = navController,
+                openDrawer = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                },
                 selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly),
                 onClickUnreadOrAll = { unreadOrAll ->
                     account?.also { acct ->
                         inboxViewModel.resetPages()
                         inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
                         inboxViewModel.getReplies(
-                            GetReplies(
-                                unread_only = inboxViewModel.unreadOnly,
-                                sort = CommentSortType.New,
-                                page = inboxViewModel.pageReplies,
-                                auth = acct.jwt,
-                            ),
+                            inboxViewModel.getFormReplies(acct.jwt),
                         )
                         inboxViewModel.getMentions(
-                            GetPersonMentions(
-                                unread_only = inboxViewModel.unreadOnly,
-                                sort = CommentSortType.New,
-                                page = inboxViewModel.pageMentions,
-                                auth = acct.jwt,
-                            ),
+                            inboxViewModel.getFormMentions(acct.jwt),
                         )
                         inboxViewModel.getMessages(
-                            GetPrivateMessages(
-                                unread_only = inboxViewModel.unreadOnly,
-                                page = inboxViewModel.pageMessages,
-                                auth = acct.jwt,
-                            ),
+                            inboxViewModel.getFormMessages(acct.jwt),
                         )
                     }
                 },
@@ -464,18 +445,17 @@ fun InboxTabs(
                             account?.also { acct ->
                                 inboxViewModel.resetPageMentions()
                                 inboxViewModel.getMentions(
-                                    GetPersonMentions(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        sort = CommentSortType.New,
-                                        page = inboxViewModel.pageMentions,
-                                        auth = acct.jwt,
-                                    ),
+                                    inboxViewModel.getFormMentions(acct.jwt),
                                     ApiState.Refreshing,
                                 )
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
+                    ) {
                         PullRefreshIndicator(
                             refreshing,
                             refreshState,
@@ -635,17 +615,17 @@ fun InboxTabs(
                             account?.also { acct ->
                                 inboxViewModel.resetPageMessages()
                                 inboxViewModel.getMessages(
-                                    GetPrivateMessages(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        page = inboxViewModel.pageMessages,
-                                        auth = acct.jwt,
-                                    ),
+                                    inboxViewModel.getFormMessages(acct.jwt),
                                     ApiState.Refreshing,
                                 )
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
+                    ) {
                         PullRefreshIndicator(
                             refreshing,
                             refreshState,

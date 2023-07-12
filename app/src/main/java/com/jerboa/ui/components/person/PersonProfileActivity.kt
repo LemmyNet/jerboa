@@ -71,6 +71,7 @@ import com.jerboa.isLoading
 import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.PersonProfileViewModel
+import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
@@ -79,7 +80,6 @@ import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
-import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentEditDeps
@@ -122,6 +122,8 @@ fun PersonProfileActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
+    drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -152,6 +154,12 @@ fun PersonProfileActivity(
                 }
                 else -> {}
             }
+        }
+    }
+
+    fun openDrawer() {
+        scope.launch {
+            drawerState.open()
         }
     }
 
@@ -188,7 +196,7 @@ fun PersonProfileActivity(
                         onClickSortType = {},
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
-                        navController = navController,
+                        openDrawer = ::openDrawer,
                     )
                 }
                 is ApiState.Holder -> {
@@ -237,7 +245,7 @@ fun PersonProfileActivity(
                                 navController.toPostReport(id = firstPost.post.id)
                             }
                         },
-                        navController = navController,
+                        openDrawer = ::openDrawer,
                     )
                 }
                 else -> {}
@@ -259,6 +267,7 @@ fun PersonProfileActivity(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                openImageViewer = openImageViewer,
             )
         },
     )
@@ -288,6 +297,7 @@ fun UserTabs(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
     val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
@@ -383,6 +393,7 @@ fun UserTabs(
                                     PersonProfileTopSection(
                                         personView = profileRes.data.person_view,
                                         showAvatar = showAvatar,
+                                        openImageViewer = openImageViewer,
                                     )
                                 }
                                 val moderates = profileRes.data.moderates
@@ -549,6 +560,7 @@ fun UserTabs(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
+                                    openImageViewer = openImageViewer,
                                 )
                             }
                             else -> {}

@@ -1,4 +1,4 @@
-package com.jerboa.ui.components.settings.account
+package com.jerboa.model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,11 +13,9 @@ import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.LoginResponse
 import com.jerboa.datatypes.types.SaveUserSettings
-import com.jerboa.db.AccountViewModel
 import com.jerboa.db.entity.Account
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
-import com.jerboa.model.SiteViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 

@@ -124,7 +124,6 @@
     <string name="dialogs_new_comments">New Comments</string>
     <string name="dialogs_subscribed">Subscribed</string>
     <string name="dialogs_top">Top</string>
-    <string name="dialogs_top_all_time">Top All Time</string>
     <string name="dialogs_top_day">Top Day</string>
     <string name="dialogs_top_month">Top Month</string>
     <string name="dialogs_top_week">Top Week</string>
@@ -138,14 +137,10 @@
     <string name="homeHeader_filter">Select feed</string>
     <string name="home_add_account">Add Account</string>
     <string name="home_all">All</string>
-    <string name="home_communities">Communities</string>
-    <string name="home_inbox">Inbox</string>
     <string name="home_local">Local</string>
     <string name="home_menu">Menu</string>
     <string name="home_post_view_mode">Post View Mode</string>
-    <string name="home_profile">Profile</string>
     <string name="home_refresh">Refresh</string>
-    <string name="home_saved">Saved</string>
     <string name="home_settings">Settings</string>
     <string name="home_sign_out">Sign Out</string>
     <string name="home_site_info">Site Info</string>
@@ -180,6 +175,7 @@
     <string name="look_and_feel_secure_window">Prevent Screenshots</string>
     <string name="look_and_feel_show_action_bar_for_comments">Show action bar by default for comments</string>
     <string name="look_and_feel_show_navigation_bar">Show navigation bar</string>
+    <string name="look_and_feel_show_text_descriptions_in_navbar">Show text descriptions in navigation bar</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Show voting arrows in list view</string>
     <string name="look_and_feel_show_parent_comment_navigation_buttons">Show parent comment navigation buttons</string>
     <string name="look_and_feel_navigate_parent_comments_with_volume_buttons">Navigate parent comments with volume buttons</string>
@@ -333,4 +329,12 @@
     <string name="dialogs_top_nine_month">Top Nine Months</string>
     <string name="post_listing_view_source">View Source</string>
     <string name="post_listing_view_original">View Original</string>
+    <string name="download">Download</string>
+    <string name="back_confirmation">Press back again to exit</string>
+    <string name="no_back_confirmation">Do not ask for confirmation to exit</string>
+    <string name="press_again_confirmation">Press back twice to exit</string>
+    <string name="confirm_exit">Confirm exit action</string>
+    <string name="back_dialog">Show a confirmation dialog on exit</string>
+    <string name="exit">Exit</string>
+    <string name="back_dialog_title">Are you sure you want to exit?</string>
 </resources>

@@ -11,9 +11,13 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -39,11 +43,13 @@ import com.jerboa.db.AccountViewModelFactory
 import com.jerboa.db.AppDBContainer
 import com.jerboa.db.AppSettingsViewModel
 import com.jerboa.db.AppSettingsViewModelFactory
+import com.jerboa.model.AccountSettingsViewModel
+import com.jerboa.model.AccountSettingsViewModelFactory
 import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
-import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.common.CommentEditDeps
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.PostEditDeps
@@ -54,11 +60,13 @@ import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.takeDepsFromRoot
+import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
+import com.jerboa.ui.components.imageviewer.ImageViewer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
@@ -73,6 +81,11 @@ import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
+import com.jerboa.util.BackConfirmation.addConfirmationDialog
+import com.jerboa.util.BackConfirmation.addConfirmationToast
+import com.jerboa.util.BackConfirmation.disposeConfirmation
+import com.jerboa.util.BackConfirmationMode
+import com.jerboa.util.ShowConfirmationDialog
 
 class JerboaApplication : Application() {
     lateinit var container: AppDBContainer
@@ -89,7 +102,6 @@ fun CreationExtras.jerboaApplication(): JerboaApplication =
 class MainActivity : AppCompatActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -125,6 +137,28 @@ class MainActivity : AppCompatActivity() {
                 appSettings = appSettings,
             ) {
                 val navController = rememberNavController()
+                val showConfirmationDialog = remember { mutableStateOf(false) }
+
+                if (showConfirmationDialog.value) {
+                    ShowConfirmationDialog({ showConfirmationDialog.value = false }, ::finish)
+                }
+
+                DisposableEffect(appSettings.backConfirmationMode) {
+                    when (BackConfirmationMode.values()[appSettings.backConfirmationMode]) {
+                        BackConfirmationMode.Toast -> {
+                            this@MainActivity.addConfirmationToast(navController, ctx)
+                        }
+                        BackConfirmationMode.Dialog -> {
+                            this@MainActivity.addConfirmationDialog(navController) { showConfirmationDialog.value = true }
+                        }
+                        BackConfirmationMode.None -> {}
+                    }
+
+                    onDispose {
+                        disposeConfirmation()
+                    }
+                }
+
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
@@ -148,14 +182,37 @@ class MainActivity : AppCompatActivity() {
                     else -> {}
                 }
 
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
+
                 NavHost(
                     route = Route.Graph.ROOT,
                     navController = navController,
                     startDestination = Route.HOME,
-                    enterTransition = { slideInHorizontally { it } },
-                    exitTransition = { slideOutHorizontally { -it } },
-                    popEnterTransition = { slideInHorizontally { -it } },
-                    popExitTransition = { slideOutHorizontally { it } },
+                    enterTransition = {
+                        slideInHorizontally { it }
+                    },
+                    exitTransition =
+                    {
+                        // No animation for image viewer
+                        if (this.targetState.destination.route == Route.VIEW) {
+                            ExitTransition.None
+                        } else {
+                            slideOutHorizontally { -it }
+                        }
+                    },
+                    popEnterTransition = {
+                        // No animation for image viewer
+                        if (this.initialState.destination.route == Route.VIEW) {
+                            EnterTransition.None
+                        } else {
+                            slideInHorizontally { -it }
+                        }
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally {
+                            it
+                        }
+                    },
                 ) {
                     composable(
                         route = Route.LOGIN,
@@ -174,6 +231,7 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             siteViewModel = siteViewModel,
                             appSettings = appSettings,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -297,6 +355,8 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -326,6 +386,8 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -344,6 +406,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -394,6 +457,7 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -422,6 +486,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                openImageViewer = { url -> navController.toView(url) },
                             )
                         }
                     }
@@ -450,6 +515,7 @@ class MainActivity : AppCompatActivity() {
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            openImageViewer = navController::toView,
                         )
                     }
 
@@ -564,6 +630,25 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                         )
+                    }
+
+                    composable(
+                        route = Route.VIEW,
+                        arguments = listOf(
+                            navArgument(Route.ViewArgs.URL) {
+                                type = Route.ViewArgs.URL_TYPE
+                            },
+                        ),
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None },
+                        popEnterTransition = { EnterTransition.None },
+                        popExitTransition = { ExitTransition.None },
+                    ) {
+                        val args = Route.ViewArgs(it)
+
+                        ImageViewer(url = args.url) {
+                            navController.popBackStack()
+                        }
                     }
                 }
             }

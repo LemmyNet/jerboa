@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 18,
-    "identityHash": "9a881a3925f19533ba5f6d339f9d0461",
+    "version": 19,
+    "identityHash": "48a7d36d42e1a9901e39fcb739f396f7",
     "entities": [
       {
         "tableName": "Account",
@@ -64,7 +64,7 @@
       },
       {
         "tableName": "AppSettings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `font_size` INTEGER NOT NULL DEFAULT 16, `theme` INTEGER NOT NULL DEFAULT 0, `theme_color` INTEGER NOT NULL DEFAULT 0, `viewed_changelog` INTEGER NOT NULL DEFAULT 0, `post_view_mode` INTEGER NOT NULL DEFAULT 0, `show_bottom_nav` INTEGER NOT NULL DEFAULT 1, `show_collapsed_comment_content` INTEGER NOT NULL DEFAULT 0, `show_comment_action_bar_by_default` INTEGER NOT NULL DEFAULT 1, `show_voting_arrows_in_list_view` INTEGER NOT NULL DEFAULT 1, `show_parent_comment_navigation_buttons` INTEGER NOT NULL DEFAULT 1, `navigate_parent_comments_with_volume_buttons` INTEGER NOT NULL DEFAULT 0, `use_custom_tabs` INTEGER NOT NULL DEFAULT 1, `use_private_tabs` INTEGER NOT NULL DEFAULT 0, `secure_window` INTEGER NOT NULL DEFAULT 0, `blur_nsfw` INTEGER NOT NULL DEFAULT 1, `show_text_descriptions_in_navbar` INTEGER NOT NULL DEFAULT 1)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `font_size` INTEGER NOT NULL DEFAULT 16, `theme` INTEGER NOT NULL DEFAULT 0, `theme_color` INTEGER NOT NULL DEFAULT 0, `viewed_changelog` INTEGER NOT NULL DEFAULT 0, `post_view_mode` INTEGER NOT NULL DEFAULT 0, `show_bottom_nav` INTEGER NOT NULL DEFAULT 1, `show_collapsed_comment_content` INTEGER NOT NULL DEFAULT 0, `show_comment_action_bar_by_default` INTEGER NOT NULL DEFAULT 1, `show_voting_arrows_in_list_view` INTEGER NOT NULL DEFAULT 1, `show_parent_comment_navigation_buttons` INTEGER NOT NULL DEFAULT 1, `navigate_parent_comments_with_volume_buttons` INTEGER NOT NULL DEFAULT 0, `use_custom_tabs` INTEGER NOT NULL DEFAULT 1, `use_private_tabs` INTEGER NOT NULL DEFAULT 0, `secure_window` INTEGER NOT NULL DEFAULT 0, `blur_nsfw` INTEGER NOT NULL DEFAULT 1, `show_text_descriptions_in_navbar` INTEGER NOT NULL DEFAULT 1, `backConfirmationMode` INTEGER NOT NULL DEFAULT 1)",
         "fields": [
           {
             "fieldPath": "id",
@@ -183,6 +183,13 @@
             "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "1"
+          },
+          {
+            "fieldPath": "backConfirmationMode",
+            "columnName": "backConfirmationMode",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "1"
           }
         ],
         "primaryKey": {
@@ -198,7 +205,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9a881a3925f19533ba5f6d339f9d0461')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '48a7d36d42e1a9901e39fcb739f396f7')"
     ]
   }
 }

@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -57,11 +58,13 @@ fun PostListings(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
     LazyColumn(
         state = listState,
         modifier = Modifier
             .padding(padding)
+            .fillMaxSize()
             .simpleVerticalScrollbar(listState)
             .testTag("jerboa:posts"),
     ) {
@@ -101,6 +104,7 @@ fun PostListings(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                openImageViewer = openImageViewer,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -148,5 +152,6 @@ fun PreviewPostListings() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        openImageViewer = {},
     )
 }
