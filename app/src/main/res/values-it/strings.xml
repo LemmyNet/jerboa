@@ -160,7 +160,7 @@
     <string name="login_instance">Istanza</string>
     <string name="login_instance_placeholder">ad es.: lemmy.ml</string>
     <string name="login_login">Login</string>
-    <string name="login_totp">Inserisci il token 2FA se è abilitato</string>
+    <string name="login_totp">Inserisci il token 2FA, se abilitato</string>
     <string name="login_password">Password</string>
     <string name="login_view_model_incorrect_login">Login errato</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s non è un\'istanza Lemmy</string>
