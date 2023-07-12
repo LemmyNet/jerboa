@@ -35,7 +35,7 @@
     <string name="bottomBar_bookmarks">Перейти до моїх закладок</string>
     <string name="bottomBar_home">Перейти до домівки</string>
     <string name="bottomBar_inbox">Перейти до теки «Вхідні»</string>
-    <string name="bottomBar_label_bookmarks">Збережене</string>
+    <string name="bottomBar_label_bookmarks">Скриня</string>
     <string name="bottomBar_label_home">Домівка</string>
     <string name="bottomBar_label_inbox">Вхідні</string>
     <string name="bottomBar_label_profile">Профіль</string>
@@ -309,7 +309,7 @@
     <string name="inbox_activity_replies">Відповіді</string>
     <string name="inbox_activity_mentions">Згадування</string>
     <string name="inbox_activity_messages">Повідомлення</string>
-    <string name="bookmarks_activity_saved">Збережено</string>
+    <string name="bookmarks_activity_saved">Скриня</string>
     <string name="generic_error">Сталася помилка</string>
     <string name="create_edit_post_close">Закрити</string>
     <string name="lang_language">Мова</string>
