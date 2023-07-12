@@ -130,7 +130,7 @@
     <string name="dialogs_old">Vecchi</string>
     <string name="dialogs_unread">Non letti</string>
     <string name="dialogs_server_version_outdated">La versione del server (%1$s) è inferiore alla minima supportata (%2$s).\\n\\nInforma i tuoi amministratori ed effettua il login su un\'altra istanza, o usa quella di default anonimamente.</string>
-    <string name="dialogs_server_version_outdated_short">La versione del server (%1$s) è troppo bassa.</string>
+    <string name="dialogs_server_version_outdated_short">La versione del server (%1$s) è troppo vecchia.</string>
     <string name="floating_createPost">Crea post</string>
     <string name="form_submit">Invia</string>
     <string name="homeHeader_filter">Seleziona filtro</string>
@@ -334,7 +334,7 @@
     <string name="no_back_confirmation">Non chiedere conferma per uscire</string>
     <string name="press_again_confirmation">Premi indietro due volte per uscire</string>
     <string name="confirm_exit">Conferma azione di uscita</string>
-    <string name="back_dialog">Mostra un dialogo di conferma per uscire</string>
+    <string name="back_dialog">Richiedi conferma per uscire</string>
     <string name="exit">Esci</string>
     <string name="back_dialog_title">Vuoi davvero uscire?</string>
 </resources>
