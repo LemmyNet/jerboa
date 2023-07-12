@@ -174,7 +174,8 @@
     <string name="look_and_feel_post_view_small_card">Маленька картка</string>
     <string name="look_and_feel_secure_window">Запобігати знімкам екрана</string>
     <string name="look_and_feel_show_action_bar_for_comments">Показувати панель дій за замовчуванням для коментарів</string>
-    <string name="look_and_feel_show_navigation_bar">Показувати навігацію</string>
+    <string name="look_and_feel_show_navigation_bar">Показувати панель навігації</string>
+    <string name="look_and_feel_show_text_descriptions_in_navbar">Показувати текстові описи в панелі навігації</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Показувати стрілки голосування при перегляді переліку</string>
     <string name="look_and_feel_show_parent_comment_navigation_buttons">Показувати кнопки навігації батьківського коментаря</string>
     <string name="look_and_feel_navigate_parent_comments_with_volume_buttons">Навігація батьківськими коментарями за допомогою кнопок гучності</string>
@@ -328,4 +329,12 @@
     <string name="dialogs_top_nine_month">Відбірне за дев\'ять місяців</string>
     <string name="post_listing_view_source">Переглянути джерельний код</string>
     <string name="post_listing_view_original">Переглянути оригінал</string>
+    <string name="download">Завантажити</string>
+    <string name="back_confirmation">Клацніть \`Повернутися\' ще раз, щоб вийти</string>
+    <string name="no_back_confirmation">Не запитувати підтвердження при виході</string>
+    <string name="press_again_confirmation">Клацніть \`Повернутися\' двічі, щоб вийти</string>
+    <string name="confirm_exit">Підтвердіть дію виходу</string>
+    <string name="back_dialog">Запитувати підтвердження при виході</string>
+    <string name="exit">Вийти</string>
+    <string name="back_dialog_title">Ви впевнені, що хочете вийти?</string>
 </resources>
