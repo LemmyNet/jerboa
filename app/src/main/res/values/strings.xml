@@ -217,6 +217,7 @@
     <string name="personProfile_viewBanner">View banner image</string>
     <string name="person_iconAdmin">Is administrator</string>
     <string name="person_iconBanned">Is banned</string>
+    <string name="person_iconBot">Is a bot</string>
     <string name="person_iconModerator">Is moderator</string>
     <string name="person_profile_activity_about">About</string>
     <string name="person_profile_activity_comments">Comments</string>
