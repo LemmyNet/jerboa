@@ -1,11 +1,11 @@
-name: 🔨 Feature Request
+name: 🚀 Feature Request
 description: Suggest an idea for this project.
 labels: ["enhancement", "triage"]
 body:
   - type: checkboxes
     id: terms
     attributes:
-      label: Pre-Flight Checklist
+      label: Pre-Flight checklist
       description: Make sure these are correct before submitting
       options:
         - label: Did you check to see if this issue already exists?
