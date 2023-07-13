@@ -24,7 +24,7 @@ import com.jerboa.ui.components.common.MarkdownTextField
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentEditHeader(
-    navController: NavController = rememberNavController(),
+    onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
     loading: Boolean,
 ) {
@@ -53,9 +53,7 @@ fun CommentEditHeader(
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onBackClick,
             ) {
                 Icon(
                     Icons.Outlined.Close,

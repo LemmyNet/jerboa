@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
@@ -25,9 +26,8 @@ import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostEditViewModel
-import com.jerboa.ui.components.common.InitializeRoute
+import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.CreateEditPostHeader
@@ -40,12 +40,11 @@ object PostEditReturn {
     const val POST_VIEW = "post-edit::return(post-view)"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostEditActivity(
     postView: PostView,
     accountViewModel: AccountViewModel,
-    navController: NavController,
+   appState: JerboaAppState,
 ) {
     Log.d("jerboa", "got to post edit activity")
 
@@ -82,7 +81,7 @@ fun PostEditActivity(
                     else -> false
                 }
                 CreateEditPostHeader(
-                    navController = navController,
+                    onClickBack = appState::popBackStack,
                     formValid = formValid,
                     loading = loading,
                     submitIcon = {
@@ -97,7 +96,7 @@ fun PostEditActivity(
                             url = url,
                             postEditViewModel = postEditViewModel,
                             isNsfw = isNsfw,
-                            navController = navController,
+                            appState = appState
                         )
                     },
                 )
@@ -144,7 +143,7 @@ fun onSubmitClick(
     url: String,
     postEditViewModel: PostEditViewModel,
     isNsfw: Boolean,
-    navController: NavController,
+    appState: JerboaAppState
 ) {
     account?.also { acct ->
         // Clean up that data
@@ -163,7 +162,7 @@ fun onSubmitClick(
                 nsfw = isNsfw,
             ),
         ) { postView ->
-            navController.apply {
+            appState.apply {
                 addReturn(PostEditReturn.POST_VIEW, postView)
                 navigateUp()
             }

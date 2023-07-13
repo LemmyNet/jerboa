@@ -50,7 +50,6 @@ import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.PictrsUrlImage
-import com.jerboa.ui.components.common.toCommunityList
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
@@ -59,7 +58,7 @@ import com.jerboa.ui.theme.muted
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateEditPostHeader(
-    navController: NavController = rememberNavController(),
+    onClickBack: () -> Unit,
     onSubmitClick: () -> Unit,
     formValid: Boolean,
     loading: Boolean,
@@ -87,9 +86,7 @@ fun CreateEditPostHeader(
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onClickBack,
             ) {
                 // TODO add are you sure cancel dialog
                 Icon(
@@ -226,7 +223,7 @@ fun CreateEditPostBody(
 @Composable
 fun PostCommunitySelector(
     community: Community?,
-    navController: NavController,
+    onClickCommunityList: () -> Unit,
 ) {
     Box {
         community?.also {
@@ -273,7 +270,7 @@ fun PostCommunitySelector(
                 .height(60.dp)
                 .fillMaxWidth()
                 .clickable {
-                    navController.toCommunityList(select = true)
+                    onClickCommunityList()
                 },
         )
     }
@@ -343,7 +340,7 @@ fun CreatePostBodyPreview() {
         communitySelector = {
             PostCommunitySelector(
                 community = sampleCommunity,
-                navController = rememberNavController(),
+                onClickCommunityList = {}
             )
         },
     )
@@ -363,6 +360,7 @@ fun CreatePostHeaderPreview() {
             )
         },
         title = "Create post",
+        onClickBack = {}
     )
 }
 
@@ -380,6 +378,7 @@ fun EditPostHeaderPreview() {
             )
         },
         title = "Edit post",
+        onClickBack = {}
     )
 }
 
@@ -405,7 +404,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         communitySelector = {
             PostCommunitySelector(
                 community = null,
-                navController = rememberNavController(),
+                onClickCommunityList = {}
             )
         },
     )

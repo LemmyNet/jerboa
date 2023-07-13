@@ -17,17 +17,16 @@ import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.CommentId
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
-import com.jerboa.ui.components.common.InitializeRoute
+import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 import com.jerboa.ui.components.report.CreateReportHeader
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateCommentReportActivity(
     commentId: CommentId,
     accountViewModel: AccountViewModel,
-    navController: NavController,
+    onBack: () -> Unit,
 ) {
     Log.d("jerboa", "got to create comment report activity")
 
@@ -49,14 +48,14 @@ fun CreateCommentReportActivity(
     Scaffold(
         topBar = {
             CreateReportHeader(
-                navController = navController,
                 loading = loading,
+                onClickBack = onBack,
                 onCreateClick = {
                     account?.also { acct ->
                         createReportViewModel.createCommentReport(
                             reason = reason.text,
                             ctx = ctx,
-                            navController = navController,
+                            onBack = onBack,
                             focusManager = focusManager,
                             account = acct,
                         )

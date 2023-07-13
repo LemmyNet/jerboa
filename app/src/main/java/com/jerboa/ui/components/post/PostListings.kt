@@ -61,7 +61,7 @@ fun PostListings(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
 ) {
     LazyColumn(
         state = listState,
@@ -108,7 +108,7 @@ fun PostListings(
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
                 openImageViewer = openImageViewer,
-                navController = navController,
+                openLink = openLink,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -157,6 +157,6 @@ fun PreviewPostListings() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }

@@ -35,7 +35,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentReplyHeader(
-    navController: NavController = rememberNavController(),
+    onClickBack: () -> Unit,
     onSendClick: () -> Unit,
     loading: Boolean,
 ) {
@@ -64,9 +64,7 @@ fun CommentReplyHeader(
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onClickBack,
             ) {
                 Icon(
                     Icons.Outlined.Close,

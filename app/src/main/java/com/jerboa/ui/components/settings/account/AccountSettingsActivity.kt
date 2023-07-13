@@ -20,10 +20,10 @@ import com.jerboa.ui.components.common.getCurrentAccount
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountSettingsActivity(
-    navController: NavController,
     accountSettingsViewModel: AccountSettingsViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
+    onBack: () -> Unit,
 ) {
     Log.d("jerboa", "Got to settings activity")
 
@@ -33,7 +33,7 @@ fun AccountSettingsActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.account_settings_activity_account_settings), navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.account_settings_activity_account_settings), onClickBack = onBack)
         },
         content = { padding ->
             account.also {

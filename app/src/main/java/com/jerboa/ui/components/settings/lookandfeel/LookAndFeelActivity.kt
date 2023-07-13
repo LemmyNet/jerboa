@@ -49,8 +49,8 @@ import com.jerboa.util.BackConfirmationMode
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LookAndFeelActivity(
-    navController: NavController,
     appSettingsViewModel: AppSettingsViewModel,
+    onBack: () -> Unit,
 ) {
     Log.d("jerboa", "Got to lookAndFeel activity")
     val ctx = LocalContext.current
@@ -125,7 +125,7 @@ fun LookAndFeelActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), onClickBack = onBack)
         },
         content = { padding ->
             Column(

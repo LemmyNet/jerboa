@@ -273,7 +273,7 @@ fun PostTitleBlock(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
@@ -291,7 +291,7 @@ fun PostTitleBlock(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            navController = navController,
+            openLink = openLink,
             openImageViewer = openImageViewer,
         )
     }
@@ -359,7 +359,7 @@ fun PostTitleAndThumbnail(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     Column(
@@ -392,7 +392,7 @@ fun PostTitleAndThumbnail(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-                navController = navController,
+                openLink = openLink,
                 openImageViewer = openImageViewer,
             )
         }
@@ -410,7 +410,7 @@ fun PostBody(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     clickBody: () -> Unit = {},
 ) {
     val post = postView.post
@@ -425,7 +425,7 @@ fun PostBody(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
-            navController = navController,
+            openLink = openLink
         )
 
         // The metadata card
@@ -493,7 +493,7 @@ fun PreviewStoryTitleAndMetadata() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }
 
@@ -510,7 +510,7 @@ fun PreviewSourcePost() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }
 
@@ -772,7 +772,7 @@ fun PreviewPostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }
 
@@ -805,7 +805,7 @@ fun PreviewLinkPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }
 
@@ -838,7 +838,7 @@ fun PreviewImagePostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }
 
@@ -871,7 +871,7 @@ fun PreviewImagePostListingSmallCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }
 
@@ -904,7 +904,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }
 
@@ -936,7 +936,7 @@ fun PostListing(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     // This stores vote data
@@ -997,7 +997,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            navController = navController,
+            openLink = openLink,
             openImageViewer = openImageViewer,
         )
 
@@ -1044,7 +1044,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            navController = navController,
+            openLink = openLink,
             openImageViewer = openImageViewer,
         )
 
@@ -1075,7 +1075,7 @@ fun PostListing(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
-            navController = navController,
+            openLink = { _: String, _: Boolean, _: Boolean -> }
         )
     }
 }
@@ -1142,7 +1142,7 @@ fun PostListingList(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     Column(
@@ -1248,7 +1248,7 @@ fun PostListingList(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-                navController = navController,
+                openLink = openLink,
                 openImageViewer = openImageViewer,
             )
         }
@@ -1261,7 +1261,7 @@ private fun ThumbnailTile(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
@@ -1273,10 +1273,9 @@ private fun ThumbnailTile(
                     openImageViewer(url)
                 } else {
                     openLink(
-                        url = url,
-                        navController = navController,
-                        useCustomTab = useCustomTabs,
-                        usePrivateTab = usePrivateTabs,
+                        url,
+                        useCustomTabs,
+                        usePrivateTabs,
                     )
                 }
             }
@@ -1333,7 +1332,7 @@ fun PostListingListPreview() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }
 
@@ -1362,7 +1361,7 @@ fun PostListingListWithThumbPreview() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> }
     )
 }
 
@@ -1396,7 +1395,7 @@ fun PostListingCard(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     Column(
@@ -1432,7 +1431,7 @@ fun PostListingCard(
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
             clickBody = { onPostClick(postView) },
-            navController = navController,
+            openLink = openLink,
         )
 
         // Footer bar
@@ -1465,8 +1464,7 @@ fun PostListingCard(
 @Preview
 @Composable
 fun PostListingHeaderPreview() {
-    val navController = rememberNavController()
-    SimpleTopAppBar("Post", navController)
+    SimpleTopAppBar("Post", onClickBack = {})
 }
 
 @Composable

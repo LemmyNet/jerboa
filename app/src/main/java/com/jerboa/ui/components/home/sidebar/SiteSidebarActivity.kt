@@ -16,7 +16,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 @Composable
 fun SiteSidebarActivity(
     siteViewModel: SiteViewModel,
-    navController: NavController,
+    onBackClick: () -> Unit,
 ) {
     Log.d("jerboa", "got to site sidebar activity")
 
@@ -29,7 +29,7 @@ fun SiteSidebarActivity(
         topBar = {
             SimpleTopAppBar(
                 text = title,
-                navController = navController,
+                onBackClick,
             )
         },
         content = { padding ->

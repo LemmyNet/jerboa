@@ -28,7 +28,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrivateMessageReplyHeader(
-    navController: NavController = rememberNavController(),
+    onClickBack: () -> Unit,
     onSendClick: () -> Unit,
     loading: Boolean,
 ) {
@@ -57,9 +57,7 @@ fun PrivateMessageReplyHeader(
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onClickBack,
             ) {
                 Icon(
                     Icons.Outlined.Close,

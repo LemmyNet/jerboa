@@ -15,8 +15,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
+import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.Search
 import com.jerboa.datatypes.types.SearchType
@@ -26,11 +26,9 @@ import com.jerboa.model.CommunityListViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.InitializeRoute
+import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.toCommunity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -43,7 +41,7 @@ object CommunityListReturn {
 
 @Composable
 fun CommunityListActivity(
-    navController: NavController,
+    appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     selectMode: Boolean = false,
     siteViewModel: SiteViewModel,
@@ -104,12 +102,12 @@ fun CommunityListActivity(
                             communities = communitiesRes.data.communities,
                             onClickCommunity = { cs ->
                                 if (selectMode) {
-                                    navController.apply {
+                                    appState.apply {
                                         addReturn(CommunityListReturn.COMMUNITY, cs)
                                         navigateUp()
                                     }
                                 } else {
-                                    navController.toCommunity(id = cs.id)
+                                    appState.toCommunity(id = cs.id)
                                 }
                             },
                             modifier = Modifier

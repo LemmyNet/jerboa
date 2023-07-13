@@ -23,7 +23,7 @@ import com.jerboa.ui.components.common.MarkdownTextField
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReportHeader(
-    navController: NavController = rememberNavController(),
+    onClickBack: () -> Unit,
     onCreateClick: () -> Unit,
     loading: Boolean,
 ) {
@@ -52,9 +52,7 @@ fun CreateReportHeader(
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onClickBack,
             ) {
                 Icon(
                     Icons.Outlined.Close,

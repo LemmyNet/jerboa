@@ -58,7 +58,7 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun SimpleTopAppBar(
     text: String,
-    navController: NavController,
+    onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
@@ -70,7 +70,7 @@ fun SimpleTopAppBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }, modifier = Modifier.testTag("jerboa:back")) {
+            IconButton(onClick = onClickBack, modifier = Modifier.testTag("jerboa:back")) {
                 Icon(
                     Icons.Outlined.ArrowBack,
                     contentDescription = stringResource(R.string.topAppBar_back),
@@ -85,7 +85,7 @@ fun SimpleTopAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleTopAppBarPreview() {
-    SimpleTopAppBar(text = "Preview", navController = rememberNavController()) {
+    SimpleTopAppBar(text = "Preview", onClickBack = {}) {
     }
 }
 

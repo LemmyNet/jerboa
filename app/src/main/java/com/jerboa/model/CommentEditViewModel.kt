@@ -13,7 +13,7 @@ import com.jerboa.datatypes.types.CommentResponse
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.EditComment
 import com.jerboa.db.entity.Account
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 class CommentEditViewModel : ViewModel(), Initializable {

@@ -21,7 +21,6 @@ import com.jerboa.datatypes.types.Login
 import com.jerboa.db.entity.Account
 import com.jerboa.getHostFromInstanceString
 import com.jerboa.serializeToMap
-import com.jerboa.ui.components.common.toHome
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
@@ -33,7 +32,7 @@ class LoginViewModel : ViewModel() {
     fun login(
         instance: String,
         form: Login,
-        navController: NavController,
+        onGoHome: () -> Unit,
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
         ctx: Context,
@@ -128,7 +127,7 @@ class LoginViewModel : ViewModel() {
 
                     loading = false
 
-                    navController.toHome()
+                    onGoHome()
                 }
 
                 else -> {}

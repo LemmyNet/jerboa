@@ -14,7 +14,7 @@ import com.jerboa.datatypes.types.CreatePrivateMessage
 import com.jerboa.datatypes.types.PrivateMessageResponse
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.entity.Account
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 class PrivateMessageReplyViewModel : ViewModel(), Initializable {
@@ -34,7 +34,7 @@ class PrivateMessageReplyViewModel : ViewModel(), Initializable {
     fun createPrivateMessage(
         content: String,
         account: Account,
-        navController: NavController,
+        onGoBack: () -> Unit,
         focusManager: FocusManager,
     ) {
         viewModelScope.launch {
@@ -48,7 +48,7 @@ class PrivateMessageReplyViewModel : ViewModel(), Initializable {
             createMessageRes = apiWrapper(API.getInstance().createPrivateMessage(form))
 
             focusManager.clearFocus()
-            navController.navigateUp()
+            onGoBack()
         }
     }
 }

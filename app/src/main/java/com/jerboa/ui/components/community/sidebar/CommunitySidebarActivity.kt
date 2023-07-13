@@ -16,7 +16,7 @@ import com.jerboa.ui.components.common.SimpleTopAppBar
 @Composable
 fun CommunitySidebarActivity(
     communityViewModel: CommunityViewModel,
-    navController: NavController,
+    onClickBack: () -> Unit,
 ) {
     Log.d("jerboa", "got to community sidebar activity")
 
@@ -29,7 +29,7 @@ fun CommunitySidebarActivity(
                 topBar = {
                     SimpleTopAppBar(
                         text = title,
-                        navController = navController,
+                        onClickBack = onClickBack,
                     )
                 },
                 content = { padding ->

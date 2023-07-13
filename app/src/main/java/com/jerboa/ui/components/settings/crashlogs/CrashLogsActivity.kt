@@ -46,7 +46,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 
 @Composable
 fun CrashLogsActivity(
-    navController: NavController,
+    onClickBack: () -> Unit,
 ) {
     Log.d("jerboa", "Got to Crash log activity")
 
@@ -54,12 +54,12 @@ fun CrashLogsActivity(
 
     val crashes = CrashyReporter.getLogsAsStrings()?.toMutableStateList() ?: run { mutableStateListOf() }
 
-    CrashLogs(ctx = ctx, navController = navController, crashes = crashes)
+    CrashLogs(ctx = ctx, onClickBack = onClickBack, crashes = crashes)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrashLogs(ctx: Context, navController: NavController, crashes: MutableList<String>) {
+fun CrashLogs(ctx: Context, onClickBack: () -> Unit, crashes: MutableList<String>) {
     val scope = rememberCoroutineScope()
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -70,7 +70,7 @@ fun CrashLogs(ctx: Context, navController: NavController, crashes: MutableList<S
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.crash_logs),
-                navController = navController,
+                onClickBack = onClickBack,
                 actions = {
                     IconButton(
                         onClick = {
@@ -152,7 +152,7 @@ fun CrashLog(ctx: Context, crash: String) {
 fun CrashLogsPreview() {
     CrashLogs(
         ctx = LocalContext.current,
-        navController = rememberNavController(),
+        onClickBack = {},
         crashes = mutableListOf(
             "A really bad one\nlots\nof\ntrace\nlines\nhere",
             "NullPointerException!",

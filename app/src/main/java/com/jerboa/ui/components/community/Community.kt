@@ -18,13 +18,11 @@ import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.getLocalizedSortingTypeShortName
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
-import com.jerboa.ui.components.common.toCommunitySideBar
 import com.jerboa.ui.theme.*
 
 @Composable
@@ -132,7 +130,8 @@ fun CommunityHeader(
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
     selectedSortType: SortType,
-    navController: NavController = rememberNavController(),
+    onClickCommunityInfo: () -> Unit,
+    onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
@@ -173,7 +172,7 @@ fun CommunityHeader(
                 showMoreOptions = false
                 onBlockCommunityClick()
             },
-            navController = navController,
+            onClickCommunityInfo = onClickCommunityInfo,
         )
     }
 
@@ -185,7 +184,13 @@ fun CommunityHeader(
                 selectedSortType = selectedSortType,
             )
         },
-        navigationIcon = { DefaultBackButton(navController) },
+        navigationIcon = {
+            IconButton(onClick = onClickBack) {
+            Icon(
+                Icons.Outlined.ArrowBack,
+                contentDescription = stringResource(R.string.community_back),
+            )
+        } },
         actions = {
             IconButton(onClick = {
                 showSortOptions = !showSortOptions
@@ -230,7 +235,7 @@ fun CommunityMoreDialog(
     onDismissRequest: () -> Unit,
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
-    navController: NavController,
+    onClickCommunityInfo: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -248,7 +253,7 @@ fun CommunityMoreDialog(
                     text = stringResource(R.string.community_community_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
-                        navController.toCommunitySideBar()
+                        onClickCommunityInfo()
                         onDismissRequest()
                     },
                 )

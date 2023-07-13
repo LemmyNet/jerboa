@@ -17,14 +17,14 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwipeToNavigateBack(
-    navController: NavController,
+    onSwipeBack: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     val dismissState = rememberDismissState(
         confirmStateChange = {
             when (it) {
                 DismissValue.DismissedToEnd -> {
-                    navController.navigateUp()
+                    onSwipeBack()
                     true
                 }
                 else -> { false }

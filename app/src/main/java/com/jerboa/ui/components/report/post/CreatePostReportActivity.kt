@@ -18,17 +18,16 @@ import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.PostId
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
-import com.jerboa.ui.components.common.InitializeRoute
+import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 import com.jerboa.ui.components.report.CreateReportHeader
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostReportActivity(
     postId: PostId,
     accountViewModel: AccountViewModel,
-    navController: NavController,
+    onBack: () -> Unit,
 ) {
     Log.d("jerboa", "got to create post report activity")
 
@@ -51,16 +50,16 @@ fun CreatePostReportActivity(
     Scaffold(
         topBar = {
             CreateReportHeader(
-                navController = navController,
                 loading = loading,
+                onClickBack = onBack,
                 onCreateClick = {
                     account?.also { acct ->
                         createReportViewModel.createPostReport(
                             reason = reason.text,
                             ctx = ctx,
-                            navController = navController,
                             focusManager = focusManager,
                             account = acct,
+                            onBack = onBack,
                         )
                     }
                 },

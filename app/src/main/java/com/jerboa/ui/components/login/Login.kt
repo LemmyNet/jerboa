@@ -256,8 +256,7 @@ fun LoginFormPreview() {
 
 @Composable
 fun LoginHeader(
-    navController: NavController,
-    accounts: List<Account>? = null,
+    onClickBack: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -267,10 +266,7 @@ fun LoginHeader(
         },
         navigationIcon = {
             IconButton(
-                enabled = !accounts.isNullOrEmpty(),
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onClickBack
             ) {
                 Icon(
                     Icons.Outlined.ArrowBack,
@@ -284,5 +280,7 @@ fun LoginHeader(
 @Preview
 @Composable
 fun LoginHeaderPreview() {
-    LoginHeader(navController = rememberNavController())
+    LoginHeader(
+      onClickBack = {}
+    )
 }

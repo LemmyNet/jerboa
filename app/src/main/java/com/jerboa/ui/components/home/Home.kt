@@ -47,7 +47,6 @@ import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
-import com.jerboa.ui.components.common.toSiteSideBar
 import com.jerboa.ui.theme.LARGE_PADDING
 
 @Composable
@@ -79,7 +78,7 @@ fun HomeHeader(
     selectedSortType: SortType,
     selectedListingType: ListingType,
     selectedPostViewMode: PostViewMode,
-    navController: NavController,
+    onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
@@ -133,7 +132,7 @@ fun HomeHeader(
                 showMoreOptions = false
                 showPostViewModeOptions = !showPostViewModeOptions
             },
-            navController = navController,
+            onClickSiteInfo = onClickSiteInfo,
         )
     }
 
@@ -203,10 +202,10 @@ fun HomeHeaderPreview() {
         onClickListingType = {},
         onClickRefresh = {},
         onClickPostViewMode = {},
+        onClickSiteInfo = {},
         selectedSortType = SortType.Hot,
         selectedListingType = ListingType.All,
         selectedPostViewMode = PostViewMode.Card,
-        navController = rememberNavController(),
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
     )
 }
@@ -215,7 +214,7 @@ fun HomeHeaderPreview() {
 @Composable
 fun HomeMoreDialog(
     onDismissRequest: () -> Unit,
-    navController: NavController,
+    onClickSiteInfo: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickShowPostViewModeDialog: () -> Unit,
 ) {
@@ -245,7 +244,7 @@ fun HomeMoreDialog(
                     text = stringResource(R.string.home_site_info),
                     icon = Icons.Outlined.Info,
                     onClick = {
-                        navController.toSiteSideBar()
+                        onClickSiteInfo()
                         onDismissRequest()
                     },
                 )
