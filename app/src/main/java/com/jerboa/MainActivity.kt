@@ -139,6 +139,11 @@ class MainActivity : AppCompatActivity() {
 
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
 
+            @Suppress("SENSELESS_COMPARISON")
+            if (appSettings == null) {
+                triggerRebirth(ctx)
+            }
+
             JerboaTheme(
                 appSettings = appSettings,
             ) {

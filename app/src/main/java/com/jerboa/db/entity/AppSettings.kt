@@ -55,7 +55,7 @@ data class AppSettings(
     val showVotingArrowsInListView: Boolean,
     @ColumnInfo(
         name = "show_parent_comment_navigation_buttons",
-        defaultValue = "1",
+        defaultValue = "0",
     )
     val showParentCommentNavigationButtons: Boolean,
     @ColumnInfo(
