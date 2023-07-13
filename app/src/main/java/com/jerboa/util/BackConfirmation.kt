@@ -27,7 +27,7 @@ object BackConfirmation {
     private var isBackPressedOnce = false
     private var ref: OnBackPressedCallback? = null
     fun ComponentActivity.addConfirmationToast(navController: NavController, ctx: Context) {
-        if (ref != null) throw IllegalStateException("Previous callback not cleaned up")
+        if (ref != null) disposeConfirmation()
 
         ref = this.onBackPressedDispatcher.addCallback(this) {
             val isRoot = navController.previousBackStackEntry == null
@@ -46,7 +46,7 @@ object BackConfirmation {
     }
 
     fun ComponentActivity.addConfirmationDialog(navController: NavController, showDialog: () -> Unit) {
-        if (ref != null) throw IllegalStateException("Previous callback not cleaned up")
+        if (ref != null) disposeConfirmation()
 
         ref = this.onBackPressedDispatcher.addCallback(this) {
             val isRoot = navController.previousBackStackEntry == null

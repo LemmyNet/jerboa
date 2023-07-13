@@ -412,6 +412,7 @@ fun CommunityActivity(
                                     )
                                 }
                             },
+                            navController = navController,
                         )
                     }
 

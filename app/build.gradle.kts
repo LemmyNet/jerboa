@@ -128,6 +128,9 @@ dependencies {
     // gif support
     implementation("io.coil-kt:coil-gif:2.4.0")
 
+    // crash handling
+    implementation("com.github.FunkyMuse:Crashy:1.2.0")
+
     // To use Kotlin annotation processing tool
     ksp("androidx.room:room-compiler:2.5.2")
 

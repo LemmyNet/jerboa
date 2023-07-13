@@ -63,6 +63,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.InstantScores
 import com.jerboa.PostViewMode
@@ -272,6 +273,7 @@ fun PostTitleBlock(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    navController: NavController,
     openImageViewer: (url: String) -> Unit,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
@@ -289,6 +291,7 @@ fun PostTitleBlock(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            navController = navController,
             openImageViewer = openImageViewer,
         )
     }
@@ -356,6 +359,7 @@ fun PostTitleAndThumbnail(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    navController: NavController,
     openImageViewer: (url: String) -> Unit,
 ) {
     Column(
@@ -388,6 +392,7 @@ fun PostTitleAndThumbnail(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                navController = navController,
                 openImageViewer = openImageViewer,
             )
         }
@@ -405,6 +410,7 @@ fun PostBody(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
+    navController: NavController,
     clickBody: () -> Unit = {},
 ) {
     val post = postView.post
@@ -419,6 +425,7 @@ fun PostBody(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
+            navController = navController,
         )
 
         // The metadata card
@@ -487,6 +494,7 @@ fun PreviewStoryTitleAndMetadata() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
+        navController = rememberNavController(),
     )
 }
 
@@ -503,6 +511,7 @@ fun PreviewSourcePost() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
+        navController = rememberNavController(),
     )
 }
 
@@ -764,6 +773,7 @@ fun PreviewPostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        navController = rememberNavController(),
     )
 }
 
@@ -796,6 +806,7 @@ fun PreviewLinkPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        navController = rememberNavController(),
     )
 }
 
@@ -828,6 +839,7 @@ fun PreviewImagePostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        navController = rememberNavController(),
     )
 }
 
@@ -860,6 +872,7 @@ fun PreviewImagePostListingSmallCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        navController = rememberNavController(),
     )
 }
 
@@ -892,6 +905,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
+        navController = rememberNavController(),
     )
 }
 
@@ -923,6 +937,7 @@ fun PostListing(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    navController: NavController,
     openImageViewer: (url: String) -> Unit,
 ) {
     // This stores vote data
@@ -983,6 +998,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            navController = navController,
             openImageViewer = openImageViewer,
         )
 
@@ -1029,6 +1045,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            navController = navController,
             openImageViewer = openImageViewer,
         )
 
@@ -1059,6 +1076,7 @@ fun PostListing(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
+            navController = navController,
         )
     }
 }
@@ -1125,6 +1143,7 @@ fun PostListingList(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    navController: NavController,
     openImageViewer: (url: String) -> Unit,
 ) {
     Column(
@@ -1230,6 +1249,7 @@ fun PostListingList(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                navController = navController,
                 openImageViewer = openImageViewer,
             )
         }
@@ -1242,11 +1262,10 @@ private fun ThumbnailTile(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    navController: NavController,
     openImageViewer: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
-        // TODO weird performance issues with using a previously rendered navcontroller
-        val navController = rememberNavController()
 
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
@@ -1315,6 +1334,7 @@ fun PostListingListPreview() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
+        navController = rememberNavController(),
     )
 }
 
@@ -1343,6 +1363,7 @@ fun PostListingListWithThumbPreview() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
+        navController = rememberNavController(),
     )
 }
 
@@ -1376,6 +1397,7 @@ fun PostListingCard(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    navController: NavController,
     openImageViewer: (url: String) -> Unit,
 ) {
     Column(
@@ -1411,6 +1433,7 @@ fun PostListingCard(
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
             clickBody = { onPostClick(postView) },
+            navController = navController,
         )
 
         // Footer bar

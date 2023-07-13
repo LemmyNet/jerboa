@@ -451,6 +451,7 @@ fun PostActivity(
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
                                     openImageViewer = openImageViewer,
+                                    navController = navController,
                                 )
                             }
 

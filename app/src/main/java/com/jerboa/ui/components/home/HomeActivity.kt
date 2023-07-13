@@ -352,6 +352,7 @@ fun MainPostListingsContent(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            navController = navController,
             openImageViewer = navController::toView,
             markAsReadOnScroll = markAsReadOnScroll,
             onMarkAsRead = { postView ->
