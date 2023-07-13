@@ -5,7 +5,7 @@ body:
   - type: checkboxes
     id: terms
     attributes:
-      label: Pre-Flight checklist
+      label: Pre-Flight Checklist
       description: Make sure these are correct before submitting
       options:
         - label: Did you check to see if this issue already exists?
