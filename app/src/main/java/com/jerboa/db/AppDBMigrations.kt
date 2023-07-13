@@ -223,7 +223,7 @@ val MIGRATION_18_19 = object : Migration(18, 19) {
 val MIGRATION_19_20 = object : Migration(19, 20) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
-        // Add new default show_parent_comment_navigation_buttons of 16
+        // Add new default show_parent_comment_navigation_buttons to 0
 
         database.execSQL(
             """
