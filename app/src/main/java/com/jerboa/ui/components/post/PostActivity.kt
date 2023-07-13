@@ -78,6 +78,7 @@ import com.jerboa.isLoading
 import com.jerboa.isModerator
 import com.jerboa.isRefreshing
 import com.jerboa.model.AccountViewModel
+import com.jerboa.model.HomeViewModel
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
@@ -140,6 +141,7 @@ fun PostActivity(
     id: Either<PostId, CommentId>,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
+    homeViewModel: HomeViewModel,
     navController: NavController,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -177,15 +179,18 @@ fun PostActivity(
     InitializeRoute(postViewModel) {
         postViewModel.initialize(id = id)
         postViewModel.getData(account)
-        id.fold({
-            postViewModel.markPostAsRead(
-                MarkPostAsRead(
-                    post_id = it,
-                    read = true,
-                    auth = account!!.jwt,
-                ),
-            )
-        }, {})
+        account?.also {
+            id.fold({
+                postViewModel.markPostAsRead(
+                    MarkPostAsRead(
+                        post_id = it,
+                        read = true,
+                        auth = account.jwt,
+                    ),
+                )
+                homeViewModel.refreshSinglePost(it, account)
+            }, {})
+        }
     }
 
     val onClickSortType = { commentSortType: CommentSortType ->
@@ -343,9 +348,8 @@ fun PostActivity(
                                                     auth = acct.jwt,
                                                 ),
                                             )
+                                            homeViewModel.refreshSinglePost(pv.post.id, account)
                                         }
-                                        // TODO will need to pass in postlistingsviewmodel
-                                        // for the Home page to also be updated
                                     },
                                     onDownvoteClick = { pv ->
                                         account?.also { acct ->
@@ -359,6 +363,7 @@ fun PostActivity(
                                                     auth = acct.jwt,
                                                 ),
                                             )
+                                            homeViewModel.refreshSinglePost(pv.post.id, account)
                                         }
                                     },
                                     onReplyClick = { pv ->
@@ -380,6 +385,7 @@ fun PostActivity(
                                                     auth = acct.jwt,
                                                 ),
                                             )
+                                            homeViewModel.refreshSinglePost(pv.post.id, account)
                                         }
                                     },
                                     onCommunityClick = { community ->
@@ -400,6 +406,7 @@ fun PostActivity(
                                                     auth = acct.jwt,
                                                 ),
                                             )
+                                            homeViewModel.refreshSinglePost(pv.post.id, account)
                                         }
                                     },
                                     onReportClick = { pv ->
@@ -614,7 +621,6 @@ fun PostActivity(
                                             postViewModel.fetchMoreChildren(
                                                 commentView = cv,
                                                 account = account,
-
                                             )
                                         },
                                         onBlockCreatorClick = { person ->

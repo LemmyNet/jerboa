@@ -1,12 +1,30 @@
 package com.jerboa.ui.components.home
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -14,7 +32,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,7 +46,10 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.*
+import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.InitializeRoute
+import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
@@ -88,6 +108,7 @@ fun BottomNavActivity(
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
+    homeViewModel: HomeViewModel,
 ) {
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
@@ -107,7 +128,6 @@ fun BottomNavActivity(
         }
     }
 
-    val homeViewModel: HomeViewModel = viewModel()
     if (siteViewModel.siteRes is ApiState.Success) {
         InitializeRoute(homeViewModel) {
             homeViewModel.updateSortType(siteViewModel.sortType)
