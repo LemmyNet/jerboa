@@ -1427,3 +1427,12 @@ inline fun <reified E : Enum<E>> getEnumFromIntSetting(
         enums[index]
     }
 }
+
+fun triggerRebirth(context: Context) {
+    val packageManager = context.packageManager
+    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+    val componentName = intent!!.component
+    val mainIntent = Intent.makeRestartActivityTask(componentName)
+    context.startActivity(mainIntent)
+    Runtime.getRuntime().exit(0)
+}
