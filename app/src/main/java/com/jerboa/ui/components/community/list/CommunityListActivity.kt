@@ -77,9 +77,7 @@ fun CommunityListActivity(
 
     val searchHistory by remember(account) {
         searchHistoryViewModel.searchHistory
-            .map { history -> history.filter { it.accountId == account?.id }.also {
-                Log.e("WIDGET", "histories $history")
-            } }
+            .map { history -> history.filter { it.accountId == account?.id } }
     }.observeAsState()
 
     var search by rememberSaveable { mutableStateOf("") }
@@ -119,7 +117,7 @@ fun CommunityListActivity(
                                     SearchHistory(
                                         accountId = account?.id,
                                         searchTerm = search.trim(),
-                                    )
+                                    ),
                                 )
                             }
                         }
@@ -132,7 +130,7 @@ fun CommunityListActivity(
                         Column(
                             modifier = Modifier
                                 .padding(padding)
-                                .imePadding()
+                                .imePadding(),
                         ) {
                             searchHistory?.let { history ->
                                 SearchHistoryList(
@@ -147,14 +145,14 @@ fun CommunityListActivity(
                                                     type_ = SearchType.Communities,
                                                     sort = SortType.TopAll,
                                                     auth = account?.jwt,
-                                                )
+                                                ),
                                             )
                                             if (saveSearchHistory == true) {
                                                 searchHistoryViewModel.insert(
                                                     SearchHistory(
                                                         accountId = account?.id,
                                                         searchTerm = search.trim(),
-                                                    )
+                                                    ),
                                                 )
                                             }
                                         }
@@ -163,7 +161,7 @@ fun CommunityListActivity(
                                         scope.launch {
                                             searchHistoryViewModel.delete(it)
                                         }
-                                    }
+                                    },
                                 )
                             }
                             ListItem(

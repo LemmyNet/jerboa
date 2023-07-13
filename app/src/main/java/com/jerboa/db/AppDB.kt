@@ -162,18 +162,26 @@ val APP_SETTINGS_DEFAULT = AppSettings(
 )
 
 @Entity(
-    foreignKeys = [ForeignKey(
-        entity = Account::class,
-        parentColumns = ["id"],
-        childColumns = ["account_id"],
-        onDelete = ForeignKey.CASCADE,
-        onUpdate = ForeignKey.CASCADE,
-    )],
+    foreignKeys = [
+        ForeignKey(
+            entity = Account::class,
+            parentColumns = ["id"],
+            childColumns = ["account_id"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class SearchHistory(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo(name = "account_id", index = true) val accountId: Int?,
-    @ColumnInfo(name = "search_term",) val searchTerm: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    @ColumnInfo(
+        name = "account_id",
+        index = true,
+    )
+    val accountId: Int?,
+    @ColumnInfo(name = "search_term")
+    val searchTerm: String,
 )
 
 @Dao

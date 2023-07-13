@@ -339,6 +339,6 @@
     <string name="back_dialog_title">Are you sure you want to exit?</string>
     <string name="community_list_recent_searches">Recent searches</string>
     <string name="community_list_delete_search_item">Delete %1$s</string>
-    <string name="community_list_title">Communities\n</string>
-    <string name="save_search_history">Save search history\n</string>
+    <string name="community_list_title">Communities</string>
+    <string name="save_search_history">Save search history</string>
 </resources>

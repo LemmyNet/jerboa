@@ -240,7 +240,7 @@ val MIGRATION_19_20 = object : Migration(19, 20) {
             """,
         )
         database.execSQL(
-            "CREATE INDEX index_SearchHistory_account_id ON SearchHistory(account_id)"
+            "CREATE INDEX index_SearchHistory_account_id ON SearchHistory(account_id)",
         )
     }
 }
