@@ -90,12 +90,6 @@ body:
 
         Copy the full output. (If not possible just include the few lines below `FATAL EXCEPTION: main` )
 
-        Either include it as a file or past it here
-
-        ```
-        <details><summary>LOGS</summary>
-        PASTE HERE AND REMOVE THE ABOVE GUIDE
-        </details>
-        ```
+        Either include it as a file or paste it in the textarea above
 
         </details>
