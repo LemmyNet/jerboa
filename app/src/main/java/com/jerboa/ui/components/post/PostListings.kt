@@ -60,6 +60,7 @@ fun PostListings(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
     openImageViewer: (url: String) -> Unit,
     navController: NavController,
 ) {
@@ -107,6 +108,7 @@ fun PostListings(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                showPostLinkPreview = showPostLinkPreviews,
                 openImageViewer = openImageViewer,
                 navController = navController,
             )
@@ -156,6 +158,7 @@ fun PreviewPostListings() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostLinkPreviews = true,
         openImageViewer = {},
         navController = rememberNavController(),
     )
