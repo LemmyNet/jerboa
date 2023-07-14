@@ -29,11 +29,11 @@ import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.Search
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.SearchHistory
-import com.jerboa.db.SearchHistoryViewModel
+import com.jerboa.db.entity.SearchHistory
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityListViewModel
+import com.jerboa.model.SearchHistoryViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.InitializeRoute

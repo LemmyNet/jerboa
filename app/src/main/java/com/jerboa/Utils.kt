@@ -22,6 +22,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
@@ -47,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import arrow.core.compareTo
 import com.google.gson.Gson
@@ -55,7 +58,9 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.Account
+import com.jerboa.db.APP_SETTINGS_DEFAULT
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.Route
@@ -782,6 +787,24 @@ fun scrollToTop(
     }
 }
 
+fun showSnackbar(
+    scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    message: String,
+    actionLabel: String?,
+    withDismissAction: Boolean = false,
+    snackbarDuration: SnackbarDuration,
+) {
+    scope.launch {
+        snackbarHostState.showSnackbar(
+            message,
+            actionLabel,
+            withDismissAction,
+            snackbarDuration,
+        )
+    }
+}
+
 // https://stackoverflow.com/questions/69234880/how-to-get-intent-data-in-a-composable
 fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
@@ -1388,4 +1411,28 @@ fun <T> ApiState<T>.isLoading(): Boolean {
 
 fun <T> ApiState<T>.isRefreshing(): Boolean {
     return this == ApiState.Refreshing
+}
+
+inline fun <reified E : Enum<E>> getEnumFromIntSetting(
+    appSettings: LiveData<AppSettings>,
+    getter: (AppSettings) -> Int,
+): E {
+    val enums = enumValues<E>()
+    val setting = appSettings.value ?: APP_SETTINGS_DEFAULT
+    val index = getter(setting)
+
+    return if (index >= enums.size) { // Fallback to default
+        enums[getter(APP_SETTINGS_DEFAULT)]
+    } else {
+        enums[index]
+    }
+}
+
+fun triggerRebirth(context: Context) {
+    val packageManager = context.packageManager
+    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+    val componentName = intent!!.component
+    val mainIntent = Intent.makeRestartActivityTask(componentName)
+    context.startActivity(mainIntent)
+    Runtime.getRuntime().exit(0)
 }

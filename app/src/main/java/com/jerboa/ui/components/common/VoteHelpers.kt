@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.jerboa.R
 import com.jerboa.VoteType
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.theme.muted
 
 @Composable

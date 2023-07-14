@@ -39,11 +39,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.loginFirstToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
@@ -59,6 +60,7 @@ fun SimpleTopAppBar(
     text: String,
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior? = null,
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -75,7 +77,16 @@ fun SimpleTopAppBar(
                 )
             }
         },
+        actions = actions,
     )
+}
+
+@Preview
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SimpleTopAppBarPreview() {
+    SimpleTopAppBar(text = "Preview", navController = rememberNavController()) {
+    }
 }
 
 @Composable
@@ -552,5 +563,7 @@ fun Modifier.simpleVerticalScrollbar(
 fun LoadingBar(
     padding: PaddingValues = PaddingValues(0.dp),
 ) {
-    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(padding).testTag("jerboa:loading"))
+    LinearProgressIndicator(
+        modifier = Modifier.fillMaxWidth().padding(padding).testTag("jerboa:loading"),
+    )
 }

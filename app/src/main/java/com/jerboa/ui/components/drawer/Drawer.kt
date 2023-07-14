@@ -22,7 +22,6 @@ import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Login
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Divider
@@ -31,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -47,12 +47,13 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.MyUserInfo
 import com.jerboa.datatypes.types.Person
-import com.jerboa.db.Account
-import com.jerboa.db.AccountViewModel
+import com.jerboa.db.entity.Account
 import com.jerboa.federatedNameShown
+import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.common.toLogin
 import com.jerboa.ui.components.community.CommunityLinkLarger
@@ -279,8 +280,10 @@ fun DrawerAddAccountMode(
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
 ) {
-    val accountsWithoutCurrent = accountViewModel?.allAccounts?.value?.toMutableList()
-    val currentAccount = accountsWithoutCurrent?.firstOrNull { it.current }
+    val allAccounts = accountViewModel?.allAccounts?.observeAsState()
+    val accountsWithoutCurrent = allAccounts?.value?.toMutableList()
+    val currentAccount = accountViewModel?.let { getCurrentAccount(accountViewModel = it) }
+
     accountsWithoutCurrent?.remove(currentAccount)
 
     Column {

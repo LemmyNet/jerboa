@@ -24,6 +24,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,20 +38,17 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AccountRepository
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AccountViewModelFactory
-import com.jerboa.db.AppDB
-import com.jerboa.db.AppSettingsRepository
-import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.AppSettingsViewModelFactory
-import com.jerboa.db.SearchHistoryRepository
-import com.jerboa.db.SearchHistoryViewModel
-import com.jerboa.db.SearchHistoryViewModelFactory
+import com.jerboa.db.AppDBContainer
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AccountViewModelFactory
+import com.jerboa.model.AppSettingsViewModel
+import com.jerboa.model.AppSettingsViewModelFactory
 import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.ReplyItem
+import com.jerboa.model.SearchHistoryViewModel
+import com.jerboa.model.SearchHistoryViewModelFactory
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
@@ -61,7 +60,7 @@ import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
-import com.jerboa.ui.components.common.getCurrentAccountSync
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.takeDepsFromRoot
 import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.community.CommunityActivity
@@ -82,6 +81,7 @@ import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
+import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 import com.jerboa.util.BackConfirmation.addConfirmationDialog
@@ -91,36 +91,29 @@ import com.jerboa.util.BackConfirmationMode
 import com.jerboa.util.ShowConfirmationDialog
 
 class JerboaApplication : Application() {
-    private val database by lazy { AppDB.getDatabase(this) }
-    val accountRepository by lazy { AccountRepository(database.accountDao()) }
-    val appSettingsRepository by lazy {
-        AppSettingsRepository(database.appSettingsDao(), database.searchHistoryDao())
+    lateinit var container: AppDBContainer
+
+    override fun onCreate() {
+        super.onCreate()
+        container = AppDBContainer(this)
     }
-    val searchHistoryRepository by lazy { SearchHistoryRepository(database.searchHistoryDao()) }
 }
+
+fun CreationExtras.jerboaApplication(): JerboaApplication =
+    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as JerboaApplication)
 
 class MainActivity : AppCompatActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
-    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
-        AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
-    }
-    private val accountViewModel: AccountViewModel by viewModels {
-        AccountViewModelFactory((application as JerboaApplication).accountRepository)
-    }
-    private val appSettingsViewModel: AppSettingsViewModel by viewModels {
-        AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
-    }
-    private val searchHistoryViewModel: SearchHistoryViewModel by viewModels {
-        SearchHistoryViewModelFactory((application as JerboaApplication).searchHistoryRepository)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val accountSync = getCurrentAccountSync(accountViewModel)
-
         setContent {
             val ctx = LocalContext.current
+            val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory)
+            val appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory)
+            val accountSettingsViewModel: AccountSettingsViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory)
+            val searchHistoryViewModel: SearchHistoryViewModel = viewModel(factory = SearchHistoryViewModelFactory.Factory)
 
             API.errorHandler = {
                 Log.e("jerboa", it.toString())
@@ -134,11 +127,20 @@ class MainActivity : AppCompatActivity() {
                 null
             }
 
-            LaunchedEffect(Unit) {
-                fetchInitialData(accountSync, siteViewModel)
+            val account = getCurrentAccount(accountViewModel)
+
+            LaunchedEffect(account) {
+                if (account == null || account.id != -1) {
+                    fetchInitialData(account, siteViewModel)
+                }
             }
 
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
+
+            @Suppress("SENSELESS_COMPARISON")
+            if (appSettings == null) {
+                triggerRebirth(ctx)
+            }
 
             JerboaTheme(
                 appSettings = appSettings,
@@ -665,6 +667,12 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
+                        )
+                    }
+
+                    composable(route = Route.CRASH_LOGS) {
+                        CrashLogsActivity(
+                            navController = navController,
                         )
                     }
 

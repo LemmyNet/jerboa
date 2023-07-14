@@ -102,6 +102,10 @@
     <string name="community_sortBy">Sort by</string>
     <string name="community_subscribe">Subscribe</string>
     <string name="community_users_month">%1$s users / month</string>
+    <string name="crash_logs">Crash Logs</string>
+    <string name="crash_logs_all_deleted">All crash logs deleted</string>
+    <string name="crash_logs_copy">Copy crash log</string>
+    <string name="crash_logs_delete">Delete all crash logs</string>
     <string name="createPost_selectCommunity">Select community from list</string>
     <string name="create_post_a_title_here">a title here....</string>
     <string name="create_post_community">Community</string>
@@ -217,6 +221,7 @@
     <string name="personProfile_viewBanner">View banner image</string>
     <string name="person_iconAdmin">Is administrator</string>
     <string name="person_iconBanned">Is banned</string>
+    <string name="person_iconBot">Is a bot</string>
     <string name="person_iconModerator">Is moderator</string>
     <string name="person_profile_activity_about">About</string>
     <string name="person_profile_activity_comments">Comments</string>

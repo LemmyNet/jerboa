@@ -70,13 +70,13 @@ import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.db.AccountViewModel
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
 import com.jerboa.isLoading
 import com.jerboa.isModerator
 import com.jerboa.isRefreshing
+import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
@@ -439,6 +439,7 @@ fun PostActivity(
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
                                     openImageViewer = openImageViewer,
+                                    navController = navController,
                                 )
                             }
 

@@ -39,10 +39,10 @@ import com.jerboa.R
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AppSettings
-import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.util.BackConfirmationMode
 
