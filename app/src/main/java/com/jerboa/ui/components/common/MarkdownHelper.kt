@@ -170,7 +170,6 @@ object MarkdownHelper {
                     }
                     markwon!!.setParsedMarkdown(textView, md)
                 },
-                onReset = {},
                 modifier = modifier,
             )
         }
@@ -245,7 +244,6 @@ object MarkdownHelper {
             update = { textView ->
                 previewMarkwon!!.setMarkdown(textView, markdown)
             },
-            onReset = {},
             modifier = modifier,
         )
     }

@@ -37,6 +37,7 @@ import arrow.core.Either
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
+import com.jerboa.datatypes.types.Community
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.AppDBContainer
 import com.jerboa.model.AccountSettingsViewModel
@@ -272,6 +273,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             )
                         }
 
@@ -304,6 +306,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             )
                         }
 
@@ -370,6 +373,7 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             openImageViewer = navController::toView,
                         )
@@ -403,6 +407,7 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             openImageViewer = navController::toView,
                         )
@@ -455,6 +460,7 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             body = text
                         }
+                        val community by navController.takeDepsFromRoot<Community?>()
 
                         CreatePostActivity(
                             navController = navController,
@@ -462,6 +468,7 @@ class MainActivity : AppCompatActivity() {
                             initialUrl = url,
                             initialBody = body,
                             initialImage = image,
+                            initialCommunity = community,
                         )
                         activity?.intent?.replaceExtras(Bundle())
                     }
@@ -507,6 +514,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 openImageViewer = { url -> navController.toView(url) },
                             )
                         }
@@ -537,6 +545,7 @@ class MainActivity : AppCompatActivity() {
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreview = appSettings.showPostLinkPreviews,
                             openImageViewer = navController::toView,
                         )
                     }

@@ -1,3 +1,27 @@
+# Jerboa v0.0.40-alpha Release (2023-07-14)
+
+## What's Changed
+
+- Update baseline profiles by @MV-GH in https://github.com/dessalines/jerboa/pull/1013
+- Add separate screen for ImageViewer by @MV-GH in https://github.com/dessalines/jerboa/pull/980
+- Pull-to-refresh fix on post loading fail by @ZJouba in https://github.com/dessalines/jerboa/pull/1014
+- Add confirmation on exit by @MV-GH in https://github.com/dessalines/jerboa/pull/998
+- Adding spoiler tag support by @ZJouba in https://github.com/dessalines/jerboa/pull/990
+- Indicate persons that are bots by @camporter in https://github.com/dessalines/jerboa/pull/1019
+- Fix and update of the Ukrainian translation by @Digharatta in https://github.com/dessalines/jerboa/pull/1022
+- db refactor by @yate in https://github.com/dessalines/jerboa/pull/973
+- Add local crash tracking and viewing by @camporter in https://github.com/dessalines/jerboa/pull/945
+- Update italian translations by @andscape-dev in https://github.com/dessalines/jerboa/pull/1024
+- Add general small fixes by @MV-GH in https://github.com/dessalines/jerboa/pull/1026
+- Fix thumbnail links not working with deeplinks by @MV-GH in https://github.com/dessalines/jerboa/pull/1023
+- Change default of show_parent_comment_navigation_buttons by @MV-GH in https://github.com/dessalines/jerboa/pull/1027
+- Fix rare edgecase crash when deleting app DB by @MV-GH in https://github.com/dessalines/jerboa/pull/1028
+- Revert #767 should fix post opens the wrong one sometimes by @MV-GH in https://github.com/dessalines/jerboa/pull/1029
+- Add option to show/hide post previews by @twizmwazin in https://github.com/dessalines/jerboa/pull/1033
+- Auto fill in community name for posts created in community by @MV-GH in https://github.com/dessalines/jerboa/pull/1030
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.39...0.0.40
+
 # Jerboa v0.0.39-alpha Release (2023-07-10)
 
 ## What's Changed

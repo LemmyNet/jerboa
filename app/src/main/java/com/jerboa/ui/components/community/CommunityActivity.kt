@@ -49,6 +49,7 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
+import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
@@ -90,6 +91,7 @@ fun CommunityActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
     val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
@@ -388,6 +390,7 @@ fun CommunityActivity(
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW,
+                            showPostLinkPreviews = showPostLinkPreviews,
                             openImageViewer = navController::toView,
                             navController = navController,
                         )
@@ -407,6 +410,8 @@ fun CommunityActivity(
                                     channel = transferCreatePostDepsViaRoot,
                                     community = communityRes.data.community_view.community,
                                 )
+                            } ?: run {
+                                loginFirstToast(ctx)
                             }
                         },
                     ) {
