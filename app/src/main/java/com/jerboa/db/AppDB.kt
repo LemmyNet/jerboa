@@ -34,7 +34,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     blurNSFW = true,
     showTextDescriptionsInNavbar = true,
     backConfirmationMode = 1,
-    showPostPreviews = true,
+    showPostLinkPreviews = true,
 )
 
 @Database(

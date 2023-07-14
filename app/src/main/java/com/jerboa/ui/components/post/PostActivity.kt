@@ -148,7 +148,7 @@ fun PostActivity(
     showParentCommentNavigationButtons: Boolean,
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
-    showPostPreview: Boolean,
+    showPostLinkPreview: Boolean,
     openImageViewer: (url: String) -> Unit,
 ) {
     Log.d("jerboa", "got to post activity")
@@ -439,7 +439,7 @@ fun PostActivity(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
-                                    showPostPreview = showPostPreview,
+                                    showPostLinkPreview = showPostLinkPreview,
                                     openImageViewer = openImageViewer,
                                     navController = navController,
                                 )

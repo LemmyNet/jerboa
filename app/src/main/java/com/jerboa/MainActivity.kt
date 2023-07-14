@@ -272,7 +272,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
-                                showPostPreviews = appSettings.showPostPreviews,
+                                showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             )
                         }
 
@@ -305,7 +305,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
-                                showPostPreviews = appSettings.showPostPreviews,
+                                showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             )
                         }
 
@@ -372,7 +372,7 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
-                            showPostPreviews = appSettings.showPostPreviews,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             openImageViewer = navController::toView,
                         )
@@ -406,7 +406,7 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
-                            showPostPreviews = appSettings.showPostPreviews,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             openImageViewer = navController::toView,
                         )
@@ -511,7 +511,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
-                                showPostPreview = appSettings.showPostPreviews,
+                                showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 openImageViewer = { url -> navController.toView(url) },
                             )
                         }
@@ -542,7 +542,7 @@ class MainActivity : AppCompatActivity() {
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
-                            showPostPreview = appSettings.showPostPreviews,
+                            showPostLinkPreview = appSettings.showPostLinkPreviews,
                             openImageViewer = navController::toView,
                         )
                     }

@@ -90,7 +90,7 @@ fun CommunityActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    showPostPreviews: Boolean,
+    showPostLinkPreviews: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
     val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
@@ -389,7 +389,7 @@ fun CommunityActivity(
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW,
-                            showPostPreviews = showPostPreviews,
+                            showPostLinkPreviews = showPostLinkPreviews,
                             openImageViewer = navController::toView,
                             navController = navController,
                         )

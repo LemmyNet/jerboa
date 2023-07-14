@@ -170,7 +170,7 @@ fun BottomNavActivity(
                             usePrivateTabs = appSettings.usePrivateTabs,
                             drawerState = drawerState,
                             blurNSFW = appSettings.blurNSFW,
-                            showPostPreviews = appSettings.showPostPreviews,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                         )
                     }
 
@@ -207,7 +207,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
-                            showPostPreviews = appSettings.showPostPreviews,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             openImageViewer = navController::toView,
                         )
@@ -225,7 +225,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
-                            showPostPreviews = appSettings.showPostPreviews,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             openImageViewer = navController::toView,
                             drawerState = drawerState,
                         )

@@ -92,7 +92,7 @@ fun LookAndFeelActivity(
     val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
     val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
     val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
-    val showPostPreviewMode = rememberBooleanSettingState(settings.showPostPreviews)
+    val showPostLinkPreviewMode = rememberBooleanSettingState(settings.showPostLinkPreviews)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -119,7 +119,7 @@ fun LookAndFeelActivity(
                 showTextDescriptionsInNavbar = showTextDescriptionsInNavbar.value,
                 blurNSFW = blurNSFW.value,
                 backConfirmationMode = backConfirmationMode.value,
-                showPostPreviews = showPostPreviewMode.value,
+                showPostLinkPreviews = showPostLinkPreviewMode.value,
             ),
         )
     }
@@ -303,9 +303,9 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
-                    state = showPostPreviewMode,
+                    state = showPostLinkPreviewMode,
                     title = {
-                        Text(stringResource(id = R.string.show_post_previews))
+                        Text(stringResource(id = R.string.show_post_link_previews))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
