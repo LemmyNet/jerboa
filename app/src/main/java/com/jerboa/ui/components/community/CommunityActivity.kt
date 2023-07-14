@@ -49,6 +49,7 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.isLoading
 import com.jerboa.isRefreshing
+import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
@@ -409,6 +410,8 @@ fun CommunityActivity(
                                     channel = transferCreatePostDepsViaRoot,
                                     community = communityRes.data.community_view.community,
                                 )
+                            } ?: run {
+                                loginFirstToast(ctx)
                             }
                         },
                     ) {
