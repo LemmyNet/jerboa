@@ -48,9 +48,11 @@ body:
   - type: markdown
     attributes:
       value: |
-        <details><summary>Click here if you don't know how to get the logs</summary>
-
-
+        <hr />
+        
+        ### How Do I Get Crash Logs?
+        **<details><summary>FOR CRASHES ON STARTUP (Click to expand)</summary>**
+        > 
         > Follow these steps (skip the ones you already have done):
         > - Enable developer options and USB DEBUGGING
         > - Install ADB on your PC
@@ -92,4 +94,15 @@ body:
         > 
         > Either include it as a file or paste it in the textarea above
         > 
+        </details>
+
+        **<details><summary>FOR GENERAL CRASHES (Click to expand)</summary>**
+        > 
+        > Follow these steps (skip the ones you already have done):
+        > 
+        > - Open Jerboa
+        > - Go to 'Settings'
+        > - Go to 'About'
+        > - Go to 'Crash Logs'
+
         </details>
