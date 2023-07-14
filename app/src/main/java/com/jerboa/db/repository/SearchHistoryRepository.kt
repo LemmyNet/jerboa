@@ -2,8 +2,8 @@ package com.jerboa.db.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import com.jerboa.db.entity.SearchHistory
 import com.jerboa.db.dao.SearchHistoryDao
+import com.jerboa.db.entity.SearchHistory
 
 class SearchHistoryRepository(
     private val searchHistoryDao: SearchHistoryDao,

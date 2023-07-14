@@ -1,7 +1,6 @@
 package com.jerboa.db
 
 import android.content.Context
-import com.jerboa.db.entity.SearchHistory
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.db.repository.AppSettingsRepository
 import com.jerboa.db.repository.SearchHistoryRepository
