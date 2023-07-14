@@ -38,8 +38,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.InputField
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
@@ -340,7 +338,7 @@ fun CreatePostBodyPreview() {
         communitySelector = {
             PostCommunitySelector(
                 community = sampleCommunity,
-                onClickCommunityList = {}
+                onClickCommunityList = {},
             )
         },
     )
@@ -360,7 +358,7 @@ fun CreatePostHeaderPreview() {
             )
         },
         title = "Create post",
-        onClickBack = {}
+        onClickBack = {},
     )
 }
 
@@ -378,7 +376,7 @@ fun EditPostHeaderPreview() {
             )
         },
         title = "Edit post",
-        onClickBack = {}
+        onClickBack = {},
     )
 }
 
@@ -404,7 +402,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         communitySelector = {
             PostCommunitySelector(
                 community = null,
-                onClickCommunityList = {}
+                onClickCommunityList = {},
             )
         },
     )

@@ -40,7 +40,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jerboa.CommentReplyDeps
 import com.jerboa.JerboaAppState
 import com.jerboa.PrivateMessageDeps
@@ -71,7 +70,6 @@ import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.replynode.CommentReplyNode
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isLoading
@@ -79,6 +77,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
+import com.jerboa.util.InitializeRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

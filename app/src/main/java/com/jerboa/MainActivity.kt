@@ -29,7 +29,6 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
@@ -137,10 +136,9 @@ class MainActivity : AppCompatActivity() {
             JerboaTheme(
                 appSettings = appSettings,
             ) {
-                //val navController = rememberNavController()
+                // val navController = rememberNavController()
 
                 val appState = rememberJerboaAppState()
-
 
                 val showConfirmationDialog = remember { mutableStateOf(false) }
 
@@ -313,7 +311,7 @@ class MainActivity : AppCompatActivity() {
 
                             CommunitySidebarActivity(
                                 communityViewModel = communityViewModel,
-                                onClickBack = appState::popBackStack
+                                onClickBack = appState::popBackStack,
                             )
                         }
                     }
@@ -606,7 +604,7 @@ class MainActivity : AppCompatActivity() {
                         CreateCommentReportActivity(
                             commentId = args.id,
                             accountViewModel = accountViewModel,
-                           onBack = appState::navigateUp
+                            onBack = appState::navigateUp,
                         )
                     }
 
@@ -622,7 +620,7 @@ class MainActivity : AppCompatActivity() {
                         CreatePostReportActivity(
                             postId = args.id,
                             accountViewModel = accountViewModel,
-                            onBack = appState::navigateUp
+                            onBack = appState::navigateUp,
                         )
                     }
 
@@ -669,7 +667,7 @@ class MainActivity : AppCompatActivity() {
 
                     composable(route = Route.CRASH_LOGS) {
                         CrashLogsActivity(
-                          onClickBack = appState::popBackStack
+                            onClickBack = appState::popBackStack,
                         )
                     }
 

@@ -68,6 +68,7 @@ import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
@@ -242,14 +243,14 @@ data class CommentNodeData(
 
 fun commentsToFlatNodes(
     comments: List<CommentView>,
-): List<CommentNodeData> {
-    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }
+): ImmutableList<CommentNodeData> {
+    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }.toImmutableList()
 }
 
 fun buildCommentsTree(
     comments: List<CommentView>,
     isCommentView: Boolean,
-): List<CommentNodeData> {
+): ImmutableList<CommentNodeData> {
     val map = LinkedHashMap<Number, CommentNodeData>()
     val firstComment = comments.firstOrNull()?.comment
 
@@ -286,7 +287,7 @@ fun buildCommentsTree(
         }
     }
 
-    return tree
+    return tree.toImmutableList()
 }
 
 fun LazyListState.isScrolledToEnd(): Boolean {

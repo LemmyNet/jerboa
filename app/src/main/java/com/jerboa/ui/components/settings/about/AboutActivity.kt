@@ -26,8 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
 import com.jerboa.openLink
@@ -211,6 +209,6 @@ fun AboutPreview() {
         usePrivateTabs = false,
         onBack = {},
         onClickCrashLogs = {},
-        openLink = {_: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }

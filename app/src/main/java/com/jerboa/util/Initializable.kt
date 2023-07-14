@@ -17,4 +17,3 @@ fun InitializeRoute(obj: Initializable, initBlock: suspend CoroutineScope.() -> 
         }
     }
 }
-

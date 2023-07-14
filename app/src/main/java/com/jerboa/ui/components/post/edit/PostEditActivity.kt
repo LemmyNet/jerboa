@@ -3,7 +3,6 @@ package com.jerboa.ui.components.post.edit
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
@@ -26,12 +24,12 @@ import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostEditViewModel
-import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.CreateEditPostHeader
 import com.jerboa.ui.components.post.composables.EditPostSubmitIcon
+import com.jerboa.util.InitializeRoute
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 import kotlinx.coroutines.launch
@@ -44,7 +42,7 @@ object PostEditReturn {
 fun PostEditActivity(
     postView: PostView,
     accountViewModel: AccountViewModel,
-   appState: JerboaAppState,
+    appState: JerboaAppState,
 ) {
     Log.d("jerboa", "got to post edit activity")
 
@@ -96,7 +94,7 @@ fun PostEditActivity(
                             url = url,
                             postEditViewModel = postEditViewModel,
                             isNsfw = isNsfw,
-                            appState = appState
+                            appState = appState,
                         )
                     },
                 )
@@ -143,7 +141,7 @@ fun onSubmitClick(
     url: String,
     postEditViewModel: PostEditViewModel,
     isNsfw: Boolean,
-    appState: JerboaAppState
+    appState: JerboaAppState,
 ) {
     account?.also { acct ->
         // Clean up that data

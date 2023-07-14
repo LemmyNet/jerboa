@@ -9,7 +9,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountViewModel

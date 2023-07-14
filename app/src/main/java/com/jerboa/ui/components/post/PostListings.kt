@@ -17,8 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
@@ -157,6 +155,6 @@ fun PreviewPostListings() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }

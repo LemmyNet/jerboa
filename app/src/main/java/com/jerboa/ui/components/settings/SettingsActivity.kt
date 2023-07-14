@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
 import com.jerboa.model.AccountViewModel

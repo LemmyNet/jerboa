@@ -15,15 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PrivateMessageReplyViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.util.InitializeRoute
 
 @Composable
 fun PrivateMessageReplyActivity(

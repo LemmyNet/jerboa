@@ -12,12 +12,11 @@ import com.jerboa.db.entity.Account
 import com.jerboa.ui.theme.muted
 
 @Composable
-fun <T> VoteGeneric(
+fun VoteGeneric(
     myVote: Int?,
     votes: Int,
-    item: T,
     type: VoteType,
-    onVoteClick: (item: T) -> Unit,
+    onVoteClick: () -> Unit,
     showNumber: Boolean = true,
     account: Account?,
 ) {
@@ -49,7 +48,7 @@ fun <T> VoteGeneric(
         }
     }
     ActionBarButton(
-        onClick = { onVoteClick(item) },
+        onClick = onVoteClick,
         contentColor = iconAndColor.second,
         icon = iconAndColor.first,
         contentDescription = contentDescription,

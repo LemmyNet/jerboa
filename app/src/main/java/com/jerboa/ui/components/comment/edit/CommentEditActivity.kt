@@ -12,14 +12,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentEditViewModel
-import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.util.InitializeRoute
 
 object CommentEditReturn {
     const val COMMENT_VIEW = "comment-edit::return(comment-view)"
@@ -29,7 +28,7 @@ object CommentEditReturn {
 fun CommentEditActivity(
     commentView: CommentView,
     accountViewModel: AccountViewModel,
-    appState: JerboaAppState
+    appState: JerboaAppState,
 ) {
     Log.d("jerboa", "got to comment edit activity")
 

@@ -63,8 +63,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.InstantScores
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -425,7 +423,7 @@ fun PostBody(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
-            openLink = openLink
+            openLink = openLink,
         )
 
         // The metadata card
@@ -493,7 +491,7 @@ fun PreviewStoryTitleAndMetadata() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -510,7 +508,7 @@ fun PreviewSourcePost() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -518,8 +516,8 @@ fun PreviewSourcePost() {
 fun PostFooterLine(
     postView: PostView,
     instantScores: InstantScores,
-    onUpvoteClick: (postView: PostView) -> Unit,
-    onDownvoteClick: (postView: PostView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onReplyClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
@@ -602,7 +600,6 @@ fun PostFooterLine(
             VoteGeneric(
                 myVote = instantScores.myVote,
                 votes = instantScores.upvotes,
-                item = postView,
                 type = VoteType.Upvote,
                 showNumber = (instantScores.downvotes != 0),
                 onVoteClick = onUpvoteClick,
@@ -612,7 +609,6 @@ fun PostFooterLine(
                 VoteGeneric(
                     myVote = instantScores.myVote,
                     votes = instantScores.downvotes,
-                    item = postView,
                     type = VoteType.Downvote,
                     onVoteClick = onDownvoteClick,
                     account = account,
@@ -772,7 +768,7 @@ fun PreviewPostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -805,7 +801,7 @@ fun PreviewLinkPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -838,7 +834,7 @@ fun PreviewImagePostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -871,7 +867,7 @@ fun PreviewImagePostListingSmallCard() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -904,7 +900,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showAvatar = true,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -962,14 +958,14 @@ fun PostListing(
                     instantScores.value,
                     voteType = VoteType.Upvote,
                 )
-                onUpvoteClick(it)
+                onUpvoteClick(postView)
             },
             onDownvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
                     voteType = VoteType.Downvote,
                 )
-                onDownvoteClick(it)
+                onDownvoteClick(postView)
             },
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
@@ -1009,14 +1005,14 @@ fun PostListing(
                     instantScores.value,
                     voteType = VoteType.Upvote,
                 )
-                onUpvoteClick(it)
+                onUpvoteClick(postView)
             },
             onDownvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
                     voteType = VoteType.Downvote,
                 )
-                onDownvoteClick(it)
+                onDownvoteClick(postView)
             },
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
@@ -1056,14 +1052,14 @@ fun PostListing(
                     instantScores.value,
                     voteType = VoteType.Upvote,
                 )
-                onUpvoteClick(it)
+                onUpvoteClick(postView)
             },
             onDownvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
                     voteType = VoteType.Downvote,
                 )
-                onDownvoteClick(it)
+                onDownvoteClick(postView)
             },
             onPostClick = onPostClick,
             isModerator = isModerator,
@@ -1075,17 +1071,16 @@ fun PostListing(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
-            openLink = { _: String, _: Boolean, _: Boolean -> }
+            openLink = { _: String, _: Boolean, _: Boolean -> },
         )
     }
 }
 
 @Composable
 fun PostVotingTile(
-    postView: PostView,
     instantScores: InstantScores,
-    onUpvoteClick: (postView: PostView) -> Unit,
-    onDownvoteClick: (postView: PostView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     account: Account?,
 ) {
     Column(
@@ -1097,7 +1092,6 @@ fun PostVotingTile(
         VoteGeneric(
             myVote = instantScores.myVote,
             votes = instantScores.upvotes,
-            item = postView,
             type = VoteType.Upvote,
             showNumber = false,
             onVoteClick = onUpvoteClick,
@@ -1117,7 +1111,6 @@ fun PostVotingTile(
         VoteGeneric(
             myVote = instantScores.myVote,
             votes = instantScores.downvotes,
-            item = postView,
             type = VoteType.Downvote,
             showNumber = false,
             onVoteClick = onDownvoteClick,
@@ -1131,8 +1124,8 @@ fun PostVotingTile(
 fun PostListingList(
     postView: PostView,
     instantScores: InstantScores,
-    onUpvoteClick: (postView: PostView) -> Unit,
-    onDownvoteClick: (postView: PostView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -1161,7 +1154,6 @@ fun PostListingList(
         ) {
             if (showVotingArrowsInListView) {
                 PostVotingTile(
-                    postView = postView,
                     instantScores = instantScores,
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
@@ -1332,7 +1324,7 @@ fun PostListingListPreview() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -1361,7 +1353,7 @@ fun PostListingListWithThumbPreview() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> }
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -1369,8 +1361,8 @@ fun PostListingListWithThumbPreview() {
 fun PostListingCard(
     postView: PostView,
     instantScores: InstantScores,
-    onUpvoteClick: (postView: PostView) -> Unit,
-    onDownvoteClick: (postView: PostView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,

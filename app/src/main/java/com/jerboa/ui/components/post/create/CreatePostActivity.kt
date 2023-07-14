@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jerboa.ConsumeReturn
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.JerboaAppState
@@ -34,7 +33,6 @@ import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreatePostViewModel
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListReturn
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
@@ -127,7 +125,7 @@ fun CreatePostActivity(
                                 account = account,
                                 createPostViewModel = createPostViewModel,
                                 selectedCommunity = selectedCommunity,
-                                onSuccess = appState::toPostWithPopUpTo
+                                onSuccess = appState::toPostWithPopUpTo,
                             )
                         },
                         submitIcon = {
@@ -183,7 +181,7 @@ fun CreatePostActivity(
                     communitySelector = {
                         PostCommunitySelector(
                             community = selectedCommunity,
-                            onClickCommunityList = {appState.toCommunityList(select = true)}
+                            onClickCommunityList = { appState.toCommunityList(select = true) },
                         )
                     },
                 )

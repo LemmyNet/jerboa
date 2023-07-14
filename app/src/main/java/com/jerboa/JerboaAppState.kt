@@ -23,7 +23,6 @@ import kotlinx.coroutines.CoroutineScope
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-
 @Composable
 fun rememberJerboaAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
@@ -45,7 +44,6 @@ class JerboaAppState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
 ) {
-
 
     fun toPrivateMessageReply(
         channel: RouteChannel<PrivateMessageDeps>,
@@ -121,17 +119,17 @@ class JerboaAppState(
         navController.navigate(Route.PostArgs.makeRoute(id = "$id"))
     }
 
-    fun toLogin() =  navController.navigate(Route.LOGIN)
+    fun toLogin() = navController.navigate(Route.LOGIN)
 
-    fun toHome() =  navController.navigate(Route.HOME) { popUpTo(navController.graph.id) }
+    fun toHome() = navController.navigate(Route.HOME) { popUpTo(navController.graph.id) }
 
-    fun toInbox() =  navController.navigate(Route.INBOX)
+    fun toInbox() = navController.navigate(Route.INBOX)
 
     fun toCommunity(id: Int) {
         navController.navigate(Route.CommunityFromIdArgs.makeRoute(id = "$id"))
     }
 
-    fun toCommunitySideBar() =  navController.navigate(Route.COMMUNITY_SIDEBAR)
+    fun toCommunitySideBar() = navController.navigate(Route.COMMUNITY_SIDEBAR)
 
     fun toProfile(id: Int, saved: Boolean = false) {
         navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "$saved"))
@@ -146,7 +144,7 @@ class JerboaAppState(
     fun navigateUp(): Boolean = navController.navigateUp()
 
     fun openLink(url: String, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
-        openLink(url, navController, useCustomTabs , usePrivateTabs)
+        openLink(url, navController, useCustomTabs, usePrivateTabs)
     }
 
     fun<T> addReturn(key: String, value: T) {
@@ -157,7 +155,7 @@ class JerboaAppState(
         return navController.getBackStackEntry(route)
     }
 
-    fun toPostWithPopUpTo(postId: Int){
+    fun toPostWithPopUpTo(postId: Int) {
         navController.navigate(
             Route.PostArgs.makeRoute(id = "$postId"),
         ) {
@@ -168,10 +166,7 @@ class JerboaAppState(
     fun navigate(route: String) {
         navController.navigate(route)
     }
-
 }
-
-
 
 // A view model stored higher up the tree used for moving navigation arguments from one route
 // to another. Since this will be reused, the value inside this should be moved out ASAP.
@@ -240,5 +235,3 @@ inline fun<reified T> JerboaAppState.ConsumeReturn(
         }
     }
 }
-
-

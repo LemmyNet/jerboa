@@ -5,7 +5,6 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
 import com.jerboa.fetchHomePosts
@@ -45,7 +44,7 @@ fun MainDrawer(
         },
         unreadCount = siteViewModel.getUnreadCountTotal(),
         accountViewModel = accountViewModel,
-        onAddAccount = onClickLogin ,
+        onAddAccount = onClickLogin,
         isOpen = drawerState.isOpen,
         onSwitchAccountClick = { acct ->
             accountViewModel.removeCurrent()

@@ -85,7 +85,6 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -96,6 +95,7 @@ import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.util.InitializeRoute
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -403,7 +403,7 @@ fun UserTabs(
                                         community = cmv.community,
                                         modifier = Modifier.padding(MEDIUM_PADDING),
                                         onClick = { community ->
-                                           appState.toCommunity(id = community.id)
+                                            appState.toCommunity(id = community.id)
                                         },
                                         showDefaultIcon = true,
                                         blurNSFW = blurNSFW,
@@ -482,7 +482,7 @@ fun UserTabs(
                                         }
                                     },
                                     onEditPostClick = { pv ->
-                                       appState.toPostEdit(
+                                        appState.toPostEdit(
                                             channel = transferPostEditDepsViaRoot,
                                             postView = pv,
                                         )

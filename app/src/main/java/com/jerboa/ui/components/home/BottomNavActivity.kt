@@ -48,12 +48,12 @@ import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.BottomAppBarAll
-import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import com.jerboa.util.InitializeRoute
 
 enum class NavTab(
     val textId: Int,

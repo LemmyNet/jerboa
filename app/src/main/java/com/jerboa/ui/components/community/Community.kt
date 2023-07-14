@@ -10,8 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
@@ -186,11 +184,12 @@ fun CommunityHeader(
         },
         navigationIcon = {
             IconButton(onClick = onClickBack) {
-            Icon(
-                Icons.Outlined.ArrowBack,
-                contentDescription = stringResource(R.string.community_back),
-            )
-        } },
+                Icon(
+                    Icons.Outlined.ArrowBack,
+                    contentDescription = stringResource(R.string.community_back),
+                )
+            }
+        },
         actions = {
             IconButton(onClick = {
                 showSortOptions = !showSortOptions

@@ -50,7 +50,6 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import arrow.core.Either
 import com.jerboa.CommentEditDeps
 import com.jerboa.CommentReplyDeps
@@ -95,13 +94,13 @@ import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
-import com.jerboa.util.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.util.InitializeRoute
 
 @Composable
 fun CommentsHeaderTitle(
@@ -122,9 +121,9 @@ fun CommentsHeaderTitle(
 }
 
 @OptIn(
-    ExperimentalMaterialApi::class,
     ExperimentalMaterial3Api::class,
     ExperimentalComposeUiApi::class,
+    ExperimentalMaterialApi::class,
 )
 @Composable
 fun PostActivity(
@@ -143,7 +142,7 @@ fun PostActivity(
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
-    val transferCommentReplyDepsViaRoot =appState.rootChannel<CommentReplyDeps>()
+    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
     val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     val ctx = LocalContext.current
@@ -457,7 +456,7 @@ fun PostActivity(
                                     val commentParentId = getCommentParentId(firstComment)
                                     val showContextButton = depth != null && depth > 0
 
-                                    val toggleExpanded = { commentId: Int ->
+                                    val toggleExpanded: (Int) -> Unit = { commentId: Int ->
                                         if (unExpandedComments.contains(commentId)) {
                                             unExpandedComments.remove(commentId)
                                         } else {
@@ -465,7 +464,7 @@ fun PostActivity(
                                         }
                                     }
 
-                                    val toggleActionBar = { commentId: Int ->
+                                    val toggleActionBar: (Int) -> Unit = { commentId: Int ->
                                         if (commentsWithToggledActionBar.contains(commentId)) {
                                             commentsWithToggledActionBar.remove(commentId)
                                         } else {
@@ -499,8 +498,8 @@ fun PostActivity(
                                                 commentId,
                                             )
                                         },
-                                        toggleExpanded = { commentId -> toggleExpanded(commentId) },
-                                        toggleActionBar = { commentId -> toggleActionBar(commentId) },
+                                        toggleExpanded = toggleExpanded,
+                                        toggleActionBar = toggleActionBar,
                                         onMarkAsReadClick = {},
                                         onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onUpvoteClick = { cv ->
