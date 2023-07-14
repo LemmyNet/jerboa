@@ -122,6 +122,7 @@ fun PersonProfileActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
     openImageViewer: (url: String) -> Unit,
     drawerState: DrawerState,
 ) {
@@ -268,6 +269,7 @@ fun PersonProfileActivity(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                showPostLinkPreviews = showPostLinkPreviews,
                 openImageViewer = openImageViewer,
             )
         },
@@ -298,6 +300,7 @@ fun UserTabs(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
     openImageViewer: (url: String) -> Unit,
 ) {
     val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
@@ -561,6 +564,7 @@ fun UserTabs(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
+                                    showPostLinkPreviews = showPostLinkPreviews,
                                     navController = navController,
                                     openImageViewer = openImageViewer,
                                 )
