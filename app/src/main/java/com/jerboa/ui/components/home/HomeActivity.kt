@@ -96,6 +96,7 @@ fun HomeActivity(
     usePrivateTabs: Boolean,
     drawerState: DrawerState,
     blurNSFW: Boolean,
+    showPostPreviews: Boolean,
 ) {
     Log.d("jerboa", "got to home activity")
     val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
@@ -147,6 +148,7 @@ fun HomeActivity(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                showPostPreviews = showPostPreviews,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -187,6 +189,7 @@ fun MainPostListingsContent(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostPreviews: Boolean,
 ) {
     val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
 
@@ -346,6 +349,7 @@ fun MainPostListingsContent(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            showPostPreviews = showPostPreviews,
             navController = navController,
             openImageViewer = navController::toView,
         )

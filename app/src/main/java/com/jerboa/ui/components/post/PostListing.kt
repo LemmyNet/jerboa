@@ -409,6 +409,7 @@ fun PostBody(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostPreview: Boolean,
     openImageViewer: (url: String) -> Unit,
     navController: NavController,
     clickBody: () -> Unit = {},
@@ -429,7 +430,7 @@ fun PostBody(
         )
 
         // The metadata card
-        if (fullBody && post.embed_title !== null) {
+        if (fullBody && showPostPreview && post.embed_title !== null) {
             MetadataCard(post = post)
         }
 
@@ -492,6 +493,7 @@ fun PreviewStoryTitleAndMetadata() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostPreview = true,
         openImageViewer = {},
         navController = rememberNavController(),
     )
@@ -509,6 +511,7 @@ fun PreviewSourcePost() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostPreview = true,
         openImageViewer = {},
         navController = rememberNavController(),
     )
@@ -771,6 +774,7 @@ fun PreviewPostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostPreview = true,
         openImageViewer = {},
         navController = rememberNavController(),
     )
@@ -804,6 +808,7 @@ fun PreviewLinkPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostPreview = true,
         openImageViewer = {},
         navController = rememberNavController(),
     )
@@ -837,6 +842,7 @@ fun PreviewImagePostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostPreview = true,
         openImageViewer = {},
         navController = rememberNavController(),
     )
@@ -870,6 +876,7 @@ fun PreviewImagePostListingSmallCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostPreview = true,
         openImageViewer = {},
         navController = rememberNavController(),
     )
@@ -903,6 +910,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostPreview = true,
         openImageViewer = {},
         navController = rememberNavController(),
     )
@@ -936,6 +944,7 @@ fun PostListing(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showPostPreview: Boolean,
     navController: NavController,
     openImageViewer: (url: String) -> Unit,
 ) {
@@ -997,6 +1006,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            showPostPreview = showPostPreview,
             navController = navController,
             openImageViewer = openImageViewer,
         )
@@ -1044,6 +1054,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            showPostPreview = showPostPreview,
             navController = navController,
             openImageViewer = openImageViewer,
         )
@@ -1396,6 +1407,7 @@ fun PostListingCard(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostPreview: Boolean,
     navController: NavController,
     openImageViewer: (url: String) -> Unit,
 ) {
@@ -1430,6 +1442,7 @@ fun PostListingCard(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            showPostPreview = showPostPreview,
             openImageViewer = openImageViewer,
             clickBody = { onPostClick(postView) },
             navController = navController,

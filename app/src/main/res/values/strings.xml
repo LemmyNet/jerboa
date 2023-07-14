@@ -320,6 +320,7 @@
     <string name="lang_language">Language</string>
     <string name="loading">Loading</string>
     <string name="blur_nsfw">Blur NSFW images</string>
+    <string name="show_post_previews">Show post previews</string>
     <string name="sorttype_tophour">TopHour</string>
     <string name="sorttype_topsixhour">TopSixHour</string>
     <string name="sorttype_toptwelvehour">TopTwelveHour</string>

@@ -93,4 +93,9 @@ data class AppSettings(
         defaultValue = "1",
     )
     val backConfirmationMode: Int,
+    @ColumnInfo(
+        name = "show_post_previews",
+        defaultValue = "1",
+    )
+    val showPostPreviews: Boolean,
 )
