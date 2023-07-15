@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
-import com.jerboa.openLink
 import com.jerboa.ui.components.common.SimpleTopAppBar
 
 const val githubUrl = "https://github.com/dessalines/jerboa"
