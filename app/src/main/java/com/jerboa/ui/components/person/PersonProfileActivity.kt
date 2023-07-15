@@ -113,6 +113,7 @@ fun PersonProfileActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
     drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to person activity")
@@ -258,6 +259,7 @@ fun PersonProfileActivity(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                showPostLinkPreviews = showPostLinkPreviews,
             )
         },
     )
@@ -287,6 +289,7 @@ fun UserTabs(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
 ) {
     val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
     val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
@@ -549,6 +552,7 @@ fun UserTabs(
                                     blurNSFW = blurNSFW,
                                     openImageViewer = appState::toView,
                                     openLink = appState::openLink,
+                                    showPostLinkPreviews = showPostLinkPreviews,
                                 )
                             }
                             else -> {}

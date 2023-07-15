@@ -56,6 +56,7 @@ fun CreatePostActivity(
     initialUrl: String,
     initialBody: String,
     initialImage: Uri?,
+    initialCommunity: Community?,
 ) {
     Log.d("jerboa", "got to create post activity")
 
@@ -65,7 +66,7 @@ fun CreatePostActivity(
 
     val createPostViewModel: CreatePostViewModel = viewModel()
 
-    var selectedCommunity: Community? by remember { mutableStateOf(null) }
+    var selectedCommunity: Community? by remember { mutableStateOf(initialCommunity) }
     appState.ConsumeReturn<Community>(CommunityListReturn.COMMUNITY) { community ->
         selectedCommunity = community
     }

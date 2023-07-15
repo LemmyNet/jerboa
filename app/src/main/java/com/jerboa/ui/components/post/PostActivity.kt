@@ -139,6 +139,7 @@ fun PostActivity(
     showParentCommentNavigationButtons: Boolean,
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreview: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
@@ -428,6 +429,7 @@ fun PostActivity(
                                     blurNSFW = blurNSFW,
                                     openImageViewer = appState::toView,
                                     openLink = appState::openLink,
+                                    showPostLinkPreview = showPostLinkPreview,
                                 )
                             }
 

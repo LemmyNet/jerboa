@@ -406,6 +406,7 @@ fun PostBody(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreview: Boolean,
     openImageViewer: (url: String) -> Unit,
     openLink: (String, Boolean, Boolean) -> Unit,
     clickBody: () -> Unit = {},
@@ -426,7 +427,7 @@ fun PostBody(
         )
 
         // The metadata card
-        if (fullBody && post.embed_title !== null) {
+        if (fullBody && showPostLinkPreview && post.embed_title !== null) {
             MetadataCard(post = post)
         }
 
@@ -489,6 +490,7 @@ fun PreviewStoryTitleAndMetadata() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
     )
@@ -506,6 +508,7 @@ fun PreviewSourcePost() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
     )
@@ -766,6 +769,7 @@ fun PreviewPostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
     )
@@ -799,6 +803,7 @@ fun PreviewLinkPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
     )
@@ -832,6 +837,7 @@ fun PreviewImagePostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
     )
@@ -865,6 +871,7 @@ fun PreviewImagePostListingSmallCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
     )
@@ -898,6 +905,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
     )
@@ -933,6 +941,7 @@ fun PostListing(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showPostLinkPreview: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -994,6 +1003,7 @@ fun PostListing(
             blurNSFW = blurNSFW,
             openLink = openLink,
             openImageViewer = openImageViewer,
+            showPostLinkPreview = showPostLinkPreview,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -1040,6 +1050,7 @@ fun PostListing(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openLink = openLink,
+            showPostLinkPreview = showPostLinkPreview,
             openImageViewer = openImageViewer,
         )
 
@@ -1386,6 +1397,7 @@ fun PostListingCard(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreview: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
@@ -1420,6 +1432,7 @@ fun PostListingCard(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            showPostLinkPreview = showPostLinkPreview,
             openImageViewer = openImageViewer,
             clickBody = { onPostClick(postView) },
             openLink = openLink,
