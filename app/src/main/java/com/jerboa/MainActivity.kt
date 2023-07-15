@@ -455,7 +455,7 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             body = text
                         }
-                        val community by navController.takeDepsFromRoot<Community?>()
+                        val community by appState.takeDepsFromRoot<Community?>()
 
                         CreatePostActivity(
                             appState = appState,
