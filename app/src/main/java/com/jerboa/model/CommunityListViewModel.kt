@@ -54,6 +54,7 @@ class CommunityListViewModel : ViewModel(), Initializable {
                                 users_active_week = 0,
                                 users_active_month = 0,
                                 users_active_half_year = 0,
+                                hot_rank = 0,
                             ),
                         )
                     }

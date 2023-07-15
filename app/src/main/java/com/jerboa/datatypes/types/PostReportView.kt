@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class PostReportView(
     val post_report: PostReport,
     val post: Post,
@@ -10,4 +14,4 @@ data class PostReportView(
     val my_vote: Int? = null,
     val counts: PostAggregates,
     val resolver: Person? = null,
-)
+) : Parcelable
