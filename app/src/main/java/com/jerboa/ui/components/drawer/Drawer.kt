@@ -181,7 +181,10 @@ fun DrawerItemsMain(
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.home_subscribed),
                     icon = Icons.Outlined.Bookmarks,
-                    onClick = { onClickListingType(ListingType.Subscribed) },
+                    onClick = {
+                        onClickListingType(ListingType.Subscribed)
+                        onSelectTab(NavTab.Home)
+                    },
                 )
             }
         }
@@ -189,14 +192,20 @@ fun DrawerItemsMain(
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_local),
                 icon = Icons.Outlined.LocationCity,
-                onClick = { onClickListingType(ListingType.Local) },
+                onClick = {
+                    onClickListingType(ListingType.Local)
+                    onSelectTab(NavTab.Home)
+                },
             )
         }
         item {
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_all),
                 icon = Icons.Outlined.Public,
-                onClick = { onClickListingType(ListingType.All) },
+                onClick = {
+                    onClickListingType(ListingType.All)
+                    onSelectTab(NavTab.Home)
+                },
             )
         }
         item {
