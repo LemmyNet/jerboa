@@ -23,7 +23,8 @@ class SiteViewModel : ViewModel() {
     // Can't be private, because it needs to be set by the login viewmodel
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
 
-    private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
+    var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
+        private set
 
     var sortType by mutableStateOf(SortType.Active)
         private set
@@ -73,7 +74,7 @@ class SiteViewModel : ViewModel() {
         }
     }
 
-    fun getUnreadCountTotal(): Int {
+    fun getUnreadCountTotal(unreadCountRes: ApiState<GetUnreadCountResponse>): Int {
         return when (val res = unreadCountRes) {
             is ApiState.Success -> {
                 val unreads = res.data

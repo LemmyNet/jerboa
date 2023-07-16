@@ -20,8 +20,10 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -137,9 +139,12 @@ fun BottomNavActivity(
             Scaffold(
                 bottomBar = {
                     if (appSettings.showBottomNav) {
+                        val unreadCount by remember(siteViewModel.unreadCountRes) {
+                            derivedStateOf { siteViewModel.getUnreadCountTotal(siteViewModel.unreadCountRes) }
+                        }
                         BottomAppBarAll(
                             selectedTab = selectedTab,
-                            unreadCounts = siteViewModel.getUnreadCountTotal(),
+                            unreadCounts = unreadCount,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
                             onSelect = onSelectTab,
                         )
