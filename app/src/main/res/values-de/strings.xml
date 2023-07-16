@@ -38,6 +38,12 @@
     <string name="dialogs_top_week">Top der Woche</string>
     <string name="dialogs_top_month">Top des Monats</string>
     <string name="dialogs_top_year">Top des Jahres</string>
+    <string name="dialogs_top_hour">Top Stunde</string>
+    <string name="dialogs_top_six_hour">Top 6 Stunden</string>
+    <string name="dialogs_top_twelve_hour">Top 12 Stunden</string>
+    <string name="dialogs_top_three_month">Top 3 Monate</string>
+    <string name="dialogs_top_six_month">Top 6 Monate</string>
+    <string name="dialogs_top_nine_month">Top 9 Monate</string>
     <string name="dialogs_subscribed">Abonniert</string>
     <string name="dialogs_local">Lokal</string>
     <string name="dialogs_all">Alle</string>
@@ -256,8 +262,8 @@
     <string name="bottomBar_search">Zur Suche springen</string>
     <string name="bottomBar_label_search">Suche</string>
     <string name="bottomBar_label_home">Startseite</string>
-    <string name="bottomBar_label_inbox">Posteingang</string>
-    <string name="bottomBar_label_bookmarks">Lesezeichen</string>
+    <string name="bottomBar_label_inbox">Inbox</string>
+    <string name="bottomBar_label_bookmarks">Markiert</string>
     <string name="bottomBar_label_profile">Profil</string>
     <string name="look_and_feel_show_action_bar_for_comments">Aktionsleiste standardmäsig bei Kommentaren anzeigen</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Bewertungspfeile in Listenansicht anzeigen</string>
