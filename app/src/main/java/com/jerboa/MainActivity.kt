@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -145,6 +146,7 @@ class MainActivity : AppCompatActivity() {
             ) {
                 val navController = rememberNavController()
                 val showConfirmationDialog = remember { mutableStateOf(false) }
+                val scope = rememberCoroutineScope()
 
                 if (showConfirmationDialog.value) {
                     ShowConfirmationDialog({ showConfirmationDialog.value = false }, ::finish)
@@ -170,6 +172,7 @@ class MainActivity : AppCompatActivity() {
 
                 MarkdownHelper.init(
                     navController,
+                    scope,
                     appSettings.useCustomTabs,
                     appSettings.usePrivateTabs,
                 )
@@ -294,7 +297,14 @@ class MainActivity : AppCompatActivity() {
                                 remember(it) { navController.getBackStackEntry(Route.Graph.COMMUNITY) },
                             )
 
-                            val qualifiedName = "${args.name}@${args.instance}"
+                            // Could be instance/c/community@otherinstance ({instance}/c/{name})
+                            // Name could contain its instance already, thus we check for it
+                            val qualifiedName = if (args.name.contains("@")) {
+                                args.name
+                            } else {
+                                "${args.name}@${args.instance}"
+                            }
+
                             CommunityActivity(
                                 communityArg = Either.Right(qualifiedName),
                                 navController = navController,

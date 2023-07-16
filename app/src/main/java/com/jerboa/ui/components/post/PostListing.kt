@@ -49,6 +49,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -116,6 +117,8 @@ import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.muted
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun PostHeaderLine(
@@ -1275,6 +1278,8 @@ private fun ThumbnailTile(
     navController: NavController,
     openImageViewer: (url: String) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
+
     postView.post.url?.also { url ->
 
         val postLinkPicMod = Modifier
@@ -1283,12 +1288,15 @@ private fun ThumbnailTile(
                 if (isImage(url)) {
                     openImageViewer(url)
                 } else {
-                    openLink(
-                        url = url,
-                        navController = navController,
-                        useCustomTab = useCustomTabs,
-                        usePrivateTab = usePrivateTabs,
-                    )
+                    // Navigation must be done on the main thread
+                    scope.launch(Dispatchers.Main) {
+                        openLink(
+                            url = url,
+                            navController = navController,
+                            useCustomTab = useCustomTabs,
+                            usePrivateTab = usePrivateTabs,
+                        )
+                    }
                 }
             }
 

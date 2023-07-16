@@ -24,6 +24,8 @@ const val DEFAULT_INSTANCE = "lemmy.ml"
 const val MINIMUM_API_VERSION: String = "0.18"
 val REDACTED_QUERY_PARAMS = setOf("auth")
 val REDACTED_BODY_FIELDS = setOf("jwt", "password")
+val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
+val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
 
 interface API {
     @GET("site")
@@ -251,18 +253,22 @@ interface API {
 
         fun changeLemmyInstance(instance: String): API {
             currentInstance = instance
-            api = buildApi()
+            api = buildApi(buildUrl())
             return api!!
         }
 
         fun getInstance(): API {
             if (api == null) {
-                api = buildApi()
+                api = buildApi(buildUrl())
             }
             return api!!
         }
 
-        private fun buildApi(): API {
+        fun createTempInstance(host: String): API {
+            return buildApi("https://$host/api/$VERSION/")
+        }
+
+        private fun buildApi(baseUrl: String): API {
             val client: OkHttpClient = OkHttpClient.Builder()
                 .addInterceptor { chain ->
                     val requestBuilder = chain.request().newBuilder()
@@ -294,7 +300,7 @@ interface API {
                 .build()
 
             return Retrofit.Builder()
-                .baseUrl(buildUrl())
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

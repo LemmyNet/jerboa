@@ -47,6 +47,9 @@ import io.noties.markwon.image.AsyncDrawableSpan
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 /**
@@ -81,7 +84,7 @@ object MarkdownHelper {
     private var markwon: Markwon? = null
     private var previewMarkwon: Markwon? = null
 
-    fun init(navController: NavController, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+    fun init(navController: NavController, scope: CoroutineScope, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
         val context = navController.context
         val loader = ImageLoader.Builder(context)
             .crossfade(true)
@@ -103,8 +106,14 @@ object MarkdownHelper {
             .usePlugin(MarkwonSpoilerPlugin(true))
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                    builder.linkResolver { _, link ->
-                        openLink(link, navController, useCustomTabs, usePrivateTabs)
+                    builder.linkResolver { view, link ->
+                        // Previously when openLink wasn't suspending it was somehow preventing the click from propagating
+                        // Now it doesn't anymore and we have to do it manually
+                        view.cancelPendingInputEvents()
+                        // Navigation must be done on the main thread
+                        scope.launch(Dispatchers.Main) {
+                            openLink(link, navController, useCustomTabs, usePrivateTabs)
+                        }
                     }
                 }
             })

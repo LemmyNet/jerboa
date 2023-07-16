@@ -30,7 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
-import com.jerboa.openLink
+import com.jerboa.openLinkRaw
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.toCrashLogs
 
@@ -57,7 +57,7 @@ fun AboutActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun openLink(link: String) {
-        openLink(link, navController, useCustomTabs, usePrivateTabs)
+        openLinkRaw(link, navController, useCustomTabs, usePrivateTabs)
     }
 
     Scaffold(
@@ -81,7 +81,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", navController, useCustomTabs, usePrivateTabs)
+                        openLink("$githubUrl/blob/main/RELEASES.md")
                     },
                 )
                 SettingsDivider()
