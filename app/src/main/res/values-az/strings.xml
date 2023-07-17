@@ -31,7 +31,6 @@
     <string name="account_settings_subscribed">Abunə olundu</string>
     <string name="addBookmark">Əlfəcinlərə əlavə et</string>
     <string name="bottomBar_bookmarks">Əlfəcinlərimə keç</string>
-    <string name="app_bars_dot_spacer" translatable="false">·</string>
     <string name="bottomBar_home">Əsas səhifəyə keç</string>
     <string name="bottomBar_inbox">Gələnlər qutuma keç</string>
     <string name="bottomBar_label_bookmarks">Saxlanıldı</string>
