@@ -675,7 +675,7 @@ class MainActivity : AppCompatActivity() {
                             usePrivateTabs = appSettings.usePrivateTabs,
                             onBack = appState::popBackStack,
                             onClickCrashLogs = appState::toCrashLogs,
-                            openLink = appState::openLink,
+                            openLink = appState::openLinkRaw,
                         )
                     }
 

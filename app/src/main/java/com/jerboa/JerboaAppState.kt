@@ -20,6 +20,8 @@ import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.model.ReplyItem
 import com.jerboa.ui.components.common.Route
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -143,8 +145,14 @@ class JerboaAppState(
 
     fun navigateUp(): Boolean = navController.navigateUp()
 
+    fun openLinkRaw(url: String, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+        openLinkRaw(url, navController, useCustomTabs, usePrivateTabs)
+    }
+
     fun openLink(url: String, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
-        openLink(url, navController, useCustomTabs, usePrivateTabs)
+        coroutineScope.launch(Dispatchers.Main) {
+            openLink(url, navController, useCustomTabs, usePrivateTabs)
+        }
     }
 
     fun<T> addReturn(key: String, value: T) {

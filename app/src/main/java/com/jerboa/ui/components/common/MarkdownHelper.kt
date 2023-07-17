@@ -28,8 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
-import androidx.navigation.NavController
 import coil.ImageLoader
+import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.convertSpToPx
 import com.jerboa.openLink
@@ -47,7 +47,6 @@ import io.noties.markwon.image.AsyncDrawableSpan
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
@@ -84,8 +83,8 @@ object MarkdownHelper {
     private var markwon: Markwon? = null
     private var previewMarkwon: Markwon? = null
 
-    fun init(navController: NavController, scope: CoroutineScope, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
-        val context = navController.context
+    fun init(appState: JerboaAppState, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+        val context = appState.navController.context
         val loader = ImageLoader.Builder(context)
             .crossfade(true)
             .placeholder(R.drawable.ic_launcher_foreground)
@@ -111,8 +110,8 @@ object MarkdownHelper {
                         // Now it doesn't anymore and we have to do it manually
                         view.cancelPendingInputEvents()
                         // Navigation must be done on the main thread
-                        scope.launch(Dispatchers.Main) {
-                            openLink(link, navController, useCustomTabs, usePrivateTabs)
+                        appState.coroutineScope.launch(Dispatchers.Main) {
+                            openLink(link, appState.navController, useCustomTabs, usePrivateTabs)
                         }
                     }
                 }
