@@ -17,8 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
@@ -62,7 +60,7 @@ fun PostListings(
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     openImageViewer: (url: String) -> Unit,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
 ) {
     LazyColumn(
         state = listState,
@@ -110,7 +108,7 @@ fun PostListings(
                 blurNSFW = blurNSFW,
                 showPostLinkPreview = showPostLinkPreviews,
                 openImageViewer = openImageViewer,
-                navController = navController,
+                openLink = openLink,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -160,6 +158,6 @@ fun PreviewPostListings() {
         blurNSFW = true,
         showPostLinkPreviews = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }

@@ -10,10 +10,11 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityModeratorView
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentNodes(
-    nodes: List<CommentNodeData>,
+    nodes: ImmutableList<CommentNodeData>,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -88,7 +89,7 @@ fun CommentNodes(
 }
 
 fun LazyListScope.commentNodeItems(
-    nodes: List<CommentNodeData>,
+    nodes: ImmutableList<CommentNodeData>,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,

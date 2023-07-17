@@ -15,7 +15,7 @@ import com.jerboa.datatypes.types.SearchResponse
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.serializeToMap
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 class CommunityListViewModel : ViewModel(), Initializable {
@@ -54,6 +54,7 @@ class CommunityListViewModel : ViewModel(), Initializable {
                                 users_active_week = 0,
                                 users_active_month = 0,
                                 users_active_half_year = 0,
+                                hot_rank = 0,
                             ),
                         )
                     }

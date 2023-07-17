@@ -50,8 +50,12 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import arrow.core.Either
+import com.jerboa.CommentEditDeps
+import com.jerboa.CommentReplyDeps
+import com.jerboa.ConsumeReturn
+import com.jerboa.JerboaAppState
+import com.jerboa.PostEditDeps
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -73,14 +77,13 @@ import com.jerboa.datatypes.types.SavePost
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
-import com.jerboa.isLoading
 import com.jerboa.isModerator
-import com.jerboa.isRefreshing
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
+import com.jerboa.rootChannel
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.shareLink
@@ -89,27 +92,15 @@ import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.CommentEditDeps
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
-import com.jerboa.ui.components.common.CommentReplyDeps
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
-import com.jerboa.ui.components.common.ConsumeReturn
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PostEditDeps
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.rootChannel
+import com.jerboa.ui.components.common.isLoading
+import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.common.toComment
-import com.jerboa.ui.components.common.toCommentEdit
-import com.jerboa.ui.components.common.toCommentReply
-import com.jerboa.ui.components.common.toCommentReport
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPostEdit
-import com.jerboa.ui.components.common.toPostReport
-import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.util.InitializeRoute
 
 @Composable
 fun CommentsHeaderTitle(
@@ -130,16 +121,16 @@ fun CommentsHeaderTitle(
 }
 
 @OptIn(
-    ExperimentalMaterialApi::class,
     ExperimentalMaterial3Api::class,
     ExperimentalComposeUiApi::class,
+    ExperimentalMaterialApi::class,
 )
 @Composable
 fun PostActivity(
     id: Either<PostId, CommentId>,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
-    navController: NavController,
+    appState: JerboaAppState,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     showCollapsedCommentContent: Boolean,
@@ -149,12 +140,11 @@ fun PostActivity(
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreview: Boolean,
-    openImageViewer: (url: String) -> Unit,
 ) {
     Log.d("jerboa", "got to post activity")
-    val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
-    val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
-    val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
+    val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
+    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
+    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     val ctx = LocalContext.current
 
@@ -162,15 +152,15 @@ fun PostActivity(
 
     val postViewModel: PostViewModel = viewModel()
 
-    navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (postViewModel.initialized) postViewModel.updatePost(pv)
     }
 
-    navController.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
+    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
         if (postViewModel.initialized) postViewModel.appendComment(cv)
     }
 
-    navController.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
         if (postViewModel.initialized) postViewModel.updateComment(cv)
     }
 
@@ -270,7 +260,7 @@ fun PostActivity(
                     navigationIcon = {
                         IconButton(
                             modifier = Modifier.testTag("jerboa:back"),
-                            onClick = { navController.popBackStack() },
+                            onClick = appState::popBackStack,
                         ) {
                             Icon(
                                 Icons.Outlined.ArrowBack,
@@ -353,7 +343,7 @@ fun PostActivity(
                                     },
                                     onReplyClick = { pv ->
                                         val isModerator = isModerator(pv.creator, postRes.data.moderators)
-                                        navController.toCommentReply(
+                                        appState.toCommentReply(
                                             channel = transferCommentReplyDepsViaRoot,
                                             replyItem = ReplyItem.PostItem(pv),
                                             isModerator = isModerator,
@@ -372,10 +362,10 @@ fun PostActivity(
                                         }
                                     },
                                     onCommunityClick = { community ->
-                                        navController.toCommunity(id = community.id)
+                                        appState.toCommunity(id = community.id)
                                     },
                                     onEditPostClick = { pv ->
-                                        navController.toPostEdit(
+                                        appState.toPostEdit(
                                             channel = transferPostEditDepsViaRoot,
                                             postView = pv,
                                         )
@@ -392,11 +382,9 @@ fun PostActivity(
                                         }
                                     },
                                     onReportClick = { pv ->
-                                        navController.toPostReport(id = pv.post.id)
+                                        appState.toPostReport(id = pv.post.id)
                                     },
-                                    onPersonClick = { personId ->
-                                        navController.toProfile(id = personId)
-                                    },
+                                    onPersonClick = appState::toProfile,
                                     onBlockCommunityClick = { c ->
                                         account?.also { acct ->
                                             postViewModel.blockCommunity(
@@ -439,9 +427,9 @@ fun PostActivity(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
+                                    openImageViewer = appState::toView,
+                                    openLink = appState::openLink,
                                     showPostLinkPreview = showPostLinkPreview,
-                                    openImageViewer = openImageViewer,
-                                    navController = navController,
                                 )
                             }
 
@@ -470,7 +458,7 @@ fun PostActivity(
                                     val commentParentId = getCommentParentId(firstComment)
                                     val showContextButton = depth != null && depth > 0
 
-                                    val toggleExpanded = { commentId: Int ->
+                                    val toggleExpanded: (Int) -> Unit = { commentId: Int ->
                                         if (unExpandedComments.contains(commentId)) {
                                             unExpandedComments.remove(commentId)
                                         } else {
@@ -478,7 +466,7 @@ fun PostActivity(
                                         }
                                     }
 
-                                    val toggleActionBar = { commentId: Int ->
+                                    val toggleActionBar: (Int) -> Unit = { commentId: Int ->
                                         if (commentsWithToggledActionBar.contains(commentId)) {
                                             commentsWithToggledActionBar.remove(commentId)
                                         } else {
@@ -492,12 +480,8 @@ fun PostActivity(
                                                 postView.post.id,
                                                 commentParentId = commentParentId,
                                                 showContextButton = showContextButton,
-                                                onPostClick = { id ->
-                                                    navController.toPost(id = id)
-                                                },
-                                                onCommentClick = { commentId ->
-                                                    navController.toComment(id = commentId)
-                                                },
+                                                onPostClick = appState::toPost,
+                                                onCommentClick = appState::toComment,
                                             )
                                         }
                                     }
@@ -516,8 +500,8 @@ fun PostActivity(
                                                 commentId,
                                             )
                                         },
-                                        toggleExpanded = { commentId -> toggleExpanded(commentId) },
-                                        toggleActionBar = { commentId -> toggleActionBar(commentId) },
+                                        toggleExpanded = toggleExpanded,
+                                        toggleActionBar = toggleActionBar,
                                         onMarkAsReadClick = {},
                                         onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onUpvoteClick = { cv ->
@@ -550,7 +534,7 @@ fun PostActivity(
                                         },
                                         onReplyClick = { cv ->
                                             val isModerator = isModerator(cv.creator, postRes.data.moderators)
-                                            navController.toCommentReply(
+                                            appState.toCommentReply(
                                                 channel = transferCommentReplyDepsViaRoot,
                                                 replyItem = ReplyItem.CommentItem(cv),
                                                 isModerator = isModerator,
@@ -567,13 +551,11 @@ fun PostActivity(
                                                 )
                                             }
                                         },
-                                        onPersonClick = { personId ->
-                                            navController.toProfile(id = personId)
-                                        },
+                                        onPersonClick = appState::toProfile,
                                         onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->
-                                            navController.toCommentEdit(
+                                            appState.toCommentEdit(
                                                 channel = transferCommentEditDepsViaRoot,
                                                 commentView = cv,
                                             )
@@ -590,10 +572,10 @@ fun PostActivity(
                                             }
                                         },
                                         onReportClick = { cv ->
-                                            navController.toCommentReport(id = cv.comment.id)
+                                            appState.toCommentReport(id = cv.comment.id)
                                         },
                                         onCommentLinkClick = { cv ->
-                                            navController.toComment(id = cv.comment.id)
+                                            appState.toComment(id = cv.comment.id)
                                         },
                                         onFetchChildrenClick = { cv ->
                                             postViewModel.fetchMoreChildren(
@@ -615,7 +597,7 @@ fun PostActivity(
                                             }
                                         },
                                         onCommunityClick = { community ->
-                                            navController.toCommunity(id = community.id)
+                                            appState.toCommunity(id = community.id)
                                         },
                                         onPostClick = {}, // Do nothing
                                         account = account,

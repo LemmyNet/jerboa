@@ -11,7 +11,7 @@ import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.EditPost
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 class PostEditViewModel : ViewModel(), Initializable {

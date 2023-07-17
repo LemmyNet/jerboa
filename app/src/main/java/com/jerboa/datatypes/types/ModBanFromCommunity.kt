@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class ModBanFromCommunity(
     val id: Int,
     val mod_person_id: PersonId,
@@ -9,4 +13,4 @@ data class ModBanFromCommunity(
     val banned: Boolean,
     val expires: String? = null,
     val when_: String,
-)
+) : Parcelable

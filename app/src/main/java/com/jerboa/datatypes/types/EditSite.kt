@@ -1,5 +1,11 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import androidx.compose.runtime.Immutable
+import kotlinx.parcelize.Parcelize
+
+@Immutable
+@Parcelize
 data class EditSite(
     val name: String? = null,
     val sidebar: String? = null,
@@ -43,4 +49,4 @@ data class EditSite(
     val registration_mode: RegistrationMode? /* "Closed" | "RequireApplication" | "Open" */ = null,
     val reports_email_admins: Boolean? = null,
     val auth: String,
-)
+) : Parcelable
