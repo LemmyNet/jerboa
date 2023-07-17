@@ -32,7 +32,6 @@ import coil.ImageLoader
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.convertSpToPx
-import com.jerboa.openLink
 import com.jerboa.util.MarkwonLemmyLinkPlugin
 import com.jerboa.util.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -47,8 +46,6 @@ import io.noties.markwon.image.AsyncDrawableSpan
 import io.noties.markwon.image.coil.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 /**
