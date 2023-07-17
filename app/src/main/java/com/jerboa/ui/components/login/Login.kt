@@ -51,12 +51,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
 import com.jerboa.datatypes.types.Login
-import com.jerboa.db.entity.Account
 import com.jerboa.onAutofill
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -254,10 +251,10 @@ fun LoginFormPreview() {
     LoginForm()
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginHeader(
-    navController: NavController,
-    accounts: List<Account>? = null,
+    onClickBack: () -> Unit,
 ) {
     TopAppBar(
         title = {
@@ -267,10 +264,7 @@ fun LoginHeader(
         },
         navigationIcon = {
             IconButton(
-                enabled = !accounts.isNullOrEmpty(),
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onClickBack,
             ) {
                 Icon(
                     Icons.Outlined.ArrowBack,
@@ -284,5 +278,7 @@ fun LoginHeader(
 @Preview
 @Composable
 fun LoginHeaderPreview() {
-    LoginHeader(navController = rememberNavController())
+    LoginHeader(
+        onClickBack = {},
+    )
 }

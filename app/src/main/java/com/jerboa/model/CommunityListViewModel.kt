@@ -15,7 +15,7 @@ import com.jerboa.datatypes.types.SearchResponse
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.serializeToMap
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 class CommunityListViewModel : ViewModel(), Initializable {

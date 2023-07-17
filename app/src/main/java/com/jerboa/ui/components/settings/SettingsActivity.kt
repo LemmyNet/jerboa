@@ -19,20 +19,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
 import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.toAbout
-import com.jerboa.ui.components.common.toAccountSettings
-import com.jerboa.ui.components.common.toLookAndFeel
 
 @Composable
 fun SettingsActivity(
-    navController: NavController,
     accountViewModel: AccountViewModel,
+    onBack: () -> Unit,
+    onClickLookAndFeel: () -> Unit,
+    onClickAccountSettings: () -> Unit,
+    onClickAbout: () -> Unit,
 ) {
     Log.d("jerboa", "Got to settings activity")
 
@@ -42,7 +41,7 @@ fun SettingsActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.settings_activity_settings), navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.settings_activity_settings), onClickBack = onBack)
         },
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
@@ -54,7 +53,7 @@ fun SettingsActivity(
                             contentDescription = null,
                         )
                     },
-                    onClick = { navController.toLookAndFeel() },
+                    onClick = onClickLookAndFeel,
                 )
                 account?.also { acct ->
                     SettingsMenuLink(
@@ -72,7 +71,7 @@ fun SettingsActivity(
                                 contentDescription = null,
                             )
                         },
-                        onClick = { navController.toAccountSettings() },
+                        onClick = onClickAccountSettings,
                     )
                 }
                 SettingsMenuLink(
@@ -83,7 +82,7 @@ fun SettingsActivity(
                             contentDescription = null,
                         )
                     },
-                    onClick = { navController.toAbout() },
+                    onClick = onClickAbout,
                 )
             }
         },

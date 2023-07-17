@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.jerboa.api.ApiState
 
 @Composable
 fun ApiErrorText(
@@ -23,4 +24,12 @@ fun ApiErrorToast(
 @Composable
 fun ApiEmptyText() {
     Text("Empty")
+}
+
+fun <T> ApiState<T>.isLoading(): Boolean {
+    return this is ApiState.Appending || this == ApiState.Loading || this == ApiState.Refreshing
+}
+
+fun <T> ApiState<T>.isRefreshing(): Boolean {
+    return this == ApiState.Refreshing
 }

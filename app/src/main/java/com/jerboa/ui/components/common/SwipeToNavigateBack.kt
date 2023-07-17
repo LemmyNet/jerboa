@@ -12,19 +12,18 @@ import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwipeToNavigateBack(
-    navController: NavController,
+    onSwipeBack: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     val dismissState = rememberDismissState(
         confirmStateChange = {
             when (it) {
                 DismissValue.DismissedToEnd -> {
-                    navController.navigateUp()
+                    onSwipeBack()
                     true
                 }
                 else -> { false }

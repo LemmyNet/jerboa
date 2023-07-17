@@ -26,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
-import androidx.navigation.NavController
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberFloatSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
@@ -49,8 +48,8 @@ import com.jerboa.util.BackConfirmationMode
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LookAndFeelActivity(
-    navController: NavController,
     appSettingsViewModel: AppSettingsViewModel,
+    onBack: () -> Unit,
 ) {
     Log.d("jerboa", "Got to lookAndFeel activity")
     val ctx = LocalContext.current
@@ -127,7 +126,7 @@ fun LookAndFeelActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), onClickBack = onBack)
         },
         content = { padding ->
             Column(
