@@ -3,10 +3,8 @@ package com.jerboa.ui.components.drawer
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
@@ -41,16 +39,12 @@ fun MainDrawer(
         closeDrawer(scope, drawerState)
     }
 
-    val unreadCount by remember(siteViewModel.unreadCountRes) {
-        derivedStateOf { siteViewModel.getUnreadCountTotal(siteViewModel.unreadCountRes) }
-    }
-
     Drawer(
         myUserInfo = when (val res = siteViewModel.siteRes) {
             is ApiState.Success -> res.data.my_user
             else -> null
         },
-        unreadCount = unreadCount,
+        unreadCount = siteViewModel.unreadCount,
         accountViewModel = accountViewModel,
         navController = navController,
         isOpen = drawerState.isOpen,

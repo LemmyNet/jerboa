@@ -103,9 +103,7 @@ fun InboxActivity(
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
-    val unreadCount by remember(siteViewModel.unreadCountRes) {
-        derivedStateOf { siteViewModel.getUnreadCountTotal(siteViewModel.unreadCountRes) }
-    }
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val inboxViewModel: InboxViewModel = viewModel()
@@ -131,7 +129,7 @@ fun InboxActivity(
         topBar = {
             InboxHeader(
                 scrollBehavior = scrollBehavior,
-                unreadCount = unreadCount,
+                unreadCount = siteViewModel.unreadCount,
                 openDrawer = {
                     scope.launch {
                         drawerState.open()
