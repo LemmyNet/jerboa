@@ -1,5 +1,11 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import androidx.compose.runtime.Immutable
+import kotlinx.parcelize.Parcelize
+
+@Immutable
+@Parcelize
 data class EditCommunity(
     val community_id: CommunityId,
     val title: String? = null,
@@ -10,4 +16,4 @@ data class EditCommunity(
     val posting_restricted_to_mods: Boolean? = null,
     val discussion_languages: List<LanguageId>? = null,
     val auth: String,
-)
+) : Parcelable

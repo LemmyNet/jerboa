@@ -1,5 +1,11 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import androidx.compose.runtime.Immutable
+import kotlinx.parcelize.Parcelize
+
+@Immutable
+@Parcelize
 data class EditCustomEmoji(
     val id: CustomEmojiId,
     val category: String,
@@ -7,4 +13,4 @@ data class EditCustomEmoji(
     val alt_text: String,
     val keywords: List<String>,
     val auth: String,
-)
+) : Parcelable

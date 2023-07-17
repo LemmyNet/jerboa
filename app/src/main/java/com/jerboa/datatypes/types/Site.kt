@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Site(
     val id: SiteId,
     val name: String,
@@ -15,4 +19,4 @@ data class Site(
     val private_key: String? = null,
     val public_key: String,
     val instance_id: InstanceId,
-)
+) : Parcelable

@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class GetComments(
     val type_: ListingType? /* "All" | "Local" | "Subscribed" */ = null,
     val sort: CommentSortType? /* "Hot" | "Top" | "New" | "Old" */ = null,
@@ -12,4 +16,4 @@ data class GetComments(
     val parent_id: CommentId? = null,
     val saved_only: Boolean? = null,
     val auth: String? = null,
-)
+) : Parcelable

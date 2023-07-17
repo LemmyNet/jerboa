@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class ModRemoveCommunity(
     val id: Int,
     val mod_person_id: PersonId,
@@ -8,4 +12,4 @@ data class ModRemoveCommunity(
     val removed: Boolean,
     val expires: String? = null,
     val when_: String,
-)
+) : Parcelable

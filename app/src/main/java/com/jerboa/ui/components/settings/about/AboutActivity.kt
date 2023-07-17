@@ -26,13 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
-import com.jerboa.openLink
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.ui.components.common.toCrashLogs
 
 const val githubUrl = "https://github.com/dessalines/jerboa"
 const val jerboaMatrixChat = "https://matrix.to/#/#jerboa-dev:matrix.org"
@@ -43,9 +39,11 @@ const val mastodonLink = "https://mastodon.social/@LemmyDev"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutActivity(
-    navController: NavController,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
+    onBack: () -> Unit,
+    onClickCrashLogs: () -> Unit,
+    openLink: (String, Boolean, Boolean) -> Unit,
 ) {
     Log.d("jerboa", "Got to About activity")
 
@@ -57,13 +55,13 @@ fun AboutActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun openLink(link: String) {
-        openLink(link, navController, useCustomTabs, usePrivateTabs)
+        openLink(link, useCustomTabs, usePrivateTabs)
     }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.settings_about_about), navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.settings_about_about), onClickBack = onBack)
         },
         content = { padding ->
             Column(
@@ -81,7 +79,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md", navController, useCustomTabs, usePrivateTabs)
+                        openLink("$githubUrl/blob/main/RELEASES.md")
                     },
                 )
                 SettingsDivider()
@@ -106,7 +104,7 @@ fun AboutActivity(
                             contentDescription = null,
                         )
                     },
-                    onClick = { navController.toCrashLogs() },
+                    onClick = onClickCrashLogs,
                 )
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_developer_matrix_chatroom)) },
@@ -205,5 +203,11 @@ fun SettingsHeader(
 @Preview
 @Composable
 fun AboutPreview() {
-    AboutActivity(navController = rememberNavController(), useCustomTabs = false, usePrivateTabs = false)
+    AboutActivity(
+        useCustomTabs = false,
+        usePrivateTabs = false,
+        onBack = {},
+        onClickCrashLogs = {},
+        openLink = { _: String, _: Boolean, _: Boolean -> },
+    )
 }
