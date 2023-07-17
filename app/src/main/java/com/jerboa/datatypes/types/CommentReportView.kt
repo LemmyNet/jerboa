@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class CommentReportView(
     val comment_report: CommentReport,
     val comment: Comment,
@@ -11,4 +15,4 @@ data class CommentReportView(
     val creator_banned_from_community: Boolean,
     val my_vote: Int? = null,
     val resolver: Person? = null,
-)
+) : Parcelable

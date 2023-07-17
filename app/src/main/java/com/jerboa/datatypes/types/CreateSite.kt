@@ -1,5 +1,11 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import androidx.compose.runtime.Immutable
+import kotlinx.parcelize.Parcelize
+
+@Immutable
+@Parcelize
 data class CreateSite(
     val name: String,
     val sidebar: String? = null,
@@ -42,4 +48,4 @@ data class CreateSite(
     val taglines: List<String>? = null,
     val registration_mode: RegistrationMode? /* "Closed" | "RequireApplication" | "Open" */ = null,
     val auth: String,
-)
+) : Parcelable

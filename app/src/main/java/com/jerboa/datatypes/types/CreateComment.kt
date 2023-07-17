@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class CreateComment(
     val content: String,
     val post_id: PostId,
@@ -7,4 +11,4 @@ data class CreateComment(
     val language_id: LanguageId? = null,
     val form_id: String? = null,
     val auth: String,
-)
+) : Parcelable

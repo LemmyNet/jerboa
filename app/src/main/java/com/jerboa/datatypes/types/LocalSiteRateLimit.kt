@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class LocalSiteRateLimit(
     val id: Int,
     val local_site_id: LocalSiteId,
@@ -17,4 +21,4 @@ data class LocalSiteRateLimit(
     val search_per_second: Int,
     val published: String,
     val updated: String? = null,
-)
+) : Parcelable
