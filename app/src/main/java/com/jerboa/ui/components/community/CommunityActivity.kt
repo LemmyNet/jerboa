@@ -29,8 +29,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
 import arrow.core.Either
+import com.jerboa.ConsumeReturn
+import com.jerboa.CreatePostDeps
+import com.jerboa.JerboaAppState
+import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -47,42 +50,32 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.isLoading
-import com.jerboa.isRefreshing
 import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
+import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.ConsumeReturn
-import com.jerboa.ui.components.common.CreatePostDeps
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PostEditDeps
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.common.rootChannel
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toCreatePost
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPostEdit
-import com.jerboa.ui.components.common.toPostReport
-import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.common.toView
+import com.jerboa.ui.components.common.isLoading
+import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.util.InitializeRoute
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun CommunityActivity(
     communityArg: Either<CommunityId, String>,
-    navController: NavController,
+    appState: JerboaAppState,
     communityViewModel: CommunityViewModel,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
@@ -94,8 +87,8 @@ fun CommunityActivity(
     showPostLinkPreviews: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
-    val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
-    val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
+    val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
+    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
@@ -104,7 +97,7 @@ fun CommunityActivity(
     val account = getCurrentAccount(accountViewModel)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (communityViewModel.initialized) communityViewModel.updatePost(pv)
     }
 
@@ -215,7 +208,8 @@ fun CommunityActivity(
                                     )
                                 }
                             },
-                            navController = navController,
+                            onClickCommunityInfo = appState::toCommunitySideBar,
+                            onClickBack = appState::navigateUp,
                         )
                     }
                     else -> {}
@@ -295,7 +289,7 @@ fun CommunityActivity(
                                 }
                             },
                             onPostClick = { postView ->
-                                navController.toPost(id = postView.post.id)
+                                appState.toPost(id = postView.post.id)
                             },
                             onSaveClick = { postView ->
                                 account?.also { acct ->
@@ -309,7 +303,7 @@ fun CommunityActivity(
                                 }
                             },
                             onEditPostClick = { postView ->
-                                navController.toPostEdit(
+                                appState.toPostEdit(
                                     channel = transferPostEditDepsViaRoot,
                                     postView = postView,
                                 )
@@ -326,13 +320,13 @@ fun CommunityActivity(
                                 }
                             },
                             onReportClick = { postView ->
-                                navController.toPostReport(id = postView.post.id)
+                                appState.toPostReport(id = postView.post.id)
                             },
                             onCommunityClick = { community ->
-                                navController.toCommunity(id = community.id)
+                                appState.toCommunity(id = community.id)
                             },
                             onPersonClick = { personId ->
-                                navController.toProfile(id = personId)
+                                appState.toProfile(id = personId)
                             },
                             onBlockCommunityClick = {
                                 when (val communityRes = communityViewModel.communityRes) {
@@ -391,8 +385,8 @@ fun CommunityActivity(
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW,
                             showPostLinkPreviews = showPostLinkPreviews,
-                            openImageViewer = navController::toView,
-                            navController = navController,
+                            openImageViewer = appState::toView,
+                            openLink = appState::openLink,
                         )
                     }
                     else -> {}
@@ -406,7 +400,7 @@ fun CommunityActivity(
                     FloatingActionButton(
                         onClick = {
                             account?.also {
-                                navController.toCreatePost(
+                                appState.toCreatePost(
                                     channel = transferCreatePostDepsViaRoot,
                                     community = communityRes.data.community_view.community,
                                 )

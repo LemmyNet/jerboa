@@ -38,7 +38,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
+import com.jerboa.ConsumeReturn
+import com.jerboa.CreatePostDeps
+import com.jerboa.JerboaAppState
+import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -50,33 +53,23 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.entity.Account
-import com.jerboa.isLoading
-import com.jerboa.isRefreshing
 import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
+import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.ApiErrorToast
-import com.jerboa.ui.components.common.ConsumeReturn
-import com.jerboa.ui.components.common.CreatePostDeps
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PostEditDeps
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.common.rootChannel
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toCreatePost
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPostEdit
-import com.jerboa.ui.components.common.toPostReport
-import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.common.toView
+import com.jerboa.ui.components.common.isLoading
+import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import kotlinx.collections.immutable.persistentListOf
@@ -86,7 +79,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun HomeActivity(
-    navController: NavController,
+    appState: JerboaAppState,
     homeViewModel: HomeViewModel,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
@@ -99,7 +92,7 @@ fun HomeActivity(
     showPostLinkPreviews: Boolean,
 ) {
     Log.d("jerboa", "got to home activity")
-    val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
+    val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
 
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
@@ -108,7 +101,7 @@ fun HomeActivity(
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
 
-    navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (homeViewModel.initialized) homeViewModel.updatePost(pv)
     }
 
@@ -130,8 +123,8 @@ fun HomeActivity(
                 homeViewModel = homeViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 account = account,
-                navController = navController,
                 scrollBehavior = scrollBehavior,
+                onClickSiteInfo = appState::toSiteSideBar,
             )
         },
         content = { padding ->
@@ -142,7 +135,7 @@ fun HomeActivity(
                 appSettingsViewModel = appSettingsViewModel,
                 account = account,
                 ctx = ctx,
-                navController = navController,
+                appState = appState,
                 postListState = postListState,
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 useCustomTabs = useCustomTabs,
@@ -156,7 +149,7 @@ fun HomeActivity(
             FloatingActionButton(
                 onClick = {
                     account?.also {
-                        navController.toCreatePost(
+                        appState.toCreatePost(
                             channel = transferCreatePostDepsViaRoot,
                             community = null,
                         )
@@ -181,7 +174,7 @@ fun MainPostListingsContent(
     siteViewModel: SiteViewModel,
     account: Account?,
     ctx: Context,
-    navController: NavController,
+    appState: JerboaAppState,
     padding: PaddingValues,
     postListState: LazyListState,
     appSettingsViewModel: AppSettingsViewModel,
@@ -191,7 +184,7 @@ fun MainPostListingsContent(
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
 ) {
-    val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
+    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
@@ -273,7 +266,7 @@ fun MainPostListingsContent(
                 }
             },
             onPostClick = { postView ->
-                navController.toPost(id = postView.post.id)
+                appState.toPost(id = postView.post.id)
             },
             onSaveClick = { postView ->
                 account?.also { acct ->
@@ -311,7 +304,7 @@ fun MainPostListingsContent(
                 }
             },
             onEditPostClick = { postView ->
-                navController.toPostEdit(
+                appState.toPostEdit(
                     channel = transferPostEditDepsViaRoot,
                     postView = postView,
                 )
@@ -328,13 +321,13 @@ fun MainPostListingsContent(
                 }
             },
             onReportClick = { postView ->
-                navController.toPostReport(id = postView.post.id)
+                appState.toPostReport(id = postView.post.id)
             },
             onCommunityClick = { community ->
-                navController.toCommunity(id = community.id)
+                appState.toCommunity(id = community.id)
             },
             onPersonClick = { personId ->
-                navController.toProfile(id = personId)
+                appState.toProfile(id = personId)
             },
             onShareClick = { url ->
                 shareLink(url, ctx)
@@ -350,8 +343,8 @@ fun MainPostListingsContent(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             showPostLinkPreviews = showPostLinkPreviews,
-            navController = navController,
-            openImageViewer = navController::toView,
+            openImageViewer = appState::toView,
+            openLink = appState::openLink,
         )
     }
 }
@@ -364,14 +357,13 @@ fun MainTopBar(
     homeViewModel: HomeViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     account: Account?,
-    navController: NavController,
+    onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     Column {
         HomeHeader(
             openDrawer = openDrawer,
             scrollBehavior = scrollBehavior,
-            navController = navController,
             selectedSortType = homeViewModel.sortType,
             selectedListingType = homeViewModel.listingType,
             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
@@ -392,6 +384,7 @@ fun MainTopBar(
                 scrollToTop()
                 homeViewModel.resetPosts(account)
             },
+            onClickSiteInfo = onClickSiteInfo,
         )
     }
 }
