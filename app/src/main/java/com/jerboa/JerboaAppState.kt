@@ -150,6 +150,7 @@ class JerboaAppState(
     }
 
     fun openLink(url: String, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+        // Navigation must be done on the main thread
         coroutineScope.launch(Dispatchers.Main) {
             openLink(url, navController, useCustomTabs, usePrivateTabs)
         }

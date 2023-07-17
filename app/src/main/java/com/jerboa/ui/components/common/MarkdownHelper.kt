@@ -109,10 +109,7 @@ object MarkdownHelper {
                         // Previously when openLink wasn't suspending it was somehow preventing the click from propagating
                         // Now it doesn't anymore and we have to do it manually
                         view.cancelPendingInputEvents()
-                        // Navigation must be done on the main thread
-                        appState.coroutineScope.launch(Dispatchers.Main) {
-                            openLink(link, appState.navController, useCustomTabs, usePrivateTabs)
-                        }
+                        appState.openLink(link, useCustomTabs, usePrivateTabs)
                     }
                 }
             })
