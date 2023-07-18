@@ -81,8 +81,8 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.getPostType
 import com.jerboa.db.entity.Account
+import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
@@ -115,9 +115,8 @@ import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
-import com.jerboa.ui.theme.imageHighlight
+import com.jerboa.ui.theme.jerboaColorScheme
 import com.jerboa.ui.theme.muted
-import com.jerboa.ui.theme.videoHighlight
 
 @Composable
 fun PostHeaderLine(
@@ -1323,8 +1322,8 @@ private fun ThumbnailTile(
                     modifier = Modifier.size(THUMBNAIL_CARET_SIZE)
                         .align(Alignment.BottomEnd),
                     tint = when (postType) {
-                        PostType.Video -> videoHighlight
-                        else -> imageHighlight
+                        PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                        else -> MaterialTheme.jerboaColorScheme.imageHighlight
                     },
                 )
             }
