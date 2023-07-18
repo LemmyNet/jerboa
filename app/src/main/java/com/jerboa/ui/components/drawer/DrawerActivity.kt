@@ -42,7 +42,7 @@ fun MainDrawer(
             is ApiState.Success -> res.data.my_user
             else -> null
         },
-        unreadCount = siteViewModel.getUnreadCountTotal(),
+        unreadCount = siteViewModel.unreadCount,
         accountViewModel = accountViewModel,
         onAddAccount = onClickLogin,
         isOpen = drawerState.isOpen,

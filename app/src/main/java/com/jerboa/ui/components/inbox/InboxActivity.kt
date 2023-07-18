@@ -96,7 +96,7 @@ fun InboxActivity(
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
-    val unreadCount = siteViewModel.getUnreadCountTotal()
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val inboxViewModel: InboxViewModel = viewModel()
@@ -112,6 +112,7 @@ fun InboxActivity(
             inboxViewModel.getMessages(
                 inboxViewModel.getFormMessages(account.jwt),
             )
+            siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
         }
     }
 
@@ -121,7 +122,7 @@ fun InboxActivity(
         topBar = {
             InboxHeader(
                 scrollBehavior = scrollBehavior,
-                unreadCount = unreadCount,
+                unreadCount = siteViewModel.unreadCount,
                 openDrawer = {
                     scope.launch {
                         drawerState.open()
@@ -149,13 +150,23 @@ fun InboxActivity(
                             MarkAllAsRead(
                                 auth = acct.jwt,
                             ),
-                        )
-                        // TODO test this
-                        // Update site counts
-                        siteViewModel.fetchUnreadCounts(
-                            GetUnreadCount(
-                                auth = acct.jwt,
-                            ),
+                            onComplete = {
+                                siteViewModel.fetchUnreadCounts(
+                                    GetUnreadCount(
+                                        auth = acct.jwt,
+                                    ),
+                                )
+                                inboxViewModel.resetPages()
+                                inboxViewModel.getReplies(
+                                    inboxViewModel.getFormReplies(account.jwt),
+                                )
+                                inboxViewModel.getMentions(
+                                    inboxViewModel.getFormMentions(account.jwt),
+                                )
+                                inboxViewModel.getMessages(
+                                    inboxViewModel.getFormMessages(account.jwt),
+                                )
+                            },
                         )
                     }
                 },
@@ -287,11 +298,13 @@ fun InboxTabs(
                                     read = !crv.comment_reply.read,
                                     auth = acct.jwt,
                                 ),
-                            )
-                            siteViewModel.fetchUnreadCounts(
-                                GetUnreadCount(
-                                    auth = acct.jwt,
-                                ),
+                                onSuccess = {
+                                    siteViewModel.fetchUnreadCounts(
+                                        GetUnreadCount(
+                                            auth = acct.jwt,
+                                        ),
+                                    )
+                                },
                             )
                         }
                     }
@@ -525,11 +538,13 @@ fun InboxTabs(
                                                             read = !pm.person_mention.read,
                                                             auth = acct.jwt,
                                                         ),
-                                                    )
-                                                    siteViewModel.fetchUnreadCounts(
-                                                        GetUnreadCount(
-                                                            auth = acct.jwt,
-                                                        ),
+                                                        onSuccess = {
+                                                            siteViewModel.fetchUnreadCounts(
+                                                                GetUnreadCount(
+                                                                    auth = acct.jwt,
+                                                                ),
+                                                            )
+                                                        },
                                                     )
                                                 }
                                             },
@@ -658,11 +673,13 @@ fun InboxTabs(
                                                             read = !pm.private_message.read,
                                                             auth = acct.jwt,
                                                         ),
-                                                    )
-                                                    siteViewModel.fetchUnreadCounts(
-                                                        GetUnreadCount(
-                                                            auth = acct.jwt,
-                                                        ),
+                                                        onSuccess = {
+                                                            siteViewModel.fetchUnreadCounts(
+                                                                GetUnreadCount(
+                                                                    auth = acct.jwt,
+                                                                ),
+                                                            )
+                                                        },
                                                     )
                                                 },
                                                 onPersonClick = appState::toProfile,

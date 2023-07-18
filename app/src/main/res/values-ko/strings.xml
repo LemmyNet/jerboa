@@ -30,7 +30,6 @@
     <string name="account_settings_show_scores">점수 표시</string>
     <string name="account_settings_subscribed">구독</string>
     <string name="addBookmark">북마크에 추가</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="bottomBar_bookmarks">내 북마크로 가기</string>
     <string name="bottomBar_home">홈으로 가기</string>
     <string name="bottomBar_inbox">내 수신함으로 가기</string>
