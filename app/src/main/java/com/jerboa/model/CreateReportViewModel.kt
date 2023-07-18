@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -18,7 +17,7 @@ import com.jerboa.datatypes.types.CreateCommentReport
 import com.jerboa.datatypes.types.CreatePostReport
 import com.jerboa.datatypes.types.PostReportResponse
 import com.jerboa.db.entity.Account
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 class CreateReportViewModel : ViewModel(), Initializable {
@@ -50,8 +49,8 @@ class CreateReportViewModel : ViewModel(), Initializable {
         reason: String,
         account: Account,
         ctx: Context,
-        navController: NavController,
         focusManager: FocusManager,
+        onBack: () -> Unit,
     ) {
         commentId?.also { cId ->
             viewModelScope.launch {
@@ -77,7 +76,7 @@ class CreateReportViewModel : ViewModel(), Initializable {
 
                 Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
                 focusManager.clearFocus()
-                navController.navigateUp()
+                onBack()
             }
         }
     }
@@ -86,8 +85,8 @@ class CreateReportViewModel : ViewModel(), Initializable {
         reason: String,
         account: Account,
         ctx: Context,
-        navController: NavController,
         focusManager: FocusManager,
+        onBack: () -> Unit,
     ) {
         postId?.also { pId ->
             viewModelScope.launch {
@@ -113,7 +112,7 @@ class CreateReportViewModel : ViewModel(), Initializable {
 
                 Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
                 focusManager.clearFocus()
-                navController.navigateUp()
+                onBack()
             }
         }
     }

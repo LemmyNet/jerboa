@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Person(
     val id: PersonId,
     val name: String,
@@ -18,4 +22,4 @@ data class Person(
     val bot_account: Boolean,
     val ban_expires: String? = null,
     val instance_id: InstanceId,
-)
+) : Parcelable

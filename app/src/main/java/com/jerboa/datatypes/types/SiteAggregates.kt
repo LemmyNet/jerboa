@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class SiteAggregates(
     val id: Int,
     val site_id: SiteId,
@@ -11,4 +15,4 @@ data class SiteAggregates(
     val users_active_week: Int,
     val users_active_month: Int,
     val users_active_half_year: Int,
-)
+) : Parcelable

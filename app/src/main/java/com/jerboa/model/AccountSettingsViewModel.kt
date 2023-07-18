@@ -1,5 +1,6 @@
 package com.jerboa.model
 
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,6 +20,7 @@ import com.jerboa.jerboaApplication
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
+@Stable
 class AccountSettingsViewModel(
     private val accountRepository: AccountRepository,
 ) : ViewModel() {

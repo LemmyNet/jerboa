@@ -84,6 +84,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun CommentNodeHeader(
@@ -325,14 +326,14 @@ fun LazyListScope.commentNodeItem(
                                                 instantScores.value,
                                                 voteType = VoteType.Upvote,
                                             )
-                                            onUpvoteClick(it)
+                                            onUpvoteClick(commentView)
                                         },
                                         onDownvoteClick = {
                                             instantScores.value = calculateNewInstantScores(
                                                 instantScores.value,
                                                 voteType = VoteType.Downvote,
                                             )
-                                            onDownvoteClick(it)
+                                            onDownvoteClick(commentView)
                                         },
                                         onViewSourceClick = {
                                             viewSource = !viewSource
@@ -376,7 +377,7 @@ fun LazyListScope.commentNodeItem(
 
     node.children?.also { nodes ->
         commentNodeItems(
-            nodes = nodes,
+            nodes = nodes.toImmutableList(),
             increaseLazyListIndexTracker = increaseLazyListIndexTracker,
             addToParentIndexes = addToParentIndexes,
             isFlat = isFlat,
@@ -509,8 +510,8 @@ fun CommentFooterLine(
     commentView: CommentView,
     enableDownVotes: Boolean,
     instantScores: InstantScores,
-    onUpvoteClick: (commentView: CommentView) -> Unit,
-    onDownvoteClick: (commentView: CommentView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
     onSaveClick: (commentView: CommentView) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -580,7 +581,6 @@ fun CommentFooterLine(
             VoteGeneric(
                 myVote = instantScores.myVote,
                 votes = instantScores.upvotes,
-                item = commentView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 showNumber = (instantScores.downvotes != 0),
@@ -590,7 +590,6 @@ fun CommentFooterLine(
                 VoteGeneric(
                     myVote = instantScores.myVote,
                     votes = instantScores.downvotes,
-                    item = commentView,
                     type = VoteType.Downvote,
                     onVoteClick = onDownvoteClick,
                     account = account,

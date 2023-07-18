@@ -215,6 +215,8 @@ val samplePostAggregates = PostAggregates(
     newest_comment_time_necro = "2022-01-02T04:02:44.592929",
     newest_comment_time = "2022-01-02T04:02:44.592929",
     published = "2022-01-02T04:02:44.592929",
+    hot_rank = 5,
+    hot_rank_active = 6,
 )
 
 val samplePostView = PostView(
@@ -346,6 +348,7 @@ val sampleCommentAggregates = CommentAggregates(
     downvotes = 4,
     published = "2022-01-02T04:02:44.592929",
     child_count = 0,
+    hot_rank = 6,
 )
 
 val sampleCommentView = CommentView(
@@ -444,6 +447,7 @@ val sampleCommunityAggregates = CommunityAggregates(
     users_active_week = 98,
     users_active_month = 82,
     users_active_half_year = 91,
+    hot_rank = 3,
 )
 
 val sampleCommunityView = CommunityView(
@@ -517,7 +521,6 @@ val sampleLocalSite = LocalSite(
     captcha_enabled = false,
     default_post_listing_type = ListingType.All,
     default_theme = "main",
-    federation_debug = false,
     federation_enabled = true,
     federation_worker_count = 64,
     id = 1,

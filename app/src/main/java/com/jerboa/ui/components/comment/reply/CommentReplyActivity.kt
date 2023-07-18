@@ -13,17 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentReplyViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.toProfile
+import com.jerboa.util.InitializeRoute
 
 object CommentReplyReturn {
     const val COMMENT_VIEW = "comment-reply::return(comment-view)"
@@ -34,7 +32,7 @@ fun CommentReplyActivity(
     replyItem: ReplyItem,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    navController: NavController,
+    appState: JerboaAppState,
     isModerator: Boolean,
 ) {
     Log.d("jerboa", "got to comment reply activity")
@@ -62,8 +60,8 @@ fun CommentReplyActivity(
     Scaffold(
         topBar = {
             CommentReplyHeader(
-                navController = navController,
                 loading = loading,
+                onClickBack = appState::popBackStack,
                 onSendClick = {
                     account?.also { acct ->
                         commentReplyViewModel.createComment(
@@ -71,7 +69,7 @@ fun CommentReplyActivity(
                             account = acct,
                             focusManager = focusManager,
                         ) { cv ->
-                            navController.apply {
+                            appState.apply {
                                 addReturn(CommentReplyReturn.COMMENT_VIEW, cv)
                                 navigateUp()
                             }
@@ -92,9 +90,7 @@ fun CommentReplyActivity(
                                 account = account,
                                 reply = reply,
                                 onReplyChange = { reply = it },
-                                onPersonClick = { personId ->
-                                    navController.toProfile(id = personId)
-                                },
+                                onPersonClick = appState::toProfile,
                                 isModerator = isModerator,
                                 modifier = Modifier
                                     .padding(padding)
@@ -107,9 +103,7 @@ fun CommentReplyActivity(
                             account = account,
                             reply = reply,
                             onReplyChange = { reply = it },
-                            onPersonClick = { personId ->
-                                navController.toProfile(id = personId)
-                            },
+                            onPersonClick = appState::toProfile,
                             isModerator = isModerator,
                             modifier = Modifier
                                 .padding(padding)
@@ -122,9 +116,7 @@ fun CommentReplyActivity(
                                 account = account,
                                 reply = reply,
                                 onReplyChange = { reply = it },
-                                onPersonClick = { personId ->
-                                    navController.toProfile(id = personId)
-                                },
+                                onPersonClick = appState::toProfile,
                                 modifier = Modifier
                                     .padding(padding)
                                     .imePadding(),
@@ -137,9 +129,7 @@ fun CommentReplyActivity(
                                 account = account,
                                 reply = reply,
                                 onReplyChange = { reply = it },
-                                onPersonClick = { personId ->
-                                    navController.toProfile(id = personId)
-                                },
+                                onPersonClick = appState::toProfile,
                                 modifier = Modifier
                                     .padding(padding)
                                     .imePadding(),
