@@ -30,7 +30,6 @@
     <string name="account_settings_show_scores">Показувати кількість балів</string>
     <string name="account_settings_subscribed">Передплачено</string>
     <string name="addBookmark">Додати до закладок</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="app_name" translatable="false">Джербоа</string>
     <string name="bottomBar_bookmarks">Перейти до моїх закладок</string>
     <string name="bottomBar_home">Перейти до домівки</string>
