@@ -1081,7 +1081,7 @@ fun PostListing(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
-            openLink = { _: String, _: Boolean, _: Boolean -> },
+            openLink = openLink,
         )
     }
 }
