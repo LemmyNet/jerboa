@@ -185,7 +185,6 @@
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s ist keine Lemmy Instanz</string>
     <string name="create_report_view_model_report_created">Meldung erstellt</string>
     <string name="about_social">Sozial</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Zeige Inhalt für eingeklappte Kommentare</string>
     <string name="comment_node_permalink_copied">Permalink kopiert</string>
