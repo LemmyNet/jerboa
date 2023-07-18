@@ -133,7 +133,7 @@ body:
         > The above command will print the logs of the latest execution of Jerboa (regardless of which version/build).
         > 
         > That should look like something like this.
-        > ![example_cmd.png](../../media/example_cmd.png)
+        > ![example_cmd](../../media/example_cmd.png)
         > 
         > Copy the full output. (If not possible just include the few lines below `FATAL EXCEPTION: main` )
         > 
