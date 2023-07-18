@@ -49,6 +49,7 @@ body:
     attributes:
       value: |
         <hr />
+        
         ### How do I get the full logs?
         **<details><summary>How to get the full logs (Click to expand)</summary>**
         > 
@@ -57,7 +58,7 @@ body:
         > - Install ADB on your PC
         > - Connect your phone to your PC
         > - Execute this command on PC
-           > ### To enable developer options and USB DEBUGGING
+        > ### To enable developer options and USB DEBUGGING
         > 
         > [Follow this article](https://developer.android.com/studio/debug/dev-options)
         > In essence you find the build number in About section of settings page and tap it a few times
