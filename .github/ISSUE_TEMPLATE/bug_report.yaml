@@ -41,7 +41,7 @@ body:
   - type: textarea
     id: incaseofcrash
     attributes:
-      label: In the case of a crash
+      label: In the case of a crash or when relevant include the logs
       description: Please include the logs.
     validations:
       required: false
