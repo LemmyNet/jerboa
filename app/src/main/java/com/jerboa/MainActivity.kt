@@ -11,54 +11,57 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import arrow.core.Either
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
+import com.jerboa.datatypes.types.Community
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AccountRepository
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AccountViewModelFactory
-import com.jerboa.db.AppDB
-import com.jerboa.db.AppSettingsRepository
-import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.AppSettingsViewModelFactory
+import com.jerboa.db.AppDBContainer
+import com.jerboa.model.AccountSettingsViewModel
+import com.jerboa.model.AccountSettingsViewModelFactory
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AccountViewModelFactory
+import com.jerboa.model.AppSettingsViewModel
+import com.jerboa.model.AppSettingsViewModelFactory
+import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.ReplyItem
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
-import com.jerboa.ui.components.comment.reply.ReplyItem
-import com.jerboa.ui.components.common.CommentEditDeps
 import com.jerboa.ui.components.common.MarkdownHelper
-import com.jerboa.ui.components.common.PostEditDeps
-import com.jerboa.ui.components.common.PrivateMessageDeps
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
 import com.jerboa.ui.components.common.SwipeToNavigateBack
-import com.jerboa.ui.components.common.getCurrentAccountSync
-import com.jerboa.ui.components.common.takeDepsFromRoot
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityActivity
-import com.jerboa.ui.components.community.CommunityViewModel
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
+import com.jerboa.ui.components.imageviewer.ImageViewer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
@@ -71,37 +74,38 @@ import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModel
-import com.jerboa.ui.components.settings.account.AccountSettingsViewModelFactory
+import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
+import com.jerboa.util.BackConfirmation.addConfirmationDialog
+import com.jerboa.util.BackConfirmation.addConfirmationToast
+import com.jerboa.util.BackConfirmation.disposeConfirmation
+import com.jerboa.util.BackConfirmationMode
+import com.jerboa.util.ShowConfirmationDialog
 
 class JerboaApplication : Application() {
-    private val database by lazy { AppDB.getDatabase(this) }
-    val accountRepository by lazy { AccountRepository(database.accountDao()) }
-    val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
+    lateinit var container: AppDBContainer
+
+    override fun onCreate() {
+        super.onCreate()
+        container = AppDBContainer(this)
+    }
 }
+
+fun CreationExtras.jerboaApplication(): JerboaApplication =
+    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as JerboaApplication)
 
 class MainActivity : AppCompatActivity() {
     private val siteViewModel by viewModels<SiteViewModel>()
-    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
-        AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
-    }
-    private val accountViewModel: AccountViewModel by viewModels {
-        AccountViewModelFactory((application as JerboaApplication).accountRepository)
-    }
-    private val appSettingsViewModel: AppSettingsViewModel by viewModels {
-        AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
-    }
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val accountSync = getCurrentAccountSync(accountViewModel)
-
         setContent {
             val ctx = LocalContext.current
+            val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory)
+            val appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory)
+            val accountSettingsViewModel: AccountSettingsViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory)
 
             API.errorHandler = {
                 Log.e("jerboa", it.toString())
@@ -115,20 +119,52 @@ class MainActivity : AppCompatActivity() {
                 null
             }
 
-            LaunchedEffect(Unit) {
-                fetchInitialData(accountSync, siteViewModel)
+            val account = getCurrentAccount(accountViewModel)
+
+            LaunchedEffect(account) {
+                if (account == null || account.id != -1) {
+                    fetchInitialData(account, siteViewModel)
+                }
             }
 
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
 
+            @Suppress("SENSELESS_COMPARISON")
+            if (appSettings == null) {
+                triggerRebirth(ctx)
+            }
+
             JerboaTheme(
                 appSettings = appSettings,
             ) {
-                val navController = rememberAnimatedNavController()
+                val appState = rememberJerboaAppState()
+
+                val showConfirmationDialog = remember { mutableStateOf(false) }
+
+                if (showConfirmationDialog.value) {
+                    ShowConfirmationDialog({ showConfirmationDialog.value = false }, ::finish)
+                }
+
+                DisposableEffect(appSettings.backConfirmationMode) {
+                    when (BackConfirmationMode.values()[appSettings.backConfirmationMode]) {
+                        BackConfirmationMode.Toast -> {
+                            this@MainActivity.addConfirmationToast(appState.navController, ctx)
+                        }
+                        BackConfirmationMode.Dialog -> {
+                            this@MainActivity.addConfirmationDialog(appState.navController) { showConfirmationDialog.value = true }
+                        }
+                        BackConfirmationMode.None -> {}
+                    }
+
+                    onDispose {
+                        disposeConfirmation()
+                    }
+                }
+
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
-                    navController,
+                    appState.navController,
                     appSettings.useCustomTabs,
                     appSettings.usePrivateTabs,
                 )
@@ -148,14 +184,37 @@ class MainActivity : AppCompatActivity() {
                     else -> {}
                 }
 
-                AnimatedNavHost(
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+                NavHost(
                     route = Route.Graph.ROOT,
-                    navController = navController,
+                    navController = appState.navController,
                     startDestination = Route.HOME,
-                    enterTransition = { slideInHorizontally { it } },
-                    exitTransition = { slideOutHorizontally { -it } },
-                    popEnterTransition = { slideInHorizontally { -it } },
-                    popExitTransition = { slideOutHorizontally { it } },
+                    enterTransition = {
+                        slideInHorizontally { it }
+                    },
+                    exitTransition =
+                    {
+                        // No animation for image viewer
+                        if (this.targetState.destination.route == Route.VIEW) {
+                            ExitTransition.None
+                        } else {
+                            slideOutHorizontally { -it }
+                        }
+                    },
+                    popEnterTransition = {
+                        // No animation for image viewer
+                        if (this.initialState.destination.route == Route.VIEW) {
+                            EnterTransition.None
+                        } else {
+                            slideInHorizontally { -it }
+                        }
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally {
+                            it
+                        }
+                    },
                 ) {
                     composable(
                         route = Route.LOGIN,
@@ -164,7 +223,7 @@ class MainActivity : AppCompatActivity() {
                         },
                     ) {
                         LoginActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                         )
@@ -172,11 +231,12 @@ class MainActivity : AppCompatActivity() {
 
                     composable(route = Route.HOME) {
                         BottomNavActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             appSettings = appSettings,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -194,12 +254,12 @@ class MainActivity : AppCompatActivity() {
                         ) {
                             val args = Route.CommunityFromIdArgs(it)
                             val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { navController.getBackStackEntry(Route.Graph.COMMUNITY) },
+                                remember(it) { appState.getBackStackEntry(Route.Graph.COMMUNITY) },
                             )
 
                             CommunityActivity(
                                 communityArg = Either.Left(args.id),
-                                navController = navController,
+                                appState = appState,
                                 communityViewModel = communityViewModel,
                                 accountViewModel = accountViewModel,
                                 appSettingsViewModel = appSettingsViewModel,
@@ -208,6 +268,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             )
                         }
 
@@ -225,13 +286,13 @@ class MainActivity : AppCompatActivity() {
                         ) {
                             val args = Route.CommunityFromUrlArgs(it)
                             val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { navController.getBackStackEntry(Route.Graph.COMMUNITY) },
+                                remember(it) { appState.getBackStackEntry(Route.Graph.COMMUNITY) },
                             )
 
                             val qualifiedName = "${args.name}@${args.instance}"
                             CommunityActivity(
                                 communityArg = Either.Right(qualifiedName),
-                                navController = navController,
+                                appState = appState,
                                 communityViewModel = communityViewModel,
                                 accountViewModel = accountViewModel,
                                 appSettingsViewModel = appSettingsViewModel,
@@ -240,17 +301,18 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             )
                         }
 
                         composable(route = Route.COMMUNITY_SIDEBAR) {
                             val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { navController.getBackStackEntry(Route.Graph.COMMUNITY) },
+                                remember(it) { appState.getBackStackEntry(Route.Graph.COMMUNITY) },
                             )
 
                             CommunitySidebarActivity(
                                 communityViewModel = communityViewModel,
-                                navController = navController,
+                                onClickBack = appState::popBackStack,
                             )
                         }
                     }
@@ -279,7 +341,9 @@ class MainActivity : AppCompatActivity() {
                             instance = args.instance,
                             name = args.name,
                         )
-                        navController.navigate(route)
+
+                        // TODO properly
+                        appState.navigate(route)
                     }
 
                     composable(
@@ -298,7 +362,7 @@ class MainActivity : AppCompatActivity() {
                         PersonProfileActivity(
                             personArg = Either.Left(args.id),
                             savedMode = args.saved,
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
@@ -306,6 +370,8 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -329,7 +395,7 @@ class MainActivity : AppCompatActivity() {
                         PersonProfileActivity(
                             personArg = Either.Right(qualifiedName),
                             savedMode = false,
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
@@ -337,6 +403,8 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -351,11 +419,12 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.CommunityListArgs(it)
                         CommunityListActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -386,13 +455,15 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             body = text
                         }
+                        val community by appState.takeDepsFromRoot<Community?>()
 
                         CreatePostActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             initialUrl = url,
                             initialBody = body,
                             initialImage = image,
+                            initialCommunity = community,
                         )
                         activity?.intent?.replaceExtras(Bundle())
                     }
@@ -404,10 +475,11 @@ class MainActivity : AppCompatActivity() {
                         },
                     ) {
                         InboxActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -423,11 +495,11 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.PostArgs(it)
-                        SwipeToNavigateBack(navController = navController) {
+                        SwipeToNavigateBack(appState::navigateUp) {
                             PostActivity(
                                 id = Either.Left(args.id),
                                 accountViewModel = accountViewModel,
-                                navController = navController,
+                                appState = appState,
                                 showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
                                 showActionBarByDefault = appSettings.showCommentActionBarByDefault,
                                 showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
@@ -437,6 +509,7 @@ class MainActivity : AppCompatActivity() {
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
+                                showPostLinkPreview = appSettings.showPostLinkPreviews,
                             )
                         }
                     }
@@ -456,7 +529,7 @@ class MainActivity : AppCompatActivity() {
                         PostActivity(
                             id = Either.Right(args.id),
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            appState = appState,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
@@ -466,6 +539,7 @@ class MainActivity : AppCompatActivity() {
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreview = appSettings.showPostLinkPreviews,
                         )
                     }
 
@@ -478,12 +552,12 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.CommentReplyArgs(it)
-                        val replyItem by navController.takeDepsFromRoot<ReplyItem>()
+                        val replyItem by appState.takeDepsFromRoot<ReplyItem>()
 
                         CommentReplyActivity(
                             replyItem = replyItem,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            appState = appState,
                             siteViewModel = siteViewModel,
                             isModerator = args.isModerator,
                         )
@@ -492,35 +566,36 @@ class MainActivity : AppCompatActivity() {
                     composable(route = Route.SITE_SIDEBAR) {
                         SiteSidebarActivity(
                             siteViewModel = siteViewModel,
-                            navController = navController,
+                            onBackClick = appState::popBackStack,
                         )
                     }
 
                     composable(route = Route.COMMENT_EDIT) {
-                        val commentView by navController.takeDepsFromRoot<CommentEditDeps>()
+                        val commentView by appState.takeDepsFromRoot<CommentEditDeps>()
                         CommentEditActivity(
                             commentView = commentView,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            appState = appState,
                         )
                     }
 
                     composable(route = Route.POST_EDIT) {
-                        val postView by navController.takeDepsFromRoot<PostEditDeps>()
+                        val postView by appState.takeDepsFromRoot<PostEditDeps>()
                         PostEditActivity(
                             postView = postView,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            appState = appState,
                         )
                     }
 
                     composable(route = Route.PRIVATE_MESSAGE_REPLY) {
-                        val privateMessage by navController.takeDepsFromRoot<PrivateMessageDeps>()
+                        val privateMessage by appState.takeDepsFromRoot<PrivateMessageDeps>()
                         PrivateMessageReplyActivity(
                             privateMessageView = privateMessage,
                             accountViewModel = accountViewModel,
-                            navController = navController,
                             siteViewModel = siteViewModel,
+                            onBack = appState::popBackStack,
+                            onProfile = appState::toProfile,
                         )
                     }
 
@@ -536,7 +611,7 @@ class MainActivity : AppCompatActivity() {
                         CreateCommentReportActivity(
                             commentId = args.id,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            onBack = appState::navigateUp,
                         )
                     }
 
@@ -552,21 +627,24 @@ class MainActivity : AppCompatActivity() {
                         CreatePostReportActivity(
                             postId = args.id,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            onBack = appState::navigateUp,
                         )
                     }
 
                     composable(route = Route.SETTINGS) {
                         SettingsActivity(
-                            navController = navController,
                             accountViewModel = accountViewModel,
+                            onBack = appState::popBackStack,
+                            onClickAbout = appState::toAbout,
+                            onClickAccountSettings = appState::toAccountSettings,
+                            onClickLookAndFeel = appState::toLookAndFeel,
                         )
                     }
 
                     composable(route = Route.LOOK_AND_FEEL) {
                         LookAndFeelActivity(
-                            navController = navController,
                             appSettingsViewModel = appSettingsViewModel,
+                            onBack = appState::popBackStack,
                         )
                     }
 
@@ -577,19 +655,44 @@ class MainActivity : AppCompatActivity() {
                         },
                     ) {
                         AccountSettingsActivity(
-                            navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             accountSettingsViewModel = accountSettingsViewModel,
+                            onBack = appState::popBackStack,
                         )
                     }
 
                     composable(route = Route.ABOUT) {
                         AboutActivity(
-                            navController = navController,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
+                            onBack = appState::popBackStack,
+                            onClickCrashLogs = appState::toCrashLogs,
+                            openLink = appState::openLink,
                         )
+                    }
+
+                    composable(route = Route.CRASH_LOGS) {
+                        CrashLogsActivity(
+                            onClickBack = appState::popBackStack,
+                        )
+                    }
+
+                    composable(
+                        route = Route.VIEW,
+                        arguments = listOf(
+                            navArgument(Route.ViewArgs.URL) {
+                                type = Route.ViewArgs.URL_TYPE
+                            },
+                        ),
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None },
+                        popEnterTransition = { EnterTransition.None },
+                        popExitTransition = { ExitTransition.None },
+                    ) {
+                        val args = Route.ViewArgs(it)
+
+                        ImageViewer(url = args.url, onBackRequest = appState::popBackStack)
                     }
                 }
             }

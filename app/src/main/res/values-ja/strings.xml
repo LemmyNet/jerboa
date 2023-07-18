@@ -38,7 +38,6 @@
     <string name="dialogs_top_week">今週の人気順</string>
     <string name="dialogs_top_month">今月の人気順</string>
     <string name="dialogs_top_year">今年の人気順</string>
-    <string name="dialogs_top_all_time">すべての期間の人気順</string>
     <string name="dialogs_subscribed">登録済み</string>
     <string name="dialogs_local">ローカル</string>
     <string name="dialogs_all">すべて</string>
@@ -70,14 +69,10 @@
     <string name="home_subscribed">登録済み</string>
     <string name="home_local">ローカル</string>
     <string name="home_all">すべて</string>
-    <string name="home_saved">保存済み</string>
-    <string name="home_communities">コミュニティ一覧</string>
-    <string name="home_profile">ユーザー</string>
-    <string name="home_inbox">受信トレイ</string>
     <string name="home_settings">設定</string>
     <string name="home_subscriptions">登録コミュニティ</string>
     <string name="home_add_account">アカウントを連携</string>
-    <string name="home_switch_to">アカウントを%1$s/%2$sに変更</string>
+    <string name="home_switch_to">アカウントを%1$s@%2$sに変更</string>
     <string name="home_sign_out">サインアウト</string>
     <string name="home_menu">メニュー</string>
     <string name="home_refresh">再読み込み</string>

@@ -3,7 +3,11 @@ package com.jerboa.ui.components.inbox
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -13,59 +17,75 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.jerboa.*
+import com.jerboa.CommentReplyDeps
+import com.jerboa.JerboaAppState
+import com.jerboa.PrivateMessageDeps
+import com.jerboa.UnreadOrAll
+import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentReplyView
-import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.GetPersonMentions
-import com.jerboa.datatypes.types.GetPrivateMessages
-import com.jerboa.datatypes.types.GetReplies
 import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.MarkAllAsRead
 import com.jerboa.datatypes.types.MarkCommentReplyAsRead
 import com.jerboa.datatypes.types.MarkPersonMentionAsRead
 import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
-import com.jerboa.db.Account
-import com.jerboa.db.AccountViewModel
+import com.jerboa.db.entity.Account
+import com.jerboa.getCommentParentId
+import com.jerboa.getLocalizedStringForInboxTab
+import com.jerboa.isScrolledToEnd
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.InboxViewModel
+import com.jerboa.model.ReplyItem
+import com.jerboa.model.SiteViewModel
+import com.jerboa.newVote
+import com.jerboa.pagerTabIndicatorOffset2
+import com.jerboa.rootChannel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
-import com.jerboa.ui.components.comment.reply.ReplyItem
 import com.jerboa.ui.components.comment.replynode.CommentReplyNode
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.CommentReplyDeps
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PrivateMessageDeps
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.rootChannel
+import com.jerboa.ui.components.common.isLoading
+import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.common.toComment
-import com.jerboa.ui.components.common.toCommentReply
-import com.jerboa.ui.components.common.toCommentReport
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPrivateMessageReply
-import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.privatemessage.PrivateMessage
+import com.jerboa.unreadOrAllFromBool
+import com.jerboa.util.InitializeRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxActivity(
-    navController: NavController,
+    appState: JerboaAppState,
+    drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     blurNSFW: Boolean,
@@ -82,21 +102,15 @@ fun InboxActivity(
     val inboxViewModel: InboxViewModel = viewModel()
     InitializeRoute(inboxViewModel) {
         if (account != null) {
-            inboxViewModel.resetPage()
+            inboxViewModel.resetPages()
             inboxViewModel.getReplies(
-                GetReplies(
-                    auth = account.jwt,
-                ),
+                inboxViewModel.getFormReplies(account.jwt),
             )
             inboxViewModel.getMentions(
-                GetPersonMentions(
-                    auth = account.jwt,
-                ),
+                inboxViewModel.getFormMentions(account.jwt),
             )
             inboxViewModel.getMessages(
-                GetPrivateMessages(
-                    auth = account.jwt,
-                ),
+                inboxViewModel.getFormMessages(account.jwt),
             )
         }
     }
@@ -108,34 +122,24 @@ fun InboxActivity(
             InboxHeader(
                 scrollBehavior = scrollBehavior,
                 unreadCount = unreadCount,
-                navController = navController,
+                openDrawer = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                },
                 selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly),
                 onClickUnreadOrAll = { unreadOrAll ->
                     account?.also { acct ->
-                        inboxViewModel.resetPage()
+                        inboxViewModel.resetPages()
                         inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
                         inboxViewModel.getReplies(
-                            GetReplies(
-                                unread_only = inboxViewModel.unreadOnly,
-                                sort = CommentSortType.New,
-                                page = inboxViewModel.page,
-                                auth = acct.jwt,
-                            ),
+                            inboxViewModel.getFormReplies(acct.jwt),
                         )
                         inboxViewModel.getMentions(
-                            GetPersonMentions(
-                                unread_only = inboxViewModel.unreadOnly,
-                                sort = CommentSortType.New,
-                                page = inboxViewModel.page,
-                                auth = acct.jwt,
-                            ),
+                            inboxViewModel.getFormMentions(acct.jwt),
                         )
                         inboxViewModel.getMessages(
-                            GetPrivateMessages(
-                                unread_only = inboxViewModel.unreadOnly,
-                                page = inboxViewModel.page,
-                                auth = acct.jwt,
-                            ),
+                            inboxViewModel.getFormMessages(acct.jwt),
                         )
                     }
                 },
@@ -160,7 +164,7 @@ fun InboxActivity(
         content = {
             InboxTabs(
                 padding = it,
-                navController = navController,
+                appState = appState,
                 inboxViewModel = inboxViewModel,
                 siteViewModel = siteViewModel,
                 ctx = ctx,
@@ -181,7 +185,7 @@ enum class InboxTab {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun InboxTabs(
-    navController: NavController,
+    appState: JerboaAppState,
     inboxViewModel: InboxViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
@@ -190,11 +194,11 @@ fun InboxTabs(
     padding: PaddingValues,
     blurNSFW: Boolean,
 ) {
-    val transferPrivateMessageDepsViaRoot = navController.rootChannel<PrivateMessageDeps>()
-    val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
+    val transferPrivateMessageDepsViaRoot = appState.rootChannel<PrivateMessageDeps>()
+    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
 
     val tabTitles = InboxTab.values().map { getLocalizedStringForInboxTab(ctx, it) }
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { tabTitles.size }
 
     Column(
         modifier = Modifier.padding(padding),
@@ -224,7 +228,6 @@ fun InboxTabs(
             },
         )
         HorizontalPager(
-            pageCount = tabTitles.size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize(),
@@ -243,37 +246,24 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account?.also { acct ->
-                                inboxViewModel.nextPage()
+                            account?.also {
                                 inboxViewModel.appendReplies(
-                                    GetReplies(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        sort = CommentSortType.New,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    it.jwt,
                                 )
                             }
                         }
                     }
 
-                    val loading = when (inboxViewModel.repliesRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val refreshing = inboxViewModel.repliesRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
-                        refreshing = loading,
+                        refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
-                                inboxViewModel.resetPage()
+                                inboxViewModel.resetPageReplies()
                                 inboxViewModel.getReplies(
-                                    GetReplies(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        sort = CommentSortType.New,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    inboxViewModel.getFormReplies(acct.jwt),
+                                    ApiState.Refreshing,
                                 )
                             }
                         },
@@ -283,9 +273,9 @@ fun InboxTabs(
                         // Go to the parent comment or post instead for context
                         val parent = getCommentParentId(crv.comment)
                         if (parent != null) {
-                            navController.toComment(id = parent)
+                            appState.toComment(id = parent)
                         } else {
-                            navController.toPost(id = crv.post.id)
+                            appState.toPost(id = crv.post.id)
                         }
                     }
 
@@ -307,12 +297,21 @@ fun InboxTabs(
                     }
 
                     Box(modifier = Modifier.pullRefresh(refreshState)) {
-                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                        PullRefreshIndicator(
+                            refreshing,
+                            refreshState,
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100F),
+                        )
+
+                        if (inboxViewModel.repliesRes.isLoading()) {
+                            LoadingBar()
+                        }
                         when (val repliesRes = inboxViewModel.repliesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(repliesRes.msg)
-                            ApiState.Loading -> LoadingBar()
-                            is ApiState.Success -> {
+                            is ApiState.Holder -> {
                                 val replies = repliesRes.data.replies
                                 LazyColumn(
                                     state = listState,
@@ -349,7 +348,7 @@ fun InboxTabs(
                                                 }
                                             },
                                             onReplyClick = { cr ->
-                                                navController.toCommentReply(
+                                                appState.toCommentReply(
                                                     channel = transferCommentReplyDepsViaRoot,
                                                     replyItem = ReplyItem.CommentReplyItem(cr),
                                                     isModerator = false,
@@ -368,18 +367,18 @@ fun InboxTabs(
                                             },
                                             onMarkAsReadClick = { crv -> markAsRead(crv) },
                                             onReportClick = { cv ->
-                                                navController.toComment(id = cv.comment.id)
+                                                appState.toComment(id = cv.comment.id)
                                             },
                                             onCommentLinkClick = goToComment,
                                             onPersonClick = { personId ->
-                                                navController.toProfile(id = personId)
+                                                appState.toProfile(id = personId)
                                             },
                                             onCommentClick = { crv ->
                                                 goToComment(crv)
                                                 markAsRead(crv)
                                             },
                                             onCommunityClick = { community ->
-                                                navController.toCommunity(id = community.id)
+                                                appState.toCommunity(id = community.id)
                                             },
                                             onBlockCreatorClick = { person ->
                                                 account?.also { acct ->
@@ -394,7 +393,7 @@ fun InboxTabs(
                                                 }
                                             },
                                             onPostClick = { postId ->
-                                                navController.toPost(id = postId)
+                                                appState.toPost(id = postId)
                                             },
                                             account = account,
                                             showAvatar = siteViewModel.showAvatar(),
@@ -403,6 +402,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -420,48 +420,50 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account?.also { acct ->
-                                inboxViewModel.nextPage()
+                            account?.also {
                                 inboxViewModel.appendMentions(
-                                    GetPersonMentions(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        sort = CommentSortType.New,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    it.jwt,
                                 )
                             }
                         }
                     }
 
-                    val loading = when (inboxViewModel.mentionsRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val loading = inboxViewModel.mentionsRes.isLoading()
+
+                    val refreshing = inboxViewModel.mentionsRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
-                        refreshing = loading,
+                        refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
-                                inboxViewModel.resetPage()
+                                inboxViewModel.resetPageMentions()
                                 inboxViewModel.getMentions(
-                                    GetPersonMentions(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        sort = CommentSortType.New,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    inboxViewModel.getFormMentions(acct.jwt),
+                                    ApiState.Refreshing,
                                 )
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
-                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
+                    ) {
+                        PullRefreshIndicator(
+                            refreshing,
+                            refreshState,
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100F),
+                        )
+                        if (loading) {
+                            LoadingBar()
+                        }
+
                         when (val mentionsRes = inboxViewModel.mentionsRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(mentionsRes.msg)
-                            ApiState.Loading -> LoadingBar()
-                            is ApiState.Success -> {
+                            is ApiState.Holder -> {
                                 val mentions = mentionsRes.data.mentions
                                 LazyColumn(
                                     state = listState,
@@ -498,7 +500,7 @@ fun InboxTabs(
                                                 }
                                             },
                                             onReplyClick = { pm ->
-                                                navController.toCommentReply(
+                                                appState.toCommentReply(
                                                     channel = transferCommentReplyDepsViaRoot,
                                                     replyItem = ReplyItem.MentionReplyItem(pm),
                                                     isModerator = false,
@@ -532,22 +534,20 @@ fun InboxTabs(
                                                 }
                                             },
                                             onReportClick = { pm ->
-                                                navController.toCommentReport(id = pm.comment.id)
+                                                appState.toCommentReport(id = pm.comment.id)
                                             },
                                             onLinkClick = { pm ->
                                                 // Go to the parent comment or post instead for context
                                                 val parent = getCommentParentId(pm.comment)
                                                 if (parent != null) {
-                                                    navController.toComment(id = parent)
+                                                    appState.toComment(id = parent)
                                                 } else {
-                                                    navController.toPost(id = pm.post.id)
+                                                    appState.toPost(id = pm.post.id)
                                                 }
                                             },
-                                            onPersonClick = { personId ->
-                                                navController.toProfile(id = personId)
-                                            },
+                                            onPersonClick = appState::toProfile,
                                             onCommunityClick = { community ->
-                                                navController.toCommunity(id = community.id)
+                                                appState.toCommunity(id = community.id)
                                             },
                                             onBlockCreatorClick = { person ->
                                                 account?.also { acct ->
@@ -561,9 +561,7 @@ fun InboxTabs(
                                                     )
                                                 }
                                             },
-                                            onPostClick = { postId ->
-                                                navController.toPost(id = postId)
-                                            },
+                                            onPostClick = appState::toPost,
                                             account = account,
                                             showAvatar = siteViewModel.showAvatar(),
                                             blurNSFW = blurNSFW,
@@ -571,6 +569,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+                            else -> {}
                         }
                     }
                 }
@@ -588,46 +587,49 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account?.also { acct ->
-                                inboxViewModel.nextPage()
+                            account?.also {
                                 inboxViewModel.appendMessages(
-                                    GetPrivateMessages(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    it.jwt,
                                 )
                             }
                         }
                     }
 
-                    val loading = when (inboxViewModel.messagesRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val loading = inboxViewModel.messagesRes.isLoading()
+                    val refreshing = inboxViewModel.mentionsRes.isRefreshing()
 
                     val refreshState = rememberPullRefreshState(
-                        refreshing = loading,
+                        refreshing = refreshing,
                         onRefresh = {
                             account?.also { acct ->
-                                inboxViewModel.resetPage()
+                                inboxViewModel.resetPageMessages()
                                 inboxViewModel.getMessages(
-                                    GetPrivateMessages(
-                                        unread_only = inboxViewModel.unreadOnly,
-                                        page = inboxViewModel.page,
-                                        auth = acct.jwt,
-                                    ),
+                                    inboxViewModel.getFormMessages(acct.jwt),
+                                    ApiState.Refreshing,
                                 )
                             }
                         },
                     )
-                    Box(modifier = Modifier.pullRefresh(refreshState).fillMaxSize()) {
-                        PullRefreshIndicator(loading, refreshState, Modifier.align(Alignment.TopCenter))
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(refreshState)
+                            .fillMaxSize(),
+                    ) {
+                        PullRefreshIndicator(
+                            refreshing,
+                            refreshState,
+                            Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(100F),
+                        )
+
+                        if (loading) {
+                            LoadingBar()
+                        }
                         when (val messagesRes = inboxViewModel.messagesRes) {
                             ApiState.Empty -> ApiEmptyText()
                             is ApiState.Failure -> ApiErrorText(messagesRes.msg)
-                            ApiState.Loading -> LoadingBar()
-                            is ApiState.Success -> {
+                            is ApiState.Holder -> {
                                 val messages = messagesRes.data.private_messages
                                 LazyColumn(
                                     state = listState,
@@ -644,7 +646,7 @@ fun InboxTabs(
                                                 myPersonId = acct.id,
                                                 privateMessageView = message,
                                                 onReplyClick = { privateMessageView ->
-                                                    navController.toPrivateMessageReply(
+                                                    appState.toPrivateMessageReply(
                                                         channel = transferPrivateMessageDepsViaRoot,
                                                         privateMessageView = privateMessageView,
                                                     )
@@ -663,9 +665,7 @@ fun InboxTabs(
                                                         ),
                                                     )
                                                 },
-                                                onPersonClick = { personId ->
-                                                    navController.toProfile(id = personId)
-                                                },
+                                                onPersonClick = appState::toProfile,
                                                 account = acct,
                                                 showAvatar = siteViewModel.showAvatar(),
                                             )
@@ -673,6 +673,7 @@ fun InboxTabs(
                                     }
                                 }
                             }
+                            else -> {}
                         }
                     }
                 }

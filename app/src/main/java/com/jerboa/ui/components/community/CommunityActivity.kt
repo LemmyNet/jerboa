@@ -27,8 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import arrow.core.Either
+import com.jerboa.ConsumeReturn
+import com.jerboa.CreatePostDeps
+import com.jerboa.JerboaAppState
+import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -40,39 +45,37 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.FollowCommunity
 import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPosts
+import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.loginFirstToast
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
+import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
+import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
+import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.ConsumeReturn
-import com.jerboa.ui.components.common.CreatePostDeps
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PostEditDeps
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.common.rootChannel
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toCreatePost
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPostEdit
-import com.jerboa.ui.components.common.toPostReport
-import com.jerboa.ui.components.common.toProfile
-import com.jerboa.ui.components.home.SiteViewModel
+import com.jerboa.ui.components.common.isLoading
+import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.util.InitializeRoute
+import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun CommunityActivity(
     communityArg: Either<CommunityId, String>,
-    navController: NavController,
+    appState: JerboaAppState,
     communityViewModel: CommunityViewModel,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
@@ -81,10 +84,11 @@ fun CommunityActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
-    val transferCreatePostDepsViaRoot = navController.rootChannel<CreatePostDeps>()
-    val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
+    val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
+    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
@@ -93,7 +97,7 @@ fun CommunityActivity(
     val account = getCurrentAccount(accountViewModel)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (communityViewModel.initialized) communityViewModel.updatePost(pv)
     }
 
@@ -124,10 +128,8 @@ fun CommunityActivity(
         )
     }
 
-    val loading = communityViewModel.postsRes == ApiState.Loading || communityViewModel.fetchingMore
-
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = loading,
+        refreshing = communityViewModel.postsRes.isRefreshing(),
         onRefresh = {
             when (val communityRes = communityViewModel.communityRes) {
                 is ApiState.Success -> {
@@ -140,12 +142,15 @@ fun CommunityActivity(
                             sort = communityViewModel.sortType,
                             auth = account?.jwt,
                         ),
+                        ApiState.Refreshing,
                     )
                 }
 
                 else -> {}
             }
         },
+        // Needs to be lower else it can hide behind the top bar
+        refreshingOffset = 150.dp,
     )
 
     Scaffold(
@@ -168,6 +173,7 @@ fun CommunityActivity(
                             selectedSortType = communityViewModel.sortType,
                             onClickRefresh = {
                                 scrollToTop(scope, postListState)
+                                communityViewModel.resetPage()
                                 communityViewModel.getPosts(
                                     GetPosts(
                                         community_id = communityId,
@@ -202,25 +208,28 @@ fun CommunityActivity(
                                     )
                                 }
                             },
-                            navController = navController,
+                            onClickCommunityInfo = appState::toCommunitySideBar,
+                            onClickBack = appState::navigateUp,
                         )
                     }
+                    else -> {}
                 }
             }
         },
         content = { padding ->
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-                PullRefreshIndicator(loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
+                // zIndex needed bc some elements of a post get drawn above it.
+                PullRefreshIndicator(communityViewModel.postsRes.isRefreshing(), pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100F))
                 // Can't be in ApiState.Loading, because of infinite scrolling
-                if (loading) {
+                if (communityViewModel.postsRes.isLoading()) {
                     LoadingBar(padding = padding)
                 }
                 when (val postsRes = communityViewModel.postsRes) {
                     ApiState.Empty -> ApiEmptyText()
                     is ApiState.Failure -> ApiErrorText(postsRes.msg)
-                    is ApiState.Success -> {
+                    is ApiState.Holder -> {
                         PostListings(
-                            posts = postsRes.data.posts,
+                            posts = postsRes.data.posts.toImmutableList(),
                             contentAboveListings = {
                                 when (val communityRes = communityViewModel.communityRes) {
                                     is ApiState.Success -> {
@@ -234,6 +243,13 @@ fun CommunityActivity(
                                                             follow = cfv.subscribed == SubscribedType.NotSubscribed,
                                                             auth = acct.jwt,
                                                         ),
+                                                        onSuccess = {
+                                                            siteViewModel.getSite(
+                                                                form = GetSite(
+                                                                    auth = acct.jwt,
+                                                                ),
+                                                            )
+                                                        },
                                                     )
                                                 }
                                             },
@@ -273,7 +289,7 @@ fun CommunityActivity(
                                 }
                             },
                             onPostClick = { postView ->
-                                navController.toPost(id = postView.post.id)
+                                appState.toPost(id = postView.post.id)
                             },
                             onSaveClick = { postView ->
                                 account?.also { acct ->
@@ -287,7 +303,7 @@ fun CommunityActivity(
                                 }
                             },
                             onEditPostClick = { postView ->
-                                navController.toPostEdit(
+                                appState.toPostEdit(
                                     channel = transferPostEditDepsViaRoot,
                                     postView = postView,
                                 )
@@ -304,13 +320,13 @@ fun CommunityActivity(
                                 }
                             },
                             onReportClick = { postView ->
-                                navController.toPostReport(id = postView.post.id)
+                                appState.toPostReport(id = postView.post.id)
                             },
                             onCommunityClick = { community ->
-                                navController.toCommunity(id = community.id)
+                                appState.toCommunity(id = community.id)
                             },
                             onPersonClick = { personId ->
-                                navController.toProfile(id = personId)
+                                appState.toProfile(id = personId)
                             },
                             onBlockCommunityClick = {
                                 when (val communityRes = communityViewModel.communityRes) {
@@ -342,18 +358,15 @@ fun CommunityActivity(
                                     )
                                 }
                             },
+                            onShareClick = { url ->
+                                shareLink(url, ctx)
+                            },
                             isScrolledToEnd = {
                                 when (val communityRes = communityViewModel.communityRes) {
                                     is ApiState.Success -> {
-                                        communityViewModel.nextPage()
                                         communityViewModel.appendPosts(
-                                            form =
-                                            GetPosts(
-                                                community_id = communityRes.data.community_view.community.id,
-                                                page = communityViewModel.page,
-                                                sort = communityViewModel.sortType,
-                                                auth = account?.jwt,
-                                            ),
+                                            communityRes.data.community_view.community.id,
+                                            account?.jwt,
                                         )
                                     }
 
@@ -362,7 +375,7 @@ fun CommunityActivity(
                             },
                             account = account,
                             showCommunityName = false,
-                            padding,
+                            padding = padding,
                             listState = postListState,
                             postViewMode = getPostViewMode(appSettingsViewModel),
                             enableDownVotes = siteViewModel.enableDownvotes(),
@@ -371,6 +384,9 @@ fun CommunityActivity(
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW,
+                            showPostLinkPreviews = showPostLinkPreviews,
+                            openImageViewer = appState::toView,
+                            openLink = appState::openLink,
                         )
                     }
                     else -> {}
@@ -384,10 +400,12 @@ fun CommunityActivity(
                     FloatingActionButton(
                         onClick = {
                             account?.also {
-                                navController.toCreatePost(
+                                appState.toCreatePost(
                                     channel = transferCreatePostDepsViaRoot,
                                     community = communityRes.data.community_view.community,
                                 )
+                            } ?: run {
+                                loginFirstToast(ctx)
                             }
                         },
                     ) {

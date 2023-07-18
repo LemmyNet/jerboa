@@ -3,17 +3,15 @@ package com.jerboa.api
 import android.content.Context
 import android.util.Log
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.toastException
-import com.jerboa.util.DisableLog
+import com.jerboa.util.CustomHttpLoggingInterceptor
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody.Companion.toResponseBody
-import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
-import retrofit2.Invocation
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,6 +22,8 @@ import okhttp3.Response as HttpResponse
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
 const val MINIMUM_API_VERSION: String = "0.18"
+val REDACTED_QUERY_PARAMS = setOf("auth")
+val REDACTED_BODY_FIELDS = setOf("jwt", "password")
 
 interface API {
     @GET("site")
@@ -44,7 +44,6 @@ interface API {
     /**
      * Log into lemmy.
      */
-    @DisableLog
     @POST("user/login")
     suspend fun login(@Body form: Login): Response<LoginResponse>
 
@@ -264,23 +263,12 @@ interface API {
         }
 
         private fun buildApi(): API {
-            val interceptor = HttpLoggingInterceptor()
-            interceptor.level = HttpLoggingInterceptor.Level.BODY
             val client: OkHttpClient = OkHttpClient.Builder()
                 .addInterceptor { chain ->
                     val requestBuilder = chain.request().newBuilder()
                         .header("User-Agent", "Jerboa")
                     val newRequest = requestBuilder.build()
                     chain.proceed(newRequest)
-                }
-                .addInterceptor { chain ->
-                    // based on https://stackoverflow.com/a/76264357
-                    val request = chain.request()
-                    val invocation = request.tag(Invocation::class.java)
-                    val disableLog = invocation?.method()?.getAnnotation(DisableLog::class.java)
-                    val shouldLogBody: Boolean = disableLog == null
-                    interceptor.setLevel(if (shouldLogBody) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE)
-                    chain.proceed(request)
                 }
                 // this should probably be a network interceptor,
                 .addInterceptor { chain ->
@@ -302,7 +290,7 @@ interface API {
                             .build()
                     }
                 }
-                .addInterceptor(interceptor)
+                .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
                 .build()
 
             return Retrofit.Builder()
@@ -316,9 +304,13 @@ interface API {
 }
 
 sealed class ApiState<out T> {
-    class Success<T>(val data: T) : ApiState<T>()
+
+    abstract class Holder<T>(val data: T) : ApiState<T>()
+    class Success<T>(data: T) : Holder<T>(data)
+    class Appending<T>(data: T) : Holder<T>(data)
     class Failure(val msg: Throwable) : ApiState<Nothing>()
     object Loading : ApiState<Nothing>()
+    object Refreshing : ApiState<Nothing>()
     object Empty : ApiState<Nothing>()
 }
 

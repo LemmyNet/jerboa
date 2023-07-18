@@ -38,7 +38,6 @@
     <string name="dialogs_top_week">Top Tygodnia</string>
     <string name="dialogs_top_month">Top Miesiąca</string>
     <string name="dialogs_top_year">Top Roku</string>
-    <string name="dialogs_top_all_time">Top Wszechczasów</string>
     <string name="dialogs_subscribed">Zasubskrybowano</string>
     <string name="dialogs_local">Lokalne</string>
     <string name="dialogs_all">Wszystkie</string>
@@ -70,14 +69,10 @@
     <string name="home_subscribed">Zasubskrybowano</string>
     <string name="home_local">Lokalne</string>
     <string name="home_all">Wszystkie</string>
-    <string name="home_saved">Zapisane</string>
-    <string name="home_communities">Społeczności</string>
-    <string name="home_profile">Profil</string>
-    <string name="home_inbox">Skrzynka Odbiorcza</string>
     <string name="home_settings">Ustawienia</string>
     <string name="home_subscriptions">Subskrypcje</string>
     <string name="home_add_account">Dodaj Konto</string>
-    <string name="home_switch_to">Przełącz na %1$s/%2$s</string>
+    <string name="home_switch_to">Przełącz na %1$s@%2$s</string>
     <string name="home_sign_out">Wyloguj</string>
     <string name="home_menu">Menu</string>
     <string name="home_refresh">Odśwież</string>

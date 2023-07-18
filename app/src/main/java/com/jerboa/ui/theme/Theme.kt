@@ -18,17 +18,16 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
-import com.jerboa.db.AppSettings
-import com.jerboa.db.DEFAULT_FONT_SIZE
+import com.jerboa.db.entity.AppSettings
 
 @Composable
 fun JerboaTheme(
-    appSettings: AppSettings?,
+    appSettings: AppSettings,
     content: @Composable () -> Unit,
 ) {
-    val themeMode = ThemeMode.values()[appSettings?.theme ?: 0]
-    val themeColor = ThemeColor.values()[appSettings?.themeColor ?: 0]
-    val fontSize = (appSettings?.fontSize ?: DEFAULT_FONT_SIZE).sp
+    val themeMode = ThemeMode.values()[appSettings.theme]
+    val themeColor = ThemeColor.values()[appSettings.themeColor]
+    val fontSize = appSettings.fontSize.sp
 
     val ctx = LocalContext.current
     val android12OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
@@ -90,12 +89,10 @@ fun JerboaTheme(
         else -> true
     }
 
-    appSettings?.let {
-        if (it.secureWindow) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        } else {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
+    if (appSettings.secureWindow) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    } else {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 
     window.statusBarColor = colors.background.toArgb()

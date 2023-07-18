@@ -27,10 +27,11 @@ import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.model.AccountSettingsViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.*
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.theme.*
 import kotlinx.coroutines.launch
 

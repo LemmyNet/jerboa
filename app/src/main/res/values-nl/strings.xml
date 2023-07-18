@@ -14,7 +14,7 @@
     <string name="bottomBar_bookmarks">Ga naar mijn bladwijzers</string>
     <string name="bottomBar_home">Ga naar de startpagina</string>
     <string name="bottomBar_inbox">Ga naar de inbox</string>
-    <string name="bottomBar_label_bookmarks">Opgeslaan</string>
+    <string name="bottomBar_label_bookmarks">Opgeslagen</string>
     <string name="bottomBar_label_home">Home</string>
     <string name="bottomBar_label_inbox">Inbox</string>
     <string name="bottomBar_label_profile">Profiel</string>
@@ -54,7 +54,6 @@
     <string name="dialogs_top_week">Top Week</string>
     <string name="dialogs_top_month">Top Maand</string>
     <string name="dialogs_top_year">Top Jaar</string>
-    <string name="dialogs_top_all_time">Top Aller Tijden</string>
     <string name="dialogs_subscribed">Geabonneerd</string>
     <string name="dialogs_local">Lokaal</string>
     <string name="dialogs_all">Alles</string>
@@ -93,17 +92,13 @@
     <string name="home_subscribed">Geabonneerd</string>
     <string name="home_local">Lokaal</string>
     <string name="home_all">Alle</string>
-    <string name="home_saved">Opgeslagen</string>
-    <string name="home_profile">Profiel</string>
-    <string name="home_communities">Communities</string>
-    <string name="home_inbox">Inbox</string>
     <string name="home_settings">Instellingen</string>
     <string name="home_subscriptions">Abonnementen</string>
     <string name="floating_createPost">Maak bericht</string>
     <string name="form_submit">Verzend</string>
     <string name="homeHeader_filter">Selecteer feed</string>
     <string name="home_add_account">Account toevoegen</string>
-    <string name="home_switch_to">Overschakelen naar %1$s/%2$s</string>
+    <string name="home_switch_to">Overschakelen naar %1$s@%2$s</string>
     <string name="home_sign_out">Afmelden</string>
     <string name="home_menu">Menu</string>
     <string name="home_refresh">Vernieuwen</string>

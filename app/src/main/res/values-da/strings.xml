@@ -38,7 +38,6 @@
     <string name="dialogs_top_week">Populært denne uge</string>
     <string name="dialogs_top_month">Populært denne måned</string>
     <string name="dialogs_top_year">Populært i år</string>
-    <string name="dialogs_top_all_time">Populært gennem tiderne</string>
     <string name="dialogs_subscribed">Abonneret</string>
     <string name="dialogs_local">Lokalt</string>
     <string name="dialogs_all">Alle</string>
@@ -70,13 +69,10 @@
     <string name="home_subscribed">Abonneret</string>
     <string name="home_local">Lokalt</string>
     <string name="home_all">Alle</string>
-    <string name="home_saved">Gemt</string>
-    <string name="home_profile">Profil</string>
-    <string name="home_inbox">Indbakke</string>
     <string name="home_settings">Indstillinger</string>
     <string name="home_subscriptions">Abonnementer</string>
     <string name="home_add_account">Tilføj konto</string>
-    <string name="home_switch_to">Skift til %1$s/%2$s</string>
+    <string name="home_switch_to">Skift til %1$s@%2$s</string>
     <string name="home_sign_out">Log ud</string>
     <string name="home_menu">Menu</string>
     <string name="home_refresh">Opdater</string>

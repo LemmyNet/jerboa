@@ -12,7 +12,7 @@
     <string name="comment_body_removed">*Supprimé*</string>
     <string name="comment_body_deleted">*Effacé*</string>
     <string name="comment_edit_edit">Modifier</string>
-    <string name="comment_edit_type_your_comment">Saissisez votre commentaire</string>
+    <string name="comment_edit_type_your_comment">Saisissez votre commentaire</string>
     <string name="comment_edit_back">Précédent</string>
     <string name="comment_mention_node_view_source">Afficher la source</string>
     <string name="comment_mention_node_copy_permalink">Copier le lien permanent</string>
@@ -20,7 +20,7 @@
     <string name="comment_mention_node_block">Bloquer %1$s</string>
     <string name="comment_reply_reply">Répondre</string>
     <string name="comment_reply_back">Précédent</string>
-    <string name="comment_reply_type_your_comment">Saissisez votre commentaire</string>
+    <string name="comment_reply_type_your_comment">Saisissez votre commentaire</string>
     <string name="comment_reply_node_view_source">Afficher la source</string>
     <string name="comment_reply_node_report_comment">Signaler le commentaire</string>
     <string name="comment_reply_node_block">Bloquer %1$s</string>
@@ -35,7 +35,6 @@
     <string name="dialogs_top_week">Top hebdomadaire</string>
     <string name="dialogs_top_month">Top mensuel</string>
     <string name="dialogs_top_year">Top annuel</string>
-    <string name="dialogs_top_all_time">Top de tous les temps</string>
     <string name="dialogs_subscribed">Communautés abonnées</string>
     <string name="dialogs_local">Communautés locales</string>
     <string name="dialogs_all">Toutes les communautés</string>
@@ -67,14 +66,11 @@
     <string name="home_subscribed">Communautés abonnées</string>
     <string name="home_local">Communautés locales</string>
     <string name="home_all">Toutes les communautés</string>
-    <string name="home_saved">Publications/commentaires enregistrés</string>
-    <string name="home_profile">Profil</string>
-    <string name="home_inbox">Messages</string>
     <string name="home_settings">Paramètres</string>
     <string name="home_subscriptions">Abonnements</string>
     <string name="home_add_account">Ajouter un compte</string>
-    <string name="home_switch_to">Passer à %1$s/%2$s</string>
-    <string name="home_sign_out">Se déconneceter</string>
+    <string name="home_switch_to">Passer à %1$s@%2$s</string>
+    <string name="home_sign_out">Se déconnecter</string>
     <string name="home_menu">Menu</string>
     <string name="home_refresh">Rafraîchir</string>
     <string name="home_post_view_mode">Mode d’affichage des publications</string>
@@ -114,10 +110,10 @@
     <string name="private_message_from">"de "</string>
     <string name="private_message_reply_reply">Répondre</string>
     <string name="private_message_reply_back">Précédent</string>
-    <string name="private_message_reply_type_your_message_placeholder">Saissisez votre message</string>
+    <string name="private_message_reply_type_your_message_placeholder">Saisissez votre message</string>
     <string name="create_report_report">Signaler</string>
     <string name="create_report_back">Précédent</string>
-    <string name="create_report_type_your_reason">Saissisez la raison</string>
+    <string name="create_report_type_your_reason">Saisissez la raison</string>
     <string name="settings_about_about">À propos</string>
     <string name="settings_about_what_s_new">Quoi de neuf ?</string>
     <string name="settings_about_version">Version %1$s</string>
@@ -260,7 +256,6 @@
     <string name="postListing_reply">Répondre à la publication</string>
     <string name="privateMessage_reply">Répondre au message</string>
     <string name="topAppBar_back">Précédent</string>
-    <string name="home_communities">Abonnements</string>
     <string name="bottomBar_label_bookmarks">Enregistrés</string>
     <string name="bottomBar_label_home">Accueil</string>
     <string name="bottomBar_label_inbox">Messages</string>

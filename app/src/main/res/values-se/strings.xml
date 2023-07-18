@@ -38,7 +38,6 @@
     <string name="dialogs_top_week">Poppis i veckan</string>
     <string name="dialogs_top_month">Poppis den här månaden</string>
     <string name="dialogs_top_year">Poppis i år</string>
-    <string name="dialogs_top_all_time">Poppis genom tiderna</string>
     <string name="dialogs_subscribed">Prenumererade</string>
     <string name="dialogs_local">Lokala</string>
     <string name="dialogs_all">Samtliga</string>
@@ -70,13 +69,10 @@
     <string name="home_subscribed">Prenumererade</string>
     <string name="home_local">Lokala</string>
     <string name="home_all">Samtliga</string>
-    <string name="home_saved">Sparade</string>
-    <string name="home_profile">Profil</string>
-    <string name="home_inbox">Inkorg</string>
     <string name="home_settings">Inställningar</string>
     <string name="home_subscriptions">Prenumerationer</string>
     <string name="home_add_account">Lägg till konto</string>
-    <string name="home_switch_to">Byt till %1$s/%2$s</string>
+    <string name="home_switch_to">Byt till %1$s@%2$s</string>
     <string name="home_sign_out">Logga ut</string>
     <string name="home_menu">Meny</string>
     <string name="home_refresh">Uppdatera</string>

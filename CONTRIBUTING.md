@@ -12,6 +12,7 @@
   * [Adding translations](#adding-translations)
   * [Updating the instance list](#updating-the-instance-list)
   * [Generate compose compiler metrics](#generate-compose-compiler-metrics)
+  * [Testing migrations](#testing-migrations)
 <!-- TOC -->
 
 <!-- prettier-ignore-end -->
@@ -45,7 +46,7 @@ The code must be formatted to a [common standard](https://pinterest.github.io/kt
 To check for violations
 
 ```shell
-./gradlew lintKotlin`
+./gradlew lintKotlin
 ```
 
 Or just run this to fix them
@@ -61,13 +62,13 @@ You can install prettier either through the plugin, or globally using npm `npm i
 To check for violations
 
 ```shell
-prettier -c "*.md" "*.yml"`
+prettier -c "*.md" "*.yml"
 ```
 
 To fix the violations
 
 ```shell
-prettier --write "*.md" "*.yml"`
+prettier --write "*.md" "*.yml"
 ```
 
 ## Adding translations
@@ -75,6 +76,8 @@ prettier --write "*.md" "*.yml"`
 You can find the translations in the `app/src/main/res/values-{locale}/strings.xml` file.
 You can open it in android studio, right click and click open translations editor or you can
 directly edit the files.
+
+If you add a new locale. Also add it in `locales_config.xml`. Don't forget to escape `'` in translations.
 
 ## Updating the instance list
 
@@ -97,3 +100,11 @@ You can generate the compose compiler metrics by executing the following gradle 
 
 Then you will find the metrics in `app/build/compose_metrics` directory.
 See [this link for more information on these metrics](https://github.com/androidx/androidx/blob/androidx-main/compose/compiler/design/compiler-metrics.md)
+
+## Testing migrations
+
+If you add a migration to the DB, test it with this gradle task
+
+```shell
+./gradlew app:connectAndroidTest
+```

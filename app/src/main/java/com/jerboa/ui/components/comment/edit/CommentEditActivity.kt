@@ -4,18 +4,21 @@ import android.util.Log
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.CommentView
-import com.jerboa.db.AccountViewModel
-import com.jerboa.ui.components.common.InitializeRoute
-import com.jerboa.ui.components.common.addReturn
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.CommentEditViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.util.InitializeRoute
 
 object CommentEditReturn {
     const val COMMENT_VIEW = "comment-edit::return(comment-view)"
@@ -25,7 +28,7 @@ object CommentEditReturn {
 fun CommentEditActivity(
     commentView: CommentView,
     accountViewModel: AccountViewModel,
-    navController: NavController,
+    appState: JerboaAppState,
 ) {
     Log.d("jerboa", "got to comment edit activity")
 
@@ -51,8 +54,8 @@ fun CommentEditActivity(
         Scaffold(
             topBar = {
                 CommentEditHeader(
-                    navController = navController,
                     loading = loading,
+                    onBackClick = appState::popBackStack,
                     onSaveClick = {
                         account?.also { acct ->
                             commentEditViewModel.editComment(
@@ -60,7 +63,7 @@ fun CommentEditActivity(
                                 focusManager = focusManager,
                                 account = acct,
                             ) { commentView ->
-                                navController.apply {
+                                appState.apply {
                                     addReturn(CommentEditReturn.COMMENT_VIEW, commentView)
                                     navigateUp()
                                 }

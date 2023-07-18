@@ -28,18 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.datatypes.types.PersonView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.personNameShown
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
-import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -55,16 +51,8 @@ fun PersonProfileTopSection(
     personView: PersonView,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
-    var showImage by remember { mutableStateOf<String?>(null) }
-
-    if (showImage != null) {
-        ImageViewerDialog(
-            url = showImage!!,
-            onBackRequest = { showImage = null },
-        )
-    }
-
     Column {
         Box(
             modifier = modifier.fillMaxWidth(),
@@ -77,7 +65,7 @@ fun PersonProfileTopSection(
                     modifier = Modifier
                         .height(PROFILE_BANNER_SIZE)
                         .clickable {
-                            showImage = personView.person.banner
+                            openImageViewer(personView.person.banner)
                         },
                 )
             }
@@ -88,7 +76,7 @@ fun PersonProfileTopSection(
                             icon = it,
                             contentDescription = stringResource(R.string.personProfile_viewAvatar),
                             modifier = Modifier.clickable {
-                                showImage = personView.person.avatar
+                                openImageViewer(personView.person.avatar)
                             },
                         )
                     }
@@ -148,6 +136,7 @@ fun PersonProfileTopSectionPreview() {
     PersonProfileTopSection(
         personView = samplePersonView,
         showAvatar = true,
+        openImageViewer = {},
     )
 }
 
@@ -160,7 +149,7 @@ fun PersonProfileHeader(
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
     selectedSortType: SortType,
-    navController: NavController = rememberNavController(),
+    openDrawer: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
@@ -215,7 +204,14 @@ fun PersonProfileHeader(
                 selectedSortType = selectedSortType,
             )
         },
-        navigationIcon = { DefaultBackButton(navController) },
+        navigationIcon = {
+            IconButton(onClick = openDrawer) {
+                Icon(
+                    Icons.Outlined.Menu,
+                    contentDescription = stringResource(R.string.home_menu),
+                )
+            }
+        },
         actions = {
             IconButton(onClick = {
                 showSortOptions = !showSortOptions

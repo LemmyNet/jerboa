@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class EditPost(
     val post_id: PostId,
     val name: String? = null,
@@ -8,4 +12,4 @@ data class EditPost(
     val nsfw: Boolean? = null,
     val language_id: LanguageId? = null,
     val auth: String,
-)
+) : Parcelable

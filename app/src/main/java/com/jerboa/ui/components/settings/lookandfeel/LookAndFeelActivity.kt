@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Colorize
+import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.FormatSize
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Palette
@@ -25,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
-import androidx.navigation.NavController
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberFloatSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
@@ -38,17 +38,18 @@ import com.jerboa.R
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AppSettings
-import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.ui.components.common.SimpleTopAppBar
+import com.jerboa.util.BackConfirmationMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LookAndFeelActivity(
-    navController: NavController,
     appSettingsViewModel: AppSettingsViewModel,
+    onBack: () -> Unit,
 ) {
     Log.d("jerboa", "Got to lookAndFeel activity")
     val ctx = LocalContext.current
@@ -69,6 +70,7 @@ fun LookAndFeelActivity(
     )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
+    val showTextDescriptionsInNavbar = rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
     val showCollapsedCommentContentState =
         rememberBooleanSettingState(settings.showCollapsedCommentContent)
     val showCommentActionBarByDefaultState = rememberBooleanSettingState(
@@ -88,6 +90,8 @@ fun LookAndFeelActivity(
 
     val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
     val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
+    val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
+    val showPostLinkPreviewMode = rememberBooleanSettingState(settings.showPostLinkPreviews)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -111,7 +115,10 @@ fun LookAndFeelActivity(
                 useCustomTabs = useCustomTabsState.value,
                 usePrivateTabs = usePrivateTabsState.value,
                 secureWindow = secureWindowState.value,
+                showTextDescriptionsInNavbar = showTextDescriptionsInNavbar.value,
                 blurNSFW = blurNSFW.value,
+                backConfirmationMode = backConfirmationMode.value,
+                showPostLinkPreviews = showPostLinkPreviewMode.value,
             ),
         )
     }
@@ -119,7 +126,7 @@ fun LookAndFeelActivity(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), onClickBack = onBack)
         },
         content = { padding ->
             Column(
@@ -131,7 +138,6 @@ fun LookAndFeelActivity(
                     title = {
                         Text(text = stringResource(R.string.lang_language))
                     },
-                    enabled = true,
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Language,
@@ -225,6 +231,14 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
+                    state = showTextDescriptionsInNavbar,
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_show_text_descriptions_in_navbar))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                    enabled = showBottomNavState.value,
+                )
+                SettingsCheckbox(
                     state = showCollapsedCommentContentState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_activity_show_content_for_collapsed_comments))
@@ -286,6 +300,30 @@ fun LookAndFeelActivity(
                         Text(stringResource(id = R.string.blur_nsfw))
                     },
                     onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = showPostLinkPreviewMode,
+                    title = {
+                        Text(stringResource(id = R.string.show_post_link_previews))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.confirm_exit))
+                    },
+                    state = backConfirmationMode,
+                    items = BackConfirmationMode.values().map { stringResource(it.resId) },
+                    onItemSelected = { i, _ ->
+                        backConfirmationMode.value = i
+                        updateAppSettings()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.ExitToApp,
+                            contentDescription = null,
+                        )
+                    },
                 )
             }
         },

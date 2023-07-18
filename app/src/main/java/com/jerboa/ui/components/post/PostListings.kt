@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -22,14 +23,16 @@ import com.jerboa.datatypes.samplePostView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun PostListings(
-    posts: List<PostView>,
+    posts: ImmutableList<PostView>,
     contentAboveListings: @Composable () -> Unit = {},
     onUpvoteClick: (postView: PostView) -> Unit,
     onDownvoteClick: (postView: PostView) -> Unit,
@@ -42,6 +45,7 @@ fun PostListings(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
+    onShareClick: (url: String) -> Unit,
     isScrolledToEnd: () -> Unit,
     account: Account?,
     showCommunityName: Boolean = true,
@@ -54,11 +58,15 @@ fun PostListings(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
+    openImageViewer: (url: String) -> Unit,
+    openLink: (String, Boolean, Boolean) -> Unit,
 ) {
     LazyColumn(
         state = listState,
         modifier = Modifier
             .padding(padding)
+            .fillMaxSize()
             .simpleVerticalScrollbar(listState)
             .testTag("jerboa:posts"),
     ) {
@@ -86,6 +94,7 @@ fun PostListings(
                 onPersonClick = onPersonClick,
                 onBlockCommunityClick = onBlockCommunityClick,
                 onBlockCreatorClick = onBlockCreatorClick,
+                onShareClick = onShareClick,
                 isModerator = false,
                 showCommunityName = showCommunityName,
                 fullBody = false,
@@ -97,6 +106,9 @@ fun PostListings(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                showPostLinkPreview = showPostLinkPreviews,
+                openImageViewer = openImageViewer,
+                openLink = openLink,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -121,7 +133,7 @@ fun PostListings(
 @Composable
 fun PreviewPostListings() {
     PostListings(
-        posts = listOf(samplePostView, sampleLinkPostView),
+        posts = persistentListOf(samplePostView, sampleLinkPostView),
         onUpvoteClick = {},
         onDownvoteClick = {},
         onPostClick = {},
@@ -133,6 +145,7 @@ fun PreviewPostListings() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
+        onShareClick = {},
         isScrolledToEnd = {},
         account = null,
         listState = rememberLazyListState(),
@@ -143,5 +156,8 @@ fun PreviewPostListings() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostLinkPreviews = true,
+        openImageViewer = {},
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }

@@ -22,16 +22,18 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.Autofill
 import androidx.compose.ui.autofill.AutofillNode
+import androidx.compose.ui.autofill.AutofillTree
 import androidx.compose.ui.autofill.AutofillType
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -40,8 +42,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalAutofill
-import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import arrow.core.compareTo
 import com.google.gson.Gson
@@ -57,13 +58,17 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.Account
+import com.jerboa.db.APP_SETTINGS_DEFAULT
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AppSettings
+import com.jerboa.model.HomeViewModel
+import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.Route
-import com.jerboa.ui.components.home.HomeViewModel
-import com.jerboa.ui.components.home.SiteViewModel
 import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
@@ -238,14 +243,14 @@ data class CommentNodeData(
 
 fun commentsToFlatNodes(
     comments: List<CommentView>,
-): List<CommentNodeData> {
-    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }
+): ImmutableList<CommentNodeData> {
+    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }.toImmutableList()
 }
 
 fun buildCommentsTree(
     comments: List<CommentView>,
     isCommentView: Boolean,
-): List<CommentNodeData> {
+): ImmutableList<CommentNodeData> {
     val map = LinkedHashMap<Number, CommentNodeData>()
     val firstComment = comments.firstOrNull()?.comment
 
@@ -282,22 +287,18 @@ fun buildCommentsTree(
         }
     }
 
-    return tree
+    return tree.toImmutableList()
 }
 
 fun LazyListState.isScrolledToEnd(): Boolean {
     val totalItems = layoutInfo.totalItemsCount
     val lastItemVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index
 
-    val out = if (totalItems > 0) {
+    return if (totalItems > 0) {
         lastItemVisible == totalItems - 1
     } else {
         false
     }
-//    Log.d("jerboa", layoutInfo.visibleItemsInfo.lastOrNull()?.index.toString())
-//    Log.d("jerboa", layoutInfo.totalItemsCount.toString())
-//    Log.d("jerboa", out.toString())
-    return out
 }
 
 /*
@@ -359,6 +360,19 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
         return Pair(host, user)
     }
     return null
+}
+
+/**
+ * Open a sharesheet for the given URL.
+ */
+fun shareLink(url: String, ctx: Context) {
+    val intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, url)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(intent, null)
+    ctx.startActivity(shareIntent)
 }
 
 fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
@@ -465,7 +479,6 @@ val imageRegex = Regex(
 )
 
 // Todo is the scope.launch still necessary?
-@OptIn(ExperimentalMaterial3Api::class)
 fun closeDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
@@ -486,6 +499,13 @@ fun personNameShown(person: Person, federatedName: Boolean = false): String {
             "$name@${hostName(person.actor_id)}"
         }
     }
+}
+
+/**
+ * In cases where there should be no ambiguity as to the given Person's federated name.
+ */
+fun federatedNameShown(person: Person): String {
+    return "${person.name}@${hostName(person.actor_id)}"
 }
 
 fun communityNameShown(community: Community): String {
@@ -772,6 +792,24 @@ fun scrollToTop(
     }
 }
 
+fun showSnackbar(
+    scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    message: String,
+    actionLabel: String?,
+    withDismissAction: Boolean = false,
+    snackbarDuration: SnackbarDuration,
+) {
+    scope.launch {
+        snackbarHostState.showSnackbar(
+            message,
+            actionLabel,
+            withDismissAction,
+            snackbarDuration,
+        )
+    }
+}
+
 // https://stackoverflow.com/questions/69234880/how-to-get-intent-data-in-a-composable
 fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
@@ -967,16 +1005,14 @@ fun saveBitmapP(
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-fun Modifier.onAutofill(vararg autofillType: AutofillType, onFill: (String) -> Unit): Modifier = composed {
+fun Modifier.onAutofill(tree: AutofillTree, autofill: Autofill?, autofillTypes: ImmutableList<AutofillType>, onFill: (String) -> Unit): Modifier {
     val autofillNode = AutofillNode(
-        autofillTypes = autofillType.toList(),
+        autofillTypes = autofillTypes,
         onFill = onFill,
     )
-    LocalAutofillTree.current += autofillNode
+    tree += autofillNode
 
-    val autofill = LocalAutofill.current
-
-    this
+    return this
         .onGloballyPositioned {
             autofillNode.boundingBox = it.boundsInWindow()
         }
@@ -1238,19 +1274,18 @@ fun dedupePosts(
     more: List<PostView>,
     existing: List<PostView>,
 ): List<PostView> {
-    val newPostsDeduped = more.filterNot { pv ->
-        existing.map { op -> op.post.id }.contains(
-            pv
-                .post.id,
-        )
-    }
-    return newPostsDeduped
+    val mapIds = existing.map { it.post.id }
+    return more.filterNot { mapIds.contains(it.post.id) }
 }
 
 fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
     val appended = existing.toMutableList()
     appended.addAll(more)
     return appended.toList()
+}
+
+fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
+    return appendData(old, dedupePosts(new, old))
 }
 
 fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
@@ -1394,4 +1429,27 @@ fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange>
         l.add(i, Locale.LanguageRange(this[i]!!.toLanguageTag()))
     }
     return l
+}
+inline fun <reified E : Enum<E>> getEnumFromIntSetting(
+    appSettings: LiveData<AppSettings>,
+    getter: (AppSettings) -> Int,
+): E {
+    val enums = enumValues<E>()
+    val setting = appSettings.value ?: APP_SETTINGS_DEFAULT
+    val index = getter(setting)
+
+    return if (index >= enums.size) { // Fallback to default
+        enums[getter(APP_SETTINGS_DEFAULT)]
+    } else {
+        enums[index]
+    }
+}
+
+fun triggerRebirth(context: Context) {
+    val packageManager = context.packageManager
+    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+    val componentName = intent!!.component
+    val mainIntent = Intent.makeRestartActivityTask(componentName)
+    context.startActivity(mainIntent)
+    Runtime.getRuntime().exit(0)
 }

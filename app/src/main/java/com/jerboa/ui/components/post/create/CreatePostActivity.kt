@@ -19,20 +19,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import com.jerboa.ConsumeReturn
 import com.jerboa.DEBOUNCE_DELAY
+import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
-import com.jerboa.db.Account
-import com.jerboa.db.AccountViewModel
+import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
-import com.jerboa.ui.components.common.ConsumeReturn
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.CreatePostViewModel
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListReturn
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
@@ -52,10 +52,11 @@ data class MetaDataRes(val title: String?, val loading: Boolean)
 @Composable
 fun CreatePostActivity(
     accountViewModel: AccountViewModel,
-    navController: NavController,
+    appState: JerboaAppState,
     initialUrl: String,
     initialBody: String,
     initialImage: Uri?,
+    initialCommunity: Community?,
 ) {
     Log.d("jerboa", "got to create post activity")
 
@@ -65,8 +66,8 @@ fun CreatePostActivity(
 
     val createPostViewModel: CreatePostViewModel = viewModel()
 
-    var selectedCommunity: Community? by remember { mutableStateOf(null) }
-    navController.ConsumeReturn<Community>(CommunityListReturn.COMMUNITY) { community ->
+    var selectedCommunity: Community? by remember { mutableStateOf(initialCommunity) }
+    appState.ConsumeReturn<Community>(CommunityListReturn.COMMUNITY) { community ->
         selectedCommunity = community
     }
 
@@ -114,7 +115,6 @@ fun CreatePostActivity(
                         else -> false
                     }
                     CreateEditPostHeader(
-                        navController = navController,
                         formValid = formValid,
                         loading = loading,
                         onSubmitClick = {
@@ -126,13 +126,14 @@ fun CreatePostActivity(
                                 account = account,
                                 createPostViewModel = createPostViewModel,
                                 selectedCommunity = selectedCommunity,
-                                navController = navController,
+                                onSuccess = appState::toPostWithPopUpTo,
                             )
                         },
                         submitIcon = {
                             CreatePostSubmitIcon(formValid)
                         },
                         title = stringResource(R.string.create_post_create_post),
+                        onClickBack = appState::popBackStack,
                     )
                     if (loading) {
                         LoadingBar()
@@ -181,7 +182,7 @@ fun CreatePostActivity(
                     communitySelector = {
                         PostCommunitySelector(
                             community = selectedCommunity,
-                            navController = navController,
+                            onClickCommunityList = { appState.toCommunityList(select = true) },
                         )
                     },
                 )
@@ -198,7 +199,7 @@ fun onSubmitClick(
     account: Account?,
     selectedCommunity: Community?,
     createPostViewModel: CreatePostViewModel,
-    navController: NavController,
+    onSuccess: (Int) -> Unit,
 ) {
     account?.also { acct ->
         selectedCommunity?.id?.also {
@@ -215,13 +216,8 @@ fun onSubmitClick(
                     auth = acct.jwt,
                     nsfw = isNsfw,
                 ),
-            ) { postId ->
-                navController.navigate(
-                    Route.PostArgs.makeRoute(id = "$postId"),
-                ) {
-                    popUpTo(Route.CREATE_POST) { inclusive = true }
-                }
-            }
+                onSuccess = onSuccess,
+            )
         }
     }
 }

@@ -35,7 +35,6 @@
     <string name="dialogs_top_week">Melhor da Semana</string>
     <string name="dialogs_top_month">Melhor do Mês</string>
     <string name="dialogs_top_year">Melhor do Ano</string>
-    <string name="dialogs_top_all_time">Melhor de Sempre</string>
     <string name="dialogs_subscribed">Participando</string>
     <string name="dialogs_local">Local</string>
     <string name="dialogs_all">Tudo</string>
@@ -67,13 +66,10 @@
     <string name="home_subscribed">Participando</string>
     <string name="home_local">Local</string>
     <string name="home_all">Tudo</string>
-    <string name="home_saved">Guardado</string>
-    <string name="home_profile">Perfil</string>
-    <string name="home_inbox">Caixa de Entrada</string>
     <string name="home_settings">Configurações</string>
     <string name="home_subscriptions">Participa das Comunidades</string>
     <string name="home_add_account">Adicionar Conta</string>
-    <string name="home_switch_to">Mudar para %1$s/%2$s</string>
+    <string name="home_switch_to">Mudar para %1$s@%2$s</string>
     <string name="home_sign_out">Sair</string>
     <string name="home_menu">Menu</string>
     <string name="home_refresh">Recarregar</string>

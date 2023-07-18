@@ -1,5 +1,11 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import androidx.compose.runtime.Immutable
+import kotlinx.parcelize.Parcelize
+
+@Immutable
+@Parcelize
 data class GetModlogResponse(
     val removed_posts: List<ModRemovePostView>,
     val locked_posts: List<ModLockPostView>,
@@ -16,4 +22,4 @@ data class GetModlogResponse(
     val admin_purged_posts: List<AdminPurgePostView>,
     val admin_purged_comments: List<AdminPurgeCommentView>,
     val hidden_communities: List<ModHideCommunityView>,
-)
+) : Parcelable

@@ -59,12 +59,11 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
@@ -581,22 +580,9 @@ fun TextMarkdownBarPreview() {
 }
 
 @Composable
-fun PreviewLines(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyMedium,
-        maxLines = 5,
-        overflow = TextOverflow.Ellipsis,
-        modifier = modifier,
-    )
-}
-
-@Composable
 fun MyMarkdownText(
     markdown: String,
+    modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
@@ -606,6 +592,7 @@ fun MyMarkdownText(
         color = color,
         onClick = onClick,
         onLongClick = onLongClick,
+        modifier = modifier,
     )
 }
 

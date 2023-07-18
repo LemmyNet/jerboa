@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class LocalSite(
     val id: LocalSiteId,
     val site_id: SiteId,
@@ -18,7 +22,6 @@ data class LocalSite(
     val slur_filter_regex: String? = null,
     val actor_name_max_length: Int,
     val federation_enabled: Boolean,
-    val federation_debug: Boolean,
     val federation_worker_count: Int,
     val captcha_enabled: Boolean,
     val captcha_difficulty: String,
@@ -26,4 +29,4 @@ data class LocalSite(
     val updated: String? = null,
     val registration_mode: RegistrationMode /* "Closed" | "RequireApplication" | "Open" */,
     val reports_email_admins: Boolean,
-)
+) : Parcelable
