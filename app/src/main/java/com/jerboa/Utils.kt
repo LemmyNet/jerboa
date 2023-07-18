@@ -316,8 +316,8 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     }
 }
 
-/*
- * Parses a "url" and returns a spec-compliant Url:
+/**
+ * Parses a "url" and returns a spec-compliant URL:
  *
  * - https://host/path - leave as-is
  * - http://host/path - leave as-is
@@ -325,6 +325,11 @@ fun LazyListState.isScrolledToEnd(): Boolean {
  * - /c/community@instance -> https://instance/c/community
  * - !community@instance -> https://instance/c/community
  * - @user@instance -> https://instance/u/user
+ *
+ * @return A pair of a boolean and a string where the
+ * string represents the spec-compliant URL. The boolean
+ * represents true if the given string as argument was
+ * formatted in a lemmy specific format. Such as "/c/community"
  */
 fun parseUrl(url: String): Pair<Boolean, String>? {
     if (url.startsWith("https://") || url.startsWith("http://")) {
