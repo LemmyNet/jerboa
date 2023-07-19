@@ -93,7 +93,6 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.ApiErrorToast
-import com.jerboa.ui.components.common.CommentEditDeps
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
 import com.jerboa.ui.components.common.LoadingBar
