@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
+import android.util.Log
 import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
 import android.webkit.MimeTypeMap
@@ -172,7 +173,7 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
 }
 
 // Needs to check for permission before this for API 29 and below
-suspend fun SaveImage(url: String, context: Context) {
+suspend fun saveImage(url: String, context: Context) {
     Toast.makeText(context, context.getString(R.string.saving_image), Toast.LENGTH_SHORT).show()
 
     val fileName = Uri.parse(url).pathSegments.last()
@@ -192,6 +193,7 @@ suspend fun SaveImage(url: String, context: Context) {
         }
         Toast.makeText(context, context.getString(R.string.saved_image), Toast.LENGTH_SHORT).show()
     } catch (e: IOException) {
+        Log.d("image", "failed saving image", e)
         Toast.makeText(context, R.string.failed_saving_image, Toast.LENGTH_SHORT).show()
     }
 }
@@ -218,7 +220,7 @@ fun ViewerHeader(
         ) {
             if (it) {
                 coroutineScope.launch {
-                    SaveImage(url, context)
+                    saveImage(url, context)
                 }
             } else {
                 Toast.makeText(context, context.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
@@ -229,7 +231,7 @@ fun ViewerHeader(
     } else {
         {
             coroutineScope.launch {
-                SaveImage(url, context)
+                saveImage(url, context)
             }
         }
     }
