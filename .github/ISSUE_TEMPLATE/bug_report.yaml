@@ -41,7 +41,7 @@ body:
   - type: textarea
     id: incaseofcrash
     attributes:
-      label: In the case of a crash
+      label: In the case of a crash or when relevant include the logs
       description: Please include the logs.
     validations:
       required: false
@@ -49,6 +49,51 @@ body:
     attributes:
       value: |
         <hr />
+        
+        ### How do I get the full logs?
+        **<details><summary>How to get the full logs (Click to expand)</summary>**
+        > 
+        > Follow these steps (skip the ones you already have done):
+        > - Enable developer options and USB DEBUGGING
+        > - Install ADB on your PC
+        > - Connect your phone to your PC
+        > - Execute this command on PC
+        > ### To enable developer options and USB DEBUGGING
+        > 
+        > [Follow this article](https://developer.android.com/studio/debug/dev-options)
+        > In essence you find the build number in About section of settings page and tap it a few times
+        > Then open developer options and enable USB DEBUGGING
+        > 
+        > ### Install ADB on your PC
+        > 
+        > Download ADB from here [https://adbinstaller.com/](https://adbinstaller.com/)
+        > 
+        > Unzip it
+        > 
+        > [(Click here if you wanna know more about ADB)](https://developer.android.com/tools/adb)
+        > 
+        > ### Connect your phone to your PC
+        > 
+        > Use a USB cable to connect your phone to your PC
+        > 
+        > ### Execute this command on PC
+        > On Windows open Powershell in the directory with the adb.exe (where you unzipped it, if you didn't add it to the PATH)
+        > 
+        > On Unix open a shell in the directory with the adb (where you unzipped it, if you didn't add it to the PATH)
+        > 
+        > To test if this is working type `adb devices`, this should output a device
+        > 
+        > Then execute this command 
+        > ```shell
+        > adb shell logcat *:V --pid $(adb shell "timeout 5s logcat | sed -En 's/.*proc ([0-9]*):com.jerboa.*/\1/p' | tail -1")
+        > ```
+        > The above command will print the full logs of the latest execution of Jerboa (regardless of which version/build).
+        > 
+        > Copy the full output. (If not possible just include the few lines below `FATAL EXCEPTION: main` )
+        > 
+        > Either include it as a file or paste it in the textarea above
+        > 
+        </details>
         
         ### How Do I Get Crash Logs?
         **<details><summary>FOR CRASHES ON STARTUP (Click to expand)</summary>**
@@ -78,7 +123,7 @@ body:
         > Use a USB cable to connect your phone to your PC
         > 
         > ### Execute this command on PC
-        > On windows open Powershell in the directory with the adb.exe (where you unzipped it, if you didn't add it to the PATH)
+        > On Windows open Powershell in the directory with the adb.exe (where you unzipped it, if you didn't add it to the PATH)
         > 
         > On Unix open a shell in the directory with the adb (where you unzipped it, if you didn't add it to the PATH)
         > 
@@ -88,7 +133,7 @@ body:
         > The above command will print the logs of the latest execution of Jerboa (regardless of which version/build).
         > 
         > That should look like something like this.
-        > ![example_cmd.png](../../media/example_cmd.png)
+        > ![example_cmd](../../media/example_cmd.png)
         > 
         > Copy the full output. (If not possible just include the few lines below `FATAL EXCEPTION: main` )
         > 

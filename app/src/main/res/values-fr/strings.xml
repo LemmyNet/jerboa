@@ -174,7 +174,6 @@
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s n’est pas une instance Lemmy</string>
     <string name="create_report_view_model_report_created">Signalement créé</string>
     <string name="about_social">Social</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="comment_node_in">"dans "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Afficher le contenu des commentaires minimisés</string>
     <string name="comment_node_permalink_copied">Permalien copié</string>
