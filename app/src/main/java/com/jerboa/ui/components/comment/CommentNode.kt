@@ -234,7 +234,9 @@ fun LazyListScope.commentNodeItem(
         .commentView.counts.child_count > 0 && !isFlat
 
     increaseLazyListIndexTracker()
-    item(key = commentId, contentType = { "contentNodeItemL${node.depth}" }) {
+    // TODO Needs a contentType
+    // possibly "contentNodeItemL${node.depth}"
+    item(key = commentId) {
         var viewSource by remember { mutableStateOf(false) }
 
         val backgroundColor = MaterialTheme.colorScheme.background
