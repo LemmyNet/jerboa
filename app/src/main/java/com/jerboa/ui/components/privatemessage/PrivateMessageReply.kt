@@ -15,12 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.datatypes.types.PrivateMessageView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -28,7 +26,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrivateMessageReplyHeader(
-    navController: NavController = rememberNavController(),
+    onClickBack: () -> Unit,
     onSendClick: () -> Unit,
     loading: Boolean,
 ) {
@@ -57,9 +55,7 @@ fun PrivateMessageReplyHeader(
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onClickBack,
             ) {
                 Icon(
                     Icons.Outlined.Close,

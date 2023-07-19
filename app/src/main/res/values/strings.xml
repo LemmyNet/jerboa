@@ -30,7 +30,7 @@
     <string name="account_settings_show_scores">Show Scores</string>
     <string name="account_settings_subscribed">Subscribed</string>
     <string name="addBookmark">Add to bookmarks</string>
-    <string name="app_bars_dot_spacer">·</string>
+    <string name="app_bars_dot_spacer" translatable="false">·</string>
     <string name="app_name" translatable="false">Jerboa</string>
     <string name="bottomBar_bookmarks">Go to my bookmarks</string>
     <string name="bottomBar_home">Go home</string>
@@ -102,6 +102,10 @@
     <string name="community_sortBy">Sort by</string>
     <string name="community_subscribe">Subscribe</string>
     <string name="community_users_month">%1$s users / month</string>
+    <string name="crash_logs">Crash Logs</string>
+    <string name="crash_logs_all_deleted">All crash logs deleted</string>
+    <string name="crash_logs_copy">Copy crash log</string>
+    <string name="crash_logs_delete">Delete all crash logs</string>
     <string name="createPost_selectCommunity">Select community from list</string>
     <string name="create_post_a_title_here">a title here....</string>
     <string name="create_post_community">Community</string>
@@ -124,7 +128,6 @@
     <string name="dialogs_new_comments">New Comments</string>
     <string name="dialogs_subscribed">Subscribed</string>
     <string name="dialogs_top">Top</string>
-    <string name="dialogs_top_all_time">Top All Time</string>
     <string name="dialogs_top_day">Top Day</string>
     <string name="dialogs_top_month">Top Month</string>
     <string name="dialogs_top_week">Top Week</string>
@@ -138,14 +141,10 @@
     <string name="homeHeader_filter">Select feed</string>
     <string name="home_add_account">Add Account</string>
     <string name="home_all">All</string>
-    <string name="home_communities">Communities</string>
-    <string name="home_inbox">Inbox</string>
     <string name="home_local">Local</string>
     <string name="home_menu">Menu</string>
     <string name="home_post_view_mode">Post View Mode</string>
-    <string name="home_profile">Profile</string>
     <string name="home_refresh">Refresh</string>
-    <string name="home_saved">Saved</string>
     <string name="home_settings">Settings</string>
     <string name="home_sign_out">Sign Out</string>
     <string name="home_site_info">Site Info</string>
@@ -222,6 +221,7 @@
     <string name="personProfile_viewBanner">View banner image</string>
     <string name="person_iconAdmin">Is administrator</string>
     <string name="person_iconBanned">Is banned</string>
+    <string name="person_iconBot">Is a bot</string>
     <string name="person_iconModerator">Is moderator</string>
     <string name="person_profile_activity_about">About</string>
     <string name="person_profile_activity_comments">Comments</string>
@@ -320,6 +320,7 @@
     <string name="lang_language">Language</string>
     <string name="loading">Loading</string>
     <string name="blur_nsfw">Blur NSFW images</string>
+    <string name="show_post_link_previews">Show post link previews</string>
     <string name="sorttype_tophour">TopHour</string>
     <string name="sorttype_topsixhour">TopSixHour</string>
     <string name="sorttype_toptwelvehour">TopTwelveHour</string>
@@ -334,4 +335,12 @@
     <string name="dialogs_top_nine_month">Top Nine Months</string>
     <string name="post_listing_view_source">View Source</string>
     <string name="post_listing_view_original">View Original</string>
+    <string name="download">Download</string>
+    <string name="back_confirmation">Press back again to exit</string>
+    <string name="no_back_confirmation">Do not ask for confirmation to exit</string>
+    <string name="press_again_confirmation">Press back twice to exit</string>
+    <string name="confirm_exit">Confirm exit action</string>
+    <string name="back_dialog">Show a confirmation dialog on exit</string>
+    <string name="exit">Exit</string>
+    <string name="back_dialog_title">Are you sure you want to exit?</string>
 </resources>

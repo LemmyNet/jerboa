@@ -1,5 +1,6 @@
 package com.jerboa.model
 
+import android.os.Parcelable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,11 +16,13 @@ import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.CreateComment
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.db.entity.Account
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
-sealed class ReplyItem {
+@Parcelize
+sealed class ReplyItem : Parcelable {
     class PostItem(val item: PostView) : ReplyItem()
     class CommentItem(val item: CommentView) : ReplyItem()
     class CommentReplyItem(val item: CommentReplyView) : ReplyItem()

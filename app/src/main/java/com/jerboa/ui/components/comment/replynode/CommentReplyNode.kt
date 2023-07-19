@@ -41,7 +41,7 @@ import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.datatypes.types.CommentReplyView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
@@ -97,8 +97,8 @@ fun CommentReplyNodeHeaderPreview() {
 @Composable
 fun CommentReplyNodeFooterLine(
     commentReplyView: CommentReplyView,
-    onUpvoteClick: (commentReplyView: CommentReplyView) -> Unit,
-    onDownvoteClick: (commentReplyView: CommentReplyView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onReplyClick: (commentReplyView: CommentReplyView) -> Unit,
     onSaveClick: (commentReplyView: CommentReplyView) -> Unit,
     onMarkAsReadClick: (commentReplyView: CommentReplyView) -> Unit,
@@ -150,7 +150,6 @@ fun CommentReplyNodeFooterLine(
             VoteGeneric(
                 myVote = myVote,
                 votes = upvotes,
-                item = commentReplyView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 showNumber = (downvotes != 0),
@@ -159,7 +158,6 @@ fun CommentReplyNodeFooterLine(
             VoteGeneric(
                 myVote = myVote,
                 votes = downvotes,
-                item = commentReplyView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
                 account = account,
@@ -366,10 +364,10 @@ fun CommentReplyNode(
                     CommentReplyNodeFooterLine(
                         commentReplyView = commentReplyView,
                         onUpvoteClick = {
-                            onUpvoteClick(it)
+                            onUpvoteClick(commentReplyView)
                         },
                         onDownvoteClick = {
-                            onDownvoteClick(it)
+                            onDownvoteClick(commentReplyView)
                         },
                         onPersonClick = onPersonClick,
                         onViewSourceClick = {

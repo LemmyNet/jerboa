@@ -43,7 +43,7 @@ import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PersonMentionView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
@@ -99,8 +99,8 @@ fun CommentMentionNodeHeaderPreview() {
 @Composable
 fun CommentMentionNodeFooterLine(
     personMentionView: PersonMentionView,
-    onUpvoteClick: (personMentionView: PersonMentionView) -> Unit,
-    onDownvoteClick: (personMentionView: PersonMentionView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onReplyClick: (personMentionView: PersonMentionView) -> Unit,
     onSaveClick: (personMentionView: PersonMentionView) -> Unit,
     onMarkAsReadClick: (personMentionView: PersonMentionView) -> Unit,
@@ -152,7 +152,6 @@ fun CommentMentionNodeFooterLine(
             VoteGeneric(
                 myVote = myVote,
                 votes = upvotes,
-                item = personMentionView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
                 showNumber = (downvotes != 0),
@@ -161,7 +160,6 @@ fun CommentMentionNodeFooterLine(
             VoteGeneric(
                 myVote = myVote,
                 votes = downvotes,
-                item = personMentionView,
                 type = VoteType.Downvote,
                 onVoteClick = onDownvoteClick,
                 account = account,
@@ -381,10 +379,10 @@ fun CommentMentionNode(
                     CommentMentionNodeFooterLine(
                         personMentionView = personMentionView,
                         onUpvoteClick = {
-                            onUpvoteClick(it)
+                            onUpvoteClick(personMentionView)
                         },
                         onDownvoteClick = {
-                            onDownvoteClick(it)
+                            onDownvoteClick(personMentionView)
                         },
                         onPersonClick = onPersonClick,
                         onViewSourceClick = {

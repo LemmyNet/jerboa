@@ -30,7 +30,6 @@
     <string name="account_settings_show_scores">Εμφάνιση των scores</string>
     <string name="account_settings_subscribed">Εγγεγραμμένος</string>
     <string name="addBookmark">Προσθήκη στους σελιδοδείκτες</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="app_name" translatable="false">Jerboa</string>
     <string name="bottomBar_bookmarks">Πήγαινε στους σελιδοδείκτες μου</string>
     <string name="bottomBar_home">Πήγαινε στην αρχική σελίδα</string>
@@ -124,7 +123,6 @@
     <string name="dialogs_new_comments">Νέα Σχόλια</string>
     <string name="dialogs_subscribed">Συνδρομές</string>
     <string name="dialogs_top">Κορυφαία</string>
-    <string name="dialogs_top_all_time">Κορυφαία όλων των εποχών</string>
     <string name="dialogs_top_day">Κορυφαία της Ημέρας</string>
     <string name="dialogs_top_month">Κορυφαία του Μήνα</string>
     <string name="dialogs_top_week">Κορυφαία της Εβδομάδας</string>
@@ -138,14 +136,10 @@
     <string name="homeHeader_filter">Επιλογή ροής</string>
     <string name="home_add_account">Προσθήκη Λογαριασμού</string>
     <string name="home_all">Όλα</string>
-    <string name="home_communities">Κοινότητες</string>
-    <string name="home_inbox">Εισερχόμενα</string>
     <string name="home_local">Τοπικά</string>
     <string name="home_menu">Μενού</string>
     <string name="home_post_view_mode">Αλλαγή Τρόπου Εμφάνισης Των Ανάρτησεων</string>
-    <string name="home_profile">Λογαριασμός</string>
     <string name="home_refresh">Ανανέωση</string>
-    <string name="home_saved">Αποθηκευμένα</string>
     <string name="home_settings">Ρυθμίσεις</string>
     <string name="home_sign_out">Αποσύνδεση</string>
     <string name="home_site_info">Πληροφορίες Ιστότοπου</string>

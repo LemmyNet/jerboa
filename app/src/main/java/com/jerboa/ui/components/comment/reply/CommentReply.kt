@@ -15,15 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.types.CommentReplyView
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentNodeHeader
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNodeHeader
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeHeader
@@ -35,7 +33,7 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentReplyHeader(
-    navController: NavController = rememberNavController(),
+    onClickBack: () -> Unit,
     onSendClick: () -> Unit,
     loading: Boolean,
 ) {
@@ -64,9 +62,7 @@ fun CommentReplyHeader(
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onClickBack,
             ) {
                 Icon(
                     Icons.Outlined.Close,

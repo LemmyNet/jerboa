@@ -5,6 +5,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
+    id("kotlin-parcelize")
+
 }
 
 apply(from = "update_instances.gradle.kts")
@@ -17,8 +19,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 33
-        versionCode = 38
-        versionName = "0.0.38"
+        versionCode = 40
+        versionName = "0.0.40"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -119,6 +121,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-flowlayout:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-permissions:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
 
     // LiveData
     implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
@@ -126,6 +129,9 @@ dependencies {
 
     // gif support
     implementation("io.coil-kt:coil-gif:2.4.0")
+
+    // crash handling
+    implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
     // To use Kotlin annotation processing tool
     ksp("androidx.room:room-compiler:2.5.2")

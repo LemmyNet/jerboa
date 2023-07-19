@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class PersonMentionView(
     val person_mention: PersonMention,
     val comment: Comment,
@@ -13,4 +17,4 @@ data class PersonMentionView(
     val saved: Boolean,
     val creator_blocked: Boolean,
     val my_vote: Int? = null,
-)
+) : Parcelable

@@ -2,6 +2,7 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -31,7 +32,7 @@ import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 class CommunityViewModel : ViewModel(), Initializable {
@@ -55,7 +56,7 @@ class CommunityViewModel : ViewModel(), Initializable {
 
     var sortType by mutableStateOf(SortType.Active)
         private set
-    var page by mutableStateOf(1)
+    var page by mutableIntStateOf(1)
         private set
 
     fun updateSortType(sortType: SortType) {

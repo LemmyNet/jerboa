@@ -22,7 +22,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import arrow.core.compareTo
 import com.google.gson.Gson
@@ -56,7 +58,9 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.Account
+import com.jerboa.db.APP_SETTINGS_DEFAULT
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.Route
@@ -64,6 +68,7 @@ import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.ocpsoft.prettytime.PrettyTime
@@ -238,14 +243,14 @@ data class CommentNodeData(
 
 fun commentsToFlatNodes(
     comments: List<CommentView>,
-): List<CommentNodeData> {
-    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }
+): ImmutableList<CommentNodeData> {
+    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }.toImmutableList()
 }
 
 fun buildCommentsTree(
     comments: List<CommentView>,
     isCommentView: Boolean,
-): List<CommentNodeData> {
+): ImmutableList<CommentNodeData> {
     val map = LinkedHashMap<Number, CommentNodeData>()
     val firstComment = comments.firstOrNull()?.comment
 
@@ -282,7 +287,7 @@ fun buildCommentsTree(
         }
     }
 
-    return tree
+    return tree.toImmutableList()
 }
 
 fun LazyListState.isScrolledToEnd(): Boolean {
@@ -470,7 +475,6 @@ val imageRegex = Regex(
 )
 
 // Todo is the scope.launch still necessary?
-@OptIn(ExperimentalMaterial3Api::class)
 fun closeDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
@@ -781,6 +785,24 @@ fun scrollToTop(
 ) {
     scope.launch {
         listState.animateScrollToItem(index = 0)
+    }
+}
+
+fun showSnackbar(
+    scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    message: String,
+    actionLabel: String?,
+    withDismissAction: Boolean = false,
+    snackbarDuration: SnackbarDuration,
+) {
+    scope.launch {
+        snackbarHostState.showSnackbar(
+            message,
+            actionLabel,
+            withDismissAction,
+            snackbarDuration,
+        )
     }
 }
 
@@ -1383,11 +1405,26 @@ fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange>
     }
     return l
 }
+inline fun <reified E : Enum<E>> getEnumFromIntSetting(
+    appSettings: LiveData<AppSettings>,
+    getter: (AppSettings) -> Int,
+): E {
+    val enums = enumValues<E>()
+    val setting = appSettings.value ?: APP_SETTINGS_DEFAULT
+    val index = getter(setting)
 
-fun <T> ApiState<T>.isLoading(): Boolean {
-    return this is ApiState.Appending || this == ApiState.Loading || this == ApiState.Refreshing
+    return if (index >= enums.size) { // Fallback to default
+        enums[getter(APP_SETTINGS_DEFAULT)]
+    } else {
+        enums[index]
+    }
 }
 
-fun <T> ApiState<T>.isRefreshing(): Boolean {
-    return this == ApiState.Refreshing
+fun triggerRebirth(context: Context) {
+    val packageManager = context.packageManager
+    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+    val componentName = intent!!.component
+    val mainIntent = Intent.makeRestartActivityTask(componentName)
+    context.startActivity(mainIntent)
+    Runtime.getRuntime().exit(0)
 }

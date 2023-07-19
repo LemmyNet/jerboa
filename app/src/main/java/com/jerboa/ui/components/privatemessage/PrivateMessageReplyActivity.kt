@@ -15,23 +15,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.PrivateMessageView
-import com.jerboa.db.AccountViewModel
+import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PrivateMessageReplyViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.toProfile
+import com.jerboa.util.InitializeRoute
 
 @Composable
 fun PrivateMessageReplyActivity(
     privateMessageView: PrivateMessageView,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
-    navController: NavController,
+    onBack: () -> Unit,
+    onProfile: (Int) -> Unit,
 ) {
     Log.d("jerboa", "got to private message reply activity")
 
@@ -55,14 +54,14 @@ fun PrivateMessageReplyActivity(
         Scaffold(
             topBar = {
                 PrivateMessageReplyHeader(
-                    navController = navController,
                     loading = loading,
+                    onClickBack = onBack,
                     onSendClick = {
                         account?.also { acct ->
                             privateMessageReplyViewModel.createPrivateMessage(
                                 content = reply.text,
                                 account = acct,
-                                navController,
+                                onGoBack = onBack,
                                 focusManager,
                             )
                         }
@@ -79,9 +78,7 @@ fun PrivateMessageReplyActivity(
                             account = account,
                             reply = reply,
                             onReplyChange = { reply = it },
-                            onPersonClick = { personId ->
-                                navController.toProfile(id = personId)
-                            },
+                            onPersonClick = onProfile,
                             modifier = Modifier
                                 .padding(padding)
                                 .imePadding(),

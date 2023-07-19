@@ -2,6 +2,7 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -37,7 +38,7 @@ import com.jerboa.findAndUpdatePrivateMessage
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 class InboxViewModel : ViewModel(), Initializable {
@@ -78,11 +79,11 @@ class InboxViewModel : ViewModel(), Initializable {
     private var blockPersonRes: ApiState<BlockPersonResponse> by
         mutableStateOf(ApiState.Empty)
 
-    var pageReplies by mutableStateOf(1)
+    var pageReplies by mutableIntStateOf(1)
         private set
-    var pageMentions by mutableStateOf(1)
+    var pageMentions by mutableIntStateOf(1)
         private set
-    var pageMessages by mutableStateOf(1)
+    var pageMessages by mutableIntStateOf(1)
         private set
     var unreadOnly by mutableStateOf(true)
         private set
@@ -98,9 +99,9 @@ class InboxViewModel : ViewModel(), Initializable {
     }
 
     fun resetPages() {
-        pageMentions = 1
-        pageReplies = 1
-        pageMessages = 1
+        resetPageMentions()
+        resetPageMessages()
+        resetPageReplies()
     }
 
     fun updateUnreadOnly(unreadOnly: Boolean) {
@@ -363,6 +364,7 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun markReplyAsRead(
         form: MarkCommentReplyAsRead,
+        onSuccess: () -> Unit,
     ) {
         viewModelScope.launch {
             markReplyAsReadRes = ApiState.Loading
@@ -383,6 +385,7 @@ class InboxViewModel : ViewModel(), Initializable {
                             val newRes =
                                 ApiState.Success(existing.data.copy(replies = mutable.toList()))
                             repliesRes = newRes
+                            onSuccess()
                         }
 
                         else -> {}
@@ -396,6 +399,7 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun markPersonMentionAsRead(
         form: MarkPersonMentionAsRead,
+        onSuccess: () -> Unit,
     ) {
         viewModelScope.launch {
             markMentionAsReadRes = ApiState.Loading
@@ -410,9 +414,9 @@ class InboxViewModel : ViewModel(), Initializable {
                                     existing.data.mentions,
                                     readRes.data.person_mention_view,
                                 )
-                            val newRes =
-                                ApiState.Success(existing.data.copy(mentions = newMentions))
+                            val newRes = ApiState.Success(existing.data.copy(mentions = newMentions))
                             mentionsRes = newRes
+                            onSuccess()
                         }
 
                         else -> {}
@@ -426,6 +430,7 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun markPrivateMessageAsRead(
         form: MarkPrivateMessageAsRead,
+        onSuccess: () -> Unit,
     ) {
         viewModelScope.launch {
             markMessageAsReadRes = ApiState.Loading
@@ -440,9 +445,9 @@ class InboxViewModel : ViewModel(), Initializable {
                                     existing.data.private_messages,
                                     readRes.data.private_message_view,
                                 )
-                            val newRes =
-                                ApiState.Success(existing.data.copy(private_messages = newMessages))
+                            val newRes = ApiState.Success(existing.data.copy(private_messages = newMessages))
                             messagesRes = newRes
+                            onSuccess()
                         }
 
                         else -> {}
@@ -472,6 +477,7 @@ class InboxViewModel : ViewModel(), Initializable {
 
     fun markAllAsRead(
         form: MarkAllAsRead,
+        onComplete: () -> Unit,
     ) {
         viewModelScope.launch {
             markAllAsReadRes = ApiState.Loading
@@ -506,6 +512,7 @@ class InboxViewModel : ViewModel(), Initializable {
 
                 else -> {}
             }
+            onComplete()
         }
     }
 
@@ -514,6 +521,23 @@ class InboxViewModel : ViewModel(), Initializable {
             unread_only = unreadOnly,
             sort = CommentSortType.New,
             page = pageReplies,
+            auth = jwt,
+        )
+    }
+
+    fun getFormMentions(jwt: String): GetPersonMentions {
+        return GetPersonMentions(
+            unread_only = unreadOnly,
+            sort = CommentSortType.New,
+            page = pageMentions,
+            auth = jwt,
+        )
+    }
+
+    fun getFormMessages(jwt: String): GetPrivateMessages {
+        return GetPrivateMessages(
+            unread_only = unreadOnly,
+            page = pageMessages,
             auth = jwt,
         )
     }

@@ -3,7 +3,11 @@ package com.jerboa.ui.components.person
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -14,8 +18,25 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -23,8 +44,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import arrow.core.Either
+import com.jerboa.CommentEditDeps
+import com.jerboa.CommentReplyDeps
+import com.jerboa.ConsumeReturn
+import com.jerboa.JerboaAppState
+import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -42,18 +67,17 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.Account
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.entity.Account
 import com.jerboa.getLocalizedStringForUserTab
-import com.jerboa.isLoading
-import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.PersonProfileViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
+import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.CommentNodes
@@ -61,29 +85,17 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.CommentEditDeps
-import com.jerboa.ui.components.common.CommentReplyDeps
-import com.jerboa.ui.components.common.ConsumeReturn
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PostEditDeps
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.common.rootChannel
+import com.jerboa.ui.components.common.isLoading
+import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.common.toComment
-import com.jerboa.ui.components.common.toCommentEdit
-import com.jerboa.ui.components.common.toCommentReply
-import com.jerboa.ui.components.common.toCommentReport
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPostEdit
-import com.jerboa.ui.components.common.toPostReport
-import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.util.InitializeRoute
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -93,7 +105,7 @@ import kotlinx.coroutines.launch
 fun PersonProfileActivity(
     personArg: Either<PersonId, String>,
     savedMode: Boolean,
-    navController: NavController,
+    appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     appSettingsViewModel: AppSettingsViewModel,
@@ -101,6 +113,8 @@ fun PersonProfileActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
+    drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -113,15 +127,15 @@ fun PersonProfileActivity(
 
     val personProfileViewModel: PersonProfileViewModel = viewModel()
 
-    navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)
     }
 
-    navController.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
         if (personProfileViewModel.initialized) personProfileViewModel.updateComment(cv)
     }
 
-    navController.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
+    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
         if (personProfileViewModel.initialized) {
             when (val res = personProfileViewModel.personDetailsRes) {
                 is ApiState.Success -> {
@@ -131,6 +145,12 @@ fun PersonProfileActivity(
                 }
                 else -> {}
             }
+        }
+    }
+
+    fun openDrawer() {
+        scope.launch {
+            drawerState.open()
         }
     }
 
@@ -167,7 +187,7 @@ fun PersonProfileActivity(
                         onClickSortType = {},
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
-                        navController = navController,
+                        openDrawer = ::openDrawer,
                     )
                 }
                 is ApiState.Holder -> {
@@ -211,12 +231,12 @@ fun PersonProfileActivity(
                             val firstComment = profileRes.data.comments.firstOrNull()
                             val firstPost = profileRes.data.posts.firstOrNull()
                             if (firstComment !== null) {
-                                navController.toCommentReport(id = firstComment.comment.id)
+                                appState.toCommentReport(id = firstComment.comment.id)
                             } else if (firstPost !== null) {
-                                navController.toPostReport(id = firstPost.post.id)
+                                appState.toPostReport(id = firstPost.post.id)
                             }
                         },
-                        navController = navController,
+                        openDrawer = ::openDrawer,
                     )
                 }
                 else -> {}
@@ -226,7 +246,7 @@ fun PersonProfileActivity(
             UserTabs(
                 savedMode = savedMode,
                 padding = it,
-                navController = navController,
+                appState = appState,
                 personProfileViewModel = personProfileViewModel,
                 ctx = ctx,
                 account = account,
@@ -239,6 +259,7 @@ fun PersonProfileActivity(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                showPostLinkPreviews = showPostLinkPreviews,
             )
         },
     )
@@ -253,8 +274,8 @@ enum class UserTab {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun UserTabs(
+    appState: JerboaAppState,
     savedMode: Boolean,
-    navController: NavController,
     personProfileViewModel: PersonProfileViewModel,
     ctx: Context,
     account: Account?,
@@ -268,10 +289,11 @@ fun UserTabs(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
 ) {
-    val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
-    val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
-    val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
+    val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
+    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
+    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     val tabTitles = if (savedMode) {
         listOf(
@@ -363,6 +385,7 @@ fun UserTabs(
                                     PersonProfileTopSection(
                                         personView = profileRes.data.person_view,
                                         showAvatar = showAvatar,
+                                        openImageViewer = appState::toView,
                                     )
                                 }
                                 val moderates = profileRes.data.moderates
@@ -384,7 +407,7 @@ fun UserTabs(
                                         community = cmv.community,
                                         modifier = Modifier.padding(MEDIUM_PADDING),
                                         onClick = { community ->
-                                            navController.toCommunity(id = community.id)
+                                            appState.toCommunity(id = community.id)
                                         },
                                         showDefaultIcon = true,
                                         blurNSFW = blurNSFW,
@@ -449,7 +472,7 @@ fun UserTabs(
                                         }
                                     },
                                     onPostClick = { pv ->
-                                        navController.toPost(id = pv.post.id)
+                                        appState.toPost(id = pv.post.id)
                                     },
                                     onSaveClick = { pv ->
                                         account?.also { acct ->
@@ -463,7 +486,7 @@ fun UserTabs(
                                         }
                                     },
                                     onEditPostClick = { pv ->
-                                        navController.toPostEdit(
+                                        appState.toPostEdit(
                                             channel = transferPostEditDepsViaRoot,
                                             postView = pv,
                                         )
@@ -480,14 +503,12 @@ fun UserTabs(
                                         }
                                     },
                                     onReportClick = { pv ->
-                                        navController.toPostReport(id = pv.post.id)
+                                        appState.toPostReport(id = pv.post.id)
                                     },
                                     onCommunityClick = { community ->
-                                        navController.toCommunity(id = community.id)
+                                        appState.toCommunity(id = community.id)
                                     },
-                                    onPersonClick = { personId ->
-                                        navController.toProfile(id = personId)
-                                    },
+                                    onPersonClick = appState::toProfile,
                                     onBlockCommunityClick = { community ->
                                         account?.also { acct ->
                                             personProfileViewModel.blockCommunity(
@@ -530,6 +551,9 @@ fun UserTabs(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
+                                    openImageViewer = appState::toView,
+                                    openLink = appState::openLink,
+                                    showPostLinkPreviews = showPostLinkPreviews,
                                 )
                             }
                             else -> {}
@@ -614,7 +638,7 @@ fun UserTabs(
                                     toggleActionBar = { commentId -> toggleActionBar(commentId) },
                                     onMarkAsReadClick = {},
                                     onCommentClick = { cv ->
-                                        navController.toComment(id = cv.comment.id)
+                                        appState.toComment(id = cv.comment.id)
                                     },
                                     onUpvoteClick = { cv ->
                                         account?.also { acct ->
@@ -639,7 +663,7 @@ fun UserTabs(
                                         }
                                     },
                                     onReplyClick = { cv ->
-                                        navController.toCommentReply(
+                                        appState.toCommentReply(
                                             channel = transferCommentReplyDepsViaRoot,
                                             replyItem = ReplyItem.CommentItem(cv),
                                             isModerator = false,
@@ -656,19 +680,17 @@ fun UserTabs(
                                             )
                                         }
                                     },
-                                    onPersonClick = { personId ->
-                                        navController.toProfile(id = personId)
-                                    },
+                                    onPersonClick = appState::toProfile,
                                     onHeaderClick = {},
                                     onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                     onCommunityClick = { community ->
-                                        navController.toCommunity(id = community.id)
+                                        appState.toCommunity(id = community.id)
                                     },
                                     onPostClick = { postId ->
-                                        navController.toPost(id = postId)
+                                        appState.toPost(id = postId)
                                     },
                                     onEditCommentClick = { cv ->
-                                        navController.toCommentEdit(
+                                        appState.toCommentEdit(
                                             channel = transferCommentEditDepsViaRoot,
                                             commentView = cv,
                                         )
@@ -685,10 +707,10 @@ fun UserTabs(
                                         }
                                     },
                                     onReportClick = { cv ->
-                                        navController.toCommentReport(id = cv.comment.id)
+                                        appState.toCommentReport(id = cv.comment.id)
                                     },
                                     onCommentLinkClick = { cv ->
-                                        navController.toComment(id = cv.comment.id)
+                                        appState.toComment(id = cv.comment.id)
                                     },
                                     onFetchChildrenClick = {},
                                     onBlockCreatorClick = { person ->

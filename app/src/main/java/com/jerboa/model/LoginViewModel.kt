@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -18,11 +17,9 @@ import com.jerboa.api.retrofitErrorHandler
 import com.jerboa.compareVersions
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.Login
-import com.jerboa.db.Account
-import com.jerboa.db.AccountViewModel
+import com.jerboa.db.entity.Account
 import com.jerboa.getHostFromInstanceString
 import com.jerboa.serializeToMap
-import com.jerboa.ui.components.common.toHome
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
@@ -34,7 +31,7 @@ class LoginViewModel : ViewModel() {
     fun login(
         instance: String,
         form: Login,
-        navController: NavController,
+        onGoHome: () -> Unit,
         accountViewModel: AccountViewModel,
         siteViewModel: SiteViewModel,
         ctx: Context,
@@ -129,7 +126,7 @@ class LoginViewModel : ViewModel() {
 
                     loading = false
 
-                    navController.toHome()
+                    onGoHome()
                 }
 
                 else -> {}

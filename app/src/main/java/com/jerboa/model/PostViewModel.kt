@@ -33,12 +33,12 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.findAndUpdateComment
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6

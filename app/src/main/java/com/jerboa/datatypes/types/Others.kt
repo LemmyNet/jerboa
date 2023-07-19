@@ -1,6 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 enum class RegistrationMode {
     @SerializedName("Closed")
@@ -260,12 +263,15 @@ enum class ModlogActionType {
     AdminPurgeComment,
 }
 
+@Parcelize
 data class PictrsImage(
     val file: String,
     val delete_token: String,
-)
+) : Parcelable
 
+@Immutable
+@Parcelize
 data class PictrsImages(
     val msg: String,
     val files: List<PictrsImage>?,
-)
+) : Parcelable
