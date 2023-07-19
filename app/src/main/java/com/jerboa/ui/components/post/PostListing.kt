@@ -1648,7 +1648,7 @@ fun PostOptionsDialog(
                     onClick = { onShareClick(postView.post.ap_id) },
                 )
                 if (!isCreator) {
-                    Divider(Modifier.padding(SMALL_PADDING))
+                    Divider(Modifier.padding(LARGE_PADDING))
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.post_listing_block, postView.creator.name),
                         icon = Icons.Outlined.Block,
