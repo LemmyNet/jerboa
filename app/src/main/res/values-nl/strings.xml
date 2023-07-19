@@ -219,7 +219,6 @@
     <string name="create_report_view_model_report_created">Rapportage aangemaakt</string>
     <string name="about_social">Sociaal</string>
     <string name="addBookmark">Voeg toe aan bladwijzers</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Inhoud tonen voor samengevouwde reacties</string>
     <string name="comment_node_permalink_copied">Permalink gekopieerd</string>
