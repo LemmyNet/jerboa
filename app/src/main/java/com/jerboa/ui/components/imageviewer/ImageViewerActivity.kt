@@ -43,7 +43,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -162,8 +162,7 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                                 // and show it again upon user's touch. We just want the user to be able to show the
                                 // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
                                 // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                                systemUiController.systemBarsBehavior =
-                                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                                systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                             },
                         ),
                 )
