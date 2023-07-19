@@ -234,6 +234,8 @@ fun LazyListScope.commentNodeItem(
         .commentView.counts.child_count > 0 && !isFlat
 
     increaseLazyListIndexTracker()
+    // TODO Needs a contentType
+    // possibly "contentNodeItemL${node.depth}"
     item(key = commentId) {
         var viewSource by remember { mutableStateOf(false) }
 

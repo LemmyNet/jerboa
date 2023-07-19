@@ -170,7 +170,7 @@ fun HomeHeader(
                     contentDescription = stringResource(R.string.homeHeader_filter),
                 )
             }
-            IconButton(onClick = {
+            IconButton(modifier = Modifier.testTag("jerboa:sortoptions"), onClick = {
                 showSortOptions = !showSortOptions
             }) {
                 Icon(
