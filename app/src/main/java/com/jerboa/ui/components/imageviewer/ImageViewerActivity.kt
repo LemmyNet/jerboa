@@ -59,6 +59,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
+import java.io.IOException
 import java.net.URL
 
 const val backFadeTime = 300
@@ -161,7 +162,8 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                                 // and show it again upon user's touch. We just want the user to be able to show the
                                 // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
                                 // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                                systemUiController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                                systemUiController.systemBarsBehavior =
+                                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                             },
                         ),
                 )
@@ -179,17 +181,20 @@ suspend fun SaveImage(url: String, context: Context) {
     val extension = MimeTypeMap.getFileExtensionFromUrl(url)
     val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 
-    withContext(Dispatchers.IO) {
-        URL(url).openStream().use {
-            if (SDK_INT < 29) {
-                saveBitmapP(context, it, mimeType, fileName)
-            } else {
-                saveBitmap(context, it, mimeType, fileName)
+    try {
+        withContext(Dispatchers.IO) {
+            URL(url).openStream().use {
+                if (SDK_INT < 29) {
+                    saveBitmapP(context, it, mimeType, fileName)
+                } else {
+                    saveBitmap(context, it, mimeType, fileName)
+                }
             }
         }
+        Toast.makeText(context, context.getString(R.string.saved_image), Toast.LENGTH_SHORT).show()
+    } catch (e: IOException) {
+        Toast.makeText(context, R.string.failed_saving_image, Toast.LENGTH_SHORT).show()
     }
-
-    Toast.makeText(context, context.getString(R.string.saved_image), Toast.LENGTH_SHORT).show()
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
