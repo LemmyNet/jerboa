@@ -2,10 +2,13 @@ package com.jerboa.api
 
 import android.content.Context
 import android.util.Log
+import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.entity.Account
 import com.jerboa.toastException
 import com.jerboa.util.CustomHttpLoggingInterceptor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -17,6 +20,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.io.InputStream
+import java.net.MalformedURLException
+import java.net.URL
 import okhttp3.Response as HttpResponse
 
 const val VERSION = "v3"
@@ -24,8 +29,6 @@ const val DEFAULT_INSTANCE = "lemmy.ml"
 const val MINIMUM_API_VERSION: String = "0.18"
 val REDACTED_QUERY_PARAMS = setOf("auth")
 val REDACTED_BODY_FIELDS = setOf("jwt", "password")
-val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
-val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
 
 interface API {
     @GET("site")
@@ -247,6 +250,9 @@ interface API {
         var currentInstance: String = DEFAULT_INSTANCE
             private set
 
+        private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
+        private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
+
         private fun buildUrl(): String {
             return "https://$currentInstance/api/$VERSION/"
         }
@@ -305,6 +311,34 @@ interface API {
                 .client(client)
                 .build()
                 .create(API::class.java)
+        }
+
+        suspend fun checkIfLemmyInstance(url: String): Boolean {
+            try {
+                val host = URL(url).host
+
+                if (DEFAULT_LEMMY_INSTANCES.contains(host) || TEMP_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
+                    return true
+                } else if (TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
+                    return false
+                } else {
+                    val api = createTempInstance(host)
+                    return withContext(Dispatchers.IO) {
+                        return@withContext when (apiWrapper(api.getSite(emptyMap()))) {
+                            is ApiState.Success -> {
+                                TEMP_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
+                                true
+                            }
+                            else -> {
+                                TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
+                                false
+                            }
+                        }
+                    }
+                }
+            } catch (_: MalformedURLException) {
+                return false
+            }
         }
     }
 }

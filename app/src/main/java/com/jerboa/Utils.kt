@@ -55,11 +55,9 @@ import arrow.core.compareTo
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
+import com.jerboa.api.API.Companion.checkIfLemmyInstance
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
-import com.jerboa.api.TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES
-import com.jerboa.api.TEMP_RECOGNISED_AS_LEMMY_INSTANCES
-import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.Account
@@ -73,9 +71,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.ocpsoft.prettytime.PrettyTime
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -1471,32 +1467,4 @@ fun triggerRebirth(context: Context) {
     val mainIntent = Intent.makeRestartActivityTask(componentName)
     context.startActivity(mainIntent)
     Runtime.getRuntime().exit(0)
-}
-
-suspend fun checkIfLemmyInstance(url: String): Boolean {
-    try {
-        val host = URL(url).host
-
-        if (DEFAULT_LEMMY_INSTANCES.contains(host) || TEMP_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
-            return true
-        } else if (TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
-            return false
-        } else {
-            val api = API.createTempInstance(host)
-            return withContext(Dispatchers.IO) {
-                return@withContext when (apiWrapper(api.getSite(emptyMap()))) {
-                    is ApiState.Success -> {
-                        TEMP_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
-                        true
-                    }
-                    else -> {
-                        TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
-                        false
-                    }
-                }
-            }
-        }
-    } catch (_: MalformedURLException) {
-        return false
-    }
 }
