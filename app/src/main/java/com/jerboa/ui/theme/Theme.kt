@@ -4,11 +4,13 @@ import android.app.Activity
 import android.os.Build
 import android.view.WindowManager
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +21,10 @@ import androidx.core.view.WindowCompat
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.entity.AppSettings
+
+// Defines a provider for custom color scheme use; initializes it to a default scheme that will
+// be overridden by JerboaTheme
+private val LocalColorScheme = staticCompositionLocalOf { JerboaColorScheme() }
 
 @Composable
 fun JerboaTheme(
@@ -34,7 +40,20 @@ fun JerboaTheme(
 
     // Dynamic schemes crash on lower than android 12
     val dynamicPair = if (android12OrLater) {
-        Pair(dynamicLightColorScheme(ctx), dynamicDarkColorScheme(ctx))
+        val jerboaImageHighlight = Color(0xCCD1D1D1)
+        val jerboaVideoHighlight = Color(0xCCC20000)
+        Pair(
+            JerboaColorScheme(
+                material = dynamicLightColorScheme(ctx),
+                videoHighlight = jerboaVideoHighlight,
+                imageHighlight = jerboaImageHighlight,
+            ),
+            JerboaColorScheme(
+                material = dynamicDarkColorScheme(ctx),
+                videoHighlight = jerboaVideoHighlight,
+                imageHighlight = jerboaImageHighlight,
+            ),
+        )
     } else {
         pink()
     }
@@ -51,10 +70,12 @@ fun JerboaTheme(
         ThemeColor.Woodland -> woodland()
     }
 
-    fun makeBlack(darkTheme: ColorScheme): ColorScheme {
+    fun makeBlack(darkTheme: JerboaColorScheme): JerboaColorScheme {
         return darkTheme.copy(
-            background = Color(0xFF000000),
-            surface = Color(0xFF000000),
+            material = darkTheme.material.copy(
+                background = Color(0xFF000000),
+                surface = Color(0xFF000000),
+            ),
         )
     }
 
@@ -95,20 +116,33 @@ fun JerboaTheme(
         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 
-    window.statusBarColor = colors.background.toArgb()
+    window.statusBarColor = colors.material.background.toArgb()
     // The navigation bar color is also set on BottomAppBarAll
-    window.navigationBarColor = colors.background.toArgb()
+    window.navigationBarColor = colors.material.background.toArgb()
 
     insets.isAppearanceLightStatusBars = isLight
     insets.isAppearanceLightNavigationBars = isLight
 
-    MaterialTheme(
-        colorScheme = colors,
-        typography = typography,
-        shapes = Shapes,
-        content = content,
-    )
+    // Set up a provider to allow access to the custom color scheme from any child element
+    CompositionLocalProvider(LocalColorScheme provides colors) {
+        // Set up the default MaterialTheme provider
+        MaterialTheme(
+            colorScheme = colors.material,
+            typography = typography,
+            shapes = Shapes,
+            content = content,
+        )
+    }
 }
+
+/**
+ * Enables access to the custom @see JerboaColorScheme instance for this @see MaterialTheme
+ */
+@Suppress("UnusedReceiverParameter") // Fix compiler complaining about not using `this`
+val MaterialTheme.jerboaColorScheme: JerboaColorScheme
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalColorScheme.current
 
 val colorList = listOf(
     hsl(0f),

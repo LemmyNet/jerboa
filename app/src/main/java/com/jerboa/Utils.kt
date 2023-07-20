@@ -493,6 +493,10 @@ fun isImage(url: String): Boolean {
     return imageRegex.matches(url)
 }
 
+fun getPostType(url: String): PostType {
+    return if (isImage(url)) PostType.Image else PostType.Link
+}
+
 val imageRegex = Regex(
     pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",
 )
@@ -872,6 +876,27 @@ enum class PostViewMode(val mode: Int) {
      * A list view that has no action bar.
      */
     List(R.string.look_and_feel_post_view_list),
+}
+
+/**
+ * For a given post, what sort of content Jerboa treats it as.
+ */
+enum class PostType {
+    /**
+     * A Link to an external website. Opens the browser.
+     */
+    Link,
+
+    /**
+     * An Image. Opens the built-in image viewer.
+     */
+    Image,
+
+    /**
+     * A Video. Should open the built-in video viewer.
+     * (Not currently available).
+     */
+    Video,
 }
 
 @OptIn(ExperimentalFoundationApi::class)
