@@ -1,14 +1,13 @@
 package com.jerboa.ui.theme
 
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-fun beach(): Pair<ColorScheme, ColorScheme> {
+fun beach(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_light_primary = Color(0xFF006FD1)
     val md_theme_light_onPrimary = Color(0xFFFFFFFF)
     val md_theme_light_primaryContainer = Color(0xFFFFEBB8)
@@ -70,6 +69,8 @@ fun beach(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_surfaceTint = Color(0xFF00234D)
     val md_theme_dark_outlineVariant = Color(0xFF002991)
     val md_theme_dark_scrim = Color(0xFF000000)
+    val jerboa_image_highlight = Color(0xCCD1D1D1)
+    val jerboa_video_highlight = Color(0xCCC20000)
 
 //    val seed = Color(0xFF78B0FF)
 
@@ -136,10 +137,23 @@ fun beach(): Pair<ColorScheme, ColorScheme> {
         outlineVariant = md_theme_dark_outlineVariant,
         scrim = md_theme_dark_scrim,
     )
-    return Pair(light, dark)
+
+    val jerboaLight = JerboaColorScheme(
+        material = light,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    val jerboaDark = JerboaColorScheme(
+        material = dark,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    return Pair(jerboaLight, jerboaDark)
 }
 
-fun blue(): Pair<ColorScheme, ColorScheme> {
+fun blue(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_light_primary = Color(0xFF3161A6)
     val md_theme_light_onPrimary = Color(0xFFFFFFFF)
     val md_theme_light_primaryContainer = Color(0xFFD9E8FF)
@@ -201,6 +215,8 @@ fun blue(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_surfaceTint = Color(0xFFB0D0FF)
     val md_theme_dark_outlineVariant = Color(0xFF434851)
     val md_theme_dark_scrim = Color(0xFF000000)
+    val jerboa_image_highlight = Color(0xCCD1D1D1)
+    val jerboa_video_highlight = Color(0xCCC20000)
 
 //    val seed = Color(0xFF78B0FF)
 
@@ -267,10 +283,23 @@ fun blue(): Pair<ColorScheme, ColorScheme> {
         outlineVariant = md_theme_dark_outlineVariant,
         scrim = md_theme_dark_scrim,
     )
-    return Pair(light, dark)
+
+    val jerboaLight = JerboaColorScheme(
+        material = light,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    val jerboaDark = JerboaColorScheme(
+        material = dark,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    return Pair(jerboaLight, jerboaDark)
 }
 
-fun crimson(): Pair<ColorScheme, ColorScheme> {
+fun crimson(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_light_primary = Color(0xFFFF5252)
     val md_theme_light_onPrimary = Color(0xFF000000)
     val md_theme_light_primaryContainer = Color(0xFFEC8F8F)
@@ -332,6 +361,8 @@ fun crimson(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_surfaceTint = Color(0xFF630A1B)
     val md_theme_dark_outlineVariant = Color(0xFF7E2839)
     val md_theme_dark_scrim = Color(0xFF000000)
+    val jerboa_image_highlight = Color(0xCCD1D1D1)
+    val jerboa_video_highlight = Color(0xCCC20000)
 
 //    val seed = Color(0xFF78B0FF)
 
@@ -398,10 +429,23 @@ fun crimson(): Pair<ColorScheme, ColorScheme> {
         outlineVariant = md_theme_dark_outlineVariant,
         scrim = md_theme_dark_scrim,
     )
-    return Pair(light, dark)
+
+    val jerboaLight = JerboaColorScheme(
+        material = light,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    val jerboaDark = JerboaColorScheme(
+        material = dark,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    return Pair(jerboaLight, jerboaDark)
 }
 
-fun green(): Pair<ColorScheme, ColorScheme> {
+fun green(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_light_primary = Color(0xFF216C29)
     val md_theme_light_onPrimary = Color(0xFFFFFFFF)
     val md_theme_light_primaryContainer = Color(0xFFA7F5A1)
@@ -463,6 +507,8 @@ fun green(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_surfaceTint = Color(0xFF8BD987)
     val md_theme_dark_outlineVariant = Color(0xFF424940)
     val md_theme_dark_scrim = Color(0xFF000000)
+    val jerboa_image_highlight = Color(0xCCD1D1D1)
+    val jerboa_video_highlight = Color(0xCCC20000)
 
 //    val seed = Color(0xFF78C475)
 
@@ -529,10 +575,23 @@ fun green(): Pair<ColorScheme, ColorScheme> {
         outlineVariant = md_theme_dark_outlineVariant,
         scrim = md_theme_dark_scrim,
     )
-    return Pair(light, dark)
+
+    val jerboaLight = JerboaColorScheme(
+        material = light,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    val jerboaDark = JerboaColorScheme(
+        material = dark,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    return Pair(jerboaLight, jerboaDark)
 }
 
-fun grey(): Pair<ColorScheme, ColorScheme> {
+fun grey(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_light_primary = Color(0xFF576274)
     val md_theme_light_onPrimary = Color(0xFFFFFFFF)
     val md_theme_light_primaryContainer = Color(0xFFDEE1E4)
@@ -594,6 +653,8 @@ fun grey(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_surfaceTint = Color(0xFF1A1C20)
     val md_theme_dark_outlineVariant = Color(0xFF434851)
     val md_theme_dark_scrim = Color(0xFF000000)
+    val jerboa_image_highlight = Color(0xCCD1D1D1)
+    val jerboa_video_highlight = Color(0xCCC20000)
 
 //    val seed = Color(0xFF78B0FF)
 
@@ -660,10 +721,23 @@ fun grey(): Pair<ColorScheme, ColorScheme> {
         outlineVariant = md_theme_dark_outlineVariant,
         scrim = md_theme_dark_scrim,
     )
-    return Pair(light, dark)
+
+    val jerboaLight = JerboaColorScheme(
+        material = light,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    val jerboaDark = JerboaColorScheme(
+        material = dark,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    return Pair(jerboaLight, jerboaDark)
 }
 
-fun pink(): Pair<ColorScheme, ColorScheme> {
+fun pink(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_light_primary = Color(0xFFA63166)
     val md_theme_light_onPrimary = Color(0xFFFFFFFF)
     val md_theme_light_primaryContainer = Color(0xFFFFD9E3)
@@ -725,6 +799,8 @@ fun pink(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_surfaceTint = Color(0xFFFFB0CB)
     val md_theme_dark_outlineVariant = Color(0xFF514347)
     val md_theme_dark_scrim = Color(0xFF000000)
+    val jerboa_image_highlight = Color(0xCCD1D1D1)
+    val jerboa_video_highlight = Color(0xCCC20000)
 
 //    val seed = Color(0xFFFF78AE)
 
@@ -791,10 +867,23 @@ fun pink(): Pair<ColorScheme, ColorScheme> {
         outlineVariant = md_theme_dark_outlineVariant,
         scrim = md_theme_dark_scrim,
     )
-    return Pair(light, dark)
+
+    val jerboaLight = JerboaColorScheme(
+        material = light,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    val jerboaDark = JerboaColorScheme(
+        material = dark,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    return Pair(jerboaLight, jerboaDark)
 }
 
-fun purple(): Pair<ColorScheme, ColorScheme> {
+fun purple(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_light_primary = Color(0xFFC5009B)
     val md_theme_light_onPrimary = Color(0xFFFFFFFF)
     val md_theme_light_primaryContainer = Color(0xFFCA8EFF)
@@ -856,6 +945,8 @@ fun purple(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_surfaceTint = Color(0xFF54068B)
     val md_theme_dark_outlineVariant = Color(0xFF434851)
     val md_theme_dark_scrim = Color(0xFF000000)
+    val jerboa_image_highlight = Color(0xCCD1D1D1)
+    val jerboa_video_highlight = Color(0xCCC20000)
 
 //    val seed = Color(0xFF78B0FF)
 
@@ -922,10 +1013,23 @@ fun purple(): Pair<ColorScheme, ColorScheme> {
         outlineVariant = md_theme_dark_outlineVariant,
         scrim = md_theme_dark_scrim,
     )
-    return Pair(light, dark)
+
+    val jerboaLight = JerboaColorScheme(
+        material = light,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    val jerboaDark = JerboaColorScheme(
+        material = dark,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    return Pair(jerboaLight, jerboaDark)
 }
 
-fun woodland(): Pair<ColorScheme, ColorScheme> {
+fun woodland(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_light_primary = Color(0xFF442A2A)
     val md_theme_light_onPrimary = Color(0xFFFFFFFF)
     val md_theme_light_primaryContainer = Color(0xFF33C490)
@@ -987,6 +1091,8 @@ fun woodland(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_surfaceTint = Color(0xFF54068B)
     val md_theme_dark_outlineVariant = Color(0xFF434851)
     val md_theme_dark_scrim = Color(0xFF000000)
+    val jerboa_image_highlight = Color(0xCCD1D1D1)
+    val jerboa_video_highlight = Color(0xCCC20000)
 
 //    val seed = Color(0xFF78B0FF)
 
@@ -1053,7 +1159,20 @@ fun woodland(): Pair<ColorScheme, ColorScheme> {
         outlineVariant = md_theme_dark_outlineVariant,
         scrim = md_theme_dark_scrim,
     )
-    return Pair(light, dark)
+
+    val jerboaLight = JerboaColorScheme(
+        material = light,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    val jerboaDark = JerboaColorScheme(
+        material = dark,
+        imageHighlight = jerboa_image_highlight,
+        videoHighlight = jerboa_video_highlight,
+    )
+
+    return Pair(jerboaLight, jerboaDark)
 }
 
 // TODO check this
