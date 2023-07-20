@@ -28,11 +28,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
-import androidx.navigation.NavController
 import coil.ImageLoader
+import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.convertSpToPx
-import com.jerboa.openLink
 import com.jerboa.util.MarkwonLemmyLinkPlugin
 import com.jerboa.util.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -81,8 +80,8 @@ object MarkdownHelper {
     private var markwon: Markwon? = null
     private var previewMarkwon: Markwon? = null
 
-    fun init(navController: NavController, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
-        val context = navController.context
+    fun init(appState: JerboaAppState, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+        val context = appState.navController.context
         val loader = ImageLoader.Builder(context)
             .crossfade(true)
             .placeholder(R.drawable.ic_launcher_foreground)
@@ -103,8 +102,11 @@ object MarkdownHelper {
             .usePlugin(MarkwonSpoilerPlugin(true))
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                    builder.linkResolver { _, link ->
-                        openLink(link, navController, useCustomTabs, usePrivateTabs)
+                    builder.linkResolver { view, link ->
+                        // Previously when openLink wasn't suspending it was somehow preventing the click from propagating
+                        // Now it doesn't anymore and we have to do it manually
+                        view.cancelPendingInputEvents()
+                        appState.openLink(link, useCustomTabs, usePrivateTabs)
                     }
                 }
             })

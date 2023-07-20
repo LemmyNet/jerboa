@@ -43,7 +43,7 @@ fun AboutActivity(
     usePrivateTabs: Boolean,
     onBack: () -> Unit,
     onClickCrashLogs: () -> Unit,
-    openLink: (String, Boolean, Boolean) -> Unit,
+    openLinkRaw: (String, Boolean, Boolean) -> Unit,
 ) {
     Log.d("jerboa", "Got to About activity")
 
@@ -55,7 +55,7 @@ fun AboutActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun openLink(link: String) {
-        openLink(link, useCustomTabs, usePrivateTabs)
+        openLinkRaw(link, useCustomTabs, usePrivateTabs)
     }
 
     Scaffold(
@@ -208,6 +208,6 @@ fun AboutPreview() {
         usePrivateTabs = false,
         onBack = {},
         onClickCrashLogs = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        openLinkRaw = { _: String, _: Boolean, _: Boolean -> },
     )
 }
