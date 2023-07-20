@@ -43,7 +43,7 @@ import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.html.TagHandlerNoOp
 import io.noties.markwon.image.AsyncDrawableSpan
-import io.noties.markwon.image.coil.CoilImagesPlugin
+import io.noties.markwon.image.coil.ClickableCoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
 import java.util.regex.Pattern
@@ -94,7 +94,7 @@ object MarkdownHelper {
             .usePlugin(MarkwonLemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
-            .usePlugin(CoilImagesPlugin.create(context, loader))
+            .usePlugin(ClickableCoilImagesPlugin.create(context, loader, appState))
             .usePlugin(HtmlPlugin.create())
             // use TableAwareLinkMovementMethod to handle clicks inside tables,
             // wraps LinkMovementMethod internally
