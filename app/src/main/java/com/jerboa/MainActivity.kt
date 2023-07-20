@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
-                    appState.navController,
+                    appState,
                     appSettings.useCustomTabs,
                     appSettings.usePrivateTabs,
                 )
