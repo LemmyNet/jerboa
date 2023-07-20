@@ -115,7 +115,7 @@ abstract class UpdateInstancesTask: DefaultTask() {
         outFile.writeText("""
             package com.jerboa
             
-            val DEFAULT_LEMMY_INSTANCES = arrayOf(
+            val DEFAULT_LEMMY_INSTANCES = setOf(
             
             """.trimIndent()
         )
