@@ -139,6 +139,7 @@ fun getImageRequest(
 fun PictrsThumbnailImage(
     thumbnail: String,
     blur: Boolean,
+    roundBottomEndCorner: Boolean,
     modifier: Modifier = Modifier,
 ) {
     AsyncImage(
@@ -152,9 +153,17 @@ fun PictrsThumbnailImage(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier.getBlurredOrRounded(
-            rounded = true,
+            rounded = false,
             blur = blur,
-        ),
+        )
+            .clip(
+                RoundedCornerShape(
+                    12f,
+                    12f,
+                    if (roundBottomEndCorner) 0f else 12f,
+                    12f,
+                ),
+            ),
     )
 }
 
