@@ -1,12 +1,16 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class LocalUser(
     val id: LocalUserId,
     val person_id: PersonId,
     val email: String? = null,
     val show_nsfw: Boolean,
     val theme: String,
-    val default_sort_type: SortType /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" */,
+    val default_sort_type: SortType /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" | "TopHour" | "TopSixHour" | "TopTwelveHour" */,
     val default_listing_type: ListingType /* "All" | "Local" | "Subscribed" */,
     val interface_language: String,
     val show_avatars: Boolean,
@@ -19,4 +23,4 @@ data class LocalUser(
     val email_verified: Boolean,
     val accepted_application: Boolean,
     val totp_2fa_url: String? = null,
-)
+) : Parcelable

@@ -63,8 +63,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.InstantScores
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -86,7 +84,6 @@ import com.jerboa.hostName
 import com.jerboa.isImage
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
-import com.jerboa.openLink
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -273,7 +270,7 @@ fun PostTitleBlock(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
@@ -291,7 +288,7 @@ fun PostTitleBlock(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            navController = navController,
+            openLink = openLink,
             openImageViewer = openImageViewer,
         )
     }
@@ -359,7 +356,7 @@ fun PostTitleAndThumbnail(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     Column(
@@ -392,7 +389,7 @@ fun PostTitleAndThumbnail(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-                navController = navController,
+                openLink = openLink,
                 openImageViewer = openImageViewer,
             )
         }
@@ -409,8 +406,9 @@ fun PostBody(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreview: Boolean,
     openImageViewer: (url: String) -> Unit,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     clickBody: () -> Unit = {},
 ) {
     val post = postView.post
@@ -425,11 +423,11 @@ fun PostBody(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
-            navController = navController,
+            openLink = openLink,
         )
 
         // The metadata card
-        if (fullBody && post.embed_title !== null) {
+        if (fullBody && showPostLinkPreview && post.embed_title !== null) {
             MetadataCard(post = post)
         }
 
@@ -493,8 +491,9 @@ fun PreviewStoryTitleAndMetadata() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -510,8 +509,9 @@ fun PreviewSourcePost() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -519,8 +519,8 @@ fun PreviewSourcePost() {
 fun PostFooterLine(
     postView: PostView,
     instantScores: InstantScores,
-    onUpvoteClick: (postView: PostView) -> Unit,
-    onDownvoteClick: (postView: PostView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onReplyClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
     onEditPostClick: (postView: PostView) -> Unit,
@@ -603,7 +603,6 @@ fun PostFooterLine(
             VoteGeneric(
                 myVote = instantScores.myVote,
                 votes = instantScores.upvotes,
-                item = postView,
                 type = VoteType.Upvote,
                 showNumber = (instantScores.downvotes != 0),
                 onVoteClick = onUpvoteClick,
@@ -613,7 +612,6 @@ fun PostFooterLine(
                 VoteGeneric(
                     myVote = instantScores.myVote,
                     votes = instantScores.downvotes,
-                    item = postView,
                     type = VoteType.Downvote,
                     onVoteClick = onDownvoteClick,
                     account = account,
@@ -772,8 +770,9 @@ fun PreviewPostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -805,8 +804,9 @@ fun PreviewLinkPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -838,8 +838,9 @@ fun PreviewImagePostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -871,8 +872,9 @@ fun PreviewImagePostListingSmallCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -904,8 +906,9 @@ fun PreviewLinkNoThumbnailPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        showPostLinkPreview = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -937,8 +940,9 @@ fun PostListing(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showPostLinkPreview: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -963,14 +967,14 @@ fun PostListing(
                     instantScores.value,
                     voteType = VoteType.Upvote,
                 )
-                onUpvoteClick(it)
+                onUpvoteClick(postView)
             },
             onDownvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
                     voteType = VoteType.Downvote,
                 )
-                onDownvoteClick(it)
+                onDownvoteClick(postView)
             },
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
@@ -998,8 +1002,9 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            navController = navController,
+            openLink = openLink,
             openImageViewer = openImageViewer,
+            showPostLinkPreview = showPostLinkPreview,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -1010,14 +1015,14 @@ fun PostListing(
                     instantScores.value,
                     voteType = VoteType.Upvote,
                 )
-                onUpvoteClick(it)
+                onUpvoteClick(postView)
             },
             onDownvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
                     voteType = VoteType.Downvote,
                 )
-                onDownvoteClick(it)
+                onDownvoteClick(postView)
             },
             onReplyClick = onReplyClick,
             onPostClick = onPostClick,
@@ -1045,7 +1050,8 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            navController = navController,
+            openLink = openLink,
+            showPostLinkPreview = showPostLinkPreview,
             openImageViewer = openImageViewer,
         )
 
@@ -1057,14 +1063,14 @@ fun PostListing(
                     instantScores.value,
                     voteType = VoteType.Upvote,
                 )
-                onUpvoteClick(it)
+                onUpvoteClick(postView)
             },
             onDownvoteClick = {
                 instantScores.value = calculateNewInstantScores(
                     instantScores.value,
                     voteType = VoteType.Downvote,
                 )
-                onDownvoteClick(it)
+                onDownvoteClick(postView)
             },
             onPostClick = onPostClick,
             isModerator = isModerator,
@@ -1076,17 +1082,16 @@ fun PostListing(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
-            navController = navController,
+            openLink = openLink,
         )
     }
 }
 
 @Composable
 fun PostVotingTile(
-    postView: PostView,
     instantScores: InstantScores,
-    onUpvoteClick: (postView: PostView) -> Unit,
-    onDownvoteClick: (postView: PostView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     account: Account?,
 ) {
     Column(
@@ -1098,7 +1103,6 @@ fun PostVotingTile(
         VoteGeneric(
             myVote = instantScores.myVote,
             votes = instantScores.upvotes,
-            item = postView,
             type = VoteType.Upvote,
             showNumber = false,
             onVoteClick = onUpvoteClick,
@@ -1118,7 +1122,6 @@ fun PostVotingTile(
         VoteGeneric(
             myVote = instantScores.myVote,
             votes = instantScores.downvotes,
-            item = postView,
             type = VoteType.Downvote,
             showNumber = false,
             onVoteClick = onDownvoteClick,
@@ -1132,8 +1135,8 @@ fun PostVotingTile(
 fun PostListingList(
     postView: PostView,
     instantScores: InstantScores,
-    onUpvoteClick: (postView: PostView) -> Unit,
-    onDownvoteClick: (postView: PostView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onPostClick: (postView: PostView) -> Unit,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -1143,7 +1146,7 @@ fun PostListingList(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     Column(
@@ -1162,7 +1165,6 @@ fun PostListingList(
         ) {
             if (showVotingArrowsInListView) {
                 PostVotingTile(
-                    postView = postView,
                     instantScores = instantScores,
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
@@ -1249,7 +1251,7 @@ fun PostListingList(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-                navController = navController,
+                openLink = openLink,
                 openImageViewer = openImageViewer,
             )
         }
@@ -1262,7 +1264,7 @@ private fun ThumbnailTile(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
@@ -1274,10 +1276,9 @@ private fun ThumbnailTile(
                     openImageViewer(url)
                 } else {
                     openLink(
-                        url = url,
-                        navController = navController,
-                        useCustomTab = useCustomTabs,
-                        usePrivateTab = usePrivateTabs,
+                        url,
+                        useCustomTabs,
+                        usePrivateTabs,
                     )
                 }
             }
@@ -1334,7 +1335,7 @@ fun PostListingListPreview() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -1363,7 +1364,7 @@ fun PostListingListWithThumbPreview() {
         usePrivateTabs = false,
         blurNSFW = true,
         openImageViewer = {},
-        navController = rememberNavController(),
+        openLink = { _: String, _: Boolean, _: Boolean -> },
     )
 }
 
@@ -1371,8 +1372,8 @@ fun PostListingListWithThumbPreview() {
 fun PostListingCard(
     postView: PostView,
     instantScores: InstantScores,
-    onUpvoteClick: (postView: PostView) -> Unit,
-    onDownvoteClick: (postView: PostView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onReplyClick: (postView: PostView) -> Unit = {},
     onPostClick: (postView: PostView) -> Unit,
     onSaveClick: (postView: PostView) -> Unit,
@@ -1397,7 +1398,8 @@ fun PostListingCard(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    navController: NavController,
+    showPostLinkPreview: Boolean,
+    openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
 ) {
     Column(
@@ -1431,9 +1433,10 @@ fun PostListingCard(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
+            showPostLinkPreview = showPostLinkPreview,
             openImageViewer = openImageViewer,
             clickBody = { onPostClick(postView) },
-            navController = navController,
+            openLink = openLink,
         )
 
         // Footer bar
@@ -1466,8 +1469,7 @@ fun PostListingCard(
 @Preview
 @Composable
 fun PostListingHeaderPreview() {
-    val navController = rememberNavController()
-    SimpleTopAppBar("Post", navController)
+    SimpleTopAppBar("Post", onClickBack = {})
 }
 
 @Composable
@@ -1498,6 +1500,7 @@ fun MetadataCard(post: Post) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostOptionsDialog(
     postView: PostView,
@@ -1694,11 +1697,7 @@ fun PostOptionsDialog(
                     onClick = { onShareClick(postView.post.ap_id) },
                 )
                 if (!isCreator) {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_report_post),
-                        icon = Icons.Outlined.Flag,
-                        onClick = onReportClick,
-                    )
+                    Divider(Modifier.padding(LARGE_PADDING))
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.post_listing_block, postView.creator.name),
                         icon = Icons.Outlined.Block,
@@ -1708,6 +1707,11 @@ fun PostOptionsDialog(
                         text = stringResource(R.string.post_listing_block, postView.community.name),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCommunityClick,
+                    )
+                    IconAndTextDrawerItem(
+                        text = stringResource(R.string.post_listing_report_post),
+                        icon = Icons.Outlined.Flag,
+                        onClick = onReportClick,
                     )
                 }
                 if (isCreator) {

@@ -98,4 +98,9 @@ data class AppSettings(
         defaultValue = "1",
     )
     val backConfirmationMode: Int,
+    @ColumnInfo(
+        name = "show_post_link_previews",
+        defaultValue = "1",
+    )
+    val showPostLinkPreviews: Boolean,
 )

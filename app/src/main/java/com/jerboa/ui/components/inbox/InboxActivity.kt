@@ -40,7 +40,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import com.jerboa.CommentReplyDeps
+import com.jerboa.JerboaAppState
+import com.jerboa.PrivateMessageDeps
 import com.jerboa.UnreadOrAll
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -56,8 +58,6 @@ import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.db.entity.Account
 import com.jerboa.getCommentParentId
 import com.jerboa.getLocalizedStringForInboxTab
-import com.jerboa.isLoading
-import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.InboxViewModel
@@ -65,33 +65,26 @@ import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
+import com.jerboa.rootChannel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.replynode.CommentReplyNode
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.CommentReplyDeps
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PrivateMessageDeps
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.rootChannel
+import com.jerboa.ui.components.common.isLoading
+import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.common.toComment
-import com.jerboa.ui.components.common.toCommentReply
-import com.jerboa.ui.components.common.toCommentReport
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPrivateMessageReply
-import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
+import com.jerboa.util.InitializeRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxActivity(
-    navController: NavController,
+    appState: JerboaAppState,
     drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
@@ -103,7 +96,7 @@ fun InboxActivity(
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
-    val unreadCount = siteViewModel.getUnreadCountTotal()
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val inboxViewModel: InboxViewModel = viewModel()
@@ -119,6 +112,7 @@ fun InboxActivity(
             inboxViewModel.getMessages(
                 inboxViewModel.getFormMessages(account.jwt),
             )
+            siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
         }
     }
 
@@ -128,7 +122,7 @@ fun InboxActivity(
         topBar = {
             InboxHeader(
                 scrollBehavior = scrollBehavior,
-                unreadCount = unreadCount,
+                unreadCount = siteViewModel.unreadCount,
                 openDrawer = {
                     scope.launch {
                         drawerState.open()
@@ -156,13 +150,23 @@ fun InboxActivity(
                             MarkAllAsRead(
                                 auth = acct.jwt,
                             ),
-                        )
-                        // TODO test this
-                        // Update site counts
-                        siteViewModel.fetchUnreadCounts(
-                            GetUnreadCount(
-                                auth = acct.jwt,
-                            ),
+                            onComplete = {
+                                siteViewModel.fetchUnreadCounts(
+                                    GetUnreadCount(
+                                        auth = acct.jwt,
+                                    ),
+                                )
+                                inboxViewModel.resetPages()
+                                inboxViewModel.getReplies(
+                                    inboxViewModel.getFormReplies(account.jwt),
+                                )
+                                inboxViewModel.getMentions(
+                                    inboxViewModel.getFormMentions(account.jwt),
+                                )
+                                inboxViewModel.getMessages(
+                                    inboxViewModel.getFormMessages(account.jwt),
+                                )
+                            },
                         )
                     }
                 },
@@ -171,7 +175,7 @@ fun InboxActivity(
         content = {
             InboxTabs(
                 padding = it,
-                navController = navController,
+                appState = appState,
                 inboxViewModel = inboxViewModel,
                 siteViewModel = siteViewModel,
                 ctx = ctx,
@@ -192,7 +196,7 @@ enum class InboxTab {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun InboxTabs(
-    navController: NavController,
+    appState: JerboaAppState,
     inboxViewModel: InboxViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
@@ -201,8 +205,8 @@ fun InboxTabs(
     padding: PaddingValues,
     blurNSFW: Boolean,
 ) {
-    val transferPrivateMessageDepsViaRoot = navController.rootChannel<PrivateMessageDeps>()
-    val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
+    val transferPrivateMessageDepsViaRoot = appState.rootChannel<PrivateMessageDeps>()
+    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
 
     val tabTitles = InboxTab.values().map { getLocalizedStringForInboxTab(ctx, it) }
     val pagerState = rememberPagerState { tabTitles.size }
@@ -280,9 +284,9 @@ fun InboxTabs(
                         // Go to the parent comment or post instead for context
                         val parent = getCommentParentId(crv.comment)
                         if (parent != null) {
-                            navController.toComment(id = parent)
+                            appState.toComment(id = parent)
                         } else {
-                            navController.toPost(id = crv.post.id)
+                            appState.toPost(id = crv.post.id)
                         }
                     }
 
@@ -294,11 +298,13 @@ fun InboxTabs(
                                     read = !crv.comment_reply.read,
                                     auth = acct.jwt,
                                 ),
-                            )
-                            siteViewModel.fetchUnreadCounts(
-                                GetUnreadCount(
-                                    auth = acct.jwt,
-                                ),
+                                onSuccess = {
+                                    siteViewModel.fetchUnreadCounts(
+                                        GetUnreadCount(
+                                            auth = acct.jwt,
+                                        ),
+                                    )
+                                },
                             )
                         }
                     }
@@ -329,6 +335,7 @@ fun InboxTabs(
                                     items(
                                         replies,
                                         key = { reply -> reply.comment_reply.id },
+                                        contentType = { "comment" },
                                     ) { commentReplyView ->
                                         CommentReplyNode(
                                             commentReplyView = commentReplyView,
@@ -355,7 +362,7 @@ fun InboxTabs(
                                                 }
                                             },
                                             onReplyClick = { cr ->
-                                                navController.toCommentReply(
+                                                appState.toCommentReply(
                                                     channel = transferCommentReplyDepsViaRoot,
                                                     replyItem = ReplyItem.CommentReplyItem(cr),
                                                     isModerator = false,
@@ -374,18 +381,18 @@ fun InboxTabs(
                                             },
                                             onMarkAsReadClick = { crv -> markAsRead(crv) },
                                             onReportClick = { cv ->
-                                                navController.toComment(id = cv.comment.id)
+                                                appState.toComment(id = cv.comment.id)
                                             },
                                             onCommentLinkClick = goToComment,
                                             onPersonClick = { personId ->
-                                                navController.toProfile(id = personId)
+                                                appState.toProfile(id = personId)
                                             },
                                             onCommentClick = { crv ->
                                                 goToComment(crv)
                                                 markAsRead(crv)
                                             },
                                             onCommunityClick = { community ->
-                                                navController.toCommunity(id = community.id)
+                                                appState.toCommunity(id = community.id)
                                             },
                                             onBlockCreatorClick = { person ->
                                                 account?.also { acct ->
@@ -400,7 +407,7 @@ fun InboxTabs(
                                                 }
                                             },
                                             onPostClick = { postId ->
-                                                navController.toPost(id = postId)
+                                                appState.toPost(id = postId)
                                             },
                                             account = account,
                                             showAvatar = siteViewModel.showAvatar(),
@@ -481,6 +488,7 @@ fun InboxTabs(
                                     items(
                                         mentions,
                                         key = { mention -> mention.person_mention.id },
+                                        contentType = { "mentions" },
                                     ) { pmv ->
                                         CommentMentionNode(
                                             personMentionView = pmv,
@@ -507,7 +515,7 @@ fun InboxTabs(
                                                 }
                                             },
                                             onReplyClick = { pm ->
-                                                navController.toCommentReply(
+                                                appState.toCommentReply(
                                                     channel = transferCommentReplyDepsViaRoot,
                                                     replyItem = ReplyItem.MentionReplyItem(pm),
                                                     isModerator = false,
@@ -532,31 +540,31 @@ fun InboxTabs(
                                                             read = !pm.person_mention.read,
                                                             auth = acct.jwt,
                                                         ),
-                                                    )
-                                                    siteViewModel.fetchUnreadCounts(
-                                                        GetUnreadCount(
-                                                            auth = acct.jwt,
-                                                        ),
+                                                        onSuccess = {
+                                                            siteViewModel.fetchUnreadCounts(
+                                                                GetUnreadCount(
+                                                                    auth = acct.jwt,
+                                                                ),
+                                                            )
+                                                        },
                                                     )
                                                 }
                                             },
                                             onReportClick = { pm ->
-                                                navController.toCommentReport(id = pm.comment.id)
+                                                appState.toCommentReport(id = pm.comment.id)
                                             },
                                             onLinkClick = { pm ->
                                                 // Go to the parent comment or post instead for context
                                                 val parent = getCommentParentId(pm.comment)
                                                 if (parent != null) {
-                                                    navController.toComment(id = parent)
+                                                    appState.toComment(id = parent)
                                                 } else {
-                                                    navController.toPost(id = pm.post.id)
+                                                    appState.toPost(id = pm.post.id)
                                                 }
                                             },
-                                            onPersonClick = { personId ->
-                                                navController.toProfile(id = personId)
-                                            },
+                                            onPersonClick = appState::toProfile,
                                             onCommunityClick = { community ->
-                                                navController.toCommunity(id = community.id)
+                                                appState.toCommunity(id = community.id)
                                             },
                                             onBlockCreatorClick = { person ->
                                                 account?.also { acct ->
@@ -570,9 +578,7 @@ fun InboxTabs(
                                                     )
                                                 }
                                             },
-                                            onPostClick = { postId ->
-                                                navController.toPost(id = postId)
-                                            },
+                                            onPostClick = appState::toPost,
                                             account = account,
                                             showAvatar = siteViewModel.showAvatar(),
                                             blurNSFW = blurNSFW,
@@ -651,13 +657,14 @@ fun InboxTabs(
                                     items(
                                         messages,
                                         key = { message -> message.private_message.id },
+                                        contentType = { "messages" },
                                     ) { message ->
                                         account?.also { acct ->
                                             PrivateMessage(
                                                 myPersonId = acct.id,
                                                 privateMessageView = message,
                                                 onReplyClick = { privateMessageView ->
-                                                    navController.toPrivateMessageReply(
+                                                    appState.toPrivateMessageReply(
                                                         channel = transferPrivateMessageDepsViaRoot,
                                                         privateMessageView = privateMessageView,
                                                     )
@@ -669,16 +676,16 @@ fun InboxTabs(
                                                             read = !pm.private_message.read,
                                                             auth = acct.jwt,
                                                         ),
-                                                    )
-                                                    siteViewModel.fetchUnreadCounts(
-                                                        GetUnreadCount(
-                                                            auth = acct.jwt,
-                                                        ),
+                                                        onSuccess = {
+                                                            siteViewModel.fetchUnreadCounts(
+                                                                GetUnreadCount(
+                                                                    auth = acct.jwt,
+                                                                ),
+                                                            )
+                                                        },
                                                     )
                                                 },
-                                                onPersonClick = { personId ->
-                                                    navController.toProfile(id = personId)
-                                                },
+                                                onPersonClick = appState::toProfile,
                                                 account = acct,
                                                 showAvatar = siteViewModel.showAvatar(),
                                             )

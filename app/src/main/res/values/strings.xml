@@ -30,7 +30,7 @@
     <string name="account_settings_show_scores">Show Scores</string>
     <string name="account_settings_subscribed">Subscribed</string>
     <string name="addBookmark">Add to bookmarks</string>
-    <string name="app_bars_dot_spacer">·</string>
+    <string name="app_bars_dot_spacer" translatable="false">·</string>
     <string name="app_name" translatable="false">Jerboa</string>
     <string name="bottomBar_bookmarks">Go to my bookmarks</string>
     <string name="bottomBar_home">Go home</string>
@@ -320,6 +320,7 @@
     <string name="lang_language">Language</string>
     <string name="loading">Loading</string>
     <string name="blur_nsfw">Blur NSFW images</string>
+    <string name="show_post_link_previews">Show post link previews</string>
     <string name="sorttype_tophour">TopHour</string>
     <string name="sorttype_topsixhour">TopSixHour</string>
     <string name="sorttype_toptwelvehour">TopTwelveHour</string>

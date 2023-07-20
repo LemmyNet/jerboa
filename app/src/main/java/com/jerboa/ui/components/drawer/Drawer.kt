@@ -39,8 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.types.Community
@@ -55,7 +53,6 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.common.toLogin
 import com.jerboa.ui.components.community.CommunityLinkLarger
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonName
@@ -69,8 +66,8 @@ import com.jerboa.ui.theme.muted
 fun Drawer(
     myUserInfo: MyUserInfo?,
     unreadCount: Int,
-    navController: NavController = rememberNavController(),
     accountViewModel: AccountViewModel,
+    onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
@@ -98,7 +95,7 @@ fun Drawer(
         unreadCount = unreadCount,
         myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
-        navController = navController,
+        onAddAccount = onAddAccount,
         onSwitchAccountClick = onSwitchAccountClick,
         onSignOutClick = onSignOutClick,
         onClickListingType = onClickListingType,
@@ -114,7 +111,7 @@ fun Drawer(
 @Composable
 fun DrawerContent(
     showAccountAddMode: Boolean,
-    navController: NavController,
+    onAddAccount: () -> Unit,
     accountViewModel: AccountViewModel,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
@@ -136,7 +133,7 @@ fun DrawerContent(
         Divider()
         DrawerAddAccountMode(
             accountViewModel = accountViewModel,
-            navController = navController,
+            onAddAccount = onAddAccount,
             onSwitchAccountClick = onSwitchAccountClick,
             onSignOutClick = onSignOutClick,
         )
@@ -181,7 +178,10 @@ fun DrawerItemsMain(
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.home_subscribed),
                     icon = Icons.Outlined.Bookmarks,
-                    onClick = { onClickListingType(ListingType.Subscribed) },
+                    onClick = {
+                        onClickListingType(ListingType.Subscribed)
+                        onSelectTab(NavTab.Home)
+                    },
                 )
             }
         }
@@ -189,14 +189,20 @@ fun DrawerItemsMain(
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_local),
                 icon = Icons.Outlined.LocationCity,
-                onClick = { onClickListingType(ListingType.Local) },
+                onClick = {
+                    onClickListingType(ListingType.Local)
+                    onSelectTab(NavTab.Home)
+                },
             )
         }
         item {
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_all),
                 icon = Icons.Outlined.Public,
-                onClick = { onClickListingType(ListingType.All) },
+                onClick = {
+                    onClickListingType(ListingType.All)
+                    onSelectTab(NavTab.Home)
+                },
             )
         }
         item {
@@ -217,25 +223,25 @@ fun DrawerItemsMain(
                 )
             }
 
-            item {
+            item(contentType = "divider") {
                 Divider()
             }
         }
-        item {
+        item("settings") {
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_settings),
                 icon = Icons.Outlined.Settings,
                 onClick = onClickSettings,
             )
         }
-        item {
-            myUserInfo?.also {
+        myUserInfo?.also {
+            item(contentType = "divider") {
                 Divider()
             }
         }
 
         follows?.also { follows ->
-            item {
+            item(contentType = "SubscriptionHeader") {
                 Text(
                     text = stringResource(R.string.home_subscriptions),
                     modifier = Modifier.padding(LARGE_PADDING),
@@ -245,6 +251,7 @@ fun DrawerItemsMain(
             items(
                 follows,
                 key = { follow -> follow.community.id },
+                contentType = { "CommunityLink" },
             ) { follow ->
                 CommunityLinkLarger(
                     community = follow.community,
@@ -275,8 +282,8 @@ fun DrawerItemsMainPreview() {
 
 @Composable
 fun DrawerAddAccountMode(
-    navController: NavController = rememberNavController(),
     accountViewModel: AccountViewModel?,
+    onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
 ) {
@@ -290,7 +297,7 @@ fun DrawerAddAccountMode(
         IconAndTextDrawerItem(
             text = stringResource(R.string.home_add_account),
             icon = Icons.Outlined.Add,
-            onClick = { navController.toLogin() },
+            onClick = onAddAccount,
         )
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
@@ -313,6 +320,7 @@ fun DrawerAddAccountMode(
 @Composable
 fun DrawerAddAccountModePreview() {
     DrawerAddAccountMode(
+        onAddAccount = {},
         onSignOutClick = {},
         onSwitchAccountClick = {},
         accountViewModel = null,

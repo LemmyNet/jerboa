@@ -5,6 +5,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
+    id("kotlin-parcelize")
+
 }
 
 apply(from = "update_instances.gradle.kts")
@@ -17,8 +19,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 33
-        versionCode = 39
-        versionName = "0.0.39"
+        versionCode = 40
+        versionName = "0.0.40"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

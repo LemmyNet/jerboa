@@ -7,9 +7,11 @@ import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.jerboa.actions.clickMostComments
 import com.jerboa.actions.closeChangeLogIfOpen
 import com.jerboa.actions.closePost
 import com.jerboa.actions.openPost
+import com.jerboa.actions.openSortOptions
 import com.jerboa.actions.scrollThroughComments
 import com.jerboa.actions.scrollThroughPostsOnce
 import com.jerboa.actions.waitUntilLoadingDone
@@ -44,6 +46,9 @@ class ScrollCommentsBenchmarks {
                 startActivityAndWait()
                 closeChangeLogIfOpen()
                 waitUntilLoadingDone()
+                waitUntilPostsActuallyVisible()
+                openSortOptions()
+                clickMostComments()
                 waitUntilPostsActuallyVisible()
                 scrollThroughPostsOnce()
                 while (!openPost()) { // Could fail at loading a post with its comments

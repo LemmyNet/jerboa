@@ -33,11 +33,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
+import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.db.entity.AppSettings
@@ -48,13 +48,12 @@ import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.BottomAppBarAll
-import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
+import com.jerboa.util.InitializeRoute
 
 enum class NavTab(
     val textId: Int,
@@ -103,7 +102,7 @@ enum class NavTab(
 )
 @Composable
 fun BottomNavActivity(
-    navController: NavController,
+    appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     appSettingsViewModel: AppSettingsViewModel,
@@ -145,7 +144,6 @@ fun BottomNavActivity(
                 content = {
                     MainDrawer(
                         siteViewModel = siteViewModel,
-                        navController = navController,
                         accountViewModel = accountViewModel,
                         homeViewModel = homeViewModel,
                         scope = scope,
@@ -153,6 +151,9 @@ fun BottomNavActivity(
                         onSelectTab = onSelectTab,
                         blurNSFW = appSettings.blurNSFW,
                         showBottomNav = appSettings.showBottomNav,
+                        onCommunityClick = appState::toCommunity,
+                        onSettingsClick = appState::toSettings,
+                        onClickLogin = appState::toLogin,
                     )
                 },
             )
@@ -164,7 +165,7 @@ fun BottomNavActivity(
                     if (appSettings.showBottomNav) {
                         BottomAppBarAll(
                             selectedTab = selectedTab,
-                            unreadCounts = siteViewModel.getUnreadCountTotal(),
+                            unreadCounts = siteViewModel.unreadCount,
                             showTextDescriptionsInNavbar = appSettings.showTextDescriptionsInNavbar,
                             onSelect = onSelectTab,
                         )
@@ -185,7 +186,7 @@ fun BottomNavActivity(
                 ) {
                     composable(route = NavTab.Home.name) {
                         HomeActivity(
-                            navController = navController,
+                            appState = appState,
                             homeViewModel = homeViewModel,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
@@ -195,13 +196,14 @@ fun BottomNavActivity(
                             usePrivateTabs = appSettings.usePrivateTabs,
                             drawerState = drawerState,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
 
                     composable(route = NavTab.Search.name) {
                         CommunityListActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             selectMode = false,
                             siteViewModel = siteViewModel,
@@ -212,7 +214,7 @@ fun BottomNavActivity(
 
                     composable(route = NavTab.Inbox.name) {
                         InboxActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
@@ -224,7 +226,7 @@ fun BottomNavActivity(
                         PersonProfileActivity(
                             personArg = Either.Left(account!!.id),
                             savedMode = true,
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
@@ -232,8 +234,8 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
-                            openImageViewer = navController::toView,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
@@ -242,7 +244,7 @@ fun BottomNavActivity(
                         PersonProfileActivity(
                             personArg = Either.Left(account!!.id),
                             savedMode = false,
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
@@ -250,7 +252,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
-                            openImageViewer = navController::toView,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )

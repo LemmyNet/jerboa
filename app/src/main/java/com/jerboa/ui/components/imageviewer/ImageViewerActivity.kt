@@ -104,14 +104,21 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
         )
 
         onDispose { // Restore previous system bars
-            WindowCompat.setDecorFitsSystemWindows(window, true)
+
+            // Does weird behaviour on android 10 and below
+            if (SDK_INT >= 30) {
+                WindowCompat.setDecorFitsSystemWindows(window, true)
+            }
 
             systemUiController.setStatusBarColor(
                 color = oldBarColor,
                 darkIcons = oldIcons,
             )
 
-            systemUiController.isSystemBarsVisible = true
+            if (!showTopBar) {
+                systemUiController.isSystemBarsVisible = true
+            }
+
             window.addFlags(FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             @Suppress("DEPRECATION")
             window.clearFlags(FLAG_TRANSLUCENT_NAVIGATION)

@@ -8,7 +8,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.BrightnessHigh
 import androidx.compose.material.icons.outlined.BrightnessLow
 import androidx.compose.material.icons.outlined.FormatListNumbered
 import androidx.compose.material.icons.outlined.History
@@ -132,6 +131,7 @@ fun ListingTypeOptionsDialog(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SortOptionsDialog(
     onDismissRequest: () -> Unit,
@@ -140,6 +140,7 @@ fun SortOptionsDialog(
     selectedSortType: SortType,
 ) {
     AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onDismissRequest,
         text = {
             Column {
@@ -163,11 +164,12 @@ fun SortOptionsDialog(
                 )
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.dialogs_old),
-                    icon = Icons.Outlined.BrightnessHigh,
+                    icon = Icons.Outlined.History,
                     onClick = { onClickSortType(SortType.Old) },
                     highlight = (selectedSortType == SortType.Old),
                 )
                 IconAndTextDrawerItem(
+                    modifier = Modifier.testTag("jerboa:sortoption_mostcomments"),
                     text = stringResource(R.string.dialogs_most_comments),
                     icon = Icons.Outlined.FormatListNumbered,
                     onClick = { onClickSortType(SortType.MostComments) },

@@ -20,7 +20,7 @@ import java.io.InputStream
 import okhttp3.Response as HttpResponse
 
 const val VERSION = "v3"
-const val DEFAULT_INSTANCE = "lemmy.ml"
+const val DEFAULT_INSTANCE = "voyager.lemmy.ml"
 const val MINIMUM_API_VERSION: String = "0.18"
 val REDACTED_QUERY_PARAMS = setOf("auth")
 val REDACTED_BODY_FIELDS = setOf("jwt", "password")

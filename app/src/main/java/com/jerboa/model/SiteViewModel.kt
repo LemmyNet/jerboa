@@ -1,5 +1,6 @@
 package com.jerboa.model
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,6 +25,8 @@ class SiteViewModel : ViewModel() {
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
+
+    val unreadCount by derivedStateOf { getUnreadCountTotal(unreadCountRes) }
 
     var sortType by mutableStateOf(SortType.Active)
         private set
@@ -73,7 +76,7 @@ class SiteViewModel : ViewModel() {
         }
     }
 
-    fun getUnreadCountTotal(): Int {
+    private fun getUnreadCountTotal(unreadCountRes: ApiState<GetUnreadCountResponse>): Int {
         return when (val res = unreadCountRes) {
             is ApiState.Success -> {
                 val unreads = res.data

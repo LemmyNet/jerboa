@@ -18,8 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
@@ -61,10 +59,11 @@ fun PostListings(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
     openImageViewer: (url: String) -> Unit,
+    openLink: (String, Boolean, Boolean) -> Unit,
     markAsReadOnScroll: Boolean,
     onMarkAsRead: (postView: PostView) -> Unit,
-    navController: NavController,
 ) {
     LazyColumn(
         state = listState,
@@ -75,12 +74,13 @@ fun PostListings(
             .testTag("jerboa:posts"),
     ) {
         // TODO this should be a .also?
-        item {
+        item(contentType = "aboveContent") {
             contentAboveListings()
         }
         // List of items
         itemsIndexed(
-            posts,
+            items = posts,
+            contentType = { _, _ -> "Post" },
         ) { index, postView ->
             PostListing(
                 postView = postView,
@@ -107,8 +107,9 @@ fun PostListings(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                showPostLinkPreview = showPostLinkPreviews,
                 openImageViewer = openImageViewer,
-                navController = navController,
+                openLink = openLink,
             ).let {
                 if (!postView.read && markAsReadOnScroll) {
                     DisposableEffect(key1 = postView.post.id) {
@@ -166,9 +167,10 @@ fun PreviewPostListings() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostLinkPreviews = true,
         openImageViewer = {},
+        openLink = { _: String, _: Boolean, _: Boolean -> },
         markAsReadOnScroll = false,
         onMarkAsRead = {},
-        navController = rememberNavController(),
     )
 }
