@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
+import android.util.Log
 import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
 import android.webkit.MimeTypeMap
@@ -43,7 +44,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -59,6 +60,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
+import java.io.IOException
 import java.net.URL
 
 const val backFadeTime = 300
@@ -161,7 +163,7 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                                 // and show it again upon user's touch. We just want the user to be able to show the
                                 // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
                                 // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                                systemUiController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                                systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                             },
                         ),
                 )
@@ -171,7 +173,7 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
 }
 
 // Needs to check for permission before this for API 29 and below
-suspend fun SaveImage(url: String, context: Context) {
+suspend fun saveImage(url: String, context: Context) {
     Toast.makeText(context, context.getString(R.string.saving_image), Toast.LENGTH_SHORT).show()
 
     val fileName = Uri.parse(url).pathSegments.last()
@@ -179,17 +181,21 @@ suspend fun SaveImage(url: String, context: Context) {
     val extension = MimeTypeMap.getFileExtensionFromUrl(url)
     val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 
-    withContext(Dispatchers.IO) {
-        URL(url).openStream().use {
-            if (SDK_INT < 29) {
-                saveBitmapP(context, it, mimeType, fileName)
-            } else {
-                saveBitmap(context, it, mimeType, fileName)
+    try {
+        withContext(Dispatchers.IO) {
+            URL(url).openStream().use {
+                if (SDK_INT < 29) {
+                    saveBitmapP(context, it, mimeType, fileName)
+                } else {
+                    saveBitmap(context, it, mimeType, fileName)
+                }
             }
         }
+        Toast.makeText(context, context.getString(R.string.saved_image), Toast.LENGTH_SHORT).show()
+    } catch (e: IOException) {
+        Log.d("image", "failed saving image", e)
+        Toast.makeText(context, R.string.failed_saving_image, Toast.LENGTH_SHORT).show()
     }
-
-    Toast.makeText(context, context.getString(R.string.saved_image), Toast.LENGTH_SHORT).show()
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
@@ -214,7 +220,7 @@ fun ViewerHeader(
         ) {
             if (it) {
                 coroutineScope.launch {
-                    SaveImage(url, context)
+                    saveImage(url, context)
                 }
             } else {
                 Toast.makeText(context, context.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
@@ -225,7 +231,7 @@ fun ViewerHeader(
     } else {
         {
             coroutineScope.launch {
-                SaveImage(url, context)
+                saveImage(url, context)
             }
         }
     }
