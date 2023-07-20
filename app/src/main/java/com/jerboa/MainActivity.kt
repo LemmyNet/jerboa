@@ -46,7 +46,6 @@ import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.AppSettingsViewModelFactory
 import com.jerboa.model.CommunityViewModel
-import com.jerboa.model.HomeViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
@@ -109,13 +108,10 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val ctx = LocalContext.current
-            val accountViewModel: AccountViewModel =
-                viewModel(factory = AccountViewModelFactory.Factory)
-            val appSettingsViewModel: AppSettingsViewModel =
-                viewModel(factory = AppSettingsViewModelFactory.Factory)
+            val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory)
+            val appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory)
             val accountSettingsViewModel: AccountSettingsViewModel =
                 viewModel(factory = AccountSettingsViewModelFactory.Factory)
-            val homeViewModel: HomeViewModel = viewModel()
 
             API.errorHandler = {
                 Log.e("jerboa", it.toString())
@@ -255,7 +251,6 @@ class MainActivity : AppCompatActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             appSettings = appSettings,
                             drawerState = drawerState,
-                            homeViewModel = homeViewModel,
                         )
                     }
 
@@ -516,7 +511,6 @@ class MainActivity : AppCompatActivity() {
                             PostActivity(
                                 id = Either.Left(args.id),
                                 accountViewModel = accountViewModel,
-                                homeViewModel = homeViewModel,
                                 navController = navController,
                                 showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
                                 showActionBarByDefault = appSettings.showCommentActionBarByDefault,
@@ -549,7 +543,6 @@ class MainActivity : AppCompatActivity() {
                         PostActivity(
                             id = Either.Right(args.id),
                             accountViewModel = accountViewModel,
-                            homeViewModel = homeViewModel,
                             navController = navController,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,

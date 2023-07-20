@@ -71,16 +71,10 @@ fun LookAndFeelActivity(
     )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
-    val showTextDescriptionsInNavbar =
-        rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
-    val showCollapsedCommentContentState =
-        rememberBooleanSettingState(settings.showCollapsedCommentContent)
-    val showCommentActionBarByDefaultState = rememberBooleanSettingState(
-        settings.showCommentActionBarByDefault,
-    )
-    val showVotingArrowsInListViewState = rememberBooleanSettingState(
-        settings.showVotingArrowsInListView,
-    )
+    val showTextDescriptionsInNavbar = rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
+    val showCollapsedCommentContentState = rememberBooleanSettingState(settings.showCollapsedCommentContent)
+    val showCommentActionBarByDefaultState = rememberBooleanSettingState(settings.showCommentActionBarByDefault)
+    val showVotingArrowsInListViewState = rememberBooleanSettingState(settings.showVotingArrowsInListView)
     val showParentCommentNavigationButtonsState = rememberBooleanSettingState(
         settings.showParentCommentNavigationButtons,
     )

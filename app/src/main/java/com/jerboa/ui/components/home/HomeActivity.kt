@@ -79,6 +79,7 @@ import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -111,6 +112,10 @@ fun HomeActivity(
 
     navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (homeViewModel.initialized) homeViewModel.updatePost(pv)
+    }
+
+    navController.ConsumeReturn<Int>(PostViewReturn.POST_VIEW) { id ->
+        if (homeViewModel.initialized) account?.also { homeViewModel.refreshSinglePost(id, account) }
     }
 
     Scaffold(

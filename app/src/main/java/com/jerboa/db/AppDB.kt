@@ -38,7 +38,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
 )
 
 @Database(
-    version = 20,
+    version = 21,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

@@ -311,7 +311,9 @@ class PostViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun markPostAsRead(form: MarkPostAsRead) {
+    fun markPostAsRead(
+        form: MarkPostAsRead,
+    ) {
         viewModelScope.launch {
             markPostRes = ApiState.Loading
             markPostRes = apiWrapper(API.getInstance().markAsRead(form))

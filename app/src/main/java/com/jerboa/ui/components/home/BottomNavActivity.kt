@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -108,7 +109,6 @@ fun BottomNavActivity(
     appSettingsViewModel: AppSettingsViewModel,
     appSettings: AppSettings,
     drawerState: DrawerState,
-    homeViewModel: HomeViewModel,
 ) {
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
@@ -128,6 +128,7 @@ fun BottomNavActivity(
         }
     }
 
+    val homeViewModel: HomeViewModel = viewModel()
     if (siteViewModel.siteRes is ApiState.Success) {
         InitializeRoute(homeViewModel) {
             homeViewModel.updateSortType(siteViewModel.sortType)

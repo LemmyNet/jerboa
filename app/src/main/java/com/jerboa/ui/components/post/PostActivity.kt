@@ -78,7 +78,6 @@ import com.jerboa.isLoading
 import com.jerboa.isModerator
 import com.jerboa.isRefreshing
 import com.jerboa.model.AccountViewModel
-import com.jerboa.model.HomeViewModel
 import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
@@ -99,6 +98,7 @@ import com.jerboa.ui.components.common.ConsumeReturn
 import com.jerboa.ui.components.common.InitializeRoute
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.PostEditDeps
+import com.jerboa.ui.components.common.addReturn
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.rootChannel
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
@@ -112,6 +112,10 @@ import com.jerboa.ui.components.common.toPostEdit
 import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.post.edit.PostEditReturn
+
+object PostViewReturn {
+    const val POST_VIEW = "post-view::return(post-view)"
+}
 
 @Composable
 fun CommentsHeaderTitle(
@@ -141,7 +145,6 @@ fun PostActivity(
     id: Either<PostId, CommentId>,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
-    homeViewModel: HomeViewModel,
     navController: NavController,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
@@ -188,7 +191,9 @@ fun PostActivity(
                         auth = account.jwt,
                     ),
                 )
-                homeViewModel.refreshSinglePost(it, account)
+                navController.apply {
+                    addReturn(PostViewReturn.POST_VIEW, it)
+                }
             }, {})
         }
     }
@@ -348,7 +353,6 @@ fun PostActivity(
                                                     auth = acct.jwt,
                                                 ),
                                             )
-                                            homeViewModel.refreshSinglePost(pv.post.id, account)
                                         }
                                     },
                                     onDownvoteClick = { pv ->
@@ -363,7 +367,6 @@ fun PostActivity(
                                                     auth = acct.jwt,
                                                 ),
                                             )
-                                            homeViewModel.refreshSinglePost(pv.post.id, account)
                                         }
                                     },
                                     onReplyClick = { pv ->
@@ -385,7 +388,6 @@ fun PostActivity(
                                                     auth = acct.jwt,
                                                 ),
                                             )
-                                            homeViewModel.refreshSinglePost(pv.post.id, account)
                                         }
                                     },
                                     onCommunityClick = { community ->
@@ -406,7 +408,6 @@ fun PostActivity(
                                                     auth = acct.jwt,
                                                 ),
                                             )
-                                            homeViewModel.refreshSinglePost(pv.post.id, account)
                                         }
                                     },
                                     onReportClick = { pv ->

@@ -7,11 +7,36 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jerboa.*
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.*
+import com.jerboa.datatypes.types.BlockCommunity
+import com.jerboa.datatypes.types.BlockCommunityResponse
+import com.jerboa.datatypes.types.BlockPerson
+import com.jerboa.datatypes.types.BlockPersonResponse
+import com.jerboa.datatypes.types.CommentResponse
+import com.jerboa.datatypes.types.CommentView
+import com.jerboa.datatypes.types.CreateCommentLike
+import com.jerboa.datatypes.types.CreatePostLike
+import com.jerboa.datatypes.types.DeleteComment
+import com.jerboa.datatypes.types.DeletePost
+import com.jerboa.datatypes.types.GetPersonDetails
+import com.jerboa.datatypes.types.GetPersonDetailsResponse
+import com.jerboa.datatypes.types.GetPost
+import com.jerboa.datatypes.types.GetPostResponse
+import com.jerboa.datatypes.types.MarkPostAsRead
+import com.jerboa.datatypes.types.PersonId
+import com.jerboa.datatypes.types.PostResponse
+import com.jerboa.datatypes.types.PostView
+import com.jerboa.datatypes.types.SaveComment
+import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.SortType
+import com.jerboa.db.entity.Account
+import com.jerboa.findAndUpdateComment
+import com.jerboa.findAndUpdatePost
+import com.jerboa.serializeToMap
+import com.jerboa.showBlockCommunityToast
+import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
@@ -22,6 +47,8 @@ class PersonProfileViewModel : ViewModel(), Initializable {
         ApiState.Empty,
     )
         private set
+
+    private var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
 
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
@@ -278,6 +305,26 @@ class PersonProfileViewModel : ViewModel(), Initializable {
             when (val markRes = markPostRes) {
                 is ApiState.Success -> {
                     updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    fun refreshSinglePost(id: Int, account: Account) {
+        viewModelScope.launch {
+            val postForm = GetPost(id = id, auth = account.jwt)
+            postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
+            val refreshedPost = postRes
+            val existing = personDetailsRes
+            when {
+                refreshedPost is ApiState.Success && existing is ApiState.Success -> {
+                    personDetailsRes = ApiState.Loading
+                    val refreshedPosts =
+                        findAndUpdatePost(existing.data.posts, refreshedPost.data.post_view)
+                    val newPosts = ApiState.Success(existing.data.copy(posts = refreshedPosts))
+                    personDetailsRes = newPosts
                 }
 
                 else -> {}

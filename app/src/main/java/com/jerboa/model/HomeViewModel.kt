@@ -196,6 +196,7 @@ class HomeViewModel : ViewModel(), Initializable {
             val existing = postsRes
             when {
                 refreshedPost is ApiState.Success && existing is ApiState.Success -> {
+                    postsRes = ApiState.Loading
                     val refreshedPosts =
                         findAndUpdatePost(existing.data.posts, refreshedPost.data.post_view)
                     val newPosts = ApiState.Success(existing.data.copy(posts = refreshedPosts))

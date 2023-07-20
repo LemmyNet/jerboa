@@ -83,6 +83,7 @@ import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.collections.immutable.toImmutableList
@@ -301,6 +302,10 @@ fun UserTabs(
     val pagerState = rememberPagerState { tabTitles.size }
 
     val loading = personProfileViewModel.personDetailsRes.isLoading()
+
+    navController.ConsumeReturn<Int>(PostViewReturn.POST_VIEW) { id ->
+        if (personProfileViewModel.initialized) account?.also { personProfileViewModel.refreshSinglePost(id, account) }
+    }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),

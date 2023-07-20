@@ -75,6 +75,7 @@ import com.jerboa.ui.components.common.toPostReport
 import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.common.toView
 import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import kotlinx.collections.immutable.toImmutableList
 
@@ -105,6 +106,10 @@ fun CommunityActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+        if (communityViewModel.initialized) communityViewModel.updatePost(pv)
+    }
+
+    navController.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
         if (communityViewModel.initialized) communityViewModel.updatePost(pv)
     }
 
