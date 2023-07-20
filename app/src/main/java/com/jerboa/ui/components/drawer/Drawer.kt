@@ -223,25 +223,25 @@ fun DrawerItemsMain(
                 )
             }
 
-            item {
+            item(contentType = "divider") {
                 Divider()
             }
         }
-        item {
+        item("settings") {
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_settings),
                 icon = Icons.Outlined.Settings,
                 onClick = onClickSettings,
             )
         }
-        item {
-            myUserInfo?.also {
+        myUserInfo?.also {
+            item(contentType = "divider") {
                 Divider()
             }
         }
 
         follows?.also { follows ->
-            item {
+            item(contentType = "SubscriptionHeader") {
                 Text(
                     text = stringResource(R.string.home_subscriptions),
                     modifier = Modifier.padding(LARGE_PADDING),
@@ -251,6 +251,7 @@ fun DrawerItemsMain(
             items(
                 follows,
                 key = { follow -> follow.community.id },
+                contentType = { "CommunityLink" },
             ) { follow ->
                 CommunityLinkLarger(
                     community = follow.community,

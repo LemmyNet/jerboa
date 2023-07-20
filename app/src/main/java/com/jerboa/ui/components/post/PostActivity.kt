@@ -92,6 +92,7 @@ import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.ApiErrorToast
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
 import com.jerboa.ui.components.common.LoadingBar
@@ -308,7 +309,7 @@ fun PostActivity(
                                 .simpleVerticalScrollbar(listState)
                                 .testTag("jerboa:comments"),
                         ) {
-                            item(key = "${postView.post.id}_listing") {
+                            item(key = "${postView.post.id}_listing", "post_listing") {
                                 PostListing(
                                     postView = postView,
                                     onUpvoteClick = { pv ->
@@ -434,14 +435,14 @@ fun PostActivity(
                             }
 
                             if (postViewModel.commentsRes.isLoading()) {
-                                item {
+                                item(contentType = "loadingbar") {
                                     LoadingBar()
                                 }
                             }
 
                             when (val commentsRes = postViewModel.commentsRes) {
                                 is ApiState.Failure -> item(key = "error") {
-                                    ApiErrorText(
+                                    ApiErrorToast(
                                         commentsRes.msg,
                                     )
                                 }
@@ -474,7 +475,7 @@ fun PostActivity(
                                         }
                                     }
 
-                                    item(key = "${postView.post.id}_is_comment_view") {
+                                    item(key = "${postView.post.id}_is_comment_view", contentType = "contextButtons") {
                                         if (postViewModel.isCommentView()) {
                                             ShowCommentContextButtons(
                                                 postView.post.id,

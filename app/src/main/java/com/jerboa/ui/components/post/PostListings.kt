@@ -71,7 +71,7 @@ fun PostListings(
             .testTag("jerboa:posts"),
     ) {
         // TODO this should be a .also?
-        item {
+        item(contentType = "aboveContent") {
             contentAboveListings()
         }
         // List of items
@@ -80,6 +80,7 @@ fun PostListings(
             key = { postView ->
                 postView.post.id
             },
+            contentType = { "Post" },
         ) { postView ->
             PostListing(
                 postView = postView,

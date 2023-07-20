@@ -381,7 +381,7 @@ fun UserTabs(
                                     .fillMaxSize()
                                     .simpleVerticalScrollbar(listState),
                             ) {
-                                item {
+                                item(contentType = "topSection") {
                                     PersonProfileTopSection(
                                         personView = profileRes.data.person_view,
                                         showAvatar = showAvatar,
@@ -401,6 +401,7 @@ fun UserTabs(
                                 items(
                                     moderates,
                                     key = { cmv -> cmv.community.id },
+                                    contentType = { "communitylink" },
                                 ) { cmv ->
                                     CommunityLink(
                                         community = cmv.community,
