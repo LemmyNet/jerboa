@@ -22,6 +22,7 @@ import retrofit2.http.*
 import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
+import java.util.concurrent.TimeUnit
 import okhttp3.Response as HttpResponse
 
 const val VERSION = "v3"
@@ -276,6 +277,9 @@ interface API {
 
         private fun buildApi(baseUrl: String): API {
             val client: OkHttpClient = OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor { chain ->
                     val requestBuilder = chain.request().newBuilder()
                         .header("User-Agent", "Jerboa")
