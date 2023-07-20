@@ -32,7 +32,6 @@ import coil.ImageLoader
 import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.convertSpToPx
-import com.jerboa.openLink
 import com.jerboa.util.MarkwonLemmyLinkPlugin
 import com.jerboa.util.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -103,7 +102,10 @@ object MarkdownHelper {
             .usePlugin(MarkwonSpoilerPlugin(true))
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                    builder.linkResolver { _, link ->
+                    builder.linkResolver { view, link ->
+                        // Previously when openLink wasn't suspending it was somehow preventing the click from propagating
+                        // Now it doesn't anymore and we have to do it manually
+                        view.cancelPendingInputEvents()
                         appState.openLink(link, useCustomTabs, usePrivateTabs)
                     }
                 }

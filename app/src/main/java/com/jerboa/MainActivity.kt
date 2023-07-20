@@ -289,7 +289,14 @@ class MainActivity : AppCompatActivity() {
                                 remember(it) { appState.getBackStackEntry(Route.Graph.COMMUNITY) },
                             )
 
-                            val qualifiedName = "${args.name}@${args.instance}"
+                            // Could be instance/c/community@otherinstance ({instance}/c/{name})
+                            // Name could contain its instance already, thus we check for it
+                            val qualifiedName = if (args.name.contains("@")) {
+                                args.name
+                            } else {
+                                "${args.name}@${args.instance}"
+                            }
+
                             CommunityActivity(
                                 communityArg = Either.Right(qualifiedName),
                                 appState = appState,
@@ -668,7 +675,7 @@ class MainActivity : AppCompatActivity() {
                             usePrivateTabs = appSettings.usePrivateTabs,
                             onBack = appState::popBackStack,
                             onClickCrashLogs = appState::toCrashLogs,
-                            openLink = appState::openLink,
+                            openLinkRaw = appState::openLinkRaw,
                         )
                     }
 

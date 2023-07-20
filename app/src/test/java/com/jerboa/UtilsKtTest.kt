@@ -176,7 +176,7 @@ class UtilsKtTest {
             "@user@instance.ml" to "https://instance.ml/u/user",
         )
 
-        cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)) }
+        cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)?.second) }
     }
 
     @Test
