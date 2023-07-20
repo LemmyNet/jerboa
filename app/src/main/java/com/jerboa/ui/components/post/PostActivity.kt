@@ -178,8 +178,8 @@ fun PostActivity(
     val selectedSortType = postViewModel.sortType
 
     // Holds expanded comment ids
-    val unExpandedComments = remember { mutableStateListOf<Int>() }
-    val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
+    val unExpandedComments = postViewModel.unExpandedComments
+    val commentsWithToggledActionBar = postViewModel.commentsWithToggledActionBar
     var showSortOptions by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
 
