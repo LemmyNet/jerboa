@@ -1498,6 +1498,7 @@ fun MetadataCard(post: Post) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostOptionsDialog(
     postView: PostView,
@@ -1646,11 +1647,7 @@ fun PostOptionsDialog(
                     onClick = { onShareClick(postView.post.ap_id) },
                 )
                 if (!isCreator) {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_report_post),
-                        icon = Icons.Outlined.Flag,
-                        onClick = onReportClick,
-                    )
+                    Divider(Modifier.padding(LARGE_PADDING))
                     IconAndTextDrawerItem(
                         text = stringResource(R.string.post_listing_block, postView.creator.name),
                         icon = Icons.Outlined.Block,
@@ -1660,6 +1657,11 @@ fun PostOptionsDialog(
                         text = stringResource(R.string.post_listing_block, postView.community.name),
                         icon = Icons.Outlined.Block,
                         onClick = onBlockCommunityClick,
+                    )
+                    IconAndTextDrawerItem(
+                        text = stringResource(R.string.post_listing_report_post),
+                        icon = Icons.Outlined.Flag,
+                        onClick = onReportClick,
                     )
                 }
                 if (isCreator) {
