@@ -276,6 +276,7 @@ fun PostTitleBlock(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean = true,
 ) {
     val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
 
@@ -284,6 +285,7 @@ fun PostTitleBlock(
             postView = postView,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
+            showIfRead = showIfRead,
         )
     } else {
         PostTitleAndThumbnail(
@@ -294,6 +296,7 @@ fun PostTitleBlock(
             blurNSFW = blurNSFW,
             openLink = openLink,
             openImageViewer = openImageViewer,
+            showIfRead = showIfRead,
         )
     }
 }
@@ -301,6 +304,7 @@ fun PostTitleBlock(
 @Composable
 fun PostName(
     postView: PostView,
+    showIfRead: Boolean = true,
 ) {
     var color = if (postView.post.featured_local) {
         MaterialTheme.colorScheme.primary
@@ -310,7 +314,7 @@ fun PostName(
         MaterialTheme.colorScheme.onSurface
     }
 
-    if (postView.read) {
+    if (showIfRead && postView.read) {
         color = color.muted
     }
 
@@ -327,6 +331,7 @@ fun PostTitleAndImageLink(
     postView: PostView,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean = true,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -341,6 +346,7 @@ fun PostTitleAndImageLink(
         // Title of the post
         PostName(
             postView = postView,
+            showIfRead = showIfRead,
         )
     }
 
@@ -362,6 +368,7 @@ fun PostTitleAndThumbnail(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean = true,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -374,7 +381,7 @@ fun PostTitleAndThumbnail(
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
                 modifier = Modifier.weight(1f),
             ) {
-                PostName(postView = postView)
+                PostName(postView = postView, showIfRead = showIfRead)
                 postView.post.url?.also { postUrl ->
                     if (!isSameInstance(postUrl, account?.instance)) {
                         val hostName = hostName(postUrl)
@@ -414,6 +421,7 @@ fun PostBody(
     openImageViewer: (url: String) -> Unit,
     openLink: (String, Boolean, Boolean) -> Unit,
     clickBody: () -> Unit = {},
+    showIfRead: Boolean = true,
 ) {
     val post = postView.post
     Column(
@@ -428,6 +436,7 @@ fun PostBody(
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
             openLink = openLink,
+            showIfRead = showIfRead,
         )
 
         // The metadata card
@@ -946,6 +955,7 @@ fun PostListing(
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
     showPostLinkPreview: Boolean,
+    showIfRead: Boolean = true,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -1008,6 +1018,7 @@ fun PostListing(
             openLink = openLink,
             openImageViewer = openImageViewer,
             showPostLinkPreview = showPostLinkPreview,
+            showIfRead = showIfRead,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -1422,6 +1433,7 @@ fun PostListingCard(
     showPostLinkPreview: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean = false,
 ) {
     Column(
         modifier = Modifier
@@ -1458,6 +1470,7 @@ fun PostListingCard(
             openImageViewer = openImageViewer,
             clickBody = { onPostClick(postView) },
             openLink = openLink,
+            showIfRead = showIfRead,
         )
 
         // Footer bar
