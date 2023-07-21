@@ -52,6 +52,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jerboa.Border
 import com.jerboa.CommentNodeData
 import com.jerboa.InstantScores
@@ -265,10 +266,10 @@ fun LazyListScope.commentNodeItem(
                         start = offset,
                     ),
             ) {
-                Divider()
                 Column(
                     modifier = Modifier.border(start = border),
                 ) {
+                    Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier = Modifier.padding(
                             start = offset2,
