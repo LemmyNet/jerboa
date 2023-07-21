@@ -344,4 +344,5 @@
     <string name="exit">Exit</string>
     <string name="back_dialog_title">Are you sure you want to exit?</string>
     <string name="failed_saving_image">Failed to save image!</string>
+    <string name="home_switch_anon">Switch to anonymous</string>
 </resources>
