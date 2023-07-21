@@ -70,6 +70,7 @@ fun Drawer(
     onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
+    onSwitchAnon: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     onClickSettings: () -> Unit,
@@ -105,6 +106,7 @@ fun Drawer(
         showBottomNav = showBottomNav,
         closeDrawer = closeDrawer,
         onSelectTab = onSelectTab,
+        onSwitchAnon = onSwitchAnon,
     )
 }
 
@@ -124,6 +126,7 @@ fun DrawerContent(
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
+    onSwitchAnon: () -> Unit,
 ) {
     AnimatedVisibility(
         visible = showAccountAddMode,
@@ -136,6 +139,7 @@ fun DrawerContent(
             onAddAccount = onAddAccount,
             onSwitchAccountClick = onSwitchAccountClick,
             onSignOutClick = onSignOutClick,
+            onSwitchAnon = onSwitchAnon,
         )
     }
 
@@ -286,6 +290,7 @@ fun DrawerAddAccountMode(
     onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
+    onSwitchAnon: () -> Unit,
 ) {
     val allAccounts = accountViewModel?.allAccounts?.observeAsState()
     val accountsWithoutCurrent = allAccounts?.value?.toMutableList()
@@ -308,6 +313,12 @@ fun DrawerAddAccountMode(
         }
         currentAccount?.also {
             IconAndTextDrawerItem(
+                text = stringResource(R.string.home_switch_anon),
+                icon = Icons.Outlined.Login,
+                onClick = onSwitchAnon,
+            )
+
+            IconAndTextDrawerItem(
                 text = stringResource(R.string.home_sign_out),
                 icon = Icons.Outlined.Close,
                 onClick = onSignOutClick,
@@ -324,6 +335,7 @@ fun DrawerAddAccountModePreview() {
         onSignOutClick = {},
         onSwitchAccountClick = {},
         accountViewModel = null,
+        onSwitchAnon = {},
     )
 }
 
