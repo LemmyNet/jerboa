@@ -46,6 +46,7 @@ class HomeViewModel : ViewModel(), Initializable {
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     val lazyListState = LazyListState()
+    val instantRead by mutableStateOf(mutableSetOf<Int>())
 
     var sortType by mutableStateOf(SortType.Active)
         private set

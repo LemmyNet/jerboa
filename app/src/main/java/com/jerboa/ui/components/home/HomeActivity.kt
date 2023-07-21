@@ -344,6 +344,7 @@ fun MainPostListingsContent(
             showPostLinkPreviews = showPostLinkPreviews,
             openImageViewer = appState::toView,
             openLink = appState::openLink,
+            instantRead = homeViewModel.instantRead,
         )
     }
 }

@@ -59,6 +59,8 @@ class CommunityViewModel : ViewModel(), Initializable {
     var page by mutableIntStateOf(1)
         private set
 
+    val instantRead by mutableStateOf(mutableSetOf<Int>())
+
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
     }

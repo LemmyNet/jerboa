@@ -61,6 +61,7 @@ fun PostListings(
     showPostLinkPreviews: Boolean,
     openImageViewer: (url: String) -> Unit,
     openLink: (String, Boolean, Boolean) -> Unit,
+    instantRead: MutableSet<Int>,
 ) {
     LazyColumn(
         state = listState,
@@ -86,7 +87,10 @@ fun PostListings(
                 postView = postView,
                 onUpvoteClick = onUpvoteClick,
                 onDownvoteClick = onDownvoteClick,
-                onPostClick = onPostClick,
+                onPostClick = {
+                    instantRead.add(postView.post.id)
+                    onPostClick(it)
+                },
                 onSaveClick = onSaveClick,
                 onCommunityClick = onCommunityClick,
                 onEditPostClick = onEditPostClick,
@@ -110,6 +114,7 @@ fun PostListings(
                 showPostLinkPreview = showPostLinkPreviews,
                 openImageViewer = openImageViewer,
                 openLink = openLink,
+                overrideAsRead = instantRead.contains(postView.post.id),
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -160,5 +165,6 @@ fun PreviewPostListings() {
         showPostLinkPreviews = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        instantRead = mutableSetOf(),
     )
 }

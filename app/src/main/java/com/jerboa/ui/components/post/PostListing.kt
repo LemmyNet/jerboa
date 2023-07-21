@@ -276,6 +276,7 @@ fun PostTitleBlock(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    overrideAsRead: Boolean,
 ) {
     val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
 
@@ -284,6 +285,8 @@ fun PostTitleBlock(
             postView = postView,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
+            overrideAsRead = overrideAsRead,
+
         )
     } else {
         PostTitleAndThumbnail(
@@ -294,6 +297,7 @@ fun PostTitleBlock(
             blurNSFW = blurNSFW,
             openLink = openLink,
             openImageViewer = openImageViewer,
+            overrideAsRead = overrideAsRead,
         )
     }
 }
@@ -301,6 +305,7 @@ fun PostTitleBlock(
 @Composable
 fun PostName(
     postView: PostView,
+    overrideAsRead: Boolean,
 ) {
     var color = if (postView.post.featured_local) {
         MaterialTheme.colorScheme.primary
@@ -310,7 +315,7 @@ fun PostName(
         MaterialTheme.colorScheme.onSurface
     }
 
-    if (postView.read) {
+    if (overrideAsRead || postView.read) {
         color = color.muted
     }
 
@@ -327,6 +332,7 @@ fun PostTitleAndImageLink(
     postView: PostView,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
+    overrideAsRead: Boolean,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -341,6 +347,7 @@ fun PostTitleAndImageLink(
         // Title of the post
         PostName(
             postView = postView,
+            overrideAsRead = overrideAsRead,
         )
     }
 
@@ -362,6 +369,7 @@ fun PostTitleAndThumbnail(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    overrideAsRead: Boolean = false,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -374,7 +382,7 @@ fun PostTitleAndThumbnail(
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
                 modifier = Modifier.weight(1f),
             ) {
-                PostName(postView = postView)
+                PostName(postView = postView, overrideAsRead = overrideAsRead)
                 postView.post.url?.also { postUrl ->
                     if (!isSameInstance(postUrl, account?.instance)) {
                         val hostName = hostName(postUrl)
@@ -414,6 +422,7 @@ fun PostBody(
     openImageViewer: (url: String) -> Unit,
     openLink: (String, Boolean, Boolean) -> Unit,
     clickBody: () -> Unit = {},
+    overrideAsRead: Boolean = false,
 ) {
     val post = postView.post
     Column(
@@ -428,6 +437,7 @@ fun PostBody(
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
             openLink = openLink,
+            overrideAsRead = overrideAsRead,
         )
 
         // The metadata card
@@ -776,6 +786,7 @@ fun PreviewPostListingCard() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        overrideAsRead = false,
     )
 }
 
@@ -810,6 +821,7 @@ fun PreviewLinkPostListing() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        overrideAsRead = false,
     )
 }
 
@@ -844,6 +856,7 @@ fun PreviewImagePostListingCard() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        overrideAsRead = false,
     )
 }
 
@@ -878,6 +891,7 @@ fun PreviewImagePostListingSmallCard() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        overrideAsRead = false,
     )
 }
 
@@ -912,6 +926,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        overrideAsRead = false,
     )
 }
 
@@ -946,6 +961,7 @@ fun PostListing(
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
     showPostLinkPreview: Boolean,
+    overrideAsRead: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -1008,6 +1024,7 @@ fun PostListing(
             openLink = openLink,
             openImageViewer = openImageViewer,
             showPostLinkPreview = showPostLinkPreview,
+            overrideAsRead = overrideAsRead,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -1056,6 +1073,7 @@ fun PostListing(
             openLink = openLink,
             showPostLinkPreview = showPostLinkPreview,
             openImageViewer = openImageViewer,
+            overrideAsRead = overrideAsRead,
         )
 
         PostViewMode.List -> PostListingList(
@@ -1086,6 +1104,7 @@ fun PostListing(
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
             openLink = openLink,
+            overrideAsRead = overrideAsRead,
         )
     }
 }
@@ -1151,6 +1170,7 @@ fun PostListingList(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    overrideAsRead: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1181,7 +1201,7 @@ fun PostListingList(
 
                 verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
-                PostName(postView = postView)
+                PostName(postView = postView, overrideAsRead = overrideAsRead)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
                     verticalArrangement = Arrangement.Center,
@@ -1357,6 +1377,7 @@ fun PostListingListPreview() {
         blurNSFW = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        overrideAsRead = false,
     )
 }
 
@@ -1386,6 +1407,7 @@ fun PostListingListWithThumbPreview() {
         blurNSFW = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        overrideAsRead = false,
     )
 }
 
@@ -1422,6 +1444,7 @@ fun PostListingCard(
     showPostLinkPreview: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    overrideAsRead: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1458,6 +1481,7 @@ fun PostListingCard(
             openImageViewer = openImageViewer,
             clickBody = { onPostClick(postView) },
             openLink = openLink,
+            overrideAsRead = overrideAsRead,
         )
 
         // Footer bar

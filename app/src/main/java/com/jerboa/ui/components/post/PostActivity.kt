@@ -430,6 +430,7 @@ fun PostActivity(
                                     openImageViewer = appState::toView,
                                     openLink = appState::openLink,
                                     showPostLinkPreview = showPostLinkPreview,
+                                    overrideAsRead = false,
                                 )
                             }
 

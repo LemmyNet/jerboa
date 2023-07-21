@@ -62,6 +62,8 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     var savedOnly by mutableStateOf(false)
         private set
 
+    val instantRead by mutableStateOf(mutableSetOf<Int>())
+
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
     }

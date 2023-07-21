@@ -387,6 +387,7 @@ fun CommunityActivity(
                             showPostLinkPreviews = showPostLinkPreviews,
                             openImageViewer = appState::toView,
                             openLink = appState::openLink,
+                            instantRead = communityViewModel.instantRead,
                         )
                     }
                     else -> {}
