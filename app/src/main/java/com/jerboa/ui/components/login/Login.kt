@@ -235,7 +235,7 @@ fun LoginForm(
         )
         Button(
             enabled = isValid && !loading,
-            onClick = { onClickLogin(form, instance) },
+            onClick = { onClickLogin(form, instance.lowercase()) },
             modifier = Modifier.padding(top = 10.dp),
         ) {
             if (loading) {
