@@ -379,6 +379,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
+                            onBack = appState::popBackStack,
                         )
                     }
 
