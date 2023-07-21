@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -95,7 +94,7 @@ fun HomeActivity(
     val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
 
     val scope = rememberCoroutineScope()
-    val postListState = rememberLazyListState()
+    val postListState = homeViewModel.lazyListState
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val ctx = LocalContext.current
