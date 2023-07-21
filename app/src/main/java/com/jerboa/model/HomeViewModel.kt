@@ -1,6 +1,7 @@
 package com.jerboa.model
 
 import android.content.Context
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +44,8 @@ class HomeViewModel : ViewModel(), Initializable {
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+
+    val lazyListState = LazyListState()
 
     var sortType by mutableStateOf(SortType.Active)
         private set
