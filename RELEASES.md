@@ -1,3 +1,45 @@
+# Jerboa v0.0.41-alpha Release (2023-07-21)
+
+## What's Changed
+
+- Add missing and shorten some german translations (fixes #818) by @yjiang-yh135 in https://github.com/dessalines/jerboa/pull/1047
+- Navigate to home tab after selecting feed type in sidebar by @twizmwazin in https://github.com/dessalines/jerboa/pull/1049
+- Fix image viewer adding unneeded padding on android 10 and below by @MV-GH in https://github.com/dessalines/jerboa/pull/1046
+- Change all issue templates to github issue forms by @bappitybup in https://github.com/dessalines/jerboa/pull/1031
+- Improve stableness by @MV-GH in https://github.com/dessalines/jerboa/pull/1040
+- Make datatypes Parcelable and Stable by @MV-GH in https://github.com/dessalines/jerboa/pull/1044
+- Fix thumbnail link not opening in SmallCard mode by @MV-GH in https://github.com/dessalines/jerboa/pull/1055
+- Fix unread inbox counter badge not properly updating by @MV-GH in https://github.com/dessalines/jerboa/pull/1051
+- Create strings.xml by @Fish25op in https://github.com/dessalines/jerboa/pull/1052
+- Update Azerbaijani translation by @Fish25op in https://github.com/dessalines/jerboa/pull/1058
+- Update Brazilian Portuguese translation by @Gustavo-Martins in https://github.com/dessalines/jerboa/pull/1062
+- Clean up strings.xml by @MV-GH in https://github.com/dessalines/jerboa/pull/1056
+- Update bug report to include how to get the full logs step by @MV-GH in https://github.com/dessalines/jerboa/pull/1059
+- Add contenttypes to lazy columns by @MV-GH in https://github.com/dessalines/jerboa/pull/984
+- Add divider to section for report actions by @MV-GH in https://github.com/dessalines/jerboa/pull/1064
+- Add caret to indicate thumbnails that open in the image viewer by @LilithSilver in https://github.com/dessalines/jerboa/pull/932
+- Add error handling for saving images by @MV-GH in https://github.com/dessalines/jerboa/pull/1066
+- Fix dropdown popup issue by @MV-GH in https://github.com/dessalines/jerboa/pull/1063
+- Fix links looking like lemmy links being used as one by @MV-GH in https://github.com/dessalines/jerboa/pull/1048
+- Make images in markdown open in imageviewer by @MV-GH in https://github.com/dessalines/jerboa/pull/1069
+- Increase timeout of connections to 30s by @MV-GH in https://github.com/dessalines/jerboa/pull/1071
+- Retain scroll position of feed after swapping navigation by @MV-GH in https://github.com/dessalines/jerboa/pull/1072
+- Move unExpandedComments and commentsWithToggledActionBar from PostActivity to PostViewModel by @twizmwazin in https://github.com/dessalines/jerboa/pull/1068
+- Update strings.xml for `ko` by @meinside in https://github.com/dessalines/jerboa/pull/1073
+- Show comment divider inside the left side border by @twizmwazin in https://github.com/dessalines/jerboa/pull/1075
+- Add spacer to bottom of comment lists by @twizmwazin in https://github.com/dessalines/jerboa/pull/1074
+- Don't color posts as read in post activity by @twizmwazin in https://github.com/dessalines/jerboa/pull/1076
+
+## New Contributors
+
+- @yjiang-yh135 made their first contribution in https://github.com/dessalines/jerboa/pull/1047
+- @bappitybup made their first contribution in https://github.com/dessalines/jerboa/pull/1031
+- @Fish25op made their first contribution in https://github.com/dessalines/jerboa/pull/1052
+- @Gustavo-Martins made their first contribution in https://github.com/dessalines/jerboa/pull/1062
+- @LilithSilver made their first contribution in https://github.com/dessalines/jerboa/pull/932
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.40...0.0.41
+
 # Jerboa v0.0.40-alpha Release (2023-07-14)
 
 ## What's Changed
