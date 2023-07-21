@@ -614,6 +614,9 @@ fun PostActivity(
                                         },
                                         blurNSFW = blurNSFW,
                                     )
+                                    item {
+                                        Spacer(modifier = Modifier.height(100.dp))
+                                    }
                                 }
 
                                 else -> {}
