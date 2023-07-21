@@ -115,6 +115,7 @@ fun PersonProfileActivity(
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     drawerState: DrawerState,
+    onBack: (() -> Unit)? = null,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -188,6 +189,7 @@ fun PersonProfileActivity(
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
                         openDrawer = ::openDrawer,
+                        onBack = onBack,
                     )
                 }
                 is ApiState.Holder -> {
@@ -237,6 +239,7 @@ fun PersonProfileActivity(
                             }
                         },
                         openDrawer = ::openDrawer,
+                        onBack = onBack,
                     )
                 }
                 else -> {}

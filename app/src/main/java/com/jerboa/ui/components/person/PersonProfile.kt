@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
@@ -151,6 +152,7 @@ fun PersonProfileHeader(
     selectedSortType: SortType,
     openDrawer: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    onBack: (() -> Unit)? = null,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -205,11 +207,20 @@ fun PersonProfileHeader(
             )
         },
         navigationIcon = {
-            IconButton(onClick = openDrawer) {
-                Icon(
-                    Icons.Outlined.Menu,
-                    contentDescription = stringResource(R.string.home_menu),
-                )
+            if (onBack == null) {
+                IconButton(onClick = openDrawer) {
+                    Icon(
+                        Icons.Outlined.Menu,
+                        contentDescription = stringResource(R.string.home_menu),
+                    )
+                }
+            } else {
+                IconButton(onClick = onBack, modifier = Modifier.testTag("jerboa:back")) {
+                    Icon(
+                        Icons.Outlined.ArrowBack,
+                        contentDescription = stringResource(R.string.topAppBar_back),
+                    )
+                }
             }
         },
         actions = {
