@@ -28,7 +28,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -178,8 +177,8 @@ fun PostActivity(
     val selectedSortType = postViewModel.sortType
 
     // Holds expanded comment ids
-    val unExpandedComments = remember { mutableStateListOf<Int>() }
-    val commentsWithToggledActionBar = remember { mutableStateListOf<Int>() }
+    val unExpandedComments = postViewModel.unExpandedComments
+    val commentsWithToggledActionBar = postViewModel.commentsWithToggledActionBar
     var showSortOptions by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
 
