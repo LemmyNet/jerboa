@@ -1067,7 +1067,6 @@ fun PostListing(
             openLink = openLink,
             showPostLinkPreview = showPostLinkPreview,
             openImageViewer = openImageViewer,
-            showIfRead = showIfRead,
         )
 
         PostViewMode.List -> PostListingList(
@@ -1098,7 +1097,6 @@ fun PostListing(
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
             openLink = openLink,
-            // TODO showIfRead?
         )
     }
 }
