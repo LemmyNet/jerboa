@@ -98,7 +98,7 @@ fun BottomNavActivity(
         } else {
             selectedTab = tab
             val currentRoute = bottomNavController.currentDestination?.route
-            if (currentRoute == tab.name && currentRoute == NavTab.Home.name) {
+            if (currentRoute == tab.name && tab == NavTab.Home) {
                 scope.launch {
                     homeViewModel.lazyListState.animateScrollToItem(0)
                 }
