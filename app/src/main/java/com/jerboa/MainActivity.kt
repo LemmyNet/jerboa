@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
-                    appState.navController,
+                    appState,
                     appSettings.useCustomTabs,
                     appSettings.usePrivateTabs,
                 )
@@ -290,7 +290,14 @@ class MainActivity : AppCompatActivity() {
                                 remember(it) { appState.getBackStackEntry(Route.Graph.COMMUNITY) },
                             )
 
-                            val qualifiedName = "${args.name}@${args.instance}"
+                            // Could be instance/c/community@otherinstance ({instance}/c/{name})
+                            // Name could contain its instance already, thus we check for it
+                            val qualifiedName = if (args.name.contains("@")) {
+                                args.name
+                            } else {
+                                "${args.name}@${args.instance}"
+                            }
+
                             CommunityActivity(
                                 communityArg = Either.Right(qualifiedName),
                                 appState = appState,
@@ -374,6 +381,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
+                            onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
@@ -672,7 +680,7 @@ class MainActivity : AppCompatActivity() {
                             usePrivateTabs = appSettings.usePrivateTabs,
                             onBack = appState::popBackStack,
                             onClickCrashLogs = appState::toCrashLogs,
-                            openLink = appState::openLink,
+                            openLinkRaw = appState::openLinkRaw,
                         )
                     }
 

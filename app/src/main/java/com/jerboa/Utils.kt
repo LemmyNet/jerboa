@@ -55,6 +55,7 @@ import arrow.core.compareTo
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
+import com.jerboa.api.API.Companion.checkIfLemmyInstance
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
@@ -173,9 +174,11 @@ fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
             1 -> {
                 currentScore - 1
             }
+
             -1 -> {
                 currentScore + 2
             }
+
             else -> {
                 currentScore + 1
             }
@@ -185,9 +188,11 @@ fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
             -1 -> {
                 currentScore + 1
             }
+
             1 -> {
                 currentScore - 2
             }
+
             else -> {
                 currentScore - 1
             }
@@ -201,9 +206,11 @@ fun newVoteCount(votes: Pair<Int, Int>, currentVote: Int?, voteType: VoteType): 
             1 -> {
                 Pair(votes.first - 1, votes.second)
             }
+
             -1 -> {
                 Pair(votes.first + 1, votes.second - 1)
             }
+
             else -> {
                 Pair(votes.first + 1, votes.second)
             }
@@ -213,9 +220,11 @@ fun newVoteCount(votes: Pair<Int, Int>, currentVote: Int?, voteType: VoteType): 
             -1 -> {
                 Pair(votes.first, votes.second - 1)
             }
+
             1 -> {
                 Pair(votes.first - 1, votes.second + 1)
             }
+
             else -> {
                 Pair(votes.first, votes.second + 1)
             }
@@ -254,7 +263,9 @@ fun buildCommentsTree(
     val map = LinkedHashMap<Number, CommentNodeData>()
     val firstComment = comments.firstOrNull()?.comment
 
-    val depthOffset = if (!isCommentView) { 0 } else {
+    val depthOffset = if (!isCommentView) {
+        0
+    } else {
         getDepthFromComment(firstComment) ?: 0
     }
 
@@ -301,8 +312,8 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     }
 }
 
-/*
- * Parses a "url" and returns a spec-compliant Url:
+/**
+ * Parses a "url" and returns a spec-compliant URL:
  *
  * - https://host/path - leave as-is
  * - http://host/path - leave as-is
@@ -310,34 +321,39 @@ fun LazyListState.isScrolledToEnd(): Boolean {
  * - /c/community@instance -> https://instance/c/community
  * - !community@instance -> https://instance/c/community
  * - @user@instance -> https://instance/u/user
+ *
+ * @return A pair of a boolean and a string where the
+ * string represents the spec-compliant URL. The boolean
+ * represents true if the given string as argument was
+ * formatted in a lemmy specific format. Such as "/c/community"
  */
-fun parseUrl(url: String): String? {
+fun parseUrl(url: String): Pair<Boolean, String>? {
     if (url.startsWith("https://") || url.startsWith("http://")) {
-        return url
+        return Pair(false, url)
     } else if (url.startsWith("/c/")) {
-        if (url.count({ c -> c == '@' }) == 1) {
+        if (url.count { c -> c == '@' } == 1) {
             val (community, host) = url.split("@", limit = 2)
-            return "https://$host$community"
+            return Pair(true, "https://$host$community")
         }
-        return "https://${API.currentInstance}$url"
+        return Pair(true, "https://${API.currentInstance}$url")
     } else if (url.startsWith("/u/")) {
-        if (url.count({ c -> c == '@' }) == 1) {
+        if (url.count { c -> c == '@' } == 1) {
             val (userPath, host) = url.split("@", limit = 2)
-            return "https://$host$userPath"
+            return Pair(true, "https://$host$userPath")
         }
-        return "https://${API.currentInstance}$url"
+        return Pair(true, "https://${API.currentInstance}$url")
     } else if (url.startsWith("!")) {
-        if (url.count({ c -> c == '@' }) == 1) {
+        if (url.count { c -> c == '@' } == 1) {
             val (community, host) = url.substring(1).split("@", limit = 2)
-            return "https://$host/c/$community"
+            return Pair(true, "https://$host/c/$community")
         }
-        return "https://${API.currentInstance}/c/${url.substring(1)}"
+        return Pair(true, "https://${API.currentInstance}/c/${url.substring(1)}")
     } else if (url.startsWith("@")) {
-        if (url.count({ c -> c == '@' }) == 2) {
+        if (url.count { c -> c == '@' } == 2) {
             val (user, host) = url.substring(1).split("@", limit = 2)
-            return "https://$host/u/$user"
+            return Pair(true, "https://$host/u/$user")
         }
-        return "https://${API.currentInstance}/u/${url.substring(1)}"
+        return Pair(true, "https://${API.currentInstance}/u/${url.substring(1)}")
     }
     return null
 }
@@ -375,20 +391,27 @@ fun shareLink(url: String, ctx: Context) {
     ctx.startActivity(shareIntent)
 }
 
-fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
-    val parsedUrl = parseUrl(url) ?: return
+// Current logic is that if the url matches a community url or user url then it confirms
+// if the host is an actual lemmy instance unless it was originally formatted in a user/community format
 
-    looksLikeUserUrl(parsedUrl)?.let { it ->
-        val route = Route.ProfileFromUrlArgs.makeRoute(instance = it.first, name = it.second)
-        navController.navigate(route)
-        return
-    }
-    looksLikeCommunityUrl(parsedUrl)?.let { it ->
-        val route = Route.CommunityFromUrlArgs.makeRoute(instance = it.first, name = it.second)
-        navController.navigate(route)
-        return
-    }
+suspend fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    val (formatted, parsedUrl) = parseUrl(url) ?: return
 
+    val userUrl = looksLikeUserUrl(parsedUrl)
+    val communityUrl = looksLikeCommunityUrl(parsedUrl)
+
+    if (userUrl != null && (formatted || checkIfLemmyInstance(url))) {
+        val route = Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
+        navController.navigate(route)
+    } else if (communityUrl != null && (formatted || checkIfLemmyInstance(url))) {
+        val route = Route.CommunityFromUrlArgs.makeRoute(instance = communityUrl.first, name = communityUrl.second)
+        navController.navigate(route)
+    } else {
+        openLinkRaw(url, navController, useCustomTab, usePrivateTab)
+    }
+}
+
+fun openLinkRaw(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder()
             .build().apply {
@@ -396,9 +419,9 @@ fun openLink(url: String, navController: NavController, useCustomTab: Boolean, u
                     intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
                 }
             }
-        intent.launchUrl(navController.context, Uri.parse(parsedUrl))
+        intent.launchUrl(navController.context, Uri.parse(url))
     } else {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(parsedUrl))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         navController.context.startActivity(intent)
     }
 }
@@ -468,6 +491,10 @@ fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
 
 fun isImage(url: String): Boolean {
     return imageRegex.matches(url)
+}
+
+fun getPostType(url: String): PostType {
+    return if (isImage(url)) PostType.Image else PostType.Link
 }
 
 val imageRegex = Regex(
@@ -851,6 +878,27 @@ enum class PostViewMode(val mode: Int) {
     List(R.string.look_and_feel_post_view_list),
 }
 
+/**
+ * For a given post, what sort of content Jerboa treats it as.
+ */
+enum class PostType {
+    /**
+     * A Link to an external website. Opens the browser.
+     */
+    Link,
+
+    /**
+     * An Image. Opens the built-in image viewer.
+     */
+    Image,
+
+    /**
+     * A Video. Should open the built-in video viewer.
+     * (Not currently available).
+     */
+    Video,
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 fun Modifier.pagerTabIndicatorOffset2(
     pagerState: PagerState,
@@ -980,7 +1028,12 @@ fun saveBitmapP(
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-fun Modifier.onAutofill(tree: AutofillTree, autofill: Autofill?, autofillTypes: ImmutableList<AutofillType>, onFill: (String) -> Unit): Modifier {
+fun Modifier.onAutofill(
+    tree: AutofillTree,
+    autofill: Autofill?,
+    autofillTypes: ImmutableList<AutofillType>,
+    onFill: (String) -> Unit,
+): Modifier {
     val autofillNode = AutofillNode(
         autofillTypes = autofillTypes,
         onFill = onFill,
@@ -1014,7 +1067,10 @@ fun convertSpToPx(sp: TextUnit, ctx: Context): Int {
  */
 
 fun getLocalizedSortingTypeShortName(ctx: Context, sortingType: SortType): String {
-    return ctx.getString(MAP_SORT_TYPE_SHORT_FORM[sortingType] ?: throw IllegalStateException("Someone forgot to update the MAP_SORT_TYPE_SHORT_FORM"))
+    return ctx.getString(
+        MAP_SORT_TYPE_SHORT_FORM[sortingType]
+            ?: throw IllegalStateException("Someone forgot to update the MAP_SORT_TYPE_SHORT_FORM"),
+    )
 }
 
 // ORDER MUST BE THE SAME AS THE ENUM
@@ -1043,7 +1099,10 @@ val MAP_SORT_TYPE_SHORT_FORM = mapOf(
  */
 
 fun getLocalizedSortingTypeLongName(ctx: Context, sortingType: SortType): String {
-    return ctx.getString(MAP_SORT_TYPE_LONG_FORM[sortingType] ?: throw IllegalStateException("Someone forgot to update the MAP_SORT_TYPE_LONG_FORM"))
+    return ctx.getString(
+        MAP_SORT_TYPE_LONG_FORM[sortingType]
+            ?: throw IllegalStateException("Someone forgot to update the MAP_SORT_TYPE_LONG_FORM"),
+    )
 }
 
 val MAP_SORT_TYPE_LONG_FORM = mapOf(
@@ -1172,7 +1231,10 @@ fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>,
     }
 }
 
-fun findAndUpdatePersonMention(mentions: List<PersonMentionView>, updatedCommentView: CommentView): List<PersonMentionView> {
+fun findAndUpdatePersonMention(
+    mentions: List<PersonMentionView>,
+    updatedCommentView: CommentView,
+): List<PersonMentionView> {
     val foundIndex = mentions.indexOfFirst {
         it.person_mention.comment_id == updatedCommentView.comment.id
     }
@@ -1219,7 +1281,10 @@ fun findAndUpdateComment(comments: List<CommentView>, updated: CommentView): Lis
     }
 }
 
-fun findAndUpdateCommentReply(replies: List<CommentReplyView>, updatedCommentView: CommentView): List<CommentReplyView> {
+fun findAndUpdateCommentReply(
+    replies: List<CommentReplyView>,
+    updatedCommentView: CommentView,
+): List<CommentReplyView> {
     val foundIndex = replies.indexOfFirst {
         it.comment_reply.comment_id == updatedCommentView.comment.id
     }

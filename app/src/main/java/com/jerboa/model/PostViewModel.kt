@@ -2,6 +2,7 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -69,6 +70,9 @@ class PostViewModel : ViewModel(), Initializable {
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+
+    val unExpandedComments = mutableStateListOf<Int>()
+    val commentsWithToggledActionBar = mutableStateListOf<Int>()
 
     fun initialize(
         id: Either<PostId, CommentId>,

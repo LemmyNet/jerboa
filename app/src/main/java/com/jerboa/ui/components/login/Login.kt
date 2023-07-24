@@ -134,13 +134,15 @@ fun PasswordField(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InstancePicker(expanded: Boolean, setExpanded: ((Boolean) -> Unit), instance: String, setInstance: ((String) -> Unit)) {
+    val filteringOptions = DEFAULT_LEMMY_INSTANCES.filter { it.contains(instance, ignoreCase = true) }
+    val expand = filteringOptions.isNotEmpty() && expanded
+
     ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = {
-            setExpanded(!expanded)
-        },
+        expanded = expand,
+        onExpandedChange = setExpanded,
     ) {
         OutlinedTextField(
             modifier = Modifier
@@ -150,32 +152,35 @@ fun InstancePicker(expanded: Boolean, setExpanded: ((Boolean) -> Unit), instance
             placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
             value = instance,
             singleLine = true,
-            onValueChange = setInstance,
+            onValueChange = {
+                setExpanded(true)
+                setInstance(it)
+            },
             trailingIcon = {
-                TrailingIcon(expanded = expanded)
+                TrailingIcon(expanded = expand)
             },
             keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Uri),
         )
-        val filteringOptions = DEFAULT_LEMMY_INSTANCES.filter { it.contains(instance, ignoreCase = true) }
-        if (filteringOptions.isNotEmpty()) {
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { setExpanded(false) },
-                properties = PopupProperties(focusable = false),
-                modifier = Modifier.exposedDropdownSize(true),
-            ) {
-                filteringOptions.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        modifier = Modifier.exposedDropdownSize(),
-                        text = {
-                            Text(text = selectionOption)
-                        },
-                        onClick = {
-                            setInstance(selectionOption)
-                            setExpanded(false)
-                        },
-                    )
-                }
+
+        DropdownMenu(
+            expanded = expand,
+            onDismissRequest = {
+                setExpanded(false)
+            },
+            properties = PopupProperties(focusable = false),
+            modifier = Modifier.exposedDropdownSize(true),
+        ) {
+            filteringOptions.forEach { selectionOption ->
+                DropdownMenuItem(
+                    modifier = Modifier.exposedDropdownSize(),
+                    text = {
+                        Text(text = selectionOption)
+                    },
+                    onClick = {
+                        setInstance(selectionOption)
+                        setExpanded(false)
+                    },
+                )
             }
         }
     }
@@ -230,7 +235,7 @@ fun LoginForm(
         )
         Button(
             enabled = isValid && !loading,
-            onClick = { onClickLogin(form, instance) },
+            onClick = { onClickLogin(form, instance.lowercase()) },
             modifier = Modifier.padding(top = 10.dp),
         ) {
             if (loading) {

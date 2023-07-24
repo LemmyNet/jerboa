@@ -414,6 +414,7 @@ fun CommunityActivity(
                                     )
                                 }
                             },
+                            showIfRead = true,
                         )
                     }
                     else -> {}

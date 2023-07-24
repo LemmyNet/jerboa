@@ -86,6 +86,22 @@ fun MainDrawer(
                 }
             }
         },
+        onSwitchAnon = {
+            account?.also {
+                accountViewModel.removeCurrent()
+
+                fetchInitialData(
+                    account = null,
+                    siteViewModel = siteViewModel,
+                )
+                fetchHomePosts(
+                    account = null,
+                    homeViewModel = homeViewModel,
+                )
+
+                closeDrawer(scope, drawerState)
+            }
+        },
         onClickListingType = { listingType ->
             homeViewModel.updateListingType(listingType)
             homeViewModel.resetPosts(account)

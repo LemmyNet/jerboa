@@ -343,5 +343,8 @@
     <string name="back_dialog">Show a confirmation dialog on exit</string>
     <string name="exit">Exit</string>
     <string name="back_dialog_title">Are you sure you want to exit?</string>
+    <string name="failed_saving_image">Failed to save image!</string>
+    <string name="home_switch_anon">Switch to anonymous</string>
+    <string name="login_already_logged_in">You are already logged in with this account</string>
     <string name="mark_as_read_on_scroll">Mark as read on scroll</string>
 </resources>

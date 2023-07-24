@@ -2,10 +2,13 @@ package com.jerboa.api
 
 import android.content.Context
 import android.util.Log
+import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.entity.Account
 import com.jerboa.toastException
 import com.jerboa.util.CustomHttpLoggingInterceptor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -17,6 +20,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.io.InputStream
+import java.net.MalformedURLException
+import java.net.URL
+import java.util.concurrent.TimeUnit
 import okhttp3.Response as HttpResponse
 
 const val VERSION = "v3"
@@ -251,25 +257,35 @@ interface API {
         var currentInstance: String = DEFAULT_INSTANCE
             private set
 
+        private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
+        private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
+
         private fun buildUrl(): String {
             return "https://$currentInstance/api/$VERSION/"
         }
 
         fun changeLemmyInstance(instance: String): API {
             currentInstance = instance
-            api = buildApi()
+            api = buildApi(buildUrl())
             return api!!
         }
 
         fun getInstance(): API {
             if (api == null) {
-                api = buildApi()
+                api = buildApi(buildUrl())
             }
             return api!!
         }
 
-        private fun buildApi(): API {
+        fun createTempInstance(host: String): API {
+            return buildApi("https://$host/api/$VERSION/")
+        }
+
+        private fun buildApi(baseUrl: String): API {
             val client: OkHttpClient = OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor { chain ->
                     val requestBuilder = chain.request().newBuilder()
                         .header("User-Agent", "Jerboa")
@@ -305,11 +321,39 @@ interface API {
                 .build()
 
             return Retrofit.Builder()
-                .baseUrl(buildUrl())
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
                 .create(API::class.java)
+        }
+
+        suspend fun checkIfLemmyInstance(url: String): Boolean {
+            try {
+                val host = URL(url).host
+
+                if (DEFAULT_LEMMY_INSTANCES.contains(host) || TEMP_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
+                    return true
+                } else if (TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
+                    return false
+                } else {
+                    val api = createTempInstance(host)
+                    return withContext(Dispatchers.IO) {
+                        return@withContext when (apiWrapper(api.getSite(emptyMap()))) {
+                            is ApiState.Success -> {
+                                TEMP_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
+                                true
+                            }
+                            else -> {
+                                TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
+                                false
+                            }
+                        }
+                    }
+                }
+            } catch (_: MalformedURLException) {
+                return false
+            }
         }
     }
 }

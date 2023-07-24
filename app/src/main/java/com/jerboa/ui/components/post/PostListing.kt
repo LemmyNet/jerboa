@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -64,6 +65,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jerboa.InstantScores
+import com.jerboa.PostType
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -80,8 +82,8 @@ import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
+import com.jerboa.getPostType
 import com.jerboa.hostName
-import com.jerboa.isImage
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
 import com.jerboa.ui.components.common.ActionBarButton
@@ -111,7 +113,9 @@ import com.jerboa.ui.theme.MEDIUM_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.POST_LINK_PIC_SIZE
 import com.jerboa.ui.theme.SMALL_PADDING
+import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
+import com.jerboa.ui.theme.jerboaColorScheme
 import com.jerboa.ui.theme.muted
 
 @Composable
@@ -272,14 +276,16 @@ fun PostTitleBlock(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean,
 ) {
-    val imagePost = postView.post.url?.let { isImage(it) } ?: run { false }
+    val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
 
     if (imagePost && expandedImage) {
         PostTitleAndImageLink(
             postView = postView,
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
+            showIfRead = showIfRead,
         )
     } else {
         PostTitleAndThumbnail(
@@ -290,6 +296,7 @@ fun PostTitleBlock(
             blurNSFW = blurNSFW,
             openLink = openLink,
             openImageViewer = openImageViewer,
+            showIfRead = showIfRead,
         )
     }
 }
@@ -297,6 +304,7 @@ fun PostTitleBlock(
 @Composable
 fun PostName(
     postView: PostView,
+    showIfRead: Boolean,
 ) {
     var color = if (postView.post.featured_local) {
         MaterialTheme.colorScheme.primary
@@ -306,7 +314,7 @@ fun PostName(
         MaterialTheme.colorScheme.onSurface
     }
 
-    if (postView.read) {
+    if (showIfRead && postView.read) {
         color = color.muted
     }
 
@@ -323,6 +331,7 @@ fun PostTitleAndImageLink(
     postView: PostView,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -337,6 +346,7 @@ fun PostTitleAndImageLink(
         // Title of the post
         PostName(
             postView = postView,
+            showIfRead = showIfRead,
         )
     }
 
@@ -358,6 +368,7 @@ fun PostTitleAndThumbnail(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -370,7 +381,7 @@ fun PostTitleAndThumbnail(
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
                 modifier = Modifier.weight(1f),
             ) {
-                PostName(postView = postView)
+                PostName(postView = postView, showIfRead = showIfRead)
                 postView.post.url?.also { postUrl ->
                     if (!isSameInstance(postUrl, account?.instance)) {
                         val hostName = hostName(postUrl)
@@ -410,6 +421,7 @@ fun PostBody(
     openImageViewer: (url: String) -> Unit,
     openLink: (String, Boolean, Boolean) -> Unit,
     clickBody: () -> Unit = {},
+    showIfRead: Boolean,
 ) {
     val post = postView.post
     Column(
@@ -424,6 +436,7 @@ fun PostBody(
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
             openLink = openLink,
+            showIfRead = showIfRead,
         )
 
         // The metadata card
@@ -494,6 +507,7 @@ fun PreviewStoryTitleAndMetadata() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -512,6 +526,7 @@ fun PreviewSourcePost() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -773,6 +788,7 @@ fun PreviewPostListingCard() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -807,6 +823,7 @@ fun PreviewLinkPostListing() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -841,6 +858,7 @@ fun PreviewImagePostListingCard() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -875,6 +893,7 @@ fun PreviewImagePostListingSmallCard() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -909,6 +928,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -943,6 +963,7 @@ fun PostListing(
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
     showPostLinkPreview: Boolean,
+    showIfRead: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -1005,6 +1026,7 @@ fun PostListing(
             openLink = openLink,
             openImageViewer = openImageViewer,
             showPostLinkPreview = showPostLinkPreview,
+            showIfRead = showIfRead,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -1083,6 +1105,7 @@ fun PostListing(
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
             openLink = openLink,
+            showIfRead = showIfRead,
         )
     }
 }
@@ -1148,6 +1171,7 @@ fun PostListingList(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1178,7 +1202,7 @@ fun PostListingList(
 
                 verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
-                PostName(postView = postView)
+                PostName(postView = postView, showIfRead = showIfRead)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
                     verticalArrangement = Arrangement.Center,
@@ -1268,11 +1292,12 @@ private fun ThumbnailTile(
     openImageViewer: (url: String) -> Unit,
 ) {
     postView.post.url?.also { url ->
+        val postType = getPostType(url)
 
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
             .clickable {
-                if (isImage(url)) {
+                if (postType != PostType.Link) {
                     openImageViewer(url)
                 } else {
                     openLink(
@@ -1283,28 +1308,45 @@ private fun ThumbnailTile(
                 }
             }
 
-        postView.post.thumbnail_url?.also { thumbnail ->
-            PictrsThumbnailImage(
-                thumbnail = thumbnail,
-                blur = blurNSFW && nsfwCheck(postView),
-                modifier = postLinkPicMod,
-            )
-        } ?: run {
-            Card(
-                colors = CARD_COLORS,
-                modifier = postLinkPicMod,
-                shape = MaterialTheme.shapes.large,
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize(),
+        Box {
+            postView.post.thumbnail_url?.also { thumbnail ->
+                PictrsThumbnailImage(
+                    thumbnail = thumbnail,
+                    blur = blurNSFW && nsfwCheck(postView),
+                    roundBottomEndCorner = postType != PostType.Link,
+                    modifier = postLinkPicMod,
+                )
+            } ?: run {
+                Card(
+                    colors = CARD_COLORS,
+                    modifier = postLinkPicMod,
+                    shape = MaterialTheme.shapes.large,
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Link,
-                        contentDescription = null,
-                        modifier = Modifier.size(LINK_ICON_SIZE),
-                    )
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Link,
+                            contentDescription = null,
+                            modifier = Modifier.size(LINK_ICON_SIZE),
+                        )
+                    }
                 }
+            }
+
+            // Display a caret in the bottom right corner to denote this as an image
+            if (postType != PostType.Link) {
+                Icon(
+                    painter = painterResource(id = R.drawable.triangle),
+                    contentDescription = null,
+                    modifier = Modifier.size(THUMBNAIL_CARET_SIZE)
+                        .align(Alignment.BottomEnd),
+                    tint = when (postType) {
+                        PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                        else -> MaterialTheme.jerboaColorScheme.imageHighlight
+                    },
+                )
             }
         }
     }
@@ -1336,6 +1378,7 @@ fun PostListingListPreview() {
         blurNSFW = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -1365,6 +1408,7 @@ fun PostListingListWithThumbPreview() {
         blurNSFW = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -1401,6 +1445,7 @@ fun PostListingCard(
     showPostLinkPreview: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean = false,
 ) {
     Column(
         modifier = Modifier
@@ -1437,6 +1482,7 @@ fun PostListingCard(
             openImageViewer = openImageViewer,
             clickBody = { onPostClick(postView) },
             openLink = openLink,
+            showIfRead = showIfRead,
         )
 
         // Footer bar

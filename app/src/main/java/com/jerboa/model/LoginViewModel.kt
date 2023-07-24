@@ -22,6 +22,7 @@ import com.jerboa.getHostFromInstanceString
 import com.jerboa.serializeToMap
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import java.lang.RuntimeException
 
 class LoginViewModel : ViewModel() {
 
@@ -52,7 +53,7 @@ class LoginViewModel : ViewModel() {
                         R.string.login_view_model_is_not_a_lemmy_instance,
                         instance,
                     )
-                    Log.e("login", e.toString())
+                    Log.e("login", msg, e)
                     Toast.makeText(
                         ctx,
                         msg,
@@ -101,6 +102,17 @@ class LoginViewModel : ViewModel() {
 
                     try {
                         val luv = siteRes.data.my_user!!.local_user_view
+
+                        if (accountViewModel.allAccounts.value?.any {
+                                it.name.equals(
+                                    luv.person.name,
+                                    true,
+                                ) && it.instance.equals(instance, true)
+                            } == true
+                        ) {
+                            throw RuntimeException(ctx.getString(R.string.login_already_logged_in))
+                        }
+
                         val account = Account(
                             id = luv.person.id,
                             name = luv.person.name,
@@ -118,7 +130,12 @@ class LoginViewModel : ViewModel() {
                         accountViewModel.insert(account)
                     } catch (e: Exception) {
                         loading = false
-                        Log.e("login", e.toString())
+                        Log.e("login", "failed", e)
+                        Toast.makeText(
+                            ctx,
+                            e.message,
+                            Toast.LENGTH_SHORT,
+                        ).show()
                         API.changeLemmyInstance(originalInstance)
                         this.cancel()
                         return@launch

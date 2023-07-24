@@ -100,6 +100,10 @@
     <string name="community_sortBy">정렬</string>
     <string name="community_subscribe">구독</string>
     <string name="community_users_month">%1$s 사용자 / 월</string>
+    <string name="crash_logs">크래시 기록</string>
+    <string name="crash_logs_all_deleted">모든 크래시 기록이 삭제 되었습니다</string>
+    <string name="crash_logs_copy">크래시 기록 복사</string>
+    <string name="crash_logs_delete">모든 크래시 기록 삭제</string>
     <string name="createPost_selectCommunity">목록에서 커뮤니티 선택</string>
     <string name="create_post_a_title_here">여기에 제목....</string>
     <string name="create_post_community">커뮤니티</string>
@@ -126,7 +130,7 @@
     <string name="dialogs_top_month">월 최고</string>
     <string name="dialogs_top_week">주 최고</string>
     <string name="dialogs_top_year">연 최고</string>
-    <string name="dialogs_old">Old</string>
+    <string name="dialogs_old">오래됨</string>
     <string name="dialogs_unread">안읽음</string>
     <string name="dialogs_server_version_outdated">서버의 버전(%1$s)이 최소 지원 버전(%2$s)보다 아래입니다.\n\n관리자에게 알리고 다른 인스턴스로 로그인하거나, 로그아웃 후 기본 인스턴스를 사용하세요.</string>
     <string name="dialogs_server_version_outdated_short">서버 버전(%1$s)이 너무 오래 되었습니다.</string>
@@ -173,6 +177,7 @@
     <string name="look_and_feel_secure_window">스크린샷 방지</string>
     <string name="look_and_feel_show_action_bar_for_comments">댓글에 액션바 기본으로 보이기</string>
     <string name="look_and_feel_show_navigation_bar">네비게이션 바 보기</string>
+    <string name="look_and_feel_show_text_descriptions_in_navbar">네비게이션 바에서 텍스트 설명 보기</string>
     <string name="look_and_feel_show_voting_arrows_list_view">목록 화면에서 찬반 화살표 보이기</string>
     <string name="look_and_feel_show_parent_comment_navigation_buttons">부모 댓글 이동 버튼 보이기</string>
     <string name="look_and_feel_navigate_parent_comments_with_volume_buttons">볼륨 버튼으로 부모 댓글 이동하기</string>
@@ -214,6 +219,7 @@
     <string name="personProfile_viewBanner">배너 이미지 보기</string>
     <string name="person_iconAdmin">관리자</string>
     <string name="person_iconBanned">차단됨</string>
+    <string name="person_iconBot">봇</string>
     <string name="person_iconModerator">운영진</string>
     <string name="person_profile_activity_about">정보</string>
     <string name="person_profile_activity_comments">댓글</string>
@@ -312,6 +318,7 @@
     <string name="lang_language">언어</string>
     <string name="loading">불러오는 중</string>
     <string name="blur_nsfw">후방주의 이미지 뿌옇게 보이기</string>
+    <string name="show_post_link_previews">게시물 링크 미리보기 보이기</string>
     <string name="sorttype_tophour">TopHour</string>
     <string name="sorttype_topsixhour">TopSixHour</string>
     <string name="sorttype_toptwelvehour">TopTwelveHour</string>
@@ -326,4 +333,13 @@
     <string name="dialogs_top_nine_month">9개월 내 최고</string>
     <string name="post_listing_view_source">소스 보기</string>
     <string name="post_listing_view_original">원본 보기</string>
+    <string name="download">다운로드</string>
+    <string name="back_confirmation">백 버튼을 다시 눌러 종료하세요</string>
+    <string name="no_back_confirmation">종료 확인 묻지 않기</string>
+    <string name="press_again_confirmation">백 버튼을 두 번 눌러 종료하기</string>
+    <string name="confirm_exit">종료 확인 동작</string>
+    <string name="back_dialog">종료 확인 창 띄우기</string>
+    <string name="exit">종료</string>
+    <string name="back_dialog_title">정말로 종료하시겠습니까?</string>
+    <string name="failed_saving_image">이미지 저장 실패!</string>
 </resources>
