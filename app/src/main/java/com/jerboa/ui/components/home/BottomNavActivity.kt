@@ -56,8 +56,8 @@ import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.util.InitializeRoute
-import kotlinx.coroutines.launch
 import com.jerboa.util.doIfReadyElseDisplayInfo
+import kotlinx.coroutines.launch
 
 enum class NavTab(
     val textId: Int,
@@ -110,7 +110,6 @@ fun BottomNavActivity(
                 popUpTo(bottomNavController.graph.id) // To make back button close the app.
             }
         }
-
     }
 
     val onSelectTab: (NavTab) -> Unit = { tab: NavTab ->
