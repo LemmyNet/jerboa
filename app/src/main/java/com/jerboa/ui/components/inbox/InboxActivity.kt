@@ -307,7 +307,7 @@ fun InboxTabs(
                                     inboxViewModel.getFormReplies(it.jwt),
                                     ApiState.Refreshing,
                                 )
-                                siteViewModel.fetchUnreadCounts(GetUnreadCount(acct.jwt))
+                                siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
                             }
                         },
                     )
