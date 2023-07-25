@@ -604,6 +604,7 @@ fun UserTabs(
                                     openImageViewer = appState::toView,
                                     openLink = appState::openLink,
                                     showPostLinkPreviews = showPostLinkPreviews,
+                                    showIfRead = false,
                                 )
                             }
                             else -> {}

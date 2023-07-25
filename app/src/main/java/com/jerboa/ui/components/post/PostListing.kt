@@ -277,7 +277,7 @@ fun PostTitleBlock(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
-    showIfRead: Boolean = true,
+    showIfRead: Boolean,
 ) {
     val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
 
@@ -305,7 +305,7 @@ fun PostTitleBlock(
 @Composable
 fun PostName(
     postView: PostView,
-    showIfRead: Boolean = true,
+    showIfRead: Boolean,
 ) {
     var color = if (postView.post.featured_local) {
         MaterialTheme.colorScheme.primary
@@ -332,7 +332,7 @@ fun PostTitleAndImageLink(
     postView: PostView,
     blurNSFW: Boolean,
     openImageViewer: (url: String) -> Unit,
-    showIfRead: Boolean = true,
+    showIfRead: Boolean,
 ) {
     // This was tested, we know it exists
     val url = postView.post.url!!
@@ -369,7 +369,7 @@ fun PostTitleAndThumbnail(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
-    showIfRead: Boolean = true,
+    showIfRead: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
@@ -422,7 +422,7 @@ fun PostBody(
     openImageViewer: (url: String) -> Unit,
     openLink: (String, Boolean, Boolean) -> Unit,
     clickBody: () -> Unit = {},
-    showIfRead: Boolean = true,
+    showIfRead: Boolean,
 ) {
     val post = postView.post
     Column(
@@ -507,6 +507,7 @@ fun PreviewStoryTitleAndMetadata() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -525,6 +526,7 @@ fun PreviewSourcePost() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -786,6 +788,7 @@ fun PreviewPostListingCard() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -820,6 +823,7 @@ fun PreviewLinkPostListing() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -854,6 +858,7 @@ fun PreviewImagePostListingCard() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -888,6 +893,7 @@ fun PreviewImagePostListingSmallCard() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -922,6 +928,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showPostLinkPreview = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -956,7 +963,7 @@ fun PostListing(
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
     showPostLinkPreview: Boolean,
-    showIfRead: Boolean = true,
+    showIfRead: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -1098,6 +1105,7 @@ fun PostListing(
             blurNSFW = blurNSFW,
             openImageViewer = openImageViewer,
             openLink = openLink,
+            showIfRead = showIfRead,
         )
     }
 }
@@ -1163,6 +1171,7 @@ fun PostListingList(
     blurNSFW: Boolean,
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
+    showIfRead: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1193,7 +1202,7 @@ fun PostListingList(
 
                 verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
-                PostName(postView = postView)
+                PostName(postView = postView, showIfRead = showIfRead)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
                     verticalArrangement = Arrangement.Center,
@@ -1369,6 +1378,7 @@ fun PostListingListPreview() {
         blurNSFW = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 
@@ -1398,6 +1408,7 @@ fun PostListingListWithThumbPreview() {
         blurNSFW = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        showIfRead = true,
     )
 }
 

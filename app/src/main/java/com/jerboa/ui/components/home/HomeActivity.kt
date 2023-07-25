@@ -400,6 +400,7 @@ fun MainPostListingsContent(
             showPostLinkPreviews = showPostLinkPreviews,
             openImageViewer = appState::toView,
             openLink = appState::openLink,
+            showIfRead = true,
         )
     }
 }

@@ -56,6 +56,7 @@ import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.util.InitializeRoute
+import kotlinx.coroutines.launch
 import com.jerboa.util.doIfReadyElseDisplayInfo
 
 enum class NavTab(
@@ -90,11 +91,29 @@ fun BottomNavActivity(
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
+    val homeViewModel: HomeViewModel = viewModel()
 
     val bottomNavController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
     var selectedTab by rememberSaveable { mutableStateOf(NavTab.Home) }
-    val onSelectTab = { tab: NavTab ->
+
+    val onInnerSelectTab = { tab: NavTab ->
+        selectedTab = tab
+        val currentRoute = bottomNavController.currentDestination?.route
+        if (currentRoute == tab.name && tab == NavTab.Home) {
+            scope.launch {
+                homeViewModel.lazyListState.animateScrollToItem(0)
+            }
+        } else {
+            bottomNavController.navigate(tab.name) {
+                launchSingleTop = true
+                popUpTo(bottomNavController.graph.id) // To make back button close the app.
+            }
+        }
+
+    }
+
+    val onSelectTab: (NavTab) -> Unit = { tab: NavTab ->
         if (tab.needsLogin()) {
             account.doIfReadyElseDisplayInfo(
                 appState,
@@ -105,22 +124,13 @@ fun BottomNavActivity(
                 accountViewModel,
                 loginAsToast = false,
             ) {
-                selectedTab = tab
-                bottomNavController.navigate(tab.name) {
-                    launchSingleTop = true
-                    popUpTo(bottomNavController.graph.id) // To make back button close the app.
-                }
+                onInnerSelectTab(tab)
             }
         } else {
-            selectedTab = tab
-            bottomNavController.navigate(tab.name) {
-                launchSingleTop = true
-                popUpTo(bottomNavController.graph.id) // To make back button close the app.
-            }
+            onInnerSelectTab(tab)
         }
     }
 
-    val homeViewModel: HomeViewModel = viewModel()
     if (siteViewModel.siteRes is ApiState.Success) {
         InitializeRoute(homeViewModel) {
             homeViewModel.updateSortType(siteViewModel.sortType)

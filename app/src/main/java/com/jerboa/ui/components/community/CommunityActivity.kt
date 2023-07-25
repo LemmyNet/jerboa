@@ -446,6 +446,7 @@ fun CommunityActivity(
                             showPostLinkPreviews = showPostLinkPreviews,
                             openImageViewer = appState::toView,
                             openLink = appState::openLink,
+                            showIfRead = true,
                         )
                     }
                     else -> {}
