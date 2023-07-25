@@ -121,6 +121,7 @@ class LoginViewModel : ViewModel() {
                             jwt = jwt,
                             defaultListingType = luv.local_user.default_listing_type.ordinal,
                             defaultSortType = luv.local_user.default_sort_type.ordinal,
+                            verificationState = 0,
                         )
 
                         // Remove the default account

@@ -14,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody.Companion.toResponseBody
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -271,11 +272,13 @@ interface API {
             return api!!
         }
 
-        fun createTempInstance(host: String): API {
-            return buildApi("https://$host/api/$VERSION/")
+        fun createTempInstance(host: String, customErrorHandler: ((Exception) -> Exception?)? = null): API {
+            return buildApi("https://$host/api/$VERSION/", customErrorHandler)
         }
 
-        private fun buildApi(baseUrl: String): API {
+        private fun buildApi(baseUrl: String, customErrorHandler: ((Exception) -> Exception?)? = null): API {
+            val currErrorHandler = customErrorHandler ?: errorHandler
+
             val client: OkHttpClient = OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
@@ -292,7 +295,7 @@ interface API {
                     try {
                         chain.proceed(request)
                     } catch (e: Exception) {
-                        val err = errorHandler(e)
+                        val err = currErrorHandler(e)
                         if (err != null) {
                             throw err
                         }
@@ -395,10 +398,12 @@ fun <T> retrofitErrorHandler(res: Response<T>): T {
         return res.body()!!
     } else {
         val errMsg = res.errorBody()?.string()?.let {
-            JSONObject(it).getString("error")
-        } ?: run {
-            res.code().toString()
-        }
+            try { // Prevent Could not convert to JSON messages everywhere
+                JSONObject(it).getString("error")
+            } catch (_: JSONException) {
+                it
+            }
+        } ?: res.code().toString()
 
         throw Exception(errMsg)
     }

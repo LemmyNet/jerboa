@@ -62,6 +62,7 @@ import com.jerboa.datatypes.types.*
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.db.entity.isAnon
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.Route
@@ -106,13 +107,10 @@ inline fun <I, reified O> I.convert(): O {
 
 // / This should be done in a UI wrapper
 fun toastException(ctx: Context, error: Exception) {
-    Log.e("jerboa", error.toString())
-//    if (ctx !== null) {
+    Log.e("jerboa", "error", error)
     Toast.makeText(ctx, error.message, Toast.LENGTH_SHORT).show()
-//    }
 }
 
-// TODO also navigate to login page
 fun loginFirstToast(ctx: Context) {
     Toast.makeText(ctx, ctx.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
@@ -501,7 +499,6 @@ val imageRegex = Regex(
     pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",
 )
 
-// Todo is the scope.launch still necessary?
 fun closeDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
@@ -522,13 +519,6 @@ fun personNameShown(person: Person, federatedName: Boolean = false): String {
             "$name@${hostName(person.actor_id)}"
         }
     }
-}
-
-/**
- * In cases where there should be no ambiguity as to the given Person's federated name.
- */
-fun federatedNameShown(person: Person): String {
-    return "${person.name}@${hostName(person.actor_id)}"
 }
 
 fun communityNameShown(community: Community): String {
@@ -751,10 +741,10 @@ fun siFormat(num: Int): String {
 }
 
 fun fetchInitialData(
-    account: Account?,
+    account: Account,
     siteViewModel: SiteViewModel,
 ) {
-    if (account != null) {
+    if (!account.isAnon()) {
         API.changeLemmyInstance(account.instance)
         siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
     } else {
@@ -763,13 +753,13 @@ fun fetchInitialData(
 
     siteViewModel.getSite(
         GetSite(
-            auth = account?.jwt,
+            auth = account.jwt.ifEmpty { null },
         ),
     )
 }
 
-fun fetchHomePosts(account: Account?, homeViewModel: HomeViewModel) {
-    if (account != null) {
+fun fetchHomePosts(account: Account, homeViewModel: HomeViewModel) {
+    if (!account.isAnon()) {
         homeViewModel.updateFromAccount(account)
         homeViewModel.resetPage()
         homeViewModel.getPosts(
@@ -945,8 +935,8 @@ fun Modifier.pagerTabIndicatorOffset2(
     }
 }
 
-fun isSameInstance(url: String?, instance: String?): Boolean {
-    return url?.let { hostName(it) } == instance
+fun isSameInstance(url: String, instance: String): Boolean {
+    return hostName(url) == instance
 }
 
 fun getCommentParentId(comment: Comment?): Int? {
@@ -964,7 +954,6 @@ fun getDepthFromComment(comment: Comment?): Int? {
     return comment?.path?.split(".")?.size?.minus(2)
 }
 
-// TODO add a check for your account, view nsfw
 fun nsfwCheck(postView: PostView): Boolean {
     return postView.post.nsfw || postView.community.nsfw
 }
@@ -1492,4 +1481,10 @@ fun triggerRebirth(context: Context) {
     val mainIntent = Intent.makeRestartActivityTask(componentName)
     context.startActivity(mainIntent)
     Runtime.getRuntime().exit(0)
+}
+
+// Int to Enum
+@Throws(IndexOutOfBoundsException::class)
+inline fun <reified T : Enum<T>> Int.toEnum(): T {
+    return enumValues<T>()[this]
 }

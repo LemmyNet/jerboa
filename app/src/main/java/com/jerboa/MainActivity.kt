@@ -54,8 +54,9 @@ import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
+import com.jerboa.ui.components.common.SpecialAccount
 import com.jerboa.ui.components.common.SwipeToNavigateBack
-import com.jerboa.ui.components.common.getCurrentAccount
+import com.jerboa.ui.components.common.getSpecialCurrentAccount
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
@@ -81,6 +82,7 @@ import com.jerboa.util.BackConfirmation.addConfirmationDialog
 import com.jerboa.util.BackConfirmation.addConfirmationToast
 import com.jerboa.util.BackConfirmation.disposeConfirmation
 import com.jerboa.util.BackConfirmationMode
+import com.jerboa.util.NetworkStateImpl
 import com.jerboa.util.ShowConfirmationDialog
 
 class JerboaApplication : Application() {
@@ -96,16 +98,16 @@ fun CreationExtras.jerboaApplication(): JerboaApplication =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as JerboaApplication)
 
 class MainActivity : AppCompatActivity() {
-    private val siteViewModel by viewModels<SiteViewModel>()
+    val siteViewModel by viewModels<SiteViewModel>()
+    val accountViewModel by viewModels<AccountViewModel>(factoryProducer = { AccountViewModelFactory.Factory })
+    private val appSettingsViewModel by viewModels<AppSettingsViewModel>(factoryProducer = { AppSettingsViewModelFactory.Factory })
+    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>(factoryProducer = { AccountSettingsViewModelFactory.Factory })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             val ctx = LocalContext.current
-            val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory)
-            val appSettingsViewModel: AppSettingsViewModel = viewModel(factory = AppSettingsViewModelFactory.Factory)
-            val accountSettingsViewModel: AccountSettingsViewModel = viewModel(factory = AccountSettingsViewModelFactory.Factory)
 
             API.errorHandler = {
                 Log.e("jerboa", it.toString())
@@ -119,10 +121,10 @@ class MainActivity : AppCompatActivity() {
                 null
             }
 
-            val account = getCurrentAccount(accountViewModel)
+            val account = getSpecialCurrentAccount(accountViewModel)
 
             LaunchedEffect(account) {
-                if (account == null || account.id != -1) {
+                if (account !== SpecialAccount) {
                     fetchInitialData(account, siteViewModel)
                 }
             }
@@ -137,7 +139,7 @@ class MainActivity : AppCompatActivity() {
             JerboaTheme(
                 appSettings = appSettings,
             ) {
-                val appState = rememberJerboaAppState()
+                val appState = rememberJerboaAppState(NetworkStateImpl(ctx))
 
                 val showConfirmationDialog = remember { mutableStateOf(false) }
 
@@ -582,8 +584,8 @@ class MainActivity : AppCompatActivity() {
                         val commentView by appState.takeDepsFromRoot<CommentEditDeps>()
                         CommentEditActivity(
                             commentView = commentView,
-                            accountViewModel = accountViewModel,
                             appState = appState,
+                            accountViewModel = accountViewModel,
                         )
                     }
 

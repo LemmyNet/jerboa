@@ -19,6 +19,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.model.ReplyItem
 import com.jerboa.ui.components.common.Route
+import com.jerboa.util.NetworkState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ import java.nio.charset.StandardCharsets
 
 @Composable
 fun rememberJerboaAppState(
+    networkState: NetworkState,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): JerboaAppState {
@@ -37,6 +39,7 @@ fun rememberJerboaAppState(
         JerboaAppState(
             navController,
             coroutineScope,
+            networkState,
         )
     }
 }
@@ -45,6 +48,7 @@ fun rememberJerboaAppState(
 class JerboaAppState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
+    val networkState: NetworkState,
 ) {
 
     fun toPrivateMessageReply(

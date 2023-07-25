@@ -29,6 +29,7 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreatePostViewModel
@@ -118,16 +119,18 @@ fun CreatePostActivity(
                         formValid = formValid,
                         loading = loading,
                         onSubmitClick = {
-                            onSubmitClick(
-                                name = name,
-                                body = body,
-                                url = url,
-                                isNsfw = isNsfw,
-                                account = account,
-                                createPostViewModel = createPostViewModel,
-                                selectedCommunity = selectedCommunity,
-                                onSuccess = appState::toPostWithPopUpTo,
-                            )
+                            if (!account.isAnon()) {
+                                onSubmitClick(
+                                    name = name,
+                                    body = body,
+                                    url = url,
+                                    isNsfw = isNsfw,
+                                    account = account,
+                                    createPostViewModel = createPostViewModel,
+                                    selectedCommunity = selectedCommunity,
+                                    onSuccess = appState::toPostWithPopUpTo,
+                                )
+                            }
                         },
                         submitIcon = {
                             CreatePostSubmitIcon(formValid)
@@ -164,13 +167,11 @@ fun CreatePostActivity(
                     sharedImage = initialImage,
                     isUploadingImage = isUploadingImage,
                     onImagePicked = { uri ->
-                        if (uri != Uri.EMPTY) {
+                        if (!account.isAnon() && uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)
                             scope.launch {
                                 isUploadingImage = true
-                                account?.also { acct ->
-                                    url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
-                                }
+                                url = uploadPictrsImage(account, imageIs, ctx).orEmpty()
                                 isUploadingImage = false
                             }
                         }
@@ -196,28 +197,26 @@ fun onSubmitClick(
     body: TextFieldValue,
     url: String,
     isNsfw: Boolean,
-    account: Account?,
+    account: Account,
     selectedCommunity: Community?,
     createPostViewModel: CreatePostViewModel,
     onSuccess: (Int) -> Unit,
 ) {
-    account?.also { acct ->
-        selectedCommunity?.id?.also {
-            // Clean up that data
-            val nameOut = name.trim()
-            val bodyOut = body.text.trim().ifEmpty { null }
-            val urlOut = url.trim().ifEmpty { null }
-            createPostViewModel.createPost(
-                CreatePost(
-                    name = nameOut,
-                    community_id = it,
-                    url = urlOut,
-                    body = bodyOut,
-                    auth = acct.jwt,
-                    nsfw = isNsfw,
-                ),
-                onSuccess = onSuccess,
-            )
-        }
+    selectedCommunity?.id?.also {
+        // Clean up that data
+        val nameOut = name.trim()
+        val bodyOut = body.text.trim().ifEmpty { null }
+        val urlOut = url.trim().ifEmpty { null }
+        createPostViewModel.createPost(
+            CreatePost(
+                name = nameOut,
+                community_id = it,
+                url = urlOut,
+                body = bodyOut,
+                auth = account.jwt,
+                nsfw = isNsfw,
+            ),
+            onSuccess = onSuccess,
+        )
     }
 }

@@ -82,6 +82,7 @@ import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
@@ -270,7 +271,7 @@ fun PostNodeHeader(
 fun PostTitleBlock(
     postView: PostView,
     expandedImage: Boolean,
-    account: Account?,
+    account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
@@ -362,7 +363,7 @@ fun PostTitleAndImageLink(
 @Composable
 fun PostTitleAndThumbnail(
     postView: PostView,
-    account: Account?,
+    account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
@@ -383,7 +384,7 @@ fun PostTitleAndThumbnail(
             ) {
                 PostName(postView = postView, showIfRead = showIfRead)
                 postView.post.url?.also { postUrl ->
-                    if (!isSameInstance(postUrl, account?.instance)) {
+                    if (!isSameInstance(postUrl, account.instance)) {
                         val hostName = hostName(postUrl)
                         hostName?.also {
                             Text(
@@ -413,7 +414,7 @@ fun PostBody(
     fullBody: Boolean,
     viewSource: Boolean,
     expandedImage: Boolean,
-    account: Account?,
+    account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
@@ -499,7 +500,7 @@ fun PreviewStoryTitleAndMetadata() {
         fullBody = false,
         viewSource = false,
         expandedImage = false,
-        account = null,
+        account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
@@ -517,7 +518,7 @@ fun PreviewSourcePost() {
         fullBody = true,
         viewSource = true,
         expandedImage = false,
-        account = null,
+        account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
@@ -546,7 +547,7 @@ fun PostFooterLine(
     onViewSourceClick: () -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
-    account: Account?,
+    account: Account,
     enableDownVotes: Boolean,
     viewSource: Boolean,
 ) {
@@ -592,7 +593,7 @@ fun PostFooterLine(
                 showMoreOptions = false
                 onViewSourceClick()
             },
-            isCreator = account?.id == postView.creator.id,
+            isCreator = account.id == postView.creator.id,
             viewSource = viewSource,
         )
     }
@@ -671,7 +672,7 @@ fun PostFooterLine(
 fun CommentCount(
     comments: Int,
     unreadCount: Int,
-    account: Account?,
+    account: Account,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -718,7 +719,7 @@ fun CommentNewCount(
 @Preview
 @Composable
 fun CommentCountPreview() {
-    CommentCount(42, 0, account = null)
+    CommentCount(42, 0, account = AnonAccount)
 }
 
 @Preview
@@ -735,7 +736,7 @@ fun PostFooterLinePreview() {
     PostFooterLine(
         postView = postView,
         instantScores = instantScores,
-        account = null,
+        account = AnonAccount,
         onReportClick = {},
         onCommunityClick = {},
         onPersonClick = {},
@@ -776,7 +777,7 @@ fun PreviewPostListingCard() {
         onShareClick = {},
         isModerator = true,
         fullBody = false,
-        account = null,
+        account = AnonAccount,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
@@ -810,7 +811,7 @@ fun PreviewLinkPostListing() {
         onShareClick = {},
         isModerator = false,
         fullBody = false,
-        account = null,
+        account = AnonAccount,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
@@ -844,7 +845,7 @@ fun PreviewImagePostListingCard() {
         onShareClick = {},
         isModerator = false,
         fullBody = false,
-        account = null,
+        account = AnonAccount,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
@@ -878,7 +879,7 @@ fun PreviewImagePostListingSmallCard() {
         onShareClick = {},
         isModerator = false,
         fullBody = false,
-        account = null,
+        account = AnonAccount,
         postViewMode = PostViewMode.SmallCard,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
@@ -912,7 +913,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         onShareClick = {},
         isModerator = true,
         fullBody = false,
-        account = null,
+        account = AnonAccount,
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
         enableDownVotes = true,
@@ -946,7 +947,7 @@ fun PostListing(
     isModerator: Boolean,
     showCommunityName: Boolean = true,
     fullBody: Boolean,
-    account: Account?,
+    account: Account,
     postViewMode: PostViewMode,
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
@@ -1106,7 +1107,7 @@ fun PostVotingTile(
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
-    account: Account?,
+    account: Account,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -1154,7 +1155,7 @@ fun PostListingList(
     onPostClick: (postView: PostView) -> Unit,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
-    account: Account?,
+    account: Account,
     showVotingArrowsInListView: Boolean,
     showAvatar: Boolean,
     useCustomTabs: Boolean,
@@ -1218,7 +1219,7 @@ fun PostListingList(
                     )
                     DotSpacer(0.dp)
                     postView.post.url?.also { postUrl ->
-                        if (!isSameInstance(postUrl, account?.instance)) {
+                        if (!isSameInstance(postUrl, account.instance)) {
                             val hostName = hostName(postUrl)
                             hostName?.also {
                                 Text(
@@ -1360,7 +1361,7 @@ fun PostListingListPreview() {
         onDownvoteClick = {},
         onPostClick = {},
         isModerator = false,
-        account = null,
+        account = AnonAccount,
         showVotingArrowsInListView = true,
         showAvatar = true,
         useCustomTabs = false,
@@ -1389,7 +1390,7 @@ fun PostListingListWithThumbPreview() {
         onDownvoteClick = {},
         onPostClick = {},
         isModerator = false,
-        account = null,
+        account = AnonAccount,
         showVotingArrowsInListView = true,
         showAvatar = true,
         useCustomTabs = false,
@@ -1423,7 +1424,7 @@ fun PostListingCard(
     isModerator: Boolean,
     showCommunityName: Boolean = true,
     fullBody: Boolean,
-    account: Account?,
+    account: Account,
     expandedImage: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,

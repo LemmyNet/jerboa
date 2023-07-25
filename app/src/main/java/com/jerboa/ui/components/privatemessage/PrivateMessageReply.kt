@@ -101,7 +101,7 @@ fun PrivateMessageReply(
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    account: Account?,
+    account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
 ) {

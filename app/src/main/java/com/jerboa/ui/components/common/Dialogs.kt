@@ -260,7 +260,6 @@ fun UnreadOrAllOptionsDialog(
                     onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
                     highlight = (selectedUnreadOrAll == UnreadOrAll.All),
                 )
-                // TODO hide local for non-federated instances
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.dialogs_unread),
                     icon = Icons.Outlined.MarkunreadMailbox,

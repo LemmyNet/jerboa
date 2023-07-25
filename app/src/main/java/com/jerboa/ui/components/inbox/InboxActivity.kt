@@ -20,7 +20,6 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -56,6 +55,7 @@ import com.jerboa.datatypes.types.MarkPersonMentionAsRead
 import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.isAnon
 import com.jerboa.getCommentParentId
 import com.jerboa.getLocalizedStringForInboxTab
 import com.jerboa.isScrolledToEnd
@@ -70,6 +70,7 @@ import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.replynode.CommentReplyNode
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isLoading
@@ -78,6 +79,7 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
 import com.jerboa.util.InitializeRoute
+import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -101,7 +103,7 @@ fun InboxActivity(
 
     val inboxViewModel: InboxViewModel = viewModel()
     InitializeRoute(inboxViewModel) {
-        if (account != null) {
+        if (!account.isAnon()) {
             inboxViewModel.resetPages()
             inboxViewModel.getReplies(
                 inboxViewModel.getFormReplies(account.jwt),
@@ -118,7 +120,7 @@ fun InboxActivity(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             InboxHeader(
                 scrollBehavior = scrollBehavior,
@@ -130,30 +132,45 @@ fun InboxActivity(
                 },
                 selectedUnreadOrAll = unreadOrAllFromBool(inboxViewModel.unreadOnly),
                 onClickUnreadOrAll = { unreadOrAll ->
-                    account?.also { acct ->
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                        accountViewModel,
+                        loginAsToast = true,
+                    ) {
                         inboxViewModel.resetPages()
                         inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
                         inboxViewModel.getReplies(
-                            inboxViewModel.getFormReplies(acct.jwt),
+                            inboxViewModel.getFormReplies(it.jwt),
                         )
                         inboxViewModel.getMentions(
-                            inboxViewModel.getFormMentions(acct.jwt),
+                            inboxViewModel.getFormMentions(it.jwt),
                         )
                         inboxViewModel.getMessages(
-                            inboxViewModel.getFormMessages(acct.jwt),
+                            inboxViewModel.getFormMessages(it.jwt),
                         )
                     }
                 },
                 onClickMarkAllAsRead = {
-                    account?.also { acct ->
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                        accountViewModel,
+                    ) {
                         inboxViewModel.markAllAsRead(
                             MarkAllAsRead(
-                                auth = acct.jwt,
+                                auth = it.jwt,
                             ),
                             onComplete = {
                                 siteViewModel.fetchUnreadCounts(
                                     GetUnreadCount(
-                                        auth = acct.jwt,
+                                        auth = it.jwt,
                                     ),
                                 )
                                 inboxViewModel.resetPages()
@@ -182,6 +199,7 @@ fun InboxActivity(
                 account = account,
                 scope = scope,
                 blurNSFW = blurNSFW,
+                snackbarHostState = snackbarHostState,
             )
         },
     )
@@ -200,8 +218,9 @@ fun InboxTabs(
     inboxViewModel: InboxViewModel,
     siteViewModel: SiteViewModel,
     ctx: Context,
-    account: Account?,
+    account: Account,
     scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
     padding: PaddingValues,
     blurNSFW: Boolean,
 ) {
@@ -257,7 +276,13 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account?.also {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
                                 inboxViewModel.appendReplies(
                                     it.jwt,
                                 )
@@ -270,10 +295,16 @@ fun InboxTabs(
                     val refreshState = rememberPullRefreshState(
                         refreshing = refreshing,
                         onRefresh = {
-                            account?.also { acct ->
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
                                 inboxViewModel.resetPageReplies()
                                 inboxViewModel.getReplies(
-                                    inboxViewModel.getFormReplies(acct.jwt),
+                                    inboxViewModel.getFormReplies(it.jwt),
                                     ApiState.Refreshing,
                                 )
                             }
@@ -291,17 +322,23 @@ fun InboxTabs(
                     }
 
                     val markAsRead = { crv: CommentReplyView ->
-                        account?.also { acct ->
+                        account.doIfReadyElseDisplayInfo(
+                            appState,
+                            ctx,
+                            snackbarHostState,
+                            scope,
+                            siteViewModel,
+                        ) {
                             inboxViewModel.markReplyAsRead(
                                 MarkCommentReplyAsRead(
                                     comment_reply_id = crv.comment_reply.id,
                                     read = !crv.comment_reply.read,
-                                    auth = acct.jwt,
+                                    auth = it.jwt,
                                 ),
                                 onSuccess = {
                                     siteViewModel.fetchUnreadCounts(
                                         GetUnreadCount(
-                                            auth = acct.jwt,
+                                            auth = it.jwt,
                                         ),
                                     )
                                 },
@@ -340,23 +377,35 @@ fun InboxTabs(
                                         CommentReplyNode(
                                             commentReplyView = commentReplyView,
                                             onUpvoteClick = { cr ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                ) {
                                                     inboxViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Upvote),
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
                                             },
                                             onDownvoteClick = { cr ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                ) {
                                                     inboxViewModel.likeReply(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Downvote),
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -369,12 +418,18 @@ fun InboxTabs(
                                                 )
                                             },
                                             onSaveClick = { cr ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                ) {
                                                     inboxViewModel.saveReply(
                                                         SaveComment(
                                                             comment_id = cr.comment.id,
                                                             save = !cr.saved,
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -395,12 +450,18 @@ fun InboxTabs(
                                                 appState.toCommunity(id = community.id)
                                             },
                                             onBlockCreatorClick = { person ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                ) {
                                                     inboxViewModel.blockPerson(
                                                         BlockPerson(
                                                             person_id = person.id,
                                                             block = true,
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                         ctx,
                                                     )
@@ -434,7 +495,13 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account?.also {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
                                 inboxViewModel.appendMentions(
                                     it.jwt,
                                 )
@@ -449,10 +516,16 @@ fun InboxTabs(
                     val refreshState = rememberPullRefreshState(
                         refreshing = refreshing,
                         onRefresh = {
-                            account?.also { acct ->
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
                                 inboxViewModel.resetPageMentions()
                                 inboxViewModel.getMentions(
-                                    inboxViewModel.getFormMentions(acct.jwt),
+                                    inboxViewModel.getFormMentions(it.jwt),
                                     ApiState.Refreshing,
                                 )
                             }
@@ -493,23 +566,35 @@ fun InboxTabs(
                                         CommentMentionNode(
                                             personMentionView = pmv,
                                             onUpvoteClick = { pm ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                ) {
                                                     inboxViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
                                                             score = newVote(pm.my_vote, VoteType.Upvote),
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
                                             },
                                             onDownvoteClick = { pm ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                ) {
                                                     inboxViewModel.likeMention(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
                                                             score = newVote(pm.my_vote, VoteType.Downvote),
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -522,28 +607,40 @@ fun InboxTabs(
                                                 )
                                             },
                                             onSaveClick = { pm ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                ) {
                                                     inboxViewModel.saveMention(
                                                         SaveComment(
                                                             comment_id = pm.comment.id,
                                                             save = !pm.saved,
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
                                             },
                                             onMarkAsReadClick = { pm ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                ) {
                                                     inboxViewModel.markPersonMentionAsRead(
                                                         MarkPersonMentionAsRead(
                                                             person_mention_id = pm.person_mention.id,
                                                             read = !pm.person_mention.read,
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                         onSuccess = {
                                                             siteViewModel.fetchUnreadCounts(
                                                                 GetUnreadCount(
-                                                                    auth = acct.jwt,
+                                                                    auth = it.jwt,
                                                                 ),
                                                             )
                                                         },
@@ -567,12 +664,18 @@ fun InboxTabs(
                                                 appState.toCommunity(id = community.id)
                                             },
                                             onBlockCreatorClick = { person ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                ) {
                                                     inboxViewModel.blockPerson(
                                                         BlockPerson(
                                                             person_id = person.id,
                                                             block = true,
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                         ctx,
                                                     )
@@ -604,7 +707,13 @@ fun InboxTabs(
                     // act when end of list reached
                     if (endOfListReached) {
                         LaunchedEffect(Unit) {
-                            account?.also {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
                                 inboxViewModel.appendMessages(
                                     it.jwt,
                                 )
@@ -618,10 +727,16 @@ fun InboxTabs(
                     val refreshState = rememberPullRefreshState(
                         refreshing = refreshing,
                         onRefresh = {
-                            account?.also { acct ->
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                            ) {
                                 inboxViewModel.resetPageMessages()
                                 inboxViewModel.getMessages(
-                                    inboxViewModel.getFormMessages(acct.jwt),
+                                    inboxViewModel.getFormMessages(it.jwt),
                                     ApiState.Refreshing,
                                 )
                             }
@@ -659,37 +774,35 @@ fun InboxTabs(
                                         key = { message -> message.private_message.id },
                                         contentType = { "messages" },
                                     ) { message ->
-                                        account?.also { acct ->
-                                            PrivateMessage(
-                                                myPersonId = acct.id,
-                                                privateMessageView = message,
-                                                onReplyClick = { privateMessageView ->
-                                                    appState.toPrivateMessageReply(
-                                                        channel = transferPrivateMessageDepsViaRoot,
-                                                        privateMessageView = privateMessageView,
-                                                    )
-                                                },
-                                                onMarkAsReadClick = { pm ->
-                                                    inboxViewModel.markPrivateMessageAsRead(
-                                                        MarkPrivateMessageAsRead(
-                                                            private_message_id = pm.private_message.id,
-                                                            read = !pm.private_message.read,
-                                                            auth = acct.jwt,
-                                                        ),
-                                                        onSuccess = {
-                                                            siteViewModel.fetchUnreadCounts(
-                                                                GetUnreadCount(
-                                                                    auth = acct.jwt,
-                                                                ),
-                                                            )
-                                                        },
-                                                    )
-                                                },
-                                                onPersonClick = appState::toProfile,
-                                                account = acct,
-                                                showAvatar = siteViewModel.showAvatar(),
-                                            )
-                                        }
+                                        PrivateMessage(
+                                            myPersonId = account.id,
+                                            privateMessageView = message,
+                                            onReplyClick = { privateMessageView ->
+                                                appState.toPrivateMessageReply(
+                                                    channel = transferPrivateMessageDepsViaRoot,
+                                                    privateMessageView = privateMessageView,
+                                                )
+                                            },
+                                            onMarkAsReadClick = { pm ->
+                                                inboxViewModel.markPrivateMessageAsRead(
+                                                    MarkPrivateMessageAsRead(
+                                                        private_message_id = pm.private_message.id,
+                                                        read = !pm.private_message.read,
+                                                        auth = account.jwt,
+                                                    ),
+                                                    onSuccess = {
+                                                        siteViewModel.fetchUnreadCounts(
+                                                            GetUnreadCount(
+                                                                auth = account.jwt,
+                                                            ),
+                                                        )
+                                                    },
+                                                )
+                                            },
+                                            onPersonClick = appState::toProfile,
+                                            account = account,
+                                            showAvatar = siteViewModel.showAvatar(),
+                                        )
                                     }
                                 }
                             }

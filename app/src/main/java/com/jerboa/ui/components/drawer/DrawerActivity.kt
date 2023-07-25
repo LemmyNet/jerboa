@@ -7,6 +7,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
+import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.isAnon
+import com.jerboa.db.entity.isReady
 import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
 import com.jerboa.model.AccountViewModel
@@ -39,7 +42,21 @@ fun MainDrawer(
 
     Drawer(
         myUserInfo = when (val res = siteViewModel.siteRes) {
-            is ApiState.Success -> res.data.my_user
+            is ApiState.Success -> {
+                // JWT Failed
+                if (!account.isAnon() && account.isReady() && res.data.my_user == null) {
+                    accountViewModel.invalidateAccount(account)
+                }
+                res.data.my_user
+            }
+            is ApiState.Failure -> {
+                // Invalidate account
+                if (account.isReady()) {
+                    accountViewModel.invalidateAccount(account)
+                }
+
+                null
+            }
             else -> null
         },
         unreadCount = siteViewModel.unreadCount,
@@ -59,46 +76,33 @@ fun MainDrawer(
                 homeViewModel = homeViewModel,
             )
 
+            onSelectTab(NavTab.Home)
             closeDrawer(scope, drawerState)
         },
         onSignOutClick = {
-            accounts?.also { accts ->
-                account?.also {
-                    accountViewModel.delete(it)
-                    val updatedList = accts.toMutableList()
-                    updatedList.remove(it)
+            accountViewModel.deleteAccountAndSwapCurrent(
+                account,
+                siteViewModel,
+                homeViewModel,
+            )
 
-                    if (updatedList.isNotEmpty()) {
-                        accountViewModel.setCurrent(updatedList[0].id)
-                    } else { // Could still be on a page that requires a account
-                        onSelectTab(NavTab.Home)
-                    }
-                    fetchInitialData(
-                        account = updatedList.getOrNull(0),
-                        siteViewModel = siteViewModel,
-                    )
-                    fetchHomePosts(
-                        account = updatedList.getOrNull(0),
-                        homeViewModel = homeViewModel,
-                    )
-
-                    closeDrawer(scope, drawerState)
-                }
-            }
+            onSelectTab(NavTab.Home)
+            closeDrawer(scope, drawerState)
         },
         onSwitchAnon = {
-            account?.also {
+            if (!account.isAnon()) {
                 accountViewModel.removeCurrent()
 
                 fetchInitialData(
-                    account = null,
+                    account = AnonAccount,
                     siteViewModel = siteViewModel,
                 )
                 fetchHomePosts(
-                    account = null,
+                    account = AnonAccount,
                     homeViewModel = homeViewModel,
                 )
 
+                onSelectTab(NavTab.Home)
                 closeDrawer(scope, drawerState)
             }
         },

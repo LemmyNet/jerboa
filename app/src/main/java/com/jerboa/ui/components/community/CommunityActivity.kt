@@ -15,7 +15,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -50,7 +49,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.loginFirstToast
+import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
@@ -61,6 +60,7 @@ import com.jerboa.scrollToTop
 import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
@@ -69,6 +69,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
+import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -106,14 +107,16 @@ fun CommunityActivity(
         val communityName = communityArg.fold({ null }, { it })
 
         communityViewModel.resetPage()
-        account?.let {
+
+        if (account.isAnon()) {
             communityViewModel.updateSortType(SortType.values().getOrElse(account.defaultSortType) { siteViewModel.sortType })
         }
+
         communityViewModel.getCommunity(
             form = GetCommunity(
                 id = communityId,
                 name = communityName,
-                auth = account?.jwt,
+                auth = account.jwt.ifEmpty { null },
             ),
         )
         communityViewModel.getPosts(
@@ -123,7 +126,7 @@ fun CommunityActivity(
                 community_name = communityName,
                 page = communityViewModel.page,
                 sort = communityViewModel.sortType,
-                auth = account?.jwt,
+                auth = account.jwt.ifEmpty { null },
             ),
         )
     }
@@ -140,7 +143,7 @@ fun CommunityActivity(
                             community_id = communityRes.data.community_view.community.id,
                             page = communityViewModel.page,
                             sort = communityViewModel.sortType,
-                            auth = account?.jwt,
+                            auth = account.jwt.ifEmpty { null },
                         ),
                         ApiState.Refreshing,
                     )
@@ -155,7 +158,7 @@ fun CommunityActivity(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             Column {
                 when (val communityRes = communityViewModel.communityRes) {
@@ -179,7 +182,7 @@ fun CommunityActivity(
                                         community_id = communityId,
                                         page = communityViewModel.page,
                                         sort = communityViewModel.sortType,
-                                        auth = account?.jwt,
+                                        auth = account.jwt.ifEmpty { null },
                                     ),
                                 )
                             },
@@ -192,16 +195,23 @@ fun CommunityActivity(
                                         community_id = communityId,
                                         page = communityViewModel.page,
                                         sort = communityViewModel.sortType,
-                                        auth = account?.jwt,
+                                        auth = account.jwt.ifEmpty { null },
                                     ),
                                 )
                             },
                             onBlockCommunityClick = {
-                                account?.also { acct ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
                                     communityViewModel.blockCommunity(
                                         BlockCommunity(
                                             community_id = communityId,
-                                            auth = acct.jwt,
+                                            auth = it.jwt,
                                             block = !communityRes.data.community_view.blocked,
                                         ),
                                         ctx = ctx,
@@ -236,17 +246,24 @@ fun CommunityActivity(
                                         CommunityTopSection(
                                             communityView = communityRes.data.community_view,
                                             onClickFollowCommunity = { cfv ->
-                                                account?.also { acct ->
+                                                account.doIfReadyElseDisplayInfo(
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                    accountViewModel,
+                                                ) {
                                                     communityViewModel.followCommunity(
                                                         form = FollowCommunity(
                                                             community_id = cfv.community.id,
                                                             follow = cfv.subscribed == SubscribedType.NotSubscribed,
-                                                            auth = acct.jwt,
+                                                            auth = it.jwt,
                                                         ),
                                                         onSuccess = {
                                                             siteViewModel.getSite(
                                                                 form = GetSite(
-                                                                    auth = acct.jwt,
+                                                                    auth = it.jwt,
                                                                 ),
                                                             )
                                                         },
@@ -261,7 +278,14 @@ fun CommunityActivity(
                                 }
                             },
                             onUpvoteClick = { postView ->
-                                account?.also { acct ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
                                     communityViewModel.likePost(
                                         form = CreatePostLike(
                                             post_id = postView.post.id,
@@ -269,13 +293,20 @@ fun CommunityActivity(
                                                 currentVote = postView.my_vote,
                                                 voteType = VoteType.Upvote,
                                             ),
-                                            auth = acct.jwt,
+                                            auth = it.jwt,
                                         ),
                                     )
                                 }
                             },
                             onDownvoteClick = { postView ->
-                                account?.also { acct ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
                                     communityViewModel.likePost(
                                         form = CreatePostLike(
                                             post_id = postView.post.id,
@@ -283,7 +314,7 @@ fun CommunityActivity(
                                                 currentVote = postView.my_vote,
                                                 voteType = VoteType.Downvote,
                                             ),
-                                            auth = acct.jwt,
+                                            auth = it.jwt,
                                         ),
                                     )
                                 }
@@ -292,12 +323,19 @@ fun CommunityActivity(
                                 appState.toPost(id = postView.post.id)
                             },
                             onSaveClick = { postView ->
-                                account?.also { acct ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
                                     communityViewModel.savePost(
                                         form = SavePost(
                                             post_id = postView.post.id,
                                             save = !postView.saved,
-                                            auth = acct.jwt,
+                                            auth = it.jwt,
                                         ),
                                     )
                                 }
@@ -309,12 +347,19 @@ fun CommunityActivity(
                                 )
                             },
                             onDeletePostClick = { postView ->
-                                account?.also { acct ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
                                     communityViewModel.deletePost(
                                         DeletePost(
                                             post_id = postView.post.id,
                                             deleted = !postView.post.deleted,
-                                            auth = acct.jwt,
+                                            auth = it.jwt,
                                         ),
                                     )
                                 }
@@ -331,12 +376,19 @@ fun CommunityActivity(
                             onBlockCommunityClick = {
                                 when (val communityRes = communityViewModel.communityRes) {
                                     is ApiState.Success -> {
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
                                             communityViewModel.blockCommunity(
                                                 form = BlockCommunity(
                                                     community_id = communityRes.data.community_view.community.id,
                                                     block = !communityRes.data.community_view.blocked,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                                 ctx = ctx,
                                             )
@@ -347,12 +399,19 @@ fun CommunityActivity(
                                 }
                             },
                             onBlockCreatorClick = { person ->
-                                account?.also { acct ->
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
                                     communityViewModel.blockPerson(
                                         form = BlockPerson(
                                             person_id = person.id,
                                             block = true,
-                                            auth = acct.jwt,
+                                            auth = it.jwt,
                                         ),
                                         ctx = ctx,
                                     )
@@ -366,7 +425,7 @@ fun CommunityActivity(
                                     is ApiState.Success -> {
                                         communityViewModel.appendPosts(
                                             communityRes.data.community_view.community.id,
-                                            account?.jwt,
+                                            account.jwt.ifEmpty { null },
                                         )
                                     }
 
@@ -399,13 +458,19 @@ fun CommunityActivity(
                 is ApiState.Success -> {
                     FloatingActionButton(
                         onClick = {
-                            account?.also {
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                                accountViewModel,
+                                loginAsToast = false,
+                            ) {
                                 appState.toCreatePost(
                                     channel = transferCreatePostDepsViaRoot,
                                     community = communityRes.data.community_view.community,
                                 )
-                            } ?: run {
-                                loginFirstToast(ctx)
                             }
                         },
                     ) {
