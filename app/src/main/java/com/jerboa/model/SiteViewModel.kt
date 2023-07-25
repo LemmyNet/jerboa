@@ -87,6 +87,22 @@ class SiteViewModel : ViewModel() {
         }
     }
 
+    fun updateUnreadCounts(dReplies: Int = 0, dMentions: Int = 0, dMessages: Int = 0) {
+        when (val res = unreadCountRes) {
+            is ApiState.Success -> {
+                unreadCountRes = ApiState.Success(
+                    GetUnreadCountResponse(
+                        private_messages = res.data.private_messages + dMessages,
+                        mentions = res.data.mentions + dMentions,
+                        replies = res.data.replies + dReplies,
+                    ),
+                )
+            }
+
+            else -> {}
+        }
+    }
+
     fun showAvatar(): Boolean {
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_avatars ?: true

@@ -30,7 +30,7 @@ const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
 const val MINIMUM_API_VERSION: String = "0.18"
 val REDACTED_QUERY_PARAMS = setOf("auth")
-val REDACTED_BODY_FIELDS = setOf("jwt", "password")
+val REDACTED_BODY_FIELDS = setOf("jwt", "password", "auth")
 
 interface API {
     @GET("site")
