@@ -362,4 +362,10 @@
     <string name="verification_account_not_read">This account is not in a ready state yet.</string>
     <string name="verification_account_busy">This account (%s) is being verified</string>
     <string name="warning">Warning</string>
+    <string name="login_view_model_email_not_verified">Email of this account is not verified, check inbox</string>
+    <string name="login_view_model_login_failed">Login failed</string>
+    <string name="login_view_model_registration_denied">Your registration has been denied</string>
+    <string name="login_view_model_registration_pending">Registration approval is still pending</string>
+    <string name="login_view_model_missing_totp">TOTP token is missing</string>
+    <string name="login_view_model_incorrect_totp">Incorrect TOTP token given</string>
 </resources>

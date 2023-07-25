@@ -1,6 +1,7 @@
 package com.jerboa
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
@@ -32,6 +33,12 @@ fun rememberJerboaAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): JerboaAppState {
+    DisposableEffect(Unit) {
+        onDispose {
+            networkState.unregisterNetworkCallback()
+        }
+    }
+
     return remember(
         navController,
         coroutineScope,

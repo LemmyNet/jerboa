@@ -56,6 +56,7 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
         account: Account,
         siteViewModel: SiteViewModel,
         homeViewModel: HomeViewModel? = null,
+        swapToAnon: Boolean = false,
     ) = viewModelScope.launch {
         if (account.isAnon()) return@launch
 
@@ -64,7 +65,7 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
         val accounts = repository.allAccounts.value
         var nextAcc = accounts?.firstOrNull { it.id != account.id }
 
-        if (nextAcc != null) {
+        if (!swapToAnon && nextAcc != null) {
             repository.setCurrent(nextAcc.id)
         } else {
             nextAcc = AnonAccount

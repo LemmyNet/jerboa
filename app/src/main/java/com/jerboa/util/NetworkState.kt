@@ -13,45 +13,41 @@ import androidx.lifecycle.MutableLiveData
 @Stable
 interface NetworkState {
     val isOnline: LiveData<Boolean>
+    fun unregisterNetworkCallback()
 }
 
 class NetworkStateImpl(
     private val context: Context,
 ) : NetworkState {
-    private val _isOnline = MutableLiveData(call())
-
+    private val _isOnline = MutableLiveData<Boolean>()
     override val isOnline: LiveData<Boolean> = _isOnline
 
-    private fun call(): Boolean {
-        val connectivityManager = context.getSystemService<ConnectivityManager>() ?: return false
-        return connectivityManager.isCurrentlyConnected()
+    private val callback = object : ConnectivityManager.NetworkCallback() {
+
+        private val networks = mutableSetOf<Network>()
+
+        override fun onAvailable(network: Network) {
+            networks += network
+            _isOnline.postValue(true)
+        }
+
+        override fun onLost(network: Network) {
+            networks -= network
+            _isOnline.postValue(networks.isNotEmpty())
+        }
     }
 
     init {
-
         val connectivityManager = context.getSystemService<ConnectivityManager>()
-
-        val request = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-
-        connectivityManager?.registerNetworkCallback(
-            request,
-            object : ConnectivityManager.NetworkCallback() {
-
-                private val networks = mutableSetOf<Network>()
-
-                override fun onAvailable(network: Network) {
-                    networks += network
-                    this@NetworkStateImpl._isOnline.postValue(true)
-                }
-
-                override fun onLost(network: Network) {
-                    networks -= network
-                    this@NetworkStateImpl._isOnline.postValue(networks.isNotEmpty())
-                }
-            },
-        )
+        if (connectivityManager == null) {
+            _isOnline.postValue(false)
+        } else {
+            val request = NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build()
+            connectivityManager.registerNetworkCallback(request, callback)
+            _isOnline.postValue(connectivityManager.isCurrentlyConnected())
+        }
     }
 
     private fun ConnectivityManager.isCurrentlyConnected() =
@@ -59,4 +55,9 @@ class NetworkStateImpl(
             ?.let(::getNetworkCapabilities)
             ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             ?: false
+
+    override fun unregisterNetworkCallback() {
+        val connectivityManager = context.getSystemService<ConnectivityManager>()
+        connectivityManager?.unregisterNetworkCallback(callback)
+    }
 }

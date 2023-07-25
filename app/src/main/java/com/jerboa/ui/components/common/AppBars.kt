@@ -43,14 +43,13 @@ import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.isAnon
-import com.jerboa.loginFirstToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
+import com.jerboa.util.isReadyAndIfNotShowSimplifiedInfoToast
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -290,10 +289,8 @@ fun ActionBarButton(
         Modifier
     } else {
         Modifier.clickable(onClick = {
-            if (!requiresAccount || !account.isAnon()) {
+            if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 onClick()
-            } else {
-                loginFirstToast(ctx)
             }
         })
     }

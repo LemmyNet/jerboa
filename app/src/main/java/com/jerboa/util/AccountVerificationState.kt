@@ -28,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.net.InetAddress
 
 // Order is important, as it classifies in which order it does the checks
@@ -92,7 +93,13 @@ fun checkInternet(networkState: NetworkState): CheckState {
 
 // If this won't end up been reliable enough, we can try a API endpoint
 suspend fun checkInstance(instance: String): CheckState {
-    return withContext(Dispatchers.IO) { CheckState.from(InetAddress.getByName(instance).isReachable(2000)) }
+    return withContext(Dispatchers.IO) {
+        try {
+            CheckState.from(InetAddress.getByName(instance).isReachable(2000))
+        } catch (_: IOException) {
+            CheckState.Failed
+        }
+    }
 }
 
 suspend fun checkIfAccountIsDeleted(account: Account, api: API): CheckState {
@@ -388,12 +395,12 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                         }
 
                         AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, siteVM)
+                            accountVM.deleteAccountAndSwapCurrent(this, siteVM, swapToAnon = true)
                             appState.toHome()
                         }
 
                         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, siteVM)
+                            accountVM.deleteAccountAndSwapCurrent(this, siteVM, swapToAnon = true)
                             appState.toLogin()
                         }
 
@@ -451,7 +458,7 @@ suspend fun SnackbarHostState.doSnackbarAction(
     }
 }
 
-fun Account.isReadyAndIfNotSimplifiedShowInfoToast(ctx: Context): Boolean {
+fun Account.isReadyAndIfNotShowSimplifiedInfoToast(ctx: Context): Boolean {
     return if (this.isAnon()) {
         loginFirstToast(ctx)
         false
