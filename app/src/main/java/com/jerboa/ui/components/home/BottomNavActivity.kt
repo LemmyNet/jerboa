@@ -94,7 +94,7 @@ fun BottomNavActivity(
     val homeViewModel: HomeViewModel = viewModel()
 
     val bottomNavController = rememberNavController()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = remember(account) { SnackbarHostState() }
     var selectedTab by rememberSaveable { mutableStateOf(NavTab.Home) }
 
     val onInnerSelectTab = { tab: NavTab ->
