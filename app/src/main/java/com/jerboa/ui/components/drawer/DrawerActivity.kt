@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
 import com.jerboa.db.entity.AnonAccount
@@ -33,7 +32,6 @@ fun MainDrawer(
     blurNSFW: Boolean,
     showBottomNav: Boolean,
 ) {
-    val accounts by accountViewModel.allAccounts.observeAsState()
     val account = getCurrentAccount(accountViewModel)
 
     BackHandler(drawerState.isOpen) {

@@ -73,7 +73,6 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.doIfReadyElseDisplayInfo
-import com.jerboa.util.isReadyAndIfNotDisplayInfo
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
@@ -157,21 +156,19 @@ fun HomeActivity(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    scope.launch {
-                        if (account.isReadyAndIfNotDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                siteViewModel,
-                                accountViewModel,
-                                loginAsToast = false,
-                            )
-                        ) {
-                            appState.toCreatePost(
-                                channel = transferCreatePostDepsViaRoot,
-                                community = null,
-                            )
-                        }
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                        accountViewModel,
+                        loginAsToast = false,
+                    ) {
+                        appState.toCreatePost(
+                            channel = transferCreatePostDepsViaRoot,
+                            community = null,
+                        )
                     }
                 },
             ) {

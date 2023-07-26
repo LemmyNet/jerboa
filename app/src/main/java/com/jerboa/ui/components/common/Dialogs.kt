@@ -272,6 +272,7 @@ fun UnreadOrAllOptionsDialog(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PostViewModeDialog(
     onDismissRequest: () -> Unit,
@@ -279,6 +280,7 @@ fun PostViewModeDialog(
     selectedPostViewMode: PostViewMode,
 ) {
     AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onDismissRequest,
         text = {
             Column {
@@ -287,6 +289,7 @@ fun PostViewModeDialog(
                         text = stringResource(it.mode),
                         onClick = { onClickPostViewMode(it) },
                         highlight = (selectedPostViewMode == it),
+                        modifier = Modifier.testTag("jerboa:postviewmode_${it.name}"),
                     )
                 }
             }
