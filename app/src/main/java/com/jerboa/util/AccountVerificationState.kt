@@ -271,10 +271,10 @@ suspend fun Account.checkAccountVerification(
     if (!this.isAnon()) {
         accountViewModel.setVerificationState(
             this@checkAccountVerification.id,
-            if (curVerificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal)
+            if (curVerificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal) {
                 curVerificationState
-            else // Verification failed, thus we restart procedure
-                AccountVerificationState.NOT_CHECKED.ordinal
+            } else // Verification failed, thus we restart procedure
+                AccountVerificationState.NOT_CHECKED.ordinal,
         )
     }
 
