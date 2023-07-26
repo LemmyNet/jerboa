@@ -82,7 +82,6 @@ import com.jerboa.util.BackConfirmation.addConfirmationDialog
 import com.jerboa.util.BackConfirmation.addConfirmationToast
 import com.jerboa.util.BackConfirmation.disposeConfirmation
 import com.jerboa.util.BackConfirmationMode
-import com.jerboa.util.NetworkStateImpl
 import com.jerboa.util.ShowConfirmationDialog
 
 class JerboaApplication : Application() {
@@ -139,7 +138,7 @@ class MainActivity : AppCompatActivity() {
             JerboaTheme(
                 appSettings = appSettings,
             ) {
-                val appState = rememberJerboaAppState(NetworkStateImpl(ctx))
+                val appState = rememberJerboaAppState()
 
                 val showConfirmationDialog = remember { mutableStateOf(false) }
 

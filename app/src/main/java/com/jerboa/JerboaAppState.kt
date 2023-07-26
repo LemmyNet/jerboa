@@ -9,6 +9,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
@@ -20,7 +23,6 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.model.ReplyItem
 import com.jerboa.ui.components.common.Route
-import com.jerboa.util.NetworkState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,15 +31,9 @@ import java.nio.charset.StandardCharsets
 
 @Composable
 fun rememberJerboaAppState(
-    networkState: NetworkState,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): JerboaAppState {
-    DisposableEffect(Unit) {
-        onDispose {
-            networkState.unregisterNetworkCallback()
-        }
-    }
 
     return remember(
         navController,
@@ -46,7 +42,6 @@ fun rememberJerboaAppState(
         JerboaAppState(
             navController,
             coroutineScope,
-            networkState,
         )
     }
 }
@@ -55,7 +50,6 @@ fun rememberJerboaAppState(
 class JerboaAppState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
-    val networkState: NetworkState,
 ) {
 
     fun toPrivateMessageReply(

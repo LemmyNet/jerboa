@@ -1,11 +1,13 @@
 package com.jerboa.util
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.core.content.getSystemService
 import com.jerboa.JerboaAppState
 import com.jerboa.MainActivity
 import com.jerboa.R
@@ -19,6 +21,7 @@ import com.jerboa.datatypes.types.RegistrationMode
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.isCurrentlyConnected
 import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.SiteViewModel
@@ -87,8 +90,8 @@ enum class AccountVerificationState {
     }
 }
 
-fun checkInternet(networkState: NetworkState): CheckState {
-    return CheckState.from(networkState.isOnline.value ?: false)
+fun checkInternet(ctx: Context): CheckState {
+    return CheckState.from(ctx.getSystemService<ConnectivityManager>().isCurrentlyConnected())
 }
 
 // If this won't end up been reliable enough, we can try a API endpoint
@@ -199,7 +202,7 @@ enum class CheckState {
 }
 
 suspend fun Account.checkAccountVerification(
-    networkState: NetworkState,
+    ctx: Context,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
 ): Pair<AccountVerificationState, CheckState> {
@@ -225,7 +228,7 @@ suspend fun Account.checkAccountVerification(
             }
 
             AccountVerificationState.HAS_INTERNET -> {
-                checkInternet(networkState)
+                checkInternet(ctx)
             }
 
             AccountVerificationState.INSTANCE_ALIVE -> {
@@ -266,7 +269,13 @@ suspend fun Account.checkAccountVerification(
     }
 
     if (!this.isAnon()) {
-        accountViewModel.setVerificationState(this@checkAccountVerification.id, curVerificationState)
+        accountViewModel.setVerificationState(
+            this@checkAccountVerification.id,
+            if (curVerificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal)
+                curVerificationState
+            else // Verification failed, thus we restart procedure
+                AccountVerificationState.NOT_CHECKED.ordinal
+        )
     }
 
     return Pair(curVerificationState.toEnum<AccountVerificationState>(), checkState)
@@ -381,7 +390,7 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
             val siteVM = siteViewModel ?: (ctx as MainActivity).siteViewModel
             val accountVM = accountViewModel ?: (ctx as MainActivity).accountViewModel
 
-            checkAccountVerification(appState.networkState, siteVM, accountVM).let {
+            checkAccountVerification(ctx, siteVM, accountVM).let {
                 lockAccount.remove(this)
 
                 it.showSnackbarForVerificationInfo(

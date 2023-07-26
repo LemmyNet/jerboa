@@ -10,6 +10,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.media.MediaScannerConnection
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
@@ -1503,3 +1505,9 @@ fun matchLoginErrorMsgToStringRes(ctx: Context, e: Throwable): String {
         }
     }
 }
+
+fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
+    this?.activeNetwork
+        ?.let(::getNetworkCapabilities)
+        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        ?: false
