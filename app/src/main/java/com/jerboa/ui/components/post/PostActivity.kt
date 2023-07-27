@@ -172,20 +172,6 @@ fun PostActivity(
     InitializeRoute(postViewModel) {
         postViewModel.initialize(id = id)
         postViewModel.getData(account)
-        account?.also {
-            id.fold({
-                postViewModel.markPostAsRead(
-                    MarkPostAsRead(
-                        post_id = it,
-                        read = true,
-                        auth = account.jwt,
-                    ),
-                )
-                appState.apply {
-                    addReturn(PostViewReturn.POST_VIEW, it)
-                }
-            }, {})
-        }
     }
 
     val onClickSortType = { commentSortType: CommentSortType ->
@@ -319,6 +305,19 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
+                        account?.also { _ ->
+                            if (!postView.read) {
+                                appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
+                                postViewModel.markPostAsRead(
+                                    MarkPostAsRead(
+                                        post_id = postView.post.id,
+                                        read = true,
+                                        auth = account.jwt,
+                                    ),
+                                    appState,
+                                )
+                            }
+                        }
 
                         LazyColumn(
                             state = listState,

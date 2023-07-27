@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
+import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -317,8 +318,9 @@ class PostViewModel : ViewModel(), Initializable {
 
     fun markPostAsRead(
         form: MarkPostAsRead,
+        appState: JerboaAppState,
     ) {
-        viewModelScope.launch {
+        appState.coroutineScope.launch {
             markPostRes = ApiState.Loading
             markPostRes = apiWrapper(API.getInstance().markAsRead(form))
 

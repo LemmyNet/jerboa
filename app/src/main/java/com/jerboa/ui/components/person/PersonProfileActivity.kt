@@ -315,8 +315,8 @@ fun UserTabs(
 
     val loading = personProfileViewModel.personDetailsRes.isLoading()
 
-    appState.ConsumeReturn<Int>(PostViewReturn.POST_VIEW) { id ->
-        if (personProfileViewModel.initialized) account?.also { personProfileViewModel.refreshSinglePost(id, account) }
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
+        if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)
     }
 
     val pullRefreshState = rememberPullRefreshState(
@@ -568,14 +568,17 @@ fun UserTabs(
                                     showPostLinkPreviews = showPostLinkPreviews,
                                     markAsReadOnScroll = markAsReadOnScroll,
                                     onMarkAsRead = {
-                                        account?.also { acct ->
-                                            personProfileViewModel.markPostAsRead(
-                                                MarkPostAsRead(
-                                                    post_id = it.post.id,
-                                                    read = true,
-                                                    auth = acct.jwt,
-                                                ),
-                                            )
+                                        if (!it.read) {
+                                            account?.also { acct ->
+                                                personProfileViewModel.markPostAsRead(
+                                                    MarkPostAsRead(
+                                                        post_id = it.post.id,
+                                                        read = true,
+                                                        auth = acct.jwt,
+                                                    ),
+                                                    appState,
+                                                )
+                                            }
                                         }
                                     },
                                     showIfRead = false,

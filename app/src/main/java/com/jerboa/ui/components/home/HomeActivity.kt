@@ -107,8 +107,8 @@ fun HomeActivity(
         if (homeViewModel.initialized) homeViewModel.updatePost(pv)
     }
 
-    appState.ConsumeReturn<Int>(PostViewReturn.POST_VIEW) { id ->
-        if (homeViewModel.initialized) account?.also { homeViewModel.refreshSinglePost(id, account) }
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
+        if (homeViewModel.initialized) homeViewModel.updatePost(pv)
     }
 
     Scaffold(
@@ -355,14 +355,17 @@ fun MainPostListingsContent(
             openLink = appState::openLink,
             markAsReadOnScroll = markAsReadOnScroll,
             onMarkAsRead = { postView ->
-                account?.also { acct ->
-                    homeViewModel.markPostAsRead(
-                        MarkPostAsRead(
-                            post_id = postView.post.id,
-                            read = true,
-                            auth = acct.jwt,
-                        ),
-                    )
+                if (!postView.read) {
+                    account?.also { acct ->
+                        homeViewModel.markPostAsRead(
+                            MarkPostAsRead(
+                                post_id = postView.post.id,
+                                read = true,
+                                auth = acct.jwt,
+                            ),
+                            appState,
+                        )
+                    }
                 }
             },
             showIfRead = true,
