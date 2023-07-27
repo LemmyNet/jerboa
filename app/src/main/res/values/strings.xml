@@ -347,4 +347,7 @@
     <string name="failed_saving_image">Failed to save image!</string>
     <string name="home_switch_anon">Switch to anonymous</string>
     <string name="login_already_logged_in">You are already logged in with this account</string>
+    <string name="person_profile_dm_person">Message this person</string>
+    <string name="private_message_failed">Sending message failed, retrying...</string>
+    <string name="private_message_placeholder">Type here your message</string>
 </resources>
