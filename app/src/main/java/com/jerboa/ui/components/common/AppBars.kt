@@ -5,6 +5,7 @@ import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -52,7 +53,7 @@ import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
@@ -65,6 +66,8 @@ fun SimpleTopAppBar(
         title = {
             Text(
                 text = text,
+                maxLines = 1,
+                modifier = Modifier.basicMarquee(),
             )
         },
         navigationIcon = {
