@@ -42,6 +42,12 @@ enum class SortType {
     Old,
 
     /**
+     * Posts sorted by controversy rank.
+     */
+    @SerializedName("Controversial")
+    Controversial,
+
+    /**
      * The top posts for this last day.
      */
     @SerializedName("TopDay")
@@ -148,6 +154,12 @@ enum class CommentSortType {
      */
     @SerializedName("Old")
     Old,
+
+    /**
+     * Posts sorted by controversy rank.
+     */
+    @SerializedName("Controversial")
+    Controversial,
 }
 
 /**

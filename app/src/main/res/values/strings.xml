@@ -134,6 +134,7 @@
     <string name="dialogs_top_year">Top Year</string>
     <string name="dialogs_top_all">Top All</string>
     <string name="dialogs_old">Old</string>
+    <string name="dialogs_controversial">Controversial</string>
     <string name="dialogs_unread">Unread</string>
     <string name="dialogs_server_version_outdated">Server version (%1$s) is under the minimum supported version (%2$s).\n\nPlease inform your administrator and login to another instance, or sign out and use the default instance.</string>
     <string name="dialogs_server_version_outdated_short">Server version (%1$s) too low.</string>
@@ -297,6 +298,7 @@
     <string name="sorttype_new">New</string>
     <string name="sorttype_newcomments">NewComments</string>
     <string name="sorttype_old">Old</string>
+    <string name="sorttype_controversial">Controversial</string>
     <string name="sorttype_topall">TopAll</string>
     <string name="sorttype_topday">TopDay</string>
     <string name="sorttype_topmonth">TopMonth</string>

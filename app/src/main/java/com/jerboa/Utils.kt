@@ -1079,6 +1079,7 @@ val MAP_SORT_TYPE_SHORT_FORM = mapOf(
     SortType.Hot to R.string.sorttype_hot,
     SortType.New to R.string.sorttype_new,
     SortType.Old to R.string.sorttype_old,
+    SortType.Controversial to R.string.sorttype_controversial,
     SortType.TopDay to R.string.sorttype_topday,
     SortType.TopWeek to R.string.sorttype_topweek,
     SortType.TopMonth to R.string.sorttype_topmonth,
@@ -1110,6 +1111,7 @@ val MAP_SORT_TYPE_LONG_FORM = mapOf(
     SortType.Hot to R.string.sorttype_hot,
     SortType.New to R.string.sorttype_new,
     SortType.Old to R.string.sorttype_old,
+    SortType.Controversial to R.string.sorttype_controversial,
     SortType.TopDay to R.string.dialogs_top_day,
     SortType.TopWeek to R.string.dialogs_top_week,
     SortType.TopMonth to R.string.dialogs_top_month,
@@ -1158,6 +1160,7 @@ fun getLocalizedCommentSortTypeName(ctx: Context, commentSortType: CommentSortTy
         CommentSortType.New -> ctx.getString(R.string.sorttype_new)
         CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
         CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
+        CommentSortType.Controversial -> "Controversial"
     }
     return returnString
 }

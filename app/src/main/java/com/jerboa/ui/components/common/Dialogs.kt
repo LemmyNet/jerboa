@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.MarkunreadMailbox
 import androidx.compose.material.icons.outlined.Moving
 import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Public
+import androidx.compose.material.icons.outlined.ThumbsUpDown
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -169,6 +170,12 @@ fun SortOptionsDialog(
                     highlight = (selectedSortType == SortType.Old),
                 )
                 IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_controversial),
+                    icon = Icons.Outlined.ThumbsUpDown,
+                    onClick = { onClickSortType(SortType.Controversial) },
+                    highlight = (selectedSortType == SortType.Controversial),
+                )
+                IconAndTextDrawerItem(
                     modifier = Modifier.testTag("jerboa:sortoption_mostcomments"),
                     text = stringResource(R.string.dialogs_most_comments),
                     icon = Icons.Outlined.FormatListNumbered,
@@ -237,6 +244,12 @@ fun CommentSortOptionsDialog(
                     icon = Icons.Outlined.History,
                     onClick = { onClickSortType(CommentSortType.Old) },
                     highlight = (selectedSortType == CommentSortType.Old),
+                )
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.dialogs_controversial),
+                    icon = Icons.Outlined.ThumbsUpDown,
+                    onClick = { onClickSortType(CommentSortType.Controversial) },
+                    highlight = (selectedSortType == CommentSortType.Controversial),
                 )
             }
         },
