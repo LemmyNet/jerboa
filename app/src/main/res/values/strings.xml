@@ -350,4 +350,5 @@
     <string name="person_profile_dm_person">Message this person</string>
     <string name="private_message_failed">Sending message failed, retrying...</string>
     <string name="private_message_placeholder">Type here your message</string>
+    <string name="private_message_success">Message sent</string>
 </resources>
