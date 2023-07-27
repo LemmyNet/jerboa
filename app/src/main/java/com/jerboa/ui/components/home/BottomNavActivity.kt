@@ -54,6 +54,7 @@ import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.util.InitializeRoute
+import kotlinx.coroutines.launch
 
 enum class NavTab(
     val textId: Int,
@@ -112,14 +113,22 @@ fun BottomNavActivity(
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
+    val homeViewModel: HomeViewModel = viewModel()
 
     val bottomNavController = rememberNavController()
     var selectedTab by rememberSaveable { mutableStateOf(NavTab.Home) }
-    val onSelectTab = { tab: NavTab ->
+    val onSelectTab = onSelectTab@{ tab: NavTab ->
         if (tab.needsLogin() && account == null) {
             loginFirstToast(ctx)
         } else {
             selectedTab = tab
+            val currentRoute = bottomNavController.currentDestination?.route
+            if (currentRoute == tab.name && tab == NavTab.Home) {
+                scope.launch {
+                    homeViewModel.lazyListState.animateScrollToItem(0)
+                }
+                return@onSelectTab
+            }
             bottomNavController.navigate(tab.name) {
                 launchSingleTop = true
                 popUpTo(bottomNavController.graph.id) // To make back button close the app.
@@ -127,7 +136,6 @@ fun BottomNavActivity(
         }
     }
 
-    val homeViewModel: HomeViewModel = viewModel()
     if (siteViewModel.siteRes is ApiState.Success) {
         InitializeRoute(homeViewModel) {
             homeViewModel.updateSortType(siteViewModel.sortType)
