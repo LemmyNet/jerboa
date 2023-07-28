@@ -132,6 +132,7 @@
     <string name="dialogs_top_month">Top Month</string>
     <string name="dialogs_top_week">Top Week</string>
     <string name="dialogs_top_year">Top Year</string>
+    <string name="dialogs_top_all">Top All</string>
     <string name="dialogs_old">Old</string>
     <string name="dialogs_unread">Unread</string>
     <string name="dialogs_server_version_outdated">Server version (%1$s) is under the minimum supported version (%2$s).\n\nPlease inform your administrator and login to another instance, or sign out and use the default instance.</string>

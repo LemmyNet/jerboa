@@ -51,6 +51,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
+import com.jerboa.hostName
 import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -176,9 +177,12 @@ fun CommunityActivity(
 
                     is ApiState.Success -> {
                         val communityId = communityRes.data.community_view.community.id
+                        val instance = hostName(communityRes.data.community_view.community.actor_id)
+                        val communityName = communityRes.data.community_view.community.name +
+                            if (instance != null) "@$instance" else ""
                         CommunityHeader(
                             scrollBehavior = scrollBehavior,
-                            communityName = communityRes.data.community_view.community.name,
+                            communityName = communityName,
                             selectedSortType = communityViewModel.sortType,
                             onClickRefresh = {
                                 scrollToTop(scope, postListState)
