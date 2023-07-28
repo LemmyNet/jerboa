@@ -85,7 +85,6 @@ fun CreatePrivateMessageActivity(
                                 }
                             }
 
-
                             loading = false
                             focusManager.clearFocus()
                             Toast.makeText(ctx, R.string.private_message_success, Toast.LENGTH_SHORT).show()
