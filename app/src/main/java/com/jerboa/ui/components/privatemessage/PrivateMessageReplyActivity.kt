@@ -58,7 +58,7 @@ fun PrivateMessageReplyActivity(
                     loading = loading,
                     onClickBack = onBack,
                     onSendClick = {
-                        if (account.isAnon()) {
+                        if (!account.isAnon()) {
                             privateMessageReplyViewModel.createPrivateMessage(
                                 content = reply.text,
                                 account = account,
