@@ -23,7 +23,6 @@ import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
-import com.jerboa.datatypes.types.GetPost
 import com.jerboa.datatypes.types.GetPostResponse
 import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PersonId
@@ -32,7 +31,6 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.entity.Account
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
@@ -309,26 +307,6 @@ class PersonProfileViewModel : ViewModel(), Initializable {
             when (val markRes = markPostRes) {
                 is ApiState.Success -> {
                     updatePost(markRes.data.post_view)
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun refreshSinglePost(id: Int, account: Account) {
-        viewModelScope.launch {
-            val postForm = GetPost(id = id, auth = account.jwt)
-            postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
-            val refreshedPost = postRes
-            val existing = personDetailsRes
-            when {
-                refreshedPost is ApiState.Success && existing is ApiState.Success -> {
-                    personDetailsRes = ApiState.Loading
-                    val refreshedPosts =
-                        findAndUpdatePost(existing.data.posts, refreshedPost.data.post_view)
-                    val newPosts = ApiState.Success(existing.data.copy(posts = refreshedPosts))
-                    personDetailsRes = newPosts
                 }
 
                 else -> {}

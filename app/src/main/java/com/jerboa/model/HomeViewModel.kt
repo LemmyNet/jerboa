@@ -18,7 +18,6 @@ import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPost
 import com.jerboa.datatypes.types.GetPostResponse
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
@@ -190,26 +189,6 @@ class HomeViewModel : ViewModel(), Initializable {
         updateListingType(
             ListingType.values().getOrElse(account.defaultListingType) { listingType },
         )
-    }
-
-    fun refreshSinglePost(id: Int, account: Account) {
-        viewModelScope.launch {
-            val postForm = GetPost(id = id, auth = account.jwt)
-            postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
-            val refreshedPost = postRes
-            val existing = postsRes
-            when {
-                refreshedPost is ApiState.Success && existing is ApiState.Success -> {
-                    postsRes = ApiState.Loading
-                    val refreshedPosts =
-                        findAndUpdatePost(existing.data.posts, refreshedPost.data.post_view)
-                    val newPosts = ApiState.Success(existing.data.copy(posts = refreshedPosts))
-                    postsRes = newPosts
-                }
-
-                else -> {}
-            }
-        }
     }
 
     fun updatePost(postView: PostView) {
