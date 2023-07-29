@@ -14,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody.Companion.toResponseBody
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -395,10 +396,12 @@ fun <T> retrofitErrorHandler(res: Response<T>): T {
         return res.body()!!
     } else {
         val errMsg = res.errorBody()?.string()?.let {
-            JSONObject(it).getString("error")
-        } ?: run {
-            res.code().toString()
-        }
+            try { // Prevent Could not convert to JSON messages everywhere
+                JSONObject(it).getString("error")
+            } catch (_: JSONException) {
+                it
+            }
+        } ?: res.code().toString()
 
         throw Exception(errMsg)
     }
