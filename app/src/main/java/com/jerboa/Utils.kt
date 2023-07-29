@@ -1105,7 +1105,7 @@ val MAP_SORT_TYPE_LONG_FORM = mapOf(
     SortType.TopWeek to R.string.dialogs_top_week,
     SortType.TopMonth to R.string.dialogs_top_month,
     SortType.TopYear to R.string.dialogs_top_year,
-    SortType.TopAll to R.string.sorttype_topall,
+    SortType.TopAll to R.string.dialogs_top_all,
     SortType.MostComments to R.string.dialogs_most_comments,
     SortType.NewComments to R.string.dialogs_new_comments,
     SortType.TopHour to R.string.dialogs_top_hour,
