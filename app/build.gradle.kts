@@ -129,6 +129,8 @@ dependencies {
 
     // gif support
     implementation("io.coil-kt:coil-gif:2.4.0")
+    // SVG support
+    implementation("io.coil-kt:coil-svg:2.4.0")
 
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")

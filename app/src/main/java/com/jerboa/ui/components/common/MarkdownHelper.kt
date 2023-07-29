@@ -28,9 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
-import coil.ImageLoader
+import coil.imageLoader
 import com.jerboa.JerboaAppState
-import com.jerboa.R
 import com.jerboa.convertSpToPx
 import com.jerboa.util.MarkwonLemmyLinkPlugin
 import com.jerboa.util.MarkwonSpoilerPlugin
@@ -82,10 +81,7 @@ object MarkdownHelper {
 
     fun init(appState: JerboaAppState, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
         val context = appState.navController.context
-        val loader = ImageLoader.Builder(context)
-            .crossfade(true)
-            .placeholder(R.drawable.ic_launcher_foreground)
-            .build()
+        val loader = context.imageLoader
 
         // main markdown parser has coil + html on
         markwon = Markwon.builder(context)
