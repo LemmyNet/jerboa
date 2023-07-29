@@ -31,8 +31,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.IOException
-import java.net.InetAddress
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.Request
 
 // Order is important, as it classifies in which order it does the checks
 enum class AccountVerificationState {
@@ -94,13 +94,25 @@ fun checkInternet(ctx: Context): CheckState {
     return CheckState.from(ctx.getSystemService<ConnectivityManager>().isCurrentlyConnected())
 }
 
-// If this won't end up been reliable enough, we can try a API endpoint
+// Checks the instance itself, this way we can properly check if the backend is having issues
+// as the API endpoints seem te be returning 400 instead of 5XX when the backend is having internal issues
 suspend fun checkInstance(instance: String): CheckState {
     return withContext(Dispatchers.IO) {
         try {
-            CheckState.from(InetAddress.getByName(instance).isReachable(2000))
-        } catch (_: IOException) {
-            CheckState.Failed
+            val response = API.httpClient
+                .newCall(Request("https://$instance".toHttpUrlOrNull()!!))
+                .execute()
+
+            if (response.isSuccessful) {
+                CheckState.Passed
+            } else if (response.code >= 500) {
+                CheckState.Failed
+            } else {
+                CheckState.ConnectionFailed
+            }
+        } catch (e: Exception) {
+            Log.d("verification", "checkInstance error", e)
+            CheckState.ConnectionFailed
         }
     }
 }
@@ -306,9 +318,16 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
                 actionPerform,
             )
 
+        AccountVerificationState.INSTANCE_ALIVE to CheckState.ConnectionFailed ->
+            snackbarHostState.doSnackbarAction(
+                ctx.getString(R.string.verification_connection_failed_instance),
+                ctx.getString(R.string.retry),
+                actionPerform,
+            )
+
         AccountVerificationState.INSTANCE_ALIVE to CheckState.Failed ->
             snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_failed_connect_instance),
+                ctx.getString(R.string.verification_failed_instance),
                 ctx.getString(R.string.retry),
                 actionPerform,
             )
