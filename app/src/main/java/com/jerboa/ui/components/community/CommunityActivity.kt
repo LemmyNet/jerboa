@@ -51,7 +51,6 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.entity.isAnon
 import com.jerboa.hostName
-import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
