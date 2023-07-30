@@ -63,8 +63,8 @@ import com.jerboa.scrollToTop
 import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.ApiErrorToast
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
@@ -223,7 +223,7 @@ fun MainPostListingsContent(
 
         val posts = when (val postsRes = homeViewModel.postsRes) {
             is ApiState.Failure -> {
-                ApiErrorToast(postsRes.msg)
+                apiErrorToast(ctx, postsRes.msg)
                 persistentListOf()
             }
             is ApiState.Holder -> postsRes.data.posts.toImmutableList()
