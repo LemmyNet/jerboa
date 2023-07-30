@@ -105,6 +105,9 @@ suspend fun checkInstance(instance: String): CheckState {
 
             if (response.isSuccessful) {
                 CheckState.Passed
+                // From experience some lemmy servers return this code when they are offline
+            } else if (response.code == 521) {
+                CheckState.ConnectionFailed
             } else if (response.code >= 500) {
                 CheckState.Failed
             } else {
