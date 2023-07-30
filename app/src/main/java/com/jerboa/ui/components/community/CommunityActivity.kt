@@ -50,6 +50,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
+import com.jerboa.hostName
 import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -167,9 +168,12 @@ fun CommunityActivity(
 
                     is ApiState.Success -> {
                         val communityId = communityRes.data.community_view.community.id
+                        val instance = hostName(communityRes.data.community_view.community.actor_id)
+                        val communityName = communityRes.data.community_view.community.name +
+                            if (instance != null) "@$instance" else ""
                         CommunityHeader(
                             scrollBehavior = scrollBehavior,
-                            communityName = communityRes.data.community_view.community.name,
+                            communityName = communityName,
                             selectedSortType = communityViewModel.sortType,
                             onClickRefresh = {
                                 scrollToTop(scope, postListState)
@@ -219,7 +223,13 @@ fun CommunityActivity(
         content = { padding ->
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
                 // zIndex needed bc some elements of a post get drawn above it.
-                PullRefreshIndicator(communityViewModel.postsRes.isRefreshing(), pullRefreshState, Modifier.align(Alignment.TopCenter).zIndex(100F))
+                PullRefreshIndicator(
+                    communityViewModel.postsRes.isRefreshing(),
+                    pullRefreshState,
+                    Modifier
+                        .align(Alignment.TopCenter)
+                        .zIndex(100F),
+                )
                 // Can't be in ApiState.Loading, because of infinite scrolling
                 if (communityViewModel.postsRes.isLoading()) {
                     LoadingBar(padding = padding)
@@ -387,6 +397,7 @@ fun CommunityActivity(
                             showPostLinkPreviews = showPostLinkPreviews,
                             openImageViewer = appState::toView,
                             openLink = appState::openLink,
+                            showIfRead = true,
                         )
                     }
                     else -> {}

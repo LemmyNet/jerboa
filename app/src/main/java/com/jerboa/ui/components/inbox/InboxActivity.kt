@@ -276,6 +276,7 @@ fun InboxTabs(
                                     inboxViewModel.getFormReplies(acct.jwt),
                                     ApiState.Refreshing,
                                 )
+                                siteViewModel.fetchUnreadCounts(GetUnreadCount(acct.jwt))
                             }
                         },
                     )
@@ -290,7 +291,7 @@ fun InboxTabs(
                         }
                     }
 
-                    val markAsRead = { crv: CommentReplyView ->
+                    val markAsRead: (CommentReplyView) -> Unit = { crv: CommentReplyView ->
                         account?.also { acct ->
                             inboxViewModel.markReplyAsRead(
                                 MarkCommentReplyAsRead(
@@ -299,11 +300,7 @@ fun InboxTabs(
                                     auth = acct.jwt,
                                 ),
                                 onSuccess = {
-                                    siteViewModel.fetchUnreadCounts(
-                                        GetUnreadCount(
-                                            auth = acct.jwt,
-                                        ),
-                                    )
+                                    siteViewModel.updateUnreadCounts(dReplies = if (crv.comment_reply.read) 1 else -1)
                                 },
                             )
                         }
@@ -379,7 +376,7 @@ fun InboxTabs(
                                                     )
                                                 }
                                             },
-                                            onMarkAsReadClick = { crv -> markAsRead(crv) },
+                                            onMarkAsReadClick = markAsRead,
                                             onReportClick = { cv ->
                                                 appState.toComment(id = cv.comment.id)
                                             },
@@ -389,7 +386,10 @@ fun InboxTabs(
                                             },
                                             onCommentClick = { crv ->
                                                 goToComment(crv)
-                                                markAsRead(crv)
+                                                // Do not mark already read reply as read
+                                                if (!crv.comment_reply.read) {
+                                                    markAsRead(crv)
+                                                }
                                             },
                                             onCommunityClick = { community ->
                                                 appState.toCommunity(id = community.id)
@@ -456,6 +456,7 @@ fun InboxTabs(
                                     inboxViewModel.getFormMentions(acct.jwt),
                                     ApiState.Refreshing,
                                 )
+                                siteViewModel.fetchUnreadCounts(GetUnreadCount(acct.jwt))
                             }
                         },
                     )
@@ -542,11 +543,7 @@ fun InboxTabs(
                                                             auth = acct.jwt,
                                                         ),
                                                         onSuccess = {
-                                                            siteViewModel.fetchUnreadCounts(
-                                                                GetUnreadCount(
-                                                                    auth = acct.jwt,
-                                                                ),
-                                                            )
+                                                            siteViewModel.updateUnreadCounts(dMentions = if (pm.person_mention.read) 1 else -1)
                                                         },
                                                     )
                                                 }
@@ -625,6 +622,7 @@ fun InboxTabs(
                                     inboxViewModel.getFormMessages(acct.jwt),
                                     ApiState.Refreshing,
                                 )
+                                siteViewModel.fetchUnreadCounts(GetUnreadCount(acct.jwt))
                             }
                         },
                     )
@@ -678,11 +676,7 @@ fun InboxTabs(
                                                             auth = acct.jwt,
                                                         ),
                                                         onSuccess = {
-                                                            siteViewModel.fetchUnreadCounts(
-                                                                GetUnreadCount(
-                                                                    auth = acct.jwt,
-                                                                ),
-                                                            )
+                                                            siteViewModel.updateUnreadCounts(dMessages = if (pm.private_message.read) 1 else -1)
                                                         },
                                                     )
                                                 },
