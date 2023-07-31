@@ -153,7 +153,7 @@ fun PersonProfileHeader(
     openDrawer: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     onBack: (() -> Unit)? = null,
-    siteVersion: String
+    siteVersion: String,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }

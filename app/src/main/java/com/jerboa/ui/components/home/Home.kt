@@ -80,7 +80,7 @@ fun HomeHeader(
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     siteVersion: String,
-    ) {
+) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
@@ -208,7 +208,7 @@ fun HomeHeaderPreview() {
         selectedListingType = ListingType.All,
         selectedPostViewMode = PostViewMode.Card,
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
-        siteVersion = MINIMUM_API_VERSION
+        siteVersion = MINIMUM_API_VERSION,
     )
 }
 

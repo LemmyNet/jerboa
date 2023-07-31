@@ -137,7 +137,7 @@ fun SortOptionsDialog(
     onClickSortTopOptions: () -> Unit,
     selectedSortType: SortType,
     siteVersion: String,
-    ) {
+) {
     AlertDialog(
         modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onDismissRequest,

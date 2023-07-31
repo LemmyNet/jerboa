@@ -124,7 +124,7 @@ fun HomeActivity(
                 account = account,
                 scrollBehavior = scrollBehavior,
                 onClickSiteInfo = appState::toSiteSideBar,
-                siteVersion = siteViewModel.siteVersion()
+                siteVersion = siteViewModel.siteVersion(),
             )
         },
         content = { padding ->

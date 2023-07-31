@@ -17,7 +17,6 @@ import com.jerboa.R
 import com.jerboa.api.MINIMUM_API_VERSION
 import kotlinx.parcelize.Parcelize
 
-
 const val MINIMUM_CONTROVERSIAL_SORT_API_VERSION: String = "0.19"
 
 enum class RegistrationMode {
