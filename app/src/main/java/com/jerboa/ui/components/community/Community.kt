@@ -132,6 +132,7 @@ fun CommunityHeader(
     onClickCommunityInfo: () -> Unit,
     onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    siteVersion: String,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -149,6 +150,7 @@ fun CommunityHeader(
                 showSortOptions = false
                 showTopOptions = !showTopOptions
             },
+            siteVersion = siteVersion,
         )
     }
 

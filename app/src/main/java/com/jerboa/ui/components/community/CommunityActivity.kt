@@ -214,6 +214,7 @@ fun CommunityActivity(
                             },
                             onClickCommunityInfo = appState::toCommunitySideBar,
                             onClickBack = appState::navigateUp,
+                            siteVersion = siteViewModel.siteVersion(),
                         )
                     }
                     else -> {}

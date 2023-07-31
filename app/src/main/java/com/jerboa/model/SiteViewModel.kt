@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
+import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
@@ -113,6 +114,13 @@ class SiteViewModel : ViewModel() {
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.site_view.local_site.enable_downvotes
             else -> true
+        }
+    }
+
+    fun siteVersion(): String {
+        return when (val res = siteRes) {
+            is ApiState.Success -> res.data.version
+            else -> MINIMUM_API_VERSION
         }
     }
 }

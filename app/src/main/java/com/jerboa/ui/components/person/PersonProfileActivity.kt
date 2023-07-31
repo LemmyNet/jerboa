@@ -190,6 +190,7 @@ fun PersonProfileActivity(
                         onReportPersonClick = {},
                         openDrawer = ::openDrawer,
                         onBack = onBack,
+                        siteVersion = siteViewModel.siteVersion(),
                     )
                 }
                 is ApiState.Holder -> {
@@ -240,6 +241,7 @@ fun PersonProfileActivity(
                         },
                         openDrawer = ::openDrawer,
                         onBack = onBack,
+                        siteVersion = siteViewModel.siteVersion(),
                     )
                 }
                 else -> {}

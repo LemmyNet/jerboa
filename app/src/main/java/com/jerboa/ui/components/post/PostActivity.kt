@@ -205,6 +205,7 @@ fun PostActivity(
                 showSortOptions = false
                 onClickSortType(it)
             },
+            siteVersion = siteViewModel.siteVersion(),
         )
     }
 

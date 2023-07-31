@@ -8,17 +8,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.BrightnessLow
-import androidx.compose.material.icons.outlined.FormatListNumbered
-import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.List
-import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.MarkunreadMailbox
-import androidx.compose.material.icons.outlined.Moving
-import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Public
-import androidx.compose.material.icons.outlined.ThumbsUpDown
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -42,6 +35,7 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.api.MINIMUM_API_VERSION
+import com.jerboa.compareVersions
 import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
@@ -61,6 +55,8 @@ val DONATION_MARKDOWN = """
 """.trimIndent()
 
 val topSortTypes = SortType.values().filter { it.name.startsWith("Top") }
+val getSupportedSortTypes = { siteVersion: String -> SortType.values().filter { compareVersions(siteVersion, it.version) >= 0 } }
+val getSupportedCommentSortTypes = { siteVersion: String -> CommentSortType.values().filter { compareVersions(siteVersion, it.version) >= 0 } }
 
 @Composable
 fun SortTopOptionsDialog(
@@ -94,6 +90,7 @@ fun SortOptionsDialogPreview() {
         onDismissRequest = {},
         onClickSortTopOptions = {},
         onClickSortType = {},
+        siteVersion = MINIMUM_API_VERSION,
     )
 }
 
@@ -139,55 +136,21 @@ fun SortOptionsDialog(
     onClickSortType: (SortType) -> Unit,
     onClickSortTopOptions: () -> Unit,
     selectedSortType: SortType,
-) {
+    siteVersion: String,
+    ) {
     AlertDialog(
         modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_active),
-                    icon = Icons.Outlined.Moving,
-                    onClick = { onClickSortType(SortType.Active) },
-                    highlight = (selectedSortType == SortType.Active),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_hot),
-                    icon = Icons.Outlined.LocalFireDepartment,
-                    onClick = { onClickSortType(SortType.Hot) },
-                    highlight = (selectedSortType == SortType.Hot),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_new),
-                    icon = Icons.Outlined.BrightnessLow,
-                    onClick = { onClickSortType(SortType.New) },
-                    highlight = (selectedSortType == SortType.New),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_old),
-                    icon = Icons.Outlined.History,
-                    onClick = { onClickSortType(SortType.Old) },
-                    highlight = (selectedSortType == SortType.Old),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_controversial),
-                    icon = Icons.Outlined.ThumbsUpDown,
-                    onClick = { onClickSortType(SortType.Controversial) },
-                    highlight = (selectedSortType == SortType.Controversial),
-                )
-                IconAndTextDrawerItem(
-                    modifier = Modifier.testTag("jerboa:sortoption_mostcomments"),
-                    text = stringResource(R.string.dialogs_most_comments),
-                    icon = Icons.Outlined.FormatListNumbered,
-                    onClick = { onClickSortType(SortType.MostComments) },
-                    highlight = (selectedSortType == SortType.MostComments),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_new_comments),
-                    icon = Icons.Outlined.NewReleases,
-                    onClick = { onClickSortType(SortType.NewComments) },
-                    highlight = (selectedSortType == SortType.NewComments),
-                )
+                getSupportedSortTypes(siteVersion).filter { !topSortTypes.contains(it) }.forEach {
+                    IconAndTextDrawerItem(
+                        text = stringResource(it.text),
+                        icon = it.icon,
+                        onClick = { onClickSortType(it) },
+                        highlight = (selectedSortType == it),
+                    )
+                }
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.dialogs_top),
                     icon = Icons.Outlined.BarChart,
@@ -208,6 +171,7 @@ fun CommentSortOptionsDialogPreview() {
         selectedSortType = CommentSortType.Hot,
         onDismissRequest = {},
         onClickSortType = {},
+        siteVersion = MINIMUM_API_VERSION,
     )
 }
 
@@ -216,41 +180,20 @@ fun CommentSortOptionsDialog(
     onDismissRequest: () -> Unit,
     onClickSortType: (CommentSortType) -> Unit,
     selectedSortType: CommentSortType,
+    siteVersion: String,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_hot),
-                    icon = Icons.Outlined.LocalFireDepartment,
-                    onClick = { onClickSortType(CommentSortType.Hot) },
-                    highlight = (selectedSortType == CommentSortType.Hot),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_top),
-                    icon = Icons.Outlined.BarChart,
-                    onClick = { onClickSortType(CommentSortType.Top) },
-                    highlight = (selectedSortType == CommentSortType.Top),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_new),
-                    icon = Icons.Outlined.NewReleases,
-                    onClick = { onClickSortType(CommentSortType.New) },
-                    highlight = (selectedSortType == CommentSortType.New),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_old),
-                    icon = Icons.Outlined.History,
-                    onClick = { onClickSortType(CommentSortType.Old) },
-                    highlight = (selectedSortType == CommentSortType.Old),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_controversial),
-                    icon = Icons.Outlined.ThumbsUpDown,
-                    onClick = { onClickSortType(CommentSortType.Controversial) },
-                    highlight = (selectedSortType == CommentSortType.Controversial),
-                )
+                getSupportedCommentSortTypes(siteVersion).forEach {
+                    IconAndTextDrawerItem(
+                        text = stringResource(it.text),
+                        icon = it.icon,
+                        onClick = { onClickSortType(it) },
+                        highlight = (selectedSortType == it),
+                    )
+                }
             }
         },
         confirmButton = {},
