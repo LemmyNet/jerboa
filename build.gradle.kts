@@ -4,6 +4,10 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        // TODO: remove once me.saket.telephoto:zoomable-image-coil:1.0.0 releases
+        maven {
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+        }
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 

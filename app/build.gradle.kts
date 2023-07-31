@@ -131,6 +131,8 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.4.0")
     // SVG support
     implementation("io.coil-kt:coil-svg:2.4.0")
+    // Allows for proper subsampling of large images
+    implementation("me.saket.telephoto:zoomable-image-coil:1.0.0-alpha02")
 
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")

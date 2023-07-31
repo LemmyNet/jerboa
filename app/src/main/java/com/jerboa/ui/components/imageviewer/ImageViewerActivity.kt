@@ -37,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -45,9 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
+import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -59,8 +56,7 @@ import com.jerboa.ui.components.common.LoadingBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.engawapg.lib.zoomable.rememberZoomState
-import net.engawapg.lib.zoomable.zoomable
+import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import java.io.IOException
 import java.net.URL
 
@@ -117,6 +113,18 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
         }
     }
 
+    var loading by remember {
+        mutableStateOf(true)
+    }
+
+    val image = ImageRequest.Builder(LocalContext.current)
+        .placeholder(null)
+        .data(url)
+        .listener(
+            onSuccess = { _, _ -> loading = false },
+            onError = { _, _ -> loading = false },
+        ).build()
+
     Scaffold(
         topBar = {
             ViewerHeader(showTopBar, onBackRequest, url)
@@ -138,43 +146,27 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                         ),
                     ),
             ) {
-                var loading by remember {
-                    mutableStateOf(false)
-                }
-
                 if (loading) {
                     LoadingBar(it)
                 }
-                val zoomState = rememberZoomState(100f)
-                SubcomposeAsyncImage(
-                    filterQuality = FilterQuality.High,
+
+                ZoomableAsyncImage(
                     contentScale = ContentScale.Fit,
-                    model = url,
+                    model = image,
                     imageLoader = imageGifLoader,
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .zoomable(
-                            zoomState = zoomState,
-                            onTap = {
-                                showTopBar = !showTopBar
-                                systemUiController.isSystemBarsVisible = showTopBar
+                    onClick = {
+                        showTopBar = !showTopBar
+                        systemUiController.isSystemBarsVisible = showTopBar
 
-                                // Default behavior is that if navigation bar is hidden, the system will "steal" touches
-                                // and show it again upon user's touch. We just want the user to be able to show the
-                                // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
-                                // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                                systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                            },
-                        ),
-                ) {
-                    if (painter.state is AsyncImagePainter.State.Loading) {
-                        loading = true
-                    } else {
-                        loading = false
-                        SubcomposeAsyncImageContent()
-                    }
-                }
+                        // Default behavior is that if navigation bar is hidden, the system will "steal" touches
+                        // and show it again upon user's touch. We just want the user to be able to show the
+                        // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
+                        // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
+                        systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                )
             }
         },
     )
