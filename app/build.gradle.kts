@@ -127,9 +127,9 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
 
-    // gif support
+    // Images
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("io.coil-kt:coil-gif:2.4.0")
-    // SVG support
     implementation("io.coil-kt:coil-svg:2.4.0")
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:1.0.0-alpha02")
@@ -160,7 +160,6 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
-    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.navigation:navigation-compose:2.7.0-beta01")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -176,7 +175,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
-    implementation("net.engawapg.lib:zoomable:1.4.3")
     implementation("androidx.browser:browser:1.5.0")
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
