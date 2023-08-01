@@ -69,6 +69,7 @@ import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.create.CreatePostActivity
 import com.jerboa.ui.components.post.edit.PostEditActivity
+import com.jerboa.ui.components.privatemessage.CreatePrivateMessageActivity
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
@@ -702,6 +703,27 @@ class MainActivity : AppCompatActivity() {
                         val args = Route.ViewArgs(it)
 
                         ImageViewer(url = args.url, onBackRequest = appState::popBackStack)
+                    }
+
+                    composable(
+                        route = Route.CREATE_PRIVATE_MESSAGE,
+                        arguments = listOf(
+                            navArgument(Route.CreatePrivateMessageArgs.PERSON_ID) {
+                                type = Route.CreatePrivateMessageArgs.PERSON_ID_TYPE
+                            },
+                            navArgument(Route.CreatePrivateMessageArgs.PERSON_NAME) {
+                                type = Route.CreatePrivateMessageArgs.PERSON_NAME_TYPE
+                            },
+                        ),
+                    ) {
+                        val args = Route.CreatePrivateMessageArgs(it)
+
+                        CreatePrivateMessageActivity(
+                            args.personId,
+                            args.personName,
+                            accountViewModel,
+                            appState::popBackStack,
+                        )
                     }
                 }
             }

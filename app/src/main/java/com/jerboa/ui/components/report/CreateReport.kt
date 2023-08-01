@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,49 +16,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.jerboa.R
 import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.MarkdownTextField
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CreateReportHeader(
-    onClickBack: () -> Unit,
-    onCreateClick: () -> Unit,
-    loading: Boolean,
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.create_report_report),
-            )
-        },
-        actions = {
-            IconButton(
-                onClick = onCreateClick,
-                enabled = !loading,
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.Send,
-                        contentDescription = stringResource(R.string.form_submit),
-                    )
-                }
-            }
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = onClickBack,
-            ) {
-                Icon(
-                    Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.create_report_back),
-                )
-            }
-        },
-    )
-}
 
 @Composable
 fun CreateReportBody(

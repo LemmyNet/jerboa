@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -37,7 +38,7 @@ fun CommentReplyActivity(
     isModerator: Boolean,
 ) {
     Log.d("jerboa", "got to comment reply activity")
-
+    val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val commentReplyViewModel: CommentReplyViewModel = viewModel()
@@ -66,6 +67,7 @@ fun CommentReplyActivity(
                 onSendClick = {
                     if (!account.isAnon()) {
                         commentReplyViewModel.createComment(
+                            ctx = ctx,
                             content = reply.text,
                             account = account,
                             focusManager = focusManager,

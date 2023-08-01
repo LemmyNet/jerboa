@@ -92,11 +92,11 @@ import com.jerboa.ui.components.comment.commentNodeItems
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.ApiErrorToast
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
@@ -489,7 +489,8 @@ fun PostActivity(
 
                             when (val commentsRes = postViewModel.commentsRes) {
                                 is ApiState.Failure -> item(key = "error") {
-                                    ApiErrorToast(
+                                    apiErrorToast(
+                                        ctx,
                                         commentsRes.msg,
                                     )
                                 }
