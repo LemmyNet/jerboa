@@ -66,7 +66,7 @@ fun SortTopOptionsDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                SortType.getSupportedSortTypes(siteVersion).filter(isTopSort).forEach{
+                SortType.getSupportedSortTypes(siteVersion).filter(isTopSort).forEach {
                     IconAndTextDrawerItem(
                         text = ctx.getString(it.longForm),
                         onClick = { onClickSortType(it) },

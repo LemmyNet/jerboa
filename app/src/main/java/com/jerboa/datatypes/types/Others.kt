@@ -51,7 +51,7 @@ enum class SortType(
         R.string.dialogs_active,
         R.string.sorttype_active,
         R.string.sorttype_active,
-        Icons.Outlined.Moving
+        Icons.Outlined.Moving,
     ),
 
     /**
@@ -62,7 +62,7 @@ enum class SortType(
         R.string.dialogs_hot,
         R.string.sorttype_hot,
         R.string.sorttype_hot,
-        Icons.Outlined.LocalFireDepartment
+        Icons.Outlined.LocalFireDepartment,
     ),
 
     @SerializedName("New")
@@ -70,7 +70,7 @@ enum class SortType(
         R.string.dialogs_new,
         R.string.sorttype_new,
         R.string.sorttype_new,
-        Icons.Outlined.BrightnessLow
+        Icons.Outlined.BrightnessLow,
     ),
 
     /**
@@ -81,7 +81,7 @@ enum class SortType(
         R.string.dialogs_old,
         R.string.sorttype_old,
         R.string.sorttype_old,
-        Icons.Outlined.History
+        Icons.Outlined.History,
     ),
 
     /**
@@ -93,7 +93,7 @@ enum class SortType(
         R.string.sorttype_controversial,
         R.string.sorttype_controversial,
         Icons.Outlined.ThumbsUpDown,
-        MINIMUM_CONTROVERSIAL_SORT_API_VERSION
+        MINIMUM_CONTROVERSIAL_SORT_API_VERSION,
     ),
 
     /**
@@ -104,7 +104,7 @@ enum class SortType(
         R.string.dialogs_top_day,
         R.string.sorttype_topday,
         R.string.dialogs_top_day,
-        Icons.Outlined.BarChart
+        Icons.Outlined.BarChart,
     ),
 
     /**
@@ -115,7 +115,7 @@ enum class SortType(
         R.string.dialogs_top_week,
         R.string.sorttype_topweek,
         R.string.dialogs_top_week,
-        Icons.Outlined.BarChart
+        Icons.Outlined.BarChart,
     ),
 
     /**
@@ -126,7 +126,7 @@ enum class SortType(
         R.string.dialogs_top_month,
         R.string.sorttype_topmonth,
         R.string.dialogs_top_month,
-        Icons.Outlined.BarChart
+        Icons.Outlined.BarChart,
     ),
 
     /**
@@ -137,7 +137,7 @@ enum class SortType(
         R.string.dialogs_top_year,
         R.string.sorttype_topyear,
         R.string.dialogs_top_year,
-        Icons.Outlined.BarChart
+        Icons.Outlined.BarChart,
     ),
 
     /**
@@ -148,7 +148,7 @@ enum class SortType(
         R.string.dialogs_top_all,
         R.string.sorttype_topall,
         R.string.dialogs_top_all,
-        Icons.Outlined.BarChart
+        Icons.Outlined.BarChart,
     ),
 
     /**
@@ -159,7 +159,7 @@ enum class SortType(
         R.string.dialogs_most_comments,
         R.string.sorttype_mostcomments,
         R.string.sorttype_mostcomments,
-        Icons.Outlined.FormatListNumbered
+        Icons.Outlined.FormatListNumbered,
     ),
 
     /**
@@ -170,7 +170,7 @@ enum class SortType(
         R.string.dialogs_new_comments,
         R.string.sorttype_newcomments,
         R.string.sorttype_newcomments,
-        Icons.Outlined.NewReleases
+        Icons.Outlined.NewReleases,
     ),
 
     /**
@@ -181,7 +181,7 @@ enum class SortType(
         R.string.dialogs_top_hour,
         R.string.sorttype_tophour,
         R.string.dialogs_top_hour,
-        Icons.Outlined.BarChart
+        Icons.Outlined.BarChart,
     ),
 
     /**
@@ -192,7 +192,7 @@ enum class SortType(
         R.string.dialogs_top_six_hour,
         R.string.sorttype_topsixhour,
         R.string.dialogs_top_six_hour,
-        Icons.Outlined.BarChart
+        Icons.Outlined.BarChart,
     ),
 
     /**
@@ -203,7 +203,7 @@ enum class SortType(
         R.string.dialogs_top_twelve_hour,
         R.string.sorttype_toptwelvehour,
         R.string.dialogs_top_twelve_hour,
-        Icons.Outlined.BarChart
+        Icons.Outlined.BarChart,
     ),
 
     /**
@@ -215,7 +215,7 @@ enum class SortType(
         R.string.sorttype_topthreemonths,
         R.string.dialogs_top_three_month,
         Icons.Outlined.BarChart,
-        MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION
+        MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION,
     ),
 
     /**
@@ -227,7 +227,7 @@ enum class SortType(
         R.string.sorttype_topsixmonths,
         R.string.dialogs_top_six_month,
         Icons.Outlined.BarChart,
-        MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION
+        MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION,
     ),
 
     /**
@@ -239,7 +239,7 @@ enum class SortType(
         R.string.sorttype_topninemonths,
         R.string.dialogs_top_nine_month,
         Icons.Outlined.BarChart,
-        MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION
+        MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION,
     ),
     ;
 
