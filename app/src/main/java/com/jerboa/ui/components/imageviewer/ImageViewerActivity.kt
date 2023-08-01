@@ -17,12 +17,15 @@ import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
@@ -44,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -53,6 +57,7 @@ import com.jerboa.R
 import com.jerboa.saveBitmap
 import com.jerboa.saveBitmapP
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.util.downloadprogress.DownloadProgress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,16 +69,17 @@ const val backFadeTime = 300
 
 @Composable
 fun ImageViewer(url: String, onBackRequest: () -> Unit) {
+    val ctx = LocalContext.current
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
 
-    val imageGifLoader = (LocalContext.current.applicationContext as JerboaApplication).imageGifLoader
+    val imageGifLoader = (ctx.applicationContext as JerboaApplication).imageViewLoader
     var debounce by remember {
         mutableStateOf(false)
     }
     val systemUiController = rememberSystemUiController()
 
-    val window = (LocalContext.current as Activity).window
+    val window = (ctx as Activity).window
     val controller = WindowCompat.getInsetsController(window, LocalView.current)
     val oldBarColor = Color(window.statusBarColor)
     val oldIcons = controller.isAppearanceLightStatusBars
@@ -117,13 +123,15 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
         mutableStateOf(true)
     }
 
-    val image = ImageRequest.Builder(LocalContext.current)
-        .placeholder(null)
-        .data(url)
-        .listener(
-            onSuccess = { _, _ -> loading = false },
-            onError = { _, _ -> loading = false },
-        ).build()
+    val image = remember {
+        ImageRequest.Builder(ctx)
+            .placeholder(null)
+            .data(url)
+            .listener(
+                onSuccess = { _, _ -> loading = false },
+                onError = { _, _ -> loading = false },
+            ).build()
+    }
 
     Scaffold(
         topBar = {
@@ -147,7 +155,18 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                     ),
             ) {
                 if (loading) {
-                    LoadingBar(it)
+//                    val currentProgress = DownloadProgress.downloadProgressFlow.collectAsStateWithLifecycle()
+//
+//                    if (currentProgress.value.percentIsAvailable) {
+//                        LinearProgressIndicator(
+//                            currentProgress.value.progress,
+//                            Modifier
+//                                .padding(it)
+//                                .fillMaxWidth(),
+//                        )
+//                    } else {
+                        LoadingBar(it)
+//                    }
                 }
 
                 ZoomableAsyncImage(

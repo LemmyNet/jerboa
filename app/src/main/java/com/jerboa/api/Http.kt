@@ -255,6 +255,18 @@ interface API {
         private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
         private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
 
+        val httpClient: OkHttpClient = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addNetworkInterceptor { chain ->
+                val requestBuilder = chain.request().newBuilder()
+                    .header("User-Agent", "Jerboa")
+                val newRequest = requestBuilder.build()
+                chain.proceed(newRequest)
+            }
+            .build()
+
         private fun buildUrl(): String {
             return "https://$currentInstance/api/$VERSION/"
         }
@@ -277,16 +289,8 @@ interface API {
         }
 
         private fun buildApi(baseUrl: String): API {
-            val client: OkHttpClient = OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor { chain ->
-                    val requestBuilder = chain.request().newBuilder()
-                        .header("User-Agent", "Jerboa")
-                    val newRequest = requestBuilder.build()
-                    chain.proceed(newRequest)
-                }
+            val client = httpClient
+                .newBuilder()
                 // this should probably be a network interceptor,
                 .addInterceptor { chain ->
                     val request = chain.request()

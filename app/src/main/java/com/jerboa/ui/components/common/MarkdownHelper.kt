@@ -31,8 +31,8 @@ import androidx.core.content.res.ResourcesCompat
 import coil.imageLoader
 import com.jerboa.JerboaAppState
 import com.jerboa.convertSpToPx
-import com.jerboa.util.MarkwonLemmyLinkPlugin
-import com.jerboa.util.MarkwonSpoilerPlugin
+import com.jerboa.util.markwon.MarkwonLemmyLinkPlugin
+import com.jerboa.util.markwon.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
