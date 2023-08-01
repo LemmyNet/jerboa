@@ -12,13 +12,13 @@ plugins {
 apply(from = "update_instances.gradle.kts")
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.jerboa"
         namespace = "com.jerboa"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 41
         versionName = "0.0.41"
 
@@ -99,8 +99,6 @@ android {
 }
 
 dependencies {
-    val composeVersion = "1.5.0-beta03"
-
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.github.alorma:compose-settings-ui-m3:0.27.0")
 
@@ -154,10 +152,11 @@ dependencies {
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
     implementation("androidx.compose.material3:material3:1.1.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
+    val composeVersion = "1.5.0-rc01"
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
     implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("androidx.navigation:navigation-compose:2.7.0-beta01")
+    implementation("androidx.navigation:navigation-compose:2.7.0-rc01")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -179,4 +178,7 @@ dependencies {
     baselineProfile(project(":benchmarks"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+    implementation("me.saket.swipe:swipe:1.2.0")
+
+
 }
