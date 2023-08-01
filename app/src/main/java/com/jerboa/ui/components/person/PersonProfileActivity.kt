@@ -68,6 +68,8 @@ import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.isAnon
+import com.jerboa.db.entity.isReady
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
@@ -85,7 +87,7 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.ApiErrorToast
+import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -180,7 +182,7 @@ fun PersonProfileActivity(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
-                is ApiState.Failure -> ApiErrorToast(profileRes.msg)
+                is ApiState.Failure -> apiErrorToast(ctx, profileRes.msg)
                 ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
@@ -258,7 +260,7 @@ fun PersonProfileActivity(
                         },
                         openDrawer = ::openDrawer,
                         onBack = onBack,
-                        isLoggedIn = { account != null },
+                        isLoggedIn = { !account.isAnon() },
                     )
                 }
                 else -> {}
