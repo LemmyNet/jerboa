@@ -565,3 +565,47 @@ fun LoadingBar(
         modifier = Modifier.fillMaxWidth().padding(padding).testTag("jerboa:loading"),
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateSubmitHeader(
+    title: String,
+    onClickBack: () -> Unit,
+    onSubmitClick: () -> Unit,
+    loading: Boolean,
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = title,
+            )
+        },
+        actions = {
+            IconButton(
+                onClick = onSubmitClick,
+                enabled = !loading,
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.Send,
+                        contentDescription = stringResource(R.string.form_submit),
+                    )
+                }
+            }
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = onClickBack,
+            ) {
+                Icon(
+                    Icons.Outlined.Close,
+                    contentDescription = stringResource(R.string.create_report_back),
+                )
+            }
+        },
+    )
+}
