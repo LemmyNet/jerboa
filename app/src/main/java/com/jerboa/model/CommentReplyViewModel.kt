@@ -1,6 +1,8 @@
 package com.jerboa.model
 
+import android.content.Context
 import android.os.Parcelable
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,6 +19,7 @@ import com.jerboa.datatypes.types.CreateComment
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
+import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -44,6 +47,7 @@ class CommentReplyViewModel : ViewModel(), Initializable {
     }
 
     fun createComment(
+        ctx: Context,
         content: String,
         account: Account,
         focusManager: FocusManager,
@@ -83,6 +87,10 @@ class CommentReplyViewModel : ViewModel(), Initializable {
 
                     focusManager.clearFocus()
                     onSuccess(commentView)
+                }
+                is ApiState.Failure -> {
+                    Log.d("createComment", "failed", res.msg)
+                    apiErrorToast(msg = res.msg, ctx = ctx)
                 }
                 else -> {}
             }
