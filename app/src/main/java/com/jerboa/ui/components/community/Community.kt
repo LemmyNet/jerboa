@@ -16,7 +16,6 @@ import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -162,6 +161,7 @@ fun CommunityHeader(
                 showTopOptions = false
                 onClickSortType(it)
             },
+            siteVersion = siteVersion,
         )
     }
 
@@ -227,7 +227,7 @@ fun CommunityHeaderTitle(
             overflow = TextOverflow.Ellipsis,
         )
         Text(
-            text = getLocalizedSortingTypeShortName(ctx, selectedSortType),
+            text = ctx.getString(selectedSortType.shortForm),
             style = MaterialTheme.typography.titleMedium,
         )
     }

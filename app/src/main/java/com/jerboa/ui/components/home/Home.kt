@@ -39,7 +39,6 @@ import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.getLocalizedListingTypeName
-import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
 import com.jerboa.ui.components.common.MyMarkdownText
@@ -60,7 +59,7 @@ fun HomeHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeShortName(ctx, selectedSortType),
+            text = ctx.getString(selectedSortType.shortForm),
             style = MaterialTheme.typography.titleSmall,
         )
     }
@@ -111,6 +110,7 @@ fun HomeHeader(
                 showTopOptions = false
                 onClickSortType(it)
             },
+            siteVersion = siteVersion,
         )
     }
 

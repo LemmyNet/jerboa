@@ -35,11 +35,9 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.api.MINIMUM_API_VERSION
-import com.jerboa.compareVersions
 import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.getLocalizedSortingTypeLongName
 import com.jerboa.model.AppSettingsViewModel
 
 val DONATION_MARKDOWN = """
@@ -54,24 +52,23 @@ val DONATION_MARKDOWN = """
 
 """.trimIndent()
 
-val topSortTypes = SortType.values().filter { it.name.startsWith("Top") }
-val getSupportedSortTypes = { siteVersion: String -> SortType.values().filter { compareVersions(siteVersion, it.version) >= 0 } }
-val getSupportedCommentSortTypes = { siteVersion: String -> CommentSortType.values().filter { compareVersions(siteVersion, it.version) >= 0 } }
+val isTopSort = { sort: SortType -> sort.name.startsWith("Top") }
 
 @Composable
 fun SortTopOptionsDialog(
     onDismissRequest: () -> Unit,
     onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
+    siteVersion: String,
 ) {
     val ctx = LocalContext.current
     AlertDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                topSortTypes.forEach {
+                SortType.getSupportedSortTypes(siteVersion).filter(isTopSort).forEach{
                     IconAndTextDrawerItem(
-                        text = getLocalizedSortingTypeLongName(ctx, it),
+                        text = ctx.getString(it.longForm),
                         onClick = { onClickSortType(it) },
                         highlight = (selectedSortType == it),
                     )
@@ -143,7 +140,7 @@ fun SortOptionsDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                getSupportedSortTypes(siteVersion).filter { !topSortTypes.contains(it) }.forEach {
+                SortType.getSupportedSortTypes(siteVersion).filter { !isTopSort(it) }.forEach {
                     IconAndTextDrawerItem(
                         text = stringResource(it.text),
                         icon = it.icon,
@@ -156,7 +153,7 @@ fun SortOptionsDialog(
                     icon = Icons.Outlined.BarChart,
                     onClick = onClickSortTopOptions,
                     more = true,
-                    highlight = (topSortTypes.contains(selectedSortType)),
+                    highlight = (isTopSort(selectedSortType)),
                 )
             }
         },
@@ -186,7 +183,7 @@ fun CommentSortOptionsDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                getSupportedCommentSortTypes(siteVersion).forEach {
+                CommentSortType.getSupportedSortTypes(siteVersion).forEach {
                     IconAndTextDrawerItem(
                         text = stringResource(it.text),
                         icon = it.icon,

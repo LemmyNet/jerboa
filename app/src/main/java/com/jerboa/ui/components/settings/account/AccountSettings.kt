@@ -20,7 +20,6 @@ import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsListDropdown
-import com.jerboa.MAP_SORT_TYPE_SHORT_FORM
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
@@ -125,7 +124,7 @@ fun SettingsForm(
     val sendNotificationsToEmail =
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
     val sortTypeNames = remember {
-        MAP_SORT_TYPE_SHORT_FORM.values.map { ctx.getString(it) }
+        SortType.getSupportedSortTypes(siteViewModel.siteVersion()).map { ctx.getString(it.shortForm) }
     }
     val form = SaveUserSettings(
         display_name = displayName,
