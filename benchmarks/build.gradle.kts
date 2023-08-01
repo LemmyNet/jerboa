@@ -26,7 +26,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Only use the emulator to test benchmarks
-        testInstrumentationRunnerArguments += mapOf("androidx.benchmark.suppressErrors" to "EMULATOR")
+        testInstrumentationRunnerArguments += mapOf("suppressErrors" to "EMULATOR")
     }
 
     targetProjectPath = ":app"
