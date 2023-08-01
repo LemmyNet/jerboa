@@ -277,7 +277,7 @@
     <string name="sorttype_newcomments">Con Nuevos Comentarios</string>
     <string name="bottomBar_label_home">Inicio</string>
     <string name="bottomBar_label_search">Buscar</string>
-    <string name="bottomBar_label_inbox">Bandeja de Entrada</string>
+    <string name="bottomBar_label_inbox">Entrada</string>
     <string name="bottomBar_label_bookmarks">Guardados</string>
     <string name="bottomBar_label_profile">Perfil</string>
     <string name="look_and_feel_secure_window">Prevenir capturas de pantalla</string>

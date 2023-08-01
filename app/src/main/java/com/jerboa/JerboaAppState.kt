@@ -175,6 +175,10 @@ class JerboaAppState(
     fun navigate(route: String) {
         navController.navigate(route)
     }
+
+    fun toCreatePrivateMessage(id: Int, name: String) {
+        navController.navigate(Route.CreatePrivateMessageArgs.makeRoute(personId = "$id", personName = name))
+    }
 }
 
 // A view model stored higher up the tree used for moving navigation arguments from one route
