@@ -54,6 +54,7 @@ import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
+import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentView
@@ -188,8 +189,10 @@ fun PersonProfileActivity(
                         onClickSortType = {},
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
+                        onMessagePersonClick = {},
                         openDrawer = ::openDrawer,
                         onBack = onBack,
+                        isLoggedIn = { false },
                     )
                 }
                 is ApiState.Holder -> {
@@ -238,8 +241,15 @@ fun PersonProfileActivity(
                                 appState.toPostReport(id = firstPost.post.id)
                             }
                         },
+                        onMessagePersonClick = {
+                            appState.toCreatePrivateMessage(
+                                profileRes.data.person_view.person.id,
+                                profileRes.data.person_view.person.getDisplayName(),
+                            )
+                        },
                         openDrawer = ::openDrawer,
                         onBack = onBack,
+                        isLoggedIn = { account != null },
                     )
                 }
                 else -> {}

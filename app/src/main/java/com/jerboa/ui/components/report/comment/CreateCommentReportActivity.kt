@@ -9,15 +9,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.CommentId
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
+import com.jerboa.ui.components.common.CreateSubmitHeader
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
-import com.jerboa.ui.components.report.CreateReportHeader
 import com.jerboa.util.InitializeRoute
 
 @Composable
@@ -45,10 +47,11 @@ fun CreateCommentReportActivity(
     val focusManager = LocalFocusManager.current
     Scaffold(
         topBar = {
-            CreateReportHeader(
+            CreateSubmitHeader(
+                title = stringResource(R.string.create_report_report),
                 loading = loading,
                 onClickBack = onBack,
-                onCreateClick = {
+                onSubmitClick = {
                     account?.also { acct ->
                         createReportViewModel.createCommentReport(
                             reason = reason.text,
