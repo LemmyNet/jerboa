@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -21,6 +22,7 @@ import com.jerboa.model.ReplyItem
 import com.jerboa.ui.components.common.Route
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -46,6 +48,8 @@ class JerboaAppState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
 ) {
+
+    private val popBackStackBusy = mutableStateOf(false)
 
     fun toPrivateMessageReply(
         channel: RouteChannel<PrivateMessageDeps>,
@@ -141,7 +145,17 @@ class JerboaAppState(
         navController.navigate(Route.CommunityListArgs.makeRoute(select = "$select"))
     }
 
-    fun popBackStack(): Boolean = navController.popBackStack()
+    fun popBackStack(): Boolean = if (!popBackStackBusy.value) {
+        popBackStackBusy.value = true
+        navController.popBackStack().also {
+            coroutineScope.launch {
+                delay(300)
+                popBackStackBusy.value = false
+            }
+        }
+    } else {
+        false
+    }
 
     fun navigateUp(): Boolean = navController.navigateUp()
 
