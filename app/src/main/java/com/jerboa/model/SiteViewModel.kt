@@ -124,7 +124,7 @@ class SiteViewModel : ViewModel() {
             else -> true
         }
     }
-          
+
     fun siteVersion(): String {
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.version
