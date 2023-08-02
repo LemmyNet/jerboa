@@ -64,6 +64,7 @@ fun CommentMentionNodeHeader(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = personMentionView.creator,
@@ -79,6 +80,7 @@ fun CommentMentionNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
+        showScores = showScores,
     )
 }
 
@@ -93,6 +95,7 @@ fun CommentMentionNodeHeaderPreview() {
         onClick = {},
         onLongClick = {},
         showAvatar = true,
+        showScores = true,
     )
 }
 
@@ -322,6 +325,7 @@ fun CommentMentionNode(
     account: Account?,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showScores: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = personMentionView.counts.score
@@ -356,6 +360,7 @@ fun CommentMentionNode(
                 isActionBarExpanded = !isActionBarExpanded
             },
             showAvatar = showAvatar,
+            showScores = showScores,
         )
         AnimatedVisibility(
             visible = isExpanded,

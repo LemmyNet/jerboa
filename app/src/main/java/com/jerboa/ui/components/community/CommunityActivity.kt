@@ -398,6 +398,7 @@ fun CommunityActivity(
                             openImageViewer = appState::toView,
                             openLink = appState::openLink,
                             showIfRead = true,
+                            showScores = siteViewModel.showScores(),
                         )
                     }
                     else -> {}

@@ -130,6 +130,7 @@ fun PostHeaderLine(
     showCommunityName: Boolean = true,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showScores: Boolean,
 ) {
     val community = postView.community
     Column(modifier = modifier) {
@@ -210,6 +211,7 @@ fun PostHeaderLine(
                 published = postView.post.published,
                 updated = postView.post.updated,
                 isNsfw = nsfwCheck(postView),
+                showScores = showScores,
             )
         }
         Row {
@@ -238,6 +240,7 @@ fun PostHeaderLinePreview() {
         onPersonClick = {},
         showAvatar = true,
         blurNSFW = true,
+        showScores = true,
     )
 }
 
@@ -248,6 +251,8 @@ fun PostNodeHeader(
     score: Int,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
+    showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = postView.creator,
@@ -262,7 +267,8 @@ fun PostNodeHeader(
         isCommunityBanned = postView.creator_banned_from_community,
         onClick = {},
         onLongCLick = {},
-        showAvatar = true,
+        showAvatar = showAvatar,
+        showScores = showScores,
     )
 }
 
@@ -551,6 +557,7 @@ fun PostFooterLine(
     account: Account?,
     enableDownVotes: Boolean,
     viewSource: Boolean,
+    showScores: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -618,7 +625,7 @@ fun PostFooterLine(
                 myVote = instantScores.myVote,
                 votes = instantScores.upvotes,
                 type = VoteType.Upvote,
-                showNumber = (instantScores.downvotes != 0),
+                showNumber = (instantScores.downvotes != 0) && showScores,
                 onVoteClick = onUpvoteClick,
                 account = account,
             )
@@ -626,6 +633,7 @@ fun PostFooterLine(
                 VoteGeneric(
                     myVote = instantScores.myVote,
                     votes = instantScores.downvotes,
+                    showNumber = showScores,
                     type = VoteType.Downvote,
                     onVoteClick = onDownvoteClick,
                     account = account,
@@ -753,6 +761,7 @@ fun PostFooterLinePreview() {
         onViewSourceClick = {},
         enableDownVotes = true,
         viewSource = false,
+        showScores = true,
     )
 }
 
@@ -788,6 +797,7 @@ fun PreviewPostListingCard() {
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
+        showScores = true,
     )
 }
 
@@ -823,6 +833,7 @@ fun PreviewLinkPostListing() {
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
+        showScores = true,
     )
 }
 
@@ -858,6 +869,7 @@ fun PreviewImagePostListingCard() {
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
+        showScores = true,
     )
 }
 
@@ -893,6 +905,7 @@ fun PreviewImagePostListingSmallCard() {
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
+        showScores = true,
     )
 }
 
@@ -928,6 +941,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
+        showScores = true,
     )
 }
 
@@ -963,6 +977,7 @@ fun PostListing(
     openImageViewer: (url: String) -> Unit,
     showPostLinkPreview: Boolean,
     showIfRead: Boolean,
+    showScores: Boolean,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -1026,6 +1041,7 @@ fun PostListing(
             openImageViewer = openImageViewer,
             showPostLinkPreview = showPostLinkPreview,
             showIfRead = showIfRead,
+            showScores = showScores,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -1074,6 +1090,7 @@ fun PostListing(
             openLink = openLink,
             showPostLinkPreview = showPostLinkPreview,
             openImageViewer = openImageViewer,
+            showScores = showScores,
         )
 
         PostViewMode.List -> PostListingList(
@@ -1445,6 +1462,7 @@ fun PostListingCard(
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
     showIfRead: Boolean = false,
+    showScores: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1465,6 +1483,7 @@ fun PostListingCard(
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
+            showScores = showScores,
         )
 
         //  Title + metadata
@@ -1506,6 +1525,7 @@ fun PostListingCard(
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             enableDownVotes = enableDownVotes,
             viewSource = viewSource,
+            showScores = showScores,
         )
     }
 }

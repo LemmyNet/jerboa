@@ -62,6 +62,7 @@ fun CommentReplyNodeHeader(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
@@ -77,6 +78,7 @@ fun CommentReplyNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
+        showScores = showScores,
     )
 }
 
@@ -91,6 +93,7 @@ fun CommentReplyNodeHeaderPreview() {
         onClick = {},
         onLongClick = {},
         showAvatar = true,
+        showScores = true,
     )
 }
 
@@ -155,6 +158,7 @@ fun CommentReplyNodeFooterLine(
                 showNumber = (downvotes != 0),
                 account = account,
             )
+            // TODO should be hidden for enableDownvote?
             VoteGeneric(
                 myVote = myVote,
                 votes = downvotes,
@@ -307,6 +311,7 @@ fun CommentReplyNode(
     account: Account?,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showScores: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = commentReplyView.counts.score
@@ -341,6 +346,7 @@ fun CommentReplyNode(
                 isActionBarExpanded = !isActionBarExpanded
             },
             showAvatar = showAvatar,
+            showScores = showScores,
         )
         AnimatedVisibility(
             visible = isExpanded,

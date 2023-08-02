@@ -273,6 +273,7 @@ fun PersonProfileActivity(
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
                 showPostLinkPreviews = showPostLinkPreviews,
+                showScores = siteViewModel.showScores(),
             )
         },
     )
@@ -303,6 +304,7 @@ fun UserTabs(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
+    showScores: Boolean,
 ) {
     val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
     val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
@@ -568,6 +570,7 @@ fun UserTabs(
                                     openLink = appState::openLink,
                                     showPostLinkPreviews = showPostLinkPreviews,
                                     showIfRead = false,
+                                    showScores = showScores,
                                 )
                             }
                             else -> {}
@@ -750,6 +753,7 @@ fun UserTabs(
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
+                                    showScores = showScores,
                                 )
                             }
                         }
