@@ -260,7 +260,7 @@ fun PostActivity(
                     navigationIcon = {
                         IconButton(
                             modifier = Modifier.testTag("jerboa:back"),
-                            onClick = appState::popBackStack,
+                            onClick = appState::navigateUp,
                         ) {
                             Icon(
                                 Icons.Outlined.ArrowBack,
