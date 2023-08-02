@@ -24,7 +24,6 @@ import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import okhttp3.Response as HttpResponse
 
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
@@ -302,7 +301,7 @@ interface API {
                             throw err
                         }
 
-                       Response.Builder()
+                        okhttp3.Response.Builder()
                             .request(request)
                             .code(999)
                             .protocol(Protocol.HTTP_1_1)
