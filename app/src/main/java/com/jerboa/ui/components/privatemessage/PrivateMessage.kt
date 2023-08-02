@@ -21,6 +21,7 @@ import com.jerboa.datatypes.samplePrivateMessageView
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.TimeAgo
@@ -103,7 +104,7 @@ fun PrivateMessage(
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     myPersonId: Int, // Required so we know the from / to
-    account: Account?,
+    account: Account,
     showAvatar: Boolean,
 ) {
     Column(
@@ -136,7 +137,7 @@ fun PrivateMessageFooterLine(
     onReplyClick: (privateMessageView: PrivateMessageView) -> Unit,
     onMarkAsReadClick: (privateMessageView: PrivateMessageView) -> Unit,
     myPersonId: Int,
-    account: Account?,
+    account: Account,
 ) {
     Row(
         horizontalArrangement = Arrangement.End,
@@ -174,11 +175,6 @@ fun PrivateMessageFooterLine(
                     account = account,
                 )
             }
-            // TODO
-//            ActionBarButton(
-//                icon = Icons.Outlined.MoreVert,
-//                account = account,
-//            )
         }
     }
 }
@@ -189,7 +185,7 @@ fun PrivateMessagePreview() {
     PrivateMessage(
         privateMessageView = samplePrivateMessageView,
         myPersonId = 23,
-        account = null,
+        account = AnonAccount,
         onPersonClick = {},
         onReplyClick = {},
         onMarkAsReadClick = {},

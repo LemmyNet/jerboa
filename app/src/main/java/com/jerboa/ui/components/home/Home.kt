@@ -241,6 +241,7 @@ fun HomeMoreDialog(
                         onDismissRequest()
                         onClickShowPostViewModeDialog()
                     },
+                    modifier = Modifier.testTag("jerboa:postviewmode"),
                 )
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.home_site_info),

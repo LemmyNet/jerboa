@@ -22,7 +22,6 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -69,6 +68,7 @@ import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.isAnon
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
@@ -86,7 +86,9 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
@@ -97,6 +99,7 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.util.InitializeRoute
+import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -141,7 +144,7 @@ fun PersonProfileActivity(
         if (personProfileViewModel.initialized) {
             when (val res = personProfileViewModel.personDetailsRes) {
                 is ApiState.Success -> {
-                    if (account?.id == res.data.person_view.person.id) {
+                    if (account.id == res.data.person_view.person.id) {
                         personProfileViewModel.insertComment(cv)
                     }
                 }
@@ -167,7 +170,7 @@ fun PersonProfileActivity(
                 person_id = personId,
                 username = personName,
                 sort = SortType.New,
-                auth = account?.jwt,
+                auth = account.jwt.ifEmpty { null },
                 saved_only = savedMode,
             ),
         )
@@ -175,10 +178,10 @@ fun PersonProfileActivity(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
-                is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                is ApiState.Failure -> apiErrorToast(ctx, profileRes.msg)
                 ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
@@ -205,7 +208,7 @@ fun PersonProfileActivity(
                         } else {
                             person.name
                         },
-                        myProfile = account?.id == person.id,
+                        myProfile = account.id == person.id,
                         selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = { sortType ->
                             scrollToTop(scope, postListState)
@@ -217,17 +220,24 @@ fun PersonProfileActivity(
                                     sort = personProfileViewModel.sortType,
                                     page = personProfileViewModel.page,
                                     saved_only = personProfileViewModel.savedOnly,
-                                    auth = account?.jwt,
+                                    auth = account.jwt.ifEmpty { null },
                                 ),
                             )
                         },
                         onBlockPersonClick = {
-                            account?.also { acct ->
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                                accountViewModel,
+                            ) {
                                 personProfileViewModel.blockPerson(
                                     BlockPerson(
                                         person_id = person.id,
                                         block = true,
-                                        auth = acct.jwt,
+                                        auth = it.jwt,
                                     ),
                                     ctx,
                                 )
@@ -250,7 +260,7 @@ fun PersonProfileActivity(
                         },
                         openDrawer = ::openDrawer,
                         onBack = onBack,
-                        isLoggedIn = { account != null },
+                        isLoggedIn = { !account.isAnon() },
                         siteVersion = siteViewModel.siteVersion(),
                     )
                 }
@@ -275,6 +285,7 @@ fun PersonProfileActivity(
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
                 showPostLinkPreviews = showPostLinkPreviews,
+                snackbarHostState = snackbarHostState,
             )
         },
     )
@@ -293,7 +304,7 @@ fun UserTabs(
     savedMode: Boolean,
     personProfileViewModel: PersonProfileViewModel,
     ctx: Context,
-    account: Account?,
+    account: Account,
     scope: CoroutineScope,
     postListState: LazyListState,
     padding: PaddingValues,
@@ -305,6 +316,7 @@ fun UserTabs(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
+    snackbarHostState: SnackbarHostState,
 ) {
     val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
     val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
@@ -334,7 +346,7 @@ fun UserTabs(
                             sort = personProfileViewModel.sortType,
                             page = personProfileViewModel.page,
                             saved_only = personProfileViewModel.savedOnly,
-                            auth = account?.jwt,
+                            auth = account.jwt.ifEmpty { null },
                         ),
                         ApiState.Refreshing,
                     )
@@ -459,7 +471,13 @@ fun UserTabs(
                                 PostListings(
                                     posts = profileRes.data.posts.toImmutableList(),
                                     onUpvoteClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
@@ -467,13 +485,19 @@ fun UserTabs(
                                                         pv.my_vote,
                                                         VoteType.Upvote,
                                                     ),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onDownvoteClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
@@ -481,7 +505,7 @@ fun UserTabs(
                                                         pv.my_vote,
                                                         VoteType.Downvote,
                                                     ),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -490,12 +514,18 @@ fun UserTabs(
                                         appState.toPost(id = pv.post.id)
                                     },
                                     onSaveClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.savePost(
                                                 SavePost(
                                                     post_id = pv.post.id,
                                                     save = !pv.saved,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -507,12 +537,18 @@ fun UserTabs(
                                         )
                                     },
                                     onDeletePostClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.deletePost(
                                                 DeletePost(
                                                     post_id = pv.post.id,
                                                     deleted = !pv.post.deleted,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -525,24 +561,36 @@ fun UserTabs(
                                     },
                                     onPersonClick = appState::toProfile,
                                     onBlockCommunityClick = { community ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.blockCommunity(
                                                 BlockCommunity(
                                                     community_id = community.id,
                                                     block = true,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
                                         }
                                     },
                                     onBlockCreatorClick = { person ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.blockPerson(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                                 ctx = ctx,
                                             )
@@ -554,7 +602,7 @@ fun UserTabs(
                                     isScrolledToEnd = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,
-                                            account?.jwt,
+                                            account.jwt.ifEmpty { null },
                                         )
                                     },
                                     account = account,
@@ -622,7 +670,7 @@ fun UserTabs(
                                 LaunchedEffect(Unit) {
                                     personProfileViewModel.appendData(
                                         profileRes.data.person_view.person.id,
-                                        account?.jwt,
+                                        account.jwt.ifEmpty { null },
                                     )
                                 }
                             }
@@ -657,23 +705,35 @@ fun UserTabs(
                                         appState.toComment(id = cv.comment.id)
                                     },
                                     onUpvoteClick = { cv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
                                                     score = newVote(cv.my_vote, VoteType.Upvote),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onDownvoteClick = { cv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
                                                     score = newVote(cv.my_vote, VoteType.Downvote),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -686,12 +746,18 @@ fun UserTabs(
                                         )
                                     },
                                     onSaveClick = { cv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.saveComment(
                                                 SaveComment(
                                                     comment_id = cv.comment.id,
                                                     save = !cv.saved,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -712,12 +778,18 @@ fun UserTabs(
                                         )
                                     },
                                     onDeleteCommentClick = { cv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.deleteComment(
                                                 DeleteComment(
                                                     comment_id = cv.comment.id,
                                                     deleted = !cv.comment.deleted,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -730,12 +802,18 @@ fun UserTabs(
                                     },
                                     onFetchChildrenClick = {},
                                     onBlockCreatorClick = { person ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.blockPerson(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )

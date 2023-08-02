@@ -18,6 +18,7 @@ import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.serializeToMap
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SiteViewModel : ViewModel() {
@@ -49,8 +50,8 @@ class SiteViewModel : ViewModel() {
 
     fun getSite(
         form: GetSite,
-    ) {
-        viewModelScope.launch {
+    ): Job {
+        return viewModelScope.launch {
             siteRes = ApiState.Loading
             siteRes = apiWrapper(API.getInstance().getSite(form.serializeToMap()))
 

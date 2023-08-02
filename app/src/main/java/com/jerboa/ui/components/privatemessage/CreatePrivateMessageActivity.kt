@@ -27,6 +27,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.CreatePrivateMessage
 import com.jerboa.datatypes.types.PrivateMessageResponse
+import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.CreateSubmitHeader
 import com.jerboa.ui.components.common.MarkdownTextField
@@ -62,7 +63,7 @@ fun CreatePrivateMessageActivity(
                 loading = loading,
                 onClickBack = onBack,
                 onSubmitClick = {
-                    account?.also {
+                    if (!account.isAnon()) {
                         scope.launch {
                             loading = true
 

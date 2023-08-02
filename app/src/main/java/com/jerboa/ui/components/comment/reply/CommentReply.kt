@@ -182,7 +182,7 @@ fun CommentReply(
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
-    account: Account?,
+    account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
 ) {
@@ -213,7 +213,7 @@ fun CommentReplyReply(
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    account: Account?,
+    account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
 ) {
@@ -243,7 +243,7 @@ fun MentionReply(
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    account: Account?,
+    account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
 ) {
@@ -274,7 +274,7 @@ fun PostReply(
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
     isModerator: Boolean,
-    account: Account?,
+    account: Account,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
