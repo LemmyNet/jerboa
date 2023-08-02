@@ -398,6 +398,7 @@ fun MainPostListingsContent(
             openImageViewer = appState::toView,
             openLink = appState::openLink,
             showIfRead = true,
+            showScores = siteViewModel.showScores(),
         )
     }
 }

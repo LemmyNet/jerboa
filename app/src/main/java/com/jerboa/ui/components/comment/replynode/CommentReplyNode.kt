@@ -62,6 +62,7 @@ fun CommentReplyNodeHeader(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
@@ -77,6 +78,7 @@ fun CommentReplyNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
+        showScores = showScores,
     )
 }
 
@@ -91,6 +93,7 @@ fun CommentReplyNodeHeaderPreview() {
         onClick = {},
         onLongClick = {},
         showAvatar = true,
+        showScores = true,
     )
 }
 
@@ -111,6 +114,8 @@ fun CommentReplyNodeFooterLine(
     upvotes: Int,
     downvotes: Int,
     account: Account,
+    enableDownvotes: Boolean,
+    showScores: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -152,16 +157,19 @@ fun CommentReplyNodeFooterLine(
                 votes = upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0),
+                showNumber = (downvotes != 0) && showScores,
                 account = account,
             )
-            VoteGeneric(
-                myVote = myVote,
-                votes = downvotes,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (enableDownvotes) {
+                VoteGeneric(
+                    myVote = myVote,
+                    votes = downvotes,
+                    type = VoteType.Downvote,
+                    showNumber = showScores,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = Icons.Outlined.Link,
                 contentDescription = stringResource(R.string.commentReply_link),
@@ -307,6 +315,8 @@ fun CommentReplyNode(
     account: Account,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    enableDownvotes: Boolean,
+    showScores: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = commentReplyView.counts.score
@@ -341,6 +351,7 @@ fun CommentReplyNode(
                 isActionBarExpanded = !isActionBarExpanded
             },
             showAvatar = showAvatar,
+            showScores = showScores,
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -383,6 +394,8 @@ fun CommentReplyNode(
                         upvotes = upvotes,
                         downvotes = downvotes,
                         account = account,
+                        enableDownvotes = enableDownvotes,
+                        showScores = showScores,
                     )
                 }
             }

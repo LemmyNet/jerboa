@@ -116,4 +116,11 @@ class SiteViewModel : ViewModel() {
             else -> true
         }
     }
+
+    fun showScores(): Boolean {
+        return when (val res = siteRes) {
+            is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores ?: true
+            else -> true
+        }
+    }
 }

@@ -99,6 +99,7 @@ fun CommentReplyActivity(
                                     .padding(padding)
                                     .imePadding(),
                                 showAvatar = siteViewModel.showAvatar(),
+                                showScores = siteViewModel.showScores(),
                             )
 
                         is ReplyItem.PostItem -> PostReply(
@@ -108,6 +109,8 @@ fun CommentReplyActivity(
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
                             isModerator = isModerator,
+                            showAvatar = siteViewModel.showAvatar(),
+                            showScores = siteViewModel.showScores(),
                             modifier = Modifier
                                 .padding(padding)
                                 .imePadding(),
@@ -124,6 +127,7 @@ fun CommentReplyActivity(
                                     .padding(padding)
                                     .imePadding(),
                                 showAvatar = siteViewModel.showAvatar(),
+                                showScores = siteViewModel.showScores(),
                             )
 
                         is ReplyItem.MentionReplyItem ->
@@ -137,6 +141,7 @@ fun CommentReplyActivity(
                                     .padding(padding)
                                     .imePadding(),
                                 showAvatar = siteViewModel.showAvatar(),
+                                showScores = siteViewModel.showScores(),
                             )
                     }
                 }
