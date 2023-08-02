@@ -44,7 +44,7 @@ class BaselineProfileGenerator {
     @RequiresApi(Build.VERSION_CODES.P)
     @Test
     fun generate() {
-        rule.collectBaselineProfile("com.jerboa") {
+        rule.collect("com.jerboa") {
             pressHome()
             startActivityAndWait()
             closeChangeLogIfOpen()

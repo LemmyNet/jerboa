@@ -17,6 +17,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.PrivateMessageView
+import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PrivateMessageReplyViewModel
 import com.jerboa.model.SiteViewModel
@@ -57,10 +58,10 @@ fun PrivateMessageReplyActivity(
                     loading = loading,
                     onClickBack = onBack,
                     onSendClick = {
-                        account?.also { acct ->
+                        if (!account.isAnon()) {
                             privateMessageReplyViewModel.createPrivateMessage(
                                 content = reply.text,
-                                account = acct,
+                                account = account,
                                 onGoBack = onBack,
                                 focusManager,
                             )

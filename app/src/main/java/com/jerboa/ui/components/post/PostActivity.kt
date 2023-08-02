@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -93,6 +94,7 @@ import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
 import com.jerboa.ui.components.common.CommentSortOptionsDialog
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -101,6 +103,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
+import com.jerboa.util.doIfReadyElseDisplayInfo
 
 @Composable
 fun CommentsHeaderTitle(
@@ -187,6 +190,7 @@ fun PostActivity(
     val parentListStateIndexes = remember { mutableListOf<Int>() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = postViewModel.postRes.isRefreshing(),
@@ -213,6 +217,7 @@ fun PostActivity(
     }
 
     Scaffold(
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .semantics { testTagsAsResourceId = true }
@@ -312,7 +317,14 @@ fun PostActivity(
                                 PostListing(
                                     postView = postView,
                                     onUpvoteClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
                                             postViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
@@ -320,7 +332,7 @@ fun PostActivity(
                                                         postView.my_vote,
                                                         VoteType.Upvote,
                                                     ),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -328,7 +340,14 @@ fun PostActivity(
                                         // for the Home page to also be updated
                                     },
                                     onDownvoteClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
                                             postViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
@@ -336,7 +355,7 @@ fun PostActivity(
                                                         postView.my_vote,
                                                         VoteType.Downvote,
                                                     ),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -351,12 +370,19 @@ fun PostActivity(
                                     },
                                     onPostClick = {},
                                     onSaveClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
                                             postViewModel.savePost(
                                                 SavePost(
                                                     post_id = pv.post.id,
                                                     save = !pv.saved,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -371,12 +397,19 @@ fun PostActivity(
                                         )
                                     },
                                     onDeletePostClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
                                             postViewModel.deletePost(
                                                 DeletePost(
                                                     post_id = pv.post.id,
                                                     deleted = pv.post.deleted,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -386,24 +419,38 @@ fun PostActivity(
                                     },
                                     onPersonClick = appState::toProfile,
                                     onBlockCommunityClick = { c ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
                                             postViewModel.blockCommunity(
                                                 BlockCommunity(
                                                     community_id = c.id,
                                                     block = true,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
                                         }
                                     },
                                     onBlockCreatorClick = { person ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
                                             postViewModel.blockPerson(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
@@ -507,7 +554,14 @@ fun PostActivity(
                                         onMarkAsReadClick = {},
                                         onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
                                         onUpvoteClick = { cv ->
-                                            account?.also { acct ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.likeComment(
                                                     CreateCommentLike(
                                                         comment_id = cv.comment.id,
@@ -515,13 +569,20 @@ fun PostActivity(
                                                             cv.my_vote,
                                                             VoteType.Upvote,
                                                         ),
-                                                        auth = acct.jwt,
+                                                        auth = it.jwt,
                                                     ),
                                                 )
                                             }
                                         },
                                         onDownvoteClick = { cv ->
-                                            account?.also { acct ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.likeComment(
                                                     CreateCommentLike(
                                                         comment_id = cv.comment.id,
@@ -529,7 +590,7 @@ fun PostActivity(
                                                             cv.my_vote,
                                                             VoteType.Downvote,
                                                         ),
-                                                        auth = acct.jwt,
+                                                        auth = it.jwt,
                                                     ),
                                                 )
                                             }
@@ -543,12 +604,19 @@ fun PostActivity(
                                             )
                                         },
                                         onSaveClick = { cv ->
-                                            account?.also { acct ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.saveComment(
                                                     SaveComment(
                                                         comment_id = cv.comment.id,
                                                         save = !cv.saved,
-                                                        auth = acct.jwt,
+                                                        auth = it.jwt,
                                                     ),
                                                 )
                                             }
@@ -563,12 +631,19 @@ fun PostActivity(
                                             )
                                         },
                                         onDeleteCommentClick = { cv ->
-                                            account?.also { acct ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.deleteComment(
                                                     DeleteComment(
                                                         comment_id = cv.comment.id,
                                                         deleted = !cv.comment.deleted,
-                                                        auth = acct.jwt,
+                                                        auth = it.jwt,
                                                     ),
                                                 )
                                             }
@@ -587,12 +662,19 @@ fun PostActivity(
                                             )
                                         },
                                         onBlockCreatorClick = { person ->
-                                            account?.also { acct ->
+                                            account.doIfReadyElseDisplayInfo(
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.blockPerson(
                                                     BlockPerson(
                                                         person_id = person.id,
                                                         block = true,
-                                                        auth = acct.jwt,
+                                                        auth = it.jwt,
                                                     ),
                                                     ctx,
                                                 )

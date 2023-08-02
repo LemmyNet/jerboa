@@ -21,7 +21,7 @@ import com.jerboa.ui.components.common.MarkdownTextField
 fun CreateReportBody(
     reason: TextFieldValue,
     onReasonChange: (TextFieldValue) -> Unit,
-    account: Account?,
+    account: Account,
     padding: PaddingValues,
 ) {
     val scrollState = rememberScrollState()
