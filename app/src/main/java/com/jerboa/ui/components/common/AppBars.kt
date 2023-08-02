@@ -201,6 +201,7 @@ fun CommentOrPostNodeHeader(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Int = 0,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -248,6 +249,7 @@ fun CommentOrPostNodeHeader(
             updated = updated,
             isExpanded = isExpanded,
             collapsedCommentsCount = collapsedCommentsCount,
+            showScores = showScores,
         )
     }
 }
@@ -269,6 +271,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onClick = {},
         onLongCLick = {},
         showAvatar = true,
+        showScores = true,
     )
 }
 

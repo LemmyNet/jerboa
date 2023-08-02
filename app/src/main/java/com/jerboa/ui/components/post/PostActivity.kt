@@ -478,6 +478,7 @@ fun PostActivity(
                                     openLink = appState::openLink,
                                     showPostLinkPreview = showPostLinkPreview,
                                     showIfRead = false,
+                                    showScores = siteViewModel.showScores(),
                                 )
                             }
 
@@ -696,6 +697,7 @@ fun PostActivity(
                                             )
                                         },
                                         blurNSFW = blurNSFW,
+                                        showScores = siteViewModel.showScores(),
                                     )
                                     item {
                                         Spacer(modifier = Modifier.height(100.dp))

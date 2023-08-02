@@ -88,6 +88,7 @@ fun ScoreAndTime(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Int = 0,
     isNsfw: Boolean = false,
+    showScores: Boolean,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -96,11 +97,13 @@ fun ScoreAndTime(
         NsfwBadge(isNsfw)
         CollapsedIndicator(visible = !isExpanded, descendants = collapsedCommentsCount)
         Spacer(modifier = Modifier.padding(end = SMALL_PADDING))
-        Text(
-            text = score.toString(),
-            color = scoreColor(myVote = myVote),
-            fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3),
-        )
+        if (showScores) {
+            Text(
+                text = score.toString(),
+                color = scoreColor(myVote = myVote),
+                fontSize = MaterialTheme.typography.bodyMedium.fontSize.times(1.3),
+            )
+        }
         DotSpacer(0.dp, MaterialTheme.typography.bodyMedium)
         TimeAgo(published = published, updated = updated)
     }
@@ -114,6 +117,7 @@ fun ScoreAndTimePreview() {
         myVote = -1,
         published = samplePost.published,
         updated = samplePost.updated,
+        showScores = true,
     )
 }
 
