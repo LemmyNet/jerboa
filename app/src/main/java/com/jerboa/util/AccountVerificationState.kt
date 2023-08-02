@@ -14,10 +14,10 @@ import com.jerboa.R
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.GetPersonDetails
+import com.jerboa.datatypes.types.GetPersonDetailsResponse
 import com.jerboa.datatypes.types.GetPersonMentions
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
-import com.jerboa.datatypes.types.RegistrationMode
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -59,6 +59,12 @@ enum class AccountVerificationState {
     ACCOUNT_DELETED,
 
     /**
+     * Checks if the account is banned
+     */
+
+    ACCOUNT_BANNED,
+
+    /**
      * Checks if the JWT is not expired/removed
      */
     JWT_VERIFIED,
@@ -67,16 +73,6 @@ enum class AccountVerificationState {
      * Checks if the site info could be retrieved
      */
     SITE_RETRIEVAL_SUCCEEDED,
-
-    /**
-     * Checks if the user's instance requires email verification and if that is done
-     */
-    EMAIL_VERIFIED,
-
-    /**
-     * Checks if the user's application has been approved.
-     */
-    APPLICATION_APPROVED,
 
     /**
      * All checks completed
@@ -109,7 +105,7 @@ suspend fun checkInstance(instance: String): CheckState {
             } else if (response.code == 521) {
                 CheckState.ConnectionFailed
             } else if (response.code >= 500) {
-                CheckState.Failed
+                CheckState.FailedMsg(instance)
             } else {
                 CheckState.ConnectionFailed
             }
@@ -120,7 +116,10 @@ suspend fun checkInstance(instance: String): CheckState {
     }
 }
 
-suspend fun checkIfAccountIsDeleted(account: Account, api: API): CheckState {
+suspend fun checkIfAccountIsDeleted(
+    account: Account,
+    api: API,
+): Pair<CheckState, ApiState.Success<GetPersonDetailsResponse>?> {
     return withContext(Dispatchers.IO) {
         val res = api.getPersonDetails(GetPersonDetails(person_id = account.id).serializeToMap())
 
@@ -131,15 +130,25 @@ suspend fun checkIfAccountIsDeleted(account: Account, api: API): CheckState {
                 res.body()?.person_view?.person?.name.equals(account.name, true) &&
                 res.body()?.person_view?.person?.deleted != true
             ) {
-                CheckState.Passed
+                Pair(CheckState.Passed, ApiState.Success<GetPersonDetailsResponse>(res.body()!!))
             } else {
-                CheckState.Failed
+                Pair(CheckState.Failed, null)
             }
         } else if (res.code() == 404) {
-            return@withContext CheckState.Failed
+            return@withContext Pair(CheckState.Failed, null)
         } else {
-            return@withContext CheckState.ConnectionFailed
+            return@withContext Pair(CheckState.ConnectionFailed, null)
         }
+    }
+}
+
+fun checkIfAccountIsBanned(
+    userRes: GetPersonDetailsResponse,
+): CheckState {
+    return if (userRes.person_view.person.banned) {
+        CheckState.FailedMsg(userRes.person_view.person.ban_expires ?: "TIME_NOT_SPECIFIED")
+    } else {
+        CheckState.Passed
     }
 }
 
@@ -183,32 +192,12 @@ suspend fun checkIfSiteRetrievalSucceeded(
     }
 }
 
-fun checkIfEmailPassedVerification(siteRes: ApiState.Success<GetSiteResponse>): CheckState {
-    return CheckState.from(
-        if (siteRes.data.site_view.local_site.require_email_verification) {
-            siteRes.data.my_user!!.local_user_view.local_user.email_verified
-        } else {
-            true
-        },
-    )
-}
+sealed class CheckState {
+    object Passed : CheckState()
+    object Failed : FailedMsg()
+    object ConnectionFailed : CheckState()
 
-fun checkIfApplicationApproved(siteRes: ApiState.Success<GetSiteResponse>): CheckState {
-    return CheckState.from(
-        if (siteRes.data.site_view.local_site.registration_mode == RegistrationMode.RequireApplication) {
-            siteRes.data.my_user!!.local_user_view.local_user.accepted_application
-        } else {
-            true
-        },
-    )
-}
-
-enum class CheckState {
-    Passed,
-    Failed,
-    ConnectionFailed,
-    ;
-
+    open class FailedMsg(val msg: String = "") : CheckState()
     companion object {
         fun from(boolean: Boolean): CheckState {
             return if (boolean) Passed else Failed
@@ -228,9 +217,11 @@ suspend fun Account.checkAccountVerification(
         Log.d("verification", "API ERROR", it)
         null
     }
-    var checkState = CheckState.Passed
-    var curVerificationState: Int = this.verificationState
-    var siteRes: ApiState.Success<GetSiteResponse>? = null
+    var checkState: CheckState = CheckState.Passed
+    var curVerificationState: Int = if (this.verificationState >= AccountVerificationState.size) {
+        AccountVerificationState.NOT_CHECKED.ordinal
+    } else this.verificationState
+    var userRes: ApiState.Success<GetPersonDetailsResponse>? = null
 
     // No check for the final state
     while (curVerificationState < AccountVerificationState.size - 1) {
@@ -251,7 +242,13 @@ suspend fun Account.checkAccountVerification(
             }
 
             AccountVerificationState.ACCOUNT_DELETED -> {
-                checkIfAccountIsDeleted(this, api)
+                val p = checkIfAccountIsDeleted(this, api)
+                userRes = p.second
+                p.first
+            }
+
+            AccountVerificationState.ACCOUNT_BANNED -> {
+                checkIfAccountIsBanned(userRes!!.data)
             }
 
             AccountVerificationState.JWT_VERIFIED -> {
@@ -259,23 +256,13 @@ suspend fun Account.checkAccountVerification(
             }
 
             AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> {
-                val p = checkIfSiteRetrievalSucceeded(siteViewModel, this)
-                siteRes = p.second
-                p.first
-            }
-
-            AccountVerificationState.EMAIL_VERIFIED -> {
-                checkIfEmailPassedVerification(siteRes!!)
-            }
-
-            AccountVerificationState.APPLICATION_APPROVED -> {
-                checkIfApplicationApproved(siteRes!!)
+                checkIfSiteRetrievalSucceeded(siteViewModel, this).first
             }
 
             AccountVerificationState.CHECKS_COMPLETE -> { CheckState.Passed }
         }
 
-        Log.d("verification", "Verified ${verifyState.name} with ${checkState.name}")
+        Log.d("verification", "Verified ${verifyState.name} with ${checkState::class.simpleName}")
 
         if (checkState != CheckState.Passed) {
             break
@@ -350,6 +337,19 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
             )
         }
 
+        AccountVerificationState.ACCOUNT_BANNED to CheckState -> {
+            when (val t = this.second) {
+                is CheckState.FailedMsg -> {
+                    snackbarHostState.doSnackbarAction(
+                        ctx.getString(R.string.verification_failed_user_banned, t.msg),
+                        ctx.getString(R.string.retry),
+                        actionPerform,
+                    )
+                }
+                else -> {}
+            }
+        }
+
         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
                 ctx.getString(R.string.verification_token_expired),
@@ -369,22 +369,6 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
         AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED to CheckState.Failed -> {
             snackbarHostState.doSnackbarAction(
                 ctx.getString(R.string.verification_failed_retrieve_site),
-                ctx.getString(R.string.retry),
-                actionPerform,
-            )
-        }
-
-        AccountVerificationState.EMAIL_VERIFIED to CheckState.Failed -> {
-            snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_email_failed),
-                ctx.getString(R.string.retry),
-                actionPerform,
-            )
-        }
-
-        AccountVerificationState.APPLICATION_APPROVED to CheckState.Failed -> {
-            snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_application_approval_failed),
                 ctx.getString(R.string.retry),
                 actionPerform,
             )

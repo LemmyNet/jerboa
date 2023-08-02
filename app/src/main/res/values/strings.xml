@@ -360,8 +360,6 @@
     <string name="verification_login_again">Login again</string>
     <string name="verification_failed_verify_token">Failed to verify JWT token</string>
     <string name="verification_failed_retrieve_site">Failed to retrieve site info</string>
-    <string name="verification_email_failed">Email needs to be verified</string>
-    <string name="verification_application_approval_failed">Your application has not been approved yet</string>
     <string name="verification_no_account">This action requires an account</string>
     <string name="verification_delete_account">Remove your account</string>
     <string name="verification_account_not_read">This account is not in a ready state yet.</string>
@@ -374,4 +372,5 @@
     <string name="login_view_model_missing_totp">TOTP token is missing</string>
     <string name="login_view_model_incorrect_totp">Incorrect TOTP token given</string>
     <string name="verification_failed_instance">This instance is experiencing internal server errors</string>
+    <string name="verification_failed_user_banned">Your account is banned until %s</string>
 </resources>
