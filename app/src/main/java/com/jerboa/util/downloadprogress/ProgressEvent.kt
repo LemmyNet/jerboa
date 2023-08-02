@@ -5,7 +5,7 @@ data class ProgressEvent(
     val contentLength: Long,
     val downloadURL: String,
     val bytesRead: Long,
-    val percentIsAvailable: Boolean,
+    val progressAvailable: Boolean,
 ) {
 
     constructor(downloadIdentifier: String, contentLength: Long, bytesRead: Long) :
@@ -14,6 +14,6 @@ data class ProgressEvent(
             contentLength = contentLength,
             downloadURL = downloadIdentifier,
             bytesRead = bytesRead,
-            percentIsAvailable = contentLength > 0,
+            progressAvailable = contentLength > 0,
         )
 }

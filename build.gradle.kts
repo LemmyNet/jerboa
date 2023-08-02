@@ -1,16 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        // TODO: remove once me.saket.telephoto:zoomable-image-coil:1.0.0 releases
-        maven {
-            url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-        }
-    }
-}// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 plugins {
     id("com.android.application") version "8.0.2" apply false
     id("com.android.library") version "8.0.2" apply false

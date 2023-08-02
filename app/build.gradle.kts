@@ -132,7 +132,7 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.4.0")
     implementation("io.coil-kt:coil-svg:2.4.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.4.0")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.5.0-SNAPSHOT")
 
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")

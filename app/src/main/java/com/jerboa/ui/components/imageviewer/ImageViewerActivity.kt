@@ -12,35 +12,43 @@ import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -48,6 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -119,17 +128,20 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
         }
     }
 
-    var loading by remember {
-        mutableStateOf(true)
+    var retryHash by remember { mutableIntStateOf(0) }
+
+    var imageState by remember {
+        mutableStateOf(ImageState.LOADING)
     }
 
     val image = remember {
         ImageRequest.Builder(ctx)
             .placeholder(null)
             .data(url)
+            .setParameter("retry_hash", retryHash, memoryCacheKey = null)
             .listener(
-                onSuccess = { _, _ -> loading = false },
-                onError = { _, _ -> loading = false },
+                onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
+                onError = { _, _ -> imageState = ImageState.FAILED },
             ).build()
     }
 
@@ -154,38 +166,61 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                         ),
                     ),
             ) {
-                if (loading) {
-//                    val currentProgress = DownloadProgress.downloadProgressFlow.collectAsStateWithLifecycle()
-//
-//                    if (currentProgress.value.percentIsAvailable) {
-//                        LinearProgressIndicator(
-//                            currentProgress.value.progress,
-//                            Modifier
-//                                .padding(it)
-//                                .fillMaxWidth(),
-//                        )
-//                    } else {
-                        LoadingBar(it)
-//                    }
+
+                if (imageState == ImageState.FAILED) {
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .clickable {
+                                retryHash++
+                                imageState = ImageState.LOADING
+                            },
+                        Arrangement.Center,
+                        Alignment.CenterHorizontally
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.ErrorOutline,
+                            contentDescription = stringResource(id = R.string.image_error_icon)
+                        )
+                        Text(text = stringResource(id = R.string.image_failed_loading))
+                    }
+
+                } else {
+
+                    if (imageState == ImageState.LOADING) {
+                        val currentProgress = DownloadProgress.downloadProgressFlow.collectAsStateWithLifecycle()
+
+                        if (currentProgress.value.progressAvailable) {
+                            LinearProgressIndicator(
+                                currentProgress.value.progress,
+                                Modifier
+                                    .padding(it)
+                                    .fillMaxWidth(),
+                            )
+                        } else {
+                            LoadingBar(it)
+                        }
+                    }
+
+                    ZoomableAsyncImage(
+                        contentScale = ContentScale.Fit,
+                        model = image,
+                        imageLoader = imageGifLoader,
+                        contentDescription = null,
+                        onClick = {
+                            showTopBar = !showTopBar
+                            systemUiController.isSystemBarsVisible = showTopBar
+
+                            // Default behavior is that if navigation bar is hidden, the system will "steal" touches
+                            // and show it again upon user's touch. We just want the user to be able to show the
+                            // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
+                            // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
+                            systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                        },
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
-
-                ZoomableAsyncImage(
-                    contentScale = ContentScale.Fit,
-                    model = image,
-                    imageLoader = imageGifLoader,
-                    contentDescription = null,
-                    onClick = {
-                        showTopBar = !showTopBar
-                        systemUiController.isSystemBarsVisible = showTopBar
-
-                        // Default behavior is that if navigation bar is hidden, the system will "steal" touches
-                        // and show it again upon user's touch. We just want the user to be able to show the
-                        // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
-                        // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                        systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                    },
-                    modifier = Modifier.fillMaxSize(),
-                )
             }
         },
     )
@@ -288,4 +323,10 @@ fun ViewerHeader(
 @Preview
 fun ImageActivityPreview() {
     ImageViewer(url = "", onBackRequest = { })
+}
+
+enum class ImageState {
+    SUCCESS,
+    LOADING,
+    FAILED,
 }

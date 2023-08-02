@@ -21,6 +21,7 @@ class JerboaApplication : Application(), ImageLoaderFactory {
         imageLoader = ImageLoader.Builder(this)
             .okHttpClient(API.httpClient)
             .crossfade(true)
+            .error(R.drawable.error_placeholder)
             .placeholder(R.drawable.ic_launcher_foreground)
             .components {
                 add(SvgDecoder.Factory())
@@ -28,7 +29,7 @@ class JerboaApplication : Application(), ImageLoaderFactory {
             .build()
 
         imageViewLoader = imageLoader.newBuilder()
-            //.okHttpClient(DownloadProgress.downloadProgressHttpClient)
+            .okHttpClient(DownloadProgress.downloadProgressHttpClient)
             .components {
                 if (Build.VERSION.SDK_INT >= 28) {
                     add(ImageDecoderDecoder.Factory())
