@@ -112,7 +112,7 @@ fun CommentMentionNodeFooterLine(
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
-    account: Account?,
+    account: Account,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -136,7 +136,7 @@ fun CommentMentionNodeFooterLine(
                 showMoreOptions = false
                 onBlockCreatorClick(personMentionView.creator)
             },
-            isCreator = account?.id == personMentionView.creator.id,
+            isCreator = account.id == personMentionView.creator.id,
         )
     }
 
@@ -209,7 +209,7 @@ fun CommentMentionNodeFooterLine(
                 account = account,
             )
             // Don't let you respond to your own comment.
-            if (personMentionView.creator.id != account?.id) {
+            if (personMentionView.creator.id != account.id) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
                     contentDescription = stringResource(R.string.commentFooter_reply),
@@ -319,7 +319,7 @@ fun CommentMentionNode(
     onReportClick: (personMentionView: PersonMentionView) -> Unit,
     onLinkClick: (personMentionView: PersonMentionView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    account: Account?,
+    account: Account,
     showAvatar: Boolean,
     blurNSFW: Boolean,
 ) {

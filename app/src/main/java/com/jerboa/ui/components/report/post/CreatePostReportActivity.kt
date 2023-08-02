@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.PostId
+import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
 import com.jerboa.ui.components.common.CreateSubmitHeader
@@ -54,12 +55,12 @@ fun CreatePostReportActivity(
                 loading = loading,
                 onClickBack = onBack,
                 onSubmitClick = {
-                    account?.also { acct ->
+                    if (!account.isAnon()) {
                         createReportViewModel.createPostReport(
                             reason = reason.text,
                             ctx = ctx,
                             focusManager = focusManager,
-                            account = acct,
+                            account = account,
                             onBack = onBack,
                         )
                     }

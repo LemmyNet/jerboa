@@ -260,7 +260,6 @@ fun UnreadOrAllOptionsDialog(
                     onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
                     highlight = (selectedUnreadOrAll == UnreadOrAll.All),
                 )
-                // TODO hide local for non-federated instances
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.dialogs_unread),
                     icon = Icons.Outlined.MarkunreadMailbox,
@@ -273,6 +272,7 @@ fun UnreadOrAllOptionsDialog(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PostViewModeDialog(
     onDismissRequest: () -> Unit,
@@ -280,6 +280,7 @@ fun PostViewModeDialog(
     selectedPostViewMode: PostViewMode,
 ) {
     AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onDismissRequest,
         text = {
             Column {
@@ -288,6 +289,7 @@ fun PostViewModeDialog(
                         text = stringResource(it.mode),
                         onClick = { onClickPostViewMode(it) },
                         highlight = (selectedPostViewMode == it),
+                        modifier = Modifier.testTag("jerboa:postviewmode_${it.name}"),
                     )
                 }
             }

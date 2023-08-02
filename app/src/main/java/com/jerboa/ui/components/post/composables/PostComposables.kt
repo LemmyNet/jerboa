@@ -43,6 +43,7 @@ import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.types.Community
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isImage
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
@@ -114,7 +115,7 @@ fun CreateEditPostBody(
     suggestedTitle: String? = null,
     suggestedTitleLoading: Boolean = false,
     communitySelector: @Composable () -> Unit,
-    account: Account?,
+    account: Account,
     padding: PaddingValues,
 ) {
     val scrollState = rememberScrollState()
@@ -329,7 +330,7 @@ fun CreatePostBodyPreview() {
         urlField = InputField(label = "", hasError = false),
         onUrlChange = {},
         onImagePicked = {},
-        account = null,
+        account = AnonAccount,
         padding = PaddingValues(),
         suggestedTitle = null,
         suggestedTitleLoading = false,
@@ -395,7 +396,7 @@ fun CreatePostBodyPreviewNoCommunity() {
         onImagePicked = {},
         suggestedTitle = stringResource(R.string.create_post_a_title_here),
         suggestedTitleLoading = false,
-        account = null,
+        account = AnonAccount,
         padding = PaddingValues(),
         isNsfw = false,
         onIsNsfwChange = {},
@@ -421,7 +422,7 @@ fun EditPostBodyPreview() {
         onNameChange = {},
         onImagePicked = {},
         onUrlChange = {},
-        account = null,
+        account = AnonAccount,
         isNsfw = false,
         onIsNsfwChange = {},
         padding = PaddingValues(),

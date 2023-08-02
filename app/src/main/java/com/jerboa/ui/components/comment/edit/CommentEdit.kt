@@ -66,7 +66,7 @@ fun CommentEditHeader(
 fun CommentEdit(
     content: TextFieldValue,
     onContentChange: (TextFieldValue) -> Unit,
-    account: Account?,
+    account: Account,
     padding: PaddingValues,
 ) {
     val scrollState = rememberScrollState()
