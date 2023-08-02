@@ -17,7 +17,6 @@ import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.db.entity.Account
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 @Stable
@@ -40,13 +39,12 @@ class AccountSettingsViewModel(
                 GetSite(auth = account.jwt),
             )
 
-            val newAccount = async { maybeUpdateAccountSettings(account, form) }.await()
+            val newAccount = maybeUpdateAccountSettings(account, form)
 
             siteViewModel.updateFromAccount(newAccount)
         }
     }
 
-    //     TODO Where is this used??
     private suspend fun maybeUpdateAccountSettings(
         account: Account,
         form: SaveUserSettings,

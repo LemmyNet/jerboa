@@ -260,10 +260,10 @@ interface API {
             .writeTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .addNetworkInterceptor { chain ->
-                val requestBuilder = chain.request().newBuilder()
+                chain.request().newBuilder()
                     .header("User-Agent", "Jerboa")
-                val newRequest = requestBuilder.build()
-                chain.proceed(newRequest)
+                    .build()
+                    .let(chain::proceed)
             }
             .build()
 
@@ -284,25 +284,25 @@ interface API {
             return api!!
         }
 
-        fun createTempInstance(host: String): API {
-            return buildApi("https://$host/api/$VERSION/")
+        fun createTempInstance(host: String, customErrorHandler: ((Exception) -> Exception?)? = null): API {
+            return buildApi("https://$host/api/$VERSION/", customErrorHandler)
         }
 
-        private fun buildApi(baseUrl: String): API {
-            val client = httpClient
-                .newBuilder()
-                // this should probably be a network interceptor,
+        private fun buildApi(baseUrl: String, customErrorHandler: ((Exception) -> Exception?)? = null): API {
+            val currErrorHandler = customErrorHandler ?: errorHandler
+
+            val client = httpClient.newBuilder()
                 .addInterceptor { chain ->
                     val request = chain.request()
                     try {
                         chain.proceed(request)
                     } catch (e: Exception) {
-                        val err = errorHandler(e)
+                        val err = currErrorHandler(e)
                         if (err != null) {
                             throw err
                         }
 
-                        HttpResponse.Builder()
+                       Response.Builder()
                             .request(request)
                             .code(999)
                             .protocol(Protocol.HTTP_1_1)
