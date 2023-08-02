@@ -113,7 +113,7 @@ fun CommentReplyNodeFooterLine(
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
-    account: Account?,
+    account: Account,
     enableDownvotes: Boolean,
     showScores: Boolean,
 ) {
@@ -139,7 +139,7 @@ fun CommentReplyNodeFooterLine(
                 showMoreOptions = false
                 onBlockCreatorClick(commentReplyView.creator)
             },
-            isCreator = account?.id == commentReplyView.creator.id,
+            isCreator = account.id == commentReplyView.creator.id,
         )
     }
 
@@ -213,7 +213,7 @@ fun CommentReplyNodeFooterLine(
                 account = account,
             )
             // Don't let you respond to your own comment.
-            if (commentReplyView.creator.id != account?.id) {
+            if (commentReplyView.creator.id != account.id) {
                 ActionBarButton(
                     icon = Icons.Outlined.Textsms,
                     contentDescription = stringResource(R.string.commentFooter_reply),
@@ -312,7 +312,7 @@ fun CommentReplyNode(
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    account: Account?,
+    account: Account,
     showAvatar: Boolean,
     blurNSFW: Boolean,
     enableDownvotes: Boolean,

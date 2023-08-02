@@ -70,6 +70,7 @@ import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isModerator
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
@@ -213,7 +214,7 @@ fun LazyListScope.commentNodeItem(
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     showCollapsedCommentContent: Boolean,
     showPostAndCommunityContext: Boolean = false,
-    account: Account?,
+    account: Account,
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
@@ -533,7 +534,7 @@ fun CommentFooterLine(
     onPersonClick: (personId: Int) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    account: Account?,
+    account: Account,
     showScores: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
@@ -570,7 +571,7 @@ fun CommentFooterLine(
                 showMoreOptions = false
                 onPersonClick(commentView.creator.id)
             },
-            isCreator = account?.id == commentView.creator.id,
+            isCreator = account.id == commentView.creator.id,
         )
     }
 
@@ -684,6 +685,7 @@ fun CommentNodesPreview() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        account = AnonAccount,
         showScores = true,
     )
 }

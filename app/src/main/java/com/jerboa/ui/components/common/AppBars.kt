@@ -43,13 +43,13 @@ import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
-import com.jerboa.loginFirstToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
+import com.jerboa.util.isReadyAndIfNotShowSimplifiedInfoToast
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -283,31 +283,17 @@ fun ActionBarButton(
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
-    account: Account?,
+    account: Account,
     requiresAccount: Boolean = true,
 ) {
     val ctx = LocalContext.current
-//    Button(
-//        onClick = onClick,
-//        colors = ButtonDefaults.buttonColors(
-//            backgroundColor = Color.Transparent,
-//            contentColor = contentColor,
-//        ),
-//        shape = MaterialTheme.shapes.large,
-//        contentPadding = PaddingValues(SMALL_PADDING),
-//        elevation = null,
-//        content = content,
-//        modifier = Modifier
-//            .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
-//    )
+
     val barMod = if (noClick) {
         Modifier
     } else {
         Modifier.clickable(onClick = {
-            if (!requiresAccount || account !== null) {
+            if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 onClick()
-            } else {
-                loginFirstToast(ctx)
             }
         })
     }

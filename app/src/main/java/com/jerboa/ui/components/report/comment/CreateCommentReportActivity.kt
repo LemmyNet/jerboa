@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.CommentId
+import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
 import com.jerboa.ui.components.common.CreateSubmitHeader
@@ -52,13 +53,13 @@ fun CreateCommentReportActivity(
                 loading = loading,
                 onClickBack = onBack,
                 onSubmitClick = {
-                    account?.also { acct ->
+                    if (!account.isAnon()) {
                         createReportViewModel.createCommentReport(
                             reason = reason.text,
                             ctx = ctx,
                             onBack = onBack,
                             focusManager = focusManager,
-                            account = acct,
+                            account = account,
                         )
                     }
                 },
