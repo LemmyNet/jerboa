@@ -52,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -1122,6 +1123,8 @@ fun PostListing(
             openImageViewer = openImageViewer,
             openLink = openLink,
             showIfRead = showIfRead,
+            enableDownVotes = enableDownVotes,
+            showScores = showScores,
         )
     }
 }
@@ -1132,6 +1135,8 @@ fun PostVotingTile(
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     account: Account?,
+    enableDownVotes:Boolean,
+    showScores: Boolean,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -1151,21 +1156,25 @@ fun PostVotingTile(
             text = instantScores.score.toString(),
             style = MaterialTheme.typography.bodyMedium,
             color = scoreColor(myVote = instantScores.myVote),
+            modifier = Modifier.alpha(if(showScores) 1f else 0f)
         )
-        // invisible Text below aligns width of PostVotingTiles
-        Text(
-            text = "00000",
-            modifier = Modifier.height(0.dp),
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        VoteGeneric(
-            myVote = instantScores.myVote,
-            votes = instantScores.downvotes,
-            type = VoteType.Downvote,
-            showNumber = false,
-            onVoteClick = onDownvoteClick,
-            account = account,
-        )
+
+        if (enableDownVotes) {
+            // invisible Text below aligns width of PostVotingTiles
+            Text(
+                text = "00000",
+                modifier = Modifier.height(0.dp),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            VoteGeneric(
+                myVote = instantScores.myVote,
+                votes = instantScores.downvotes,
+                type = VoteType.Downvote,
+                showNumber = false,
+                onVoteClick = onDownvoteClick,
+                account = account,
+            )
+        }
     }
 }
 
@@ -1188,6 +1197,8 @@ fun PostListingList(
     openLink: (String, Boolean, Boolean) -> Unit,
     openImageViewer: (url: String) -> Unit,
     showIfRead: Boolean,
+    enableDownVotes: Boolean,
+    showScores: Boolean,
 ) {
     Column(
         modifier = Modifier
@@ -1209,6 +1220,8 @@ fun PostListingList(
                     onUpvoteClick = onUpvoteClick,
                     onDownvoteClick = onDownvoteClick,
                     account = account,
+                    enableDownVotes = enableDownVotes,
+                    showScores = showScores,
                 )
             }
             Column(
@@ -1356,7 +1369,8 @@ private fun ThumbnailTile(
                 Icon(
                     painter = painterResource(id = R.drawable.triangle),
                     contentDescription = null,
-                    modifier = Modifier.size(THUMBNAIL_CARET_SIZE)
+                    modifier = Modifier
+                        .size(THUMBNAIL_CARET_SIZE)
                         .align(Alignment.BottomEnd),
                     tint = when (postType) {
                         PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
@@ -1395,6 +1409,8 @@ fun PostListingListPreview() {
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
+        enableDownVotes = false,
+        showScores = true,
     )
 }
 
@@ -1425,6 +1441,8 @@ fun PostListingListWithThumbPreview() {
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
+        enableDownVotes = false,
+        showScores = true,
     )
 }
 

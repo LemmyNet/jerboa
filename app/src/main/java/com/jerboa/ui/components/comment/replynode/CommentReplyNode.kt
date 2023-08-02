@@ -114,6 +114,8 @@ fun CommentReplyNodeFooterLine(
     upvotes: Int,
     downvotes: Int,
     account: Account?,
+    enableDownvotes: Boolean,
+    showScores: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -155,17 +157,19 @@ fun CommentReplyNodeFooterLine(
                 votes = upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0),
+                showNumber = (downvotes != 0) && showScores,
                 account = account,
             )
-            // TODO should be hidden for enableDownvote?
-            VoteGeneric(
-                myVote = myVote,
-                votes = downvotes,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (enableDownvotes) {
+                VoteGeneric(
+                    myVote = myVote,
+                    votes = downvotes,
+                    type = VoteType.Downvote,
+                    showNumber = showScores,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = Icons.Outlined.Link,
                 contentDescription = stringResource(R.string.commentReply_link),
@@ -311,6 +315,7 @@ fun CommentReplyNode(
     account: Account?,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    enableDownvotes: Boolean,
     showScores: Boolean,
 ) {
     // These are necessary for instant comment voting
@@ -389,6 +394,8 @@ fun CommentReplyNode(
                         upvotes = upvotes,
                         downvotes = downvotes,
                         account = account,
+                        enableDownvotes = enableDownvotes,
+                        showScores = showScores,
                     )
                 }
             }

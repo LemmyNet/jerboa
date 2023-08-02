@@ -116,6 +116,8 @@ fun CommentMentionNodeFooterLine(
     upvotes: Int,
     downvotes: Int,
     account: Account?,
+    enableDownvotes: Boolean,
+    showScores: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -157,16 +159,19 @@ fun CommentMentionNodeFooterLine(
                 votes = upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0),
+                showNumber = (downvotes != 0) && showScores,
                 account = account,
             )
-            VoteGeneric(
-                myVote = myVote,
-                votes = downvotes,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (enableDownvotes) {
+                VoteGeneric(
+                    myVote = myVote,
+                    votes = downvotes,
+                    type = VoteType.Downvote,
+                    showNumber = showScores,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = Icons.Outlined.Link,
                 contentDescription = stringResource(R.string.commentMention_link),
@@ -325,6 +330,7 @@ fun CommentMentionNode(
     account: Account?,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    enableDownvotes: Boolean,
     showScores: Boolean,
 ) {
     // These are necessary for instant comment voting
@@ -403,6 +409,8 @@ fun CommentMentionNode(
                         upvotes = upvotes,
                         downvotes = downvotes,
                         account = account,
+                        enableDownvotes = enableDownvotes,
+                        showScores = showScores,
                     )
                 }
             }
