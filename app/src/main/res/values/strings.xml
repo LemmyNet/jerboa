@@ -353,7 +353,7 @@
     <string name="private_message_success">Message sent</string>
     <string name="retry">Retry</string>
     <string name="no_network">No network connection found</string>
-    <string name="verification_connection_failed_instance">Failed to connect to instance</string>
+    <string name="verification_connection_failed_instance">Failed to connect to instance (%s)</string>
     <string name="verification_account_deleted">Your account might have been deleted</string>
     <string name="verification_failed_retrieve_profile">Failed to retrieve your profile</string>
     <string name="verification_token_expired">Your JWT token has expired</string>
@@ -371,6 +371,6 @@
     <string name="login_view_model_registration_pending">Registration approval is still pending</string>
     <string name="login_view_model_missing_totp">TOTP token is missing</string>
     <string name="login_view_model_incorrect_totp">Incorrect TOTP token given</string>
-    <string name="verification_failed_instance">This instance is experiencing internal server errors</string>
+    <string name="verification_failed_instance">This instance (%s) is experiencing internal server errors</string>
     <string name="verification_failed_user_banned">Your account is banned until %s</string>
 </resources>

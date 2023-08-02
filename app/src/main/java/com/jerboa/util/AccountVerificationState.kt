@@ -103,15 +103,15 @@ suspend fun checkInstance(instance: String): CheckState {
                 CheckState.Passed
                 // From experience some lemmy servers return this code when they are offline
             } else if (response.code == 521) {
-                CheckState.ConnectionFailed
+                CheckState.ConnectionFailedMsg(instance)
             } else if (response.code >= 500) {
                 CheckState.FailedMsg(instance)
             } else {
-                CheckState.ConnectionFailed
+                CheckState.ConnectionFailedMsg(instance)
             }
         } catch (e: Exception) {
             Log.d("verification", "checkInstance error", e)
-            CheckState.ConnectionFailed
+            CheckState.ConnectionFailedMsg(instance)
         }
     }
 }
@@ -195,8 +195,9 @@ suspend fun checkIfSiteRetrievalSucceeded(
 sealed class CheckState {
     object Passed : CheckState()
     object Failed : FailedMsg()
-    object ConnectionFailed : CheckState()
+    object ConnectionFailed : ConnectionFailedMsg()
 
+    open class ConnectionFailedMsg(val msg: String = "") : CheckState()
     open class FailedMsg(val msg: String = "") : CheckState()
     companion object {
         fun from(boolean: Boolean): CheckState {
@@ -289,6 +290,45 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
     loginAsToast: Boolean = false,
     actionPerform: suspend () -> Unit,
 ) {
+    when (this.first) {
+        AccountVerificationState.INSTANCE_ALIVE ->
+            when (val t = this.second) {
+                is CheckState.FailedMsg -> {
+                    snackbarHostState.doSnackbarAction(
+                        ctx.getString(R.string.verification_failed_instance, t.msg),
+                        ctx.getString(R.string.retry),
+                        actionPerform,
+                    )
+                }
+
+                is CheckState.ConnectionFailedMsg -> {
+                    snackbarHostState.doSnackbarAction(
+                        ctx.getString(R.string.verification_connection_failed_instance, t.msg),
+                        ctx.getString(R.string.retry),
+                        actionPerform,
+                    )
+                }
+
+                else -> {}
+            }
+
+        AccountVerificationState.ACCOUNT_BANNED -> {
+            when (val t = this.second) {
+                is CheckState.FailedMsg -> {
+                    snackbarHostState.doSnackbarAction(
+                        ctx.getString(R.string.verification_failed_user_banned, t.msg),
+                        ctx.getString(R.string.retry),
+                        actionPerform,
+                    )
+                }
+
+                else -> {}
+            }
+        }
+
+        else -> {}
+    }
+
     when (this.first to this.second) {
         AccountVerificationState.NOT_CHECKED to CheckState.Failed ->
             if (loginAsToast) {
@@ -308,20 +348,6 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
                 actionPerform,
             )
 
-        AccountVerificationState.INSTANCE_ALIVE to CheckState.ConnectionFailed ->
-            snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_connection_failed_instance),
-                ctx.getString(R.string.retry),
-                actionPerform,
-            )
-
-        AccountVerificationState.INSTANCE_ALIVE to CheckState.Failed ->
-            snackbarHostState.doSnackbarAction(
-                ctx.getString(R.string.verification_failed_instance),
-                ctx.getString(R.string.retry),
-                actionPerform,
-            )
-
         AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed ->
             snackbarHostState.doSnackbarAction(
                 ctx.getString(R.string.verification_account_deleted),
@@ -335,19 +361,6 @@ suspend fun Pair<AccountVerificationState, CheckState>.showSnackbarForVerificati
                 ctx.getString(R.string.retry),
                 actionPerform,
             )
-        }
-
-        AccountVerificationState.ACCOUNT_BANNED to CheckState -> {
-            when (val t = this.second) {
-                is CheckState.FailedMsg -> {
-                    snackbarHostState.doSnackbarAction(
-                        ctx.getString(R.string.verification_failed_user_banned, t.msg),
-                        ctx.getString(R.string.retry),
-                        actionPerform,
-                    )
-                }
-                else -> {}
-            }
         }
 
         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
