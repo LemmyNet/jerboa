@@ -64,6 +64,7 @@ fun CommentMentionNodeHeader(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = personMentionView.creator,
@@ -79,6 +80,7 @@ fun CommentMentionNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
+        showScores = showScores,
     )
 }
 
@@ -93,6 +95,7 @@ fun CommentMentionNodeHeaderPreview() {
         onClick = {},
         onLongClick = {},
         showAvatar = true,
+        showScores = true,
     )
 }
 
@@ -113,6 +116,8 @@ fun CommentMentionNodeFooterLine(
     upvotes: Int,
     downvotes: Int,
     account: Account,
+    enableDownvotes: Boolean,
+    showScores: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -154,16 +159,19 @@ fun CommentMentionNodeFooterLine(
                 votes = upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0),
+                showNumber = (downvotes != 0) && showScores,
                 account = account,
             )
-            VoteGeneric(
-                myVote = myVote,
-                votes = downvotes,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (enableDownvotes) {
+                VoteGeneric(
+                    myVote = myVote,
+                    votes = downvotes,
+                    type = VoteType.Downvote,
+                    showNumber = showScores,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = Icons.Outlined.Link,
                 contentDescription = stringResource(R.string.commentMention_link),
@@ -322,6 +330,8 @@ fun CommentMentionNode(
     account: Account,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    enableDownvotes: Boolean,
+    showScores: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = personMentionView.counts.score
@@ -356,6 +366,7 @@ fun CommentMentionNode(
                 isActionBarExpanded = !isActionBarExpanded
             },
             showAvatar = showAvatar,
+            showScores = showScores,
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -398,6 +409,8 @@ fun CommentMentionNode(
                         upvotes = upvotes,
                         downvotes = downvotes,
                         account = account,
+                        enableDownvotes = enableDownvotes,
+                        showScores = showScores,
                     )
                 }
             }
