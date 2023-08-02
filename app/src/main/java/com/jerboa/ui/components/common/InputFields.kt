@@ -64,17 +64,17 @@ import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarkdownTextField(
     text: TextFieldValue,
     onTextChange: (TextFieldValue) -> Unit,
-    account: Account?,
+    account: Account,
     modifier: Modifier = Modifier,
     placeholder: String = "",
     focusImmediate: Boolean = true,
@@ -342,7 +342,7 @@ fun CreateLinkDialogPreview() {
 
 @Composable
 private fun imageUploadLauncher(
-    account: Account?,
+    account: Account,
     onTextChange: (TextFieldValue) -> Unit,
     text: TextFieldValue,
     imageUploading: MutableState<Boolean>,
@@ -365,8 +365,8 @@ private fun imageUploadLauncher(
             imageUploading.value = true
             val imageIs = imageInputStreamFromUri(ctx, cUri)
             scope.launch {
-                account?.also { acct ->
-                    val url = uploadPictrsImage(acct, imageIs, ctx)
+                if (!account.isAnon()) {
+                    val url = uploadPictrsImage(account, imageIs, ctx)
                     url?.also {
                         imageUploading.value = false
                         onTextChange(TextFieldValue(appendMarkdownImage(text.text, it)))

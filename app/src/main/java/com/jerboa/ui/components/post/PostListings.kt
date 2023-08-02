@@ -24,6 +24,7 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isScrolledToEnd
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -47,7 +48,7 @@ fun PostListings(
     onBlockCreatorClick: (person: Person) -> Unit,
     onShareClick: (url: String) -> Unit,
     isScrolledToEnd: () -> Unit,
-    account: Account?,
+    account: Account,
     showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
     listState: LazyListState,
@@ -62,6 +63,7 @@ fun PostListings(
     openImageViewer: (url: String) -> Unit,
     openLink: (String, Boolean, Boolean) -> Unit,
     showIfRead: Boolean,
+    showScores: Boolean,
 ) {
     LazyColumn(
         state = listState,
@@ -71,7 +73,6 @@ fun PostListings(
             .simpleVerticalScrollbar(listState)
             .testTag("jerboa:posts"),
     ) {
-        // TODO this should be a .also?
         item(contentType = "aboveContent") {
             contentAboveListings()
         }
@@ -112,6 +113,7 @@ fun PostListings(
                 openImageViewer = openImageViewer,
                 openLink = openLink,
                 showIfRead = showIfRead,
+                showScores = showScores,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -150,7 +152,7 @@ fun PreviewPostListings() {
         onBlockCreatorClick = {},
         onShareClick = {},
         isScrolledToEnd = {},
-        account = null,
+        account = AnonAccount,
         listState = rememberLazyListState(),
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
@@ -163,5 +165,6 @@ fun PreviewPostListings() {
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
+        showScores = true,
     )
 }

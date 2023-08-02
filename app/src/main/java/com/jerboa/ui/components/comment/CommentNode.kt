@@ -70,6 +70,7 @@ import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isModerator
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
@@ -99,6 +100,7 @@ fun CommentNodeHeader(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -116,6 +118,7 @@ fun CommentNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
+        showScores = showScores,
     )
 }
 
@@ -133,6 +136,7 @@ fun CommentNodeHeaderPreview() {
         collapsedCommentsCount = 5,
         isExpanded = false,
         showAvatar = true,
+        showScores = true,
     )
 }
 
@@ -210,12 +214,13 @@ fun LazyListScope.commentNodeItem(
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     showCollapsedCommentContent: Boolean,
     showPostAndCommunityContext: Boolean = false,
-    account: Account?,
+    account: Account,
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showScores: Boolean,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -237,7 +242,7 @@ fun LazyListScope.commentNodeItem(
     increaseLazyListIndexTracker()
     // TODO Needs a contentType
     // possibly "contentNodeItemL${node.depth}"
-    item(key = commentId) {
+    item(key = null) { // TODO was commentId but see #1109, changeback once bug has been fixed
         var viewSource by remember { mutableStateOf(false) }
 
         val backgroundColor = MaterialTheme.colorScheme.background
@@ -300,6 +305,7 @@ fun LazyListScope.commentNodeItem(
                             collapsedCommentsCount = node.commentView.counts.child_count,
                             isExpanded = isExpanded(commentId),
                             showAvatar = showAvatar,
+                            showScores = showScores,
                         )
                         AnimatedVisibility(
                             visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -357,6 +363,7 @@ fun LazyListScope.commentNodeItem(
                                         },
                                         account = account,
                                         enableDownVotes = enableDownVotes,
+                                        showScores = showScores,
                                     )
                                 }
                             }
@@ -413,6 +420,7 @@ fun LazyListScope.commentNodeItem(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
+            showScores = showScores,
         )
     }
 }
@@ -526,7 +534,8 @@ fun CommentFooterLine(
     onPersonClick: (personId: Int) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    account: Account?,
+    account: Account,
+    showScores: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -562,7 +571,7 @@ fun CommentFooterLine(
                 showMoreOptions = false
                 onPersonClick(commentView.creator.id)
             },
-            isCreator = account?.id == commentView.creator.id,
+            isCreator = account.id == commentView.creator.id,
         )
     }
 
@@ -586,7 +595,7 @@ fun CommentFooterLine(
                 votes = instantScores.upvotes,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (instantScores.downvotes != 0),
+                showNumber = (instantScores.downvotes != 0) && showScores,
                 account = account,
             )
             if (enableDownVotes) {
@@ -594,6 +603,7 @@ fun CommentFooterLine(
                     myVote = instantScores.myVote,
                     votes = instantScores.downvotes,
                     type = VoteType.Downvote,
+                    showNumber = showScores,
                     onVoteClick = onDownvoteClick,
                     account = account,
                 )
@@ -675,6 +685,8 @@ fun CommentNodesPreview() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
+        account = AnonAccount,
+        showScores = true,
     )
 }
 

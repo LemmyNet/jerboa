@@ -12,6 +12,7 @@ import com.jerboa.findTimeout
 import com.jerboa.retryOnStale
 import com.jerboa.scrollThrough
 import com.jerboa.scrollThroughShort
+import kotlin.random.Random
 
 fun MacrobenchmarkScope.closeChangeLogIfOpen() {
     device.findObject(By.res("jerboa:changelogbtn"))?.click()
@@ -70,6 +71,8 @@ fun MacrobenchmarkScope.scrollThroughComments() {
 }
 
 fun MacrobenchmarkScope.doTypicalUserJourney(repeat: Int = 5) {
+    waitUntilPostsActuallyVisible()
+    setPostViewMode(postViewModes[Random.nextInt(0, 3)])
     repeat(repeat) {
         waitUntilPostsActuallyVisible()
         scrollThroughPostsOnce()
@@ -105,6 +108,7 @@ fun MacrobenchmarkScope.openMoreOptions() {
         val feed = device.findOrFailTimeout("jerboa:posts", "Posts not found", 2_000)
         feed.setGestureMargin(device.displayWidth / 5)
         feed.fling(Direction.UP)
+        feed.fling(Direction.UP)
         options = device.findOrFailTimeout("jerboa:options")
     }
 
@@ -121,4 +125,11 @@ fun MacrobenchmarkScope.openSortOptions() {
 
 fun MacrobenchmarkScope.clickMostComments() {
     device.findOrFailTimeout("jerboa:sortoption_mostcomments").click()
+}
+
+val postViewModes = listOf("SmallCard", "Card", "List")
+fun MacrobenchmarkScope.setPostViewMode(postViewMode: String) {
+    openMoreOptions()
+    device.findOrFailTimeout("jerboa:postviewmode").click()
+    device.findOrFailTimeout("jerboa:postviewmode_$postViewMode").click()
 }

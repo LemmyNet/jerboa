@@ -43,7 +43,7 @@ fun CommentNodes(
     onCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
-    account: Account? = null,
+    account: Account,
     moderators: List<CommunityModeratorView>,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean,
@@ -52,6 +52,7 @@ fun CommentNodes(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showScores: Boolean,
 ) {
     LazyColumn(state = listState) {
         commentNodeItems(
@@ -88,6 +89,7 @@ fun CommentNodes(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
+            showScores = showScores,
         )
         item {
             Spacer(modifier = Modifier.height(100.dp))
@@ -120,7 +122,7 @@ fun LazyListScope.commentNodeItems(
     onCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
-    account: Account? = null,
+    account: Account,
     moderators: List<CommunityModeratorView>,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean,
@@ -129,6 +131,7 @@ fun LazyListScope.commentNodeItems(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showScores: Boolean,
 ) {
     nodes.forEach { node ->
         commentNodeItem(
@@ -165,6 +168,7 @@ fun LazyListScope.commentNodeItems(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
+            showScores = showScores,
         )
     }
 }
