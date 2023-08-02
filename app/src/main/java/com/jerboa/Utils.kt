@@ -1095,7 +1095,7 @@ fun getLocalizedCommentSortTypeName(ctx: Context, commentSortType: CommentSortTy
         CommentSortType.New -> ctx.getString(R.string.sorttype_new)
         CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
         CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
-        CommentSortType.Controversial -> ctx.getString(R.string.dialogs_controversial)
+        CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
     }
     return returnString
 }

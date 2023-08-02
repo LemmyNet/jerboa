@@ -142,7 +142,7 @@ fun SortOptionsDialog(
             Column {
                 SortType.getSupportedSortTypes(siteVersion).filter { !isTopSort(it) }.forEach {
                     IconAndTextDrawerItem(
-                        text = stringResource(it.text),
+                        text = stringResource(it.longForm),
                         icon = it.icon,
                         onClick = { onClickSortType(it) },
                         highlight = (selectedSortType == it),
