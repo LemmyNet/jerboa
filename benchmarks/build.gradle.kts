@@ -21,12 +21,12 @@ android {
     }
 
     defaultConfig {
+        testInstrumentationRunnerArguments += mapOf("suppressErrors" to "EMULATOR")
         minSdk = 26
         targetSdk =  34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Only use the emulator to test benchmarks
-        testInstrumentationRunnerArguments += mapOf("suppressErrors" to "EMULATOR")
     }
 
     targetProjectPath = ":app"
