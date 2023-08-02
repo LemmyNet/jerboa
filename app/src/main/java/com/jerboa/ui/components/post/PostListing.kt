@@ -1135,7 +1135,7 @@ fun PostVotingTile(
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
     account: Account?,
-    enableDownVotes:Boolean,
+    enableDownVotes: Boolean,
     showScores: Boolean,
 ) {
     Column(
@@ -1156,7 +1156,7 @@ fun PostVotingTile(
             text = instantScores.score.toString(),
             style = MaterialTheme.typography.bodyMedium,
             color = scoreColor(myVote = instantScores.myVote),
-            modifier = Modifier.alpha(if(showScores) 1f else 0f)
+            modifier = Modifier.alpha(if (showScores) 1f else 0f),
         )
 
         if (enableDownVotes) {
