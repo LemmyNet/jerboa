@@ -347,21 +347,20 @@
     <string name="failed_saving_image">Failed to save image!</string>
     <string name="home_switch_anon">Switch to anonymous</string>
     <string name="login_already_logged_in">You are already logged in with this account</string>
+    <string name="actionbar_info_header">%s@%s Info</string>
     <string name="person_profile_dm_person">Send a message</string>
     <string name="private_message_failed">Sending message failed, retrying...</string>
     <string name="private_message_placeholder">Type your message here</string>
     <string name="private_message_success">Message sent</string>
     <string name="retry">Retry</string>
     <string name="no_network">No network connection found</string>
-    <string name="verification_connection_failed_instance">Failed to connect to instance</string>
+    <string name="verification_connection_failed_instance">Failed to connect to instance (%s)</string>
     <string name="verification_account_deleted">Your account might have been deleted</string>
     <string name="verification_failed_retrieve_profile">Failed to retrieve your profile</string>
     <string name="verification_token_expired">Your JWT token has expired</string>
     <string name="verification_login_again">Login again</string>
     <string name="verification_failed_verify_token">Failed to verify JWT token</string>
     <string name="verification_failed_retrieve_site">Failed to retrieve site info</string>
-    <string name="verification_email_failed">Email needs to be verified</string>
-    <string name="verification_application_approval_failed">Your application has not been approved yet</string>
     <string name="verification_no_account">This action requires an account</string>
     <string name="verification_delete_account">Remove your account</string>
     <string name="verification_account_not_read">This account is not in a ready state yet.</string>
@@ -373,5 +372,6 @@
     <string name="login_view_model_registration_pending">Registration approval is still pending</string>
     <string name="login_view_model_missing_totp">TOTP token is missing</string>
     <string name="login_view_model_incorrect_totp">Incorrect TOTP token given</string>
-    <string name="verification_failed_instance">This instance is experiencing internal server errors</string>
+    <string name="verification_failed_instance">This instance (%s) is experiencing internal server errors</string>
+    <string name="verification_failed_user_banned">Your account is banned until %s</string>
 </resources>
