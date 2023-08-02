@@ -181,7 +181,5 @@ dependencies {
     baselineProfile(project(":benchmarks"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
-    implementation("me.saket.swipe:swipe:1.2.0")
-
 
 }
