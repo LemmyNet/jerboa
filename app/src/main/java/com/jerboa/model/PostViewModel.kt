@@ -83,7 +83,7 @@ class PostViewModel : ViewModel(), Initializable {
     }
 
     fun getData(
-        account: Account?,
+        account: Account,
         state: ApiState<GetPostResponse> = ApiState.Loading,
     ) {
         viewModelScope.launch {
@@ -91,9 +91,9 @@ class PostViewModel : ViewModel(), Initializable {
             id?.also { id ->
 
                 val postForm = id.fold({
-                    GetPost(id = it, auth = account?.jwt)
+                    GetPost(id = it, auth = account.jwt.ifEmpty { null })
                 }, {
-                    GetPost(comment_id = it, auth = account?.jwt)
+                    GetPost(comment_id = it, auth = account.jwt.ifEmpty { null })
                 })
 
                 postRes = state
@@ -104,7 +104,7 @@ class PostViewModel : ViewModel(), Initializable {
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         post_id = it,
-                        auth = account?.jwt,
+                        auth = account.jwt.ifEmpty { null },
                         sort = sortType,
                     )
                 }, {
@@ -112,7 +112,7 @@ class PostViewModel : ViewModel(), Initializable {
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         parent_id = it,
-                        auth = account?.jwt,
+                        auth = account.jwt.ifEmpty { null },
                         sort = sortType,
                     )
                 })
@@ -130,7 +130,7 @@ class PostViewModel : ViewModel(), Initializable {
 
     fun fetchMoreChildren(
         commentView: CommentView,
-        account: Account?,
+        account: Account,
     ) {
         viewModelScope.launch {
             val existing = commentsRes
@@ -143,7 +143,7 @@ class PostViewModel : ViewModel(), Initializable {
                 parent_id = commentView.comment.id,
                 max_depth = COMMENTS_DEPTH_MAX,
                 type_ = ListingType.All,
-                auth = account?.jwt,
+                auth = account.jwt.ifEmpty { null },
             )
 
             val moreComments =

@@ -29,6 +29,9 @@ interface AccountDao {
     @Query("UPDATE account set current = 1 where id = :accountId")
     suspend fun setCurrent(accountId: Int)
 
+    @Query("Update account set verification_state = :state where id = :accountId")
+    suspend fun setVerificationState(accountId: Int, state: Int)
+
     @Delete(entity = Account::class)
     suspend fun delete(account: Account)
 }

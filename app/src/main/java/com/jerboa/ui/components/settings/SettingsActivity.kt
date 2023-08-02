@@ -12,7 +12,6 @@ import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
+import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
 
@@ -39,7 +40,7 @@ fun SettingsActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             SimpleTopAppBar(text = stringResource(R.string.settings_activity_settings), onClickBack = onBack)
         },
@@ -55,13 +56,13 @@ fun SettingsActivity(
                     },
                     onClick = onClickLookAndFeel,
                 )
-                account?.also { acct ->
+                if (!account.isAnon()) {
                     SettingsMenuLink(
                         title = {
                             Text(
                                 stringResource(
                                     R.string.settings_activity_account_settings,
-                                    acct.name,
+                                    account.name,
                                 ),
                             )
                         },

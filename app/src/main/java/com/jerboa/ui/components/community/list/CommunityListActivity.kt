@@ -82,7 +82,7 @@ fun CommunityListActivity(
                                     q = search,
                                     type_ = SearchType.Communities,
                                     sort = SortType.TopAll,
-                                    auth = account?.jwt,
+                                    auth = account.jwt.ifEmpty { null },
                                 ),
                             )
                         }

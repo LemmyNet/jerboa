@@ -19,7 +19,7 @@ class StartupProfileGenerator {
     @RequiresApi(Build.VERSION_CODES.P)
     @Test
     fun startup() =
-        baselineProfileRule.collectBaselineProfile(
+        baselineProfileRule.collect(
             packageName = "com.jerboa",
             maxIterations = 15,
             includeInStartupProfile = true,
