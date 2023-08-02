@@ -48,7 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -56,7 +55,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -166,7 +164,6 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                         ),
                     ),
             ) {
-
                 if (imageState == ImageState.FAILED) {
                     Column(
                         Modifier
@@ -176,18 +173,16 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                                 imageState = ImageState.LOADING
                             },
                         Arrangement.Center,
-                        Alignment.CenterHorizontally
+                        Alignment.CenterHorizontally,
 
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.ErrorOutline,
-                            contentDescription = stringResource(id = R.string.image_error_icon)
+                            contentDescription = stringResource(id = R.string.image_error_icon),
                         )
                         Text(text = stringResource(id = R.string.image_failed_loading))
                     }
-
                 } else {
-
                     if (imageState == ImageState.LOADING) {
                         val currentProgress = DownloadProgress.downloadProgressFlow.collectAsStateWithLifecycle()
 
