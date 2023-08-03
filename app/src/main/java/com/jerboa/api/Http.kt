@@ -60,6 +60,12 @@ interface API {
     suspend fun likePost(@Body form: CreatePostLike): Response<PostResponse>
 
     /**
+     * Mark post as read.
+     */
+    @POST("post/mark_as_read")
+    suspend fun markAsRead(@Body form: MarkPostAsRead): Response<PostResponse>
+
+    /**
      * Like / vote on a comment.
      */
     @POST("comment/like")

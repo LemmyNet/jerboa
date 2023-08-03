@@ -347,7 +347,8 @@
     <string name="failed_saving_image">Failed to save image!</string>
     <string name="home_switch_anon">Switch to anonymous</string>
     <string name="login_already_logged_in">You are already logged in with this account</string>
-    <string name="actionbar_info_header">%s@%s Info</string>
+    <string name="mark_as_read_on_scroll">Mark as read on scroll</string>
+    <string name="actionbar_info_header">%1$s@%2$s Info</string>
     <string name="person_profile_dm_person">Send a message</string>
     <string name="private_message_failed">Sending message failed, retrying...</string>
     <string name="private_message_placeholder">Type your message here</string>
@@ -376,4 +377,5 @@
     <string name="login_view_model_incorrect_totp">Incorrect TOTP token given</string>
     <string name="verification_failed_instance">This instance (%s) is experiencing internal server errors</string>
     <string name="verification_failed_user_banned">Your account is banned until %s</string>
+
 </resources>

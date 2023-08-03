@@ -68,6 +68,7 @@ class PostViewModel : ViewModel(), Initializable {
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     val unExpandedComments = mutableStateListOf<Int>()
     val commentsWithToggledActionBar = mutableStateListOf<Int>()
@@ -152,13 +153,16 @@ class PostViewModel : ViewModel(), Initializable {
             when (moreComments) {
                 is ApiState.Success -> {
                     // Remove the first comment, since it is a parent
+                    // Actually since a bug in 18.3 that is no longer a guarantee
+                    // see https://github.com/LemmyNet/lemmy/issues/3767
                     val newComments = moreComments.data.comments.toMutableList()
-                    newComments.removeAt(0)
+                    newComments.removeIf { it.comment.id == commentView.comment.id }
 
                     val appended = appendData(existing.data.comments, newComments.toList())
 
                     commentsRes = ApiState.Success(existing.data.copy(comments = appended))
                 }
+
                 else -> {}
             }
         }

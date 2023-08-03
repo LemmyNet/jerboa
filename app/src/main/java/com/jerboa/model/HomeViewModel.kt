@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -17,9 +18,11 @@ import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
+import com.jerboa.datatypes.types.GetPostResponse
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.ListingType
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
@@ -39,11 +42,14 @@ class HomeViewModel : ViewModel(), Initializable {
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
+    private var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
+
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     val lazyListState = LazyListState()
 
@@ -100,8 +106,16 @@ class HomeViewModel : ViewModel(), Initializable {
                     if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
                         prevPage()
                     }
-                    ApiState.Success(GetPostsResponse(mergePosts(oldRes.data.posts, newRes.data.posts)))
+                    ApiState.Success(
+                        GetPostsResponse(
+                            mergePosts(
+                                oldRes.data.posts,
+                                newRes.data.posts,
+                            ),
+                        ),
+                    )
                 }
+
                 else -> {
                     prevPage()
                     oldRes
@@ -172,7 +186,9 @@ class HomeViewModel : ViewModel(), Initializable {
 
     fun updateFromAccount(account: Account) {
         updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
-        updateListingType(ListingType.values().getOrElse(account.defaultListingType) { listingType })
+        updateListingType(
+            ListingType.values().getOrElse(account.defaultListingType) { listingType },
+        )
     }
 
     fun updatePost(postView: PostView) {
@@ -182,6 +198,7 @@ class HomeViewModel : ViewModel(), Initializable {
                 val newRes = ApiState.Success(existing.data.copy(posts = newPosts))
                 postsRes = newRes
             }
+
             else -> {}
         }
     }
@@ -218,5 +235,23 @@ class HomeViewModel : ViewModel(), Initializable {
             type_ = listingType,
             auth = jwt,
         )
+    }
+
+    fun markPostAsRead(
+        form: MarkPostAsRead,
+        appState: JerboaAppState,
+    ) {
+        appState.coroutineScope.launch {
+            markPostRes = ApiState.Loading
+            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+
+            when (val markRes = markPostRes) {
+                is ApiState.Success -> {
+                    updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
     }
 }

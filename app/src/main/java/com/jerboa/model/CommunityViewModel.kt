@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -23,6 +24,7 @@ import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetCommunityResponse
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
@@ -53,6 +55,7 @@ class CommunityViewModel : ViewModel(), Initializable {
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
         mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.Active)
         private set
@@ -118,8 +121,16 @@ class CommunityViewModel : ViewModel(), Initializable {
                     if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
                         prevPage()
                     }
-                    ApiState.Success(GetPostsResponse(mergePosts(oldRes.data.posts, newRes.data.posts)))
+                    ApiState.Success(
+                        GetPostsResponse(
+                            mergePosts(
+                                oldRes.data.posts,
+                                newRes.data.posts,
+                            ),
+                        ),
+                    )
                 }
+
                 else -> {
                     prevPage()
                     oldRes
@@ -245,6 +256,24 @@ class CommunityViewModel : ViewModel(), Initializable {
             }
 
             else -> {}
+        }
+    }
+
+    fun markPostAsRead(
+        form: MarkPostAsRead,
+        appState: JerboaAppState,
+    ) {
+        appState.coroutineScope.launch {
+            markPostRes = ApiState.Loading
+            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+
+            when (val markRes = markPostRes) {
+                is ApiState.Success -> {
+                    updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
         }
     }
 }
