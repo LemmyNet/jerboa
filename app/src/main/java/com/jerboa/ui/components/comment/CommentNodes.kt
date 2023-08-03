@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import com.jerboa.CommentNodeData
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.CommunityModeratorView
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
 import kotlinx.collections.immutable.ImmutableList
@@ -44,7 +43,7 @@ fun CommentNodes(
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     account: Account,
-    moderators: List<CommunityModeratorView>,
+    isModerator: (Int) -> Boolean,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
@@ -68,7 +67,7 @@ fun CommentNodes(
             onReplyClick = onReplyClick,
             onSaveClick = onSaveClick,
             account = account,
-            moderators = moderators,
+            isModerator = isModerator,
             onMarkAsReadClick = onMarkAsReadClick,
             onCommentClick = onCommentClick,
             onPersonClick = onPersonClick,
@@ -123,7 +122,7 @@ fun LazyListScope.commentNodeItems(
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
     account: Account,
-    moderators: List<CommunityModeratorView>,
+    isModerator: (Int) -> Boolean,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
@@ -147,7 +146,7 @@ fun LazyListScope.commentNodeItems(
             onReplyClick = onReplyClick,
             onSaveClick = onSaveClick,
             account = account,
-            moderators = moderators,
+            isModerator = isModerator,
             onMarkAsReadClick = onMarkAsReadClick,
             onCommentClick = onCommentClick,
             onPersonClick = onPersonClick,
