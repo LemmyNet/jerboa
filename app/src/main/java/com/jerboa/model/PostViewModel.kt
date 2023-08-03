@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -30,7 +29,6 @@ import com.jerboa.datatypes.types.GetCommentsResponse
 import com.jerboa.datatypes.types.GetPost
 import com.jerboa.datatypes.types.GetPostResponse
 import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
@@ -315,24 +313,6 @@ class PostViewModel : ViewModel(), Initializable {
             }
 
             else -> {}
-        }
-    }
-
-    fun markPostAsRead(
-        form: MarkPostAsRead,
-        appState: JerboaAppState,
-    ) {
-        appState.coroutineScope.launch {
-            markPostRes = ApiState.Loading
-            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
-
-            when (val markRes = markPostRes) {
-                is ApiState.Success -> {
-                    updatePost(markRes.data.post_view)
-                }
-
-                else -> {}
-            }
         }
     }
 }
