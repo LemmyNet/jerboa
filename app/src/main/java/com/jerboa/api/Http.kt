@@ -270,7 +270,6 @@ interface API {
                     .build()
                     .let(chain::proceed)
             }
-            .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
             .build()
 
         private fun buildUrl(): String {
@@ -316,7 +315,9 @@ interface API {
                             .body(e.toString().toResponseBody())
                             .build()
                     }
-                }.build()
+                }
+                .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
+                .build()
 
             return Retrofit.Builder()
                 .baseUrl(baseUrl)

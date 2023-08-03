@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.imageviewer
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
@@ -12,82 +11,82 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.jerboa.JerboaApplication
 import com.jerboa.R
 import com.jerboa.saveBitmap
 import com.jerboa.saveBitmapP
+import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.util.downloadprogress.DownloadProgress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.engawapg.lib.zoomable.rememberZoomState
-import net.engawapg.lib.zoomable.zoomable
+import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import java.io.IOException
 import java.net.URL
 
 const val backFadeTime = 300
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ImageViewer(url: String, onBackRequest: () -> Unit) {
+    val ctx = LocalContext.current
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
 
-    val imageLoader = ImageLoader.Builder(LocalContext.current)
-        .components {
-            if (SDK_INT >= 28) {
-                add(ImageDecoderDecoder.Factory())
-            } else {
-                add(GifDecoder.Factory())
-            }
-        }
-        .build()
-
+    val imageGifLoader = (ctx.applicationContext as JerboaApplication).imageViewLoader
     var debounce by remember {
         mutableStateOf(false)
     }
-
     val systemUiController = rememberSystemUiController()
 
-    val window = (LocalContext.current as Activity).window
+    val window = (ctx as Activity).window
     val controller = WindowCompat.getInsetsController(window, LocalView.current)
     val oldBarColor = Color(window.statusBarColor)
     val oldIcons = controller.isAppearanceLightStatusBars
@@ -127,6 +126,23 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
         }
     }
 
+    var retryHash by remember { mutableIntStateOf(0) }
+
+    var imageState by remember {
+        mutableStateOf(ImageState.LOADING)
+    }
+
+    val image = remember {
+        ImageRequest.Builder(ctx)
+            .placeholder(null)
+            .data(url)
+            .setParameter("retry_hash", retryHash, memoryCacheKey = null)
+            .listener(
+                onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
+                onError = { _, _ -> imageState = ImageState.FAILED },
+            ).build()
+    }
+
     Scaffold(
         topBar = {
             ViewerHeader(showTopBar, onBackRequest, url)
@@ -148,25 +164,58 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                         ),
                     ),
             ) {
-                Image(
-                    painter = rememberAsyncImagePainter(url, imageLoader = imageLoader),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .zoomable(
-                            zoomState = rememberZoomState(),
-                            onTap = {
-                                showTopBar = !showTopBar
-                                systemUiController.isSystemBarsVisible = showTopBar
-
-                                // Default behavior is that if navigation bar is hidden, the system will "steal" touches
-                                // and show it again upon user's touch. We just want the user to be able to show the
-                                // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
-                                // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                                systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                if (imageState == ImageState.FAILED) {
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .clickable {
+                                retryHash++
+                                imageState = ImageState.LOADING
                             },
-                        ),
-                )
+                        Arrangement.Center,
+                        Alignment.CenterHorizontally,
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.ErrorOutline,
+                            contentDescription = stringResource(id = R.string.image_error_icon),
+                        )
+                        Text(text = stringResource(id = R.string.image_failed_loading))
+                    }
+                } else {
+                    if (imageState == ImageState.LOADING) {
+                        val currentProgress = DownloadProgress.downloadProgressFlow.collectAsStateWithLifecycle()
+
+                        if (currentProgress.value.progressAvailable) {
+                            LinearProgressIndicator(
+                                currentProgress.value.progress,
+                                Modifier
+                                    .padding(it)
+                                    .fillMaxWidth(),
+                            )
+                        } else {
+                            LoadingBar(it)
+                        }
+                    }
+
+                    ZoomableAsyncImage(
+                        contentScale = ContentScale.Fit,
+                        model = image,
+                        imageLoader = imageGifLoader,
+                        contentDescription = null,
+                        onClick = {
+                            showTopBar = !showTopBar
+                            systemUiController.isSystemBarsVisible = showTopBar
+
+                            // Default behavior is that if navigation bar is hidden, the system will "steal" touches
+                            // and show it again upon user's touch. We just want the user to be able to show the
+                            // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
+                            // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
+                            systemUiController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                        },
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         },
     )
@@ -269,4 +318,10 @@ fun ViewerHeader(
 @Preview
 fun ImageActivityPreview() {
     ImageViewer(url = "", onBackRequest = { })
+}
+
+enum class ImageState {
+    SUCCESS,
+    LOADING,
+    FAILED,
 }
