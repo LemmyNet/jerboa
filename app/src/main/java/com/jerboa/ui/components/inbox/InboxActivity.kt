@@ -467,9 +467,11 @@ fun InboxTabs(
                                                     )
                                                 }
                                             },
-                                            onPostClick = { postId ->
+                                            onPostClick = {
+                                                if (!commentReplyView.comment_reply.read) {
+                                                    markAsRead(commentReplyView)
+                                                }
                                                 goToComment(commentReplyView)
-                                                markAsRead(commentReplyView)
                                             },
                                             account = account,
                                             showAvatar = siteViewModel.showAvatar(),
