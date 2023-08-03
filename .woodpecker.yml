@@ -1,7 +1,9 @@
 variables:
   - &slow_check_paths
     - path:
+        - "app/**/*"
         - "**/*.kt"
+        - "**/*.kts"
         - "**/*.gradle"
         - ".woodpecker.yml"
 
