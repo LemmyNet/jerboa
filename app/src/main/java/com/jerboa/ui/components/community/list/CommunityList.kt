@@ -43,8 +43,10 @@ fun CommunityListHeader(
             )
         },
         actions = {
+            // TODO: disabled until ever implemented
             IconButton(
-                onClick = { // TODO
+                enabled = false,
+                onClick = {
                 },
             ) {
                 Icon(

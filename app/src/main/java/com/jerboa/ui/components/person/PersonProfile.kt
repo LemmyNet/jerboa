@@ -149,10 +149,12 @@ fun PersonProfileHeader(
     onClickSortType: (SortType) -> Unit,
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
+    onMessagePersonClick: () -> Unit,
     selectedSortType: SortType,
     openDrawer: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     onBack: (() -> Unit)? = null,
+    isLoggedIn: () -> Boolean,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -195,6 +197,10 @@ fun PersonProfileHeader(
                 showMoreOptions = false
                 onReportPersonClick()
             },
+            onMessagePersonClick = {
+                showMoreOptions = false
+                onMessagePersonClick()
+            },
         )
     }
 
@@ -232,7 +238,7 @@ fun PersonProfileHeader(
                     contentDescription = stringResource(R.string.selectSort),
                 )
             }
-            if (!myProfile) {
+            if (!myProfile && isLoggedIn()) {
                 IconButton(onClick = {
                     showMoreOptions = !showMoreOptions
                 }) {
@@ -268,11 +274,17 @@ fun PersonProfileMoreDialog(
     onDismissRequest: () -> Unit,
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
+    onMessagePersonClick: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
+                IconAndTextDrawerItem(
+                    text = stringResource(R.string.person_profile_dm_person),
+                    onClick = onMessagePersonClick,
+                    icon = Icons.Outlined.Message,
+                )
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.person_profile_block_person),
                     icon = Icons.Outlined.Block,

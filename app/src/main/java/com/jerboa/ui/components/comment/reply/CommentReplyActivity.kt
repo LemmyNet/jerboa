@@ -10,11 +10,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
+import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentReplyViewModel
 import com.jerboa.model.ReplyItem
@@ -36,7 +38,7 @@ fun CommentReplyActivity(
     isModerator: Boolean,
 ) {
     Log.d("jerboa", "got to comment reply activity")
-
+    val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val commentReplyViewModel: CommentReplyViewModel = viewModel()
@@ -63,10 +65,11 @@ fun CommentReplyActivity(
                 loading = loading,
                 onClickBack = appState::popBackStack,
                 onSendClick = {
-                    account?.also { acct ->
+                    if (!account.isAnon()) {
                         commentReplyViewModel.createComment(
+                            ctx = ctx,
                             content = reply.text,
-                            account = acct,
+                            account = account,
                             focusManager = focusManager,
                         ) { cv ->
                             appState.apply {
@@ -96,6 +99,7 @@ fun CommentReplyActivity(
                                     .padding(padding)
                                     .imePadding(),
                                 showAvatar = siteViewModel.showAvatar(),
+                                showScores = siteViewModel.showScores(),
                             )
 
                         is ReplyItem.PostItem -> PostReply(
@@ -105,6 +109,8 @@ fun CommentReplyActivity(
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
                             isModerator = isModerator,
+                            showAvatar = siteViewModel.showAvatar(),
+                            showScores = siteViewModel.showScores(),
                             modifier = Modifier
                                 .padding(padding)
                                 .imePadding(),
@@ -121,6 +127,7 @@ fun CommentReplyActivity(
                                     .padding(padding)
                                     .imePadding(),
                                 showAvatar = siteViewModel.showAvatar(),
+                                showScores = siteViewModel.showScores(),
                             )
 
                         is ReplyItem.MentionReplyItem ->
@@ -134,6 +141,7 @@ fun CommentReplyActivity(
                                     .padding(padding)
                                     .imePadding(),
                                 showAvatar = siteViewModel.showAvatar(),
+                                showScores = siteViewModel.showScores(),
                             )
                     }
                 }

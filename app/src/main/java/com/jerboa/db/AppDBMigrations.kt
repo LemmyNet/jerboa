@@ -274,6 +274,23 @@ val MIGRATION_21_22 = object : Migration(21, 22) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
+            "ALTER TABLE Account ADD COLUMN verification_state INTEGER NOT NULL DEFAULT 0",
+        )
+    }
+}
+
+val MIGRATION_22_21 = object : Migration(22, 21) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE Account DROP COLUMN verification_state",
+        )
+    }
+}
+
+val MIGRATION_21_22 = object : Migration(21, 22) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
             "ALTER TABLE AppSettings ADD COLUMN markAsReadOnScroll INTEGER NOT NULL DEFAULT 0",
         )
     }
@@ -301,5 +318,7 @@ val MIGRATIONS_LIST = arrayOf(
     MIGRATION_18_19,
     MIGRATION_19_20,
     MIGRATION_20_21,
+    MIGRATION_21_22,
+    MIGRATION_22_21,
     MIGRATION_21_22,
 )

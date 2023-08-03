@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.jerboa.benchmarks"
-    compileSdk = 33
+    compileSdk = 34
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -21,12 +21,12 @@ android {
     }
 
     defaultConfig {
+        testInstrumentationRunnerArguments += mapOf("suppressErrors" to "EMULATOR")
         minSdk = 26
-        targetSdk =  33
+        targetSdk =  34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Only use the emulator to test benchmarks
-        testInstrumentationRunnerArguments += mapOf("androidx.benchmark.suppressErrors" to "EMULATOR")
     }
 
     targetProjectPath = ":app"
@@ -62,6 +62,6 @@ baselineProfile {
 dependencies {
     implementation("androidx.test.ext:junit:1.1.5")
     implementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("androidx.test.uiautomator:uiautomator:2.2.0")
-    implementation("androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha15")
+    implementation("androidx.test.uiautomator:uiautomator:2.3.0-alpha03")
+    implementation("androidx.benchmark:benchmark-macro-junit4:1.2.0-beta01")
 }

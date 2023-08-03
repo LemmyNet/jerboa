@@ -24,7 +24,6 @@ import java.io.InputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
-import okhttp3.Response as HttpResponse
 
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
@@ -261,6 +260,19 @@ interface API {
         private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
         private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
 
+        val httpClient: OkHttpClient = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addNetworkInterceptor { chain ->
+                chain.request().newBuilder()
+                    .header("User-Agent", "Jerboa")
+                    .build()
+                    .let(chain::proceed)
+            }
+            .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
+            .build()
+
         private fun buildUrl(): String {
             return "https://$currentInstance/api/$VERSION/"
         }
@@ -278,33 +290,25 @@ interface API {
             return api!!
         }
 
-        fun createTempInstance(host: String): API {
-            return buildApi("https://$host/api/$VERSION/")
+        fun createTempInstance(host: String, customErrorHandler: ((Exception) -> Exception?)? = null): API {
+            return buildApi("https://$host/api/$VERSION/", customErrorHandler)
         }
 
-        private fun buildApi(baseUrl: String): API {
-            val client: OkHttpClient = OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor { chain ->
-                    val requestBuilder = chain.request().newBuilder()
-                        .header("User-Agent", "Jerboa")
-                    val newRequest = requestBuilder.build()
-                    chain.proceed(newRequest)
-                }
-                // this should probably be a network interceptor,
+        private fun buildApi(baseUrl: String, customErrorHandler: ((Exception) -> Exception?)? = null): API {
+            val currErrorHandler = customErrorHandler ?: errorHandler
+
+            val client = httpClient.newBuilder()
                 .addInterceptor { chain ->
                     val request = chain.request()
                     try {
                         chain.proceed(request)
                     } catch (e: Exception) {
-                        val err = errorHandler(e)
+                        val err = currErrorHandler(e)
                         if (err != null) {
                             throw err
                         }
 
-                        HttpResponse.Builder()
+                        okhttp3.Response.Builder()
                             .request(request)
                             .code(999)
                             .protocol(Protocol.HTTP_1_1)
@@ -312,14 +316,7 @@ interface API {
                             .body(e.toString().toResponseBody())
                             .build()
                     }
-                }
-                .addInterceptor(
-                    CustomHttpLoggingInterceptor(
-                        REDACTED_QUERY_PARAMS,
-                        REDACTED_BODY_FIELDS,
-                    ),
-                )
-                .build()
+                }.build()
 
             return Retrofit.Builder()
                 .baseUrl(baseUrl)

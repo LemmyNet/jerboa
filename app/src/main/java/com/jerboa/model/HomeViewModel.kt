@@ -203,26 +203,26 @@ class HomeViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun resetPosts(account: Account?) {
+    fun resetPosts(account: Account) {
         resetPage()
         getPosts(
             GetPosts(
                 page = page,
                 sort = sortType,
                 type_ = listingType,
-                auth = account?.jwt,
+                auth = account.jwt.ifEmpty { null },
             ),
         )
     }
 
-    fun refreshPosts(account: Account?) {
+    fun refreshPosts(account: Account) {
         resetPage()
         getPosts(
             GetPosts(
                 page = page,
                 sort = sortType,
                 type_ = listingType,
-                auth = account?.jwt,
+                auth = account.jwt.ifEmpty { null },
             ),
             ApiState.Refreshing,
         )

@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.home
 
-import android.content.Context
 import android.util.Log
 import androidx.activity.compose.ReportDrawn
 import androidx.compose.foundation.layout.Box
@@ -19,12 +18,12 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -53,7 +52,8 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.entity.Account
-import com.jerboa.loginFirstToast
+import com.jerboa.db.entity.isAnon
+import com.jerboa.db.entity.isReady
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
@@ -64,8 +64,9 @@ import com.jerboa.scrollToTop
 import com.jerboa.shareLink
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.ApiErrorToast
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
@@ -73,6 +74,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
@@ -98,10 +100,11 @@ fun HomeActivity(
 
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
-    val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
+    // Forget snackbars of previous accounts
+    val snackbarHostState = remember(account) { SnackbarHostState() }
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
         if (homeViewModel.initialized) homeViewModel.updatePost(pv)
@@ -111,11 +114,17 @@ fun HomeActivity(
         if (homeViewModel.initialized) homeViewModel.updatePost(pv)
     }
 
+    LaunchedEffect(account) {
+        if (!account.isAnon() && !account.isReady()) {
+            account.doIfReadyElseDisplayInfo(appState, ctx, snackbarHostState, scope, siteViewModel, accountViewModel) {}
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .semantics { testTagsAsResourceId = true },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
                 openDrawer = {
@@ -140,7 +149,6 @@ fun HomeActivity(
                 siteViewModel = siteViewModel,
                 appSettingsViewModel = appSettingsViewModel,
                 account = account,
-                ctx = ctx,
                 appState = appState,
                 postListState = postListState,
                 showVotingArrowsInListView = showVotingArrowsInListView,
@@ -149,19 +157,26 @@ fun HomeActivity(
                 blurNSFW = blurNSFW,
                 showPostLinkPreviews = showPostLinkPreviews,
                 markAsReadOnScroll = markAsReadOnScroll,
+                snackbarHostState = snackbarHostState,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    account?.also {
+                    account.doIfReadyElseDisplayInfo(
+                        appState,
+                        ctx,
+                        snackbarHostState,
+                        scope,
+                        siteViewModel,
+                        accountViewModel,
+                        loginAsToast = false,
+                    ) {
                         appState.toCreatePost(
                             channel = transferCreatePostDepsViaRoot,
                             community = null,
                         )
-                    } ?: run {
-                        loginFirstToast(ctx)
                     }
                 },
             ) {
@@ -179,8 +194,7 @@ fun HomeActivity(
 fun MainPostListingsContent(
     homeViewModel: HomeViewModel,
     siteViewModel: SiteViewModel,
-    account: Account?,
-    ctx: Context,
+    account: Account,
     appState: JerboaAppState,
     padding: PaddingValues,
     postListState: LazyListState,
@@ -190,8 +204,11 @@ fun MainPostListingsContent(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
+    snackbarHostState: SnackbarHostState,
     markAsReadOnScroll: Boolean,
 ) {
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
     val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     var taglines: List<Tagline>? = null
@@ -232,7 +249,7 @@ fun MainPostListingsContent(
 
         val posts = when (val postsRes = homeViewModel.postsRes) {
             is ApiState.Failure -> {
-                ApiErrorToast(postsRes.msg)
+                apiErrorToast(ctx, postsRes.msg)
                 persistentListOf()
             }
             is ApiState.Holder -> postsRes.data.posts.toImmutableList()
@@ -246,7 +263,13 @@ fun MainPostListingsContent(
             postViewMode = getPostViewMode(appSettingsViewModel),
             contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
             onUpvoteClick = { postView ->
-                account?.also { acct ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
@@ -254,13 +277,19 @@ fun MainPostListingsContent(
                                 currentVote = postView.my_vote,
                                 voteType = VoteType.Upvote,
                             ),
-                            auth = acct.jwt,
+                            auth = it.jwt,
                         ),
                     )
                 }
             },
             onDownvoteClick = { postView ->
-                account?.also { acct ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
@@ -268,7 +297,7 @@ fun MainPostListingsContent(
                                 currentVote = postView.my_vote,
                                 voteType = VoteType.Downvote,
                             ),
-                            auth = acct.jwt,
+                            auth = it.jwt,
                         ),
                     )
                 }
@@ -277,22 +306,34 @@ fun MainPostListingsContent(
                 appState.toPost(id = postView.post.id)
             },
             onSaveClick = { postView ->
-                account?.also { acct ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
                     homeViewModel.savePost(
                         SavePost(
                             post_id = postView.post.id,
                             save = !postView.saved,
-                            auth = acct.jwt,
+                            auth = it.jwt,
                         ),
                     )
                 }
             },
             onBlockCommunityClick = { community ->
-                account?.also { acct ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
                     homeViewModel.blockCommunity(
                         BlockCommunity(
                             community_id = community.id,
-                            auth = acct.jwt,
+                            auth = it.jwt,
                             block = true,
                         ),
                         ctx = ctx,
@@ -300,12 +341,18 @@ fun MainPostListingsContent(
                 }
             },
             onBlockCreatorClick = { creator ->
-                account?.also { acct ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
                     homeViewModel.blockPerson(
                         BlockPerson(
                             person_id = creator.id,
                             block = true,
-                            auth = acct.jwt,
+                            auth = it.jwt,
                         ),
                         ctx = ctx,
                     )
@@ -318,12 +365,18 @@ fun MainPostListingsContent(
                 )
             },
             onDeletePostClick = { postView ->
-                account?.also { acct ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
                     homeViewModel.deletePost(
                         DeletePost(
                             post_id = postView.post.id,
                             deleted = !postView.post.deleted,
-                            auth = acct.jwt,
+                            auth = it.jwt,
                         ),
                     )
                 }
@@ -341,7 +394,7 @@ fun MainPostListingsContent(
                 shareLink(url, ctx)
             },
             isScrolledToEnd = {
-                homeViewModel.appendPosts(account?.jwt)
+                homeViewModel.appendPosts(account.jwt)
             },
             account = account,
             enableDownVotes = siteViewModel.enableDownvotes(),
@@ -369,6 +422,7 @@ fun MainPostListingsContent(
                 }
             },
             showIfRead = true,
+            showScores = siteViewModel.showScores(),
         )
     }
 }
@@ -380,7 +434,7 @@ fun MainTopBar(
     openDrawer: () -> Unit,
     homeViewModel: HomeViewModel,
     appSettingsViewModel: AppSettingsViewModel,
-    account: Account?,
+    account: Account,
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {

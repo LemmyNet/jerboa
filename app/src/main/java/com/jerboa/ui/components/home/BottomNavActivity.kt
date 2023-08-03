@@ -19,9 +19,11 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -42,18 +44,19 @@ import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.fetchHomePosts
-import com.jerboa.loginFirstToast
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.BottomAppBarAll
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.util.InitializeRoute
+import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.coroutines.launch
 
 enum class NavTab(
@@ -116,23 +119,39 @@ fun BottomNavActivity(
     val homeViewModel: HomeViewModel = viewModel()
 
     val bottomNavController = rememberNavController()
+    val snackbarHostState = remember(account) { SnackbarHostState() }
     var selectedTab by rememberSaveable { mutableStateOf(NavTab.Home) }
-    val onSelectTab = onSelectTab@{ tab: NavTab ->
-        if (tab.needsLogin() && account == null) {
-            loginFirstToast(ctx)
-        } else {
-            selectedTab = tab
-            val currentRoute = bottomNavController.currentDestination?.route
-            if (currentRoute == tab.name && tab == NavTab.Home) {
-                scope.launch {
-                    homeViewModel.lazyListState.animateScrollToItem(0)
-                }
-                return@onSelectTab
+
+    val onInnerSelectTab = { tab: NavTab ->
+        selectedTab = tab
+        val currentRoute = bottomNavController.currentDestination?.route
+        if (currentRoute == tab.name && tab == NavTab.Home) {
+            scope.launch {
+                homeViewModel.lazyListState.animateScrollToItem(0)
             }
+        } else {
             bottomNavController.navigate(tab.name) {
                 launchSingleTop = true
                 popUpTo(bottomNavController.graph.id) // To make back button close the app.
             }
+        }
+    }
+
+    val onSelectTab: (NavTab) -> Unit = { tab: NavTab ->
+        if (tab.needsLogin()) {
+            account.doIfReadyElseDisplayInfo(
+                appState,
+                ctx,
+                snackbarHostState,
+                scope,
+                siteViewModel,
+                accountViewModel,
+                loginAsToast = false,
+            ) {
+                onInnerSelectTab(tab)
+            }
+        } else {
+            onInnerSelectTab(tab)
         }
     }
 
@@ -169,6 +188,8 @@ fun BottomNavActivity(
         modifier = Modifier.semantics { testTagsAsResourceId = true },
         content = {
             Scaffold(
+                snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
+
                 bottomBar = {
                     if (appSettings.showBottomNav) {
                         BottomAppBarAll(
@@ -232,7 +253,7 @@ fun BottomNavActivity(
 
                     composable(route = NavTab.Saved.name) {
                         PersonProfileActivity(
-                            personArg = Either.Left(account!!.id),
+                            personArg = Either.Left(account.id),
                             savedMode = true,
                             appState = appState,
                             accountViewModel = accountViewModel,
@@ -250,7 +271,7 @@ fun BottomNavActivity(
 
                     composable(route = NavTab.Profile.name) {
                         PersonProfileActivity(
-                            personArg = Either.Left(account!!.id),
+                            personArg = Either.Left(account.id),
                             savedMode = false,
                             appState = appState,
                             accountViewModel = accountViewModel,

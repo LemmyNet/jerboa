@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Login
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.types.Community
@@ -46,8 +48,11 @@ import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.MyUserInfo
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
-import com.jerboa.federatedNameShown
+import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.isAnon
+import com.jerboa.db.entity.isReady
 import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -85,6 +90,7 @@ fun Drawer(
     if (!isOpen) showAccountAddMode = false
 
     DrawerHeader(
+        accountViewModel = accountViewModel,
         myPerson = myUserInfo?.local_user_view?.person,
         showAccountAddMode = showAccountAddMode,
         onClickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode },
@@ -286,15 +292,15 @@ fun DrawerItemsMainPreview() {
 
 @Composable
 fun DrawerAddAccountMode(
-    accountViewModel: AccountViewModel?,
+    accountViewModel: AccountViewModel,
     onAddAccount: () -> Unit,
     onSwitchAccountClick: (account: Account) -> Unit,
     onSignOutClick: () -> Unit,
     onSwitchAnon: () -> Unit,
 ) {
-    val allAccounts = accountViewModel?.allAccounts?.observeAsState()
-    val accountsWithoutCurrent = allAccounts?.value?.toMutableList()
-    val currentAccount = accountViewModel?.let { getCurrentAccount(accountViewModel = it) }
+    val allAccounts = accountViewModel.allAccounts.observeAsState()
+    val accountsWithoutCurrent = allAccounts.value?.toMutableList()
+    val currentAccount = getCurrentAccount(accountViewModel = accountViewModel)
 
     accountsWithoutCurrent?.remove(currentAccount)
 
@@ -311,7 +317,8 @@ fun DrawerAddAccountMode(
                 onClick = { onSwitchAccountClick(it) },
             )
         }
-        currentAccount?.also {
+
+        if (!currentAccount.isAnon()) {
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_switch_anon),
                 icon = Icons.Outlined.Login,
@@ -330,22 +337,27 @@ fun DrawerAddAccountMode(
 @Preview
 @Composable
 fun DrawerAddAccountModePreview() {
+    val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory)
     DrawerAddAccountMode(
         onAddAccount = {},
         onSignOutClick = {},
         onSwitchAccountClick = {},
-        accountViewModel = null,
+        accountViewModel = accountViewModel,
         onSwitchAnon = {},
     )
 }
 
 @Composable
 fun DrawerHeader(
+    accountViewModel: AccountViewModel,
     myPerson: Person?,
     onClickShowAccountAddMode: () -> Unit,
     showAccountAddMode: Boolean = false,
     showAvatar: Boolean,
 ) {
+    val account = getCurrentAccount(accountViewModel)
+    val showWarningIcon = !account.isAnon() && !account.isReady()
+
     val sizeMod = Modifier
         .fillMaxWidth()
         .height(DRAWER_BANNER_SIZE)
@@ -366,8 +378,16 @@ fun DrawerHeader(
             modifier = sizeMod
                 .padding(XL_PADDING),
         ) {
-            Box(modifier = Modifier.weight(0.9f)) {
-                AvatarAndAccountName(myPerson, showAvatar)
+            if (showWarningIcon) {
+                Icon(
+                    modifier = Modifier.weight(0.1f).padding(end = SMALL_PADDING),
+                    imageVector = Icons.Outlined.WarningAmber,
+                    contentDescription = stringResource(R.string.warning),
+                    tint = MaterialTheme.colorScheme.error,
+                )
+            }
+            Box(modifier = Modifier.weight(if (showWarningIcon) 0.8f else 0.9f)) {
+                AvatarAndAccountName(account, myPerson, showAvatar)
             }
             Icon(
                 modifier = Modifier.weight(0.1f),
@@ -387,7 +407,7 @@ fun DrawerHeader(
 }
 
 @Composable
-fun AvatarAndAccountName(myPerson: Person?, showAvatar: Boolean) {
+fun AvatarAndAccountName(account: Account, myPerson: Person?, showAvatar: Boolean) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -397,13 +417,13 @@ fun AvatarAndAccountName(myPerson: Person?, showAvatar: Boolean) {
                 LargerCircularIcon(icon = it)
             }
         }
-        Column() {
+        Column {
             PersonName(
-                person = myPerson,
+                name = myPerson?.display_name ?: account.name,
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                text = myPerson?.let { federatedNameShown(it) } ?: "",
+                text = if (account.isAnon()) "" else "${account.name}@${account.instance}",
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.labelSmall,
                 overflow = TextOverflow.Ellipsis,
@@ -416,15 +436,17 @@ fun AvatarAndAccountName(myPerson: Person?, showAvatar: Boolean) {
 @Preview
 @Composable
 fun AvatarAndAccountNamePreview() {
-    AvatarAndAccountName(myPerson = samplePerson, showAvatar = true)
+    AvatarAndAccountName(account = AnonAccount, myPerson = samplePerson, showAvatar = true)
 }
 
 @Preview
 @Composable
 fun DrawerHeaderPreview() {
+    val accountViewModel: AccountViewModel = viewModel(factory = AccountViewModelFactory.Factory)
     DrawerHeader(
         myPerson = samplePerson,
         onClickShowAccountAddMode = {},
         showAvatar = true,
+        accountViewModel = accountViewModel,
     )
 }

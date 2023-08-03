@@ -5,6 +5,7 @@ import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -43,16 +44,16 @@ import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
-import com.jerboa.loginFirstToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
+import com.jerboa.util.isReadyAndIfNotShowSimplifiedInfoToast
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
@@ -65,6 +66,8 @@ fun SimpleTopAppBar(
         title = {
             Text(
                 text = text,
+                maxLines = 1,
+                modifier = Modifier.basicMarquee(),
             )
         },
         navigationIcon = {
@@ -201,6 +204,7 @@ fun CommentOrPostNodeHeader(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Int = 0,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -248,6 +252,7 @@ fun CommentOrPostNodeHeader(
             updated = updated,
             isExpanded = isExpanded,
             collapsedCommentsCount = collapsedCommentsCount,
+            showScores = showScores,
         )
     }
 }
@@ -269,6 +274,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onClick = {},
         onLongCLick = {},
         showAvatar = true,
+        showScores = true,
     )
 }
 
@@ -280,31 +286,17 @@ fun ActionBarButton(
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
-    account: Account?,
+    account: Account,
     requiresAccount: Boolean = true,
 ) {
     val ctx = LocalContext.current
-//    Button(
-//        onClick = onClick,
-//        colors = ButtonDefaults.buttonColors(
-//            backgroundColor = Color.Transparent,
-//            contentColor = contentColor,
-//        ),
-//        shape = MaterialTheme.shapes.large,
-//        contentPadding = PaddingValues(SMALL_PADDING),
-//        elevation = null,
-//        content = content,
-//        modifier = Modifier
-//            .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
-//    )
+
     val barMod = if (noClick) {
         Modifier
     } else {
         Modifier.clickable(onClick = {
-            if (!requiresAccount || account !== null) {
+            if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 onClick()
-            } else {
-                loginFirstToast(ctx)
             }
         })
     }
@@ -563,5 +555,49 @@ fun LoadingBar(
 ) {
     LinearProgressIndicator(
         modifier = Modifier.fillMaxWidth().padding(padding).testTag("jerboa:loading"),
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateSubmitHeader(
+    title: String,
+    onClickBack: () -> Unit,
+    onSubmitClick: () -> Unit,
+    loading: Boolean,
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = title,
+            )
+        },
+        actions = {
+            IconButton(
+                onClick = onSubmitClick,
+                enabled = !loading,
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.Send,
+                        contentDescription = stringResource(R.string.form_submit),
+                    )
+                }
+            }
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = onClickBack,
+            ) {
+                Icon(
+                    Icons.Outlined.Close,
+                    contentDescription = stringResource(R.string.create_report_back),
+                )
+            }
+        },
     )
 }
