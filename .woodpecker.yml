@@ -1,3 +1,10 @@
+variables:
+  - &slow_check_paths
+    - path:
+        - "**/*.kt"
+        - "**/*.gradle"
+        - ".woodpecker.yml"
+
 pipeline:
   prettier_markdown_check:
     image: tmknom/prettier
@@ -11,6 +18,7 @@ pipeline:
       - ./gradlew lintKotlin
     environment:
       GRADLE_RO_DEP_CACHE: .depcache
+    when: *slow_check_paths
 
   build_project:
     image: cimg/android:2023.06
@@ -19,6 +27,7 @@ pipeline:
       - ./gradlew assembleDebug
     environment:
       GRADLE_RO_DEP_CACHE: .depcache
+    when: *slow_check_paths
 
   run_tests:
     image: cimg/android:2023.06
@@ -27,6 +36,7 @@ pipeline:
       - ./gradlew testDebug
     environment:
       GRADLE_RO_DEP_CACHE: .depcache
+    when: *slow_check_paths
 
   notify:
     image: alpine:3
