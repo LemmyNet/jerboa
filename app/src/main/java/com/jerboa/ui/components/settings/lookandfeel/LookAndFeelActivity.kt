@@ -71,14 +71,9 @@ fun LookAndFeelActivity(
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
     val showTextDescriptionsInNavbar = rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
-    val showCollapsedCommentContentState =
-        rememberBooleanSettingState(settings.showCollapsedCommentContent)
-    val showCommentActionBarByDefaultState = rememberBooleanSettingState(
-        settings.showCommentActionBarByDefault,
-    )
-    val showVotingArrowsInListViewState = rememberBooleanSettingState(
-        settings.showVotingArrowsInListView,
-    )
+    val showCollapsedCommentContentState = rememberBooleanSettingState(settings.showCollapsedCommentContent)
+    val showCommentActionBarByDefaultState = rememberBooleanSettingState(settings.showCommentActionBarByDefault)
+    val showVotingArrowsInListViewState = rememberBooleanSettingState(settings.showVotingArrowsInListView)
     val showParentCommentNavigationButtonsState = rememberBooleanSettingState(
         settings.showParentCommentNavigationButtons,
     )
@@ -96,6 +91,8 @@ fun LookAndFeelActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val scrollState = rememberScrollState()
+
+    val markAsReadOnScroll = rememberBooleanSettingState(settings.markAsReadOnScroll)
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
@@ -119,6 +116,7 @@ fun LookAndFeelActivity(
                 blurNSFW = blurNSFW.value,
                 backConfirmationMode = backConfirmationMode.value,
                 showPostLinkPreviews = showPostLinkPreviewMode.value,
+                markAsReadOnScroll = markAsReadOnScroll.value,
             ),
         )
     }
@@ -305,6 +303,13 @@ fun LookAndFeelActivity(
                     state = showPostLinkPreviewMode,
                     title = {
                         Text(stringResource(id = R.string.show_post_link_previews))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = markAsReadOnScroll,
+                    title = {
+                        Text(stringResource(id = R.string.mark_as_read_on_scroll))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

@@ -271,6 +271,7 @@ class MainActivity : AppCompatActivity() {
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                                markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             )
                         }
 
@@ -311,6 +312,7 @@ class MainActivity : AppCompatActivity() {
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                                markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             )
                         }
 
@@ -382,6 +384,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             onBack = appState::popBackStack,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
 
@@ -415,6 +418,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
 
