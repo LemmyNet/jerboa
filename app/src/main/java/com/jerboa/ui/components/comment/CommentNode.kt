@@ -241,7 +241,7 @@ fun LazyListScope.commentNodeItem(
     increaseLazyListIndexTracker()
     // TODO Needs a contentType
     // possibly "contentNodeItemL${node.depth}"
-    item(key = null) { // TODO was commentId but see #1109, changeback once bug has been fixed
+    item(key = commentId) {
         var viewSource by remember { mutableStateOf(false) }
 
         val backgroundColor = MaterialTheme.colorScheme.background
