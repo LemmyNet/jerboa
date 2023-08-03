@@ -5,7 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,7 +31,7 @@ import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.*
-import com.jerboa.ui.theme.*
+import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.coroutines.launch
 
 @Composable
@@ -261,6 +261,7 @@ fun SettingsForm(
                 Text(text = stringResource(R.string.account_settings_show_read_posts))
             },
         )
+
         SettingsCheckbox(
             state = botAccount,
             title = {

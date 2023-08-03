@@ -89,6 +89,11 @@ data class AppSettings(
     )
     val showTextDescriptionsInNavbar: Boolean,
     @ColumnInfo(
+        name = "markAsReadOnScroll",
+        defaultValue = "0",
+    )
+    val markAsReadOnScroll: Boolean,
+    @ColumnInfo(
         name = "backConfirmationMode",
         defaultValue = "1",
     )

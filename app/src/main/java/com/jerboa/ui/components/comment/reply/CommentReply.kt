@@ -176,8 +176,8 @@ fun RepliedPost(
             score = postView.counts.score,
             onPersonClick = onPersonClick,
             isModerator = isModerator,
-            showAvatar = true,
-            showScores = true,
+            showAvatar = showAvatar,
+            showScores = showScores,
 
         )
         val text = postView.post.body ?: run { postView.post.name }

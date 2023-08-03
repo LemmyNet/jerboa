@@ -468,7 +468,8 @@ fun InboxTabs(
                                                 }
                                             },
                                             onPostClick = { postId ->
-                                                appState.toPost(id = postId)
+                                                goToComment(commentReplyView)
+                                                markAsRead(commentReplyView)
                                             },
                                             account = account,
                                             showAvatar = siteViewModel.showAvatar(),

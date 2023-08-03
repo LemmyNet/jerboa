@@ -1,3 +1,42 @@
+# Jerboa v0.0.42-alpha Release (2023-08-03)
+
+## What's Changed
+
+- Fix menubar icon when viewing someones profile by @MV-GH in https://github.com/dessalines/jerboa/pull/1083
+- Prevent duplicate accounts from logging in by @MV-GH in https://github.com/dessalines/jerboa/pull/1082
+- Add switch to anonymous option by @MV-GH in https://github.com/dessalines/jerboa/pull/1084
+- Don't show posts as read in saved and profile views by @twizmwazin in https://github.com/dessalines/jerboa/pull/1090
+- Scroll to top if homepage button pressed when on the home... (#1080) by @aaronkh in https://github.com/dessalines/jerboa/pull/1092
+- Fetch unreadCount on refresh, make unreadCount use less API calls, fix mark unread reply bug by @MV-GH in https://github.com/dessalines/jerboa/pull/1086
+- Add long-form ‘Top All’ string by @huftis in https://github.com/dessalines/jerboa/pull/1103
+- Add Norwegian Nynorsk translation by @huftis in https://github.com/dessalines/jerboa/pull/1102
+- Add instance to community name by @MV-GH in https://github.com/dessalines/jerboa/pull/1104
+- Fix `Value X cannot be converted to json` in error messages by @MV-GH in https://github.com/dessalines/jerboa/pull/1098
+- Add warning in instance file for auto generated instance list by @MV-GH in https://github.com/dessalines/jerboa/pull/1112
+- Add failure toast for creating comments by @MV-GH in https://github.com/dessalines/jerboa/pull/1114
+- Temp fix for crash sometimes on read more replies to bug introduced in lemmy 18.3 by @MV-GH in https://github.com/dessalines/jerboa/pull/1113
+- Add direct message person option and screen by @MV-GH in https://github.com/dessalines/jerboa/pull/1108
+- Fix Inbox Spanish Translation, closes #1110 by @ogarcia in https://github.com/dessalines/jerboa/pull/1118
+- Add account verification, improve login error messages, fix "account removal" and more by @MV-GH in https://github.com/dessalines/jerboa/pull/1099
+- Update deps, gradle and target SDK 34 by @MV-GH in https://github.com/dessalines/jerboa/pull/1120
+- Respect show score user setting by @MV-GH in https://github.com/dessalines/jerboa/pull/1122
+- Remove account_approved and account_email_verified add account_banned checks by @MV-GH in https://github.com/dessalines/jerboa/pull/1126
+- Use marquee for instance in topbar, and add it to communitysidebar by @MV-GH in https://github.com/dessalines/jerboa/pull/1107
+- Properly fix read more replies bug introduced in lemmy 18.3 by @MV-GH in https://github.com/dessalines/jerboa/pull/1127
+- Mark as Read on Open and Scroll by @ZJouba in https://github.com/dessalines/jerboa/pull/1025
+- Go to comment when clicking on reply comment in inbox, fixes #1089 by @twizmwazin in https://github.com/dessalines/jerboa/pull/1091
+- Update moderator list to be a isModerator function by @MV-GH in https://github.com/dessalines/jerboa/pull/1130
+- Update drawer Subscriptions by @ZJouba in https://github.com/dessalines/jerboa/pull/1131
+- Enchance imageviewer: Downloadprogressbar, error placeholder + retry, large images subsampling, SVG support by @MV-GH in https://github.com/dessalines/jerboa/pull/1111
+
+## New Contributors
+
+- @aaronkh made their first contribution in https://github.com/dessalines/jerboa/pull/1092
+- @huftis made their first contribution in https://github.com/dessalines/jerboa/pull/1103
+- @ogarcia made their first contribution in https://github.com/dessalines/jerboa/pull/1118
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.41...0.0.42
+
 # Jerboa v0.0.41-alpha Release (2023-07-21)
 
 ## What's Changed

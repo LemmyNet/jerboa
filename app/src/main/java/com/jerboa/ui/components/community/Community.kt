@@ -1,5 +1,7 @@
 package com.jerboa.ui.components.community
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -9,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunityView
@@ -214,6 +215,7 @@ fun CommunityHeader(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommunityHeaderTitle(
     communityName: String,
@@ -224,7 +226,8 @@ fun CommunityHeaderTitle(
         Text(
             text = communityName,
             style = MaterialTheme.typography.titleLarge,
-            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            modifier = Modifier.basicMarquee(),
         )
         Text(
             text = ctx.getString(selectedSortType.shortForm),

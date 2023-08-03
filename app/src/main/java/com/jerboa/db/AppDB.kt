@@ -34,11 +34,12 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     blurNSFW = true,
     showTextDescriptionsInNavbar = true,
     backConfirmationMode = 1,
+    markAsReadOnScroll = false,
     showPostLinkPreviews = true,
 )
 
 @Database(
-    version = 22,
+    version = 23,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

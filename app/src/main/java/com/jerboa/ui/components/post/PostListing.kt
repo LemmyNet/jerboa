@@ -483,7 +483,8 @@ fun PostBody(
                             }
                         }
                     } else {
-                        val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+                        val defaultColor: Color =
+                            LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 
                         CreateMarkdownPreview(
                             markdown = text,
@@ -1662,10 +1663,23 @@ fun PostOptionsDialog(
                         text = stringResource(R.string.post_listing_copy_thumbnail_link),
                         icon = Icons.Outlined.Link,
                         onClick = {
-                            if (copyToClipboard(ctx, postView.post.thumbnail_url, "thumbnail link")) {
-                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_thumbnail_link_copied), Toast.LENGTH_SHORT).show()
+                            if (copyToClipboard(
+                                    ctx,
+                                    postView.post.thumbnail_url,
+                                    "thumbnail link",
+                                )
+                            ) {
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_thumbnail_link_copied),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             } else {
-                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             }
                             onDismissRequest()
                         },
@@ -1676,10 +1690,23 @@ fun PostOptionsDialog(
                         text = stringResource(R.string.post_listing_copy_title),
                         icon = Icons.Outlined.ContentCopy,
                         onClick = {
-                            if (copyToClipboard(ctx, postView.post.embed_description, "post title")) {
-                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_title_copied), Toast.LENGTH_SHORT).show()
+                            if (copyToClipboard(
+                                    ctx,
+                                    postView.post.embed_description,
+                                    "post title",
+                                )
+                            ) {
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_title_copied),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             } else {
-                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             }
                             onDismissRequest()
                         },
@@ -1691,9 +1718,17 @@ fun PostOptionsDialog(
                         icon = Icons.Outlined.ContentCopy,
                         onClick = {
                             if (copyToClipboard(ctx, postView.post.name, "post name")) {
-                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_name_copied), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_name_copied),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             } else {
-                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             }
                             onDismissRequest()
                         },
@@ -1705,9 +1740,17 @@ fun PostOptionsDialog(
                         icon = Icons.Outlined.ContentCopy,
                         onClick = {
                             if (copyToClipboard(ctx, postView.post.body, "post text")) {
-                                Toast.makeText(ctx, ctx.getString(R.string.post_listing_text_copied), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.post_listing_text_copied),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             } else {
-                                Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.generic_error),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             }
                             onDismissRequest()
                         },
@@ -1715,7 +1758,13 @@ fun PostOptionsDialog(
                 }
                 postView.post.body?.also {
                     IconAndTextDrawerItem(
-                        text = if (viewSource) stringResource(R.string.post_listing_view_original) else stringResource(R.string.post_listing_view_source),
+                        text = if (viewSource) {
+                            stringResource(R.string.post_listing_view_original)
+                        } else {
+                            stringResource(
+                                R.string.post_listing_view_source,
+                            )
+                        },
                         icon = Icons.Outlined.Description,
                         onClick = onViewSourceClick,
                     )
