@@ -65,11 +65,36 @@ enum class NavTab(
     val iconFilled: ImageVector,
     val contentDescriptionId: Int,
 ) {
-    Home(R.string.bottomBar_label_home, Icons.Outlined.Home, Icons.Filled.Home, R.string.bottomBar_home),
-    Search(R.string.bottomBar_label_search, Icons.Outlined.Search, Icons.Filled.Search, R.string.bottomBar_search),
-    Inbox(R.string.bottomBar_label_inbox, Icons.Outlined.Email, Icons.Filled.Email, R.string.bottomBar_inbox),
-    Saved(R.string.bottomBar_label_bookmarks, Icons.Outlined.Bookmarks, Icons.Filled.Bookmarks, R.string.bottomBar_bookmarks),
-    Profile(R.string.bottomBar_label_profile, Icons.Outlined.Person, Icons.Filled.Person, R.string.bottomBar_profile),
+    Home(
+        R.string.bottomBar_label_home,
+        Icons.Outlined.Home,
+        Icons.Filled.Home,
+        R.string.bottomBar_home,
+    ),
+    Search(
+        R.string.bottomBar_label_search,
+        Icons.Outlined.Search,
+        Icons.Filled.Search,
+        R.string.bottomBar_search,
+    ),
+    Inbox(
+        R.string.bottomBar_label_inbox,
+        Icons.Outlined.Email,
+        Icons.Filled.Email,
+        R.string.bottomBar_inbox,
+    ),
+    Saved(
+        R.string.bottomBar_label_bookmarks,
+        Icons.Outlined.Bookmarks,
+        Icons.Filled.Bookmarks,
+        R.string.bottomBar_bookmarks,
+    ),
+    Profile(
+        R.string.bottomBar_label_profile,
+        Icons.Outlined.Person,
+        Icons.Filled.Person,
+        R.string.bottomBar_profile,
+    ),
     ;
 
     fun needsLogin() = this == Inbox || this == Saved || this == Profile
@@ -201,6 +226,7 @@ fun BottomNavActivity(
                             drawerState = drawerState,
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
 
@@ -239,6 +265,7 @@ fun BottomNavActivity(
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
 
@@ -256,6 +283,7 @@ fun BottomNavActivity(
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
                         )
                     }
                 }
