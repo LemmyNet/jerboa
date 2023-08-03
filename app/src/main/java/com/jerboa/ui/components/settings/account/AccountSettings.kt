@@ -110,7 +110,9 @@ fun SettingsForm(
     }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
-    val defaultSortType = rememberIntSettingState(luv?.local_user?.default_sort_type?.ordinal ?: 0)
+    val supportedSortTypes = remember { SortType.getSupportedSortTypes(siteViewModel.siteVersion()) }
+    val defaultSortTypeInitial = luv?.local_user?.default_sort_type ?: SortType.Active
+    val defaultSortType = rememberIntSettingState(supportedSortTypes.indexOf(defaultSortTypeInitial))
     val defaultListingType =
         rememberIntSettingState(luv?.local_user?.default_listing_type?.ordinal ?: 0)
     val showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
@@ -123,9 +125,7 @@ fun SettingsForm(
         rememberBooleanSettingState(luv?.local_user?.show_new_post_notifs ?: false)
     val sendNotificationsToEmail =
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
-    val sortTypeNames = remember {
-        SortType.getSupportedSortTypes(siteViewModel.siteVersion()).map { ctx.getString(it.shortForm) }
-    }
+    val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.shortForm) } }
     val form = SaveUserSettings(
         display_name = displayName,
         bio = bio.text,
@@ -136,7 +136,7 @@ fun SettingsForm(
         matrix_user_id = matrixUserId,
         interface_language = interfaceLang,
         bot_account = botAccount.value,
-        default_sort_type = SortType.values()[defaultSortType.value],
+        default_sort_type = supportedSortTypes[defaultSortType.value],
         send_notifications_to_email = sendNotificationsToEmail.value,
         show_avatars = showAvatars.value,
         show_bot_accounts = showBotAccount.value,
