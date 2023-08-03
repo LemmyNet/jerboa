@@ -287,7 +287,7 @@ val MIGRATION_22_21 = object : Migration(22, 21) {
     }
 }
 
-val MIGRATION_22_23 = object : Migration(21, 22) {
+val MIGRATION_22_23 = object : Migration(22, 23) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
         database.execSQL(
