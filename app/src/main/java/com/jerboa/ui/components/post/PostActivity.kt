@@ -311,18 +311,16 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
-                        if (!account.isAnon()) {
-                            if (!postView.read) {
-                                appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
-                                postViewModel.markPostAsRead(
-                                    MarkPostAsRead(
-                                        post_id = postView.post.id,
-                                        read = true,
-                                        auth = account.jwt,
-                                    ),
-                                    appState,
-                                )
-                            }
+                        if (!account.isAnon() && !postView.read) {
+                            appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
+                            postViewModel.markPostAsRead(
+                                MarkPostAsRead(
+                                    post_id = postView.post.id,
+                                    read = true,
+                                    auth = account.jwt,
+                                ),
+                                appState,
+                            )
                         }
 
                         LazyColumn(

@@ -465,17 +465,15 @@ fun CommunityActivity(
                             openLink = appState::openLink,
                             markAsReadOnScroll = markAsReadOnScroll,
                             onMarkAsRead = { postView ->
-                                if (!postView.read) {
-                                    if (!account.isAnon()) {
-                                        communityViewModel.markPostAsRead(
-                                            MarkPostAsRead(
-                                                post_id = postView.post.id,
-                                                read = true,
-                                                auth = account.jwt,
-                                            ),
-                                            appState,
-                                        )
-                                    }
+                                if (!account.isAnon() && !postView.read) {
+                                    communityViewModel.markPostAsRead(
+                                        MarkPostAsRead(
+                                            post_id = postView.post.id,
+                                            read = true,
+                                            auth = account.jwt,
+                                        ),
+                                        appState,
+                                    )
                                 }
                             },
                             showIfRead = true,

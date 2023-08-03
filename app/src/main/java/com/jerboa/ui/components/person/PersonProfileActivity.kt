@@ -628,17 +628,15 @@ fun UserTabs(
                                     showPostLinkPreviews = showPostLinkPreviews,
                                     markAsReadOnScroll = markAsReadOnScroll,
                                     onMarkAsRead = {
-                                        if (!it.read) {
-                                            if (!account.isAnon()) {
-                                                personProfileViewModel.markPostAsRead(
-                                                    MarkPostAsRead(
-                                                        post_id = it.post.id,
-                                                        read = true,
-                                                        auth = account.jwt,
-                                                    ),
-                                                    appState,
-                                                )
-                                            }
+                                        if (!account.isAnon() && !it.read) {
+                                            personProfileViewModel.markPostAsRead(
+                                                MarkPostAsRead(
+                                                    post_id = it.post.id,
+                                                    read = true,
+                                                    auth = account.jwt,
+                                                ),
+                                                appState,
+                                            )
                                         }
                                     },
                                     showIfRead = false,
