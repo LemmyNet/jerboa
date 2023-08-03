@@ -466,12 +466,12 @@ fun CommunityActivity(
                             markAsReadOnScroll = markAsReadOnScroll,
                             onMarkAsRead = { postView ->
                                 if (!postView.read) {
-                                    account?.also { acct ->
+                                    if (!account.isAnon()) {
                                         communityViewModel.markPostAsRead(
                                             MarkPostAsRead(
                                                 post_id = postView.post.id,
                                                 read = true,
-                                                auth = acct.jwt,
+                                                auth = account.jwt,
                                             ),
                                             appState,
                                         )

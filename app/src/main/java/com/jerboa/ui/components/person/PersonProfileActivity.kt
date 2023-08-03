@@ -629,12 +629,12 @@ fun UserTabs(
                                     markAsReadOnScroll = markAsReadOnScroll,
                                     onMarkAsRead = {
                                         if (!it.read) {
-                                            account?.also { acct ->
+                                            if (!account.isAnon()) {
                                                 personProfileViewModel.markPostAsRead(
                                                     MarkPostAsRead(
                                                         post_id = it.post.id,
                                                         read = true,
-                                                        auth = acct.jwt,
+                                                        auth = account.jwt,
                                                     ),
                                                     appState,
                                                 )
