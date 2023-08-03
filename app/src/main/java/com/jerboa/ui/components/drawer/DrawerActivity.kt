@@ -4,8 +4,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
+import com.jerboa.datatypes.types.CommunityFollowerView
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -34,6 +38,8 @@ fun MainDrawer(
 ) {
     val account = getCurrentAccount(accountViewModel)
 
+    var follows by remember { mutableStateOf(listOf<CommunityFollowerView>()) }
+
     BackHandler(drawerState.isOpen) {
         closeDrawer(scope, drawerState)
     }
@@ -45,6 +51,7 @@ fun MainDrawer(
                 if (!account.isAnon() && account.isReady() && res.data.my_user == null) {
                     accountViewModel.invalidateAccount(account)
                 }
+                follows = res.data.my_user?.follows?.sortedBy { it.community.name }.orEmpty()
                 res.data.my_user
             }
             is ApiState.Failure -> {
@@ -57,6 +64,7 @@ fun MainDrawer(
             }
             else -> null
         },
+        follows = follows,
         unreadCount = siteViewModel.unreadCount,
         accountViewModel = accountViewModel,
         onAddAccount = onClickLogin,
