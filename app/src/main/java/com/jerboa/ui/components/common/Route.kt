@@ -33,6 +33,7 @@ object Route {
     const val COMMENT_EDIT = "commentEdit"
     const val POST_EDIT = "postEdit"
     const val PRIVATE_MESSAGE_REPLY = "privateMessageReply"
+    val CREATE_PRIVATE_MESSAGE = CreatePrivateMessageArgs.route
 
     val COMMENT_REPORT = CommentReportArgs.route
     val POST_REPORT = PostReportArgs.route
@@ -202,6 +203,25 @@ object Route {
 
             fun makeRoute(url: String) = "view/$url"
             internal val route by lazy { makeRoute(url = "{$URL}") }
+        }
+    }
+
+    class CreatePrivateMessageArgs(val personId: Int, val personName: String) {
+        constructor(navBackStackEntry: NavBackStackEntry) :
+            this(
+                personId = navBackStackEntry.arguments?.getInt(PERSON_ID)!!,
+                personName = navBackStackEntry.arguments?.getString(PERSON_NAME)!!,
+            )
+
+        companion object {
+            const val PERSON_ID = "person_id"
+            val PERSON_ID_TYPE = NavType.IntType
+
+            const val PERSON_NAME = "person_name"
+            val PERSON_NAME_TYPE = NavType.StringType
+
+            fun makeRoute(personId: String, personName: String) = "createPrivateMessage/$personId/$personName"
+            internal val route by lazy { makeRoute(personId = "{$PERSON_ID}", personName = "{$PERSON_NAME}") }
         }
     }
 }

@@ -18,7 +18,7 @@ fun VoteGeneric(
     type: VoteType,
     onVoteClick: () -> Unit,
     showNumber: Boolean = true,
-    account: Account?,
+    account: Account,
 ) {
     val iconAndColor = when (type) {
         VoteType.Upvote -> upvoteIconAndColor(myVote = myVote)

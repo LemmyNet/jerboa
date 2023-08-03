@@ -21,6 +21,7 @@ import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.EditPost
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostEditViewModel
@@ -87,15 +88,17 @@ fun PostEditActivity(
                     },
                     title = stringResource(R.string.post_edit_edit_post),
                     onSubmitClick = {
-                        onSubmitClick(
-                            account = account,
-                            name = name,
-                            body = body,
-                            url = url,
-                            postEditViewModel = postEditViewModel,
-                            isNsfw = isNsfw,
-                            appState = appState,
-                        )
+                        if (!account.isAnon()) {
+                            onSubmitClick(
+                                account = account,
+                                name = name,
+                                body = body,
+                                url = url,
+                                postEditViewModel = postEditViewModel,
+                                isNsfw = isNsfw,
+                                appState = appState,
+                            )
+                        }
                     },
                 )
                 if (loading) {
@@ -114,13 +117,13 @@ fun PostEditActivity(
                 urlField = urlField,
                 onUrlChange = { url = it },
                 onImagePicked = { uri ->
-                    val imageIs = imageInputStreamFromUri(ctx, uri)
-                    scope.launch {
-                        isUploadingImage = true
-                        account?.also { acct ->
-                            url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
+                    if (!account.isAnon()) {
+                        val imageIs = imageInputStreamFromUri(ctx, uri)
+                        scope.launch {
+                            isUploadingImage = true
+                            url = uploadPictrsImage(account, imageIs, ctx).orEmpty()
+                            isUploadingImage = false
                         }
-                        isUploadingImage = false
                     }
                 },
                 isUploadingImage = isUploadingImage,
@@ -135,7 +138,7 @@ fun PostEditActivity(
 }
 
 fun onSubmitClick(
-    account: Account?,
+    account: Account,
     name: String,
     body: TextFieldValue,
     url: String,
@@ -143,27 +146,25 @@ fun onSubmitClick(
     isNsfw: Boolean,
     appState: JerboaAppState,
 ) {
-    account?.also { acct ->
-        // Clean up that data
-        val nameOut = name.trim()
-        val bodyOut = body.text.trim().ifEmpty { null }
-        val urlOut = url.trim().ifEmpty { null }
-        val pv = postEditViewModel.postView
+    // Clean up that data
+    val nameOut = name.trim()
+    val bodyOut = body.text.trim().ifEmpty { null }
+    val urlOut = url.trim().ifEmpty { null }
+    val pv = postEditViewModel.postView
 
-        postEditViewModel.editPost(
-            form = EditPost(
-                post_id = pv!!.post.id,
-                name = nameOut,
-                url = urlOut,
-                body = bodyOut,
-                auth = acct.jwt,
-                nsfw = isNsfw,
-            ),
-        ) { postView ->
-            appState.apply {
-                addReturn(PostEditReturn.POST_VIEW, postView)
-                navigateUp()
-            }
+    postEditViewModel.editPost(
+        form = EditPost(
+            post_id = pv!!.post.id,
+            name = nameOut,
+            url = urlOut,
+            body = bodyOut,
+            auth = account.jwt,
+            nsfw = isNsfw,
+        ),
+    ) { postView ->
+        appState.apply {
+            addReturn(PostEditReturn.POST_VIEW, postView)
+            navigateUp()
         }
     }
 }

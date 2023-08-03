@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -22,6 +23,8 @@ import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
+import com.jerboa.datatypes.types.GetPostResponse
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
@@ -44,6 +47,8 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     )
         private set
 
+    private var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
+
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
@@ -54,6 +59,8 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
+
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     var sortType by mutableStateOf(SortType.New)
         private set
@@ -131,6 +138,7 @@ class PersonProfileViewModel : ViewModel(), Initializable {
                         ),
                     )
                 }
+
                 else -> {
                     prevPage()
                     oldRes
@@ -285,6 +293,24 @@ class PersonProfileViewModel : ViewModel(), Initializable {
             }
 
             else -> {}
+        }
+    }
+
+    fun markPostAsRead(
+        form: MarkPostAsRead,
+        appState: JerboaAppState,
+    ) {
+        appState.coroutineScope.launch {
+            markPostRes = ApiState.Loading
+            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+
+            when (val markRes = markPostRes) {
+                is ApiState.Success -> {
+                    updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
         }
     }
 }

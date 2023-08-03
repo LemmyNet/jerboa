@@ -68,6 +68,7 @@ class PostViewModel : ViewModel(), Initializable {
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     val unExpandedComments = mutableStateListOf<Int>()
     val commentsWithToggledActionBar = mutableStateListOf<Int>()
@@ -83,7 +84,7 @@ class PostViewModel : ViewModel(), Initializable {
     }
 
     fun getData(
-        account: Account?,
+        account: Account,
         state: ApiState<GetPostResponse> = ApiState.Loading,
     ) {
         viewModelScope.launch {
@@ -91,9 +92,9 @@ class PostViewModel : ViewModel(), Initializable {
             id?.also { id ->
 
                 val postForm = id.fold({
-                    GetPost(id = it, auth = account?.jwt)
+                    GetPost(id = it, auth = account.jwt.ifEmpty { null })
                 }, {
-                    GetPost(comment_id = it, auth = account?.jwt)
+                    GetPost(comment_id = it, auth = account.jwt.ifEmpty { null })
                 })
 
                 postRes = state
@@ -104,7 +105,7 @@ class PostViewModel : ViewModel(), Initializable {
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         post_id = it,
-                        auth = account?.jwt,
+                        auth = account.jwt.ifEmpty { null },
                         sort = sortType,
                     )
                 }, {
@@ -112,7 +113,7 @@ class PostViewModel : ViewModel(), Initializable {
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         parent_id = it,
-                        auth = account?.jwt,
+                        auth = account.jwt.ifEmpty { null },
                         sort = sortType,
                     )
                 })
@@ -130,7 +131,7 @@ class PostViewModel : ViewModel(), Initializable {
 
     fun fetchMoreChildren(
         commentView: CommentView,
-        account: Account?,
+        account: Account,
     ) {
         viewModelScope.launch {
             val existing = commentsRes
@@ -143,7 +144,7 @@ class PostViewModel : ViewModel(), Initializable {
                 parent_id = commentView.comment.id,
                 max_depth = COMMENTS_DEPTH_MAX,
                 type_ = ListingType.All,
-                auth = account?.jwt,
+                auth = account.jwt.ifEmpty { null },
             )
 
             val moreComments =
@@ -152,13 +153,16 @@ class PostViewModel : ViewModel(), Initializable {
             when (moreComments) {
                 is ApiState.Success -> {
                     // Remove the first comment, since it is a parent
+                    // Actually since a bug in 18.3 that is no longer a guarantee
+                    // see https://github.com/LemmyNet/lemmy/issues/3767
                     val newComments = moreComments.data.comments.toMutableList()
-                    newComments.removeAt(0)
+                    newComments.removeIf { it.comment.id == commentView.comment.id }
 
                     val appended = appendData(existing.data.comments, newComments.toList())
 
                     commentsRes = ApiState.Success(existing.data.copy(comments = appended))
                 }
+
                 else -> {}
             }
         }

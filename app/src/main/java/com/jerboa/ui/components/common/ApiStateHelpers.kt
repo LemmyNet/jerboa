@@ -1,10 +1,10 @@
 package com.jerboa.ui.components.common
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import com.jerboa.api.ApiState
 
 @Composable
@@ -14,11 +14,11 @@ fun ApiErrorText(
     msg.message?.also { Text(text = it, color = MaterialTheme.colorScheme.error) }
 }
 
-@Composable
-fun ApiErrorToast(
+fun apiErrorToast(
+    ctx: Context,
     msg: Throwable,
 ) {
-    msg.message?.also { Toast.makeText(LocalContext.current, it, Toast.LENGTH_SHORT).show() }
+    msg.message?.also { Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show() }
 }
 
 @Composable

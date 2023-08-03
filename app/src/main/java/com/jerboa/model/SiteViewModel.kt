@@ -17,6 +17,7 @@ import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.serializeToMap
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SiteViewModel : ViewModel() {
@@ -48,8 +49,8 @@ class SiteViewModel : ViewModel() {
 
     fun getSite(
         form: GetSite,
-    ) {
-        viewModelScope.launch {
+    ): Job {
+        return viewModelScope.launch {
             siteRes = ApiState.Loading
             siteRes = apiWrapper(API.getInstance().getSite(form.serializeToMap()))
 
@@ -112,6 +113,13 @@ class SiteViewModel : ViewModel() {
     fun enableDownvotes(): Boolean {
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.site_view.local_site.enable_downvotes
+            else -> true
+        }
+    }
+
+    fun showScores(): Boolean {
+        return when (val res = siteRes) {
+            is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores ?: true
             else -> true
         }
     }
