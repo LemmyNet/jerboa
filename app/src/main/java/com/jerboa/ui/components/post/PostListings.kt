@@ -63,6 +63,7 @@ fun PostListings(
     openImageViewer: (url: String) -> Unit,
     openLink: (String, Boolean, Boolean) -> Unit,
     showIfRead: Boolean,
+    showScores: Boolean,
 ) {
     LazyColumn(
         state = listState,
@@ -112,6 +113,7 @@ fun PostListings(
                 openImageViewer = openImageViewer,
                 openLink = openLink,
                 showIfRead = showIfRead,
+                showScores = showScores,
             )
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
@@ -163,5 +165,6 @@ fun PreviewPostListings() {
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
+        showScores = true,
     )
 }

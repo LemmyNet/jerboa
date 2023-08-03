@@ -5,6 +5,7 @@ import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -52,7 +53,7 @@ import com.jerboa.ui.theme.*
 import com.jerboa.util.isReadyAndIfNotShowSimplifiedInfoToast
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
@@ -65,6 +66,8 @@ fun SimpleTopAppBar(
         title = {
             Text(
                 text = text,
+                maxLines = 1,
+                modifier = Modifier.basicMarquee(),
             )
         },
         navigationIcon = {
@@ -201,6 +204,7 @@ fun CommentOrPostNodeHeader(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Int = 0,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -248,6 +252,7 @@ fun CommentOrPostNodeHeader(
             updated = updated,
             isExpanded = isExpanded,
             collapsedCommentsCount = collapsedCommentsCount,
+            showScores = showScores,
         )
     }
 }
@@ -269,6 +274,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onClick = {},
         onLongCLick = {},
         showAvatar = true,
+        showScores = true,
     )
 }
 
