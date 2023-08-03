@@ -827,7 +827,7 @@ fun UserTabs(
                                         showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                                     },
                                     account = account,
-                                    moderators = listOf(),
+                                    isModerator = { false },
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,

@@ -104,6 +104,7 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
 import com.jerboa.util.doIfReadyElseDisplayInfo
+import kotlinx.collections.immutable.toImmutableSet
 
 @Composable
 fun CommentsHeaderTitle(
@@ -305,6 +306,13 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
+                        val setIdModerators = postRes.data.moderators
+                            .map { it.moderator.id }
+                            .toImmutableSet()
+
+                        fun isModerator(id: Int): Boolean {
+                            return setIdModerators.contains(id)
+                        }
 
                         LazyColumn(
                             state = listState,
@@ -686,7 +694,7 @@ fun PostActivity(
                                         },
                                         onPostClick = {}, // Do nothing
                                         account = account,
-                                        moderators = postRes.data.moderators,
+                                        isModerator = ::isModerator,
                                         enableDownVotes = siteViewModel.enableDownvotes(),
                                         showAvatar = siteViewModel.showAvatar(),
                                         isCollapsedByParent = false,
