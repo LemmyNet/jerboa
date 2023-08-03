@@ -152,8 +152,10 @@ class PostViewModel : ViewModel(), Initializable {
             when (moreComments) {
                 is ApiState.Success -> {
                     // Remove the first comment, since it is a parent
+                    // Actually since a bug in 18.3 that is no longer a guarantee
+                    // see https://github.com/LemmyNet/lemmy/issues/3767
                     val newComments = moreComments.data.comments.toMutableList()
-                    newComments.removeAt(0)
+                    newComments.removeIf { it.comment.id == commentView.comment.id }
 
                     val appended = appendData(existing.data.comments, newComments.toList())
 
