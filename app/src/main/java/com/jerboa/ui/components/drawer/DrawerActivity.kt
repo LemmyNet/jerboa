@@ -20,6 +20,7 @@ import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.home.NavTab
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -64,7 +65,7 @@ fun MainDrawer(
             }
             else -> null
         },
-        follows = follows,
+        follows = follows.toImmutableList(),
         unreadCount = siteViewModel.unreadCount,
         accountViewModel = accountViewModel,
         onAddAccount = onClickLogin,

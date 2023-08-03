@@ -67,11 +67,12 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun Drawer(
     myUserInfo: MyUserInfo?,
-    follows: List<CommunityFollowerView>,
+    follows: ImmutableList<CommunityFollowerView>,
     unreadCount: Int,
     accountViewModel: AccountViewModel,
     onAddAccount: () -> Unit,
@@ -122,7 +123,7 @@ fun Drawer(
 @Composable
 fun DrawerContent(
     showAccountAddMode: Boolean,
-    follows: List<CommunityFollowerView>,
+    follows: ImmutableList<CommunityFollowerView>,
     onAddAccount: () -> Unit,
     accountViewModel: AccountViewModel,
     onSwitchAccountClick: (account: Account) -> Unit,
@@ -171,7 +172,7 @@ fun DrawerContent(
 @Composable
 fun DrawerItemsMain(
     myUserInfo: MyUserInfo?,
-    follows: List<CommunityFollowerView>,
+    follows: ImmutableList<CommunityFollowerView>,
     onClickSettings: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -283,7 +284,7 @@ fun DrawerItemsMain(
 fun DrawerItemsMainPreview() {
     DrawerItemsMain(
         myUserInfo = null,
-        follows = listOf(),
+        follows = listOf<CommunityFollowerView>() as ImmutableList<CommunityFollowerView>,
         onClickListingType = {},
         onCommunityClick = {},
         onClickSettings = {},
