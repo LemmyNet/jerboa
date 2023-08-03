@@ -45,6 +45,7 @@ import com.jerboa.datatypes.types.FollowCommunity
 import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetSite
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
@@ -68,6 +69,7 @@ import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
 import com.jerboa.util.doIfReadyElseDisplayInfo
@@ -87,6 +89,7 @@ fun CommunityActivity(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
+    markAsReadOnScroll: Boolean,
 ) {
     Log.d("jerboa", "got to community activity")
     val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
@@ -100,6 +103,10 @@ fun CommunityActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+        if (communityViewModel.initialized) communityViewModel.updatePost(pv)
+    }
+
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
         if (communityViewModel.initialized) communityViewModel.updatePost(pv)
     }
 
@@ -456,6 +463,19 @@ fun CommunityActivity(
                             showPostLinkPreviews = showPostLinkPreviews,
                             openImageViewer = appState::toView,
                             openLink = appState::openLink,
+                            markAsReadOnScroll = markAsReadOnScroll,
+                            onMarkAsRead = { postView ->
+                                if (!account.isAnon() && !postView.read) {
+                                    communityViewModel.markPostAsRead(
+                                        MarkPostAsRead(
+                                            post_id = postView.post.id,
+                                            read = true,
+                                            auth = account.jwt,
+                                        ),
+                                        appState,
+                                    )
+                                }
+                            },
                             showIfRead = true,
                             showScores = siteViewModel.showScores(),
                         )

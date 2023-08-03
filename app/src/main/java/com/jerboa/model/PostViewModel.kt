@@ -68,6 +68,7 @@ class PostViewModel : ViewModel(), Initializable {
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     val unExpandedComments = mutableStateListOf<Int>()
     val commentsWithToggledActionBar = mutableStateListOf<Int>()
@@ -161,6 +162,7 @@ class PostViewModel : ViewModel(), Initializable {
 
                     commentsRes = ApiState.Success(existing.data.copy(comments = appended))
                 }
+
                 else -> {}
             }
         }

@@ -47,6 +47,7 @@ import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
@@ -71,6 +72,7 @@ import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.persistentListOf
@@ -91,6 +93,7 @@ fun HomeActivity(
     drawerState: DrawerState,
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
+    markAsReadOnScroll: Boolean,
 ) {
     Log.d("jerboa", "got to home activity")
     val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
@@ -104,6 +107,10 @@ fun HomeActivity(
     val snackbarHostState = remember(account) { SnackbarHostState() }
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
+        if (homeViewModel.initialized) homeViewModel.updatePost(pv)
+    }
+
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
         if (homeViewModel.initialized) homeViewModel.updatePost(pv)
     }
 
@@ -149,6 +156,7 @@ fun HomeActivity(
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
                 showPostLinkPreviews = showPostLinkPreviews,
+                markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
             )
         },
@@ -197,6 +205,7 @@ fun MainPostListingsContent(
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     snackbarHostState: SnackbarHostState,
+    markAsReadOnScroll: Boolean,
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -397,6 +406,19 @@ fun MainPostListingsContent(
             showPostLinkPreviews = showPostLinkPreviews,
             openImageViewer = appState::toView,
             openLink = appState::openLink,
+            markAsReadOnScroll = markAsReadOnScroll,
+            onMarkAsRead = { postView ->
+                if (!account.isAnon() && !postView.read) {
+                    homeViewModel.markPostAsRead(
+                        MarkPostAsRead(
+                            post_id = postView.post.id,
+                            read = true,
+                            auth = account.jwt,
+                        ),
+                        appState,
+                    )
+                }
+            },
             showIfRead = true,
             showScores = siteViewModel.showScores(),
         )
