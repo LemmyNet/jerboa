@@ -5,10 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -62,6 +63,8 @@ fun PostListings(
     showPostLinkPreviews: Boolean,
     openImageViewer: (url: String) -> Unit,
     openLink: (String, Boolean, Boolean) -> Unit,
+    markAsReadOnScroll: Boolean,
+    onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
     showScores: Boolean,
 ) {
@@ -77,13 +80,10 @@ fun PostListings(
             contentAboveListings()
         }
         // List of items
-        items(
-            posts,
-            key = { postView ->
-                postView.post.id
-            },
-            contentType = { "Post" },
-        ) { postView ->
+        itemsIndexed(
+            items = posts,
+            contentType = { _, _ -> "Post" },
+        ) { index, postView ->
             PostListing(
                 postView = postView,
                 onUpvoteClick = onUpvoteClick,
@@ -114,7 +114,17 @@ fun PostListings(
                 openLink = openLink,
                 showIfRead = showIfRead,
                 showScores = showScores,
-            )
+            ).let {
+                if (!postView.read && markAsReadOnScroll) {
+                    DisposableEffect(key1 = postView.post.id) {
+                        onDispose {
+                            if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
+                                onMarkAsRead(postView)
+                            }
+                        }
+                    }
+                }
+            }
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
     }
@@ -164,6 +174,8 @@ fun PreviewPostListings() {
         showPostLinkPreviews = true,
         openImageViewer = {},
         openLink = { _: String, _: Boolean, _: Boolean -> },
+        markAsReadOnScroll = false,
+        onMarkAsRead = {},
         showIfRead = true,
         showScores = true,
     )
