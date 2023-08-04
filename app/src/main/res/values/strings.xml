@@ -353,6 +353,8 @@
     <string name="private_message_failed">Sending message failed, retrying...</string>
     <string name="private_message_placeholder">Type your message here</string>
     <string name="private_message_success">Message sent</string>
+    <string name="image_failed_loading">Failed loading the image, tap to retry.</string>
+    <string name="image_error_icon">This icon depicts a error symbol as a exclamation mark within a circle.</string>
     <string name="retry">Retry</string>
     <string name="no_network">No network connection found</string>
     <string name="verification_connection_failed_instance">Failed to connect to instance (%s)</string>

@@ -1,6 +1,5 @@
 package com.jerboa
 
-import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -24,8 +23,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,7 +35,6 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.Community
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AppDBContainer
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
 import com.jerboa.model.AccountViewModel
@@ -84,18 +80,6 @@ import com.jerboa.util.BackConfirmation.addConfirmationToast
 import com.jerboa.util.BackConfirmation.disposeConfirmation
 import com.jerboa.util.BackConfirmationMode
 import com.jerboa.util.ShowConfirmationDialog
-
-class JerboaApplication : Application() {
-    lateinit var container: AppDBContainer
-
-    override fun onCreate() {
-        super.onCreate()
-        container = AppDBContainer(this)
-    }
-}
-
-fun CreationExtras.jerboaApplication(): JerboaApplication =
-    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as JerboaApplication)
 
 class MainActivity : AppCompatActivity() {
     val siteViewModel by viewModels<SiteViewModel>()

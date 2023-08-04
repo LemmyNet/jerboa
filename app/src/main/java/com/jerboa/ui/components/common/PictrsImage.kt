@@ -152,10 +152,11 @@ fun PictrsThumbnailImage(
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = modifier.getBlurredOrRounded(
-            rounded = false,
-            blur = blur,
-        )
+        modifier = modifier
+            .getBlurredOrRounded(
+                rounded = false,
+                blur = blur,
+            )
             .clip(
                 RoundedCornerShape(
                     12f,

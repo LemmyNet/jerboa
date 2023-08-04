@@ -68,6 +68,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun Drawer(
@@ -284,7 +285,7 @@ fun DrawerItemsMain(
 fun DrawerItemsMainPreview() {
     DrawerItemsMain(
         myUserInfo = null,
-        follows = listOf<CommunityFollowerView>() as ImmutableList<CommunityFollowerView>,
+        follows = persistentListOf(),
         onClickListingType = {},
         onCommunityClick = {},
         onClickSettings = {},
