@@ -52,6 +52,8 @@ import androidx.compose.ui.unit.lerp
 import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import arrow.core.compareTo
 import com.google.gson.Gson
@@ -1484,6 +1486,9 @@ fun triggerRebirth(context: Context) {
     context.startActivity(mainIntent)
     Runtime.getRuntime().exit(0)
 }
+
+fun CreationExtras.jerboaApplication(): JerboaApplication =
+    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as JerboaApplication)
 
 @Throws(IndexOutOfBoundsException::class)
 inline fun <reified T : Enum<T>> Int.toEnum(): T {

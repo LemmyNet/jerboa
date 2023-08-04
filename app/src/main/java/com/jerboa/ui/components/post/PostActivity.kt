@@ -74,6 +74,7 @@ import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
+import com.jerboa.db.entity.isAnon
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
@@ -104,6 +105,11 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
 import com.jerboa.util.doIfReadyElseDisplayInfo
+import kotlinx.collections.immutable.toImmutableSet
+
+object PostViewReturn {
+    const val POST_VIEW = "post-view::return(post-view)"
+}
 
 @Composable
 fun CommentsHeaderTitle(
@@ -305,7 +311,15 @@ fun PostActivity(
                     is ApiState.Failure -> ApiErrorText(postRes.msg)
                     is ApiState.Success -> {
                         val postView = postRes.data.post_view
+                        val setIdModerators = postRes.data.moderators
+                            .map { it.moderator.id }
+                            .toImmutableSet()
 
+                        fun isModerator(id: Int): Boolean {
+                            return setIdModerators.contains(id)
+                        }
+
+                        if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
                         LazyColumn(
                             state = listState,
                             modifier = Modifier
@@ -336,8 +350,6 @@ fun PostActivity(
                                                 ),
                                             )
                                         }
-                                        // TODO will need to pass in postlistingsviewmodel
-                                        // for the Home page to also be updated
                                     },
                                     onDownvoteClick = { pv ->
                                         account.doIfReadyElseDisplayInfo(
@@ -686,7 +698,7 @@ fun PostActivity(
                                         },
                                         onPostClick = {}, // Do nothing
                                         account = account,
-                                        moderators = postRes.data.moderators,
+                                        isModerator = ::isModerator,
                                         enableDownVotes = siteViewModel.enableDownvotes(),
                                         showAvatar = siteViewModel.showAvatar(),
                                         isCollapsedByParent = false,

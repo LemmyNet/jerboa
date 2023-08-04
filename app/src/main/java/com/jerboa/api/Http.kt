@@ -60,6 +60,12 @@ interface API {
     suspend fun likePost(@Body form: CreatePostLike): Response<PostResponse>
 
     /**
+     * Mark post as read.
+     */
+    @POST("post/mark_as_read")
+    suspend fun markAsRead(@Body form: MarkPostAsRead): Response<PostResponse>
+
+    /**
      * Like / vote on a comment.
      */
     @POST("comment/like")
@@ -264,7 +270,6 @@ interface API {
                     .build()
                     .let(chain::proceed)
             }
-            .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
             .build()
 
         private fun buildUrl(): String {
@@ -310,7 +315,9 @@ interface API {
                             .body(e.toString().toResponseBody())
                             .build()
                     }
-                }.build()
+                }
+                .addInterceptor(CustomHttpLoggingInterceptor(REDACTED_QUERY_PARAMS, REDACTED_BODY_FIELDS))
+                .build()
 
             return Retrofit.Builder()
                 .baseUrl(baseUrl)

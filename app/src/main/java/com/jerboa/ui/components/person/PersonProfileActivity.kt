@@ -62,6 +62,7 @@ import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPersonDetails
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
@@ -96,6 +97,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.util.InitializeRoute
@@ -119,6 +121,7 @@ fun PersonProfileActivity(
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     drawerState: DrawerState,
+    markAsReadOnScroll: Boolean,
     onBack: (() -> Unit)? = null,
 ) {
     Log.d("jerboa", "got to person activity")
@@ -283,6 +286,7 @@ fun PersonProfileActivity(
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
                 showPostLinkPreviews = showPostLinkPreviews,
+                markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
             )
@@ -315,6 +319,7 @@ fun UserTabs(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
+    markAsReadOnScroll: Boolean,
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
 ) {
@@ -333,6 +338,10 @@ fun UserTabs(
     val pagerState = rememberPagerState { tabTitles.size }
 
     val loading = personProfileViewModel.personDetailsRes.isLoading()
+
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
+        if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)
+    }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -617,6 +626,19 @@ fun UserTabs(
                                     openImageViewer = appState::toView,
                                     openLink = appState::openLink,
                                     showPostLinkPreviews = showPostLinkPreviews,
+                                    markAsReadOnScroll = markAsReadOnScroll,
+                                    onMarkAsRead = {
+                                        if (!account.isAnon() && !it.read) {
+                                            personProfileViewModel.markPostAsRead(
+                                                MarkPostAsRead(
+                                                    post_id = it.post.id,
+                                                    read = true,
+                                                    auth = account.jwt,
+                                                ),
+                                                appState,
+                                            )
+                                        }
+                                    },
                                     showIfRead = false,
                                     showScores = showScores,
                                 )
@@ -827,7 +849,7 @@ fun UserTabs(
                                         showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                                     },
                                     account = account,
-                                    moderators = listOf(),
+                                    isModerator = { false },
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,

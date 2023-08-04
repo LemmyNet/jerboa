@@ -1,4 +1,4 @@
-package com.jerboa.util
+package com.jerboa.util.markwon
 
 import android.text.Spannable
 import android.text.SpannableStringBuilder

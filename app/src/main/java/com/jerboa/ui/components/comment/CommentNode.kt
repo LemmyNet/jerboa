@@ -71,7 +71,6 @@ import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.isModerator
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
@@ -194,7 +193,7 @@ fun LazyListScope.commentNodeItem(
     isExpanded: (commentId: Int) -> Boolean,
     toggleExpanded: (commentId: Int) -> Unit,
     toggleActionBar: (commentId: Int) -> Unit,
-    moderators: List<CommunityModeratorView>,
+    isModerator: (Int) -> Boolean,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -242,7 +241,7 @@ fun LazyListScope.commentNodeItem(
     increaseLazyListIndexTracker()
     // TODO Needs a contentType
     // possibly "contentNodeItemL${node.depth}"
-    item(key = null) { // TODO was commentId but see #1109, changeback once bug has been fixed
+    item(key = commentId) {
         var viewSource by remember { mutableStateOf(false) }
 
         val backgroundColor = MaterialTheme.colorScheme.background
@@ -295,7 +294,7 @@ fun LazyListScope.commentNodeItem(
                             onPersonClick = onPersonClick,
                             score = instantScores.value.score,
                             myVote = instantScores.value.myVote,
-                            isModerator = isModerator(commentView.creator, moderators),
+                            isModerator = isModerator(commentView.creator.id),
                             onClick = {
                                 onHeaderClick(commentView)
                             },
@@ -413,7 +412,7 @@ fun LazyListScope.commentNodeItem(
             onReplyClick = onReplyClick,
             onBlockCreatorClick = onBlockCreatorClick,
             account = account,
-            moderators = moderators,
+            isModerator = isModerator,
             isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
             showCollapsedCommentContent = showCollapsedCommentContent,
             showActionBar = showActionBar,
@@ -677,7 +676,7 @@ fun CommentNodesPreview() {
         onCommunityClick = {},
         onBlockCreatorClick = {},
         onPostClick = {},
-        moderators = listOf(),
+        isModerator = { false },
         listState = rememberLazyListState(),
         isCollapsedByParent = false,
         showCollapsedCommentContent = false,

@@ -44,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.CommunityFollowerView
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.MyUserInfo
 import com.jerboa.datatypes.types.Person
@@ -66,10 +67,13 @@ import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XL_PADDING
 import com.jerboa.ui.theme.muted
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun Drawer(
     myUserInfo: MyUserInfo?,
+    follows: ImmutableList<CommunityFollowerView>,
     unreadCount: Int,
     accountViewModel: AccountViewModel,
     onAddAccount: () -> Unit,
@@ -99,6 +103,7 @@ fun Drawer(
     // Drawer items
     DrawerContent(
         accountViewModel = accountViewModel,
+        follows = follows,
         unreadCount = unreadCount,
         myUserInfo = myUserInfo,
         showAccountAddMode = showAccountAddMode,
@@ -119,6 +124,7 @@ fun Drawer(
 @Composable
 fun DrawerContent(
     showAccountAddMode: Boolean,
+    follows: ImmutableList<CommunityFollowerView>,
     onAddAccount: () -> Unit,
     accountViewModel: AccountViewModel,
     onSwitchAccountClick: (account: Account) -> Unit,
@@ -152,6 +158,7 @@ fun DrawerContent(
     Divider()
     DrawerItemsMain(
         myUserInfo = myUserInfo,
+        follows = follows,
         onClickListingType = onClickListingType,
         onCommunityClick = onCommunityClick,
         unreadCount = unreadCount,
@@ -166,6 +173,7 @@ fun DrawerContent(
 @Composable
 fun DrawerItemsMain(
     myUserInfo: MyUserInfo?,
+    follows: ImmutableList<CommunityFollowerView>,
     onClickSettings: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
@@ -177,13 +185,11 @@ fun DrawerItemsMain(
 ) {
     val listState = rememberLazyListState()
 
-    val follows = myUserInfo?.follows
-
     LazyColumn(
         state = listState,
         modifier = Modifier.simpleVerticalScrollbar(listState),
     ) {
-        if (!follows.isNullOrEmpty()) {
+        if (follows.isNotEmpty()) {
             item {
                 IconAndTextDrawerItem(
                     text = stringResource(R.string.home_subscribed),
@@ -250,7 +256,7 @@ fun DrawerItemsMain(
             }
         }
 
-        follows?.also { follows ->
+        follows.also { follows ->
             item(contentType = "SubscriptionHeader") {
                 Text(
                     text = stringResource(R.string.home_subscriptions),
@@ -279,6 +285,7 @@ fun DrawerItemsMain(
 fun DrawerItemsMainPreview() {
     DrawerItemsMain(
         myUserInfo = null,
+        follows = persistentListOf(),
         onClickListingType = {},
         onCommunityClick = {},
         onClickSettings = {},

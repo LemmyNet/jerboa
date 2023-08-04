@@ -19,8 +19,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 34
-        versionCode = 41
-        versionName = "0.0.41"
+        versionCode = 42
+        versionName = "0.0.42"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -125,8 +125,12 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
 
-    // gif support
+    // Images
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("io.coil-kt:coil-gif:2.4.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
+    // Allows for proper subsampling of large images
+    implementation("me.saket.telephoto:zoomable-image-coil:0.5.0")
 
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
@@ -154,7 +158,6 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
-    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.navigation:navigation-compose:2.7.0-rc01")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -174,12 +177,10 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    implementation("net.engawapg.lib:zoomable:1.4.3")
     implementation("androidx.browser:browser:1.5.0")
 
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     baselineProfile(project(":benchmarks"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
-
 }
