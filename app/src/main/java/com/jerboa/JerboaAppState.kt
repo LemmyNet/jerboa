@@ -1,5 +1,6 @@
 package com.jerboa
 
+import android.os.Parcelable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -22,6 +23,7 @@ import com.jerboa.ui.components.common.Route
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -156,8 +158,8 @@ class JerboaAppState(
         }
     }
 
-    fun<T> addReturn(key: String, value: T) {
-        navController.previousBackStackEntry?.savedStateHandle?.set(key, gson.toJson(value))
+    fun addReturn(key: String, value: Parcelable) {
+        navController.previousBackStackEntry?.savedStateHandle?.set(key, value)
     }
 
     fun getBackStackEntry(route: String): NavBackStackEntry {
@@ -216,34 +218,48 @@ fun<D> JerboaAppState.rootChannel(): RouteChannel<D> {
     return viewModel(root)
 }
 
-@Composable
-inline fun <reified D> JerboaAppState.takeDepsFromRoot(): State<D> {
-    // HACK: the autogen types aren't serializable or parcelable. If they were we don't
-    //  have to do this manual conversion to json and back.
-    // TODO: Fix this once autogen types are serializable or parcelable
+@Parcelize
+data class NullableWrapper<T : Parcelable?>(val data: T) : Parcelable
 
+@Composable
+inline fun <reified D : Parcelable> JerboaAppState.takeDepsFromRoot(): State<D> {
     val deps = rootChannel<D>().take()
 
     // This will survive process death
-    val depsJson = rememberSaveable { gson.toJson(deps) }
+    val depsSaved = rememberSaveable { deps!! }
 
     // After process death, deps will be null
-    return remember(depsJson) {
+    return remember(depsSaved) {
         derivedStateOf {
-            deps ?: gson.fromJson(depsJson, D::class.java)
+            deps ?: depsSaved
         }
     }
 }
 
 @Composable
-inline fun<reified T> JerboaAppState.ConsumeReturn(
+inline fun <reified D : Parcelable?> JerboaAppState.takeNullableDepsFromRoot(): State<D?> {
+    val deps = rootChannel<D>().take()
+
+    // This will survive process death
+    val depsSaved = rememberSaveable { NullableWrapper(deps) }
+
+    // After process death, deps will be null
+    return remember(depsSaved) {
+        derivedStateOf {
+            deps ?: depsSaved.data
+        }
+    }
+}
+
+@Composable
+inline fun<reified T : Parcelable> JerboaAppState.ConsumeReturn(
     key: String,
     crossinline consumeBlock: (T) -> Unit,
 ) {
     LaunchedEffect(key) {
         val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
         if (savedStateHandle?.contains(key) == true) {
-            consumeBlock(gson.fromJson(savedStateHandle.get<String>(key), T::class.java))
+            savedStateHandle.get<T>(key)?.also(consumeBlock)
             savedStateHandle.remove<String>(key)
         }
     }

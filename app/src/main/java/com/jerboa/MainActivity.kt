@@ -453,7 +453,7 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             body = text
                         }
-                        val community by appState.takeDepsFromRoot<Community?>()
+                        val community by appState.takeNullableDepsFromRoot<Community?>()
 
                         CreatePostActivity(
                             appState = appState,
