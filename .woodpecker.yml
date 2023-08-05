@@ -4,26 +4,42 @@ steps:
     commands:
       - prettier -c "*.md" "*.yml"
 
-  restore-cache:
-    image: meltwater/drone-cache:v1
+
+  restore-cache-with-filesystem:
+    image: meltwater/drone-cache
     pull: true
     settings:
+      backend: "filesystem"
       restore: true
-      endpoint:
-        from_secret: MINIO_ENDPOINT
-      access-key:
-        from_secret: MINIO_WRITE_USER
-      secret-key:
-        from_secret: MINIO_WRITE_PASSWORD
-      bucket:
-        from_secret: MINIO_BUCKET
-      region: us-east-1
-      cache_key: "jerboa-cache"
-      path-style: true
+      cache_key: "jerboa"
+      archive_format: "gzip"
+      # filesystem_cache_root: "/tmp/cache"
       mount:
-        - ".gradle"
-    secrets:
-      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
+        - '.gradle'
+    volumes:
+      - /tmp/cache
+
+
+#  restore-cache:
+#    image: meltwater/drone-cache:v1
+#    pull: true
+#    settings:
+#      restore: true
+#      endpoint:
+#        from_secret: MINIO_ENDPOINT
+#      access-key:
+#        from_secret: MINIO_WRITE_USER
+#      secret-key:
+#        from_secret: MINIO_WRITE_PASSWORD
+#      bucket:
+#        from_secret: MINIO_BUCKET
+#      region: us-east-1
+#      cache_key: "jerboa-cache"
+#      path-style: true
+#      mount:
+#        - ".gradle"
+#    secrets:
+#      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
 
   check_formatting:
     image: cimg/android:2023.08
@@ -43,26 +59,40 @@ steps:
       - sudo chown -R circleci:circleci .
       - ./gradlew testDebug
 
-  rebuild-cache:
-    image: meltwater/drone-cache:v1
+
+  rebuild-cache-with-filesystem:
+    image: meltwater/drone-cache
     pull: true
     settings:
+      backend: "filesystem"
       rebuild: true
-      endpoint:
-        from_secret: MINIO_ENDPOINT
-      access-key:
-        from_secret: MINIO_WRITE_USER
-      secret-key:
-        from_secret: MINIO_WRITE_PASSWORD
-      bucket:
-        from_secret: MINIO_BUCKET
-      cache_key: "jerboa-cache"
-      region: us-east-1
-      path-style: true
+      cache_key: "jerboa"
+      archive_format: "gzip"
+      # filesystem_cache_root: "/tmp/cache"
       mount:
-        - ".gradle"
-    secrets:
-      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
+        - 'vendor'
+      volumes:
+        - "/tmp/cache"
+#  rebuild-cache:
+#    image: meltwater/drone-cache:v1
+#    pull: true
+#    settings:
+#      rebuild: true
+#      endpoint:
+#        from_secret: MINIO_ENDPOINT
+#      access-key:
+#        from_secret: MINIO_WRITE_USER
+#      secret-key:
+#        from_secret: MINIO_WRITE_PASSWORD
+#      bucket:
+#        from_secret: MINIO_BUCKET
+#      cache_key: "jerboa-cache"
+#      region: us-east-1
+#      path-style: true
+#      mount:
+#        - ".gradle"
+#    secrets:
+#      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
 
   notify:
     image: alpine:3
