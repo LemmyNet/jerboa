@@ -23,7 +23,7 @@ steps:
       mount:
         - ".gradle"
     secrets:
-      [ MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET ]
+      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
 
   check_formatting:
     image: cimg/android:2023.08
