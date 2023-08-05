@@ -70,7 +70,7 @@ steps:
       archive_format: "gzip"
       # filesystem_cache_root: "/tmp/cache"
       mount:
-        - 'vendor'
+        - '.gradle'
       volumes:
         - "/tmp/cache"
 #  rebuild-cache:
