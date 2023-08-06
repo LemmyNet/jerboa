@@ -18,8 +18,8 @@ import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.getLocalizedSortingTypeShortName
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
+import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
@@ -164,18 +164,6 @@ fun CommunityHeader(
         )
     }
 
-    if (showMoreOptions) {
-        CommunityMoreDialog(
-            onDismissRequest = { showMoreOptions = false },
-            onClickRefresh = onClickRefresh,
-            onBlockCommunityClick = {
-                showMoreOptions = false
-                onBlockCommunityClick()
-            },
-            onClickCommunityInfo = onClickCommunityInfo,
-        )
-    }
-
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
@@ -201,12 +189,24 @@ fun CommunityHeader(
                     contentDescription = stringResource(R.string.community_sortBy),
                 )
             }
-            IconButton(onClick = {
-                showMoreOptions = !showMoreOptions
-            }) {
-                Icon(
-                    Icons.Outlined.MoreVert,
-                    contentDescription = stringResource(R.string.moreOptions),
+            Box {
+                IconButton(onClick = {
+                    showMoreOptions = !showMoreOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.MoreVert,
+                        contentDescription = stringResource(R.string.moreOptions),
+                    )
+                }
+                CommunityMoreDropdown(
+                    expanded = showMoreOptions,
+                    onDismissRequest = { showMoreOptions = false },
+                    onClickRefresh = onClickRefresh,
+                    onBlockCommunityClick = {
+                        showMoreOptions = false
+                        onBlockCommunityClick()
+                    },
+                    onClickCommunityInfo = onClickCommunityInfo,
                 )
             }
         },
@@ -235,39 +235,37 @@ fun CommunityHeaderTitle(
 }
 
 @Composable
-fun CommunityMoreDialog(
+fun CommunityMoreDropdown(
+    expanded: Boolean,
     onDismissRequest: () -> Unit,
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickCommunityInfo: () -> Unit,
 ) {
-    AlertDialog(
+    DropdownMenu(
+        expanded = expanded,
         onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.community_refresh),
-                    icon = Icons.Outlined.Refresh,
-                    onClick = {
-                        onDismissRequest()
-                        onClickRefresh()
-                    },
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.community_community_info),
-                    icon = Icons.Outlined.Info,
-                    onClick = {
-                        onClickCommunityInfo()
-                        onDismissRequest()
-                    },
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.community_block_community),
-                    icon = Icons.Outlined.Block,
-                    onClick = onBlockCommunityClick,
-                )
-            }
-        },
-        confirmButton = {},
-    )
+    ) {
+        MenuItem(
+            text = stringResource(R.string.community_refresh),
+            icon = Icons.Outlined.Refresh,
+            onClick = {
+                onDismissRequest()
+                onClickRefresh()
+            },
+        )
+        MenuItem(
+            text = stringResource(R.string.community_community_info),
+            icon = Icons.Outlined.Info,
+            onClick = {
+                onClickCommunityInfo()
+                onDismissRequest()
+            },
+        )
+        MenuItem(
+            text = stringResource(R.string.community_block_community),
+            icon = Icons.Outlined.Block,
+            onClick = onBlockCommunityClick,
+        )
+    }
 }
