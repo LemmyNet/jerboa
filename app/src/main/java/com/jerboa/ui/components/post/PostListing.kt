@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
@@ -618,8 +617,8 @@ fun PostFooterLine(
 
     val horizontalArrangement = when (postActionbar) {
         PostActionbarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
-        PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(ButtonDefaults.IconSpacing, Alignment.Start)
-        PostActionbarMode.RightHandShort -> Arrangement.spacedBy(ButtonDefaults.IconSpacing)
+        PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(LARGE_PADDING)
+        PostActionbarMode.RightHandShort -> Arrangement.spacedBy(LARGE_PADDING)
     }
 
     Row(

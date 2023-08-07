@@ -608,6 +608,12 @@ fun CommentFooterLine(
                 )
             }
             ActionBarButton(
+                icon = Icons.Outlined.Comment,
+                onClick = { onReplyClick(commentView) },
+                contentDescription = stringResource(R.string.commentFooter_reply),
+                account = account,
+            )
+            ActionBarButton(
                 icon = if (commentView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
                 },
@@ -622,12 +628,6 @@ fun CommentFooterLine(
                 } else {
                     MaterialTheme.colorScheme.onBackground.muted
                 },
-                account = account,
-            )
-            ActionBarButton(
-                icon = Icons.Outlined.Comment,
-                onClick = { onReplyClick(commentView) },
-                contentDescription = stringResource(R.string.commentFooter_reply),
                 account = account,
             )
             ActionBarButton(

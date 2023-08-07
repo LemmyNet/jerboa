@@ -197,6 +197,15 @@ fun CommentMentionNodeFooterLine(
                 },
                 account = account,
             )
+            // Don't let you respond to your own comment.
+            if (personMentionView.creator.id != account.id) {
+                ActionBarButton(
+                    icon = Icons.Outlined.Comment,
+                    contentDescription = stringResource(R.string.commentFooter_reply),
+                    onClick = { onReplyClick(personMentionView) },
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = if (personMentionView.saved) {
                     Icons.Filled.Bookmark
@@ -216,15 +225,6 @@ fun CommentMentionNodeFooterLine(
                 },
                 account = account,
             )
-            // Don't let you respond to your own comment.
-            if (personMentionView.creator.id != account.id) {
-                ActionBarButton(
-                    icon = Icons.Outlined.Comment,
-                    contentDescription = stringResource(R.string.commentFooter_reply),
-                    onClick = { onReplyClick(personMentionView) },
-                    account = account,
-                )
-            }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
                 contentDescription = stringResource(R.string.moreOptions),
