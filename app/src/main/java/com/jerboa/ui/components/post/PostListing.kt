@@ -619,7 +619,7 @@ fun PostFooterLine(
     val horizontalArrangement = when (postActionbar) {
         PostActionbarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
         PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(ButtonDefaults.IconSpacing, Alignment.Start)
-        PostActionbarMode.RightHandShort -> Arrangement.spacedBy(ButtonDefaults.IconSpacing, Alignment.End)
+        PostActionbarMode.RightHandShort -> Arrangement.spacedBy(ButtonDefaults.IconSpacing)
     }
 
     Row(
@@ -629,6 +629,19 @@ fun PostFooterLine(
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING),
     ) {
+
+
+        // Right handside shows the comments on the left side
+        if (postActionbar == PostActionbarMode.RightHandShort) {
+            CommentNewCountRework(
+                comments = postView.counts.comments,
+                unreadCount = postView.unread_comments,
+                account = account,
+                modifier = Modifier.weight(1F, true)
+            )
+        }
+
+
         VoteGeneric(
             myVote = instantScores.myVote,
             votes = instantScores.upvotes,
@@ -648,12 +661,14 @@ fun PostFooterLine(
             )
         }
 
-        CommentNewCountRework(
-            comments = postView.counts.comments,
-            unreadCount = postView.unread_comments,
-            account = account,
-            modifier = if (postActionbar == PostActionbarMode.Long) Modifier.weight(1F, true) else Modifier,
-        )
+        if (postActionbar != PostActionbarMode.RightHandShort) {
+            CommentNewCountRework(
+                comments = postView.counts.comments,
+                unreadCount = postView.unread_comments,
+                account = account,
+                modifier = if (postActionbar == PostActionbarMode.Long) Modifier.weight(1F, true) else Modifier,
+            )
+        }
 
         if (showReply) {
             ActionBarButton(
