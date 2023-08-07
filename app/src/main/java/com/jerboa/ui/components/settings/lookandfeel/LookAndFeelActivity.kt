@@ -39,13 +39,13 @@ import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.PostActionbarMode
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.feat.BackConfirmationMode
-import com.jerboa.feat.PostActionbarMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -351,7 +351,6 @@ fun LookAndFeelActivity(
                         )
                     },
                 )
-
             }
         },
     )

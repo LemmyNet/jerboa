@@ -10,10 +10,10 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.db.repository.AccountRepository
+import com.jerboa.feat.AccountVerificationState
 import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
 import com.jerboa.jerboaApplication
-import com.jerboa.feat.AccountVerificationState
 import kotlinx.coroutines.launch
 
 @Stable

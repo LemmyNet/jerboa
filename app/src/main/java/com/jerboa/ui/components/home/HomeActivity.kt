@@ -54,7 +54,7 @@ import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
-import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
@@ -75,7 +75,6 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
-import com.jerboa.feat.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
@@ -160,7 +159,7 @@ fun HomeActivity(
                 showPostLinkPreviews = showPostLinkPreviews,
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
-                postActionbarMode = postActionbarMode
+                postActionbarMode = postActionbarMode,
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -425,7 +424,7 @@ fun MainPostListingsContent(
             },
             showIfRead = true,
             showScores = siteViewModel.showScores(),
-            postActionbarMode =  postActionbarMode,
+            postActionbarMode = postActionbarMode,
         )
     }
 }

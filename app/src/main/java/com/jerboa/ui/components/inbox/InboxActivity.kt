@@ -56,6 +56,7 @@ import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
 import com.jerboa.getLocalizedStringForInboxTab
 import com.jerboa.isScrolledToEnd
@@ -79,7 +80,6 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
 import com.jerboa.util.InitializeRoute
-import com.jerboa.feat.doIfReadyElseDisplayInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

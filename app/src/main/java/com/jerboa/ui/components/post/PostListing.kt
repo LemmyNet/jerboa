@@ -354,7 +354,7 @@ fun PostTitleAndImageLink(
             horizontal = MEDIUM_PADDING,
         ),
 
-        ) {
+    ) {
         // Title of the post
         PostName(
             postView = postView,
@@ -616,7 +616,7 @@ fun PostFooterLine(
 
     val postActionbar = postActionbarMode.toEnum<PostActionbarMode>()
 
-    val horizontalArrangement = when( postActionbar) {
+    val horizontalArrangement = when (postActionbar) {
         PostActionbarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
         PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(ButtonDefaults.IconSpacing, Alignment.Start)
         PostActionbarMode.RightHandShort -> Arrangement.spacedBy(ButtonDefaults.IconSpacing, Alignment.End)
@@ -629,7 +629,6 @@ fun PostFooterLine(
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING),
     ) {
-
         VoteGeneric(
             myVote = instantScores.myVote,
             votes = instantScores.upvotes,
@@ -653,9 +652,8 @@ fun PostFooterLine(
             comments = postView.counts.comments,
             unreadCount = postView.unread_comments,
             account = account,
-            modifier = if (postActionbar == PostActionbarMode.Long) Modifier.weight(1F, true) else Modifier
+            modifier = if (postActionbar == PostActionbarMode.Long) Modifier.weight(1F, true) else Modifier,
         )
-
 
         if (showReply) {
             ActionBarButton(
@@ -1261,7 +1259,7 @@ fun PostListingList(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
                     verticalArrangement = Arrangement.Center,
 
-                    ) {
+                ) {
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,
