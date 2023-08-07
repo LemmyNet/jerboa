@@ -2,11 +2,15 @@
 
 package com.jerboa.ui.components.inbox
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material.icons.outlined.List
+import androidx.compose.material.icons.outlined.MarkunreadMailbox
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import com.jerboa.R
 import com.jerboa.UnreadOrAll
 import com.jerboa.getLocalizedUnreadOrAllName
-import com.jerboa.ui.components.common.UnreadOrAllOptionsDialog
+import com.jerboa.ui.components.common.MenuItem
 
 @Composable
 fun InboxHeader(
@@ -36,17 +40,6 @@ fun InboxHeader(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showUnreadOrAllOptions by remember { mutableStateOf(false) }
-
-    if (showUnreadOrAllOptions) {
-        UnreadOrAllOptionsDialog(
-            selectedUnreadOrAll = selectedUnreadOrAll,
-            onDismissRequest = { showUnreadOrAllOptions = false },
-            onClickUnreadOrAll = {
-                showUnreadOrAllOptions = false
-                onClickUnreadOrAll(it)
-            },
-        )
-    }
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -65,14 +58,27 @@ fun InboxHeader(
             }
         },
         actions = {
-            IconButton(onClick = {
-                showUnreadOrAllOptions = !showUnreadOrAllOptions
-            }) {
-                Icon(
-                    Icons.Outlined.FilterList,
-                    contentDescription = stringResource(R.string.inbox_filter),
+            Box {
+                IconButton(onClick = {
+                    showUnreadOrAllOptions = !showUnreadOrAllOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.FilterList,
+                        contentDescription = stringResource(R.string.inbox_filter),
+                    )
+                }
+
+                UnreadOrAllOptionsDropDown(
+                    expanded = showUnreadOrAllOptions,
+                    selectedUnreadOrAll = selectedUnreadOrAll,
+                    onDismissRequest = { showUnreadOrAllOptions = false },
+                    onClickUnreadOrAll = {
+                        showUnreadOrAllOptions = false
+                        onClickUnreadOrAll(it)
+                    },
                 )
             }
+
             IconButton(onClick = onClickMarkAllAsRead) {
                 Icon(
                     Icons.Outlined.DoneAll,
@@ -98,6 +104,32 @@ fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null)
         Text(
             text = getLocalizedUnreadOrAllName(ctx, selectedUnreadOrAll),
             style = MaterialTheme.typography.titleMedium,
+        )
+    }
+}
+
+@Composable
+fun UnreadOrAllOptionsDropDown(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onClickUnreadOrAll: (UnreadOrAll) -> Unit,
+    selectedUnreadOrAll: UnreadOrAll,
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+    ) {
+        MenuItem(
+            text = stringResource(R.string.dialogs_all),
+            icon = Icons.Outlined.List,
+            onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
+            highlight = (selectedUnreadOrAll == UnreadOrAll.All),
+        )
+        MenuItem(
+            text = stringResource(R.string.dialogs_unread),
+            icon = Icons.Outlined.MarkunreadMailbox,
+            onClick = { onClickUnreadOrAll(UnreadOrAll.Unread) },
+            highlight = (selectedUnreadOrAll == UnreadOrAll.Unread),
         )
     }
 }

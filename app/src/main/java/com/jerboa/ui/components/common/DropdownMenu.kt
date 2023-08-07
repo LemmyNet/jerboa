@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.common
 
+import androidx.compose.foundation.background
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,5 +33,25 @@ fun MenuItem(
         },
         onClick = onClick,
         modifier = modifier,
+    )
+}
+
+@Composable
+fun MenuItem(
+    text: String,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    onClick: () -> Unit,
+    highlight: Boolean,
+) {
+    MenuItem(
+        text = text,
+        icon = icon,
+        onClick = onClick,
+        modifier = if (highlight) {
+            modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+        } else {
+            modifier
+        },
     )
 }
