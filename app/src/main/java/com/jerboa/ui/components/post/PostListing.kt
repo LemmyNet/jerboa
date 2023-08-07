@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
@@ -37,7 +38,9 @@ import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -352,7 +355,7 @@ fun PostTitleAndImageLink(
             horizontal = MEDIUM_PADDING,
         ),
 
-    ) {
+        ) {
         // Title of the post
         PostName(
             postView = postView,
@@ -612,20 +615,14 @@ fun PostFooterLine(
     }
 
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        //horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom,
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING),
     ) {
-        CommentCount(
-            comments = postView.counts.comments,
-            unreadCount = postView.unread_comments,
-            account = account,
-        )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
-        ) {
+
+        Row {
             VoteGeneric(
                 myVote = instantScores.myVote,
                 votes = instantScores.upvotes,
@@ -635,6 +632,7 @@ fun PostFooterLine(
                 account = account,
             )
             if (enableDownVotes) {
+                Spacer(Modifier.size(XXL_PADDING))
                 VoteGeneric(
                     myVote = instantScores.myVote,
                     votes = instantScores.downvotes,
@@ -644,58 +642,165 @@ fun PostFooterLine(
                     account = account,
                 )
             }
+        }
+
+        Spacer(Modifier.size(XXL_PADDING))
+
+        CommentNewCountRework(
+            comments = postView.counts.comments,
+            unreadCount = postView.unread_comments,
+            account = account,
+            modifier = Modifier.weight(1F, true)
+        )
+
+
+        if (showReply) {
+            Spacer(Modifier.size(XXL_PADDING))
             ActionBarButton(
-                icon = if (postView.saved) {
-                    Icons.Filled.Bookmark
-                } else {
-                    Icons.Outlined.BookmarkBorder
-                },
-                contentDescription = if (postView.saved) {
-                    stringResource(R.string.removeBookmark)
-                } else {
-                    stringResource(R.string.addBookmark)
-                },
-                onClick = { onSaveClick(postView) },
-                contentColor = if (postView.saved) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground.muted
-                },
+                icon = Icons.Outlined.Comment,
+                contentDescription = stringResource(R.string.postListing_reply),
+                onClick = { onReplyClick(postView) },
                 account = account,
-            )
-            if (showReply) {
-                ActionBarButton(
-                    icon = Icons.Outlined.Textsms,
-                    contentDescription = stringResource(R.string.postListing_reply),
-                    onClick = { onReplyClick(postView) },
-                    account = account,
-                )
-            }
-            ActionBarButton(
-                icon = Icons.Outlined.MoreVert,
-                contentDescription = stringResource(R.string.moreOptions),
-                account = account,
-                onClick = { showMoreOptions = !showMoreOptions },
-                requiresAccount = false,
             )
         }
+        Spacer(Modifier.size(XXL_PADDING))
+        ActionBarButton(
+            icon = if (postView.saved) {
+                Icons.Filled.Bookmark
+            } else {
+                Icons.Outlined.BookmarkBorder
+            },
+            contentDescription = if (postView.saved) {
+                stringResource(R.string.removeBookmark)
+            } else {
+                stringResource(R.string.addBookmark)
+            },
+            onClick = { onSaveClick(postView) },
+            contentColor = if (postView.saved) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onBackground.muted
+            },
+            account = account,
+        )
+        Spacer(Modifier.size(XXL_PADDING))
+        ActionBarButton(
+            icon = Icons.Outlined.MoreVert,
+            contentDescription = stringResource(R.string.moreOptions),
+            account = account,
+            onClick = { showMoreOptions = !showMoreOptions },
+            requiresAccount = false,
+        )
+
+
     }
 }
 
+// TODO change all create comment icons
+
+
+/// SHORT APP BAR CODE
+//Row(
+////horizontalArrangement = Arrangement.SpaceBetween,
+//verticalAlignment = Alignment.Bottom,
+//modifier = modifier
+//.fillMaxWidth()
+//.padding(bottom = SMALL_PADDING),
+//) {
+//
+//    Row {
+//        VoteGeneric(
+//            myVote = instantScores.myVote,
+//            votes = instantScores.upvotes,
+//            type = VoteType.Upvote,
+//            showNumber = (instantScores.downvotes != 0) && showScores,
+//            onVoteClick = onUpvoteClick,
+//            account = account,
+//        )
+//        if (enableDownVotes) {
+//            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+//            VoteGeneric(
+//                myVote = instantScores.myVote,
+//                votes = instantScores.downvotes,
+//                showNumber = showScores,
+//                type = VoteType.Downvote,
+//                onVoteClick = onDownvoteClick,
+//                account = account,
+//            )
+//        }
+//    }
+//
+//    Spacer(Modifier.size(XXL_PADDING) )
+//
+//    CommentNewCountRework(
+//        comments = postView.counts.comments,
+//        unreadCount = postView.unread_comments,
+//        account = account,
+//    )
+//
+//
+//    if (showReply) {
+//        Spacer(Modifier.size(XXL_PADDING) )
+//        ActionBarButton(
+//            icon = Icons.Outlined.Comment,
+//            contentDescription = stringResource(R.string.postListing_reply),
+//            onClick = { onReplyClick(postView) },
+//            account = account,
+//        )
+//    }
+//    Spacer(Modifier.size(XXL_PADDING) )
+//    ActionBarButton(
+//        icon = if (postView.saved) {
+//            Icons.Filled.Bookmark
+//        } else {
+//            Icons.Outlined.BookmarkBorder
+//        },
+//        contentDescription = if (postView.saved) {
+//            stringResource(R.string.removeBookmark)
+//        } else {
+//            stringResource(R.string.addBookmark)
+//        },
+//        onClick = { onSaveClick(postView) },
+//        contentColor = if (postView.saved) {
+//            MaterialTheme.colorScheme.primary
+//        } else {
+//            MaterialTheme.colorScheme.onBackground.muted
+//        },
+//        account = account,
+//    )
+//    Spacer(Modifier.size(XXL_PADDING) )
+//    ActionBarButton(
+//        icon = Icons.Outlined.MoreVert,
+//        contentDescription = stringResource(R.string.moreOptions),
+//        account = account,
+//        onClick = { showMoreOptions = !showMoreOptions },
+//        requiresAccount = false,
+//    )
+//}
+//}
+
 @Composable
-fun CommentCount(
+fun CommentNewCountRework(
     comments: Int,
     unreadCount: Int,
     account: Account,
+    modifier: Modifier = Modifier,
 ) {
+    val unread = if (unreadCount == 0 || comments == unreadCount) {
+        null
+    } else {
+        (if (unreadCount > 0) "+" else "") + siFormat(unreadCount)
+    }
+
     ActionBarButtonAndBadge(
-        icon = Icons.Outlined.ChatBubbleOutline,
-        iconBadgeCount = if (unreadCount > 0) siFormat(unreadCount) else null,
+        icon = Icons.Outlined.Forum,
+        iconBadgeCount = unread,
         contentDescription = null,
         text = siFormat(comments),
         noClick = true,
         account = account,
         onClick = {},
+        modifier = modifier,
     )
 }
 
@@ -725,7 +830,7 @@ fun CommentNewCount(
 @Preview
 @Composable
 fun CommentCountPreview() {
-    CommentCount(42, 0, account = AnonAccount)
+    CommentNewCountRework(42, 0, account = AnonAccount)
 }
 
 @Preview
@@ -1232,7 +1337,7 @@ fun PostListingList(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
                     verticalArrangement = Arrangement.Center,
 
-                ) {
+                    ) {
                     if (showCommunityName) {
                         CommunityLink(
                             community = postView.community,

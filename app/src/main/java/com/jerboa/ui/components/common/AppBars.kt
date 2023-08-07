@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -341,6 +342,7 @@ fun ActionBarButtonAndBadge(
     icon: ImageVector,
     iconBadgeCount: String?,
     contentDescription: String?,
+    modifier: Modifier = Modifier,
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
@@ -350,9 +352,9 @@ fun ActionBarButtonAndBadge(
     val ctx = LocalContext.current
 
     val barMod = if (noClick) {
-        Modifier
+        modifier
     } else {
-        Modifier.clickable(onClick = {
+        modifier.clickable(onClick = {
             if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 onClick()
             }
@@ -380,9 +382,10 @@ fun ActionBarButtonAndBadge(
             TextBadge(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 text = iconBadgeCount,
-                textStyle = MaterialTheme.typography.bodySmall,
+                textStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
                 textColor = contentColor,
-                horizontalTextPadding = 2f,
+                verticalTextPadding = 2f,
+                horizontalTextPadding = 4f,
             )
         }
     }
