@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.home
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -10,7 +11,7 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material.icons.outlined.ViewAgenda
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,8 +40,8 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.getLocalizedListingTypeName
 import com.jerboa.getLocalizedSortingTypeShortName
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.ListingTypeOptionsDialog
+import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
@@ -122,18 +123,6 @@ fun HomeHeader(
         )
     }
 
-    if (showMoreOptions) {
-        HomeMoreDialog(
-            onDismissRequest = { showMoreOptions = false },
-            onClickRefresh = onClickRefresh,
-            onClickShowPostViewModeDialog = {
-                showMoreOptions = false
-                showPostViewModeOptions = !showPostViewModeOptions
-            },
-            onClickSiteInfo = onClickSiteInfo,
-        )
-    }
-
     if (showPostViewModeOptions) {
         PostViewModeDialog(
             onDismissRequest = { showPostViewModeOptions = false },
@@ -178,12 +167,25 @@ fun HomeHeader(
                     contentDescription = stringResource(R.string.selectSort),
                 )
             }
-            IconButton(modifier = Modifier.testTag("jerboa:options"), onClick = {
-                showMoreOptions = !showMoreOptions
-            }) {
-                Icon(
-                    Icons.Outlined.MoreVert,
-                    contentDescription = stringResource(R.string.moreOptions),
+            Box {
+                IconButton(
+                    modifier = Modifier.testTag("jerboa:options"),
+                    onClick = { showMoreOptions = !showMoreOptions },
+                ) {
+                    Icon(
+                        Icons.Outlined.MoreVert,
+                        contentDescription = stringResource(R.string.moreOptions),
+                    )
+                }
+                HomeMoreDropdown(
+                    expanded = showMoreOptions,
+                    onDismissRequest = { showMoreOptions = false },
+                    onClickRefresh = onClickRefresh,
+                    onClickShowPostViewModeDialog = {
+                        showMoreOptions = false
+                        showPostViewModeOptions = !showPostViewModeOptions
+                    },
+                    onClickSiteInfo = onClickSiteInfo,
                 )
             }
         },
@@ -210,47 +212,45 @@ fun HomeHeaderPreview() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HomeMoreDialog(
+fun HomeMoreDropdown(
+    expanded: Boolean,
     onDismissRequest: () -> Unit,
     onClickSiteInfo: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickShowPostViewModeDialog: () -> Unit,
 ) {
-    AlertDialog(
+    DropdownMenu(
+        expanded = expanded,
         onDismissRequest = onDismissRequest,
         modifier = Modifier.semantics { testTagsAsResourceId = true },
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_refresh),
-                    icon = Icons.Outlined.Refresh,
-                    onClick = {
-                        onDismissRequest()
-                        onClickRefresh()
-                    },
-                    modifier = Modifier.testTag("jerboa:refresh"),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_post_view_mode),
-                    icon = Icons.Outlined.ViewAgenda,
-                    onClick = {
-                        onDismissRequest()
-                        onClickShowPostViewModeDialog()
-                    },
-                    modifier = Modifier.testTag("jerboa:postviewmode"),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_site_info),
-                    icon = Icons.Outlined.Info,
-                    onClick = {
-                        onClickSiteInfo()
-                        onDismissRequest()
-                    },
-                )
-            }
-        },
-        confirmButton = {},
-    )
+    ) {
+        MenuItem(
+            text = stringResource(R.string.home_refresh),
+            icon = Icons.Outlined.Refresh,
+            onClick = {
+                onDismissRequest()
+                onClickRefresh()
+            },
+            modifier = Modifier.testTag("jerboa:refresh"),
+        )
+        MenuItem(
+            text = stringResource(R.string.home_post_view_mode),
+            icon = Icons.Outlined.ViewAgenda,
+            onClick = {
+                onDismissRequest()
+                onClickShowPostViewModeDialog()
+            },
+            modifier = Modifier.testTag("jerboa:postviewmode"),
+        )
+        MenuItem(
+            text = stringResource(R.string.home_site_info),
+            icon = Icons.Outlined.Info,
+            onClick = {
+                onClickSiteInfo()
+                onDismissRequest()
+            },
+        )
+    }
 }
 
 @Composable
