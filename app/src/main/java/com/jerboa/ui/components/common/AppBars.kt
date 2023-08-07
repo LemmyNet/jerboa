@@ -427,6 +427,7 @@ fun InboxIconAndBadge(
             modifier = modifier,
             badge = {
                 Badge(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
                     content = {
                         Text(
                             text = iconBadgeCount.toString(),
