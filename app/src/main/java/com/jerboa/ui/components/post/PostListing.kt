@@ -629,18 +629,15 @@ fun PostFooterLine(
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING),
     ) {
-
-
         // Right handside shows the comments on the left side
         if (postActionbar == PostActionbarMode.RightHandShort) {
             CommentNewCountRework(
                 comments = postView.counts.comments,
                 unreadCount = postView.unread_comments,
                 account = account,
-                modifier = Modifier.weight(1F, true)
+                modifier = Modifier.weight(1F, true),
             )
         }
-
 
         VoteGeneric(
             myVote = instantScores.myVote,
