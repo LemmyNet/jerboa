@@ -377,5 +377,6 @@
     <string name="login_view_model_incorrect_totp">Incorrect TOTP token given</string>
     <string name="verification_failed_instance">This instance (%s) is experiencing internal server errors</string>
     <string name="verification_failed_user_banned">Your account is banned until %s</string>
+    <string name="share">Share</string>
 
 </resources>
