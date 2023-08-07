@@ -384,5 +384,6 @@
     <string name="verification_failed_instance">This instance (%s) is experiencing internal server errors</string>
     <string name="verification_failed_user_banned">Your account is banned until %s</string>
     <string name="share">Share</string>
-
+    <string name="settings_enable_2fa">Enable 2FA</string>
+    <string name="settings_2fa_link">Launch 2FA link</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.jerboa.ui.components.settings.account
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.core.content.ContextCompat.startActivity
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
@@ -33,6 +36,7 @@ import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.theme.MEDIUM_PADDING
+import com.jerboa.ui.theme.muted
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,7 +72,15 @@ fun ImageWithClose(
 ) {
     Box(contentAlignment = Alignment.TopEnd) {
         composable()
-        IconButton(onClick = onClick) {
+        IconButton(
+            onClick = onClick,
+            // Hard to see close button without a contrasting background
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.surface.muted,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
+
+        ) {
             Icon(
                 imageVector = Icons.Outlined.Close,
                 contentDescription = stringResource(R.string.account_settings_remove_current_avatar),
@@ -124,6 +136,9 @@ fun SettingsForm(
         rememberBooleanSettingState(luv?.local_user?.show_new_post_notifs ?: false)
     val sendNotificationsToEmail =
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
+    val curr2FAEnabled = luv?.local_user?.totp_2fa_url != null
+    val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
+
     val sortTypeNames = remember {
         MAP_SORT_TYPE_SHORT_FORM.values.map { ctx.getString(it) }
     }
@@ -148,6 +163,8 @@ fun SettingsForm(
         theme = theme,
         show_scores = showScores.value,
         discussion_languages = null,
+        // True -> generates a new 2FA token, False -> removes current, null -> do nothing
+        generate_totp_2fa = if (curr2FAEnabled == enable2FA.value) null else enable2FA.value,
     )
     var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
     var isUploadingBanner by rememberSaveable { mutableStateOf(false) }
@@ -294,6 +311,31 @@ fun SettingsForm(
                 Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
             },
         )
+
+        SettingsCheckbox(
+            title = {
+                Text(text = stringResource(R.string.settings_enable_2fa))
+            },
+            state = enable2FA,
+        )
+
+        if (curr2FAEnabled) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
+                        ctx.startActivity(intent)
+                    },
+
+                ) {
+                    Text(stringResource(R.string.settings_2fa_link))
+                }
+            }
+        }
+
         // Todo: Remove this
         Button(
             enabled = !loading,
