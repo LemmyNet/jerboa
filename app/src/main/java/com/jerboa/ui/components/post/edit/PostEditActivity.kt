@@ -68,8 +68,8 @@ fun PostEditActivity(
     }
     var isUploadingImage by rememberSaveable { mutableStateOf(false) }
 
-    val nameField = validatePostName(name)
-    val urlField = validateUrl(url)
+    val nameField = validatePostName(ctx, name)
+    val urlField = validateUrl(ctx, url)
     val formValid = !nameField.hasError && !urlField.hasError
 
     Scaffold(

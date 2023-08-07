@@ -690,7 +690,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.ViewArgs(it)
 
-                        ImageViewer(url = args.url, onBackRequest = appState::popBackStack)
+                        ImageViewer(url = args.url, appState = appState)
                     }
 
                     composable(
