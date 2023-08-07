@@ -690,7 +690,7 @@ fun CommentCount(
 ) {
     ActionBarButtonAndBadge(
         icon = Icons.Outlined.ChatBubbleOutline,
-        iconBadgeCount = if (unreadCount > 0) siFormat(unreadCount) else null,
+        iconBadgeCount = if (unreadCount != 0 && comments != unreadCount) siFormat(unreadCount) else null,
         contentDescription = null,
         text = siFormat(comments),
         noClick = true,
