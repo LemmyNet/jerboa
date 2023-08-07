@@ -44,21 +44,9 @@ fun MenuItem(
     onClick: () -> Unit,
     highlight: Boolean,
 ) {
-    DropdownMenuItem(
-        text = {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        },
-        leadingIcon = {
-            if (icon != null) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = text,
-                )
-            }
-        },
+    MenuItem(
+        text = text,
+        icon = icon,
         onClick = onClick,
         modifier = if (highlight) {
             modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
