@@ -303,7 +303,13 @@
     <string name="sorttype_topweek">TopWeek</string>
     <string name="sorttype_topyear">TopYear</string>
     <string name="time_ago_ago">%1$s %2$s ago</string>
+    <string name="title">Title</string>
+    <string name="title_less_than_200_chars">Title cannot be more than 200 characters</string>
+    <string name="title_min_3_chars">Title must be at least three characters</string>
+    <string name="title_required">Title required</string>
     <string name="topAppBar_back">Back</string>
+    <string name="url">URL</string>
+    <string name="url_invalid">Invalid URL</string>
     <string name="utils_login_first">Login first</string>
     <string name="upvote">Upvote</string>
     <string name="downvote">Downvote</string>
@@ -377,6 +383,7 @@
     <string name="login_view_model_incorrect_totp">Incorrect TOTP token given</string>
     <string name="verification_failed_instance">This instance (%s) is experiencing internal server errors</string>
     <string name="verification_failed_user_banned">Your account is banned until %s</string>
+    <string name="share">Share</string>
     <string name="settings_enable_2fa">Enable 2-factor authentication</string>
     <string name="settings_2fa_link">Launch 2FA link</string>
 
