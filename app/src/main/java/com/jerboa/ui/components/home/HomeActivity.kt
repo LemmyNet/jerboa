@@ -265,7 +265,7 @@ fun MainPostListingsContent(
             padding = padding,
             posts = posts,
             postViewMode = getPostViewMode(appSettingsViewModel),
-            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines) },
+            contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toImmutableList()) },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
                     appState,
