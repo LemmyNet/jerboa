@@ -44,6 +44,7 @@ import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
@@ -315,6 +316,73 @@ fun ActionBarButton(
                 text = text,
                 color = contentColor,
                 style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ActionBarButtonAndBadgePreview() {
+    ActionBarButtonAndBadge(
+        icon = Icons.Outlined.ChatBubbleOutline,
+        iconBadgeCount = siFormat(15),
+        contentDescription = null,
+        text = siFormat(2000),
+        noClick = true,
+        account = AnonAccount,
+        onClick = {},
+    )
+}
+
+@Composable
+fun ActionBarButtonAndBadge(
+    onClick: () -> Unit,
+    icon: ImageVector,
+    iconBadgeCount: String?,
+    contentDescription: String?,
+    text: String? = null,
+    contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
+    noClick: Boolean = false,
+    account: Account,
+    requiresAccount: Boolean = true,
+) {
+    val ctx = LocalContext.current
+
+    val barMod = if (noClick) {
+        Modifier
+    } else {
+        Modifier.clickable(onClick = {
+            if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                onClick()
+            }
+        })
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = barMod,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = contentColor,
+        )
+        text?.also {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            Text(
+                text = text,
+                color = contentColor,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        iconBadgeCount?.also {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            TextBadge(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                text = iconBadgeCount,
+                textStyle = MaterialTheme.typography.bodySmall,
+                textColor = contentColor,
+                horizontalTextPadding = 2f,
             )
         }
     }

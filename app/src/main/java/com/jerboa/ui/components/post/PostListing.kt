@@ -88,7 +88,9 @@ import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
+import com.jerboa.siFormat
 import com.jerboa.ui.components.common.ActionBarButton
+import com.jerboa.ui.components.common.ActionBarButtonAndBadge
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
@@ -611,7 +613,7 @@ fun PostFooterLine(
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Bottom,
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING),
@@ -686,23 +688,15 @@ fun CommentCount(
     unreadCount: Int,
     account: Account,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        ActionBarButton(
-            icon = Icons.Outlined.ChatBubbleOutline,
-            contentDescription = null,
-            text = stringResource(R.string.post_listing_comments, comments),
-            noClick = true,
-            account = account,
-            onClick = {}, // This is handled by the whole button click
-        )
-        CommentNewCount(
-            comments = comments,
-            unreadCount = unreadCount,
-            spacing = SMALL_PADDING,
-        )
-    }
+    ActionBarButtonAndBadge(
+        icon = Icons.Outlined.ChatBubbleOutline,
+        iconBadgeCount = if (unreadCount > 0) siFormat(unreadCount) else null,
+        contentDescription = null,
+        text = siFormat(comments),
+        noClick = true,
+        account = account,
+        onClick = {},
+    )
 }
 
 @Composable
@@ -1585,7 +1579,6 @@ fun MetadataCard(post: Post) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostOptionsDialog(
     postView: PostView,
