@@ -54,6 +54,7 @@ import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
+import com.jerboa.feat.PostActionbarMode
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
@@ -74,7 +75,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
-import com.jerboa.util.doIfReadyElseDisplayInfo
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
@@ -94,6 +95,7 @@ fun HomeActivity(
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
+    postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to home activity")
     val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
@@ -158,6 +160,7 @@ fun HomeActivity(
                 showPostLinkPreviews = showPostLinkPreviews,
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
+                postActionbarMode = postActionbarMode
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -206,6 +209,7 @@ fun MainPostListingsContent(
     showPostLinkPreviews: Boolean,
     snackbarHostState: SnackbarHostState,
     markAsReadOnScroll: Boolean,
+    postActionbarMode: Int,
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -421,6 +425,7 @@ fun MainPostListingsContent(
             },
             showIfRead = true,
             showScores = siteViewModel.showScores(),
+            postActionbarMode =  postActionbarMode,
         )
     }
 }

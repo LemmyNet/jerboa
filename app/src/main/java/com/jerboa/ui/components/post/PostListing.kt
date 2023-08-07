@@ -16,13 +16,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.ContentCopy
@@ -37,10 +37,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material.icons.outlined.Textsms
-import androidx.compose.material.icons.rounded.Forum
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -87,11 +84,13 @@ import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.PostActionbarMode
 import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
 import com.jerboa.siFormat
+import com.jerboa.toEnum
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.ActionBarButtonAndBadge
 import com.jerboa.ui.components.common.CircularIcon
@@ -566,6 +565,7 @@ fun PostFooterLine(
     enableDownVotes: Boolean,
     viewSource: Boolean,
     showScores: Boolean,
+    postActionbarMode: Int,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -614,48 +614,50 @@ fun PostFooterLine(
         )
     }
 
+    val postActionbar = postActionbarMode.toEnum<PostActionbarMode>()
+
+    val horizontalArrangement = when( postActionbar) {
+        PostActionbarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
+        PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(ButtonDefaults.IconSpacing, Alignment.Start)
+        PostActionbarMode.RightHandShort -> Arrangement.spacedBy(ButtonDefaults.IconSpacing, Alignment.End)
+    }
+
     Row(
-        //horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = horizontalArrangement,
         verticalAlignment = Alignment.Bottom,
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING),
     ) {
 
-        Row {
+        VoteGeneric(
+            myVote = instantScores.myVote,
+            votes = instantScores.upvotes,
+            type = VoteType.Upvote,
+            showNumber = (instantScores.downvotes != 0) && showScores,
+            onVoteClick = onUpvoteClick,
+            account = account,
+        )
+        if (enableDownVotes) {
             VoteGeneric(
                 myVote = instantScores.myVote,
-                votes = instantScores.upvotes,
-                type = VoteType.Upvote,
-                showNumber = (instantScores.downvotes != 0) && showScores,
-                onVoteClick = onUpvoteClick,
+                votes = instantScores.downvotes,
+                showNumber = showScores,
+                type = VoteType.Downvote,
+                onVoteClick = onDownvoteClick,
                 account = account,
             )
-            if (enableDownVotes) {
-                Spacer(Modifier.size(XXL_PADDING))
-                VoteGeneric(
-                    myVote = instantScores.myVote,
-                    votes = instantScores.downvotes,
-                    showNumber = showScores,
-                    type = VoteType.Downvote,
-                    onVoteClick = onDownvoteClick,
-                    account = account,
-                )
-            }
         }
-
-        Spacer(Modifier.size(XXL_PADDING))
 
         CommentNewCountRework(
             comments = postView.counts.comments,
             unreadCount = postView.unread_comments,
             account = account,
-            modifier = Modifier.weight(1F, true)
+            modifier = if (postActionbar == PostActionbarMode.Long) Modifier.weight(1F, true) else Modifier
         )
 
 
         if (showReply) {
-            Spacer(Modifier.size(XXL_PADDING))
             ActionBarButton(
                 icon = Icons.Outlined.Comment,
                 contentDescription = stringResource(R.string.postListing_reply),
@@ -663,7 +665,6 @@ fun PostFooterLine(
                 account = account,
             )
         }
-        Spacer(Modifier.size(XXL_PADDING))
         ActionBarButton(
             icon = if (postView.saved) {
                 Icons.Filled.Bookmark
@@ -683,7 +684,6 @@ fun PostFooterLine(
             },
             account = account,
         )
-        Spacer(Modifier.size(XXL_PADDING))
         ActionBarButton(
             icon = Icons.Outlined.MoreVert,
             contentDescription = stringResource(R.string.moreOptions),
@@ -691,93 +691,8 @@ fun PostFooterLine(
             onClick = { showMoreOptions = !showMoreOptions },
             requiresAccount = false,
         )
-
-
     }
 }
-
-// TODO change all create comment icons
-
-
-/// SHORT APP BAR CODE
-//Row(
-////horizontalArrangement = Arrangement.SpaceBetween,
-//verticalAlignment = Alignment.Bottom,
-//modifier = modifier
-//.fillMaxWidth()
-//.padding(bottom = SMALL_PADDING),
-//) {
-//
-//    Row {
-//        VoteGeneric(
-//            myVote = instantScores.myVote,
-//            votes = instantScores.upvotes,
-//            type = VoteType.Upvote,
-//            showNumber = (instantScores.downvotes != 0) && showScores,
-//            onVoteClick = onUpvoteClick,
-//            account = account,
-//        )
-//        if (enableDownVotes) {
-//            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-//            VoteGeneric(
-//                myVote = instantScores.myVote,
-//                votes = instantScores.downvotes,
-//                showNumber = showScores,
-//                type = VoteType.Downvote,
-//                onVoteClick = onDownvoteClick,
-//                account = account,
-//            )
-//        }
-//    }
-//
-//    Spacer(Modifier.size(XXL_PADDING) )
-//
-//    CommentNewCountRework(
-//        comments = postView.counts.comments,
-//        unreadCount = postView.unread_comments,
-//        account = account,
-//    )
-//
-//
-//    if (showReply) {
-//        Spacer(Modifier.size(XXL_PADDING) )
-//        ActionBarButton(
-//            icon = Icons.Outlined.Comment,
-//            contentDescription = stringResource(R.string.postListing_reply),
-//            onClick = { onReplyClick(postView) },
-//            account = account,
-//        )
-//    }
-//    Spacer(Modifier.size(XXL_PADDING) )
-//    ActionBarButton(
-//        icon = if (postView.saved) {
-//            Icons.Filled.Bookmark
-//        } else {
-//            Icons.Outlined.BookmarkBorder
-//        },
-//        contentDescription = if (postView.saved) {
-//            stringResource(R.string.removeBookmark)
-//        } else {
-//            stringResource(R.string.addBookmark)
-//        },
-//        onClick = { onSaveClick(postView) },
-//        contentColor = if (postView.saved) {
-//            MaterialTheme.colorScheme.primary
-//        } else {
-//            MaterialTheme.colorScheme.onBackground.muted
-//        },
-//        account = account,
-//    )
-//    Spacer(Modifier.size(XXL_PADDING) )
-//    ActionBarButton(
-//        icon = Icons.Outlined.MoreVert,
-//        contentDescription = stringResource(R.string.moreOptions),
-//        account = account,
-//        onClick = { showMoreOptions = !showMoreOptions },
-//        requiresAccount = false,
-//    )
-//}
-//}
 
 @Composable
 fun CommentNewCountRework(
@@ -864,6 +779,7 @@ fun PostFooterLinePreview() {
         enableDownVotes = true,
         viewSource = false,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -900,6 +816,7 @@ fun PreviewPostListingCard() {
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -936,6 +853,7 @@ fun PreviewLinkPostListing() {
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -972,6 +890,7 @@ fun PreviewImagePostListingCard() {
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -1008,6 +927,7 @@ fun PreviewImagePostListingSmallCard() {
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -1044,6 +964,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         openLink = { _: String, _: Boolean, _: Boolean -> },
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -1080,6 +1001,7 @@ fun PostListing(
     showPostLinkPreview: Boolean,
     showIfRead: Boolean,
     showScores: Boolean,
+    postActionbarMode: Int,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -1144,6 +1066,7 @@ fun PostListing(
             showPostLinkPreview = showPostLinkPreview,
             showIfRead = showIfRead,
             showScores = showScores,
+            postActionbarMode = postActionbarMode,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -1193,6 +1116,7 @@ fun PostListing(
             showPostLinkPreview = showPostLinkPreview,
             openImageViewer = openImageViewer,
             showScores = showScores,
+            postActionbarMode = postActionbarMode,
         )
 
         PostViewMode.List -> PostListingList(
@@ -1582,6 +1506,7 @@ fun PostListingCard(
     openImageViewer: (url: String) -> Unit,
     showIfRead: Boolean = false,
     showScores: Boolean,
+    postActionbarMode: Int,
 ) {
     Column(
         modifier = Modifier
@@ -1645,6 +1570,7 @@ fun PostListingCard(
             enableDownVotes = enableDownVotes,
             viewSource = viewSource,
             showScores = showScores,
+            postActionbarMode = postActionbarMode,
         )
     }
 }

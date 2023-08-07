@@ -4228,8 +4228,8 @@ PLandroidx/compose/material/icons/outlined/SmartToyKt;->getSmartToy(Landroidx/co
 Landroidx/compose/material/icons/outlined/SortKt;
 HSPLandroidx/compose/material/icons/outlined/SortKt;-><clinit>()V
 HPLandroidx/compose/material/icons/outlined/SortKt;->getSort(Landroidx/compose/material/icons/Icons$Outlined;)Landroidx/compose/ui/graphics/vector/ImageVector;
-PLandroidx/compose/material/icons/outlined/TextsmsKt;-><clinit>()V
-HPLandroidx/compose/material/icons/outlined/TextsmsKt;->getTextsms(Landroidx/compose/material/icons/Icons$Outlined;)Landroidx/compose/ui/graphics/vector/ImageVector;
+PLandroidx/compose/material/icons/outlined/CommentKt;-><clinit>()V
+HPLandroidx/compose/material/icons/outlined/CommentKt;->getComment(Landroidx/compose/material/icons/Icons$Outlined;)Landroidx/compose/ui/graphics/vector/ImageVector;
 PLandroidx/compose/material/icons/outlined/ViewAgendaKt;-><clinit>()V
 PLandroidx/compose/material/icons/outlined/ViewAgendaKt;->getViewAgenda(Landroidx/compose/material/icons/Icons$Outlined;)Landroidx/compose/ui/graphics/vector/ImageVector;
 Landroidx/compose/material/pullrefresh/ArrowValues;

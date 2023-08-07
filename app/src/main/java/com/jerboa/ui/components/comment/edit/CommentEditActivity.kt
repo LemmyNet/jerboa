@@ -24,7 +24,7 @@ import com.jerboa.model.CommentEditViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 
 object CommentEditReturn {
     const val COMMENT_VIEW = "comment-edit::return(comment-view)"

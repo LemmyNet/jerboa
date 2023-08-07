@@ -32,7 +32,7 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -625,7 +625,7 @@ fun CommentFooterLine(
                 account = account,
             )
             ActionBarButton(
-                icon = Icons.Outlined.Textsms,
+                icon = Icons.Outlined.Comment,
                 onClick = { onReplyClick(commentView) },
                 contentDescription = stringResource(R.string.commentFooter_reply),
                 account = account,

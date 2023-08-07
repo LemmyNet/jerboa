@@ -52,7 +52,7 @@ import com.jerboa.siFormat
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
-import com.jerboa.util.isReadyAndIfNotShowSimplifiedInfoToast
+import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

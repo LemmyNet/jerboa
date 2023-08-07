@@ -103,4 +103,9 @@ data class AppSettings(
         defaultValue = "1",
     )
     val showPostLinkPreviews: Boolean,
+    @ColumnInfo(
+        name = "post_actionbar_mode",
+        defaultValue = "0",
+    )
+    val postActionbarMode: Int,
 )

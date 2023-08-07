@@ -67,7 +67,7 @@ import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.rootChannel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
-import com.jerboa.ui.components.comment.replynode.CommentReplyNode
+import com.jerboa.ui.components.comment.replynode.CommentReplyNodeInbox
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaSnackbarHost
@@ -79,7 +79,7 @@ import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -371,7 +371,7 @@ fun InboxTabs(
                                         key = { reply -> reply.comment_reply.id },
                                         contentType = { "comment" },
                                     ) { commentReplyView ->
-                                        CommentReplyNode(
+                                        CommentReplyNodeInbox(
                                             commentReplyView = commentReplyView,
                                             onUpvoteClick = { cr ->
                                                 account.doIfReadyElseDisplayInfo(

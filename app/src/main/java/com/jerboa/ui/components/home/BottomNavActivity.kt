@@ -56,7 +56,7 @@ import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import kotlinx.coroutines.launch
 
 enum class NavTab(
@@ -227,6 +227,7 @@ fun BottomNavActivity(
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                           postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -266,6 +267,7 @@ fun BottomNavActivity(
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -284,6 +286,7 @@ fun BottomNavActivity(
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
                 }

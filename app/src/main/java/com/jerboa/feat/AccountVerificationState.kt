@@ -1,4 +1,4 @@
-package com.jerboa.util
+package com.jerboa.feat
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -260,7 +260,9 @@ suspend fun Account.checkAccountVerification(
                 checkIfSiteRetrievalSucceeded(siteViewModel, this).first
             }
 
-            AccountVerificationState.CHECKS_COMPLETE -> { CheckState.Passed }
+            AccountVerificationState.CHECKS_COMPLETE -> {
+                CheckState.Passed
+            }
         }
 
         Log.d("verification", "Verified ${verifyState.name} with ${checkState::class.simpleName}")

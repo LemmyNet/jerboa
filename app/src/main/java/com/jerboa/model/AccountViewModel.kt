@@ -13,7 +13,7 @@ import com.jerboa.db.repository.AccountRepository
 import com.jerboa.fetchHomePosts
 import com.jerboa.fetchInitialData
 import com.jerboa.jerboaApplication
-import com.jerboa.util.AccountVerificationState
+import com.jerboa.feat.AccountVerificationState
 import kotlinx.coroutines.launch
 
 @Stable

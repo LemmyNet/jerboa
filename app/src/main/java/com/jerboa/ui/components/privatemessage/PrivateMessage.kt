@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
-import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -169,7 +169,7 @@ fun PrivateMessageFooterLine(
                     account = account,
                 )
                 ActionBarButton(
-                    icon = Icons.Outlined.Textsms,
+                    icon = Icons.Outlined.Comment,
                     contentDescription = stringResource(R.string.privateMessage_reply),
                     onClick = { onReplyClick(privateMessageView) },
                     account = account,

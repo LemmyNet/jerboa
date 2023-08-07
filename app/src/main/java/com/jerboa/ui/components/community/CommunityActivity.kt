@@ -72,7 +72,7 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -90,6 +90,7 @@ fun CommunityActivity(
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
+    postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to community activity")
     val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
@@ -478,6 +479,7 @@ fun CommunityActivity(
                             },
                             showIfRead = true,
                             showScores = siteViewModel.showScores(),
+                            postActionbarMode = postActionbarMode
                         )
                     }
                     else -> {}

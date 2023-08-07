@@ -21,7 +21,7 @@ import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -219,7 +219,7 @@ fun CommentMentionNodeFooterLine(
             // Don't let you respond to your own comment.
             if (personMentionView.creator.id != account.id) {
                 ActionBarButton(
-                    icon = Icons.Outlined.Textsms,
+                    icon = Icons.Outlined.Comment,
                     contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(personMentionView) },
                     account = account,

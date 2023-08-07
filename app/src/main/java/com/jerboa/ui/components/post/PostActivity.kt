@@ -104,7 +104,7 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.toImmutableSet
 
 object PostViewReturn {
@@ -149,6 +149,7 @@ fun PostActivity(
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreview: Boolean,
+    postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
@@ -491,6 +492,7 @@ fun PostActivity(
                                     showPostLinkPreview = showPostLinkPreview,
                                     showIfRead = false,
                                     showScores = siteViewModel.showScores(),
+                                    postActionbarMode = postActionbarMode,
                                 )
                             }
 

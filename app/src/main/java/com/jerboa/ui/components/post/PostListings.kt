@@ -67,6 +67,7 @@ fun PostListings(
     onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
     showScores: Boolean,
+    postActionbarMode: Int,
 ) {
     LazyColumn(
         state = listState,
@@ -114,6 +115,7 @@ fun PostListings(
                 openLink = openLink,
                 showIfRead = showIfRead,
                 showScores = showScores,
+                postActionbarMode = postActionbarMode,
             ).let {
                 if (!postView.read && markAsReadOnScroll) {
                     DisposableEffect(key1 = postView.post.id) {
@@ -178,5 +180,6 @@ fun PreviewPostListings() {
         onMarkAsRead = {},
         showIfRead = true,
         showScores = true,
+        postActionbarMode = 0,
     )
 }

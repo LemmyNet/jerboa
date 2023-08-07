@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Link
@@ -20,7 +21,7 @@ import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Textsms
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -98,7 +99,7 @@ fun CommentReplyNodeHeaderPreview() {
 }
 
 @Composable
-fun CommentReplyNodeFooterLine(
+fun CommentReplyNodeInboxFooterLine(
     commentReplyView: CommentReplyView,
     onUpvoteClick: () -> Unit,
     onDownvoteClick: () -> Unit,
@@ -215,7 +216,7 @@ fun CommentReplyNodeFooterLine(
             // Don't let you respond to your own comment.
             if (commentReplyView.creator.id != account.id) {
                 ActionBarButton(
-                    icon = Icons.Outlined.Textsms,
+                    icon = Icons.Outlined.Comment,
                     contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(commentReplyView) },
                     account = account,
@@ -298,7 +299,7 @@ fun CommentReplyNodeOptionsDialog(
 }
 
 @Composable
-fun CommentReplyNode(
+fun CommentReplyNodeInbox(
     commentReplyView: CommentReplyView,
     onUpvoteClick: (commentReplyView: CommentReplyView) -> Unit,
     onDownvoteClick: (commentReplyView: CommentReplyView) -> Unit,
@@ -372,7 +373,7 @@ fun CommentReplyNode(
                     enter = expandVertically(),
                     exit = shrinkVertically(),
                 ) {
-                    CommentReplyNodeFooterLine(
+                    CommentReplyNodeInboxFooterLine(
                         commentReplyView = commentReplyView,
                         onUpvoteClick = {
                             onUpvoteClick(commentReplyView)
