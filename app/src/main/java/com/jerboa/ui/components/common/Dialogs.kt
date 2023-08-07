@@ -7,15 +7,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
-import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.BrightnessLow
 import androidx.compose.material.icons.outlined.FormatListNumbered
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.LocalFireDepartment
-import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Moving
 import androidx.compose.material.icons.outlined.NewReleases
-import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -39,7 +36,6 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.CommentSortType
-import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.getLocalizedSortingTypeLongName
 import com.jerboa.model.AppSettingsViewModel
@@ -90,41 +86,6 @@ fun SortOptionsDialogPreview() {
         onDismissRequest = {},
         onClickSortTopOptions = {},
         onClickSortType = {},
-    )
-}
-
-@Composable
-fun ListingTypeOptionsDialog(
-    onDismissRequest: () -> Unit,
-    onClickListingType: (ListingType) -> Unit,
-    selectedListingType: ListingType,
-) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_subscribed),
-                    icon = Icons.Outlined.Bookmarks,
-                    onClick = { onClickListingType(ListingType.Subscribed) },
-                    highlight = (selectedListingType == ListingType.Subscribed),
-                )
-                // TODO hide local for non-federated instances
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_local),
-                    icon = Icons.Outlined.LocationCity,
-                    onClick = { onClickListingType(ListingType.Local) },
-                    highlight = (selectedListingType == ListingType.Local),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_all),
-                    icon = Icons.Outlined.Public,
-                    onClick = { onClickListingType(ListingType.All) },
-                    highlight = (selectedListingType == ListingType.All),
-                )
-            }
-        },
-        confirmButton = {},
     )
 }
 
@@ -264,16 +225,6 @@ fun PostViewModeDialog(
             }
         },
         confirmButton = {},
-    )
-}
-
-@Preview
-@Composable
-fun ListingTypeOptionsDialogPreview() {
-    ListingTypeOptionsDialog(
-        selectedListingType = ListingType.Local,
-        onClickListingType = {},
-        onDismissRequest = {},
     )
 }
 

@@ -2,6 +2,7 @@ package com.jerboa.ui.components.common
 
 import androidx.compose.foundation.background
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,11 +24,10 @@ fun MenuItem(
             )
         },
         leadingIcon = {
-            icon?.also { ico ->
-                InboxIconAndBadge(
-                    icon = ico,
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
                     contentDescription = text,
-                    iconBadgeCount = null,
                 )
             }
         },

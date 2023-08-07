@@ -4,10 +4,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.LocationCity
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material.icons.outlined.ViewAgenda
@@ -40,13 +43,13 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.getLocalizedListingTypeName
 import com.jerboa.getLocalizedSortingTypeShortName
-import com.jerboa.ui.components.common.ListingTypeOptionsDialog
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.theme.LARGE_PADDING
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun HomeHeaderTitle(
@@ -112,17 +115,6 @@ fun HomeHeader(
         )
     }
 
-    if (showListingTypeOptions) {
-        ListingTypeOptionsDialog(
-            selectedListingType = selectedListingType,
-            onDismissRequest = { showListingTypeOptions = false },
-            onClickListingType = {
-                showListingTypeOptions = false
-                onClickListingType(it)
-            },
-        )
-    }
-
     if (showPostViewModeOptions) {
         PostViewModeDialog(
             onDismissRequest = { showPostViewModeOptions = false },
@@ -151,12 +143,24 @@ fun HomeHeader(
         },
         // No Idea why, but the tint for this is muted?
         actions = {
-            IconButton(onClick = {
-                showListingTypeOptions = !showListingTypeOptions
-            }) {
-                Icon(
-                    Icons.Outlined.FilterList,
-                    contentDescription = stringResource(R.string.homeHeader_filter),
+            Box {
+                IconButton(onClick = {
+                    showListingTypeOptions = !showListingTypeOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.FilterList,
+                        contentDescription = stringResource(R.string.homeHeader_filter),
+                    )
+                }
+
+                ListingTypeOptionsDropDown(
+                    expanded = showListingTypeOptions,
+                    onDismissRequest = { showListingTypeOptions = false },
+                    onClickListingType = {
+                        showListingTypeOptions = false
+                        onClickListingType(it)
+                    },
+                    selectedListingType = selectedListingType,
                 )
             }
             IconButton(modifier = Modifier.testTag("jerboa:sortoptions"), onClick = {
@@ -253,8 +257,43 @@ fun HomeMoreDropdown(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Taglines(taglines: List<Tagline>) {
+fun ListingTypeOptionsDropDown(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onClickListingType: (ListingType) -> Unit,
+    selectedListingType: ListingType,
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
+    ) {
+        MenuItem(
+            text = stringResource(R.string.dialogs_subscribed),
+            icon = Icons.Outlined.Bookmarks,
+            onClick = { onClickListingType(ListingType.Subscribed) },
+            highlight = (selectedListingType == ListingType.Subscribed),
+        )
+        // TODO hide local for non-federated instances
+        MenuItem(
+            text = stringResource(R.string.dialogs_local),
+            icon = Icons.Outlined.LocationCity,
+            onClick = { onClickListingType(ListingType.Local) },
+            highlight = (selectedListingType == ListingType.Local),
+        )
+        MenuItem(
+            text = stringResource(R.string.dialogs_all),
+            icon = Icons.Outlined.Public,
+            onClick = { onClickListingType(ListingType.All) },
+            highlight = (selectedListingType == ListingType.All),
+        )
+    }
+}
+
+@Composable
+fun Taglines(taglines: ImmutableList<Tagline>) {
     if (taglines.isNotEmpty()) {
         val tagline by remember { mutableStateOf(taglines.random()) }
         Column(
