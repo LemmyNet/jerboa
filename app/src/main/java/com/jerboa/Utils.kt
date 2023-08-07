@@ -691,42 +691,44 @@ data class InputField(
 )
 
 fun validatePostName(
+    ctx: Context,
     name: String,
 ): InputField {
     return if (name.isEmpty()) {
         InputField(
-            label = "Title required",
+            label = ctx.getString(R.string.title_required),
             hasError = true,
         )
     } else if (name.length < 3) {
         InputField(
-            label = "Title must be > 3 chars",
+            label = ctx.getString(R.string.title_min_3_chars),
             hasError = true,
         )
     } else if (name.length >= MAX_POST_TITLE_LENGTH) {
         InputField(
-            label = "Title cannot be > 200 chars",
+            label = ctx.getString(R.string.title_less_than_200_chars),
             hasError = true,
         )
     } else {
         InputField(
-            label = "Title",
+            label = ctx.getString(R.string.title),
             hasError = false,
         )
     }
 }
 
 fun validateUrl(
+    ctx: Context,
     url: String,
 ): InputField {
     return if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
         InputField(
-            label = "Invalid Url",
+            label = ctx.getString(R.string.url_invalid),
             hasError = true,
         )
     } else {
         InputField(
-            label = "Url",
+            label = ctx.getString(R.string.url),
             hasError = false,
         )
     }
