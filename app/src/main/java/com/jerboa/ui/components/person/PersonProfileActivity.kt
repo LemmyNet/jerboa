@@ -70,6 +70,7 @@ import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
@@ -101,7 +102,6 @@ import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -122,6 +122,7 @@ fun PersonProfileActivity(
     showPostLinkPreviews: Boolean,
     drawerState: DrawerState,
     markAsReadOnScroll: Boolean,
+    postActionbarMode: Int,
     onBack: (() -> Unit)? = null,
 ) {
     Log.d("jerboa", "got to person activity")
@@ -289,6 +290,7 @@ fun PersonProfileActivity(
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
+                postActionbarMode = postActionbarMode,
             )
         },
     )
@@ -322,6 +324,7 @@ fun UserTabs(
     markAsReadOnScroll: Boolean,
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
+    postActionbarMode: Int,
 ) {
     val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
     val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
@@ -641,6 +644,7 @@ fun UserTabs(
                                     },
                                     showIfRead = false,
                                     showScores = showScores,
+                                    postActionbarMode = postActionbarMode,
                                 )
                             }
                             else -> {}

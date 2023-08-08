@@ -386,4 +386,8 @@
     <string name="share">Share</string>
     <string name="settings_enable_2fa">Enable 2FA</string>
     <string name="settings_2fa_link">Launch 2FA link</string>
+    <string name="post_actionbar_mode_long">Long post actionbar</string>
+    <string name="post_actionbar_mode_short_left">Short lefthand post actionbar</string>
+    <string name="post_actionbar_mode_short_right">Short righthand post actionbar</string>
+    <string name="post_actionbar">Post actionbar mode</string>
 </resources>

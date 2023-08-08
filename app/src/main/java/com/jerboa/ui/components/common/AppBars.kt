@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -44,13 +45,14 @@ import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
 import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
-import com.jerboa.util.isReadyAndIfNotShowSimplifiedInfoToast
 import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -283,6 +285,7 @@ fun ActionBarButton(
     onClick: () -> Unit,
     icon: ImageVector,
     contentDescription: String?,
+    modifier: Modifier = Modifier,
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
@@ -292,9 +295,9 @@ fun ActionBarButton(
     val ctx = LocalContext.current
 
     val barMod = if (noClick) {
-        Modifier
+        modifier
     } else {
-        Modifier.clickable(onClick = {
+        modifier.clickable(onClick = {
             if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 onClick()
             }
@@ -315,6 +318,75 @@ fun ActionBarButton(
                 text = text,
                 color = contentColor,
                 style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ActionBarButtonAndBadgePreview() {
+    ActionBarButtonAndBadge(
+        icon = Icons.Outlined.ChatBubbleOutline,
+        iconBadgeCount = siFormat(15),
+        contentDescription = null,
+        text = siFormat(2000),
+        noClick = true,
+        account = AnonAccount,
+        onClick = {},
+    )
+}
+
+@Composable
+fun ActionBarButtonAndBadge(
+    onClick: () -> Unit,
+    icon: ImageVector,
+    iconBadgeCount: String?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
+    noClick: Boolean = false,
+    account: Account,
+    requiresAccount: Boolean = true,
+) {
+    val ctx = LocalContext.current
+
+    val barMod = if (noClick) {
+        modifier
+    } else {
+        modifier.clickable(onClick = {
+            if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                onClick()
+            }
+        })
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = barMod,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = contentColor,
+        )
+        text?.also {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            Text(
+                text = text,
+                color = contentColor,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        iconBadgeCount?.also {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            TextBadge(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                text = iconBadgeCount,
+                textStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+                textColor = contentColor,
+                verticalTextPadding = 2f,
+                horizontalTextPadding = 4f,
             )
         }
     }
@@ -356,6 +428,7 @@ fun InboxIconAndBadge(
             modifier = modifier,
             badge = {
                 Badge(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
                     content = {
                         Text(
                             text = iconBadgeCount.toString(),

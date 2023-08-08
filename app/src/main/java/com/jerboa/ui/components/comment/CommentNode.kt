@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
@@ -32,7 +33,6 @@ import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -608,6 +608,12 @@ fun CommentFooterLine(
                 )
             }
             ActionBarButton(
+                icon = Icons.Outlined.Comment,
+                onClick = { onReplyClick(commentView) },
+                contentDescription = stringResource(R.string.commentFooter_reply),
+                account = account,
+            )
+            ActionBarButton(
                 icon = if (commentView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
                 },
@@ -622,12 +628,6 @@ fun CommentFooterLine(
                 } else {
                     MaterialTheme.colorScheme.onBackground.muted
                 },
-                account = account,
-            )
-            ActionBarButton(
-                icon = Icons.Outlined.Textsms,
-                onClick = { onReplyClick(commentView) },
-                contentDescription = stringResource(R.string.commentFooter_reply),
                 account = account,
             )
             ActionBarButton(

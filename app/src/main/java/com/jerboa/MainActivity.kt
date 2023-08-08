@@ -35,6 +35,11 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.Community
 import com.jerboa.db.APP_SETTINGS_DEFAULT
+import com.jerboa.feat.BackConfirmation.addConfirmationDialog
+import com.jerboa.feat.BackConfirmation.addConfirmationToast
+import com.jerboa.feat.BackConfirmation.disposeConfirmation
+import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.ShowConfirmationDialog
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
 import com.jerboa.model.AccountViewModel
@@ -75,11 +80,6 @@ import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
-import com.jerboa.util.BackConfirmation.addConfirmationDialog
-import com.jerboa.util.BackConfirmation.addConfirmationToast
-import com.jerboa.util.BackConfirmation.disposeConfirmation
-import com.jerboa.util.BackConfirmationMode
-import com.jerboa.util.ShowConfirmationDialog
 
 class MainActivity : AppCompatActivity() {
     val siteViewModel by viewModels<SiteViewModel>()
@@ -256,6 +256,7 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreviews = appSettings.showPostLinkPreviews,
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                                postActionbarMode = appSettings.postActionbarMode,
                             )
                         }
 
@@ -297,6 +298,7 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreviews = appSettings.showPostLinkPreviews,
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                                postActionbarMode = appSettings.postActionbarMode,
                             )
                         }
 
@@ -369,6 +371,7 @@ class MainActivity : AppCompatActivity() {
                             drawerState = drawerState,
                             onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -403,6 +406,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -508,6 +512,7 @@ class MainActivity : AppCompatActivity() {
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
+                                postActionbarMode = appSettings.postActionbarMode,
                             )
                         }
                     }
@@ -538,6 +543,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 

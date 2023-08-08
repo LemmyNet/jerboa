@@ -51,6 +51,7 @@ import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.hostName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -72,7 +73,6 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -90,6 +90,7 @@ fun CommunityActivity(
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
+    postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to community activity")
     val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
@@ -197,6 +198,9 @@ fun CommunityActivity(
                                     ),
                                 )
                             },
+                            onClickPostViewMode = {
+                                appSettingsViewModel.updatedPostViewMode(it.ordinal)
+                            },
                             onClickSortType = { sortType ->
                                 communityViewModel.updateSortType(sortType)
                                 communityViewModel.resetPage()
@@ -231,6 +235,7 @@ fun CommunityActivity(
                             },
                             onClickCommunityInfo = appState::toCommunitySideBar,
                             onClickBack = appState::navigateUp,
+                            selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                         )
                     }
                     else -> {}
@@ -478,6 +483,7 @@ fun CommunityActivity(
                             },
                             showIfRead = true,
                             showScores = siteViewModel.showScores(),
+                            postActionbarMode = postActionbarMode,
                         )
                     }
                     else -> {}

@@ -36,10 +36,11 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     backConfirmationMode = 1,
     markAsReadOnScroll = false,
     showPostLinkPreviews = true,
+    postActionbarMode = 0,
 )
 
 @Database(
-    version = 23,
+    version = 24,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
