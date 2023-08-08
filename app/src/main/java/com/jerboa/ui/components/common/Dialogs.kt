@@ -10,9 +10,7 @@ import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.BrightnessLow
 import androidx.compose.material.icons.outlined.FormatListNumbered
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.LocalFireDepartment
-import androidx.compose.material.icons.outlined.MarkunreadMailbox
 import androidx.compose.material.icons.outlined.Moving
 import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material3.AlertDialog
@@ -36,7 +34,6 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.UnreadOrAll
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.SortType
@@ -198,34 +195,6 @@ fun CommentSortOptionsDialog(
                     icon = Icons.Outlined.History,
                     onClick = { onClickSortType(CommentSortType.Old) },
                     highlight = (selectedSortType == CommentSortType.Old),
-                )
-            }
-        },
-        confirmButton = {},
-    )
-}
-
-@Composable
-fun UnreadOrAllOptionsDialog(
-    onDismissRequest: () -> Unit,
-    onClickUnreadOrAll: (UnreadOrAll) -> Unit,
-    selectedUnreadOrAll: UnreadOrAll,
-) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_all),
-                    icon = Icons.Outlined.List,
-                    onClick = { onClickUnreadOrAll(UnreadOrAll.All) },
-                    highlight = (selectedUnreadOrAll == UnreadOrAll.All),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.dialogs_unread),
-                    icon = Icons.Outlined.MarkunreadMailbox,
-                    onClick = { onClickUnreadOrAll(UnreadOrAll.Unread) },
-                    highlight = (selectedUnreadOrAll == UnreadOrAll.Unread),
                 )
             }
         },
