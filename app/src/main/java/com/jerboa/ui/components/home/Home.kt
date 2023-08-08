@@ -43,7 +43,6 @@ import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.getLocalizedListingTypeName
-import com.jerboa.ui.components.common.ListingTypeOptionsDialog
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PostViewModeDialog

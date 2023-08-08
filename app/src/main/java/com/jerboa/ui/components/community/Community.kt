@@ -17,7 +17,6 @@ import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.PictrsBannerImage
