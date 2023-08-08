@@ -197,6 +197,9 @@ fun CommunityActivity(
                                     ),
                                 )
                             },
+                            onClickPostViewMode = {
+                                appSettingsViewModel.updatedPostViewMode(it.ordinal)
+                            },
                             onClickSortType = { sortType ->
                                 communityViewModel.updateSortType(sortType)
                                 communityViewModel.resetPage()
@@ -231,6 +234,7 @@ fun CommunityActivity(
                             },
                             onClickCommunityInfo = appState::toCommunitySideBar,
                             onClickBack = appState::navigateUp,
+                            selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                         )
                     }
                     else -> {}
