@@ -8,6 +8,7 @@ steps:
     image: meltwater/drone-cache:v1
     pull: true
     settings:
+      debug: true
       restore: true
       endpoint:
         from_secret: MINIO_ENDPOINT
