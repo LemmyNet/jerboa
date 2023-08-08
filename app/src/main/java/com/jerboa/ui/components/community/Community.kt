@@ -220,7 +220,7 @@ fun CommunityHeader(
                     onClickRefresh = onClickRefresh,
                     onClickShowPostViewModeDialog = {
                         showMoreOptions = false
-                        showPostViewModeOptions = !showPostViewModeOptions
+                        showPostViewModeOptions = true
                     },
                     onBlockCommunityClick = {
                         showMoreOptions = false
