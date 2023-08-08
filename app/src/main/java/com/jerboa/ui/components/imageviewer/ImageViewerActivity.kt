@@ -60,7 +60,10 @@ import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.util.downloadprogress.DownloadProgress
 import com.jerboa.util.shareImage
 import com.jerboa.util.storeImage
+import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
+import me.saket.telephoto.zoomable.rememberZoomableImageState
+import me.saket.telephoto.zoomable.rememberZoomableState
 
 const val backFadeTime = 300
 
@@ -133,6 +136,9 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
             ).build()
     }
 
+    val zoomableState = rememberZoomableState(ZoomSpec(20F, preventOverOrUnderZoom = false))
+    val zoomableImageState = rememberZoomableImageState(zoomableState)
+
     Scaffold(
         topBar = {
             ViewerHeader(showTopBar, url, appState)
@@ -193,6 +199,7 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
                         model = image,
                         imageLoader = imageGifLoader,
                         contentDescription = null,
+                        state = zoomableImageState,
                         onClick = {
                             showTopBar = !showTopBar
                             systemUiController.isSystemBarsVisible = showTopBar
