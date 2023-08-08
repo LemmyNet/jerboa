@@ -30,18 +30,24 @@ steps:
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew lintKotlin
+    environment:
+      GRADLE_USER_HOME: ".gradle"
 
   build_project:
     image: cimg/android:2023.08
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew assembleDebug
+    environment:
+      GRADLE_USER_HOME: ".gradle"
 
   run_tests:
     image: cimg/android:2023.08
     commands:
       - sudo chown -R circleci:circleci .
       - ./gradlew testDebug
+    environment:
+      GRADLE_USER_HOME: ".gradle"
 
   rebuild-cache:
     image: meltwater/drone-cache:v1
