@@ -225,6 +225,40 @@ fun LookAndFeelActivity(
                         updateAppSettings()
                     },
                 )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.confirm_exit))
+                    },
+                    state = backConfirmationMode,
+                    items = BackConfirmationMode.values().map { stringResource(it.resId) },
+                    onItemSelected = { i, _ ->
+                        backConfirmationMode.value = i
+                        updateAppSettings()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.ExitToApp,
+                            contentDescription = null,
+                        )
+                    },
+                )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.post_actionbar))
+                    },
+                    state = postActionbarMode,
+                    items = PostActionbarMode.values().map { stringResource(it.resId) },
+                    onItemSelected = { i, _ ->
+                        postActionbarMode.value = i
+                        updateAppSettings()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Forum,
+                            contentDescription = null,
+                        )
+                    },
+                )
                 SettingsCheckbox(
                     state = showBottomNavState,
                     title = {
@@ -316,40 +350,6 @@ fun LookAndFeelActivity(
                         Text(stringResource(id = R.string.mark_as_read_on_scroll))
                     },
                     onCheckedChange = { updateAppSettings() },
-                )
-                SettingsList(
-                    title = {
-                        Text(text = stringResource(R.string.confirm_exit))
-                    },
-                    state = backConfirmationMode,
-                    items = BackConfirmationMode.values().map { stringResource(it.resId) },
-                    onItemSelected = { i, _ ->
-                        backConfirmationMode.value = i
-                        updateAppSettings()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.ExitToApp,
-                            contentDescription = null,
-                        )
-                    },
-                )
-                SettingsList(
-                    title = {
-                        Text(text = stringResource(R.string.post_actionbar))
-                    },
-                    state = postActionbarMode,
-                    items = PostActionbarMode.values().map { stringResource(it.resId) },
-                    onItemSelected = { i, _ ->
-                        postActionbarMode.value = i
-                        updateAppSettings()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Forum,
-                            contentDescription = null,
-                        )
-                    },
                 )
             }
         },

@@ -657,12 +657,12 @@ fun PostFooterLine(
             )
         }
 
-        if (postActionbar != PostActionbarMode.RightHandShort) {
+        if (postActionbar == PostActionbarMode.Long) {
             CommentNewCountRework(
                 comments = postView.counts.comments,
                 unreadCount = postView.unread_comments,
                 account = account,
-                modifier = if (postActionbar == PostActionbarMode.Long) Modifier.weight(1F, true) else Modifier,
+                modifier = Modifier.weight(1F, true),
             )
         }
 
@@ -699,7 +699,16 @@ fun PostFooterLine(
             account = account,
             onClick = { showMoreOptions = !showMoreOptions },
             requiresAccount = false,
+            modifier = Modifier.weight(1F, true),
         )
+
+        if (postActionbar == PostActionbarMode.LeftHandShort) {
+            CommentNewCountRework(
+                comments = postView.counts.comments,
+                unreadCount = postView.unread_comments,
+                account = account,
+            )
+        }
     }
 }
 

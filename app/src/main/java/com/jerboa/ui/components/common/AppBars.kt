@@ -285,6 +285,7 @@ fun ActionBarButton(
     onClick: () -> Unit,
     icon: ImageVector,
     contentDescription: String?,
+    modifier: Modifier = Modifier,
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
@@ -294,9 +295,9 @@ fun ActionBarButton(
     val ctx = LocalContext.current
 
     val barMod = if (noClick) {
-        Modifier
+        modifier
     } else {
-        Modifier.clickable(onClick = {
+        modifier.clickable(onClick = {
             if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 onClick()
             }
