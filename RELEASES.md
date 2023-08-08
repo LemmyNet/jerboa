@@ -1,3 +1,23 @@
+# Jerboa v0.0.43-alpha Release (2023-08-08)
+
+## What's Changed
+
+- Small changes by @MV-GH in https://github.com/dessalines/jerboa/pull/1133
+- Replace gson.tojson with Parcelable implementation by @MV-GH in https://github.com/dessalines/jerboa/pull/1124
+- Add share functionality to imageviewer by @MV-GH in https://github.com/dessalines/jerboa/pull/1144
+- Add strings for the validateUrl and validatePostName utils. by @camporter in https://github.com/dessalines/jerboa/pull/1145
+- Make app bar 'more' buttons use dropdowns rather than dialogs by @camporter in https://github.com/dessalines/jerboa/pull/1146
+- Add 2FA user setting by @MV-GH in https://github.com/dessalines/jerboa/pull/1137
+- Use listing type use M3 dropdown instead of dialog by @MV-GH in https://github.com/dessalines/jerboa/pull/1150
+- Update woodpecker config by @MV-GH in https://github.com/dessalines/jerboa/pull/1138
+- Fixing woodpecker env vars. by @dessalines in https://github.com/dessalines/jerboa/pull/1157
+- Use M3 menu dropdown for inbox unread sort by @MV-GH in https://github.com/dessalines/jerboa/pull/1152
+- Allow post mode change in Community by @ZJouba in https://github.com/dessalines/jerboa/pull/1158
+- Increase the zoom capability of the imageviewer by @MV-GH in https://github.com/dessalines/jerboa/pull/1159
+- Post actionbar design rework and options for it. by @MV-GH in https://github.com/dessalines/jerboa/pull/1155
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.42...0.0.43
+
 # Jerboa v0.0.42-alpha Release (2023-08-03)
 
 ## What's Changed
