@@ -1,4 +1,4 @@
-# Jerboa v0.0.43-alpha Release (2023-08-08)
+# Jerboa v0.0.44-alpha Release (2023-08-08)
 
 ## What's Changed
 
@@ -15,8 +15,9 @@
 - Allow post mode change in Community by @ZJouba in https://github.com/dessalines/jerboa/pull/1158
 - Increase the zoom capability of the imageviewer by @MV-GH in https://github.com/dessalines/jerboa/pull/1159
 - Post actionbar design rework and options for it. by @MV-GH in https://github.com/dessalines/jerboa/pull/1155
+- Fix appbar rework by @MV-GH in https://github.com/dessalines/jerboa/pull/1160
 
-**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.42...0.0.43
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.42...0.0.44
 
 # Jerboa v0.0.42-alpha Release (2023-08-03)
 
