@@ -1,14 +1,9 @@
 package com.jerboa.ui.components.imageviewer
 
 import android.app.Activity
-import android.content.Context
-import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
-import android.util.Log
 import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-import android.webkit.MimeTypeMap
-import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -26,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,26 +51,21 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.request.ImageRequest
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.jerboa.JerboaAppState
 import com.jerboa.JerboaApplication
 import com.jerboa.R
-import com.jerboa.saveBitmap
-import com.jerboa.saveBitmapP
+import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.util.downloadprogress.DownloadProgress
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.jerboa.util.shareImage
+import com.jerboa.util.storeImage
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
-import java.io.IOException
-import java.net.URL
 
 const val backFadeTime = 300
 
 @Composable
-fun ImageViewer(url: String, onBackRequest: () -> Unit) {
+fun ImageViewer(url: String, appState: JerboaAppState) {
     val ctx = LocalContext.current
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
@@ -145,7 +135,7 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
 
     Scaffold(
         topBar = {
-            ViewerHeader(showTopBar, onBackRequest, url)
+            ViewerHeader(showTopBar, url, appState)
         },
         content = {
             Box(
@@ -157,7 +147,7 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
                             consumeScrollDelta = {
                                 if (it < -70 && !debounce) {
                                     debounce = true
-                                    onBackRequest()
+                                    appState.navigateUp()
                                 }
                                 it
                             },
@@ -221,38 +211,12 @@ fun ImageViewer(url: String, onBackRequest: () -> Unit) {
     )
 }
 
-// Needs to check for permission before this for API 29 and below
-suspend fun saveImage(url: String, context: Context) {
-    Toast.makeText(context, context.getString(R.string.saving_image), Toast.LENGTH_SHORT).show()
-
-    val fileName = Uri.parse(url).pathSegments.last()
-
-    val extension = MimeTypeMap.getFileExtensionFromUrl(url)
-    val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-
-    try {
-        withContext(Dispatchers.IO) {
-            URL(url).openStream().use {
-                if (SDK_INT < 29) {
-                    saveBitmapP(context, it, mimeType, fileName)
-                } else {
-                    saveBitmap(context, it, mimeType, fileName)
-                }
-            }
-        }
-        Toast.makeText(context, context.getString(R.string.saved_image), Toast.LENGTH_SHORT).show()
-    } catch (e: IOException) {
-        Log.d("image", "failed saving image", e)
-        Toast.makeText(context, R.string.failed_saving_image, Toast.LENGTH_SHORT).show()
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewerHeader(
     showTopBar: Boolean = true,
-    onBackRequest: () -> Unit = {},
     url: String = "",
+    appState: JerboaAppState,
 ) {
     val topBarAlpha by animateFloatAsState(
         targetValue = if (showTopBar) 1f else 0f,
@@ -260,30 +224,7 @@ fun ViewerHeader(
         label = "topBarAlpha",
     )
 
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
-    val onTap: () -> Unit = if (SDK_INT < 29) {
-        val storagePermissionState = rememberPermissionState(
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        ) {
-            if (it) {
-                coroutineScope.launch {
-                    saveImage(url, context)
-                }
-            } else {
-                Toast.makeText(context, context.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        storagePermissionState::launchPermissionRequest
-    } else {
-        {
-            coroutineScope.launch {
-                saveImage(url, context)
-            }
-        }
-    }
+    val ctx = LocalContext.current
 
     TopAppBar(
         colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f)),
@@ -291,7 +232,7 @@ fun ViewerHeader(
         title = {},
         navigationIcon = {
             IconButton(
-                onClick = onBackRequest,
+                onClick = appState::navigateUp,
             ) {
                 Icon(
                     Icons.Outlined.ArrowBack,
@@ -302,7 +243,22 @@ fun ViewerHeader(
         },
         actions = {
             IconButton(
-                onClick = onTap,
+                onClick = {
+                    shareImage(appState.coroutineScope, ctx, url)
+                },
+            ) {
+                Icon(
+                    Icons.Outlined.Share,
+                    tint = Color.White,
+                    contentDescription = stringResource(R.string.share),
+                )
+            }
+
+            IconButton(
+                // TODO disable once it is busy
+                onClick = {
+                    storeImage(appState.coroutineScope, ctx, url)
+                },
             ) {
                 Icon(
                     Icons.Outlined.Download,
@@ -317,7 +273,7 @@ fun ViewerHeader(
 @Composable
 @Preview
 fun ImageActivityPreview() {
-    ImageViewer(url = "", onBackRequest = { })
+    ImageViewer(url = "", appState = rememberJerboaAppState())
 }
 
 enum class ImageState {

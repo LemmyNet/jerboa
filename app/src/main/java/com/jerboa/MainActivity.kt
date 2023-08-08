@@ -453,7 +453,7 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             body = text
                         }
-                        val community by appState.takeDepsFromRoot<Community?>()
+                        val community by appState.takeNullableDepsFromRoot<Community?>()
 
                         CreatePostActivity(
                             appState = appState,
@@ -690,7 +690,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.ViewArgs(it)
 
-                        ImageViewer(url = args.url, onBackRequest = appState::popBackStack)
+                        ImageViewer(url = args.url, appState = appState)
                     }
 
                     composable(

@@ -35,21 +35,19 @@ fun AccountSettingsActivity(
             SimpleTopAppBar(text = stringResource(R.string.account_settings_activity_account_settings), onClickBack = onBack)
         },
         content = { padding ->
-            account.also {
-                SettingsForm(
-                    accountSettingsViewModel,
-                    onClickSave = { form ->
-                        accountSettingsViewModel.saveSettings(
-                            form,
-                            siteViewModel = siteViewModel,
-                            account = account,
-                        )
-                    },
-                    siteViewModel = siteViewModel,
-                    account = account,
-                    padding = padding,
-                )
-            }
+            SettingsForm(
+                accountSettingsViewModel,
+                onClickSave = { form ->
+                    accountSettingsViewModel.saveSettings(
+                        form,
+                        siteViewModel = siteViewModel,
+                        account = account,
+                    )
+                },
+                siteViewModel = siteViewModel,
+                account = account,
+                padding = padding,
+            )
         },
     )
 }

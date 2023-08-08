@@ -18,6 +18,10 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -56,6 +60,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import arrow.core.compareTo
+import coil.annotation.ExperimentalCoilApi
+import coil.imageLoader
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
@@ -77,6 +83,8 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.Request
 import org.ocpsoft.prettytime.PrettyTime
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -683,42 +691,44 @@ data class InputField(
 )
 
 fun validatePostName(
+    ctx: Context,
     name: String,
 ): InputField {
     return if (name.isEmpty()) {
         InputField(
-            label = "Title required",
+            label = ctx.getString(R.string.title_required),
             hasError = true,
         )
     } else if (name.length < 3) {
         InputField(
-            label = "Title must be > 3 chars",
+            label = ctx.getString(R.string.title_min_3_chars),
             hasError = true,
         )
     } else if (name.length >= MAX_POST_TITLE_LENGTH) {
         InputField(
-            label = "Title cannot be > 200 chars",
+            label = ctx.getString(R.string.title_less_than_200_chars),
             hasError = true,
         )
     } else {
         InputField(
-            label = "Title",
+            label = ctx.getString(R.string.title),
             hasError = false,
         )
     }
 }
 
 fun validateUrl(
+    ctx: Context,
     url: String,
 ): InputField {
     return if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
         InputField(
-            label = "Invalid Url",
+            label = ctx.getString(R.string.url_invalid),
             hasError = true,
         )
     } else {
         InputField(
-            label = "Url",
+            label = ctx.getString(R.string.url),
             hasError = false,
         )
     }
@@ -1454,3 +1464,30 @@ fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
         ?.let(::getNetworkCapabilities)
         ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         ?: false
+
+/**
+ * When calling this, you must call ActivityResultLauncher.unregister()
+ * on the returned ActivityResultLauncher when the launcher is no longer
+ * needed to release any values that might be captured in the registered callback.
+ */
+fun <I, O> ComponentActivity.registerActivityResultLauncher(
+    contract: ActivityResultContract<I, O>,
+    callback: ActivityResultCallback<O>,
+): ActivityResultLauncher<I> {
+    val key = UUID.randomUUID().toString()
+    return activityResultRegistry.register(key, contract, callback)
+}
+
+/**
+ *  Returns a [InputStream] for the data of the URL, but it also checks the cache first!
+ */
+@OptIn(ExperimentalCoilApi::class)
+fun Context.getInputStream(url: String): InputStream {
+    val snapshot = this.imageLoader.diskCache?.openSnapshot(url)
+
+    return snapshot?.use {
+        it.data.toFile().inputStream()
+    } ?: API.httpClient.newCall(Request(url.toHttpUrl())).execute().use { response ->
+        response.body.byteStream()
+    }
+}

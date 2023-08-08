@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,8 +35,8 @@ import com.jerboa.datatypes.types.PersonView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.LargerCircularIcon
+import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
@@ -188,24 +188,6 @@ fun PersonProfileHeader(
         )
     }
 
-    if (showMoreOptions) {
-        PersonProfileMoreDialog(
-            onDismissRequest = { showMoreOptions = false },
-            onBlockPersonClick = {
-                showMoreOptions = false
-                onBlockPersonClick()
-            },
-            onReportPersonClick = {
-                showMoreOptions = false
-                onReportPersonClick()
-            },
-            onMessagePersonClick = {
-                showMoreOptions = false
-                onMessagePersonClick()
-            },
-        )
-    }
-
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
@@ -241,12 +223,30 @@ fun PersonProfileHeader(
                 )
             }
             if (!myProfile && isLoggedIn()) {
-                IconButton(onClick = {
-                    showMoreOptions = !showMoreOptions
-                }) {
-                    Icon(
-                        Icons.Outlined.MoreVert,
-                        contentDescription = stringResource(R.string.moreOptions),
+                Box {
+                    IconButton(onClick = {
+                        showMoreOptions = !showMoreOptions
+                    }) {
+                        Icon(
+                            Icons.Outlined.MoreVert,
+                            contentDescription = stringResource(R.string.moreOptions),
+                        )
+                    }
+                    PersonProfileMoreDropdown(
+                        expanded = showMoreOptions,
+                        onDismissRequest = { showMoreOptions = false },
+                        onBlockPersonClick = {
+                            showMoreOptions = false
+                            onBlockPersonClick()
+                        },
+                        onReportPersonClick = {
+                            showMoreOptions = false
+                            onReportPersonClick()
+                        },
+                        onMessagePersonClick = {
+                            showMoreOptions = false
+                            onMessagePersonClick()
+                        },
                     )
                 }
             }
@@ -272,33 +272,31 @@ fun PersonProfileHeaderTitle(
 }
 
 @Composable
-fun PersonProfileMoreDialog(
+fun PersonProfileMoreDropdown(
+    expanded: Boolean,
     onDismissRequest: () -> Unit,
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
     onMessagePersonClick: () -> Unit,
 ) {
-    AlertDialog(
+    DropdownMenu(
+        expanded = expanded,
         onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.person_profile_dm_person),
-                    onClick = onMessagePersonClick,
-                    icon = Icons.Outlined.Message,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.person_profile_block_person),
-                    icon = Icons.Outlined.Block,
-                    onClick = onBlockPersonClick,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.person_profile_report_person),
-                    icon = Icons.Outlined.Flag,
-                    onClick = onReportPersonClick,
-                )
-            }
-        },
-        confirmButton = {},
-    )
+    ) {
+        MenuItem(
+            text = stringResource(R.string.person_profile_dm_person),
+            onClick = onMessagePersonClick,
+            icon = Icons.Outlined.Message,
+        )
+        MenuItem(
+            text = stringResource(R.string.person_profile_block_person),
+            onClick = onBlockPersonClick,
+            icon = Icons.Outlined.Block,
+        )
+        MenuItem(
+            text = stringResource(R.string.person_profile_report_person),
+            onClick = onReportPersonClick,
+            icon = Icons.Outlined.Flag,
+        )
+    }
 }
