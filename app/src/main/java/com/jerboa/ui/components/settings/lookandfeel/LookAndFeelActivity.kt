@@ -10,13 +10,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Colorize
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.FormatSize
+import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,11 +39,13 @@ import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.PostActionbarMode
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
 import com.jerboa.model.AppSettingsViewModel
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.util.BackConfirmationMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,6 +89,7 @@ fun LookAndFeelActivity(
     val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
     val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
     val showPostLinkPreviewMode = rememberBooleanSettingState(settings.showPostLinkPreviews)
+    val postActionbarMode = rememberIntSettingState(settings.postActionbarMode)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -117,12 +120,13 @@ fun LookAndFeelActivity(
                 backConfirmationMode = backConfirmationMode.value,
                 showPostLinkPreviews = showPostLinkPreviewMode.value,
                 markAsReadOnScroll = markAsReadOnScroll.value,
+                postActionbarMode = postActionbarMode.value,
             ),
         )
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), onClickBack = onBack)
         },
@@ -221,6 +225,40 @@ fun LookAndFeelActivity(
                         updateAppSettings()
                     },
                 )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.confirm_exit))
+                    },
+                    state = backConfirmationMode,
+                    items = BackConfirmationMode.values().map { stringResource(it.resId) },
+                    onItemSelected = { i, _ ->
+                        backConfirmationMode.value = i
+                        updateAppSettings()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.ExitToApp,
+                            contentDescription = null,
+                        )
+                    },
+                )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.post_actionbar))
+                    },
+                    state = postActionbarMode,
+                    items = PostActionbarMode.values().map { stringResource(it.resId) },
+                    onItemSelected = { i, _ ->
+                        postActionbarMode.value = i
+                        updateAppSettings()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Forum,
+                            contentDescription = null,
+                        )
+                    },
+                )
                 SettingsCheckbox(
                     state = showBottomNavState,
                     title = {
@@ -312,23 +350,6 @@ fun LookAndFeelActivity(
                         Text(stringResource(id = R.string.mark_as_read_on_scroll))
                     },
                     onCheckedChange = { updateAppSettings() },
-                )
-                SettingsList(
-                    title = {
-                        Text(text = stringResource(R.string.confirm_exit))
-                    },
-                    state = backConfirmationMode,
-                    items = BackConfirmationMode.values().map { stringResource(it.resId) },
-                    onItemSelected = { i, _ ->
-                        backConfirmationMode.value = i
-                        updateAppSettings()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.ExitToApp,
-                            contentDescription = null,
-                        )
-                    },
                 )
             }
         },

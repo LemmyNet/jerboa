@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Flag
@@ -21,7 +22,6 @@ import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -197,6 +197,15 @@ fun CommentMentionNodeFooterLine(
                 },
                 account = account,
             )
+            // Don't let you respond to your own comment.
+            if (personMentionView.creator.id != account.id) {
+                ActionBarButton(
+                    icon = Icons.Outlined.Comment,
+                    contentDescription = stringResource(R.string.commentFooter_reply),
+                    onClick = { onReplyClick(personMentionView) },
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = if (personMentionView.saved) {
                     Icons.Filled.Bookmark
@@ -216,15 +225,6 @@ fun CommentMentionNodeFooterLine(
                 },
                 account = account,
             )
-            // Don't let you respond to your own comment.
-            if (personMentionView.creator.id != account.id) {
-                ActionBarButton(
-                    icon = Icons.Outlined.Textsms,
-                    contentDescription = stringResource(R.string.commentFooter_reply),
-                    onClick = { onReplyClick(personMentionView) },
-                    account = account,
-                )
-            }
             ActionBarButton(
                 icon = Icons.Outlined.MoreVert,
                 contentDescription = stringResource(R.string.moreOptions),

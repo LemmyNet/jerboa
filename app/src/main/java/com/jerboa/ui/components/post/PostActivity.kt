@@ -75,6 +75,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
@@ -104,7 +105,6 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.toImmutableSet
 
 object PostViewReturn {
@@ -149,6 +149,7 @@ fun PostActivity(
     navigateParentCommentsWithVolumeButtons: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreview: Boolean,
+    postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to post activity")
     val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
@@ -491,6 +492,7 @@ fun PostActivity(
                                     showPostLinkPreview = showPostLinkPreview,
                                     showIfRead = false,
                                     showScores = siteViewModel.showScores(),
+                                    postActionbarMode = postActionbarMode,
                                 )
                             }
 

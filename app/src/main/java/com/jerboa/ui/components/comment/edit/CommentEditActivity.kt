@@ -19,12 +19,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.CommentView
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentEditViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
 
 object CommentEditReturn {
     const val COMMENT_VIEW = "comment-edit::return(comment-view)"

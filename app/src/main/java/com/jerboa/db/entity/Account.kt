@@ -3,7 +3,7 @@ package com.jerboa.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.jerboa.util.AccountVerificationState
+import com.jerboa.feat.AccountVerificationState
 
 @Entity
 data class Account(
