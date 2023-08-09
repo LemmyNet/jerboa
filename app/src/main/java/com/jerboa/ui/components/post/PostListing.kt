@@ -699,7 +699,7 @@ fun PostFooterLine(
             account = account,
             onClick = { showMoreOptions = !showMoreOptions },
             requiresAccount = false,
-            modifier = Modifier.weight(1F, true),
+            modifier = if (postActionbar == PostActionbarMode.LeftHandShort) Modifier.weight(1F, true) else Modifier,
         )
 
         if (postActionbar == PostActionbarMode.LeftHandShort) {
