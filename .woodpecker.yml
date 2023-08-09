@@ -8,7 +8,6 @@ steps:
   #    image: meltwater/drone-cache:v1
   #    pull: true
   #    settings:
-  #      debug: true
   #      restore: true
   #      endpoint:
   #        from_secret: MINIO_ENDPOINT
@@ -22,7 +21,7 @@ steps:
   #      cache_key: "jerboa-cache"
   #      path-style: true
   #      mount:
-  #        - ".gradle/wrapper"
+  #        - ".gradle"
   #    secrets:
   #      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
 
@@ -50,26 +49,26 @@ steps:
     environment:
       GRADLE_USER_HOME: ".gradle"
 
-  #  rebuild-cache:
-  #    image: meltwater/drone-cache:v1
-  #    pull: true
-  #    settings:
-  #      rebuild: true
-  #      endpoint:
-  #        from_secret: MINIO_ENDPOINT
-  #      access-key:
-  #        from_secret: MINIO_WRITE_USER
-  #      secret-key:
-  #        from_secret: MINIO_WRITE_PASSWORD
-  #      bucket:
-  #        from_secret: MINIO_BUCKET
-  #      cache_key: "jerboa-cache"
-  #      region: us-east-1
-  #      path-style: true
-  #      mount:
-  #        - ".gradle/wrapper"
-  #    secrets:
-  #      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
+  rebuild-cache:
+    image: meltwater/drone-cache:v1
+    pull: true
+    settings:
+      rebuild: true
+      endpoint:
+        from_secret: MINIO_ENDPOINT
+      access-key:
+        from_secret: MINIO_WRITE_USER
+      secret-key:
+        from_secret: MINIO_WRITE_PASSWORD
+      bucket:
+        from_secret: MINIO_BUCKET
+      cache_key: "jerboa-cache"
+      region: us-east-1
+      path-style: true
+      mount:
+        - ".gradle"
+    secrets:
+      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
 
   notify:
     image: alpine:3
