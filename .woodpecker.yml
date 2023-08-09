@@ -4,28 +4,6 @@ steps:
     commands:
       - prettier -c "*.md" "*.yml"
 
-#  restore-cache:
-#    image: meltwater/drone-cache:v1
-#    pull: true
-#    settings:
-#      debug: true
-#      restore: true
-#      endpoint:
-#        from_secret: MINIO_ENDPOINT
-#      access-key:
-#        from_secret: MINIO_WRITE_USER
-#      secret-key:
-#        from_secret: MINIO_WRITE_PASSWORD
-#      bucket:
-#        from_secret: MINIO_BUCKET
-#      region: us-east-1
-#      cache_key: "jerboa-cache"
-#      path-style: true
-#      mount:
-#        - ".gradle"
-#    secrets:
-#      [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
-
   check_formatting:
     image: cimg/android:2023.08
     commands:
