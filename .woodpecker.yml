@@ -22,7 +22,6 @@ steps:
       cache_key: "jerboa-cache"
       path-style: true
       mount:
-        - ".gradle/caches"
         - ".gradle/wrapper"
     secrets:
       [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
@@ -68,7 +67,6 @@ steps:
       region: us-east-1
       path-style: true
       mount:
-        - ".gradle/caches"
         - ".gradle/wrapper"
     secrets:
       [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
