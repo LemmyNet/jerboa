@@ -38,9 +38,8 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     init {
         viewModelScope.launch {
             accountRepository.currentAccount.asFlow().collect {
-                Log.d("currAcc", "$it")
-
                 val acc = it ?: AnonAccount
+                Log.d("Jerboa", "acc init for id: ${acc.id}")
 
                 if (acc.isAnon()) {
                     API.changeLemmyInstance(DEFAULT_INSTANCE)
