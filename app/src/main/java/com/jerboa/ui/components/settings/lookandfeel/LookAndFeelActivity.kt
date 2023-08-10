@@ -96,6 +96,7 @@ fun LookAndFeelActivity(
     val scrollState = rememberScrollState()
 
     val markAsReadOnScroll = rememberBooleanSettingState(settings.markAsReadOnScroll)
+    val autoPlayGifs = rememberBooleanSettingState(settings.autoPlayGifs)
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
@@ -121,6 +122,7 @@ fun LookAndFeelActivity(
                 showPostLinkPreviews = showPostLinkPreviewMode.value,
                 markAsReadOnScroll = markAsReadOnScroll.value,
                 postActionbarMode = postActionbarMode.value,
+                autoPlayGifs = autoPlayGifs.value,
             ),
         )
     }
@@ -348,6 +350,13 @@ fun LookAndFeelActivity(
                     state = markAsReadOnScroll,
                     title = {
                         Text(stringResource(id = R.string.mark_as_read_on_scroll))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = autoPlayGifs,
+                    title = {
+                        Text(stringResource(id = R.string.settings_autoplaygifs))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
