@@ -39,9 +39,7 @@ class AccountSettingsViewModel(
                 GetSite(auth = account.jwt),
             )
 
-            val newAccount = maybeUpdateAccountSettings(account, form)
-
-            siteViewModel.updateFromAccount(newAccount)
+            maybeUpdateAccountSettings(account, form)
         }
     }
 

@@ -1,26 +1,32 @@
 package com.jerboa.model
 
+import android.util.Log
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
+import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.GetUnreadCountResponse
-import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.isAnon
+import com.jerboa.db.repository.AccountRepository
+import com.jerboa.jerboaApplication
 import com.jerboa.serializeToMap
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class SiteViewModel : ViewModel() {
+class SiteViewModel(private val accountRepository: AccountRepository) : ViewModel() {
 
     // Can't be private, because it needs to be set by the login viewmodel
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
@@ -29,22 +35,30 @@ class SiteViewModel : ViewModel() {
 
     val unreadCount by derivedStateOf { getUnreadCountTotal(unreadCountRes) }
 
-    var sortType by mutableStateOf(SortType.Active)
-        private set
-    var listingType by mutableStateOf(ListingType.Local)
-        private set
+    init {
+        viewModelScope.launch {
+            accountRepository.currentAccount.asFlow().collect {
+                Log.d("currAcc", "$it")
 
-    fun updateSortType(sortType: SortType) {
-        this.sortType = sortType
-    }
+                val acc = it ?: AnonAccount
 
-    fun updateListingType(listingType: ListingType) {
-        this.listingType = listingType
-    }
+                if (acc.isAnon()) {
+                    API.changeLemmyInstance(DEFAULT_INSTANCE)
+                } else {
+                    API.changeLemmyInstance(acc.instance)
+                }
 
-    fun updateFromAccount(account: Account) {
-        updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
-        updateListingType(ListingType.values().getOrElse(account.defaultListingType) { listingType })
+                getSite(
+                    GetSite(
+                        auth = it?.jwt,
+                    ),
+                )
+
+                if (it != null) {
+                    fetchUnreadCounts(GetUnreadCount(auth = it.jwt))
+                }
+            }
+        }
     }
 
     fun getSite(
@@ -57,8 +71,17 @@ class SiteViewModel : ViewModel() {
             when (val res = siteRes) {
                 is ApiState.Success -> {
                     res.data.my_user?.local_user_view?.local_user?.let {
-                        updateSortType(it.default_sort_type)
-                        updateListingType(it.default_listing_type)
+                        val currAcc = accountRepository.currentAccount.value
+                        if (currAcc != null) {
+                            val newAccount = currAcc.copy(
+                                defaultListingType = it.default_listing_type.ordinal,
+                                defaultSortType = it.default_sort_type.ordinal,
+                            )
+
+                            if (currAcc != newAccount) {
+                                accountRepository.update(newAccount)
+                            }
+                        }
                     }
                 }
                 else -> {}
@@ -121,6 +144,14 @@ class SiteViewModel : ViewModel() {
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores ?: true
             else -> true
+        }
+    }
+
+    companion object {
+        val Factory = viewModelFactory {
+            initializer {
+                SiteViewModel(jerboaApplication().container.accountRepository)
+            }
         }
     }
 }

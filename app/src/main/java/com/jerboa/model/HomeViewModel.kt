@@ -18,7 +18,6 @@ import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.BlockPersonResponse
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
-import com.jerboa.datatypes.types.GetPostResponse
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.ListingType
@@ -28,6 +27,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
@@ -42,14 +42,11 @@ class HomeViewModel : ViewModel(), Initializable {
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    private var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
-
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
-    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     val lazyListState = LazyListState()
 
@@ -83,10 +80,9 @@ class HomeViewModel : ViewModel(), Initializable {
     fun getPosts(form: GetPosts, state: ApiState<GetPostsResponse> = ApiState.Loading) {
         viewModelScope.launch {
             postsRes = state
-            postsRes =
-                apiWrapper(
-                    API.getInstance().getPosts(form.serializeToMap()),
-                )
+            postsRes = apiWrapper(
+                API.getInstance().getPosts(form.serializeToMap()),
+            )
         }
     }
 
@@ -184,13 +180,6 @@ class HomeViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun updateFromAccount(account: Account) {
-        updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
-        updateListingType(
-            ListingType.values().getOrElse(account.defaultListingType) { listingType },
-        )
-    }
-
     fun updatePost(postView: PostView) {
         when (val existing = postsRes) {
             is ApiState.Success -> {
@@ -207,10 +196,9 @@ class HomeViewModel : ViewModel(), Initializable {
         resetPage()
         getPosts(
             GetPosts(
-                page = page,
                 sort = sortType,
                 type_ = listingType,
-                auth = account.jwt.ifEmpty { null },
+                auth = account.getJWT(),
             ),
         )
     }
@@ -222,7 +210,7 @@ class HomeViewModel : ViewModel(), Initializable {
                 page = page,
                 sort = sortType,
                 type_ = listingType,
-                auth = account.jwt.ifEmpty { null },
+                auth = account.getJWT(),
             ),
             ApiState.Refreshing,
         )
@@ -242,10 +230,7 @@ class HomeViewModel : ViewModel(), Initializable {
         appState: JerboaAppState,
     ) {
         appState.coroutineScope.launch {
-            markPostRes = ApiState.Loading
-            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
-
-            when (val markRes = markPostRes) {
+            when (val markRes = apiWrapper(API.getInstance().markAsRead(form))) {
                 is ApiState.Success -> {
                     updatePost(markRes.data.post_view)
                 }
