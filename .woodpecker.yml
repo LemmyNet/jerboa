@@ -71,7 +71,7 @@ steps:
       [MINIO_ENDPOINT, MINIO_WRITE_USER, MINIO_WRITE_PASSWORD, MINIO_BUCKET]
     when:
       - path:
-          include: ["app/build.gradle.kts"]
+          include: ["app/build.gradle.kts/donttrigger"]
 
   notify:
     image: alpine:3
