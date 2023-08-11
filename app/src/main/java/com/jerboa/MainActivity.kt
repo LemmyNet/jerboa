@@ -30,6 +30,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import arrow.core.Either
+import coil.Coil
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
@@ -118,6 +119,12 @@ class MainActivity : AppCompatActivity() {
             @Suppress("SENSELESS_COMPARISON")
             if (appSettings == null) {
                 triggerRebirth(ctx)
+            }
+
+            if (appSettings.autoPlayGifs) {
+                Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)
+            } else {
+                Coil.setImageLoader(ctx.applicationContext as JerboaApplication)
             }
 
             JerboaTheme(
