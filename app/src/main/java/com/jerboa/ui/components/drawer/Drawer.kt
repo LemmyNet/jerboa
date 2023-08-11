@@ -226,7 +226,7 @@ fun DrawerItemsMain(
         }
 
         if (!showBottomNav) {
-            items(NavTab.values()) {
+            items(NavTab.entries) {
                 IconAndTextDrawerItem(
                     text = stringResource(it.textId),
                     icon = it.iconOutlined,

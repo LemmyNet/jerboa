@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 DisposableEffect(appSettings.backConfirmationMode) {
-                    when (BackConfirmationMode.values()[appSettings.backConfirmationMode]) {
+                    when (BackConfirmationMode.entries[appSettings.backConfirmationMode]) {
                         BackConfirmationMode.Toast -> {
                             this@MainActivity.addConfirmationToast(appState.navController, ctx)
                         }

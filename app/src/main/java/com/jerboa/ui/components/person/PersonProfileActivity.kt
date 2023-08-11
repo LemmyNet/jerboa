@@ -336,7 +336,7 @@ fun UserTabs(
             getLocalizedStringForUserTab(ctx, UserTab.Comments),
         )
     } else {
-        UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
+        UserTab.entries.map { getLocalizedStringForUserTab(ctx, it) }
     }
     val pagerState = rememberPagerState { tabTitles.size }
 
