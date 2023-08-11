@@ -68,6 +68,7 @@ fun beach(): Pair<JerboaColorScheme, JerboaColorScheme> {
 //    val md_theme_dark_shadow = Color(0xFF000000)
     val md_theme_dark_surfaceTint = Color(0xFF00234D)
     val md_theme_dark_outlineVariant = Color(0xFF002991)
+    val toolbar.setBackgroundColor(0xFFFFB0CB)
     val md_theme_dark_scrim = Color(0xFF000000)
     val jerboa_image_highlight = Color(0xCCD1D1D1)
     val jerboa_video_highlight = Color(0xCCC20000)
