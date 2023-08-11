@@ -212,6 +212,7 @@ fun blue(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_dark_inverseOnSurface = Color(0xFF1A1C20)
     val md_theme_dark_inverseSurface = Color(0xFFE0E4EB)
     val md_theme_dark_inversePrimary = Color(0xFF3161A6)
+    val toolbar.setBackgroundColor(0xFF000000.toInt())
 //    val md_theme_dark_shadow = Color(0xFF000000)
     val md_theme_dark_surfaceTint = Color(0xFFB0D0FF)
     val md_theme_dark_outlineVariant = Color(0xFF434851)
