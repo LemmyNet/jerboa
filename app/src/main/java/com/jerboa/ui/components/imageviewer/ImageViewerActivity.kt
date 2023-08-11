@@ -73,7 +73,7 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
 
-    val imageGifLoader = (ctx.applicationContext as JerboaApplication).imageViewLoader
+    val imageGifLoader = (ctx.applicationContext as JerboaApplication).imageViewerLoader
     var debounce by remember {
         mutableStateOf(false)
     }

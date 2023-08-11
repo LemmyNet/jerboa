@@ -321,6 +321,23 @@ val MIGRATION_24_23 = object : Migration(24, 23) {
     }
 }
 
+val MIGRATION_24_25 = object : Migration(24, 25) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings ADD COLUMN auto_play_gifs INTEGER NOT NULL DEFAULT 0",
+        )
+    }
+}
+
+val MIGRATION_25_24 = object : Migration(25, 24) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE AppSettings DROP COLUMN auto_play_gifs",
+        )
+    }
+}
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST = arrayOf(
     MIGRATION_1_2,
@@ -349,4 +366,6 @@ val MIGRATIONS_LIST = arrayOf(
     MIGRATION_23_22,
     MIGRATION_23_24,
     MIGRATION_24_23,
+    MIGRATION_24_25,
+    MIGRATION_25_24,
 )
