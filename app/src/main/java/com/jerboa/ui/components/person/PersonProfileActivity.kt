@@ -581,7 +581,7 @@ fun UserTabs(
                                             loginAsToast = true,
                                         ) { it ->
                                             if (block) {
-                                                personProfileViewModel.blockCommunity(
+                                                personProfileViewModel.unblockCommunity(
                                                     BlockCommunity(
                                                         community_id = community.id,
                                                         block = true,
@@ -589,8 +589,8 @@ fun UserTabs(
                                                     ),
                                                     ctx,
                                                 )
-                                            } else {personProfileViewModel.blockCommunity(
-                                                BlockCommunity(
+                                            } else {personProfileViewModel.unblockCommunity(
+                                                unBlockCommunity(
                                                     community_id = community.id,
                                                     block = false,
                                                     auth = it.jwt,

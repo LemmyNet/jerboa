@@ -208,6 +208,35 @@ class CommunityViewModel : ViewModel(), Initializable {
         }
     }
 
+    fun unblockCommunity(form: Blockcommunity, ctx: Contect){
+        viewModelScope.launch {
+            blockCommunityRes = Apistate.Loading
+            blockCommunityRes =
+                apiWrapper(API.getInstance().blockcommunity(form))
+            when (val blockCommunity = blockCommunityRes) {
+            is ApiState.Success -> {
+                showBlockCommunityToast(blockCommunity, ctx)
+
+                when (val existing = communityRes) {
+                    is ApiState.Success -> {
+                        val deleteRes =
+                            ApiState.Success(
+                                existing.data.copy(
+                                    community_view =
+                                    blockCommunity.data.community_view,
+                                ),
+                            )
+                        communityRes = deleteRes
+                    }
+
+                    else -> {}
+                }
+            }
+
+            else -> {}
+        }
+        }
+    }
     fun blockCommunity(form: BlockCommunity, ctx: Context) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
