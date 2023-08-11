@@ -579,51 +579,27 @@ fun UserTabs(
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
-                                        ) {
-                                            personProfileViewModel.blockCommunity(
+                                        ) { it ->
+                                            if (block) {
+                                                personProfileViewModel.blockCommunity(
+                                                    BlockCommunity(
+                                                        community_id = community.id,
+                                                        block = true,
+                                                        auth = it.jwt,
+                                                    ),
+                                                    ctx,
+                                                )
+                                            } else {personProfileViewModel.blockCommunity(
                                                 BlockCommunity(
                                                     community_id = community.id,
-                                                    block = true,
+                                                    block = false,
                                                     auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
+                                            }
                                         }
-                                    },
-                                    onBlockCommunityClick = { community ->
-                                        account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            loginAsToast = true
-                                        ) { auth ->
-                                            val blockCommunity = BlockCommunity(
-                                                community_id = community.id,
-                                                block = true,
-                                                auth = auth.jwt
-                                            )
-
-                                            personProfileViewModel.blockCommunity(blockCommunity, ctx)
-                                        }
-                                    } else { onBlockCommunityClick = { community ->
-                                    account.doIfReadyElseDisplayInfo(
-                                        appState,
-                                        ctx,
-                                        snackbarHostState,
-                                        scope,
-                                        loginAsToast = true
-                                    ) { auth ->
-                                        blockCommunity = BlockCommunity(
-                                            community_id = community.id,
-                                            block = false,
-                                            auth = auth.jwt
-                                        )
-
-                                        personProfileViewModel.blockCommunity(blockCommunity, ctx)
                                     }
-                                }
-                                }
 
                                     onBlockCreatorClick = { person ->
                                         account.doIfReadyElseDisplayInfo(
