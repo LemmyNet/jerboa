@@ -1,13 +1,17 @@
 package com.jerboa.model
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -27,16 +31,21 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.getJWT
+import com.jerboa.db.repository.AccountRepository
 import com.jerboa.findAndUpdatePost
+import com.jerboa.jerboaApplication
 import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.toEnumSafe
 import com.jerboa.util.Initializable
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel(), Initializable {
+class HomeViewModel(private val accountRepository: AccountRepository) : ViewModel(), Initializable {
     override var initialized by mutableStateOf(false)
 
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
@@ -56,6 +65,20 @@ class HomeViewModel : ViewModel(), Initializable {
         private set
     var page by mutableIntStateOf(1)
         private set
+
+    init {
+        viewModelScope.launch {
+            accountRepository.currentAccount
+                .asFlow()
+                .map { it ?: AnonAccount }
+                .collect { account ->
+                    updateSortType(account.defaultSortType.toEnumSafe())
+                    updateListingType(account.defaultListingType.toEnumSafe())
+                    Log.d("jerboa", "Fetching posts")
+                    resetPosts(account)
+                }
+        }
+    }
 
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
@@ -236,6 +259,14 @@ class HomeViewModel : ViewModel(), Initializable {
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+    companion object {
+        val Factory = viewModelFactory {
+            initializer {
+                HomeViewModel(jerboaApplication().container.accountRepository)
             }
         }
     }

@@ -63,7 +63,6 @@ import com.jerboa.newVote
 import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.shareLink
-import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaSnackbarHost
@@ -120,10 +119,6 @@ fun HomeActivity(
         if (!account.isAnon() && !account.isReady()) {
             account.doIfReadyElseDisplayInfo(appState, ctx, snackbarHostState, scope, siteViewModel, accountViewModel) {}
         }
-        homeViewModel.updateSortType(account.defaultSortType.toEnumSafe())
-        homeViewModel.updateListingType(account.defaultListingType.toEnumSafe())
-        Log.d("jerboa", "Fetching posts")
-        homeViewModel.resetPosts(account)
     }
 
     Scaffold(

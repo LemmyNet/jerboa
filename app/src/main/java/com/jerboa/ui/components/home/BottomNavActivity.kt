@@ -113,7 +113,7 @@ fun BottomNavActivity(
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    val homeViewModel: HomeViewModel = viewModel()
+    val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
 
     val bottomNavController = rememberNavController()
     val snackbarHostState = remember(account) { SnackbarHostState() }

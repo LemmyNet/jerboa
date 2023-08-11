@@ -19,11 +19,13 @@ import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.GetUnreadCountResponse
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
 import com.jerboa.serializeToMap
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SiteViewModel(private val accountRepository: AccountRepository) : ViewModel() {
@@ -37,26 +39,28 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     init {
         viewModelScope.launch {
-            accountRepository.currentAccount.asFlow().collect {
-                val acc = it ?: AnonAccount
-                Log.d("Jerboa", "acc init for id: ${acc.id}")
+            accountRepository.currentAccount
+                .asFlow()
+                .map { it ?: AnonAccount }
+                .collect {
+                    Log.d("Jerboa", "acc init for id: ${it.id}")
 
-                if (acc.isAnon()) {
-                    API.changeLemmyInstance(DEFAULT_INSTANCE)
-                } else {
-                    API.changeLemmyInstance(acc.instance)
+                    if (it.isAnon()) {
+                        API.changeLemmyInstance(DEFAULT_INSTANCE)
+                    } else {
+                        API.changeLemmyInstance(it.instance)
+                    }
+
+                    getSite(
+                        GetSite(
+                            auth = it.getJWT(),
+                        ),
+                    )
+
+                    if (!it.isAnon()) {
+                        fetchUnreadCounts(GetUnreadCount(auth = it.jwt))
+                    }
                 }
-
-                getSite(
-                    GetSite(
-                        auth = it?.jwt,
-                    ),
-                )
-
-                if (it != null) {
-                    fetchUnreadCounts(GetUnreadCount(auth = it.jwt))
-                }
-            }
         }
     }
 
