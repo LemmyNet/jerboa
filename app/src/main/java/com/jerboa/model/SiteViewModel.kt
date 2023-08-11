@@ -43,8 +43,8 @@ class SiteViewModel : ViewModel() {
     }
 
     fun updateFromAccount(account: Account) {
-        updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
-        updateListingType(ListingType.values().getOrElse(account.defaultListingType) { listingType })
+        updateSortType(SortType.entries.getOrElse(account.defaultSortType) { sortType })
+        updateListingType(ListingType.entries.getOrElse(account.defaultListingType) { listingType })
     }
 
     fun getSite(

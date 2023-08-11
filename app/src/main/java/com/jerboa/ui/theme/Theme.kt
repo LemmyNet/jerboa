@@ -31,8 +31,8 @@ fun JerboaTheme(
     appSettings: AppSettings,
     content: @Composable () -> Unit,
 ) {
-    val themeMode = ThemeMode.values()[appSettings.theme]
-    val themeColor = ThemeColor.values()[appSettings.themeColor]
+    val themeMode = ThemeMode.entries[appSettings.theme]
+    val themeColor = ThemeColor.entries[appSettings.themeColor]
     val fontSize = appSettings.fontSize.sp
 
     val ctx = LocalContext.current

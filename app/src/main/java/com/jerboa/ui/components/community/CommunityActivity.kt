@@ -118,7 +118,7 @@ fun CommunityActivity(
         communityViewModel.resetPage()
 
         if (account.isAnon()) {
-            communityViewModel.updateSortType(SortType.values().getOrElse(account.defaultSortType) { siteViewModel.sortType })
+            communityViewModel.updateSortType(SortType.entries.getOrElse(account.defaultSortType) { siteViewModel.sortType })
         }
 
         communityViewModel.getCommunity(

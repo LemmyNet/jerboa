@@ -227,7 +227,7 @@ fun InboxTabs(
     val transferPrivateMessageDepsViaRoot = appState.rootChannel<PrivateMessageDeps>()
     val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
 
-    val tabTitles = InboxTab.values().map { getLocalizedStringForInboxTab(ctx, it) }
+    val tabTitles = InboxTab.entries.map { getLocalizedStringForInboxTab(ctx, it) }
     val pagerState = rememberPagerState { tabTitles.size }
 
     Column(
