@@ -75,6 +75,7 @@
     <string name="comment_node_report_comment">Αναφορά σχολίου</string>
     <string name="comment_node_restore">Επαναφορά</string>
     <string name="comment_node_view_context">Προβολή Περιεχομένου</string>
+    <string name="comment_node_view_original">Προβολή πρωτότυπου</string>
     <string name="comment_node_view_post">Προβολή Ανάρτησης</string>
     <string name="comment_node_view_source">Προβολή Πηγής</string>
     <string name="comment_reply_back">Πίσω</string>

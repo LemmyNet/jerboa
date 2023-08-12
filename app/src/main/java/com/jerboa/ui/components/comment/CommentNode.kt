@@ -359,6 +359,7 @@ fun LazyListScope.commentNodeItem(
                                         account = account,
                                         enableDownVotes = enableDownVotes,
                                         showScores = showScores,
+                                        viewSource = viewSource,
                                     )
                                 }
                             }
@@ -531,6 +532,7 @@ fun CommentFooterLine(
     onLongClick: () -> Unit,
     account: Account,
     showScores: Boolean,
+    viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -567,6 +569,7 @@ fun CommentFooterLine(
                 onPersonClick(commentView.creator.id)
             },
             isCreator = account.id == commentView.creator.id,
+            viewSource = viewSource,
         )
     }
 
@@ -697,6 +700,7 @@ fun CommentOptionsDialog(
     onPersonClick: () -> Unit,
     isCreator: Boolean,
     commentView: CommentView,
+    viewSource: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
@@ -719,7 +723,11 @@ fun CommentOptionsDialog(
                     onClick = onPersonClick,
                 )
                 IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_node_view_source),
+                    text = if (viewSource) {
+                        stringResource(R.string.comment_node_view_original)
+                    } else {
+                        stringResource(R.string.comment_node_view_source)
+                    },
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
@@ -802,6 +810,7 @@ fun CommentOptionsDialogPreview() {
         onCommentLinkClick = {},
         onPersonClick = {},
         onBlockCreatorClick = {},
+        viewSource = false,
     )
 }
 

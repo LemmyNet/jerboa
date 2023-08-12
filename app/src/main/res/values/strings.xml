@@ -77,6 +77,7 @@
     <string name="comment_node_report_comment">Report Comment</string>
     <string name="comment_node_restore">Restore</string>
     <string name="comment_node_view_context">View Context</string>
+    <string name="comment_node_view_original">View Original</string>
     <string name="comment_node_view_post">View Post</string>
     <string name="comment_node_view_source">View Source</string>
     <string name="comment_reply_back">Back</string>

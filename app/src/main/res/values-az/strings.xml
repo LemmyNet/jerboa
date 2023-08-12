@@ -75,6 +75,7 @@
     <string name="comment_node_report_comment">Şərhi Şikayət Et</string>
     <string name="comment_node_restore">Bərpa et</string>
     <string name="comment_node_view_context">Məzmuna bax</string>
+    <string name="comment_node_view_original">Orijinala Bax</string>
     <string name="comment_node_view_post">Elana Bax</string>
     <string name="comment_node_view_source">Mənbəyə Bax</string>
     <string name="comment_reply_back">Geri</string>
