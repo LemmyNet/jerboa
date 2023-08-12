@@ -11,9 +11,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -51,6 +49,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.Border
@@ -163,6 +162,7 @@ fun CommentBody(
                     onClick = onClick,
                     onLongClick = onLongClick,
                 ),
+                fontFamily = FontFamily.Monospace,
             )
         }
     } else {
@@ -315,12 +315,17 @@ fun LazyListScope.commentNodeItem(
                                 CommentBody(
                                     comment = commentView.comment,
                                     viewSource = viewSource,
-                                    onClick = { onCommentClick(commentView) },
+                                    onClick = {
+                                        if (!viewSource) {
+                                            onCommentClick(commentView)
+                                        }
+                                    },
                                     onLongClick = {
-                                        toggleActionBar(commentId)
+                                        if (!viewSource) {
+                                            toggleActionBar(commentId)
+                                        }
                                     },
                                 )
-                                Spacer(modifier = Modifier.height(MEDIUM_PADDING))
                                 AnimatedVisibility(
                                     visible = showActionBar(commentId),
                                     enter = expandVertically(),
@@ -578,13 +583,13 @@ fun CommentFooterLine(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick,
                 onLongClick = onLongClick,
-            ),
+            )
+            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
