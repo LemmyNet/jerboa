@@ -13,8 +13,9 @@ import com.jerboa.util.downloadprogress.DownloadProgress
 
 class JerboaApplication : Application(), ImageLoaderFactory {
     lateinit var container: AppDBContainer
-    lateinit var imageViewLoader: ImageLoader
+    lateinit var imageViewerLoader: ImageLoader
     lateinit var imageLoader: ImageLoader
+    lateinit var imageGifLoader: ImageLoader
     override fun onCreate() {
         super.onCreate()
         container = AppDBContainer(this)
@@ -28,8 +29,7 @@ class JerboaApplication : Application(), ImageLoaderFactory {
             }
             .build()
 
-        imageViewLoader = imageLoader.newBuilder()
-            .okHttpClient(DownloadProgress.downloadProgressHttpClient)
+        imageGifLoader = imageLoader.newBuilder()
             .components {
                 if (Build.VERSION.SDK_INT >= 28) {
                     add(ImageDecoderDecoder.Factory())
@@ -37,6 +37,10 @@ class JerboaApplication : Application(), ImageLoaderFactory {
                     add(GifDecoder.Factory())
                 }
             }
+            .build()
+
+        imageViewerLoader = imageGifLoader.newBuilder()
+            .okHttpClient(DownloadProgress.downloadProgressHttpClient)
             .build()
     }
 

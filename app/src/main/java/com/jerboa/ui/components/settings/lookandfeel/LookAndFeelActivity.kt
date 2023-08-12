@@ -96,6 +96,7 @@ fun LookAndFeelActivity(
     val scrollState = rememberScrollState()
 
     val markAsReadOnScroll = rememberBooleanSettingState(settings.markAsReadOnScroll)
+    val autoPlayGifs = rememberBooleanSettingState(settings.autoPlayGifs)
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
@@ -121,6 +122,7 @@ fun LookAndFeelActivity(
                 showPostLinkPreviews = showPostLinkPreviewMode.value,
                 markAsReadOnScroll = markAsReadOnScroll.value,
                 postActionbarMode = postActionbarMode.value,
+                autoPlayGifs = autoPlayGifs.value,
             ),
         )
     }
@@ -176,7 +178,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = themeState,
-                    items = ThemeMode.values().map { stringResource(it.mode) },
+                    items = ThemeMode.entries.map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
@@ -193,7 +195,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = themeColorState,
-                    items = ThemeColor.values().map { stringResource(it.mode) },
+                    items = ThemeColor.entries.map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Colorize,
@@ -210,7 +212,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = postViewModeState,
-                    items = PostViewMode.values().map { stringResource(it.mode) },
+                    items = PostViewMode.entries.map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.ViewList,
@@ -230,7 +232,7 @@ fun LookAndFeelActivity(
                         Text(text = stringResource(R.string.confirm_exit))
                     },
                     state = backConfirmationMode,
-                    items = BackConfirmationMode.values().map { stringResource(it.resId) },
+                    items = BackConfirmationMode.entries.map { stringResource(it.resId) },
                     onItemSelected = { i, _ ->
                         backConfirmationMode.value = i
                         updateAppSettings()
@@ -247,7 +249,7 @@ fun LookAndFeelActivity(
                         Text(text = stringResource(R.string.post_actionbar))
                     },
                     state = postActionbarMode,
-                    items = PostActionbarMode.values().map { stringResource(it.resId) },
+                    items = PostActionbarMode.entries.map { stringResource(it.resId) },
                     onItemSelected = { i, _ ->
                         postActionbarMode.value = i
                         updateAppSettings()
@@ -348,6 +350,13 @@ fun LookAndFeelActivity(
                     state = markAsReadOnScroll,
                     title = {
                         Text(stringResource(id = R.string.mark_as_read_on_scroll))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = autoPlayGifs,
+                    title = {
+                        Text(stringResource(id = R.string.settings_autoplaygifs))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

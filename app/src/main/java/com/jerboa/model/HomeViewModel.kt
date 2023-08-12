@@ -185,9 +185,9 @@ class HomeViewModel : ViewModel(), Initializable {
     }
 
     fun updateFromAccount(account: Account) {
-        updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
+        updateSortType(SortType.entries.getOrElse(account.defaultSortType) { sortType })
         updateListingType(
-            ListingType.values().getOrElse(account.defaultListingType) { listingType },
+            ListingType.entries.getOrElse(account.defaultListingType) { listingType },
         )
     }
 

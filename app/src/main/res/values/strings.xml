@@ -390,4 +390,5 @@
     <string name="post_actionbar_mode_short_left">Short lefthand post actionbar</string>
     <string name="post_actionbar_mode_short_right">Short righthand post actionbar</string>
     <string name="post_actionbar">Post actionbar mode</string>
+    <string name="settings_autoplaygifs">Auto play GIFs</string>
 </resources>
