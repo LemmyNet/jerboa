@@ -29,6 +29,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import arrow.core.Either
+import coil.Coil
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
@@ -109,6 +110,12 @@ class MainActivity : AppCompatActivity() {
                 triggerRebirth(ctx)
             }
 
+            if (appSettings.autoPlayGifs) {
+                Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)
+            } else {
+                Coil.setImageLoader(ctx.applicationContext as JerboaApplication)
+            }
+
             JerboaTheme(
                 appSettings = appSettings,
             ) {
@@ -121,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 DisposableEffect(appSettings.backConfirmationMode) {
-                    when (BackConfirmationMode.values()[appSettings.backConfirmationMode]) {
+                    when (BackConfirmationMode.entries[appSettings.backConfirmationMode]) {
                         BackConfirmationMode.Toast -> {
                             this@MainActivity.addConfirmationToast(appState.navController, ctx)
                         }

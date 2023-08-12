@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Bookmarks
@@ -226,7 +228,7 @@ fun DrawerItemsMain(
         }
 
         if (!showBottomNav) {
-            items(NavTab.values()) {
+            items(NavTab.entries) {
                 IconAndTextDrawerItem(
                     text = stringResource(it.textId),
                     icon = it.iconOutlined,
@@ -311,12 +313,21 @@ fun DrawerAddAccountMode(
 
     accountsWithoutCurrent?.remove(currentAccount)
 
-    Column {
-        IconAndTextDrawerItem(
-            text = stringResource(R.string.home_add_account),
-            icon = Icons.Outlined.Add,
-            onClick = onAddAccount,
-        )
+    Column(Modifier.verticalScroll(rememberScrollState())) {
+        if (!currentAccount.isAnon()) {
+            IconAndTextDrawerItem(
+                text = stringResource(R.string.home_sign_out),
+                icon = Icons.Outlined.Close,
+                onClick = onSignOutClick,
+            )
+
+            IconAndTextDrawerItem(
+                text = stringResource(R.string.home_switch_anon),
+                icon = Icons.Outlined.Login,
+                onClick = onSwitchAnon,
+            )
+        }
+
         accountsWithoutCurrent?.forEach {
             IconAndTextDrawerItem(
                 text = stringResource(R.string.home_switch_to, it.name, it.instance),
@@ -325,19 +336,11 @@ fun DrawerAddAccountMode(
             )
         }
 
-        if (!currentAccount.isAnon()) {
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_switch_anon),
-                icon = Icons.Outlined.Login,
-                onClick = onSwitchAnon,
-            )
-
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_sign_out),
-                icon = Icons.Outlined.Close,
-                onClick = onSignOutClick,
-            )
-        }
+        IconAndTextDrawerItem(
+            text = stringResource(R.string.home_add_account),
+            icon = Icons.Outlined.Add,
+            onClick = onAddAccount,
+        )
     }
 }
 
@@ -387,7 +390,9 @@ fun DrawerHeader(
         ) {
             if (showWarningIcon) {
                 Icon(
-                    modifier = Modifier.weight(0.1f).padding(end = SMALL_PADDING),
+                    modifier = Modifier
+                        .weight(0.1f)
+                        .padding(end = SMALL_PADDING),
                     imageVector = Icons.Outlined.WarningAmber,
                     contentDescription = stringResource(R.string.warning),
                     tint = MaterialTheme.colorScheme.error,

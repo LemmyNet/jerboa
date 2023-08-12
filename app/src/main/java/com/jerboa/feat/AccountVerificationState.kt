@@ -82,7 +82,7 @@ enum class AccountVerificationState {
     ;
 
     companion object {
-        val size = values().size
+        val size = entries.size
     }
 }
 
