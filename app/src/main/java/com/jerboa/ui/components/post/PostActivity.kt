@@ -95,7 +95,7 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
-import com.jerboa.ui.components.common.CommentSortOptionsDialog
+import com.jerboa.ui.components.common.CommentSortOptionsModalBottomSheet
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
@@ -209,7 +209,7 @@ fun PostActivity(
     )
 
     if (showSortOptions) {
-        CommentSortOptionsDialog(
+        CommentSortOptionsModalBottomSheet(
             selectedSortType = selectedSortType,
             onDismissRequest = { showSortOptions = false },
             onClickSortType = {

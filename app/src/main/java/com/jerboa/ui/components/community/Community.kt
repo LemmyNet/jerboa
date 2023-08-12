@@ -23,8 +23,7 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.PostViewModeDialog
-import com.jerboa.ui.components.common.SortOptionsDialog
-import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.SortOptionsModalBottomSheet
 import com.jerboa.ui.theme.*
 
 @Composable
@@ -139,31 +138,15 @@ fun CommunityHeader(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
-    var showTopOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
     var showPostViewModeOptions by remember { mutableStateOf(false) }
 
     if (showSortOptions) {
-        SortOptionsDialog(
+        SortOptionsModalBottomSheet(
             selectedSortType = selectedSortType,
             onDismissRequest = { showSortOptions = false },
             onClickSortType = {
                 showSortOptions = false
-                onClickSortType(it)
-            },
-            onClickSortTopOptions = {
-                showSortOptions = false
-                showTopOptions = !showTopOptions
-            },
-        )
-    }
-
-    if (showTopOptions) {
-        SortTopOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showTopOptions = false },
-            onClickSortType = {
-                showTopOptions = false
                 onClickSortType(it)
             },
         )

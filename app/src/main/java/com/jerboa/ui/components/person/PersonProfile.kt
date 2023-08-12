@@ -40,8 +40,7 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
-import com.jerboa.ui.components.common.SortOptionsDialog
-import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.SortOptionsModalBottomSheet
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
@@ -157,30 +156,14 @@ fun PersonProfileHeader(
     isLoggedIn: () -> Boolean,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
-    var showTopOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showSortOptions) {
-        SortOptionsDialog(
+        SortOptionsModalBottomSheet(
             selectedSortType = selectedSortType,
             onDismissRequest = { showSortOptions = false },
             onClickSortType = {
                 showSortOptions = false
-                onClickSortType(it)
-            },
-            onClickSortTopOptions = {
-                showSortOptions = false
-                showTopOptions = !showTopOptions
-            },
-        )
-    }
-
-    if (showTopOptions) {
-        SortTopOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showTopOptions = false },
-            onClickSortType = {
-                showTopOptions = false
                 onClickSortType(it)
             },
         )
