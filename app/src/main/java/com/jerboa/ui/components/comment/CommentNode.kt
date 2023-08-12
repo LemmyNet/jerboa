@@ -158,10 +158,6 @@ fun CommentBody(
         SelectionContainer {
             Text(
                 text = comment.content,
-                modifier = Modifier.combinedClickable(
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                ),
                 fontFamily = FontFamily.Monospace,
             )
         }
@@ -316,15 +312,9 @@ fun LazyListScope.commentNodeItem(
                                 CommentBody(
                                     comment = commentView.comment,
                                     viewSource = viewSource,
-                                    onClick = {
-                                        if (!viewSource) {
-                                            onCommentClick(commentView)
-                                        }
-                                    },
+                                    onClick = { onCommentClick(commentView) },
                                     onLongClick = {
-                                        if (!viewSource) {
-                                            toggleActionBar(commentId)
-                                        }
+                                        toggleActionBar(commentId)
                                     },
                                 )
                                 AnimatedVisibility(
