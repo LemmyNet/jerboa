@@ -599,7 +599,7 @@ fun UserTabs(
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
-                                            ) {
+                                        ) {
                                             personProfileViewModel.unblockCommunity(
                                                 UnblockCommunity(
                                                     community_id = community.id,
