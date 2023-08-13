@@ -264,7 +264,7 @@ fun CommunityMoreDropdown(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     onBlockCommunityClick: () -> Unit,
-    onUnblockCommunityClick:() -> Unit,
+    onUnblockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickCommunityInfo: () -> Unit,
     onClickShowPostViewModeDialog: () -> Unit,

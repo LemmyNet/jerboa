@@ -98,7 +98,7 @@ fun PostListings(
                 onReportClick = onReportClick,
                 onPersonClick = onPersonClick,
                 onBlockCommunityClick = onBlockCommunityClick,
-                onUnblockCommunityClick= onUnblockCommunityClick,
+                onUnblockCommunityClick = onUnblockCommunityClick,
                 onBlockCreatorClick = onBlockCreatorClick,
                 onShareClick = onShareClick,
                 isModerator = false,

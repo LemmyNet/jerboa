@@ -350,7 +350,7 @@ fun MainPostListingsContent(
                     ctx,
                     snackbarHostState,
                     scope,
-                    siteViewModel
+                    siteViewModel,
                 ) {
                     homeViewModel.unblockCommunity(
                         UnblockCommunity(

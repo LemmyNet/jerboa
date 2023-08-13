@@ -57,7 +57,6 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentView
-import com.jerboa.datatypes.types.CommunityId
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeleteComment
@@ -599,13 +598,16 @@ fun UserTabs(
                                             ctx,
                                             snackbarHostState,
                                             scope,
-                                            loginAsToast = true) {
+                                            loginAsToast = true,
+                                            ) {
                                             personProfileViewModel.unblockCommunity(
                                                 UnblockCommunity(
                                                     community_id = community.id,
                                                     block = false,
-                                                    auth = it.jwt),
-                                                ctx)
+                                                    auth = it.jwt,
+                                                ),
+                                                ctx,
+                                            )
                                         }
                                     },
 

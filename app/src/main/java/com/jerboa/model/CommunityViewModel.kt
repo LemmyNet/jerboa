@@ -242,11 +242,11 @@ class CommunityViewModel : ViewModel(), Initializable {
             }
         }
     }
-    fun unblockCommunity(form: UnblockCommunity, ctx: Context){
+    fun unblockCommunity(form: UnblockCommunity, ctx: Context) {
         viewModelScope.launch {
             unblockCommunityRes = ApiState.Loading
             unblockCommunityRes
-                apiWrapper(API.getInstance().unblockCommunity(form))
+            apiWrapper(API.getInstance().unblockCommunity(form))
             when (val unblockCommunity = unblockCommunityRes) {
                 is ApiState.Success -> {
                     showUnblockCommunityToast(unblockCommunity, ctx)
