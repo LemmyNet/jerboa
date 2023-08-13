@@ -1219,7 +1219,7 @@ fun showBlockPersonToast(blockPersonRes: ApiState<BlockPersonResponse>, ctx: Con
     }
 }
 
-fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>, ctx: Context) {
+fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>, ctx: BlockCommunityResponse) {
     when (blockCommunityRes) {
         is ApiState.Success -> {
             Toast.makeText(

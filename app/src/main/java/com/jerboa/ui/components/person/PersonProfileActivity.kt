@@ -57,6 +57,7 @@ import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentView
+import com.jerboa.datatypes.types.CommunityId
 import com.jerboa.datatypes.types.CreateCommentLike
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeleteComment
@@ -579,27 +580,23 @@ fun UserTabs(
                                             snackbarHostState,
                                             scope,
                                             loginAsToast = true,
-                                        ) { it ->
-                                            if (block) {
-                                                personProfileViewModel.unblockCommunity(
-                                                    BlockCommunity(
-                                                        community_id = community.id,
-                                                        block = true,
-                                                        auth = it.jwt,
-                                                    ),
-                                                    ctx,
-                                                )
-                                            } else {personProfileViewModel.unblockCommunity(
-                                                unBlockCommunity(
+                                        ) {
+                                            personProfileViewModel.blockCommunity(
+                                                BlockCommunity(
                                                     community_id = community.id,
-                                                    block = false,
+                                                    block = true,
                                                     auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
-                                            }
                                         }
-                                    }
+                                    },
+
+                                    onUnblockCommunityClick = { community ->
+                                        account.doIfReadyElseDisplayInfo(appState, ctx, snackbarHostState, scope, loginAsToast = true) {
+                                            personProfileViewModel.blockCommunity(BlockCommunity(community_id = community.id, block = false, auth = it.jwt), ctx)
+                                        }
+                                    },
 
                                     onBlockCreatorClick = { person ->
                                         account.doIfReadyElseDisplayInfo(

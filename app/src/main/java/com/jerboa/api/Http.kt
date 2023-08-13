@@ -231,7 +231,7 @@ interface API {
      * Block a community.
      */
     @POST("community/block")
-    suspend fun blockCommunity(@Body form: BlockCommunity): Response<BlockCommunityResponse>
+    suspend fun blockCommunity(@Body form: BlockCommunityResponse): Response<BlockCommunityResponse>
 
     /**
      * Save your user settings.
