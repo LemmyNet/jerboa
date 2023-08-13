@@ -130,6 +130,7 @@ fun CommunityHeader(
     communityName: String,
     onClickSortType: (SortType) -> Unit,
     onBlockCommunityClick: () -> Unit,
+    onUnblockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickPostViewMode: (PostViewMode) -> Unit,
     selectedSortType: SortType,
@@ -226,6 +227,10 @@ fun CommunityHeader(
                         showMoreOptions = false
                         onBlockCommunityClick()
                     },
+                    onUnblockCommunityClick = {
+                        showMoreOptions = false
+                        onUnblockCommunityClick()
+                    },
                     onClickCommunityInfo = onClickCommunityInfo,
                 )
             }
@@ -259,6 +264,7 @@ fun CommunityMoreDropdown(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     onBlockCommunityClick: () -> Unit,
+    onUnblockCommunityClick:() -> Unit,
     onClickRefresh: () -> Unit,
     onClickCommunityInfo: () -> Unit,
     onClickShowPostViewModeDialog: () -> Unit,

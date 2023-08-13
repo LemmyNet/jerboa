@@ -29,11 +29,14 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.datatypes.types.UnblockCommunity
+import com.jerboa.datatypes.types.UnblockCommunityResponse
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.showUnblockCommunityToast
 import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
@@ -53,6 +56,8 @@ class CommunityViewModel : ViewModel(), Initializable {
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
+        mutableStateOf(ApiState.Empty)
+    private var unblockCommunityRes: ApiState<UnblockCommunityResponse> by
         mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
@@ -237,15 +242,14 @@ class CommunityViewModel : ViewModel(), Initializable {
             }
         }
     }
-    //private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-    //mutableStateOf(ApiState.Empty)
-    fun unBlockCommunity(form: BlockCommunityResponse, ctx: BlockCommunityResponse){
+    fun unblockCommunity(form: UnblockCommunity, ctx: Context){
         viewModelScope.launch {
-            blockCommunityRes
-                apiWrapper(API.getInstance().blockCommunity(form))
-            when (val blockCommunity = blockCommunityRes) {
+            unblockCommunityRes = ApiState.Loading
+            unblockCommunityRes
+                apiWrapper(API.getInstance().unblockCommunity(form))
+            when (val unblockCommunity = unblockCommunityRes) {
                 is ApiState.Success -> {
-                    showBlockCommunityToast(blockCommunity, ctx)
+                    showUnblockCommunityToast(unblockCommunity, ctx)
 
                     when (val existing = communityRes) {
                         is ApiState.Success -> {
@@ -253,7 +257,7 @@ class CommunityViewModel : ViewModel(), Initializable {
                                 ApiState.Success(
                                     existing.data.copy(
                                         community_view =
-                                        blockCommunity.data.community_view,
+                                        unblockCommunity.data.community_view,
                                     ),
                                 )
                             communityRes = deleteRes

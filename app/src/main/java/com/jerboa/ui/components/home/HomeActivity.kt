@@ -51,6 +51,7 @@ import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.Tagline
+import com.jerboa.datatypes.types.UnblockCommunity
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
@@ -343,6 +344,25 @@ fun MainPostListingsContent(
                     )
                 }
             },
+            onUnblockCommunityClick = { community ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel
+                ) {
+                    homeViewModel.unblockCommunity(
+                        UnblockCommunity(
+                            community_id = community.id,
+                            auth = it.jwt,
+                            block = false,
+                        ),
+                        ctx = ctx,
+                    )
+                }
+            },
+
             onBlockCreatorClick = { creator ->
                 account.doIfReadyElseDisplayInfo(
                     appState,

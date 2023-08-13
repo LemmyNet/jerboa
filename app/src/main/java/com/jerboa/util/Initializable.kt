@@ -6,7 +6,6 @@ import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.CoroutineScope
 
 interface Initializable {
-    fun unblockCommunity(unBlockCommunity: Any, ctx: Context)
 
     var initialized: Boolean
 }

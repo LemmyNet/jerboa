@@ -74,6 +74,7 @@ import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.UnblockCommunity
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
@@ -444,6 +445,25 @@ fun PostActivity(
                                                 BlockCommunity(
                                                     community_id = c.id,
                                                     block = true,
+                                                    auth = it.jwt,
+                                                ),
+                                                ctx,
+                                            )
+                                        }
+                                    },
+                                    onUnblockCommunityClick = { c ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
+                                            postViewModel.unblockCommunity(
+                                                UnblockCommunity(
+                                                    community_id = c.id,
+                                                    block = false,
                                                     auth = it.jwt,
                                                 ),
                                                 ctx,

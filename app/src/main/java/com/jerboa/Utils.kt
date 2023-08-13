@@ -1219,12 +1219,27 @@ fun showBlockPersonToast(blockPersonRes: ApiState<BlockPersonResponse>, ctx: Con
     }
 }
 
-fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>, ctx: BlockCommunityResponse) {
+fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>, ctx: Context) {
     when (blockCommunityRes) {
         is ApiState.Success -> {
             Toast.makeText(
                 ctx,
                 "${blockCommunityRes.data.community_view.community.name} Blocked",
+                Toast.LENGTH_SHORT,
+            )
+                .show()
+        }
+
+        else -> {}
+    }
+}
+
+fun showUnblockCommunityToast(unblockCommunityRes: ApiState<UnblockCommunityResponse>, ctx: Context) {
+    when (unblockCommunityRes) {
+        is ApiState.Success -> {
+            Toast.makeText(
+                ctx,
+                "${unblockCommunityRes.data.community_view.community.name} Unblocked",
                 Toast.LENGTH_SHORT,
             )
                 .show()

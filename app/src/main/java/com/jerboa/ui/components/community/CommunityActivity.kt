@@ -50,6 +50,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
+import com.jerboa.datatypes.types.UnblockCommunity
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.hostName
@@ -233,6 +234,25 @@ fun CommunityActivity(
                                     )
                                 }
                             },
+                            onUnblockCommunityClick = {
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                    accountViewModel,
+                                ) {
+                                    communityViewModel.unblockCommunity(
+                                        UnblockCommunity(
+                                            community_id = communityId,
+                                            auth = it.jwt,
+                                            block = !communityRes.data.community_view.blocked,
+                                        ),
+                                        ctx = ctx,
+                                    )
+                                }
+                            },
                             onClickCommunityInfo = appState::toCommunitySideBar,
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
@@ -408,6 +428,31 @@ fun CommunityActivity(
                                         ) {
                                             communityViewModel.blockCommunity(
                                                 form = BlockCommunity(
+                                                    community_id = communityRes.data.community_view.community.id,
+                                                    block = !communityRes.data.community_view.blocked,
+                                                    auth = it.jwt,
+                                                ),
+                                                ctx = ctx,
+                                            )
+                                        }
+                                    }
+
+                                    else -> {}
+                                }
+                            },
+                            onUnblockCommunityClick = {
+                                when (val communityRes = communityViewModel.communityRes) {
+                                    is ApiState.Success -> {
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            siteViewModel,
+                                            accountViewModel,
+                                        ) {
+                                            communityViewModel.unblockCommunity(
+                                                form = UnblockCommunity(
                                                     community_id = communityRes.data.community_view.community.id,
                                                     block = !communityRes.data.community_view.blocked,
                                                     auth = it.jwt,

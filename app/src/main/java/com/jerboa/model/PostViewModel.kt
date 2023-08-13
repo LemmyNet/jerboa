@@ -34,11 +34,14 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.UnblockCommunity
+import com.jerboa.datatypes.types.UnblockCommunityResponse
 import com.jerboa.db.entity.Account
 import com.jerboa.findAndUpdateComment
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
+import com.jerboa.showUnblockCommunityToast
 import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
@@ -67,6 +70,7 @@ class PostViewModel : ViewModel(), Initializable {
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
+    private var unblockCommunityRes: ApiState<UnblockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
@@ -262,6 +266,15 @@ class PostViewModel : ViewModel(), Initializable {
             blockCommunityRes =
                 apiWrapper(API.getInstance().blockCommunity(form))
             showBlockCommunityToast(blockCommunityRes, ctx)
+        }
+    }
+
+    fun unblockCommunity(form: UnblockCommunity, ctx: Context) {
+        viewModelScope.launch {
+            unblockCommunityRes = ApiState.Loading
+            unblockCommunityRes =
+                apiWrapper(API.getInstance().unblockCommunity(form))
+            showUnblockCommunityToast(unblockCommunityRes, ctx)
         }
     }
 
