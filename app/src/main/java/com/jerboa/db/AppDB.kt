@@ -37,10 +37,11 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     markAsReadOnScroll = false,
     showPostLinkPreviews = true,
     postActionbarMode = 0,
+    autoPlayGifs = false,
 )
 
 @Database(
-    version = 24,
+    version = 25,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )
