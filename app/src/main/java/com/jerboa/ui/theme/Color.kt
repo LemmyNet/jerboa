@@ -68,7 +68,7 @@ fun beach(): Pair<JerboaColorScheme, JerboaColorScheme> {
 //    val md_theme_dark_shadow = Color(0xFF000000)
     val md_theme_dark_surfaceTint = Color(0xFF00234D)
     val md_theme_dark_outlineVariant = Color(0xFF002991)
-    val toolbar.setBackgroundColor(0xFFFFB0CB)
+    val md_theme_dark_toolbar = Color(0xFF000000)
     val md_theme_dark_scrim = Color(0xFF000000)
     val jerboa_image_highlight = Color(0xCCD1D1D1)
     val jerboa_video_highlight = Color(0xCCC20000)
@@ -212,7 +212,7 @@ fun blue(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_dark_inverseOnSurface = Color(0xFF1A1C20)
     val md_theme_dark_inverseSurface = Color(0xFFE0E4EB)
     val md_theme_dark_inversePrimary = Color(0xFF3161A6)
-    val toolbar.setBackgroundColor(0xFF000000.toInt())
+    val md_theme_dark_toolbar = Color (0xFF000000)
 //    val md_theme_dark_shadow = Color(0xFF000000)
     val md_theme_dark_surfaceTint = Color(0xFFB0D0FF)
     val md_theme_dark_outlineVariant = Color(0xFF434851)
@@ -278,6 +278,11 @@ fun blue(): Pair<JerboaColorScheme, JerboaColorScheme> {
         surfaceVariant = md_theme_dark_surfaceVariant,
         onSurfaceVariant = md_theme_dark_onSurfaceVariant,
         outline = md_theme_dark_outline,
+        // TO-DO: add parameter "toolbar: Color = ColorDarkTokens.Toolbar," in function "fun darkColorScheme" in file "ColorScheme.kt"
+        // File ColorScheme.kt is read only! Don't forget to add the parameter!
+        // Also add value in file ColorScheme.kt "val Toolbar = PaletteTokens.Black
+        // Make the same changes in dynamicDarkColorScheme, This file is also only read!
+        toolbar = md_theme_dark_toolbar,
         inverseOnSurface = md_theme_dark_inverseOnSurface,
         inverseSurface = md_theme_dark_inverseSurface,
         inversePrimary = md_theme_dark_inversePrimary,
