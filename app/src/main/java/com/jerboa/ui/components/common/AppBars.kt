@@ -114,7 +114,7 @@ fun BottomAppBarAll(
     }
 
     NavigationBar {
-        for (tab in NavTab.values()) {
+        for (tab in NavTab.entries) {
             val selected = tab == selectedTab
             NavigationBarItem(
                 icon = {
