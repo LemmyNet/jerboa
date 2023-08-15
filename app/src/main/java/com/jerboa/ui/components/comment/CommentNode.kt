@@ -11,9 +11,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -51,6 +49,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.Border
@@ -159,10 +158,7 @@ fun CommentBody(
         SelectionContainer {
             Text(
                 text = comment.content,
-                modifier = Modifier.combinedClickable(
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                ),
+                fontFamily = FontFamily.Monospace,
             )
         }
     } else {
@@ -170,6 +166,7 @@ fun CommentBody(
             markdown = content,
             onClick = onClick,
             onLongClick = onLongClick,
+            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, MEDIUM_PADDING),
         )
     }
 }
@@ -320,7 +317,6 @@ fun LazyListScope.commentNodeItem(
                                         toggleActionBar(commentId)
                                     },
                                 )
-                                Spacer(modifier = Modifier.height(MEDIUM_PADDING))
                                 AnimatedVisibility(
                                     visible = showActionBar(commentId),
                                     enter = expandVertically(),
@@ -363,6 +359,7 @@ fun LazyListScope.commentNodeItem(
                                         account = account,
                                         enableDownVotes = enableDownVotes,
                                         showScores = showScores,
+                                        viewSource = viewSource,
                                     )
                                 }
                             }
@@ -535,6 +532,7 @@ fun CommentFooterLine(
     onLongClick: () -> Unit,
     account: Account,
     showScores: Boolean,
+    viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -571,6 +569,7 @@ fun CommentFooterLine(
                 onPersonClick(commentView.creator.id)
             },
             isCreator = account.id == commentView.creator.id,
+            viewSource = viewSource,
         )
     }
 
@@ -578,13 +577,13 @@ fun CommentFooterLine(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick,
                 onLongClick = onLongClick,
-            ),
+            )
+            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -701,6 +700,7 @@ fun CommentOptionsDialog(
     onPersonClick: () -> Unit,
     isCreator: Boolean,
     commentView: CommentView,
+    viewSource: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
@@ -723,7 +723,11 @@ fun CommentOptionsDialog(
                     onClick = onPersonClick,
                 )
                 IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_node_view_source),
+                    text = if (viewSource) {
+                        stringResource(R.string.comment_node_view_original)
+                    } else {
+                        stringResource(R.string.comment_node_view_source)
+                    },
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
@@ -806,6 +810,7 @@ fun CommentOptionsDialogPreview() {
         onCommentLinkClick = {},
         onPersonClick = {},
         onBlockCreatorClick = {},
+        viewSource = false,
     )
 }
 
