@@ -17,7 +17,6 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -56,9 +55,7 @@ import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
-import com.jerboa.ui.components.common.SpecialAccount
 import com.jerboa.ui.components.common.SwipeToNavigateBack
-import com.jerboa.ui.components.common.getSpecialCurrentAccount
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
@@ -83,7 +80,7 @@ import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
 
 class MainActivity : AppCompatActivity() {
-    val siteViewModel by viewModels<SiteViewModel>()
+    val siteViewModel by viewModels<SiteViewModel>(factoryProducer = { SiteViewModel.Factory })
     val accountViewModel by viewModels<AccountViewModel>(factoryProducer = { AccountViewModelFactory.Factory })
     private val appSettingsViewModel by viewModels<AppSettingsViewModel>(factoryProducer = { AppSettingsViewModelFactory.Factory })
     private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>(factoryProducer = { AccountSettingsViewModelFactory.Factory })
@@ -104,14 +101,6 @@ class MainActivity : AppCompatActivity() {
                     ).show()
                 }
                 null
-            }
-
-            val account = getSpecialCurrentAccount(accountViewModel)
-
-            LaunchedEffect(account) {
-                if (account !== SpecialAccount) {
-                    fetchInitialData(account, siteViewModel)
-                }
             }
 
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)

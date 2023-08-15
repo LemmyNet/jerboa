@@ -67,14 +67,9 @@ import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
 import com.jerboa.api.API.Companion.checkIfLemmyInstance
 import com.jerboa.api.ApiState
-import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AppSettings
-import com.jerboa.db.entity.isAnon
-import com.jerboa.model.HomeViewModel
-import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
@@ -753,48 +748,6 @@ fun siFormat(num: Int): String {
         formattedNumber
     }
 }
-
-fun fetchInitialData(
-    account: Account,
-    siteViewModel: SiteViewModel,
-) {
-    if (!account.isAnon()) {
-        API.changeLemmyInstance(account.instance)
-        siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
-    } else {
-        API.changeLemmyInstance(DEFAULT_INSTANCE)
-    }
-
-    siteViewModel.getSite(
-        GetSite(
-            auth = account.jwt.ifEmpty { null },
-        ),
-    )
-}
-
-fun fetchHomePosts(account: Account, homeViewModel: HomeViewModel) {
-    if (!account.isAnon()) {
-        homeViewModel.updateFromAccount(account)
-        homeViewModel.resetPage()
-        homeViewModel.getPosts(
-            GetPosts(
-                type_ = homeViewModel.listingType,
-                sort = homeViewModel.sortType,
-                auth = account.jwt,
-            ),
-        )
-    } else {
-        Log.d("jerboa", "Fetching posts for anonymous user")
-        homeViewModel.resetPage()
-        homeViewModel.getPosts(
-            GetPosts(
-                type_ = ListingType.Local,
-                sort = SortType.Active,
-            ),
-        )
-    }
-}
-
 fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
     return ctx.contentResolver.openInputStream(uri)!!
 }
@@ -1503,6 +1456,11 @@ fun CreationExtras.jerboaApplication(): JerboaApplication =
 @Throws(IndexOutOfBoundsException::class)
 inline fun <reified T : Enum<T>> Int.toEnum(): T {
     return enumValues<T>()[this]
+}
+
+inline fun <reified T : Enum<T>> Int.toEnumSafe(): T {
+    val vals = enumValues<T>()
+    return if (vals.size >= this) vals[this] else vals[0]
 }
 
 fun matchLoginErrorMsgToStringRes(ctx: Context, e: Throwable): String {

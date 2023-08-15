@@ -69,6 +69,7 @@ import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getLocalizedStringForUserTab
@@ -174,7 +175,7 @@ fun PersonProfileActivity(
                 person_id = personId,
                 username = personName,
                 sort = SortType.New,
-                auth = account.jwt.ifEmpty { null },
+                auth = account.getJWT(),
                 saved_only = savedMode,
             ),
         )
@@ -223,7 +224,7 @@ fun PersonProfileActivity(
                                     sort = personProfileViewModel.sortType,
                                     page = personProfileViewModel.page,
                                     saved_only = personProfileViewModel.savedOnly,
-                                    auth = account.jwt.ifEmpty { null },
+                                    auth = account.getJWT(),
                                 ),
                             )
                         },
@@ -358,7 +359,7 @@ fun UserTabs(
                             sort = personProfileViewModel.sortType,
                             page = personProfileViewModel.page,
                             saved_only = personProfileViewModel.savedOnly,
-                            auth = account.jwt.ifEmpty { null },
+                            auth = account.getJWT(),
                         ),
                         ApiState.Refreshing,
                     )
@@ -614,7 +615,7 @@ fun UserTabs(
                                     isScrolledToEnd = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,
-                                            account.jwt.ifEmpty { null },
+                                            account.getJWT(),
                                         )
                                     },
                                     account = account,
@@ -697,7 +698,7 @@ fun UserTabs(
                                 LaunchedEffect(Unit) {
                                     personProfileViewModel.appendData(
                                         profileRes.data.person_view.person.id,
-                                        account.jwt.ifEmpty { null },
+                                        account.getJWT(),
                                     )
                                 }
                             }
