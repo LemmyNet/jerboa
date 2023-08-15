@@ -5,7 +5,6 @@ import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.CoroutineScope
 
 interface Initializable {
-
     var initialized: Boolean
 }
 

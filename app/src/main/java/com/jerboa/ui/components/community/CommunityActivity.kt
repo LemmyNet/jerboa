@@ -50,7 +50,6 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.datatypes.types.UnblockCommunity
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.hostName
@@ -244,7 +243,7 @@ fun CommunityActivity(
                                     accountViewModel,
                                 ) {
                                     communityViewModel.unblockCommunity(
-                                        UnblockCommunity(
+                                        BlockCommunity(
                                             community_id = communityId,
                                             auth = it.jwt,
                                             block = !communityRes.data.community_view.blocked,
@@ -452,7 +451,7 @@ fun CommunityActivity(
                                             accountViewModel,
                                         ) {
                                             communityViewModel.unblockCommunity(
-                                                form = UnblockCommunity(
+                                                form = BlockCommunity(
                                                     community_id = communityRes.data.community_view.community.id,
                                                     block = !communityRes.data.community_view.blocked,
                                                     auth = it.jwt,

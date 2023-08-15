@@ -1234,7 +1234,7 @@ fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>,
     }
 }
 
-fun showUnblockCommunityToast(unblockCommunityRes: ApiState<UnblockCommunityResponse>, ctx: Context) {
+fun showUnblockCommunityToast(unblockCommunityRes: ApiState<BlockCommunityResponse>, ctx: Context) {
     when (unblockCommunityRes) {
         is ApiState.Success -> {
             Toast.makeText(

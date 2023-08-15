@@ -234,7 +234,7 @@ interface API {
     suspend fun blockCommunity(@Body form: BlockCommunity): Response<BlockCommunityResponse>
 
     @POST("community/unblock")
-    suspend fun unblockCommunity(@Body form: UnblockCommunity): Response<UnblockCommunityResponse>
+    suspend fun unblockCommunity(@Body form: BlockCommunity): Response<BlockCommunityResponse>
 
     /**
      * Save your user settings.

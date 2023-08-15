@@ -68,7 +68,6 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.datatypes.types.UnblockCommunity
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -601,7 +600,7 @@ fun UserTabs(
                                             loginAsToast = true,
                                         ) {
                                             personProfileViewModel.unblockCommunity(
-                                                UnblockCommunity(
+                                                BlockCommunity(
                                                     community_id = community.id,
                                                     block = false,
                                                     auth = it.jwt,

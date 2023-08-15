@@ -27,8 +27,6 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.datatypes.types.UnblockCommunity
-import com.jerboa.datatypes.types.UnblockCommunityResponse
 import com.jerboa.db.entity.Account
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
@@ -51,7 +49,7 @@ class HomeViewModel : ViewModel(), Initializable {
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
-    private var unblockCommunityRes: ApiState<UnblockCommunityResponse> by mutableStateOf(ApiState.Empty)
+    private var unblockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
@@ -180,7 +178,7 @@ class HomeViewModel : ViewModel(), Initializable {
         }
     }
 
-    fun unblockCommunity(form: UnblockCommunity, ctx: Context) {
+    fun unblockCommunity(form: BlockCommunity, ctx: Context) {
         viewModelScope.launch {
             unblockCommunityRes = ApiState.Loading
             unblockCommunityRes =
