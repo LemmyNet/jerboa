@@ -1483,7 +1483,7 @@ fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
     this?.activeNetwork
         ?.let(::getNetworkCapabilities)
         ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        ?: false
+        ?: true
 
 /**
  * When calling this, you must call ActivityResultLauncher.unregister()
