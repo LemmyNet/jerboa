@@ -182,7 +182,7 @@ class HomeViewModel : ViewModel(), Initializable {
         viewModelScope.launch {
             unblockCommunityRes = ApiState.Loading
             unblockCommunityRes =
-                apiWrapper(API.getInstance().unblockCommunity(form))
+                apiWrapper(API.getInstance().blockCommunity(form))
             showUnblockCommunityToast(unblockCommunityRes, ctx)
         }
     }
