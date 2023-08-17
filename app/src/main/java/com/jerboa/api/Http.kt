@@ -232,6 +232,7 @@ interface API {
      */
     @POST("community/block")
     suspend fun blockCommunity(@Body form: BlockCommunity): Response<BlockCommunityResponse>
+
     /**
      * Save your user settings.
      */
