@@ -137,6 +137,7 @@ fun CommunityHeader(
     onClickCommunityInfo: () -> Unit,
     onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    isBlocked: Boolean,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -227,6 +228,7 @@ fun CommunityHeader(
                         onBlockCommunityClick()
                     },
                     onClickCommunityInfo = onClickCommunityInfo,
+                    isBlocked = isBlocked,
                 )
             }
         },
@@ -262,6 +264,7 @@ fun CommunityMoreDropdown(
     onClickRefresh: () -> Unit,
     onClickCommunityInfo: () -> Unit,
     onClickShowPostViewModeDialog: () -> Unit,
+    isBlocked: Boolean,
 ) {
     DropdownMenu(
         expanded = expanded,
@@ -292,7 +295,11 @@ fun CommunityMoreDropdown(
             },
         )
         MenuItem(
-            text = stringResource(R.string.community_block_community),
+            text = stringResource(
+                if (isBlocked) {
+                    R.string.community_unblock_community
+                } else R.string.community_block_community,
+            ),
             icon = Icons.Outlined.Block,
             onClick = onBlockCommunityClick,
         )
