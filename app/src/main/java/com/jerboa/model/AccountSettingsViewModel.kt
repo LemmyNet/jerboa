@@ -1,5 +1,6 @@
 package com.jerboa.model
 
+import android.content.Context
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +18,7 @@ import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.db.entity.Account
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
+import com.jerboa.ui.components.common.apiErrorToast
 import kotlinx.coroutines.launch
 
 @Stable
@@ -30,18 +32,27 @@ class AccountSettingsViewModel(
         form: SaveUserSettings,
         siteViewModel: SiteViewModel,
         account: Account,
+        ctx: Context,
     ) {
         viewModelScope.launch {
             saveUserSettingsRes = ApiState.Loading
             saveUserSettingsRes = apiWrapper(API.getInstance().saveUserSettings(form))
 
-            siteViewModel.getSite(
-                GetSite(auth = account.jwt),
-            )
+            when (val res = saveUserSettingsRes) {
+                is ApiState.Success -> {
+                    siteViewModel.getSite(
+                        GetSite(auth = account.jwt),
+                    )
 
-            val newAccount = maybeUpdateAccountSettings(account, form)
+                    maybeUpdateAccountSettings(account, form)
+                }
 
-            siteViewModel.updateFromAccount(newAccount)
+                is ApiState.Failure -> {
+                    apiErrorToast(ctx, res.msg)
+                }
+
+                else -> {}
+            }
         }
     }
 

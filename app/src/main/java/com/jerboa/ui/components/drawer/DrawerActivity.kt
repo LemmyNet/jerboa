@@ -10,11 +10,8 @@ import androidx.compose.runtime.setValue
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
 import com.jerboa.datatypes.types.CommunityFollowerView
-import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
-import com.jerboa.fetchHomePosts
-import com.jerboa.fetchInitialData
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
@@ -74,24 +71,11 @@ fun MainDrawer(
             accountViewModel.removeCurrent()
             accountViewModel.setCurrent(acct.id)
 
-            fetchInitialData(
-                account = acct,
-                siteViewModel = siteViewModel,
-            )
-            fetchHomePosts(
-                account = acct,
-                homeViewModel = homeViewModel,
-            )
-
             onSelectTab(NavTab.Home)
             closeDrawer(scope, drawerState)
         },
         onSignOutClick = {
-            accountViewModel.deleteAccountAndSwapCurrent(
-                account,
-                siteViewModel,
-                homeViewModel,
-            )
+            accountViewModel.deleteAccountAndSwapCurrent(account)
 
             onSelectTab(NavTab.Home)
             closeDrawer(scope, drawerState)
@@ -99,15 +83,6 @@ fun MainDrawer(
         onSwitchAnon = {
             if (!account.isAnon()) {
                 accountViewModel.removeCurrent()
-
-                fetchInitialData(
-                    account = AnonAccount,
-                    siteViewModel = siteViewModel,
-                )
-                fetchHomePosts(
-                    account = AnonAccount,
-                    homeViewModel = homeViewModel,
-                )
 
                 onSelectTab(NavTab.Home)
                 closeDrawer(scope, drawerState)

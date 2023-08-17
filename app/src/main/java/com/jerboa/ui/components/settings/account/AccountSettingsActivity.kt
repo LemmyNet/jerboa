@@ -8,6 +8,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.jerboa.R
 import com.jerboa.model.AccountSettingsViewModel
@@ -25,7 +26,7 @@ fun AccountSettingsActivity(
     onBack: () -> Unit,
 ) {
     Log.d("jerboa", "Got to settings activity")
-
+    val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -42,6 +43,7 @@ fun AccountSettingsActivity(
                         form,
                         siteViewModel = siteViewModel,
                         account = account,
+                        ctx,
                     )
                 },
                 siteViewModel = siteViewModel,

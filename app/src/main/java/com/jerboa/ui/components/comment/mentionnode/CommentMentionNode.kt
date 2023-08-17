@@ -118,6 +118,7 @@ fun CommentMentionNodeFooterLine(
     account: Account,
     enableDownvotes: Boolean,
     showScores: Boolean,
+    viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -142,6 +143,7 @@ fun CommentMentionNodeFooterLine(
                 onBlockCreatorClick(personMentionView.creator)
             },
             isCreator = account.id == personMentionView.creator.id,
+            viewSource = viewSource,
         )
     }
 
@@ -245,6 +247,7 @@ fun CommentReplyNodeOptionsDialog(
     onReportClick: () -> Unit,
     onBlockCreatorClick: () -> Unit,
     isCreator: Boolean,
+    viewSource: Boolean,
 ) {
     val localClipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
@@ -262,7 +265,11 @@ fun CommentReplyNodeOptionsDialog(
                     onClick = onPersonClick,
                 )
                 IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_mention_node_view_source),
+                    text = if (viewSource) {
+                        stringResource(R.string.comment_node_view_original)
+                    } else {
+                        stringResource(R.string.comment_mention_node_view_source)
+                    },
                     icon = Icons.Outlined.Description,
                     onClick = onViewSourceClick,
                 )
@@ -411,6 +418,7 @@ fun CommentMentionNode(
                         account = account,
                         enableDownvotes = enableDownvotes,
                         showScores = showScores,
+                        viewSource = viewSource,
                     )
                 }
             }

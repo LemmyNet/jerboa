@@ -35,6 +35,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdateComment
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
@@ -92,9 +93,9 @@ class PostViewModel : ViewModel(), Initializable {
             id?.also { id ->
 
                 val postForm = id.fold({
-                    GetPost(id = it, auth = account.jwt.ifEmpty { null })
+                    GetPost(id = it, auth = account.getJWT())
                 }, {
-                    GetPost(comment_id = it, auth = account.jwt.ifEmpty { null })
+                    GetPost(comment_id = it, auth = account.getJWT())
                 })
 
                 postRes = state
@@ -105,7 +106,7 @@ class PostViewModel : ViewModel(), Initializable {
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         post_id = it,
-                        auth = account.jwt.ifEmpty { null },
+                        auth = account.getJWT(),
                         sort = sortType,
                     )
                 }, {
@@ -113,7 +114,7 @@ class PostViewModel : ViewModel(), Initializable {
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         parent_id = it,
-                        auth = account.jwt.ifEmpty { null },
+                        auth = account.getJWT(),
                         sort = sortType,
                     )
                 })
@@ -144,7 +145,7 @@ class PostViewModel : ViewModel(), Initializable {
                 parent_id = commentView.comment.id,
                 max_depth = COMMENTS_DEPTH_MAX,
                 type_ = ListingType.All,
-                auth = account.jwt.ifEmpty { null },
+                auth = account.getJWT(),
             )
 
             val moreComments =

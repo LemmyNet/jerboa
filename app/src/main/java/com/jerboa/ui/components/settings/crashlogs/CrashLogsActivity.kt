@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.settings.crashlogs
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +36,7 @@ import com.crazylegend.crashyreporter.CrashyReporter
 import com.jerboa.R
 import com.jerboa.copyToClipboard
 import com.jerboa.showSnackbar
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -48,23 +47,21 @@ fun CrashLogsActivity(
 ) {
     Log.d("jerboa", "Got to Crash log activity")
 
-    val ctx = LocalContext.current
-
     val crashes = CrashyReporter.getLogsAsStrings()?.toMutableStateList() ?: run { mutableStateListOf() }
 
-    CrashLogs(ctx = ctx, onClickBack = onClickBack, crashes = crashes)
+    CrashLogs(onClickBack = onClickBack, crashes = crashes)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrashLogs(ctx: Context, onClickBack: () -> Unit, crashes: MutableList<String>) {
+fun CrashLogs(onClickBack: () -> Unit, crashes: MutableList<String>) {
     val scope = rememberCoroutineScope()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val deleteMessage = stringResource(R.string.crash_logs_all_deleted)
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.crash_logs),
@@ -99,7 +96,7 @@ fun CrashLogs(ctx: Context, onClickBack: () -> Unit, crashes: MutableList<String
                     .padding(padding),
             ) {
                 crashes.forEachIndexed { _, crash ->
-                    CrashLog(ctx = ctx, crash = crash)
+                    CrashLog(crash = crash)
                 }
             }
         },
@@ -107,9 +104,10 @@ fun CrashLogs(ctx: Context, onClickBack: () -> Unit, crashes: MutableList<String
 }
 
 @Composable
-fun CrashLog(ctx: Context, crash: String) {
+fun CrashLog(crash: String) {
     var expanded by remember { mutableStateOf(false) }
     val textModifier = Modifier.clickable(onClick = { expanded = !expanded })
+    val ctx = LocalContext.current
 
     Row(
         modifier = Modifier
@@ -149,7 +147,6 @@ fun CrashLog(ctx: Context, crash: String) {
 @Composable
 fun CrashLogsPreview() {
     CrashLogs(
-        ctx = LocalContext.current,
         onClickBack = {},
         crashes = mutableListOf(
             "A really bad one\nlots\nof\ntrace\nlines\nhere",

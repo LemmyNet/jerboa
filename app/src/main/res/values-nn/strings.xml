@@ -76,6 +76,7 @@
   <string name="comment_node_report_comment">Rapporter kommentar</string>
   <string name="comment_node_restore">Gjenopprett</string>
   <string name="comment_node_view_context">Vis kontekst</string>
+  <string name="comment_node_view_original">Vis opphavleg</string>
   <string name="comment_node_view_post">Vis innlegg</string>
   <string name="comment_node_view_source">Vis kjeldekode</string>
   <string name="comment_reply_back">Tilbake</string>

@@ -21,6 +21,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.Search
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.db.entity.getJWT
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommunityListViewModel
 import com.jerboa.model.SiteViewModel
@@ -82,7 +83,7 @@ fun CommunityListActivity(
                                     q = search,
                                     type_ = SearchType.Communities,
                                     sort = SortType.TopAll,
-                                    auth = account.jwt.ifEmpty { null },
+                                    auth = account.getJWT(),
                                 ),
                             )
                         }
