@@ -1,5 +1,7 @@
 package com.jerboa.ui.components.comment
 
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -138,13 +140,12 @@ fun CommentNodeHeaderPreview() {
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentBody(
     comment: Comment,
     viewSource: Boolean,
     onClick: () -> Unit,
-    onLongClick: () -> Unit,
+    onLongClick: ((View) -> Boolean),
 ) {
     val content = if (comment.removed) {
         stringResource(R.string.comment_body_removed)
@@ -178,7 +179,7 @@ fun CommentBodyPreview() {
         comment = sampleCommentView.comment,
         viewSource = false,
         onClick = {},
-        onLongClick = {},
+        onLongClick = { true },
     )
 }
 
@@ -313,8 +314,13 @@ fun LazyListScope.commentNodeItem(
                                     comment = commentView.comment,
                                     viewSource = viewSource,
                                     onClick = { onCommentClick(commentView) },
-                                    onLongClick = {
-                                        toggleActionBar(commentId)
+                                    onLongClick = { v ->
+                                        if (v is TextView) {
+                                            if (v.selectionStart == -1 && v.selectionEnd == -1) {
+                                                toggleActionBar(commentId)
+                                            }
+                                        }
+                                        true
                                     },
                                 )
                                 AnimatedVisibility(

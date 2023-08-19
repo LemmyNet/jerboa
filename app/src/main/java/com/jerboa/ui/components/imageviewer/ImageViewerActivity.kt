@@ -54,12 +54,13 @@ import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.jerboa.JerboaAppState
 import com.jerboa.JerboaApplication
+import com.jerboa.PostType
 import com.jerboa.R
+import com.jerboa.feat.shareMedia
+import com.jerboa.feat.storeMedia
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.util.downloadprogress.DownloadProgress
-import com.jerboa.util.shareImage
-import com.jerboa.util.storeImage
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -251,7 +252,7 @@ fun ViewerHeader(
         actions = {
             IconButton(
                 onClick = {
-                    shareImage(appState.coroutineScope, ctx, url)
+                    shareMedia(appState.coroutineScope, ctx, url, PostType.Image)
                 },
             ) {
                 Icon(
@@ -264,7 +265,7 @@ fun ViewerHeader(
             IconButton(
                 // TODO disable once it is busy
                 onClick = {
-                    storeImage(appState.coroutineScope, ctx, url)
+                    storeMedia(appState.coroutineScope, ctx, url, PostType.Image)
                 },
             ) {
                 Icon(

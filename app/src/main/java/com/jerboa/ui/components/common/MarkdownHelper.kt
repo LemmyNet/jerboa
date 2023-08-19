@@ -31,6 +31,7 @@ import androidx.core.content.res.ResourcesCompat
 import coil.imageLoader
 import com.jerboa.JerboaAppState
 import com.jerboa.convertSpToPx
+import com.jerboa.util.markwon.BetterLinkMovementMethod
 import com.jerboa.util.markwon.MarkwonLemmyLinkPlugin
 import com.jerboa.util.markwon.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -79,10 +80,9 @@ object MarkdownHelper {
     private var markwon: Markwon? = null
     private var previewMarkwon: Markwon? = null
 
-    fun init(appState: JerboaAppState, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+    fun init(appState: JerboaAppState, useCustomTabs: Boolean, usePrivateTabs: Boolean, onLongClick: BetterLinkMovementMethod.OnLinkLongClickListener) {
         val context = appState.navController.context
         val loader = context.imageLoader
-
         // main markdown parser has coil + html on
         markwon = Markwon.builder(context)
             // email urls interfere with lemmy links
@@ -94,8 +94,13 @@ object MarkdownHelper {
             .usePlugin(HtmlPlugin.create())
             // use TableAwareLinkMovementMethod to handle clicks inside tables,
             // wraps LinkMovementMethod internally
-            .usePlugin(MovementMethodPlugin.create(TableAwareMovementMethod.create()))
-            .usePlugin(MarkwonSpoilerPlugin(true))
+            .usePlugin(
+                MovementMethodPlugin.create(
+                    TableAwareMovementMethod(
+                        BetterLinkMovementMethod.newInstance().setOnLinkLongClickListener(onLongClick),
+                    ),
+                ),
+            )
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver { view, link ->
@@ -106,6 +111,7 @@ object MarkdownHelper {
                     }
                 }
             })
+            .usePlugin(MarkwonSpoilerPlugin(true))
             .build()
 
         // no image parser has html off
@@ -139,7 +145,7 @@ object MarkdownHelper {
         modifier: Modifier = Modifier,
         color: Color = Color.Unspecified,
         onClick: (() -> Unit)? = null,
-        onLongClick: (() -> Unit)? = null,
+        onLongClick: ((View) -> Boolean)? = null,
         style: TextStyle = MaterialTheme.typography.bodyLarge,
     ) {
         val defaultColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
@@ -183,7 +189,7 @@ object MarkdownHelper {
         style: TextStyle,
         @IdRes viewId: Int? = null,
         onClick: (() -> Unit)? = null,
-        onLongClick: (() -> Unit)? = null,
+        onLongClick: ((View) -> Boolean)? = null,
     ): TextView {
         val textColor = color.takeOrElse { style.color.takeOrElse { defaultColor } }
         val mergedStyle = style.merge(
@@ -195,7 +201,7 @@ object MarkdownHelper {
         )
         return TextView(context).apply {
             onClick?.let { setOnClickListener { onClick() } }
-            onLongClick?.let { setOnLongClickListener { onLongClick(); true } }
+            onLongClick?.let { setOnLongClickListener(it) }
             setTextColor(textColor.toArgb())
             setTextSize(TypedValue.COMPLEX_UNIT_SP, mergedStyle.fontSize.value)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

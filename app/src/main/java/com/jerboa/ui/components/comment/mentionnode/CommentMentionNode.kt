@@ -387,6 +387,7 @@ fun CommentMentionNode(
                     onClick = {},
                     onLongClick = {
                         isActionBarExpanded = !isActionBarExpanded
+                        true
                     },
                 )
                 AnimatedVisibility(
