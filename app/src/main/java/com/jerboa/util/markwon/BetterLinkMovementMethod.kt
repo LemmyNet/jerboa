@@ -18,6 +18,7 @@ import com.jerboa.R
  * Kotlin adaption of Saket their [BetterLinkMovementMethod](https://github.com/saket/Better-Link-Movement-Method)
  *
  * Also includes a crude fix for long click not being fully consumed
+ * check for the following in your other longclick handler `(v.selectionStart == -1 && v.selectionEnd == -1)`
  *
  * @author Maarten Vercruysse
  */

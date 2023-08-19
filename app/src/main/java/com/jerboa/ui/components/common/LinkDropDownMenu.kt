@@ -230,8 +230,3 @@ fun Test() {
         usePrivateTabs = false,
     )
 }
-
-object LinkDropDownMenu {
-    @set:Synchronized
-    var longPressed = true
-}

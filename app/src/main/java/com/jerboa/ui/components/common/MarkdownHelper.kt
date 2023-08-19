@@ -80,7 +80,12 @@ object MarkdownHelper {
     private var markwon: Markwon? = null
     private var previewMarkwon: Markwon? = null
 
-    fun init(appState: JerboaAppState, useCustomTabs: Boolean, usePrivateTabs: Boolean, onLongClick: BetterLinkMovementMethod.OnLinkLongClickListener) {
+    fun init(
+        appState: JerboaAppState,
+        useCustomTabs: Boolean,
+        usePrivateTabs: Boolean,
+        onLongClick: BetterLinkMovementMethod.OnLinkLongClickListener,
+    ) {
         val context = appState.navController.context
         val loader = context.imageLoader
         // main markdown parser has coil + html on

@@ -154,10 +154,6 @@ class MainActivity : AppCompatActivity() {
                     appSettings.usePrivateTabs,
                     object : BetterLinkMovementMethod.OnLinkLongClickListener {
                         override fun onLongClick(textView: TextView, url: String): Boolean {
-                            // Doesn't work reliably don't know why
-                            // view.cancelLongPress()
-                            // Simple workaround
-                            // LinkDropDownMenu.longPressed = false
                             appState.showLinkPopup(url)
                             return true
                         }

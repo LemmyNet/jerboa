@@ -316,7 +316,9 @@ fun LazyListScope.commentNodeItem(
                                     onClick = { onCommentClick(commentView) },
                                     onLongClick = { v ->
                                         if (v is TextView) {
-                                            if (v.selectionStart == -1 && v.selectionEnd == -1) {
+                                            // Also triggers for long click on links, so we check if link was hit
+                                            // Can have selection in viewSource but there are no links there
+                                            if (viewSource || (v.selectionStart == -1 && v.selectionEnd == -1)) {
                                                 toggleActionBar(commentId)
                                             }
                                         }
