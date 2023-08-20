@@ -8,19 +8,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 
 @Composable
 fun MenuItem(
     text: String,
-    modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
     DropdownMenuItem(
         text = {
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyMedium,
+                style = textStyle,
+                modifier = textModifier,
             )
         },
         leadingIcon = {

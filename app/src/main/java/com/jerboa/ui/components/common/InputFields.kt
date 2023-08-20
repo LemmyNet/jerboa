@@ -3,6 +3,7 @@ package com.jerboa.ui.components.common
 
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -585,7 +586,7 @@ fun MyMarkdownText(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit,
-    onLongClick: (() -> Unit)? = null,
+    onLongClick: ((View) -> Boolean)? = null,
 ) {
     MarkdownHelper.CreateMarkdownView(
         markdown = markdown,
