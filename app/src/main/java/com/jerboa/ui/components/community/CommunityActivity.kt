@@ -53,6 +53,7 @@ import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.shareLink
 import com.jerboa.hostName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -61,7 +62,6 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
-import com.jerboa.shareLink
 import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
@@ -471,8 +471,7 @@ fun CommunityActivity(
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW,
                             showPostLinkPreviews = showPostLinkPreviews,
-                            openImageViewer = appState::toView,
-                            openLink = appState::openLink,
+                            appState = appState,
                             markAsReadOnScroll = markAsReadOnScroll,
                             onMarkAsRead = { postView ->
                                 if (!account.isAnon() && !postView.read) {

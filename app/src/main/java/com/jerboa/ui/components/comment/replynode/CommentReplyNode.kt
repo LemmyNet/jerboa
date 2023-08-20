@@ -372,6 +372,7 @@ fun CommentReplyNodeInbox(
                     onClick = { onCommentClick(commentReplyView) },
                     onLongClick = {
                         isActionBarExpanded = !isActionBarExpanded
+                        true
                     },
                 )
                 AnimatedVisibility(
