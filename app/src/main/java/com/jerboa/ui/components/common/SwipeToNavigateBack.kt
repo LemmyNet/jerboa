@@ -16,11 +16,11 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwipeToNavigateBack(
-    useSwipeBack: Boolean,
+    useSwipeBack: Int,
     onSwipeBack: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    if (useSwipeBack) {
+    if (useSwipeBack == 1) {
         val dismissState = rememberDismissState(
             confirmStateChange = {
                 when (it) {
