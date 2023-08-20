@@ -494,25 +494,25 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.PostArgs(it)
 
-                        SwipeToNavigateBack(appSettings.useSwipeBack,
-                            appState::navigateUp)
-                            {
-                                PostActivity(
-                                    id = Either.Left(args.id),
-                                    accountViewModel = accountViewModel,
-                                    appState = appState,
-                                    showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
-                                    showActionBarByDefault = appSettings.showCommentActionBarByDefault,
-                                    showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                    showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
-                                    navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
-                                    siteViewModel = siteViewModel,
-                                    useCustomTabs = appSettings.useCustomTabs,
-                                    usePrivateTabs = appSettings.usePrivateTabs,
-                                    blurNSFW = appSettings.blurNSFW,
-                                    showPostLinkPreview = appSettings.showPostLinkPreviews,
-                                    postActionbarMode = appSettings.postActionbarMode,
-                                )
+                        SwipeToNavigateBack(
+                            appSettings.useSwipeBack,
+                            appState::navigateUp) {
+                            PostActivity(
+                                id = Either.Left(args.id),
+                                accountViewModel = accountViewModel,
+                                appState = appState,
+                                showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+                                showActionBarByDefault = appSettings.showCommentActionBarByDefault,
+                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                                showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
+                                navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
+                                siteViewModel = siteViewModel,
+                                useCustomTabs = appSettings.useCustomTabs,
+                                usePrivateTabs = appSettings.usePrivateTabs,
+                                blurNSFW = appSettings.blurNSFW,
+                                showPostLinkPreview = appSettings.showPostLinkPreviews,
+                                postActionbarMode = appSettings.postActionbarMode,
+                            )
                             }
                     }
 
