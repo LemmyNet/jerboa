@@ -34,8 +34,8 @@ import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsListDropdown
 import com.alorma.compose.settings.ui.SettingsSlider
-import com.jerboa.PostViewMode
 import com.jerboa.NavigationGestureMode
+import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
@@ -233,7 +233,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = postNavigationGestureModeState,
-                    items = NavigationGestureMode.entries.map {stringResource(it.mode) },
+                    items = NavigationGestureMode.entries.map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Swipe,
