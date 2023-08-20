@@ -99,7 +99,6 @@ fun LookAndFeelActivity(
     val autoPlayGifs = rememberBooleanSettingState(settings.autoPlayGifs)
     val useSwipeBack = rememberBooleanSettingState(settings.useSwipeBack)
 
-
     fun updateAppSettings() {
         appSettingsViewModel.update(
             AppSettings(
