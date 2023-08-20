@@ -203,6 +203,7 @@
     <string name="look_and_feel_theme_color_woodland">Woodland</string>
     <string name="look_and_feel_use_custom_tabs">Use custom tabs</string>
     <string name="look_and_feel_use_private_tabs">Use private custom tabs if available</string>
+    <string name="look_and_feel_use_swipe_back">Use swipe to navigate back on posts</string>
     <string name="markRead">Mark as read</string>
     <string name="markUnread">Mark as unread</string>
     <string name="markdownHelper_formatBold">Format as bold text</string>

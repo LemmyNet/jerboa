@@ -16,34 +16,42 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwipeToNavigateBack(
+    useSwipeBack: Boolean,
     onSwipeBack: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val dismissState = rememberDismissState(
-        confirmStateChange = {
-            when (it) {
-                DismissValue.DismissedToEnd -> {
-                    onSwipeBack()
-                    true
-                }
-                else -> { false }
-            }
-        },
-    )
+    if (useSwipeBack) {
+        val dismissState = rememberDismissState(
+            confirmStateChange = {
+                when (it) {
+                    DismissValue.DismissedToEnd -> {
+                        onSwipeBack()
+                        true
+                    }
 
-    SwipeToDismiss(
-        state = dismissState,
-        background = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-            )
-        },
-        dismissContent = {
-            content()
-        },
-        directions = setOf(DismissDirection.StartToEnd),
-        dismissThresholds = { FractionalThreshold(0.8f) },
-    )
+                    else -> {
+                        false
+                    }
+                }
+            },
+        )
+        SwipeToDismiss(
+            state = dismissState,
+            background = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
+                )
+            },
+            dismissContent = {
+                content()
+            },
+            directions = setOf(DismissDirection.StartToEnd),
+            dismissThresholds = { FractionalThreshold(0.8f) },
+        )
+    }
+    else {
+        content()
+    }
 }

@@ -97,6 +97,8 @@ fun LookAndFeelActivity(
 
     val markAsReadOnScroll = rememberBooleanSettingState(settings.markAsReadOnScroll)
     val autoPlayGifs = rememberBooleanSettingState(settings.autoPlayGifs)
+    val useSwipeBack = rememberBooleanSettingState(settings.useSwipeBack)
+
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
@@ -123,6 +125,7 @@ fun LookAndFeelActivity(
                 markAsReadOnScroll = markAsReadOnScroll.value,
                 postActionbarMode = postActionbarMode.value,
                 autoPlayGifs = autoPlayGifs.value,
+                useSwipeBack = useSwipeBack.value,
             ),
         )
     }
@@ -357,6 +360,13 @@ fun LookAndFeelActivity(
                     state = autoPlayGifs,
                     title = {
                         Text(stringResource(id = R.string.settings_autoplaygifs))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = useSwipeBack,
+                    title = {
+                        Text(stringResource(id = R.string.look_and_feel_use_swipe_back))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )

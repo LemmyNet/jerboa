@@ -38,6 +38,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     showPostLinkPreviews = true,
     postActionbarMode = 0,
     autoPlayGifs = false,
+    useSwipeBack = true,
 )
 
 @Database(

@@ -113,4 +113,9 @@ data class AppSettings(
         defaultValue = "0",
     )
     val autoPlayGifs: Boolean,
+    @ColumnInfo(
+        name = "use_swipe_back",
+        defaultValue = "1",
+    )
+    val useSwipeBack: Boolean,
 )
