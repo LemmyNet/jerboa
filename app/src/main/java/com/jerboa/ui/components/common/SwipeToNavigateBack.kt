@@ -50,8 +50,7 @@ fun SwipeToNavigateBack(
             directions = setOf(DismissDirection.StartToEnd),
             dismissThresholds = { FractionalThreshold(0.8f) },
         )
-    }
-    else {
+    } else {
         content()
     }
 }

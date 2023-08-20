@@ -496,9 +496,8 @@ class MainActivity : AppCompatActivity() {
 
                         SwipeToNavigateBack(
                             appSettings.useSwipeBack,
-                            appState::navigateUp
-                        )
-                        {
+                            appState::navigateUp,
+                        ) {
                             PostActivity(
                                 id = Either.Left(args.id),
                                 accountViewModel = accountViewModel,
