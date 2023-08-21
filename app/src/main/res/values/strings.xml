@@ -174,9 +174,9 @@
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Show content for collapsed comments</string>
     <string name="look_and_feel_font_size">Font size: %1$s</string>
     <string name="look_and_feel_look_and_feel">Look and feel</string>
-    <string name="look_and_feel_post_navigation_gesture_mode">Post Navigation Gestures</string>
+    <string name="look_and_feel_post_navigation_gesture_mode">Post navigation gestures</string>
     <string name="look_and_feel_post_navigation_gesture_mode_disabled">Disabled</string>
-    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">Swipe Left to Navigate Back</string>
+    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">Swipe left to navigate back</string>
     <string name="look_and_feel_post_view">Post View</string>
     <string name="look_and_feel_post_view_card">Card</string>
     <string name="look_and_feel_post_view_list">List</string>

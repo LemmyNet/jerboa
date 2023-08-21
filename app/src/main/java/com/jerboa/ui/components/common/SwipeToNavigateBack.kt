@@ -12,6 +12,7 @@ import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.jerboa.feat.PostNavigationGestureMode
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -20,7 +21,7 @@ fun SwipeToNavigateBack(
     onSwipeBack: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    if (useSwipeBack == 1) {
+    if (useSwipeBack == PostNavigationGestureMode.SwipeLeft.ordinal) {
         val dismissState = rememberDismissState(
             confirmStateChange = {
                 when (it) {
