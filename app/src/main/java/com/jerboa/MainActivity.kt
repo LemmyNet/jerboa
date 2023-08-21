@@ -510,7 +510,11 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.PostArgs(it)
-                        SwipeToNavigateBack(appState::navigateUp) {
+
+                        SwipeToNavigateBack(
+                            appSettings.postNavigationGestureMode,
+                            appState::navigateUp,
+                        ) {
                             PostActivity(
                                 id = Either.Left(args.id),
                                 accountViewModel = accountViewModel,
