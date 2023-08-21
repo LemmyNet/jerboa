@@ -72,6 +72,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.shareLink
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
@@ -83,7 +84,6 @@ import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
-import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
@@ -425,7 +425,7 @@ fun UserTabs(
                                     PersonProfileTopSection(
                                         personView = profileRes.data.person_view,
                                         showAvatar = showAvatar,
-                                        openImageViewer = appState::toView,
+                                        openImageViewer = appState::openImageViewer,
                                     )
                                 }
                                 val moderates = profileRes.data.moderates
@@ -627,8 +627,7 @@ fun UserTabs(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
-                                    openImageViewer = appState::toView,
-                                    openLink = appState::openLink,
+                                    appState = appState,
                                     showPostLinkPreviews = showPostLinkPreviews,
                                     markAsReadOnScroll = markAsReadOnScroll,
                                     onMarkAsRead = {

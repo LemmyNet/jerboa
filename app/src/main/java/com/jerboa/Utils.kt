@@ -1,6 +1,7 @@
 package com.jerboa
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentValues
@@ -13,15 +14,18 @@ import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.webkit.MimeTypeMap.getFileExtensionFromUrl
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -383,19 +387,6 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
     return null
 }
 
-/**
- * Open a sharesheet for the given URL.
- */
-fun shareLink(url: String, ctx: Context) {
-    val intent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_TEXT, url)
-        type = "text/plain"
-    }
-    val shareIntent = Intent.createChooser(intent, null)
-    ctx.startActivity(shareIntent)
-}
-
 // Current logic is that if the url matches a community url or user url then it confirms
 // if the host is an actual lemmy instance unless it was originally formatted in a user/community format
 
@@ -427,7 +418,7 @@ fun openLinkRaw(url: String, navController: NavController, useCustomTab: Boolean
         intent.launchUrl(navController.context, Uri.parse(url))
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        navController.context.startActivity(intent)
+        navController.context.startActivitySafe(intent)
     }
 }
 
@@ -851,9 +842,32 @@ enum class PostType {
 
     /**
      * A Video. Should open the built-in video viewer.
+     * Also matches audio only
      * (Not currently available).
      */
     Video,
+
+    ;
+
+    companion object {
+        fun fromURL(url: String): PostType {
+            return if (isImage(url)) {
+                Image
+            } else if (isVideo(url)) {
+                Video
+            } else {
+                Link
+            }
+        }
+    }
+
+    fun toMediaDir(): String {
+        return when (this) {
+            Image -> Environment.DIRECTORY_PICTURES
+            Video -> Environment.DIRECTORY_MOVIES
+            Link -> Environment.DIRECTORY_DOCUMENTS
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -925,24 +939,32 @@ fun nsfwCheck(postView: PostView): Boolean {
     return postView.post.nsfw || postView.community.nsfw
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Throws(IOException::class)
-fun saveBitmap(
+fun saveMediaQ(
     ctx: Context,
     inputStream: InputStream,
     mimeType: String?,
     displayName: String,
+    mediaType: PostType,
 ): Uri {
     val values = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
         put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Jerboa")
+        put(MediaStore.MediaColumns.RELATIVE_PATH, mediaType.toMediaDir() + "/Jerboa")
     }
 
     val resolver = ctx.contentResolver
     var uri: Uri? = null
 
     try {
-        uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        val insert = when (mediaType) {
+            PostType.Image -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            PostType.Video -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            PostType.Link -> MediaStore.Downloads.EXTERNAL_CONTENT_URI
+        }
+
+        uri = resolver.insert(insert, values)
             ?: throw IOException("Failed to create new MediaStore record.")
 
         resolver.openOutputStream(uri)?.use {
@@ -960,18 +982,19 @@ fun saveBitmap(
     }
 }
 
-// saveBitmap that works for Android 9 and below
-fun saveBitmapP(
+// saveMedia that works for Android 9 and below
+fun saveMediaP(
     context: Context,
     inputStream: InputStream,
     mimeType: String?,
     displayName: String,
+    mediaType: PostType, // Link is here more like other media (think of PDF, doc, txt)
 ) {
-    val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-    val picsDir = File(dir, "Jerboa")
-    val dest = File(picsDir, displayName)
+    val dir = Environment.getExternalStoragePublicDirectory(mediaType.toMediaDir())
+    val mediaDir = File(dir, "Jerboa")
+    val dest = File(mediaDir, displayName)
 
-    picsDir.mkdirs() // make if not exist
+    mediaDir.mkdirs() // make if not exist
 
     inputStream.use { input ->
         dest.outputStream().use {
@@ -1483,7 +1506,7 @@ fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
     this?.activeNetwork
         ?.let(::getNetworkCapabilities)
         ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        ?: false
+        ?: true
 
 /**
  * When calling this, you must call ActivityResultLauncher.unregister()
@@ -1509,5 +1532,29 @@ fun Context.getInputStream(url: String): InputStream {
         it.data.toFile().inputStream()
     } ?: API.httpClient.newCall(Request(url.toHttpUrl())).execute().use { response ->
         response.body.byteStream()
+    }
+}
+
+val videoRgx = Regex(
+    pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov))",
+)
+fun isVideo(url: String): Boolean {
+    return url.matches(videoRgx)
+}
+
+val nonMediaExt = setOf("html", "htm", "xhtml", "")
+
+// Fast guess at checking if the link could be a file that we consider as Media
+fun isMedia(url: String): Boolean {
+    val ext = getFileExtensionFromUrl(url)
+    return !nonMediaExt.contains(ext)
+}
+
+fun Context.startActivitySafe(intent: Intent) {
+    try {
+        this.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Log.d("jerboa", "failed open activity", e)
+        Toast.makeText(this, this.getText(R.string.no_activity_found), Toast.LENGTH_SHORT).show()
     }
 }
