@@ -211,13 +211,12 @@ class CommunityViewModel : ViewModel(), Initializable {
     fun blockCommunity(form: BlockCommunity, ctx: Context) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
-            blockCommunityRes =
-                apiWrapper(API.getInstance().blockCommunity(form))
+            blockCommunityRes = apiWrapper(API.getInstance().blockCommunity(form))
+
+            showBlockCommunityToast(blockCommunityRes, ctx)
 
             when (val blockCommunity = blockCommunityRes) {
                 is ApiState.Success -> {
-                    showBlockCommunityToast(blockCommunity, ctx)
-
                     when (val existing = communityRes) {
                         is ApiState.Success -> {
                             val newRes =
