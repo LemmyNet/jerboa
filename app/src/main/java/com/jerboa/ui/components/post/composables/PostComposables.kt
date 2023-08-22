@@ -74,7 +74,6 @@ fun CreateEditPostHeader(
                 onClick = onSubmitClick,
             ) {
                 if (loading) {
-                    //  TODO is this color necessary? If not, remove all of them!
                     CircularProgressIndicator(
                         color = MaterialTheme.colorScheme.onSurface,
                     )
@@ -229,7 +228,7 @@ fun PostCommunitySelector(
             OutlinedTextField(
                 value = community.name,
                 readOnly = true,
-                onValueChange = {}, // TODO what?
+                onValueChange = {},
                 label = {
                     Text(stringResource(R.string.create_post_community))
                 },
@@ -255,7 +254,7 @@ fun PostCommunitySelector(
         } ?: run {
             OutlinedTextField(
                 value = "",
-                onValueChange = {}, // TODO what?
+                onValueChange = {},
                 label = {
                     Text(stringResource(R.string.create_post_community))
                 },

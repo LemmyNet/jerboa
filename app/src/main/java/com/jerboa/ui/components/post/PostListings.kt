@@ -103,7 +103,7 @@ fun PostListings(
                 isModerator = false,
                 showCommunityName = showCommunityName,
                 fullBody = false,
-                account = account, // TODO can't know with many posts
+                account = account,
                 postViewMode = postViewMode,
                 showVotingArrowsInListView = showVotingArrowsInListView,
                 enableDownVotes = enableDownVotes,

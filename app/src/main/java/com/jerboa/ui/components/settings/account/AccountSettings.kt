@@ -336,7 +336,7 @@ fun SettingsForm(
             }
         }
 
-        // Todo: Remove this
+        // Todo: Move this to top bar, like the other examples
         Button(
             enabled = !loading,
             onClick = { onClickSave(form) },

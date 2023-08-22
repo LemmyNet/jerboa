@@ -35,7 +35,6 @@ class ExampleUnitTest {
 
     @Test
     fun testGetPosts() = runBlocking {
-        // TODO
         val api = API.getInstance()
         val form = GetPosts(
             ListingType.All,

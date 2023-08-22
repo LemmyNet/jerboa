@@ -72,6 +72,7 @@ fun HomeHeaderTitle(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeHeader(
+    federationEnabled: Boolean,
     openDrawer: () -> Unit,
     onClickSortType: (SortType) -> Unit,
     onClickListingType: (ListingType) -> Unit,
@@ -155,6 +156,7 @@ fun HomeHeader(
 
                 ListingTypeOptionsDropDown(
                     expanded = showListingTypeOptions,
+                    federationEnabled = federationEnabled,
                     onDismissRequest = { showListingTypeOptions = false },
                     onClickListingType = {
                         showListingTypeOptions = false
@@ -211,6 +213,7 @@ fun HomeHeaderPreview() {
         selectedListingType = ListingType.All,
         selectedPostViewMode = PostViewMode.Card,
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+        federationEnabled = true,
     )
 }
 
@@ -261,6 +264,7 @@ fun HomeMoreDropdown(
 @Composable
 fun ListingTypeOptionsDropDown(
     expanded: Boolean,
+    federationEnabled: Boolean,
     onDismissRequest: () -> Unit,
     onClickListingType: (ListingType) -> Unit,
     selectedListingType: ListingType,
@@ -276,13 +280,14 @@ fun ListingTypeOptionsDropDown(
             onClick = { onClickListingType(ListingType.Subscribed) },
             highlight = (selectedListingType == ListingType.Subscribed),
         )
-        // TODO hide local for non-federated instances
-        MenuItem(
-            text = stringResource(R.string.dialogs_local),
-            icon = Icons.Outlined.LocationCity,
-            onClick = { onClickListingType(ListingType.Local) },
-            highlight = (selectedListingType == ListingType.Local),
-        )
+        if (federationEnabled) {
+            MenuItem(
+                text = stringResource(R.string.dialogs_local),
+                icon = Icons.Outlined.LocationCity,
+                onClick = { onClickListingType(ListingType.Local) },
+                highlight = (selectedListingType == ListingType.Local),
+            )
+        }
         MenuItem(
             text = stringResource(R.string.dialogs_all),
             icon = Icons.Outlined.Public,

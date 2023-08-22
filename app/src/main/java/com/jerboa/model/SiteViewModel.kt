@@ -150,6 +150,13 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
+    fun federationEnabled(): Boolean {
+        return when (val res = siteRes) {
+            is ApiState.Success -> res.data.site_view.local_site.federation_enabled
+            else -> true
+        }
+    }
+
     companion object {
         val Factory = viewModelFactory {
             initializer {

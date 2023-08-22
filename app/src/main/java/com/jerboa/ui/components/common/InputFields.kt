@@ -402,7 +402,6 @@ fun simpleMarkdownSurround(
         }
 //        Log.d("jerboa", "start = ${value.selection.start}, end = ${value.selection.end}")
 
-        // TODO weird glitch when its the last item
         val start = value.selection.start + markdownChar.length
         val end = if (surround) {
             value.selection.end + markdownChar.length

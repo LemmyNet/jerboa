@@ -138,6 +138,7 @@ fun HomeActivity(
                 },
                 homeViewModel = homeViewModel,
                 appSettingsViewModel = appSettingsViewModel,
+                siteViewModel = siteViewModel,
                 account = account,
                 scrollBehavior = scrollBehavior,
                 onClickSiteInfo = appState::toSiteSideBar,
@@ -434,6 +435,7 @@ fun MainTopBar(
     scrollToTop: () -> Unit,
     openDrawer: () -> Unit,
     homeViewModel: HomeViewModel,
+    siteViewModel: SiteViewModel,
     appSettingsViewModel: AppSettingsViewModel,
     account: Account,
     onClickSiteInfo: () -> Unit,
@@ -464,6 +466,7 @@ fun MainTopBar(
                 homeViewModel.resetPosts(account)
             },
             onClickSiteInfo = onClickSiteInfo,
+            federationEnabled = siteViewModel.federationEnabled(),
         )
     }
 }

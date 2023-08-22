@@ -291,7 +291,6 @@ class PostViewModel : ViewModel(), Initializable {
         }
     }
 
-    // TODO test this to make sure comment tree inserts work
     fun appendComment(commentView: CommentView) {
         when (val existing = commentsRes) {
             is ApiState.Success -> {
