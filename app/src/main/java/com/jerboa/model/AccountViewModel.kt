@@ -6,13 +6,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.feat.AccountVerificationState
-import com.jerboa.fetchHomePosts
-import com.jerboa.fetchInitialData
 import com.jerboa.jerboaApplication
 import kotlinx.coroutines.launch
 
@@ -54,8 +51,6 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
 
     fun deleteAccountAndSwapCurrent(
         account: Account,
-        siteViewModel: SiteViewModel,
-        homeViewModel: HomeViewModel? = null,
         swapToAnon: Boolean = false,
     ) = viewModelScope.launch {
         if (account.isAnon()) return@launch
@@ -63,18 +58,10 @@ class AccountViewModel(private val repository: AccountRepository) : ViewModel() 
         repository.delete(account)
 
         val accounts = repository.allAccounts.value
-        var nextAcc = accounts?.firstOrNull { it.id != account.id }
+        val nextAcc = accounts?.firstOrNull { it.id != account.id }
 
         if (!swapToAnon && nextAcc != null) {
             repository.setCurrent(nextAcc.id)
-        } else {
-            nextAcc = AnonAccount
-        }
-
-        fetchInitialData(nextAcc, siteViewModel)
-
-        if (homeViewModel != null) {
-            fetchHomePosts(nextAcc, homeViewModel)
         }
     }
 }

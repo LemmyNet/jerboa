@@ -82,7 +82,7 @@ enum class AccountVerificationState {
     ;
 
     companion object {
-        val size = values().size
+        val size = entries.size
     }
 }
 
@@ -425,12 +425,12 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                         }
 
                         AccountVerificationState.ACCOUNT_DELETED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, siteVM, swapToAnon = true)
+                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true)
                             appState.toHome()
                         }
 
                         AccountVerificationState.JWT_VERIFIED to CheckState.Failed -> {
-                            accountVM.deleteAccountAndSwapCurrent(this, siteVM, swapToAnon = true)
+                            accountVM.deleteAccountAndSwapCurrent(this, swapToAnon = true)
                             appState.toLogin()
                         }
 

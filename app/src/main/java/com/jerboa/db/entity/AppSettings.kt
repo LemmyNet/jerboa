@@ -39,6 +39,11 @@ data class AppSettings(
     )
     val showBottomNav: Boolean,
     @ColumnInfo(
+        name = "post_navigation_gesture_mode",
+        defaultValue = "0",
+    )
+    val postNavigationGestureMode: Int,
+    @ColumnInfo(
         name = "show_collapsed_comment_content",
         defaultValue = "0",
     )
@@ -108,4 +113,9 @@ data class AppSettings(
         defaultValue = "0",
     )
     val postActionbarMode: Int,
+    @ColumnInfo(
+        name = "auto_play_gifs",
+        defaultValue = "0",
+    )
+    val autoPlayGifs: Boolean,
 )

@@ -33,7 +33,9 @@
 
 ## Code contributions
 
-You can open Jerboa in AndroidStudio.
+You can open Jerboa in AndroidStudio, version 2022.3.1 or later (Giraffe).
+
+Use Java 11+, preferably Java 17
 
 ### Kotlin
 

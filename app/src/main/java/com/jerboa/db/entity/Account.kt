@@ -35,7 +35,7 @@ val AnonAccount = Account(
     "",
     "Anonymous",
     "",
-    0,
+    1,
     0,
     verificationState = 0,
 )
@@ -46,4 +46,8 @@ fun Account.isAnon(): Boolean {
 
 fun Account.isReady(): Boolean {
     return this.verificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal
+}
+
+fun Account.getJWT(): String? {
+    return if (isAnon()) null else this.jwt
 }

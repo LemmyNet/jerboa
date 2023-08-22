@@ -52,7 +52,7 @@ val DONATION_MARKDOWN = """
 
 """.trimIndent()
 
-val topSortTypes = SortType.values().filter { it.name.startsWith("Top") }
+val topSortTypes = SortType.entries.filter { it.name.startsWith("Top") }
 
 @Composable
 fun SortTopOptionsDialog(
@@ -214,7 +214,7 @@ fun PostViewModeDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                PostViewMode.values().map {
+                PostViewMode.entries.map {
                     IconAndTextDrawerItem(
                         text = stringResource(it.mode),
                         onClick = { onClickPostViewMode(it) },

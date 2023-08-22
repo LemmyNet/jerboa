@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -48,6 +49,7 @@ class JerboaAppState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
 ) {
+    val linkDropdownExpanded = mutableStateOf<String?>(null)
 
     fun toPrivateMessageReply(
         channel: RouteChannel<PrivateMessageDeps>,
@@ -75,7 +77,7 @@ class JerboaAppState(
 
     fun toCrashLogs() = navController.navigate(Route.CRASH_LOGS)
 
-    fun toView(url: String) {
+    fun openImageViewer(url: String) {
         val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.name())
         navController.navigate(Route.ViewArgs.makeRoute(encodedUrl))
     }
@@ -180,6 +182,14 @@ class JerboaAppState(
 
     fun toCreatePrivateMessage(id: Int, name: String) {
         navController.navigate(Route.CreatePrivateMessageArgs.makeRoute(personId = "$id", personName = name))
+    }
+
+    fun hideLinkPopup() {
+        linkDropdownExpanded.value = null
+    }
+
+    fun showLinkPopup(url: String) {
+        linkDropdownExpanded.value = url
     }
 }
 
