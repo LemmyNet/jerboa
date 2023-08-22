@@ -12,6 +12,7 @@ plugins {
 apply(from = "update_instances.gradle.kts")
 
 android {
+    buildToolsVersion = "34.0.0-rc3"
     compileSdk = 34
 
     defaultConfig {
