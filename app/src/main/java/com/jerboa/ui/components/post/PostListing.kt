@@ -1,7 +1,9 @@
 package com.jerboa.ui.components.post
 
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,6 +68,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jerboa.InstantScores
+import com.jerboa.JerboaAppState
 import com.jerboa.PostType
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -89,6 +92,7 @@ import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
+import com.jerboa.rememberJerboaAppState
 import com.jerboa.siFormat
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.ActionBarButton
@@ -286,8 +290,7 @@ fun PostTitleBlock(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
     val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
@@ -296,7 +299,7 @@ fun PostTitleBlock(
         PostTitleAndImageLink(
             postView = postView,
             blurNSFW = blurNSFW,
-            openImageViewer = openImageViewer,
+            appState = appState,
             showIfRead = showIfRead,
         )
     } else {
@@ -306,8 +309,7 @@ fun PostTitleBlock(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openLink = openLink,
-            openImageViewer = openImageViewer,
+            appState = appState,
             showIfRead = showIfRead,
         )
     }
@@ -338,11 +340,12 @@ fun PostName(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
     blurNSFW: Boolean,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
     // This was tested, we know it exists
@@ -362,12 +365,14 @@ fun PostTitleAndImageLink(
         )
     }
 
-    val postLinkPicMod = Modifier
-        .clickable { openImageViewer(url) }
     PictrsUrlImage(
         url = url,
         blur = blurNSFW && nsfwCheck(postView),
-        modifier = postLinkPicMod,
+        modifier = Modifier
+            .combinedClickable(
+                onClick = { appState.openImageViewer(url) },
+                onLongClick = { appState.showLinkPopup(url) },
+            ),
     )
 }
 
@@ -378,8 +383,7 @@ fun PostTitleAndThumbnail(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
     Column(
@@ -412,8 +416,7 @@ fun PostTitleAndThumbnail(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-                openLink = openLink,
-                openImageViewer = openImageViewer,
+                appState = appState,
             )
         }
     }
@@ -430,8 +433,7 @@ fun PostBody(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreview: Boolean,
-    openImageViewer: (url: String) -> Unit,
-    openLink: (String, Boolean, Boolean) -> Unit,
+    appState: JerboaAppState,
     clickBody: () -> Unit = {},
     showIfRead: Boolean,
 ) {
@@ -446,8 +448,7 @@ fun PostBody(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openImageViewer = openImageViewer,
-            openLink = openLink,
+            appState = appState,
             showIfRead = showIfRead,
         )
 
@@ -518,8 +519,7 @@ fun PreviewStoryTitleAndMetadata() {
         usePrivateTabs = false,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
     )
 }
@@ -537,8 +537,7 @@ fun PreviewSourcePost() {
         usePrivateTabs = false,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
     )
 }
@@ -833,8 +832,7 @@ fun PreviewPostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -871,8 +869,7 @@ fun PreviewLinkPostListing() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -909,8 +906,7 @@ fun PreviewImagePostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -947,8 +943,7 @@ fun PreviewImagePostListingSmallCard() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -985,8 +980,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -1022,8 +1016,7 @@ fun PostListing(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showPostLinkPreview: Boolean,
     showIfRead: Boolean,
     showScores: Boolean,
@@ -1088,8 +1081,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openLink = openLink,
-            openImageViewer = openImageViewer,
+            appState = appState,
             showPostLinkPreview = showPostLinkPreview,
             showIfRead = showIfRead,
             showScores = showScores,
@@ -1140,9 +1132,8 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openLink = openLink,
+            appState = appState,
             showPostLinkPreview = showPostLinkPreview,
-            openImageViewer = openImageViewer,
             showScores = showScores,
             postActionbarMode = postActionbarMode,
         )
@@ -1173,8 +1164,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openImageViewer = openImageViewer,
-            openLink = openLink,
+            appState = appState,
             showIfRead = showIfRead,
             enableDownVotes = enableDownVotes,
             showScores = showScores,
@@ -1247,8 +1237,7 @@ fun PostListingList(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean,
     enableDownVotes: Boolean,
     showScores: Boolean,
@@ -1357,38 +1346,43 @@ fun PostListingList(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-                openLink = openLink,
-                openImageViewer = openImageViewer,
+                appState = appState,
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ThumbnailTile(
     postView: PostView,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
 ) {
     postView.post.url?.also { url ->
         val postType = getPostType(url)
 
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
-            .clickable {
-                if (postType != PostType.Link) {
-                    openImageViewer(url)
-                } else {
-                    openLink(
-                        url,
-                        useCustomTabs,
-                        usePrivateTabs,
-                    )
-                }
-            }
+            .combinedClickable(
+                onClick = {
+                    if (postType != PostType.Link) {
+                        appState.openImageViewer(url)
+                    } else {
+                        appState.openLink(
+                            url,
+                            useCustomTabs,
+                            usePrivateTabs,
+                        )
+                    }
+                },
+                onLongClick = {
+                    appState.showLinkPopup(url)
+                },
+
+            )
 
         Box {
             postView.post.thumbnail_url?.also { thumbnail ->
@@ -1459,8 +1453,7 @@ fun PostListingListPreview() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
         showScores = true,
@@ -1491,8 +1484,7 @@ fun PostListingListWithThumbPreview() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
         showScores = true,
@@ -1531,8 +1523,7 @@ fun PostListingCard(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreview: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean = false,
     showScores: Boolean,
     postActionbarMode: Int,
@@ -1570,9 +1561,8 @@ fun PostListingCard(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             showPostLinkPreview = showPostLinkPreview,
-            openImageViewer = openImageViewer,
+            appState = appState,
             clickBody = { onPostClick(postView) },
-            openLink = openLink,
             showIfRead = showIfRead,
         )
 

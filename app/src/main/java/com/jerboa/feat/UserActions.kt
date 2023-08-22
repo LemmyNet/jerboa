@@ -1,4 +1,4 @@
-package com.jerboa.util
+package com.jerboa.feat
 
 import android.Manifest
 import android.content.Context
@@ -12,11 +12,13 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import com.jerboa.MainActivity
+import com.jerboa.PostType
 import com.jerboa.R
 import com.jerboa.getInputStream
 import com.jerboa.registerActivityResultLauncher
-import com.jerboa.saveBitmap
-import com.jerboa.saveBitmapP
+import com.jerboa.saveMediaP
+import com.jerboa.saveMediaQ
+import com.jerboa.startActivitySafe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,31 +26,32 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 
-fun storeImage(scope: CoroutineScope, ctx: Context, url: String) {
+fun storeMedia(scope: CoroutineScope, ctx: Context, url: String, mediaType: PostType) {
     if (SDK_INT < 29 && ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         val appCompat = (ctx as MainActivity)
 
         appCompat.registerActivityResultLauncher(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
-                actualStoreImage(scope, ctx, url)
+                actualStoreImage(scope, ctx, url, mediaType)
             } else {
                 Toast.makeText(ctx, ctx.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
             }
         }.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     } else {
-        actualStoreImage(scope, ctx, url)
+        actualStoreImage(scope, ctx, url, mediaType)
     }
 }
 
-private fun actualStoreImage(scope: CoroutineScope, ctx: Context, url: String) {
+private fun actualStoreImage(scope: CoroutineScope, ctx: Context, url: String, mediaType: PostType) {
     scope.launch {
-        saveImage(url, ctx)
+        saveMedia(url, ctx, mediaType)
     }
 }
 
 // Needs to check for permission before this for API 29 and below
-private suspend fun saveImage(url: String, context: Context) {
-    Toast.makeText(context, context.getString(R.string.saving_image), Toast.LENGTH_SHORT).show()
+private suspend fun saveMedia(url: String, context: Context, mediaType: PostType) {
+    val toastId = if (mediaType == PostType.Image) R.string.saving_image else R.string.saving_media
+    Toast.makeText(context, context.getString(toastId), Toast.LENGTH_SHORT).show()
 
     val fileName = Uri.parse(url).pathSegments.last()
     val extension = MimeTypeMap.getFileExtensionFromUrl(url)
@@ -58,23 +61,27 @@ private suspend fun saveImage(url: String, context: Context) {
         withContext(Dispatchers.IO) {
             context.getInputStream(url).use {
                 if (SDK_INT < 29) {
-                    saveBitmapP(context, it, mimeType, fileName)
+                    saveMediaP(context, it, mimeType, fileName, mediaType)
                 } else {
-                    saveBitmap(context, it, mimeType, fileName)
+                    saveMediaQ(context, it, mimeType, fileName, mediaType)
                 }
             }
         }
-        Toast.makeText(context, context.getString(R.string.saved_image), Toast.LENGTH_SHORT).show()
+        val toastId2 = if (mediaType == PostType.Image) R.string.saved_image else R.string.saved_media
+        Toast.makeText(context, context.getString(toastId2), Toast.LENGTH_SHORT).show()
     } catch (e: IOException) {
-        Log.d("image", "failed saving image", e)
-        Toast.makeText(context, R.string.failed_saving_image, Toast.LENGTH_SHORT).show()
+        Log.d("saveMedia", "failed saving media", e)
+        Toast.makeText(context, R.string.failed_saving_media, Toast.LENGTH_SHORT).show()
     } catch (e: IllegalArgumentException) {
-        Log.d("image", "invalid URL", e)
-        Toast.makeText(context, R.string.failed_saving_image, Toast.LENGTH_SHORT).show()
+        Log.d("saveMedia", "invalid URL", e)
+        Toast.makeText(context, R.string.failed_saving_media, Toast.LENGTH_SHORT).show()
     }
 }
 
-fun shareImage(scope: CoroutineScope, ctx: Context, url: String) {
+/**
+ * Shares the actual file from the link
+ */
+fun shareMedia(scope: CoroutineScope, ctx: Context, url: String, mediaType: PostType) {
     try {
         val fileName = Uri.parse(url).pathSegments.last()
 
@@ -92,14 +99,31 @@ fun shareImage(scope: CoroutineScope, ctx: Context, url: String) {
         val shareIntent = Intent()
         shareIntent.setAction(Intent.ACTION_SEND)
         shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
-        shareIntent.setType("image/*")
+        when (mediaType) {
+            PostType.Image -> shareIntent.setType("image/*")
+            PostType.Video -> shareIntent.setType("video/*")
+            PostType.Link -> shareIntent.setType("text/*")
+        }
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        ctx.startActivity(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))
+        ctx.startActivitySafe(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))
     } catch (e: IOException) {
-        Log.d("share", "failed", e)
-        Toast.makeText(ctx, R.string.failed_saving_image, Toast.LENGTH_SHORT).show()
+        Log.d("shareMedia", "failed", e)
+        Toast.makeText(ctx, R.string.failed_saving_media, Toast.LENGTH_SHORT).show()
     } catch (e: Exception) {
-        Log.d("image", "invalid URL", e)
-        Toast.makeText(ctx, R.string.failed_saving_image, Toast.LENGTH_SHORT).show()
+        Log.d("shareMedia", "invalid URL", e)
+        Toast.makeText(ctx, R.string.failed_saving_media, Toast.LENGTH_SHORT).show()
     }
+}
+
+/**
+ * Just shares the link
+ */
+fun shareLink(url: String, ctx: Context) {
+    val intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, url)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(intent, ctx.getString(R.string.share))
+    ctx.startActivitySafe(shareIntent)
 }

@@ -17,6 +17,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -51,13 +52,18 @@ fun CircularIcon(
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     blur: Boolean = false,
 ) {
-    AsyncImage(
-        model = getImageRequest(
-            context = LocalContext.current,
+    val ctx = LocalContext.current
+    val imageRequest = remember {
+        getImageRequest(
+            context = ctx,
             path = icon,
             size = thumbnailSize,
             blur = blur,
-        ),
+        )
+    }
+
+    AsyncImage(
+        model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
@@ -142,13 +148,18 @@ fun PictrsThumbnailImage(
     roundBottomEndCorner: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    AsyncImage(
-        model = getImageRequest(
-            context = LocalContext.current,
+    val ctx = LocalContext.current
+    val imageRequest = remember {
+        getImageRequest(
+            context = ctx,
             path = thumbnail,
             size = THUMBNAIL_SIZE,
             blur = blur,
-        ),
+        )
+    }
+
+    AsyncImage(
+        model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.Crop,
@@ -174,13 +185,18 @@ fun PictrsUrlImage(
     blur: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    AsyncImage(
-        model = getImageRequest(
-            context = LocalContext.current,
+    val ctx = LocalContext.current
+    val imageRequest = remember {
+        getImageRequest(
+            context = ctx,
             path = url,
             size = MAX_IMAGE_SIZE,
             blur = blur,
-        ),
+        )
+    }
+
+    AsyncImage(
+        model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.FillWidth,
@@ -200,13 +216,18 @@ fun PictrsBannerImage(
     contentDescription: String? = null,
     blur: Boolean = false,
 ) {
-    AsyncImage(
-        model = getImageRequest(
-            context = LocalContext.current,
+    val ctx = LocalContext.current
+    val imageRequest = remember {
+        getImageRequest(
+            context = ctx,
             path = url,
             size = MAX_IMAGE_SIZE,
             blur = blur,
-        ),
+        )
+    }
+
+    AsyncImage(
+        model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
@@ -27,6 +28,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isScrolledToEnd
+import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.collections.immutable.ImmutableList
@@ -62,8 +64,7 @@ fun PostListings(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
-    openImageViewer: (url: String) -> Unit,
-    openLink: (String, Boolean, Boolean) -> Unit,
+    appState: JerboaAppState,
     markAsReadOnScroll: Boolean,
     onMarkAsRead: (postView: PostView) -> Unit,
     showIfRead: Boolean,
@@ -113,8 +114,7 @@ fun PostListings(
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
                 showPostLinkPreview = showPostLinkPreviews,
-                openImageViewer = openImageViewer,
-                openLink = openLink,
+                appState = appState,
                 showIfRead = showIfRead,
                 showScores = showScores,
                 postActionbarMode = postActionbarMode,
@@ -177,8 +177,7 @@ fun PreviewPostListings() {
         usePrivateTabs = false,
         blurNSFW = true,
         showPostLinkPreviews = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         markAsReadOnScroll = false,
         onMarkAsRead = {},
         showIfRead = true,

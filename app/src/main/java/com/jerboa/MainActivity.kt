@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -51,6 +52,7 @@ import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
+import com.jerboa.ui.components.common.LinkDropDownMenu
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
@@ -78,6 +80,7 @@ import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
+import com.jerboa.util.markwon.BetterLinkMovementMethod
 
 class MainActivity : AppCompatActivity() {
     val siteViewModel by viewModels<SiteViewModel>(factoryProducer = { SiteViewModel.Factory })
@@ -146,6 +149,20 @@ class MainActivity : AppCompatActivity() {
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
+                    appState,
+                    appSettings.useCustomTabs,
+                    appSettings.usePrivateTabs,
+                    object : BetterLinkMovementMethod.OnLinkLongClickListener {
+                        override fun onLongClick(textView: TextView, url: String): Boolean {
+                            appState.showLinkPopup(url)
+                            return true
+                        }
+                    },
+                )
+
+                LinkDropDownMenu(
+                    appState.linkDropdownExpanded.value,
+                    appState::hideLinkPopup,
                     appState,
                     appSettings.useCustomTabs,
                     appSettings.usePrivateTabs,
@@ -493,7 +510,11 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.PostArgs(it)
-                        SwipeToNavigateBack(appState::navigateUp) {
+
+                        SwipeToNavigateBack(
+                            appSettings.postNavigationGestureMode,
+                            appState::navigateUp,
+                        ) {
                             PostActivity(
                                 id = Either.Left(args.id),
                                 accountViewModel = accountViewModel,

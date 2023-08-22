@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.FormatSize
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Swipe
 import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,6 +42,7 @@ import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BackConfirmationMode
 import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.PostNavigationGestureMode
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
 import com.jerboa.model.AppSettingsViewModel
@@ -71,6 +73,7 @@ fun LookAndFeelActivity(
         settings.fontSize.toFloat(),
     )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
+    val postNavigationGestureModeState = rememberIntSettingState(settings.postNavigationGestureMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
     val showTextDescriptionsInNavbar = rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
     val showCollapsedCommentContentState = rememberBooleanSettingState(settings.showCollapsedCommentContent)
@@ -123,6 +126,7 @@ fun LookAndFeelActivity(
                 markAsReadOnScroll = markAsReadOnScroll.value,
                 postActionbarMode = postActionbarMode.value,
                 autoPlayGifs = autoPlayGifs.value,
+                postNavigationGestureMode = postNavigationGestureModeState.value,
             ),
         )
     }
@@ -224,6 +228,23 @@ fun LookAndFeelActivity(
                     },
                     onItemSelected = { i, _ ->
                         postViewModeState.value = i
+                        updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    state = postNavigationGestureModeState,
+                    items = PostNavigationGestureMode.entries.map { stringResource(it.mode) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Swipe,
+                            contentDescription = null,
+                        )
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_post_navigation_gesture_mode))
+                    },
+                    onItemSelected = { i, _ ->
+                        postNavigationGestureModeState.value = i
                         updateAppSettings()
                     },
                 )
