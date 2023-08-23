@@ -108,11 +108,11 @@ fun HomeActivity(
     val snackbarHostState = remember(account) { SnackbarHostState() }
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        if (homeViewModel.initialized) homeViewModel.updatePost(pv)
+        homeViewModel.updatePost(pv)
     }
 
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
-        if (homeViewModel.initialized) homeViewModel.updatePost(pv)
+        homeViewModel.updatePost(pv)
     }
 
     LaunchedEffect(account) {
