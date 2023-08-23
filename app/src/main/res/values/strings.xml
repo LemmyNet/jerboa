@@ -174,6 +174,9 @@
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Show content for collapsed comments</string>
     <string name="look_and_feel_font_size">Font size: %1$s</string>
     <string name="look_and_feel_look_and_feel">Look and feel</string>
+    <string name="look_and_feel_post_navigation_gesture_mode">Post navigation gestures</string>
+    <string name="look_and_feel_post_navigation_gesture_mode_disabled">Disabled</string>
+    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">Swipe left to navigate back</string>
     <string name="look_and_feel_post_view">Post View</string>
     <string name="look_and_feel_post_view_card">Card</string>
     <string name="look_and_feel_post_view_list">List</string>
@@ -393,6 +396,10 @@
     <string name="post_actionbar_mode_short_right">Short righthand post actionbar</string>
     <string name="post_actionbar">Post actionbar mode</string>
     <string name="settings_autoplaygifs">Auto play GIFs</string>
+    <string name="community_unblock_community">Unblock Community</string>
+    <string name="blocked_community_toast">%1$s is blocked</string>
+    <string name="unblocked_community_toast">%1$s is unblocked</string>
+    <string name="community_block_toast_failure">Failed to (un)block this community</string>
     <string name="saving_media">Saving media...</string>
     <string name="saved_media">Saved media</string>
     <string name="share_image">Share image</string>

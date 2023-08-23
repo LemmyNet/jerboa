@@ -1200,13 +1200,23 @@ fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>,
         is ApiState.Success -> {
             Toast.makeText(
                 ctx,
-                "${blockCommunityRes.data.community_view.community.name} Blocked",
+                ctx.getString(
+                    if (blockCommunityRes.data.blocked) {
+                        R.string.blocked_community_toast
+                    } else R.string.unblocked_community_toast,
+                    blockCommunityRes.data.community_view.community.name,
+                ),
                 Toast.LENGTH_SHORT,
-            )
-                .show()
+            ).show()
         }
 
-        else -> {}
+        else -> {
+            Toast.makeText(
+                ctx,
+                ctx.getText(R.string.community_block_toast_failure),
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
     }
 }
 

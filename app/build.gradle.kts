@@ -12,6 +12,7 @@ plugins {
 apply(from = "update_instances.gradle.kts")
 
 android {
+    buildToolsVersion = "34.0.0-rc3"
     compileSdk = 34
 
     defaultConfig {
@@ -19,8 +20,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 34
-        versionCode = 44
-        versionName = "0.0.44"
+        versionCode = 45
+        versionName = "0.0.45"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
