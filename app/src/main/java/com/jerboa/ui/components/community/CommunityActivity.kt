@@ -241,6 +241,7 @@ fun CommunityActivity(
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                             isBlocked = communityRes.data.community_view.blocked,
+                            siteVersion = siteViewModel.siteVersion(),
                         )
                     }
                     else -> {}

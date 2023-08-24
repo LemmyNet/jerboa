@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
+import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
@@ -147,6 +148,13 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.my_user?.local_user_view?.local_user?.show_scores ?: true
             else -> true
+        }
+    }
+
+    fun siteVersion(): String {
+        return when (val res = siteRes) {
+            is ApiState.Success -> res.data.version
+            else -> MINIMUM_API_VERSION
         }
     }
 
