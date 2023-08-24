@@ -33,7 +33,6 @@ import com.jerboa.R
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.datatypes.types.PersonView
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.LargerCircularIcon
@@ -155,6 +154,7 @@ fun PersonProfileHeader(
     scrollBehavior: TopAppBarScrollBehavior,
     onBack: (() -> Unit)? = null,
     isLoggedIn: () -> Boolean,
+    siteVersion: String,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -172,6 +172,7 @@ fun PersonProfileHeader(
                 showSortOptions = false
                 showTopOptions = !showTopOptions
             },
+            siteVersion = siteVersion,
         )
     }
 
@@ -183,6 +184,7 @@ fun PersonProfileHeader(
                 showTopOptions = false
                 onClickSortType(it)
             },
+            siteVersion = siteVersion,
         )
     }
 
@@ -263,7 +265,7 @@ fun PersonProfileHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeShortName(LocalContext.current, selectedSortType),
+            text = LocalContext.current.getString(selectedSortType.shortForm),
             style = MaterialTheme.typography.titleMedium,
         )
     }

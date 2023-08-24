@@ -327,4 +327,5 @@
     <string name="dialogs_top_nine_month">Κορυφαία Εννέα Μηνών</string>
     <string name="post_listing_view_source">Προβολή πηγής</string>
     <string name="post_listing_view_original">Προβολή πρωτότυπου</string>
+    <string name="sorttype_controversial">Αμφιλεγόμενα</string>
 </resources>
