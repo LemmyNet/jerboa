@@ -23,7 +23,6 @@ import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.alorma.compose.settings.ui.SettingsListDropdown
-import com.jerboa.MAP_SORT_TYPE_SHORT_FORM
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
@@ -123,7 +122,9 @@ fun SettingsForm(
     }
     var avatar by rememberSaveable { mutableStateOf(luv?.person?.avatar.orEmpty()) }
     var banner by rememberSaveable { mutableStateOf(luv?.person?.banner.orEmpty()) }
-    val defaultSortType = rememberIntSettingState(luv?.local_user?.default_sort_type?.ordinal ?: 0)
+    val supportedSortTypes = remember { SortType.getSupportedSortTypes(siteViewModel.siteVersion()) }
+    val defaultSortTypeInitial = luv?.local_user?.default_sort_type ?: SortType.Active
+    val defaultSortType = rememberIntSettingState(supportedSortTypes.indexOf(defaultSortTypeInitial))
     val defaultListingType =
         rememberIntSettingState(luv?.local_user?.default_listing_type?.ordinal ?: 0)
     val showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
@@ -138,10 +139,7 @@ fun SettingsForm(
         rememberBooleanSettingState(luv?.local_user?.send_notifications_to_email ?: false)
     val curr2FAEnabled = luv?.local_user?.totp_2fa_url != null
     val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
-
-    val sortTypeNames = remember {
-        MAP_SORT_TYPE_SHORT_FORM.values.map { ctx.getString(it) }
-    }
+    val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.shortForm) } }
     val form = SaveUserSettings(
         display_name = displayName,
         bio = bio.text,
@@ -152,7 +150,7 @@ fun SettingsForm(
         matrix_user_id = matrixUserId,
         interface_language = interfaceLang,
         bot_account = botAccount.value,
-        default_sort_type = SortType.entries[defaultSortType.value],
+        default_sort_type = supportedSortTypes[defaultSortType.value],
         send_notifications_to_email = sendNotificationsToEmail.value,
         show_avatars = showAvatars.value,
         show_bot_accounts = showBotAccount.value,

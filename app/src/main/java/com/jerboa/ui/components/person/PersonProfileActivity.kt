@@ -201,6 +201,7 @@ fun PersonProfileActivity(
                         openDrawer = ::openDrawer,
                         onBack = onBack,
                         isLoggedIn = { false },
+                        siteVersion = siteViewModel.siteVersion(),
                     )
                 }
                 is ApiState.Holder -> {
@@ -265,6 +266,7 @@ fun PersonProfileActivity(
                         openDrawer = ::openDrawer,
                         onBack = onBack,
                         isLoggedIn = { !account.isAnon() },
+                        siteVersion = siteViewModel.siteVersion(),
                     )
                 }
                 else -> {}

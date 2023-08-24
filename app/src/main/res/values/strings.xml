@@ -301,6 +301,7 @@
     <string name="sorttype_new">New</string>
     <string name="sorttype_newcomments">NewComments</string>
     <string name="sorttype_old">Old</string>
+    <string name="sorttype_controversial">Controversial</string>
     <string name="sorttype_topall">TopAll</string>
     <string name="sorttype_topday">TopDay</string>
     <string name="sorttype_topmonth">TopMonth</string>

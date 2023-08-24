@@ -38,11 +38,11 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
 import com.jerboa.R
+import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.getLocalizedListingTypeName
-import com.jerboa.getLocalizedSortingTypeShortName
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PostViewModeDialog
@@ -63,7 +63,7 @@ fun HomeHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeShortName(ctx, selectedSortType),
+            text = ctx.getString(selectedSortType.shortForm),
             style = MaterialTheme.typography.titleSmall,
         )
     }
@@ -82,6 +82,7 @@ fun HomeHeader(
     selectedPostViewMode: PostViewMode,
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    siteVersion: String,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
@@ -101,6 +102,7 @@ fun HomeHeader(
                 showSortOptions = false
                 showTopOptions = !showTopOptions
             },
+            siteVersion = siteVersion,
         )
     }
 
@@ -112,6 +114,7 @@ fun HomeHeader(
                 showTopOptions = false
                 onClickSortType(it)
             },
+            siteVersion = siteVersion,
         )
     }
 
@@ -211,6 +214,7 @@ fun HomeHeaderPreview() {
         selectedListingType = ListingType.All,
         selectedPostViewMode = PostViewMode.Card,
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+        siteVersion = MINIMUM_API_VERSION,
     )
 }
 
