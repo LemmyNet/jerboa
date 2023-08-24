@@ -137,7 +137,7 @@ fun CommunityHeader(
     onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     siteVersion: String,
-	isBlocked: Boolean,
+    isBlocked: Boolean,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
