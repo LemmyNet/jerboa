@@ -77,6 +77,7 @@
     <string name="comment_node_report_comment">Report Comment</string>
     <string name="comment_node_restore">Restore</string>
     <string name="comment_node_view_context">View Context</string>
+    <string name="comment_node_view_original">View Original</string>
     <string name="comment_node_view_post">View Post</string>
     <string name="comment_node_view_source">View Source</string>
     <string name="comment_reply_back">Back</string>
@@ -173,6 +174,9 @@
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Show content for collapsed comments</string>
     <string name="look_and_feel_font_size">Font size: %1$s</string>
     <string name="look_and_feel_look_and_feel">Look and feel</string>
+    <string name="look_and_feel_post_navigation_gesture_mode">Post navigation gestures</string>
+    <string name="look_and_feel_post_navigation_gesture_mode_disabled">Disabled</string>
+    <string name="look_and_feel_post_navigation_gesture_mode_swipe_left">Swipe left to navigate back</string>
     <string name="look_and_feel_post_view">Post View</string>
     <string name="look_and_feel_post_view_card">Card</string>
     <string name="look_and_feel_post_view_list">List</string>
@@ -352,6 +356,7 @@
     <string name="exit">Exit</string>
     <string name="back_dialog_title">Are you sure you want to exit?</string>
     <string name="failed_saving_image">Failed to save image!</string>
+    <string name="failed_saving_media">Failed to save media!</string>
     <string name="home_switch_anon">Switch to anonymous</string>
     <string name="login_already_logged_in">You are already logged in with this account</string>
     <string name="mark_as_read_on_scroll">Mark as read on scroll</string>
@@ -387,4 +392,23 @@
     <string name="share">Share</string>
     <string name="settings_enable_2fa">Enable 2FA</string>
     <string name="settings_2fa_link">Launch 2FA link</string>
+    <string name="post_actionbar_mode_long">Long post actionbar</string>
+    <string name="post_actionbar_mode_short_left">Short lefthand post actionbar</string>
+    <string name="post_actionbar_mode_short_right">Short righthand post actionbar</string>
+    <string name="post_actionbar">Post actionbar mode</string>
+    <string name="settings_autoplaygifs">Auto play GIFs</string>
+    <string name="community_unblock_community">Unblock Community</string>
+    <string name="blocked_community_toast">%1$s is blocked</string>
+    <string name="unblocked_community_toast">%1$s is unblocked</string>
+    <string name="community_block_toast_failure">Failed to (un)block this community</string>
+    <string name="saving_media">Saving media...</string>
+    <string name="saved_media">Saved media</string>
+    <string name="share_image">Share image</string>
+    <string name="save_image">Save image</string>
+    <string name="share_video">Share video</string>
+    <string name="save_video">Save video</string>
+    <string name="save">Save</string>
+    <string name="open_link">Open link</string>
+    <string name="open_link_external">Open link in external</string>
+    <string name="no_activity_found">No activity (app) found that can open this link</string>
 </resources>

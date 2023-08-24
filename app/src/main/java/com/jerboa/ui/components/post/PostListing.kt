@@ -1,7 +1,9 @@
 package com.jerboa.ui.components.post
 
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.CommentsDisabled
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
@@ -36,7 +38,6 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material.icons.outlined.Textsms
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
@@ -61,11 +62,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jerboa.InstantScores
+import com.jerboa.JerboaAppState
 import com.jerboa.PostType
 import com.jerboa.PostViewMode
 import com.jerboa.R
@@ -84,11 +87,16 @@ import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.PostActionbarMode
 import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
 import com.jerboa.nsfwCheck
+import com.jerboa.rememberJerboaAppState
+import com.jerboa.siFormat
+import com.jerboa.toEnum
 import com.jerboa.ui.components.common.ActionBarButton
+import com.jerboa.ui.components.common.ActionBarButtonAndBadge
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
@@ -282,8 +290,7 @@ fun PostTitleBlock(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
     val imagePost = postView.post.url?.let { getPostType(it) == PostType.Image } ?: false
@@ -292,7 +299,7 @@ fun PostTitleBlock(
         PostTitleAndImageLink(
             postView = postView,
             blurNSFW = blurNSFW,
-            openImageViewer = openImageViewer,
+            appState = appState,
             showIfRead = showIfRead,
         )
     } else {
@@ -302,8 +309,7 @@ fun PostTitleBlock(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openLink = openLink,
-            openImageViewer = openImageViewer,
+            appState = appState,
             showIfRead = showIfRead,
         )
     }
@@ -334,11 +340,12 @@ fun PostName(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
     blurNSFW: Boolean,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
     // This was tested, we know it exists
@@ -358,12 +365,14 @@ fun PostTitleAndImageLink(
         )
     }
 
-    val postLinkPicMod = Modifier
-        .clickable { openImageViewer(url) }
     PictrsUrlImage(
         url = url,
         blur = blurNSFW && nsfwCheck(postView),
-        modifier = postLinkPicMod,
+        modifier = Modifier
+            .combinedClickable(
+                onClick = { appState.openImageViewer(url) },
+                onLongClick = { appState.showLinkPopup(url) },
+            ),
     )
 }
 
@@ -374,8 +383,7 @@ fun PostTitleAndThumbnail(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
     Column(
@@ -408,8 +416,7 @@ fun PostTitleAndThumbnail(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-                openLink = openLink,
-                openImageViewer = openImageViewer,
+                appState = appState,
             )
         }
     }
@@ -426,8 +433,7 @@ fun PostBody(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreview: Boolean,
-    openImageViewer: (url: String) -> Unit,
-    openLink: (String, Boolean, Boolean) -> Unit,
+    appState: JerboaAppState,
     clickBody: () -> Unit = {},
     showIfRead: Boolean,
 ) {
@@ -442,8 +448,7 @@ fun PostBody(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openImageViewer = openImageViewer,
-            openLink = openLink,
+            appState = appState,
             showIfRead = showIfRead,
         )
 
@@ -473,6 +478,7 @@ fun PostBody(
                                 SelectionContainer {
                                     Text(
                                         text = text,
+                                        fontFamily = FontFamily.Monospace,
                                     )
                                 }
                             } else {
@@ -513,8 +519,7 @@ fun PreviewStoryTitleAndMetadata() {
         usePrivateTabs = false,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
     )
 }
@@ -532,8 +537,7 @@ fun PreviewSourcePost() {
         usePrivateTabs = false,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
     )
 }
@@ -561,6 +565,7 @@ fun PostFooterLine(
     enableDownVotes: Boolean,
     viewSource: Boolean,
     showScores: Boolean,
+    postActionbarMode: Int,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
@@ -609,100 +614,128 @@ fun PostFooterLine(
         )
     }
 
+    val postActionbar = postActionbarMode.toEnum<PostActionbarMode>()
+
+    val horizontalArrangement = when (postActionbar) {
+        PostActionbarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
+        PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(LARGE_PADDING)
+        PostActionbarMode.RightHandShort -> Arrangement.spacedBy(LARGE_PADDING)
+    }
+
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = horizontalArrangement,
+        verticalAlignment = Alignment.Bottom,
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = SMALL_PADDING),
     ) {
-        CommentCount(
-            comments = postView.counts.comments,
-            unreadCount = postView.unread_comments,
+        // Right handside shows the comments on the left side
+        if (postActionbar == PostActionbarMode.RightHandShort) {
+            CommentNewCountRework(
+                comments = postView.counts.comments,
+                unreadCount = postView.unread_comments,
+                account = account,
+                modifier = Modifier.weight(1F, true),
+            )
+        }
+
+        VoteGeneric(
+            myVote = instantScores.myVote,
+            votes = instantScores.upvotes,
+            type = VoteType.Upvote,
+            showNumber = (instantScores.downvotes != 0) && showScores,
+            onVoteClick = onUpvoteClick,
             account = account,
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
-        ) {
+        if (enableDownVotes) {
             VoteGeneric(
                 myVote = instantScores.myVote,
-                votes = instantScores.upvotes,
-                type = VoteType.Upvote,
-                showNumber = (instantScores.downvotes != 0) && showScores,
-                onVoteClick = onUpvoteClick,
+                votes = instantScores.downvotes,
+                showNumber = showScores,
+                type = VoteType.Downvote,
+                onVoteClick = onDownvoteClick,
                 account = account,
             )
-            if (enableDownVotes) {
-                VoteGeneric(
-                    myVote = instantScores.myVote,
-                    votes = instantScores.downvotes,
-                    showNumber = showScores,
-                    type = VoteType.Downvote,
-                    onVoteClick = onDownvoteClick,
-                    account = account,
-                )
-            }
+        }
+
+        if (postActionbar == PostActionbarMode.Long) {
+            CommentNewCountRework(
+                comments = postView.counts.comments,
+                unreadCount = postView.unread_comments,
+                account = account,
+                modifier = Modifier.weight(1F, true),
+            )
+        }
+
+        if (showReply) {
             ActionBarButton(
-                icon = if (postView.saved) {
-                    Icons.Filled.Bookmark
-                } else {
-                    Icons.Outlined.BookmarkBorder
-                },
-                contentDescription = if (postView.saved) {
-                    stringResource(R.string.removeBookmark)
-                } else {
-                    stringResource(R.string.addBookmark)
-                },
-                onClick = { onSaveClick(postView) },
-                contentColor = if (postView.saved) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground.muted
-                },
+                icon = Icons.Outlined.Comment,
+                contentDescription = stringResource(R.string.postListing_reply),
+                onClick = { onReplyClick(postView) },
                 account = account,
             )
-            if (showReply) {
-                ActionBarButton(
-                    icon = Icons.Outlined.Textsms,
-                    contentDescription = stringResource(R.string.postListing_reply),
-                    onClick = { onReplyClick(postView) },
-                    account = account,
-                )
-            }
-            ActionBarButton(
-                icon = Icons.Outlined.MoreVert,
-                contentDescription = stringResource(R.string.moreOptions),
+        }
+        ActionBarButton(
+            icon = if (postView.saved) {
+                Icons.Filled.Bookmark
+            } else {
+                Icons.Outlined.BookmarkBorder
+            },
+            contentDescription = if (postView.saved) {
+                stringResource(R.string.removeBookmark)
+            } else {
+                stringResource(R.string.addBookmark)
+            },
+            onClick = { onSaveClick(postView) },
+            contentColor = if (postView.saved) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onBackground.muted
+            },
+            account = account,
+        )
+        ActionBarButton(
+            icon = Icons.Outlined.MoreVert,
+            contentDescription = stringResource(R.string.moreOptions),
+            account = account,
+            onClick = { showMoreOptions = !showMoreOptions },
+            requiresAccount = false,
+            modifier = if (postActionbar == PostActionbarMode.LeftHandShort) Modifier.weight(1F, true) else Modifier,
+        )
+
+        if (postActionbar == PostActionbarMode.LeftHandShort) {
+            CommentNewCountRework(
+                comments = postView.counts.comments,
+                unreadCount = postView.unread_comments,
                 account = account,
-                onClick = { showMoreOptions = !showMoreOptions },
-                requiresAccount = false,
             )
         }
     }
 }
 
 @Composable
-fun CommentCount(
+fun CommentNewCountRework(
     comments: Int,
     unreadCount: Int,
     account: Account,
+    modifier: Modifier = Modifier,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        ActionBarButton(
-            icon = Icons.Outlined.ChatBubbleOutline,
-            contentDescription = null,
-            text = stringResource(R.string.post_listing_comments, comments),
-            noClick = true,
-            account = account,
-            onClick = {}, // This is handled by the whole button click
-        )
-        CommentNewCount(
-            comments = comments,
-            unreadCount = unreadCount,
-            spacing = SMALL_PADDING,
-        )
+    val unread = if (unreadCount == 0 || comments == unreadCount) {
+        null
+    } else {
+        (if (unreadCount > 0) "+" else "") + siFormat(unreadCount)
     }
+
+    ActionBarButtonAndBadge(
+        icon = Icons.Outlined.Forum,
+        iconBadgeCount = unread,
+        contentDescription = null,
+        text = siFormat(comments),
+        noClick = true,
+        account = account,
+        onClick = {},
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -731,7 +764,7 @@ fun CommentNewCount(
 @Preview
 @Composable
 fun CommentCountPreview() {
-    CommentCount(42, 0, account = AnonAccount)
+    CommentNewCountRework(42, 0, account = AnonAccount)
 }
 
 @Preview
@@ -765,6 +798,7 @@ fun PostFooterLinePreview() {
         enableDownVotes = true,
         viewSource = false,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -797,10 +831,10 @@ fun PreviewPostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -833,10 +867,10 @@ fun PreviewLinkPostListing() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -869,10 +903,10 @@ fun PreviewImagePostListingCard() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -905,10 +939,10 @@ fun PreviewImagePostListingSmallCard() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -941,10 +975,10 @@ fun PreviewLinkNoThumbnailPostListing() {
         showAvatar = true,
         blurNSFW = true,
         showPostLinkPreview = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         showScores = true,
+        postActionbarMode = PostActionbarMode.Long.ordinal,
     )
 }
 
@@ -976,11 +1010,11 @@ fun PostListing(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showPostLinkPreview: Boolean,
     showIfRead: Boolean,
     showScores: Boolean,
+    postActionbarMode: Int,
 ) {
     // This stores vote data
     val instantScores = remember {
@@ -1040,11 +1074,11 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openLink = openLink,
-            openImageViewer = openImageViewer,
+            appState = appState,
             showPostLinkPreview = showPostLinkPreview,
             showIfRead = showIfRead,
             showScores = showScores,
+            postActionbarMode = postActionbarMode,
         )
 
         PostViewMode.SmallCard -> PostListingCard(
@@ -1090,10 +1124,10 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openLink = openLink,
+            appState = appState,
             showPostLinkPreview = showPostLinkPreview,
-            openImageViewer = openImageViewer,
             showScores = showScores,
+            postActionbarMode = postActionbarMode,
         )
 
         PostViewMode.List -> PostListingList(
@@ -1122,8 +1156,7 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            openImageViewer = openImageViewer,
-            openLink = openLink,
+            appState = appState,
             showIfRead = showIfRead,
             enableDownVotes = enableDownVotes,
             showScores = showScores,
@@ -1196,8 +1229,7 @@ fun PostListingList(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean,
     enableDownVotes: Boolean,
     showScores: Boolean,
@@ -1306,38 +1338,43 @@ fun PostListingList(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-                openLink = openLink,
-                openImageViewer = openImageViewer,
+                appState = appState,
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ThumbnailTile(
     postView: PostView,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
 ) {
     postView.post.url?.also { url ->
         val postType = getPostType(url)
 
         val postLinkPicMod = Modifier
             .size(POST_LINK_PIC_SIZE)
-            .clickable {
-                if (postType != PostType.Link) {
-                    openImageViewer(url)
-                } else {
-                    openLink(
-                        url,
-                        useCustomTabs,
-                        usePrivateTabs,
-                    )
-                }
-            }
+            .combinedClickable(
+                onClick = {
+                    if (postType != PostType.Link) {
+                        appState.openImageViewer(url)
+                    } else {
+                        appState.openLink(
+                            url,
+                            useCustomTabs,
+                            usePrivateTabs,
+                        )
+                    }
+                },
+                onLongClick = {
+                    appState.showLinkPopup(url)
+                },
+
+            )
 
         Box {
             postView.post.thumbnail_url?.also { thumbnail ->
@@ -1408,8 +1445,7 @@ fun PostListingListPreview() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
         showScores = true,
@@ -1440,8 +1476,7 @@ fun PostListingListWithThumbPreview() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
-        openImageViewer = {},
-        openLink = { _: String, _: Boolean, _: Boolean -> },
+        appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
         showScores = true,
@@ -1479,10 +1514,10 @@ fun PostListingCard(
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
     showPostLinkPreview: Boolean,
-    openLink: (String, Boolean, Boolean) -> Unit,
-    openImageViewer: (url: String) -> Unit,
+    appState: JerboaAppState,
     showIfRead: Boolean = false,
     showScores: Boolean,
+    postActionbarMode: Int,
 ) {
     Column(
         modifier = Modifier
@@ -1517,9 +1552,8 @@ fun PostListingCard(
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
             showPostLinkPreview = showPostLinkPreview,
-            openImageViewer = openImageViewer,
+            appState = appState,
             clickBody = { onPostClick(postView) },
-            openLink = openLink,
             showIfRead = showIfRead,
         )
 
@@ -1546,6 +1580,7 @@ fun PostListingCard(
             enableDownVotes = enableDownVotes,
             viewSource = viewSource,
             showScores = showScores,
+            postActionbarMode = postActionbarMode,
         )
     }
 }
@@ -1585,7 +1620,6 @@ fun MetadataCard(post: Post) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostOptionsDialog(
     postView: PostView,

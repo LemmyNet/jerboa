@@ -230,7 +230,7 @@ val samplePostView = PostView(
     read = false,
     creator_blocked = false,
     my_vote = null,
-    unread_comments = 0,
+    unread_comments = 2,
 )
 
 val sampleLinkPostView = PostView(

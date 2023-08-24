@@ -10,13 +10,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Colorize
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.FormatSize
+import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Swipe
 import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,11 +40,14 @@ import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.PostNavigationGestureMode
 import com.jerboa.getLangPreferenceDropdownEntries
 import com.jerboa.matchLocale
 import com.jerboa.model.AppSettingsViewModel
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
-import com.jerboa.util.BackConfirmationMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +73,7 @@ fun LookAndFeelActivity(
         settings.fontSize.toFloat(),
     )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
+    val postNavigationGestureModeState = rememberIntSettingState(settings.postNavigationGestureMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
     val showTextDescriptionsInNavbar = rememberBooleanSettingState(settings.showTextDescriptionsInNavbar)
     val showCollapsedCommentContentState = rememberBooleanSettingState(settings.showCollapsedCommentContent)
@@ -87,12 +92,14 @@ fun LookAndFeelActivity(
     val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
     val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
     val showPostLinkPreviewMode = rememberBooleanSettingState(settings.showPostLinkPreviews)
+    val postActionbarMode = rememberIntSettingState(settings.postActionbarMode)
 
     val snackbarHostState = remember { SnackbarHostState() }
 
     val scrollState = rememberScrollState()
 
     val markAsReadOnScroll = rememberBooleanSettingState(settings.markAsReadOnScroll)
+    val autoPlayGifs = rememberBooleanSettingState(settings.autoPlayGifs)
 
     fun updateAppSettings() {
         appSettingsViewModel.update(
@@ -117,12 +124,15 @@ fun LookAndFeelActivity(
                 backConfirmationMode = backConfirmationMode.value,
                 showPostLinkPreviews = showPostLinkPreviewMode.value,
                 markAsReadOnScroll = markAsReadOnScroll.value,
+                postActionbarMode = postActionbarMode.value,
+                autoPlayGifs = autoPlayGifs.value,
+                postNavigationGestureMode = postNavigationGestureModeState.value,
             ),
         )
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             SimpleTopAppBar(text = stringResource(R.string.look_and_feel_look_and_feel), onClickBack = onBack)
         },
@@ -172,7 +182,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = themeState,
-                    items = ThemeMode.values().map { stringResource(it.mode) },
+                    items = ThemeMode.entries.map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Palette,
@@ -189,7 +199,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = themeColorState,
-                    items = ThemeColor.values().map { stringResource(it.mode) },
+                    items = ThemeColor.entries.map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.Colorize,
@@ -206,7 +216,7 @@ fun LookAndFeelActivity(
                 )
                 SettingsList(
                     state = postViewModeState,
-                    items = PostViewMode.values().map { stringResource(it.mode) },
+                    items = PostViewMode.entries.map { stringResource(it.mode) },
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.ViewList,
@@ -219,6 +229,57 @@ fun LookAndFeelActivity(
                     onItemSelected = { i, _ ->
                         postViewModeState.value = i
                         updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    state = postNavigationGestureModeState,
+                    items = PostNavigationGestureMode.entries.map { stringResource(it.mode) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Swipe,
+                            contentDescription = null,
+                        )
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_post_navigation_gesture_mode))
+                    },
+                    onItemSelected = { i, _ ->
+                        postNavigationGestureModeState.value = i
+                        updateAppSettings()
+                    },
+                )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.confirm_exit))
+                    },
+                    state = backConfirmationMode,
+                    items = BackConfirmationMode.entries.map { stringResource(it.resId) },
+                    onItemSelected = { i, _ ->
+                        backConfirmationMode.value = i
+                        updateAppSettings()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.ExitToApp,
+                            contentDescription = null,
+                        )
+                    },
+                )
+                SettingsList(
+                    title = {
+                        Text(text = stringResource(R.string.post_actionbar))
+                    },
+                    state = postActionbarMode,
+                    items = PostActionbarMode.entries.map { stringResource(it.resId) },
+                    onItemSelected = { i, _ ->
+                        postActionbarMode.value = i
+                        updateAppSettings()
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Forum,
+                            contentDescription = null,
+                        )
                     },
                 )
                 SettingsCheckbox(
@@ -313,22 +374,12 @@ fun LookAndFeelActivity(
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
-                SettingsList(
+                SettingsCheckbox(
+                    state = autoPlayGifs,
                     title = {
-                        Text(text = stringResource(R.string.confirm_exit))
+                        Text(stringResource(id = R.string.settings_autoplaygifs))
                     },
-                    state = backConfirmationMode,
-                    items = BackConfirmationMode.values().map { stringResource(it.resId) },
-                    onItemSelected = { i, _ ->
-                        backConfirmationMode.value = i
-                        updateAppSettings()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.ExitToApp,
-                            contentDescription = null,
-                        )
-                    },
+                    onCheckedChange = { updateAppSettings() },
                 )
             }
         },

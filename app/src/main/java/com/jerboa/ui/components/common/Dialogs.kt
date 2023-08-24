@@ -167,7 +167,7 @@ fun PostViewModeDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column {
-                PostViewMode.values().map {
+                PostViewMode.entries.map {
                     IconAndTextDrawerItem(
                         text = stringResource(it.mode),
                         onClick = { onClickPostViewMode(it) },

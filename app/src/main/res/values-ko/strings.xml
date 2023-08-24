@@ -75,6 +75,7 @@
     <string name="comment_node_report_comment">댓글 신고</string>
     <string name="comment_node_restore">복구</string>
     <string name="comment_node_view_context">문맥 보기</string>
+    <string name="comment_node_view_original">원본 보기</string>
     <string name="comment_node_view_post">게시물 보기</string>
     <string name="comment_node_view_source">소스 보기</string>
     <string name="comment_reply_back">뒤로</string>

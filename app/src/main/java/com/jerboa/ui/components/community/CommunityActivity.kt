@@ -19,6 +19,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -48,9 +49,11 @@ import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
+import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.shareLink
 import com.jerboa.hostName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -59,7 +62,7 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
-import com.jerboa.shareLink
+import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.JerboaSnackbarHost
@@ -72,7 +75,6 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -90,6 +92,7 @@ fun CommunityActivity(
     blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
+    postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to community activity")
     val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
@@ -110,21 +113,23 @@ fun CommunityActivity(
         if (communityViewModel.initialized) communityViewModel.updatePost(pv)
     }
 
+    LaunchedEffect(account) {
+        if (!account.isAnon()) {
+            communityViewModel.updateSortType(account.defaultSortType.toEnumSafe())
+        }
+    }
+
     InitializeRoute(communityViewModel) {
         val communityId = communityArg.fold({ it }, { null })
         val communityName = communityArg.fold({ null }, { it })
 
         communityViewModel.resetPage()
 
-        if (account.isAnon()) {
-            communityViewModel.updateSortType(SortType.values().getOrElse(account.defaultSortType) { siteViewModel.sortType })
-        }
-
         communityViewModel.getCommunity(
             form = GetCommunity(
                 id = communityId,
                 name = communityName,
-                auth = account.jwt.ifEmpty { null },
+                auth = account.getJWT(),
             ),
         )
         communityViewModel.getPosts(
@@ -134,7 +139,7 @@ fun CommunityActivity(
                 community_name = communityName,
                 page = communityViewModel.page,
                 sort = communityViewModel.sortType,
-                auth = account.jwt.ifEmpty { null },
+                auth = account.getJWT(),
             ),
         )
     }
@@ -151,7 +156,7 @@ fun CommunityActivity(
                             community_id = communityRes.data.community_view.community.id,
                             page = communityViewModel.page,
                             sort = communityViewModel.sortType,
-                            auth = account.jwt.ifEmpty { null },
+                            auth = account.getJWT(),
                         ),
                         ApiState.Refreshing,
                     )
@@ -193,9 +198,12 @@ fun CommunityActivity(
                                         community_id = communityId,
                                         page = communityViewModel.page,
                                         sort = communityViewModel.sortType,
-                                        auth = account.jwt.ifEmpty { null },
+                                        auth = account.getJWT(),
                                     ),
                                 )
+                            },
+                            onClickPostViewMode = {
+                                appSettingsViewModel.updatedPostViewMode(it.ordinal)
                             },
                             onClickSortType = { sortType ->
                                 communityViewModel.updateSortType(sortType)
@@ -206,7 +214,7 @@ fun CommunityActivity(
                                         community_id = communityId,
                                         page = communityViewModel.page,
                                         sort = communityViewModel.sortType,
-                                        auth = account.jwt.ifEmpty { null },
+                                        auth = account.getJWT(),
                                     ),
                                 )
                             },
@@ -231,6 +239,8 @@ fun CommunityActivity(
                             },
                             onClickCommunityInfo = appState::toCommunitySideBar,
                             onClickBack = appState::navigateUp,
+                            selectedPostViewMode = getPostViewMode(appSettingsViewModel),
+                            isBlocked = communityRes.data.community_view.blocked,
                             siteVersion = siteViewModel.siteVersion(),
                         )
                     }
@@ -443,7 +453,7 @@ fun CommunityActivity(
                                     is ApiState.Success -> {
                                         communityViewModel.appendPosts(
                                             communityRes.data.community_view.community.id,
-                                            account.jwt.ifEmpty { null },
+                                            account.getJWT(),
                                         )
                                     }
 
@@ -462,8 +472,7 @@ fun CommunityActivity(
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW,
                             showPostLinkPreviews = showPostLinkPreviews,
-                            openImageViewer = appState::toView,
-                            openLink = appState::openLink,
+                            appState = appState,
                             markAsReadOnScroll = markAsReadOnScroll,
                             onMarkAsRead = { postView ->
                                 if (!account.isAnon() && !postView.read) {
@@ -479,6 +488,7 @@ fun CommunityActivity(
                             },
                             showIfRead = true,
                             showScores = siteViewModel.showScores(),
+                            postActionbarMode = postActionbarMode,
                         )
                     }
                     else -> {}

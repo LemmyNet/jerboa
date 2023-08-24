@@ -76,6 +76,7 @@
     <string name="comment_node_report_comment">Поскаржитися на коментар</string>
     <string name="comment_node_restore">Відновити</string>
     <string name="comment_node_view_context">Переглянути контекст</string>
+    <string name="comment_node_view_original">Переглянути оригінал</string>
     <string name="comment_node_view_post">Переглянути допис</string>
     <string name="comment_node_view_source">Переглянути джерельний код</string>
     <string name="comment_reply_back">Повернутися</string>

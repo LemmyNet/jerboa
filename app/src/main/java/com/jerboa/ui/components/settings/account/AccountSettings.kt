@@ -155,7 +155,7 @@ fun SettingsForm(
         show_avatars = showAvatars.value,
         show_bot_accounts = showBotAccount.value,
         show_nsfw = showNsfw.value,
-        default_listing_type = ListingType.values()[defaultListingType.value],
+        default_listing_type = ListingType.entries[defaultListingType.value],
         show_new_post_notifs = showNewPostNotifs.value,
         show_read_posts = showReadPosts.value,
         theme = theme,

@@ -69,7 +69,10 @@ import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.shareLink
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
@@ -81,7 +84,6 @@ import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
-import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
@@ -101,7 +103,6 @@ import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -122,6 +123,7 @@ fun PersonProfileActivity(
     showPostLinkPreviews: Boolean,
     drawerState: DrawerState,
     markAsReadOnScroll: Boolean,
+    postActionbarMode: Int,
     onBack: (() -> Unit)? = null,
 ) {
     Log.d("jerboa", "got to person activity")
@@ -173,7 +175,7 @@ fun PersonProfileActivity(
                 person_id = personId,
                 username = personName,
                 sort = SortType.New,
-                auth = account.jwt.ifEmpty { null },
+                auth = account.getJWT(),
                 saved_only = savedMode,
             ),
         )
@@ -223,7 +225,7 @@ fun PersonProfileActivity(
                                     sort = personProfileViewModel.sortType,
                                     page = personProfileViewModel.page,
                                     saved_only = personProfileViewModel.savedOnly,
-                                    auth = account.jwt.ifEmpty { null },
+                                    auth = account.getJWT(),
                                 ),
                             )
                         },
@@ -291,6 +293,7 @@ fun PersonProfileActivity(
                 markAsReadOnScroll = markAsReadOnScroll,
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
+                postActionbarMode = postActionbarMode,
             )
         },
     )
@@ -324,6 +327,7 @@ fun UserTabs(
     markAsReadOnScroll: Boolean,
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
+    postActionbarMode: Int,
 ) {
     val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
     val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
@@ -335,7 +339,7 @@ fun UserTabs(
             getLocalizedStringForUserTab(ctx, UserTab.Comments),
         )
     } else {
-        UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
+        UserTab.entries.map { getLocalizedStringForUserTab(ctx, it) }
     }
     val pagerState = rememberPagerState { tabTitles.size }
 
@@ -357,7 +361,7 @@ fun UserTabs(
                             sort = personProfileViewModel.sortType,
                             page = personProfileViewModel.page,
                             saved_only = personProfileViewModel.savedOnly,
-                            auth = account.jwt.ifEmpty { null },
+                            auth = account.getJWT(),
                         ),
                         ApiState.Refreshing,
                     )
@@ -423,7 +427,7 @@ fun UserTabs(
                                     PersonProfileTopSection(
                                         personView = profileRes.data.person_view,
                                         showAvatar = showAvatar,
-                                        openImageViewer = appState::toView,
+                                        openImageViewer = appState::openImageViewer,
                                     )
                                 }
                                 val moderates = profileRes.data.moderates
@@ -613,7 +617,7 @@ fun UserTabs(
                                     isScrolledToEnd = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,
-                                            account.jwt.ifEmpty { null },
+                                            account.getJWT(),
                                         )
                                     },
                                     account = account,
@@ -625,8 +629,7 @@ fun UserTabs(
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
-                                    openImageViewer = appState::toView,
-                                    openLink = appState::openLink,
+                                    appState = appState,
                                     showPostLinkPreviews = showPostLinkPreviews,
                                     markAsReadOnScroll = markAsReadOnScroll,
                                     onMarkAsRead = {
@@ -643,6 +646,7 @@ fun UserTabs(
                                     },
                                     showIfRead = false,
                                     showScores = showScores,
+                                    postActionbarMode = postActionbarMode,
                                 )
                             }
                             else -> {}
@@ -695,7 +699,7 @@ fun UserTabs(
                                 LaunchedEffect(Unit) {
                                     personProfileViewModel.appendData(
                                         profileRes.data.person_view.person.id,
-                                        account.jwt.ifEmpty { null },
+                                        account.getJWT(),
                                     )
                                 }
                             }

@@ -1,4 +1,4 @@
-package com.jerboa.util
+package com.jerboa.feat
 
 import android.content.Context
 import android.widget.Toast

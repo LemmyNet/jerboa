@@ -296,6 +296,64 @@ val MIGRATION_22_23 = object : Migration(22, 23) {
     }
 }
 
+val MIGRATION_23_22 = object : Migration(23, 22) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE AppSettings DROP COLUMN markAsReadOnScroll",
+        )
+    }
+}
+
+val MIGRATION_23_24 = object : Migration(23, 24) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings ADD COLUMN post_actionbar_mode INTEGER NOT NULL DEFAULT 0",
+        )
+    }
+}
+
+val MIGRATION_24_23 = object : Migration(24, 23) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE AppSettings DROP COLUMN post_actionbar_mode",
+        )
+    }
+}
+
+val MIGRATION_24_25 = object : Migration(24, 25) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(UPDATE_APP_CHANGELOG_UNVIEWED)
+        database.execSQL(
+            "ALTER TABLE AppSettings ADD COLUMN auto_play_gifs INTEGER NOT NULL DEFAULT 0",
+        )
+    }
+}
+
+val MIGRATION_25_24 = object : Migration(25, 24) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE AppSettings DROP COLUMN auto_play_gifs",
+        )
+    }
+}
+
+val MIGRATION_25_26 = object : Migration(25, 26) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE AppSettings ADD COLUMN post_navigation_gesture_mode INTEGER NOT NULL DEFAULT 0",
+        )
+    }
+}
+
+val MIGRATION_26_25 = object : Migration(26, 25) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE AppSettings DROP COLUMN post_navigation_gesture_mode",
+        )
+    }
+}
+
 // Don't forget to test your migration with `./gradlew app:connectAndroidTest`
 val MIGRATIONS_LIST = arrayOf(
     MIGRATION_1_2,
@@ -321,4 +379,11 @@ val MIGRATIONS_LIST = arrayOf(
     MIGRATION_21_22,
     MIGRATION_22_21,
     MIGRATION_22_23,
+    MIGRATION_23_22,
+    MIGRATION_23_24,
+    MIGRATION_24_23,
+    MIGRATION_24_25,
+    MIGRATION_25_24,
+    MIGRATION_25_26,
+    MIGRATION_26_25,
 )

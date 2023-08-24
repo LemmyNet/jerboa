@@ -22,6 +22,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     themeColor = 0,
     viewedChangelog = 0,
     postViewMode = 0,
+    postNavigationGestureMode = 0,
     showBottomNav = true,
     showCollapsedCommentContent = false,
     showCommentActionBarByDefault = true,
@@ -36,10 +37,12 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     backConfirmationMode = 1,
     markAsReadOnScroll = false,
     showPostLinkPreviews = true,
+    postActionbarMode = 0,
+    autoPlayGifs = false,
 )
 
 @Database(
-    version = 23,
+    version = 26,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

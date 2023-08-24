@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,7 +18,6 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -30,11 +30,17 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import arrow.core.Either
+import coil.Coil
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.Community
 import com.jerboa.db.APP_SETTINGS_DEFAULT
+import com.jerboa.feat.BackConfirmation.addConfirmationDialog
+import com.jerboa.feat.BackConfirmation.addConfirmationToast
+import com.jerboa.feat.BackConfirmation.disposeConfirmation
+import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.ShowConfirmationDialog
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
 import com.jerboa.model.AccountViewModel
@@ -46,13 +52,12 @@ import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
+import com.jerboa.ui.components.common.LinkDropDownMenu
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
-import com.jerboa.ui.components.common.SpecialAccount
 import com.jerboa.ui.components.common.SwipeToNavigateBack
-import com.jerboa.ui.components.common.getSpecialCurrentAccount
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
@@ -75,14 +80,10 @@ import com.jerboa.ui.components.settings.account.AccountSettingsActivity
 import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
-import com.jerboa.util.BackConfirmation.addConfirmationDialog
-import com.jerboa.util.BackConfirmation.addConfirmationToast
-import com.jerboa.util.BackConfirmation.disposeConfirmation
-import com.jerboa.util.BackConfirmationMode
-import com.jerboa.util.ShowConfirmationDialog
+import com.jerboa.util.markwon.BetterLinkMovementMethod
 
 class MainActivity : AppCompatActivity() {
-    val siteViewModel by viewModels<SiteViewModel>()
+    val siteViewModel by viewModels<SiteViewModel>(factoryProducer = { SiteViewModel.Factory })
     val accountViewModel by viewModels<AccountViewModel>(factoryProducer = { AccountViewModelFactory.Factory })
     private val appSettingsViewModel by viewModels<AppSettingsViewModel>(factoryProducer = { AppSettingsViewModelFactory.Factory })
     private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>(factoryProducer = { AccountSettingsViewModelFactory.Factory })
@@ -105,19 +106,17 @@ class MainActivity : AppCompatActivity() {
                 null
             }
 
-            val account = getSpecialCurrentAccount(accountViewModel)
-
-            LaunchedEffect(account) {
-                if (account !== SpecialAccount) {
-                    fetchInitialData(account, siteViewModel)
-                }
-            }
-
             val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
 
             @Suppress("SENSELESS_COMPARISON")
             if (appSettings == null) {
                 triggerRebirth(ctx)
+            }
+
+            if (appSettings.autoPlayGifs) {
+                Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)
+            } else {
+                Coil.setImageLoader(ctx.applicationContext as JerboaApplication)
             }
 
             JerboaTheme(
@@ -132,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 DisposableEffect(appSettings.backConfirmationMode) {
-                    when (BackConfirmationMode.values()[appSettings.backConfirmationMode]) {
+                    when (BackConfirmationMode.entries[appSettings.backConfirmationMode]) {
                         BackConfirmationMode.Toast -> {
                             this@MainActivity.addConfirmationToast(appState.navController, ctx)
                         }
@@ -150,6 +149,20 @@ class MainActivity : AppCompatActivity() {
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
+                    appState,
+                    appSettings.useCustomTabs,
+                    appSettings.usePrivateTabs,
+                    object : BetterLinkMovementMethod.OnLinkLongClickListener {
+                        override fun onLongClick(textView: TextView, url: String): Boolean {
+                            appState.showLinkPopup(url)
+                            return true
+                        }
+                    },
+                )
+
+                LinkDropDownMenu(
+                    appState.linkDropdownExpanded.value,
+                    appState::hideLinkPopup,
                     appState,
                     appSettings.useCustomTabs,
                     appSettings.usePrivateTabs,
@@ -256,6 +269,7 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreviews = appSettings.showPostLinkPreviews,
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                                postActionbarMode = appSettings.postActionbarMode,
                             )
                         }
 
@@ -297,6 +311,7 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreviews = appSettings.showPostLinkPreviews,
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                                postActionbarMode = appSettings.postActionbarMode,
                             )
                         }
 
@@ -369,6 +384,7 @@ class MainActivity : AppCompatActivity() {
                             drawerState = drawerState,
                             onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -403,6 +419,7 @@ class MainActivity : AppCompatActivity() {
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -493,7 +510,11 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.PostArgs(it)
-                        SwipeToNavigateBack(appState::navigateUp) {
+
+                        SwipeToNavigateBack(
+                            appSettings.postNavigationGestureMode,
+                            appState::navigateUp,
+                        ) {
                             PostActivity(
                                 id = Either.Left(args.id),
                                 accountViewModel = accountViewModel,
@@ -508,6 +529,7 @@ class MainActivity : AppCompatActivity() {
                                 usePrivateTabs = appSettings.usePrivateTabs,
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
+                                postActionbarMode = appSettings.postActionbarMode,
                             )
                         }
                     }
@@ -538,6 +560,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 

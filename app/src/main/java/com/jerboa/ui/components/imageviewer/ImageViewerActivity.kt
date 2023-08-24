@@ -54,13 +54,17 @@ import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.jerboa.JerboaAppState
 import com.jerboa.JerboaApplication
+import com.jerboa.PostType
 import com.jerboa.R
+import com.jerboa.feat.shareMedia
+import com.jerboa.feat.storeMedia
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.util.downloadprogress.DownloadProgress
-import com.jerboa.util.shareImage
-import com.jerboa.util.storeImage
+import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
+import me.saket.telephoto.zoomable.rememberZoomableImageState
+import me.saket.telephoto.zoomable.rememberZoomableState
 
 const val backFadeTime = 300
 
@@ -70,7 +74,7 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
 
-    val imageGifLoader = (ctx.applicationContext as JerboaApplication).imageViewLoader
+    val imageGifLoader = (ctx.applicationContext as JerboaApplication).imageViewerLoader
     var debounce by remember {
         mutableStateOf(false)
     }
@@ -133,6 +137,9 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
             ).build()
     }
 
+    val zoomableState = rememberZoomableState(ZoomSpec(20F, preventOverOrUnderZoom = false))
+    val zoomableImageState = rememberZoomableImageState(zoomableState)
+
     Scaffold(
         topBar = {
             ViewerHeader(showTopBar, url, appState)
@@ -193,6 +200,7 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
                         model = image,
                         imageLoader = imageGifLoader,
                         contentDescription = null,
+                        state = zoomableImageState,
                         onClick = {
                             showTopBar = !showTopBar
                             systemUiController.isSystemBarsVisible = showTopBar
@@ -244,7 +252,7 @@ fun ViewerHeader(
         actions = {
             IconButton(
                 onClick = {
-                    shareImage(appState.coroutineScope, ctx, url)
+                    shareMedia(appState.coroutineScope, ctx, url, PostType.Image)
                 },
             ) {
                 Icon(
@@ -257,7 +265,7 @@ fun ViewerHeader(
             IconButton(
                 // TODO disable once it is busy
                 onClick = {
-                    storeImage(appState.coroutineScope, ctx, url)
+                    storeMedia(appState.coroutineScope, ctx, url, PostType.Image)
                 },
             ) {
                 Icon(

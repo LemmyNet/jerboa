@@ -1,3 +1,47 @@
+# Jerboa v0.0.45-alpha Release (2023-08-22)
+
+## What's Changed
+
+- Update Norwegian Nynorsk translation by @huftis in https://github.com/dessalines/jerboa/pull/1165
+- Make accounts list in drawer scrollable by @MV-GH in https://github.com/dessalines/jerboa/pull/1174
+- Add option to auto play GIFs by @MV-GH in https://github.com/dessalines/jerboa/pull/1164
+- Update deps, notable update to kotlin 1.9 by @MV-GH in https://github.com/dessalines/jerboa/pull/1173
+- Update docs requirements by @MV-GH in https://github.com/dessalines/jerboa/pull/1178
+- Fix comment click deadzones by @camporter in https://github.com/dessalines/jerboa/pull/1175
+- Refactor sort type handling, and fetching initData/Posts, fixes default sort in community by @MV-GH in https://github.com/dessalines/jerboa/pull/1166
+- Add long click link popup menu, including actions by @MV-GH in https://github.com/dessalines/jerboa/pull/1189
+- Change the default of isCurrentlyConnected by @MV-GH in https://github.com/dessalines/jerboa/pull/1181
+- Add setting to enable swipe to go back in Look and Feel settings by @sthomas727 in https://github.com/dessalines/jerboa/pull/1191
+- Update community block msg to display unblock if blocked already by @MV-GH in https://github.com/dessalines/jerboa/pull/1185
+- Improve woodpecker build times by @MV-GH in https://github.com/dessalines/jerboa/pull/1139
+
+## New Contributors
+
+- @sthomas727 made their first contribution in https://github.com/dessalines/jerboa/pull/1191
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.44...0.0.45
+
+# Jerboa v0.0.44-alpha Release (2023-08-08)
+
+## What's Changed
+
+- Small changes by @MV-GH in https://github.com/dessalines/jerboa/pull/1133
+- Replace gson.tojson with Parcelable implementation by @MV-GH in https://github.com/dessalines/jerboa/pull/1124
+- Add share functionality to imageviewer by @MV-GH in https://github.com/dessalines/jerboa/pull/1144
+- Add strings for the validateUrl and validatePostName utils. by @camporter in https://github.com/dessalines/jerboa/pull/1145
+- Make app bar 'more' buttons use dropdowns rather than dialogs by @camporter in https://github.com/dessalines/jerboa/pull/1146
+- Add 2FA user setting by @MV-GH in https://github.com/dessalines/jerboa/pull/1137
+- Use listing type use M3 dropdown instead of dialog by @MV-GH in https://github.com/dessalines/jerboa/pull/1150
+- Update woodpecker config by @MV-GH in https://github.com/dessalines/jerboa/pull/1138
+- Fixing woodpecker env vars. by @dessalines in https://github.com/dessalines/jerboa/pull/1157
+- Use M3 menu dropdown for inbox unread sort by @MV-GH in https://github.com/dessalines/jerboa/pull/1152
+- Allow post mode change in Community by @ZJouba in https://github.com/dessalines/jerboa/pull/1158
+- Increase the zoom capability of the imageviewer by @MV-GH in https://github.com/dessalines/jerboa/pull/1159
+- Post actionbar design rework and options for it. by @MV-GH in https://github.com/dessalines/jerboa/pull/1155
+- Fix appbar rework by @MV-GH in https://github.com/dessalines/jerboa/pull/1160
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.42...0.0.44
+
 # Jerboa v0.0.42-alpha Release (2023-08-03)
 
 ## What's Changed

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
@@ -20,6 +21,7 @@ import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.PictrsBannerImage
+import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.theme.*
@@ -128,15 +130,19 @@ fun CommunityHeader(
     onClickSortType: (SortType) -> Unit,
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
+    onClickPostViewMode: (PostViewMode) -> Unit,
     selectedSortType: SortType,
+    selectedPostViewMode: PostViewMode,
     onClickCommunityInfo: () -> Unit,
     onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     siteVersion: String,
+	isBlocked: Boolean,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
+    var showPostViewModeOptions by remember { mutableStateOf(false) }
 
     if (showSortOptions) {
         SortOptionsDialog(
@@ -163,6 +169,17 @@ fun CommunityHeader(
                 onClickSortType(it)
             },
             siteVersion = siteVersion,
+        )
+    }
+
+    if (showPostViewModeOptions) {
+        PostViewModeDialog(
+            onDismissRequest = { showPostViewModeOptions = false },
+            selectedPostViewMode = selectedPostViewMode,
+            onClickPostViewMode = {
+                showPostViewModeOptions = false
+                onClickPostViewMode(it)
+            },
         )
     }
 
@@ -204,11 +221,16 @@ fun CommunityHeader(
                     expanded = showMoreOptions,
                     onDismissRequest = { showMoreOptions = false },
                     onClickRefresh = onClickRefresh,
+                    onClickShowPostViewModeDialog = {
+                        showMoreOptions = false
+                        showPostViewModeOptions = true
+                    },
                     onBlockCommunityClick = {
                         showMoreOptions = false
                         onBlockCommunityClick()
                     },
                     onClickCommunityInfo = onClickCommunityInfo,
+                    isBlocked = isBlocked,
                 )
             }
         },
@@ -243,6 +265,8 @@ fun CommunityMoreDropdown(
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickCommunityInfo: () -> Unit,
+    onClickShowPostViewModeDialog: () -> Unit,
+    isBlocked: Boolean,
 ) {
     DropdownMenu(
         expanded = expanded,
@@ -257,6 +281,14 @@ fun CommunityMoreDropdown(
             },
         )
         MenuItem(
+            text = stringResource(R.string.home_post_view_mode),
+            icon = Icons.Outlined.ViewAgenda,
+            onClick = {
+                onDismissRequest()
+                onClickShowPostViewModeDialog()
+            },
+        )
+        MenuItem(
             text = stringResource(R.string.community_community_info),
             icon = Icons.Outlined.Info,
             onClick = {
@@ -265,7 +297,11 @@ fun CommunityMoreDropdown(
             },
         )
         MenuItem(
-            text = stringResource(R.string.community_block_community),
+            text = stringResource(
+                if (isBlocked) {
+                    R.string.community_unblock_community
+                } else R.string.community_block_community,
+            ),
             icon = Icons.Outlined.Block,
             onClick = onBlockCommunityClick,
         )

@@ -41,9 +41,8 @@ import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
-import com.jerboa.api.ApiState
 import com.jerboa.db.entity.AppSettings
-import com.jerboa.fetchHomePosts
+import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
@@ -55,8 +54,6 @@ import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.drawer.MainDrawer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
-import com.jerboa.util.InitializeRoute
-import com.jerboa.util.doIfReadyElseDisplayInfo
 import kotlinx.coroutines.launch
 
 enum class NavTab(
@@ -116,7 +113,7 @@ fun BottomNavActivity(
     val account = getCurrentAccount(accountViewModel)
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    val homeViewModel: HomeViewModel = viewModel()
+    val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
 
     val bottomNavController = rememberNavController()
     val snackbarHostState = remember(account) { SnackbarHostState() }
@@ -152,14 +149,6 @@ fun BottomNavActivity(
             }
         } else {
             onInnerSelectTab(tab)
-        }
-    }
-
-    if (siteViewModel.siteRes is ApiState.Success) {
-        InitializeRoute(homeViewModel) {
-            homeViewModel.updateSortType(siteViewModel.sortType)
-            homeViewModel.updateListingType(siteViewModel.listingType)
-            fetchHomePosts(account, homeViewModel)
         }
     }
 
@@ -227,6 +216,7 @@ fun BottomNavActivity(
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -266,6 +256,7 @@ fun BottomNavActivity(
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -284,6 +275,7 @@ fun BottomNavActivity(
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
                 }
