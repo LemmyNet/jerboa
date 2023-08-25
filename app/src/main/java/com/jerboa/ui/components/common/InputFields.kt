@@ -62,13 +62,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
 import kotlinx.coroutines.launch
@@ -515,7 +515,7 @@ fun MarkdownHelperBar(
             Icon(
                 painter = painterResource(R.drawable.emergency_home_fill0_wght400_grad0_opsz48),
                 contentDescription = stringResource(R.string.markdownHelper_insertSpoiler),
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(MARKDOWN_BAR_ICON_SIZE),
                 tint = MaterialTheme.colorScheme.onBackground.muted,
             )
         }
