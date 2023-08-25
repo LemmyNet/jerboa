@@ -41,13 +41,10 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.toEnumSafe
-import com.jerboa.util.Initializable
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val accountRepository: AccountRepository) : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
-
+class HomeViewModel(private val accountRepository: AccountRepository) : ViewModel() {
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
