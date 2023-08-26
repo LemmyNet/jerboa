@@ -47,7 +47,6 @@ import com.jerboa.datatypes.types.Tagline
 import com.jerboa.getLocalizedListingTypeName
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
-import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.theme.LARGE_PADDING
@@ -91,7 +90,6 @@ fun HomeHeader(
     var showTopOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
-    var showPostViewModeOptions by remember { mutableStateOf(false) }
 
     if (showSortOptions) {
         SortOptionsDialog(
@@ -121,16 +119,6 @@ fun HomeHeader(
         )
     }
 
-    if (showPostViewModeOptions) {
-        PostViewModeDialog(
-            onDismissRequest = { showPostViewModeOptions = false },
-            selectedPostViewMode = selectedPostViewMode,
-            onClickPostViewMode = {
-                showPostViewModeOptions = false
-                onClickPostViewMode(it)
-            },
-        )
-    }
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
@@ -254,9 +242,7 @@ fun HomeMoreDropdown(
                             onClickPostViewMode(it)
                             onDismissRequest()
                         },
-
-                        modifier =
-                        if (selectedPostViewMode == it) {
+                        modifier = if (selectedPostViewMode == it) {
                             Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
                         } else {
                             Modifier
