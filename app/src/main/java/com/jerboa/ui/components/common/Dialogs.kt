@@ -97,7 +97,6 @@ fun SortOptionsDialog(
     AlertDialog(
         modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onDismissRequest,
-        containerColor = MaterialTheme.colorScheme.surface,
         text = {
             Column {
                 SortType.getSupportedSortTypes(siteVersion).filter { !isTopSort(it) }.forEach {
