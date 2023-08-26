@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.community
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -10,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.PostViewMode
@@ -19,12 +21,11 @@ import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.ui.components.common.LargerCircularIcon
-import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.PictrsBannerImage
-import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.theme.*
+import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
 fun CommunityTopSection(
@@ -142,7 +143,6 @@ fun CommunityHeader(
     var showSortOptions by remember { mutableStateOf(false) }
     var showTopOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
-    var showPostViewModeOptions by remember { mutableStateOf(false) }
 
     if (showSortOptions) {
         SortOptionsDialog(
@@ -169,17 +169,6 @@ fun CommunityHeader(
                 onClickSortType(it)
             },
             siteVersion = siteVersion,
-        )
-    }
-
-    if (showPostViewModeOptions) {
-        PostViewModeDialog(
-            onDismissRequest = { showPostViewModeOptions = false },
-            selectedPostViewMode = selectedPostViewMode,
-            onClickPostViewMode = {
-                showPostViewModeOptions = false
-                onClickPostViewMode(it)
-            },
         )
     }
 
@@ -221,15 +210,13 @@ fun CommunityHeader(
                     expanded = showMoreOptions,
                     onDismissRequest = { showMoreOptions = false },
                     onClickRefresh = onClickRefresh,
-                    onClickShowPostViewModeDialog = {
-                        showMoreOptions = false
-                        showPostViewModeOptions = true
-                    },
                     onBlockCommunityClick = {
                         showMoreOptions = false
                         onBlockCommunityClick()
                     },
                     onClickCommunityInfo = onClickCommunityInfo,
+                    onClickPostViewMode = onClickPostViewMode,
+                    selectedPostViewMode = selectedPostViewMode,
                     isBlocked = isBlocked,
                 )
             }
@@ -265,44 +252,64 @@ fun CommunityMoreDropdown(
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickCommunityInfo: () -> Unit,
-    onClickShowPostViewModeDialog: () -> Unit,
+    onClickPostViewMode: (PostViewMode) -> Unit,
+    selectedPostViewMode: PostViewMode,
     isBlocked: Boolean,
 ) {
-    DropdownMenu(
+    CascadeDropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
     ) {
-        MenuItem(
-            text = stringResource(R.string.community_refresh),
-            icon = Icons.Outlined.Refresh,
+        DropdownMenuItem(
+            text = { Text(text = stringResource(R.string.home_refresh)) },
+            leadingIcon = { Icon(Icons.Outlined.Refresh, contentDescription = null) },
             onClick = {
                 onDismissRequest()
                 onClickRefresh()
             },
+            modifier = Modifier.testTag("jerboa:refresh"),
         )
-        MenuItem(
-            text = stringResource(R.string.home_post_view_mode),
-            icon = Icons.Outlined.ViewAgenda,
-            onClick = {
-                onDismissRequest()
-                onClickShowPostViewModeDialog()
+        DropdownMenuItem(
+            text = { Text(text = stringResource(R.string.home_post_view_mode)) },
+            leadingIcon = { Icon(Icons.Outlined.ViewAgenda, contentDescription = null) },
+            children = {
+                PostViewMode.entries.map {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(it.mode)) },
+                        onClick = {
+                            onClickPostViewMode(it)
+                            onDismissRequest()
+                        },
+                        modifier = if (selectedPostViewMode == it) {
+                            Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                        } else {
+                            Modifier
+                        }.testTag("jerboa:postviewmode_${it.name}"),
+                    )
+                }
             },
+            modifier = Modifier.testTag("jerboa:postviewmode"),
         )
-        MenuItem(
-            text = stringResource(R.string.community_community_info),
-            icon = Icons.Outlined.Info,
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.community_community_info)) },
+            leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
             onClick = {
                 onClickCommunityInfo()
                 onDismissRequest()
             },
         )
-        MenuItem(
-            text = stringResource(
-                if (isBlocked) {
-                    R.string.community_unblock_community
-                } else R.string.community_block_community,
-            ),
-            icon = Icons.Outlined.Block,
+        Divider()
+        DropdownMenuItem(
+            text = {
+                Text(
+                    stringResource(
+                        if (isBlocked) {
+                            R.string.community_unblock_community
+                        } else R.string.community_block_community,
+                    ),
+                )
+            },
+            leadingIcon = { Icon(Icons.Outlined.Block, contentDescription = null) },
             onClick = onBlockCommunityClick,
         )
     }
