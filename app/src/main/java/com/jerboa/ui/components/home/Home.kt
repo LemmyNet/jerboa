@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material.icons.outlined.ViewAgenda
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +52,7 @@ import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.theme.LARGE_PADDING
 import kotlinx.collections.immutable.ImmutableList
+import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
 fun HomeHeaderTitle(
@@ -188,11 +191,9 @@ fun HomeHeader(
                     expanded = showMoreOptions,
                     onDismissRequest = { showMoreOptions = false },
                     onClickRefresh = onClickRefresh,
-                    onClickShowPostViewModeDialog = {
-                        showMoreOptions = false
-                        showPostViewModeOptions = !showPostViewModeOptions
-                    },
                     onClickSiteInfo = onClickSiteInfo,
+                    selectedPostViewMode = selectedPostViewMode,
+                    onClickPostViewMode = onClickPostViewMode,
                 )
             }
         },
@@ -225,34 +226,49 @@ fun HomeMoreDropdown(
     onDismissRequest: () -> Unit,
     onClickSiteInfo: () -> Unit,
     onClickRefresh: () -> Unit,
-    onClickShowPostViewModeDialog: () -> Unit,
+    onClickPostViewMode: (PostViewMode) -> Unit,
+    selectedPostViewMode: PostViewMode,
 ) {
-    DropdownMenu(
+    CascadeDropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
         modifier = Modifier.semantics { testTagsAsResourceId = true },
     ) {
-        MenuItem(
-            text = stringResource(R.string.home_refresh),
-            icon = Icons.Outlined.Refresh,
+        DropdownMenuItem(
+            text = { Text(text = stringResource(R.string.home_refresh)) },
+            leadingIcon = { Icon(Icons.Outlined.Refresh, contentDescription = null) },
             onClick = {
                 onDismissRequest()
                 onClickRefresh()
             },
             modifier = Modifier.testTag("jerboa:refresh"),
         )
-        MenuItem(
-            text = stringResource(R.string.home_post_view_mode),
-            icon = Icons.Outlined.ViewAgenda,
-            onClick = {
-                onDismissRequest()
-                onClickShowPostViewModeDialog()
+        DropdownMenuItem(
+            text = { Text(text = stringResource(R.string.home_post_view_mode)) },
+            leadingIcon = { Icon(Icons.Outlined.ViewAgenda, contentDescription = null) },
+            children = {
+                PostViewMode.entries.map {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(it.mode)) },
+                        onClick = {
+                            onClickPostViewMode(it)
+                            onDismissRequest()
+                        },
+
+                        modifier =
+                        if (selectedPostViewMode == it) {
+                            Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                        } else {
+                            Modifier
+                        }.testTag("jerboa:postviewmode_${it.name}"),
+                    )
+                }
             },
             modifier = Modifier.testTag("jerboa:postviewmode"),
         )
-        MenuItem(
-            text = stringResource(R.string.home_site_info),
-            icon = Icons.Outlined.Info,
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.home_site_info)) },
+            leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
             onClick = {
                 onClickSiteInfo()
                 onDismissRequest()

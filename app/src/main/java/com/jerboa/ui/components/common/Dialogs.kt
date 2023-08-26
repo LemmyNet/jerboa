@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -96,6 +97,7 @@ fun SortOptionsDialog(
     AlertDialog(
         modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onDismissRequest,
+        containerColor = MaterialTheme.colorScheme.surface,
         text = {
             Column {
                 SortType.getSupportedSortTypes(siteVersion).filter { !isTopSort(it) }.forEach {
