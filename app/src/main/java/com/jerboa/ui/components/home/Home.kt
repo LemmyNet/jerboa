@@ -50,8 +50,8 @@ import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.util.cascade.CascadeDropdownMenu
 import kotlinx.collections.immutable.ImmutableList
-import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
 fun HomeHeaderTitle(
@@ -239,8 +239,8 @@ fun HomeMoreDropdown(
                     DropdownMenuItem(
                         text = { Text(text = stringResource(it.mode)) },
                         onClick = {
-                            onClickPostViewMode(it)
                             onDismissRequest()
+                            onClickPostViewMode(it)
                         },
                         modifier = if (selectedPostViewMode == it) {
                             Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
@@ -256,8 +256,8 @@ fun HomeMoreDropdown(
             text = { Text(stringResource(R.string.home_site_info)) },
             leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
             onClick = {
-                onClickSiteInfo()
                 onDismissRequest()
+                onClickSiteInfo()
             },
         )
     }

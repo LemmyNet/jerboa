@@ -25,7 +25,7 @@ import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.theme.*
-import me.saket.cascade.CascadeDropdownMenu
+import com.jerboa.util.cascade.CascadeDropdownMenu
 
 @Composable
 fun CommunityTopSection(
@@ -210,10 +210,7 @@ fun CommunityHeader(
                     expanded = showMoreOptions,
                     onDismissRequest = { showMoreOptions = false },
                     onClickRefresh = onClickRefresh,
-                    onBlockCommunityClick = {
-                        showMoreOptions = false
-                        onBlockCommunityClick()
-                    },
+                    onBlockCommunityClick = onBlockCommunityClick,
                     onClickCommunityInfo = onClickCommunityInfo,
                     onClickPostViewMode = onClickPostViewMode,
                     selectedPostViewMode = selectedPostViewMode,
@@ -277,8 +274,8 @@ fun CommunityMoreDropdown(
                     DropdownMenuItem(
                         text = { Text(text = stringResource(it.mode)) },
                         onClick = {
-                            onClickPostViewMode(it)
                             onDismissRequest()
+                            onClickPostViewMode(it)
                         },
                         modifier = if (selectedPostViewMode == it) {
                             Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
@@ -294,8 +291,8 @@ fun CommunityMoreDropdown(
             text = { Text(stringResource(R.string.community_community_info)) },
             leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
             onClick = {
-                onClickCommunityInfo()
                 onDismissRequest()
+                onClickCommunityInfo()
             },
         )
         Divider()
@@ -310,7 +307,10 @@ fun CommunityMoreDropdown(
                 )
             },
             leadingIcon = { Icon(Icons.Outlined.Block, contentDescription = null) },
-            onClick = onBlockCommunityClick,
+            onClick = {
+                onDismissRequest()
+                onBlockCommunityClick()
+            },
         )
     }
 }

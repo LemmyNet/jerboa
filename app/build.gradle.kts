@@ -187,6 +187,4 @@ dependencies {
     baselineProfile(project(":benchmarks"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
-
-    implementation("me.saket.cascade:cascade-compose:2.2.0")
 }
