@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -133,6 +134,7 @@ fun BottomAppBarAll(
                 label = {
                     if (showTextDescriptionsInNavbar) {
                         Text(
+                            textAlign = TextAlign.Center,
                             fontSize = TextUnit(10f, TextUnitType.Sp),
                             text = stringResource(tab.textId),
                             color = MaterialTheme.colorScheme.onSurface,
