@@ -108,11 +108,11 @@ fun HomeActivity(
     val snackbarHostState = remember(account) { SnackbarHostState() }
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        if (homeViewModel.initialized) homeViewModel.updatePost(pv)
+        homeViewModel.updatePost(pv)
     }
 
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
-        if (homeViewModel.initialized) homeViewModel.updatePost(pv)
+        homeViewModel.updatePost(pv)
     }
 
     LaunchedEffect(account) {
@@ -142,6 +142,7 @@ fun HomeActivity(
                 account = account,
                 scrollBehavior = scrollBehavior,
                 onClickSiteInfo = appState::toSiteSideBar,
+                siteVersion = siteViewModel.siteVersion(),
             )
         },
         content = { padding ->
@@ -440,6 +441,7 @@ fun MainTopBar(
     account: Account,
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    siteVersion: String,
 ) {
     Column {
         HomeHeader(
@@ -467,6 +469,7 @@ fun MainTopBar(
             },
             onClickSiteInfo = onClickSiteInfo,
             federationEnabled = siteViewModel.federationEnabled(),
+            siteVersion = siteVersion,
         )
     }
 }

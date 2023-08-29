@@ -30,7 +30,7 @@
     <string name="AppBars_created">作成</string>
     <string name="AppBars_users_day">1日のユーザー%1$s名</string>
     <string name="AppBars_users_week">1週間のユーザー%1$s名</string>
-    <string name="AppBars_users_month">1ヶ月のユーザー%1$名</string>
+    <string name="AppBars_users_month">1ヶ月のユーザー%1$s名</string>
     <string name="AppBars_users_6_months">6ヶ月のユーザー%1$s名</string>
     <string name="AppBars_posts">%1$sの投稿</string>
     <string name="AppBars_comments">%1$sのコメント</string>

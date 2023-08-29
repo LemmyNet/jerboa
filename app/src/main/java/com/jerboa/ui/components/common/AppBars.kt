@@ -37,8 +37,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
@@ -131,6 +134,8 @@ fun BottomAppBarAll(
                 label = {
                     if (showTextDescriptionsInNavbar) {
                         Text(
+                            textAlign = TextAlign.Center,
+                            fontSize = TextUnit(10f, TextUnitType.Sp),
                             text = stringResource(tab.textId),
                             color = MaterialTheme.colorScheme.onSurface,
                         )
@@ -627,7 +632,10 @@ fun LoadingBar(
     padding: PaddingValues = PaddingValues(0.dp),
 ) {
     LinearProgressIndicator(
-        modifier = Modifier.fillMaxWidth().padding(padding).testTag("jerboa:loading"),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(padding)
+            .testTag("jerboa:loading"),
     )
 }
 

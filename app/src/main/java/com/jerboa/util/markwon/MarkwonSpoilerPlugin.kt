@@ -27,7 +27,7 @@ class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlug
 
     private class SpoilerTextAddedListener : CorePlugin.OnTextAddedListener {
         override fun onTextAdded(visitor: MarkwonVisitor, text: String, start: Int) {
-            val spoilerTitleRegex = Regex("(:::\\s*spoiler\\s*)(.*)")
+            val spoilerTitleRegex = Regex("(:::\\s+spoiler\\s+)(.*)")
             // Find all spoiler "start" lines
             val spoilerTitles = spoilerTitleRegex.findAll(text)
 
@@ -72,8 +72,10 @@ class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlug
                 }
 
                 var open = false
+                // The space at the end is necessary for the lengths to be the same
+                // This reduces complexity as else it would need complex logic to determine the replacement length
                 val getSpoilerTitle = { openParam: Boolean ->
-                    if (openParam) "▼ ${spoilerTitleSpan.title}" else "▶ ${spoilerTitleSpan.title}"
+                    if (openParam) "▼ ${spoilerTitleSpan.title}\n" else "▶ ${spoilerTitleSpan.title}\u200B"
                 }
 
                 val spoilerTitle = getSpoilerTitle(false)
