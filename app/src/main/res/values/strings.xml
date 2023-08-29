@@ -411,4 +411,5 @@
     <string name="open_link">Open link</string>
     <string name="open_link_external">Open link in external</string>
     <string name="no_activity_found">No activity (app) found that can open this link</string>
+    <string name="markdownHelper_insertSpoiler">Insert spoiler</string>
 </resources>
