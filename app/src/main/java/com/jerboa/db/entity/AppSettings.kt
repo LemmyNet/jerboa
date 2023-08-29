@@ -39,6 +39,11 @@ data class AppSettings(
     )
     val showBottomNav: Boolean,
     @ColumnInfo(
+        name = "post_navigation_gesture_mode",
+        defaultValue = "0",
+    )
+    val postNavigationGestureMode: Int,
+    @ColumnInfo(
         name = "show_collapsed_comment_content",
         defaultValue = "0",
     )

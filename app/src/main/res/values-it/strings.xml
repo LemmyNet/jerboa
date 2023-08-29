@@ -75,6 +75,7 @@
     <string name="comment_node_report_comment">Segnala commento</string>
     <string name="comment_node_restore">Ripristina</string>
     <string name="comment_node_view_context">Mostra contesto</string>
+    <string name="comment_node_view_original">Mostra originale</string>
     <string name="comment_node_view_post">Mostra Post</string>
     <string name="comment_node_view_source">Mostra markdown</string>
     <string name="comment_reply_back">Indietro</string>

@@ -2,7 +2,7 @@
 package io.noties.markwon.image.coil
 
 import android.content.Context
-import android.text.style.ClickableSpan
+import android.text.style.URLSpan
 import android.view.View
 import coil.ImageLoader
 import coil.request.Disposable
@@ -59,10 +59,10 @@ class ClickableImageFactory(val appState: JerboaAppState) : ImageSpanFactory() {
 
     override fun getSpans(configuration: MarkwonConfiguration, props: RenderProps): Any {
         val image = super.getSpans(configuration, props) as AsyncDrawableSpan
-        val clickSpan = object : ClickableSpan() {
+        val clickSpan = object : URLSpan(image.drawable.destination) {
             override fun onClick(view: View) {
                 view.cancelPendingInputEvents()
-                appState.toView(image.drawable.destination)
+                appState.openImageViewer(image.drawable.destination)
             }
         }
 
