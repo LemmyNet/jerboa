@@ -47,8 +47,7 @@ import com.jerboa.datatypes.types.Tagline
 import com.jerboa.getLocalizedListingTypeName
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
-import com.jerboa.ui.components.common.SortOptionsDialog
-import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.util.cascade.CascadeDropdownMenu
 import kotlinx.collections.immutable.ImmutableList
@@ -87,37 +86,8 @@ fun HomeHeader(
     siteVersion: String,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
-    var showTopOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
-
-    if (showSortOptions) {
-        SortOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showSortOptions = false },
-            onClickSortType = {
-                showSortOptions = false
-                onClickSortType(it)
-            },
-            onClickSortTopOptions = {
-                showSortOptions = false
-                showTopOptions = !showTopOptions
-            },
-            siteVersion = siteVersion,
-        )
-    }
-
-    if (showTopOptions) {
-        SortTopOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showTopOptions = false },
-            onClickSortType = {
-                showTopOptions = false
-                onClickSortType(it)
-            },
-            siteVersion = siteVersion,
-        )
-    }
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -157,12 +127,26 @@ fun HomeHeader(
                     selectedListingType = selectedListingType,
                 )
             }
-            IconButton(modifier = Modifier.testTag("jerboa:sortoptions"), onClick = {
-                showSortOptions = !showSortOptions
-            }) {
-                Icon(
-                    Icons.Outlined.Sort,
-                    contentDescription = stringResource(R.string.selectSort),
+
+            Box {
+                IconButton(modifier = Modifier.testTag("jerboa:sortoptions"), onClick = {
+                    showSortOptions = !showSortOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.Sort,
+                        contentDescription = stringResource(R.string.selectSort),
+                    )
+                }
+
+                SortOptionsDropdown(
+                    expanded = showSortOptions,
+                    onDismissRequest = { showSortOptions = false },
+                    onClickSortType = {
+                        showSortOptions = false
+                        onClickSortType(it)
+                    },
+                    selectedSortType = selectedSortType,
+                    siteVersion = siteVersion,
                 )
             }
             Box {

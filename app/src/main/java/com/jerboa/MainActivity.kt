@@ -168,6 +168,14 @@ class MainActivity : AppCompatActivity() {
                     appSettings.usePrivateTabs,
                 )
 
+//                CommentSortOptionsDropdownTestOld(
+//                    expanded = appState.linkDropdownExpanded.value != null,
+//                    onDismissRequest = appState::hideLinkPopup,
+//                    siteVersion = MINIMUM_API_VERSION,
+//                    onClickSortType = {},
+//                    selectedSortType = SortType.Hot
+//                )
+
                 ShowChangelog(appSettingsViewModel = appSettingsViewModel)
 
                 when (val siteRes = siteViewModel.siteRes) {

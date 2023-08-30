@@ -22,8 +22,7 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
-import com.jerboa.ui.components.common.SortOptionsDialog
-import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.*
 import com.jerboa.util.cascade.CascadeDropdownMenu
 
@@ -141,36 +140,7 @@ fun CommunityHeader(
     isBlocked: Boolean,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
-    var showTopOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
-
-    if (showSortOptions) {
-        SortOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showSortOptions = false },
-            onClickSortType = {
-                showSortOptions = false
-                onClickSortType(it)
-            },
-            onClickSortTopOptions = {
-                showSortOptions = false
-                showTopOptions = !showTopOptions
-            },
-            siteVersion = siteVersion,
-        )
-    }
-
-    if (showTopOptions) {
-        SortTopOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showTopOptions = false },
-            onClickSortType = {
-                showTopOptions = false
-                onClickSortType(it)
-            },
-            siteVersion = siteVersion,
-        )
-    }
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -189,14 +159,28 @@ fun CommunityHeader(
             }
         },
         actions = {
-            IconButton(onClick = {
-                showSortOptions = !showSortOptions
-            }) {
-                Icon(
-                    Icons.Outlined.Sort,
-                    contentDescription = stringResource(R.string.community_sortBy),
+            Box {
+                IconButton(onClick = {
+                    showSortOptions = !showSortOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.Sort,
+                        contentDescription = stringResource(R.string.community_sortBy),
+                    )
+                }
+
+                SortOptionsDropdown(
+                    expanded = showSortOptions,
+                    onDismissRequest = { showSortOptions = false },
+                    onClickSortType = {
+                        showSortOptions = false
+                        onClickSortType(it)
+                    },
+                    selectedSortType = selectedSortType,
+                    siteVersion = siteVersion,
                 )
             }
+
             Box {
                 IconButton(onClick = {
                     showMoreOptions = !showMoreOptions

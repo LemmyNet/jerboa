@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.post
 
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -22,23 +21,14 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.CommentsDisabled
-import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,17 +40,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -74,8 +62,6 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.calculateNewInstantScores
-import com.jerboa.communityNameShown
-import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.sampleImagePostView
 import com.jerboa.datatypes.sampleLinkNoThumbnailPostView
 import com.jerboa.datatypes.sampleLinkPostView
@@ -100,7 +86,6 @@ import com.jerboa.ui.components.common.ActionBarButtonAndBadge
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
 import com.jerboa.ui.components.common.DotSpacer
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.MarkdownHelper.CreateMarkdownPreview
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.NsfwBadge
@@ -114,6 +99,7 @@ import com.jerboa.ui.components.common.scoreColor
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.community.CommunityName
 import com.jerboa.ui.components.person.PersonProfileLink
+import com.jerboa.ui.components.post.composables.PostOptionsDropdown
 import com.jerboa.ui.theme.ACTION_BAR_ICON_SIZE
 import com.jerboa.ui.theme.CARD_COLORS
 import com.jerboa.ui.theme.LARGER_ICON_THUMBNAIL_SIZE
@@ -127,6 +113,7 @@ import com.jerboa.ui.theme.THUMBNAIL_CARET_SIZE
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.jerboaColorScheme
 import com.jerboa.ui.theme.muted
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun PostHeaderLine(
@@ -566,51 +553,28 @@ fun PostFooterLine(
     viewSource: Boolean,
     showScores: Boolean,
     postActionbarMode: Int,
+    fromPostActivity: Boolean,
+    scope: CoroutineScope,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showMoreOptions) {
-        PostOptionsDialog(
+        PostOptionsDropdown(
             postView = postView,
             onDismissRequest = { showMoreOptions = false },
-            onEditPostClick = {
-                showMoreOptions = false
-                onEditPostClick(postView)
-            },
-            onDeletePostClick = {
-                showMoreOptions = false
-                onDeletePostClick(postView)
-            },
-            onCommunityClick = {
-                showMoreOptions = false
-                onCommunityClick(postView.community)
-            },
-            onPersonClick = {
-                showMoreOptions = false
-                onPersonClick(postView.creator.id)
-            },
-            onReportClick = {
-                showMoreOptions = false
-                onReportClick(postView)
-            },
-            onBlockCommunityClick = {
-                showMoreOptions = false
-                onBlockCommunityClick(postView.community)
-            },
-            onBlockCreatorClick = {
-                showMoreOptions = false
-                onBlockCreatorClick(postView.creator)
-            },
-            onShareClick = { url ->
-                showMoreOptions = false
-                onShareClick(url)
-            },
-            onViewSourceClick = {
-                showMoreOptions = false
-                onViewSourceClick()
-            },
+            onCommunityClick = onCommunityClick,
+            onPersonClick = onPersonClick,
+            onEditPostClick = onEditPostClick,
+            onDeletePostClick = onDeletePostClick,
+            onReportClick = onReportClick,
+            onBlockCreatorClick = onBlockCreatorClick,
+            onBlockCommunityClick = onBlockCommunityClick,
+            onShareClick = onShareClick,
+            onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             viewSource = viewSource,
+            showViewSource = fromPostActivity,
+            scope = scope,
         )
     }
 
@@ -781,24 +745,26 @@ fun PostFooterLinePreview() {
     PostFooterLine(
         postView = postView,
         instantScores = instantScores,
-        account = AnonAccount,
+        onUpvoteClick = {},
+        onDownvoteClick = {},
+        onReplyClick = {},
+        onSaveClick = {},
+        onEditPostClick = {},
+        onDeletePostClick = {},
         onReportClick = {},
         onCommunityClick = {},
         onPersonClick = {},
-        onUpvoteClick = {},
-        onSaveClick = {},
-        onReplyClick = {},
-        onDownvoteClick = {},
-        onEditPostClick = {},
-        onDeletePostClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
         onShareClick = {},
         onViewSourceClick = {},
+        account = AnonAccount,
         enableDownVotes = true,
         viewSource = false,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
+        fromPostActivity = true,
+        scope = rememberCoroutineScope(),
     )
 }
 
@@ -1374,7 +1340,7 @@ private fun ThumbnailTile(
                     appState.showLinkPopup(url)
                 },
 
-            )
+                )
 
         Box {
             postView.post.thumbnail_url?.also { thumbnail ->
@@ -1524,7 +1490,8 @@ fun PostListingCard(
             .padding(vertical = MEDIUM_PADDING)
             .clickable { onPostClick(postView) }
             .testTag("jerboa:post"),
-        verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
+        // see https://stackoverflow.com/questions/77010371/prevent-popup-from-adding-padding-in-a-column-with-arrangement-spacedbylarge-p
+        // verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
     ) {
         // Header
         PostHeaderLine(
@@ -1541,6 +1508,8 @@ fun PostListingCard(
             showScores = showScores,
         )
 
+        Spacer(modifier = Modifier.padding(vertical = LARGE_PADDING))
+
         //  Title + metadata
         PostBody(
             postView = postView,
@@ -1556,6 +1525,8 @@ fun PostListingCard(
             clickBody = { onPostClick(postView) },
             showIfRead = showIfRead,
         )
+
+        Spacer(modifier = Modifier.padding(vertical = LARGE_PADDING))
 
         // Footer bar
         PostFooterLine(
@@ -1579,8 +1550,10 @@ fun PostListingCard(
             modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             enableDownVotes = enableDownVotes,
             viewSource = viewSource,
+            fromPostActivity = fullBody,
             showScores = showScores,
             postActionbarMode = postActionbarMode,
+            scope = appState.coroutineScope,
         )
     }
 }
@@ -1617,265 +1590,5 @@ fun MetadataCard(post: Post) {
                 }
             }
         },
-    )
-}
-
-@Composable
-fun PostOptionsDialog(
-    postView: PostView,
-    onDismissRequest: () -> Unit,
-    onCommunityClick: () -> Unit,
-    onPersonClick: () -> Unit,
-    onEditPostClick: () -> Unit,
-    onDeletePostClick: () -> Unit,
-    onReportClick: () -> Unit,
-    onBlockCreatorClick: () -> Unit,
-    onBlockCommunityClick: () -> Unit,
-    onShareClick: (shareUrl: String) -> Unit,
-    onViewSourceClick: () -> Unit,
-    isCreator: Boolean,
-    viewSource: Boolean,
-) {
-    val localClipboardManager = LocalClipboardManager.current
-    val ctx = LocalContext.current
-
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(
-                        R.string.post_listing_go_to,
-                        communityNameShown(postView.community),
-                    ),
-                    icon = Icons.Outlined.Forum,
-                    onClick = {
-                        onCommunityClick()
-                    },
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(
-                        R.string.post_listing_go_to,
-                        postView.creator.name,
-                    ),
-                    icon = Icons.Outlined.Person,
-                    onClick = {
-                        onPersonClick()
-                    },
-                )
-                postView.post.url?.also {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_copy_link),
-                        icon = Icons.Outlined.Link,
-                        onClick = {
-                            localClipboardManager.setText(AnnotatedString(it))
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.post_listing_link_copied),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                            onDismissRequest()
-                        },
-                    )
-                }
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.post_listing_copy_permalink),
-                    icon = Icons.Outlined.Link,
-                    onClick = {
-                        val permalink = postView.post.ap_id
-                        localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(
-                            ctx,
-                            ctx.getString(R.string.post_listing_permalink_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        onDismissRequest()
-                    },
-                )
-                postView.post.thumbnail_url?.also {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_copy_thumbnail_link),
-                        icon = Icons.Outlined.Link,
-                        onClick = {
-                            if (copyToClipboard(
-                                    ctx,
-                                    postView.post.thumbnail_url,
-                                    "thumbnail link",
-                                )
-                            ) {
-                                Toast.makeText(
-                                    ctx,
-                                    ctx.getString(R.string.post_listing_thumbnail_link_copied),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            } else {
-                                Toast.makeText(
-                                    ctx,
-                                    ctx.getString(R.string.generic_error),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            }
-                            onDismissRequest()
-                        },
-                    )
-                }
-                postView.post.embed_description?.also {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_copy_title),
-                        icon = Icons.Outlined.ContentCopy,
-                        onClick = {
-                            if (copyToClipboard(
-                                    ctx,
-                                    postView.post.embed_description,
-                                    "post title",
-                                )
-                            ) {
-                                Toast.makeText(
-                                    ctx,
-                                    ctx.getString(R.string.post_listing_title_copied),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            } else {
-                                Toast.makeText(
-                                    ctx,
-                                    ctx.getString(R.string.generic_error),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            }
-                            onDismissRequest()
-                        },
-                    )
-                }
-                postView.post.name.also {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_copy_name),
-                        icon = Icons.Outlined.ContentCopy,
-                        onClick = {
-                            if (copyToClipboard(ctx, postView.post.name, "post name")) {
-                                Toast.makeText(
-                                    ctx,
-                                    ctx.getString(R.string.post_listing_name_copied),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            } else {
-                                Toast.makeText(
-                                    ctx,
-                                    ctx.getString(R.string.generic_error),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            }
-                            onDismissRequest()
-                        },
-                    )
-                }
-                postView.post.body?.also {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_copy_text),
-                        icon = Icons.Outlined.ContentCopy,
-                        onClick = {
-                            if (copyToClipboard(ctx, postView.post.body, "post text")) {
-                                Toast.makeText(
-                                    ctx,
-                                    ctx.getString(R.string.post_listing_text_copied),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            } else {
-                                Toast.makeText(
-                                    ctx,
-                                    ctx.getString(R.string.generic_error),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            }
-                            onDismissRequest()
-                        },
-                    )
-                }
-                postView.post.body?.also {
-                    IconAndTextDrawerItem(
-                        text = if (viewSource) {
-                            stringResource(R.string.post_listing_view_original)
-                        } else {
-                            stringResource(
-                                R.string.post_listing_view_source,
-                            )
-                        },
-                        icon = Icons.Outlined.Description,
-                        onClick = onViewSourceClick,
-                    )
-                }
-                postView.post.url?.also { url ->
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_share_link),
-                        icon = Icons.Outlined.Share,
-                        onClick = { onShareClick(url) },
-                    )
-                }
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.post_listing_share_post),
-                    icon = Icons.Outlined.Share,
-                    onClick = { onShareClick(postView.post.ap_id) },
-                )
-                if (!isCreator) {
-                    Divider(Modifier.padding(LARGE_PADDING))
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_block, postView.creator.name),
-                        icon = Icons.Outlined.Block,
-                        onClick = onBlockCreatorClick,
-                    )
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_block, postView.community.name),
-                        icon = Icons.Outlined.Block,
-                        onClick = onBlockCommunityClick,
-                    )
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_report_post),
-                        icon = Icons.Outlined.Flag,
-                        onClick = onReportClick,
-                    )
-                }
-                if (isCreator) {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.post_listing_edit),
-                        icon = Icons.Outlined.Edit,
-                        onClick = onEditPostClick,
-                    )
-                    val deleted = postView.post.deleted
-                    if (deleted) {
-                        IconAndTextDrawerItem(
-                            text = stringResource(R.string.post_listing_restore),
-                            icon = Icons.Outlined.Restore,
-                            onClick = onDeletePostClick,
-                        )
-                    } else {
-                        IconAndTextDrawerItem(
-                            text = stringResource(R.string.post_listing_delete),
-                            icon = Icons.Outlined.Delete,
-                            onClick = onDeletePostClick,
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {},
-    )
-}
-
-@Preview
-@Composable
-fun PostOptionsDialogPreview() {
-    PostOptionsDialog(
-        postView = samplePostView,
-        isCreator = true,
-        onReportClick = {},
-        onCommunityClick = {},
-        onPersonClick = {},
-        onDismissRequest = {},
-        onEditPostClick = {},
-        onDeletePostClick = {},
-        onBlockCommunityClick = {},
-        onShareClick = {},
-        onBlockCreatorClick = {},
-        onViewSourceClick = {},
-        viewSource = true,
     )
 }
