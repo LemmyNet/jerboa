@@ -1340,7 +1340,7 @@ private fun ThumbnailTile(
                     appState.showLinkPopup(url)
                 },
 
-                )
+            )
 
         Box {
             postView.post.thumbnail_url?.also { thumbnail ->
