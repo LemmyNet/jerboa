@@ -114,7 +114,7 @@ dependencies {
     implementation("io.noties.markwon:linkify:4.6.2")
 
     // Accompanist
-    val accompanistVersion = "0.31.4-beta"
+    val accompanistVersion = "0.32.0"
     implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-flowlayout:$accompanistVersion")
@@ -159,7 +159,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
-    implementation("androidx.navigation:navigation-compose:2.7.0")
+    implementation("androidx.navigation:navigation-compose:2.7.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -178,7 +178,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    testImplementation("org.mockito:mockito-core:5.4.0")
+    testImplementation("org.mockito:mockito-core:5.5.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
 
     implementation("androidx.browser:browser:1.6.0")
