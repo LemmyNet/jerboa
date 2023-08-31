@@ -307,7 +307,7 @@ fun PersonProfileMoreDropdown(
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.matrix_favicon),
-                        contentDescription = stringResource(R.string.markdownHelper_insertSpoiler),
+                        contentDescription = null,
                         modifier = Modifier.size(MARKDOWN_BAR_ICON_SIZE),
                     )
                 },
