@@ -190,18 +190,19 @@ fun PersonProfileActivity(
                 ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
-                        scrollBehavior = scrollBehavior,
                         personName = ctx.getString(R.string.loading),
                         myProfile = false,
-                        selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = {},
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
                         onMessagePersonClick = {},
+                        selectedSortType = personProfileViewModel.sortType,
                         openDrawer = ::openDrawer,
+                        scrollBehavior = scrollBehavior,
                         onBack = onBack,
                         isLoggedIn = { false },
                         siteVersion = siteViewModel.siteVersion(),
+                        matrixId = null,
                     )
                 }
                 is ApiState.Holder -> {
@@ -267,6 +268,7 @@ fun PersonProfileActivity(
                         onBack = onBack,
                         isLoggedIn = { !account.isAnon() },
                         siteVersion = siteViewModel.siteVersion(),
+                        matrixId = person.matrix_user_id,
                     )
                 }
                 else -> {}
