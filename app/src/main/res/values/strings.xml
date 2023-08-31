@@ -412,4 +412,5 @@
     <string name="open_link_external">Open link in external</string>
     <string name="no_activity_found">No activity (app) found that can open this link</string>
     <string name="markdownHelper_insertSpoiler">Insert spoiler</string>
+    <string name="matrix_send_msg">Connect on Matrix</string>
 </resources>
