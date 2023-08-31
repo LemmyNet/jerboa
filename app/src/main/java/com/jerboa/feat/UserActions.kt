@@ -127,3 +127,11 @@ fun shareLink(url: String, ctx: Context) {
     val shareIntent = Intent.createChooser(intent, ctx.getString(R.string.share))
     ctx.startActivitySafe(shareIntent)
 }
+
+/**
+ * Opens matrix for that user
+ */
+fun openMatrix(matrixId: String, ctx: Context) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://matrix.to/#/$matrixId"))
+    ctx.startActivitySafe(intent)
+}

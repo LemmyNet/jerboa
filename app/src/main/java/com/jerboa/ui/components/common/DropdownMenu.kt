@@ -43,6 +43,29 @@ fun MenuItem(
 @Composable
 fun MenuItem(
     text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier,
+    icon: @Composable (() -> Unit),
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+) {
+    DropdownMenuItem(
+        text = {
+            Text(
+                text = text,
+                style = textStyle,
+                modifier = textModifier,
+            )
+        },
+        leadingIcon = icon,
+        onClick = onClick,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun MenuItem(
+    text: String,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     onClick: () -> Unit,
