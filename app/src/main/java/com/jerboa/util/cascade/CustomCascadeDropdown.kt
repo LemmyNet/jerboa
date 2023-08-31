@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
 import com.jerboa.util.cascade.internal.clickableWithoutRipple
 import com.jerboa.util.cascade.internal.copy
 import com.jerboa.util.cascade.internal.then
@@ -27,7 +28,7 @@ fun CascadeCenteredDropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    fixedWidth: Dp = LocalConfiguration.current.screenWidthDp.dp * 0.86f,
+    fixedWidth: Dp = LocalConfiguration.current.screenWidthDp.dp * POPUP_MENU_WIDTH_RATIO,
     shadowElevation: Dp = 3.dp,
     properties: PopupProperties = PopupProperties(focusable = true),
     state: CascadeState = rememberCascadeState(),

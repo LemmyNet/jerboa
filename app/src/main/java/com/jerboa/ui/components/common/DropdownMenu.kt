@@ -29,6 +29,7 @@ import com.jerboa.R
 import com.jerboa.datatypes.types.CommentSortType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
 import com.jerboa.ui.theme.Shapes
 import com.jerboa.util.cascade.CascadeColumnScope
 import com.jerboa.util.cascade.CascadeDropdownMenu
@@ -244,7 +245,7 @@ fun CenteredPopupMenu(
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth(0.86f)
+                        .fillMaxWidth(POPUP_MENU_WIDTH_RATIO)
                         .padding(vertical = LARGE_PADDING),
                     content = content,
                 )
