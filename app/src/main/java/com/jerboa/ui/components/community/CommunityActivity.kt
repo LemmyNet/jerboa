@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import com.jerboa.ConsumeReturn
 import com.jerboa.CreatePostDeps
@@ -43,7 +44,6 @@ import com.jerboa.datatypes.types.CommunityId
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.FollowCommunity
-import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.MarkPostAsRead
@@ -60,7 +60,6 @@ import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.ApiEmptyText
@@ -74,7 +73,6 @@ import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
-import com.jerboa.util.InitializeRoute
 import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -82,7 +80,6 @@ import kotlinx.collections.immutable.toImmutableList
 fun CommunityActivity(
     communityArg: Either<CommunityId, String>,
     appState: JerboaAppState,
-    communityViewModel: CommunityViewModel,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
     appSettingsViewModel: AppSettingsViewModel,
@@ -105,43 +102,16 @@ fun CommunityActivity(
     val account = getCurrentAccount(accountViewModel)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        if (communityViewModel.initialized) communityViewModel.updatePost(pv)
-    }
+    val communityViewModel: CommunityViewModel =
+        viewModel(factory = CommunityViewModel.Companion.Factory(account, communityArg))
 
-    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
-        if (communityViewModel.initialized) communityViewModel.updatePost(pv)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, communityViewModel::updatePost)
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, communityViewModel::updatePost)
 
     LaunchedEffect(account) {
         if (!account.isAnon()) {
             communityViewModel.updateSortType(account.defaultSortType.toEnumSafe())
         }
-    }
-
-    InitializeRoute(communityViewModel) {
-        val communityId = communityArg.fold({ it }, { null })
-        val communityName = communityArg.fold({ null }, { it })
-
-        communityViewModel.resetPage()
-
-        communityViewModel.getCommunity(
-            form = GetCommunity(
-                id = communityId,
-                name = communityName,
-                auth = account.getJWT(),
-            ),
-        )
-        communityViewModel.getPosts(
-            form =
-            GetPosts(
-                community_id = communityId,
-                community_name = communityName,
-                page = communityViewModel.page,
-                sort = communityViewModel.sortType,
-                auth = account.getJWT(),
-            ),
-        )
     }
 
     val pullRefreshState = rememberPullRefreshState(
@@ -237,13 +207,14 @@ fun CommunityActivity(
                                     )
                                 }
                             },
-                            onClickCommunityInfo = appState::toCommunitySideBar,
+                            onClickCommunityInfo = { appState.toCommunitySideBar(communityRes.data.community_view) },
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                             isBlocked = communityRes.data.community_view.blocked,
                             siteVersion = siteViewModel.siteVersion(),
                         )
                     }
+
                     else -> {}
                 }
             }
@@ -491,6 +462,7 @@ fun CommunityActivity(
                             postActionbarMode = postActionbarMode,
                         )
                     }
+
                     else -> {}
                 }
             }

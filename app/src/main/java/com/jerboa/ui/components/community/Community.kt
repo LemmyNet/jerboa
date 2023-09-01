@@ -292,8 +292,8 @@ fun CommunityMoreDropdown(
             text = stringResource(R.string.community_community_info),
             icon = Icons.Outlined.Info,
             onClick = {
-                onClickCommunityInfo()
                 onDismissRequest()
+                onClickCommunityInfo()
             },
         )
         MenuItem(

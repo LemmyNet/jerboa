@@ -86,7 +86,6 @@ import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.rootChannel
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
@@ -104,7 +103,6 @@ import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
-import com.jerboa.util.InitializeRoute
 import kotlinx.collections.immutable.toImmutableSet
 
 object PostViewReturn {
@@ -160,24 +158,11 @@ fun PostActivity(
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val postViewModel: PostViewModel = viewModel()
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id, account))
 
-    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        if (postViewModel.initialized) postViewModel.updatePost(pv)
-    }
-
-    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
-        if (postViewModel.initialized) postViewModel.appendComment(cv)
-    }
-
-    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
-        if (postViewModel.initialized) postViewModel.updateComment(cv)
-    }
-
-    InitializeRoute(postViewModel) {
-        postViewModel.initialize(id = id)
-        postViewModel.getData(account)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
+    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)

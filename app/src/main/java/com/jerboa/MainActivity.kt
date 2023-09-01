@@ -23,12 +23,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import androidx.navigation.navigation
 import arrow.core.Either
 import coil.Coil
 import com.jerboa.api.API
@@ -47,7 +45,6 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.AppSettingsViewModelFactory
-import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
@@ -239,101 +236,35 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    navigation(
-                        route = Route.Graph.COMMUNITY,
-                        startDestination = Route.COMMUNITY_FROM_ID,
+                    composable(
+                        route = Route.COMMUNITY_FROM_ID,
+                        arguments = listOf(
+                            navArgument(Route.CommunityFromIdArgs.ID) {
+                                type = Route.CommunityFromIdArgs.ID_TYPE
+                            },
+                        ),
                     ) {
-                        composable(
-                            route = Route.COMMUNITY_FROM_ID,
-                            arguments = listOf(
-                                navArgument(Route.CommunityFromIdArgs.ID) {
-                                    type = Route.CommunityFromIdArgs.ID_TYPE
-                                },
-                            ),
-                        ) {
-                            val args = Route.CommunityFromIdArgs(it)
-                            val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { appState.getBackStackEntry(Route.Graph.COMMUNITY) },
-                            )
+                        val args = Route.CommunityFromIdArgs(it)
 
-                            CommunityActivity(
-                                communityArg = Either.Left(args.id),
-                                appState = appState,
-                                communityViewModel = communityViewModel,
-                                accountViewModel = accountViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
-                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                siteViewModel = siteViewModel,
-                                useCustomTabs = appSettings.useCustomTabs,
-                                usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
-                                showPostLinkPreviews = appSettings.showPostLinkPreviews,
-                                markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                                postActionbarMode = appSettings.postActionbarMode,
-                            )
-                        }
-
-                        // Only necessary for community deeplinks
-                        composable(
-                            route = Route.COMMUNITY_FROM_URL,
-                            arguments = listOf(
-                                navArgument(Route.CommunityFromUrlArgs.NAME) {
-                                    type = Route.CommunityFromUrlArgs.NAME_TYPE
-                                },
-                                navArgument(Route.CommunityFromUrlArgs.INSTANCE) {
-                                    type = Route.CommunityFromUrlArgs.INSTANCE_TYPE
-                                },
-                            ),
-                        ) {
-                            val args = Route.CommunityFromUrlArgs(it)
-                            val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { appState.getBackStackEntry(Route.Graph.COMMUNITY) },
-                            )
-
-                            // Could be instance/c/community@otherinstance ({instance}/c/{name})
-                            // Name could contain its instance already, thus we check for it
-                            val qualifiedName = if (args.name.contains("@")) {
-                                args.name
-                            } else {
-                                "${args.name}@${args.instance}"
-                            }
-
-                            CommunityActivity(
-                                communityArg = Either.Right(qualifiedName),
-                                appState = appState,
-                                communityViewModel = communityViewModel,
-                                accountViewModel = accountViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
-                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                siteViewModel = siteViewModel,
-                                useCustomTabs = appSettings.useCustomTabs,
-                                usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
-                                showPostLinkPreviews = appSettings.showPostLinkPreviews,
-                                markAsReadOnScroll = appSettings.markAsReadOnScroll,
-                                postActionbarMode = appSettings.postActionbarMode,
-                            )
-                        }
-
-                        composable(route = Route.COMMUNITY_SIDEBAR) {
-                            val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { appState.getBackStackEntry(Route.Graph.COMMUNITY) },
-                            )
-
-                            CommunitySidebarActivity(
-                                communityViewModel = communityViewModel,
-                                onClickBack = appState::popBackStack,
-                            )
-                        }
+                        CommunityActivity(
+                            communityArg = Either.Left(args.id),
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                            siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
+                        )
                     }
 
-                    // TODO: Make community side bar a tab in the community activity so they can
-                    //  reuse the same community view model.
-                    // HACK: Deep links to nested composables isn't allowed. This hack is required
-                    //  open community url from outside the application. This hack is NOT required
-                    //  for opening urls within the app itself.
+                    // Only necessary for community deeplinks
                     composable(
-                        route = "redirect/${Route.COMMUNITY_FROM_URL}",
+                        route = Route.COMMUNITY_FROM_URL,
                         deepLinks = listOf(
                             navDeepLink { uriPattern = Route.COMMUNITY_FROM_URL },
                         ),
@@ -347,13 +278,35 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.CommunityFromUrlArgs(it)
-                        val route = Route.CommunityFromUrlArgs.makeRoute(
-                            instance = args.instance,
-                            name = args.name,
-                        )
+                        // Could be instance/c/community@otherinstance ({instance}/c/{name})
+                        // Name could contain its instance already, thus we check for it
+                        val qualifiedName = if (args.name.contains("@")) {
+                            args.name
+                        } else {
+                            "${args.name}@${args.instance}"
+                        }
 
-                        // TODO properly
-                        appState.navigate(route)
+                        CommunityActivity(
+                            communityArg = Either.Right(qualifiedName),
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                            siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
+                        )
+                    }
+
+                    composable(route = Route.COMMUNITY_SIDEBAR) {
+                        CommunitySidebarActivity(
+                            appState = appState,
+                            onClickBack = appState::popBackStack,
+                        )
                     }
 
                     composable(
@@ -436,10 +389,10 @@ class MainActivity : AppCompatActivity() {
                         CommunityListActivity(
                             appState = appState,
                             accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
+                            followList = siteViewModel.getFollowList(),
                         )
                     }
 

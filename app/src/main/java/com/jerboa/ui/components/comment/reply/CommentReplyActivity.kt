@@ -23,7 +23,6 @@ import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.util.InitializeRoute
 
 object CommentReplyReturn {
     const val COMMENT_VIEW = "comment-reply::return(comment-view)"
@@ -42,9 +41,6 @@ fun CommentReplyActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val commentReplyViewModel: CommentReplyViewModel = viewModel()
-    InitializeRoute(commentReplyViewModel) {
-        commentReplyViewModel.initialize(replyItem)
-    }
 
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
@@ -67,6 +63,7 @@ fun CommentReplyActivity(
                 onSendClick = {
                     if (!account.isAnon()) {
                         commentReplyViewModel.createComment(
+                            replyItem,
                             ctx = ctx,
                             content = reply.text,
                             account = account,
@@ -85,65 +82,63 @@ fun CommentReplyActivity(
             if (loading) {
                 LoadingBar(padding)
             } else {
-                commentReplyViewModel.replyItem?.let { replyItem ->
-                    when (replyItem) {
-                        is ReplyItem.CommentItem ->
-                            CommentReply(
-                                commentView = replyItem.item,
-                                account = account,
-                                reply = reply,
-                                onReplyChange = { reply = it },
-                                onPersonClick = appState::toProfile,
-                                isModerator = isModerator,
-                                modifier = Modifier
-                                    .padding(padding)
-                                    .imePadding(),
-                                showAvatar = siteViewModel.showAvatar(),
-                                showScores = siteViewModel.showScores(),
-                            )
-
-                        is ReplyItem.PostItem -> PostReply(
-                            postView = replyItem.item,
+                when (replyItem) {
+                    is ReplyItem.CommentItem ->
+                        CommentReply(
+                            commentView = replyItem.item,
                             account = account,
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
                             isModerator = isModerator,
-                            showAvatar = siteViewModel.showAvatar(),
-                            showScores = siteViewModel.showScores(),
                             modifier = Modifier
                                 .padding(padding)
                                 .imePadding(),
+                            showAvatar = siteViewModel.showAvatar(),
+                            showScores = siteViewModel.showScores(),
                         )
 
-                        is ReplyItem.CommentReplyItem ->
-                            CommentReplyReply(
-                                commentReplyView = replyItem.item,
-                                account = account,
-                                reply = reply,
-                                onReplyChange = { reply = it },
-                                onPersonClick = appState::toProfile,
-                                modifier = Modifier
-                                    .padding(padding)
-                                    .imePadding(),
-                                showAvatar = siteViewModel.showAvatar(),
-                                showScores = siteViewModel.showScores(),
-                            )
+                    is ReplyItem.PostItem -> PostReply(
+                        postView = replyItem.item,
+                        account = account,
+                        reply = reply,
+                        onReplyChange = { reply = it },
+                        onPersonClick = appState::toProfile,
+                        isModerator = isModerator,
+                        showAvatar = siteViewModel.showAvatar(),
+                        showScores = siteViewModel.showScores(),
+                        modifier = Modifier
+                            .padding(padding)
+                            .imePadding(),
+                    )
 
-                        is ReplyItem.MentionReplyItem ->
-                            MentionReply(
-                                personMentionView = replyItem.item,
-                                account = account,
-                                reply = reply,
-                                onReplyChange = { reply = it },
-                                onPersonClick = appState::toProfile,
-                                modifier = Modifier
-                                    .padding(padding)
-                                    .imePadding(),
-                                showAvatar = siteViewModel.showAvatar(),
-                                showScores = siteViewModel.showScores(),
-                            )
-                    }
+                    is ReplyItem.CommentReplyItem ->
+                        CommentReplyReply(
+                            commentReplyView = replyItem.item,
+                            account = account,
+                            reply = reply,
+                            onReplyChange = { reply = it },
+                            onPersonClick = appState::toProfile,
+                            modifier = Modifier
+                                .padding(padding)
+                                .imePadding(),
+                            showAvatar = siteViewModel.showAvatar(),
+                            showScores = siteViewModel.showScores(),
+                        )
+
+                    is ReplyItem.MentionReplyItem ->
+                        MentionReply(
+                            personMentionView = replyItem.item,
+                            account = account,
+                            reply = reply,
+                            onReplyChange = { reply = it },
+                            onPersonClick = appState::toProfile,
+                            modifier = Modifier
+                                .padding(padding)
+                                .imePadding(),
+                            showAvatar = siteViewModel.showAvatar(),
+                            showScores = siteViewModel.showScores(),
+                        )
                 }
             }
         },

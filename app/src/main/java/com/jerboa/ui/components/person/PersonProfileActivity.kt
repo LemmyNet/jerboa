@@ -67,7 +67,6 @@ import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
@@ -82,7 +81,6 @@ import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
 import com.jerboa.pagerTabIndicatorOffset2
-import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
@@ -102,7 +100,6 @@ import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.util.InitializeRoute
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -135,26 +132,20 @@ fun PersonProfileActivity(
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val personProfileViewModel: PersonProfileViewModel = viewModel()
+    val personProfileViewModel: PersonProfileViewModel =
+        viewModel(factory = PersonProfileViewModel.Companion.Factory(personArg, savedMode, account))
 
-    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)
-    }
-
-    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
-        if (personProfileViewModel.initialized) personProfileViewModel.updateComment(cv)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, personProfileViewModel::updatePost)
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
 
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
-        if (personProfileViewModel.initialized) {
-            when (val res = personProfileViewModel.personDetailsRes) {
-                is ApiState.Success -> {
-                    if (account.id == res.data.person_view.person.id) {
-                        personProfileViewModel.insertComment(cv)
-                    }
+        when (val res = personProfileViewModel.personDetailsRes) {
+            is ApiState.Success -> {
+                if (account.id == res.data.person_view.person.id) {
+                    personProfileViewModel.insertComment(cv)
                 }
-                else -> {}
             }
+            else -> {}
         }
     }
 
@@ -162,23 +153,6 @@ fun PersonProfileActivity(
         scope.launch {
             drawerState.open()
         }
-    }
-
-    InitializeRoute(personProfileViewModel) {
-        val personId = personArg.fold({ it }, { null })
-        val personName = personArg.fold({ null }, { it })
-
-        personProfileViewModel.resetPage()
-        personProfileViewModel.updateSavedOnly(savedMode)
-        personProfileViewModel.getPersonDetails(
-            GetPersonDetails(
-                person_id = personId,
-                username = personName,
-                sort = SortType.New,
-                auth = account.getJWT(),
-                saved_only = savedMode,
-            ),
-        )
     }
 
     Scaffold(
@@ -347,9 +321,7 @@ fun UserTabs(
 
     val loading = personProfileViewModel.personDetailsRes.isLoading()
 
-    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
-        if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)
-    }
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, personProfileViewModel::updatePost)
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),

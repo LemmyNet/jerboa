@@ -23,7 +23,6 @@ import com.jerboa.model.PrivateMessageReplyViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.util.InitializeRoute
 
 @Composable
 fun PrivateMessageReplyActivity(
@@ -38,9 +37,6 @@ fun PrivateMessageReplyActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val privateMessageReplyViewModel: PrivateMessageReplyViewModel = viewModel()
-    InitializeRoute(privateMessageReplyViewModel) {
-        privateMessageReplyViewModel.initialize(privateMessageView)
-    }
 
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
 
@@ -60,6 +56,7 @@ fun PrivateMessageReplyActivity(
                     onSendClick = {
                         if (!account.isAnon()) {
                             privateMessageReplyViewModel.createPrivateMessage(
+                                recipientId = privateMessageView.creator.id,
                                 content = reply.text,
                                 account = account,
                                 onGoBack = onBack,
@@ -73,19 +70,17 @@ fun PrivateMessageReplyActivity(
                 if (loading) {
                     LoadingBar(padding)
                 } else {
-                    privateMessageReplyViewModel.replyItem?.also { pmv ->
-                        PrivateMessageReply(
-                            privateMessageView = pmv,
-                            account = account,
-                            reply = reply,
-                            onReplyChange = { reply = it },
-                            onPersonClick = onProfile,
-                            modifier = Modifier
-                                .padding(padding)
-                                .imePadding(),
-                            showAvatar = siteViewModel.showAvatar(),
-                        )
-                    }
+                    PrivateMessageReply(
+                        privateMessageView = privateMessageView,
+                        account = account,
+                        reply = reply,
+                        onReplyChange = { reply = it },
+                        onPersonClick = onProfile,
+                        modifier = Modifier
+                            .padding(padding)
+                            .imePadding(),
+                        showAvatar = siteViewModel.showAvatar(),
+                    )
                 }
             },
         )

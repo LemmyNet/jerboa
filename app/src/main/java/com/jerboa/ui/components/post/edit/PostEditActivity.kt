@@ -30,7 +30,6 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.ui.components.post.composables.CreateEditPostHeader
 import com.jerboa.ui.components.post.composables.EditPostSubmitIcon
-import com.jerboa.util.InitializeRoute
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 import kotlinx.coroutines.launch
@@ -52,9 +51,6 @@ fun PostEditActivity(
     val scope = rememberCoroutineScope()
 
     val postEditViewModel: PostEditViewModel = viewModel()
-    InitializeRoute(postEditViewModel) {
-        postEditViewModel.initialize(postView)
-    }
 
     var name by rememberSaveable { mutableStateOf(postView.post.name) }
     var url by rememberSaveable { mutableStateOf(postView.post.url.orEmpty()) }
@@ -90,6 +86,7 @@ fun PostEditActivity(
                     onSubmitClick = {
                         if (!account.isAnon()) {
                             onSubmitClick(
+                                postId = postView.post.id,
                                 account = account,
                                 name = name,
                                 body = body,
@@ -138,6 +135,7 @@ fun PostEditActivity(
 }
 
 fun onSubmitClick(
+    postId: Int,
     account: Account,
     name: String,
     body: TextFieldValue,
@@ -150,11 +148,10 @@ fun onSubmitClick(
     val nameOut = name.trim()
     val bodyOut = body.text.trim().ifEmpty { null }
     val urlOut = url.trim().ifEmpty { null }
-    val pv = postEditViewModel.postView
 
     postEditViewModel.editPost(
         form = EditPost(
-            post_id = pv!!.post.id,
+            post_id = postId,
             name = nameOut,
             url = urlOut,
             body = bodyOut,

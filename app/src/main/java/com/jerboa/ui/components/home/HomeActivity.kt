@@ -61,7 +61,6 @@ import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
@@ -107,13 +106,8 @@ fun HomeActivity(
     // Forget snackbars of previous accounts
     val snackbarHostState = remember(account) { SnackbarHostState() }
 
-    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        homeViewModel.updatePost(pv)
-    }
-
-    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
-        homeViewModel.updatePost(pv)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, homeViewModel::updatePost)
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {

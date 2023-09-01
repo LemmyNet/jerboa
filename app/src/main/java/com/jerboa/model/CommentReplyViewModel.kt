@@ -20,7 +20,6 @@ import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.apiErrorToast
-import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -32,28 +31,19 @@ sealed class ReplyItem : Parcelable {
     class MentionReplyItem(val item: PersonMentionView) : ReplyItem()
 }
 
-class CommentReplyViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class CommentReplyViewModel : ViewModel() {
 
     var createCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
         private set
-    var replyItem by mutableStateOf<ReplyItem?>(null)
-        private set
-
-    fun initialize(
-        newReplyItem: ReplyItem,
-    ) {
-        replyItem = newReplyItem
-    }
 
     fun createComment(
+        reply: ReplyItem,
         ctx: Context,
         content: String,
         account: Account,
         focusManager: FocusManager,
         onSuccess: (CommentView) -> Unit,
     ) {
-        val reply = replyItem!! // This should have been initialized
         val (postId, commentParentId) = when (reply) {
             is ReplyItem.PostItem -> Pair(reply.item.post.id, null)
             is ReplyItem.CommentItem -> Pair(
