@@ -616,7 +616,7 @@ fun UserTabs(
                                     onShareClick = { url ->
                                         shareLink(url, ctx)
                                     },
-                                    isScrolledToEnd = {
+                                    loadMorePosts = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,
                                             account.getJWT(),
@@ -625,14 +625,14 @@ fun UserTabs(
                                     account = account,
                                     listState = postListState,
                                     postViewMode = getPostViewMode(appSettingsViewModel),
+                                    showVotingArrowsInListView = showVotingArrowsInListView,
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
-                                    showVotingArrowsInListView = showVotingArrowsInListView,
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
-                                    appState = appState,
                                     showPostLinkPreviews = showPostLinkPreviews,
+                                    appState = appState,
                                     markAsReadOnScroll = markAsReadOnScroll,
                                     onMarkAsRead = {
                                         if (!account.isAnon() && !it.read) {
@@ -649,6 +649,7 @@ fun UserTabs(
                                     showIfRead = false,
                                     showScores = showScores,
                                     postActionbarMode = postActionbarMode,
+                                    showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                 )
                             }
                             else -> {}
