@@ -14,7 +14,7 @@ import com.jerboa.datatypes.types.PrivateMessageResponse
 import com.jerboa.db.entity.Account
 import kotlinx.coroutines.launch
 
-class PrivateMessageReplyViewModel : ViewModel(){
+class PrivateMessageReplyViewModel : ViewModel() {
 
     var createMessageRes: ApiState<PrivateMessageResponse> by mutableStateOf(ApiState.Empty)
         private set
