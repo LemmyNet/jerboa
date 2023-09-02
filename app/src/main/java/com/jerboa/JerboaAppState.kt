@@ -54,7 +54,7 @@ class JerboaAppState(
     fun toPrivateMessageReply(
         privateMessageView: PrivateMessageView,
     ) {
-        storeReturn(PrivateMessage.PM_VIEW, privateMessageView)
+        sendReturnForwards(PrivateMessage.PM_VIEW, privateMessageView)
         navController.navigate(Route.PRIVATE_MESSAGE_REPLY)
     }
 
@@ -84,14 +84,14 @@ class JerboaAppState(
     fun toPostEdit(
         postView: PostView,
     ) {
-        storeReturn(PostEditReturn.POST_SEND, postView)
+        sendReturnForwards(PostEditReturn.POST_SEND, postView)
         navController.navigate(Route.POST_EDIT)
     }
 
     fun toCommentEdit(
         commentView: CommentView,
     ) {
-        storeReturn(CommentEditReturn.COMMENT_SEND, commentView)
+        sendReturnForwards(CommentEditReturn.COMMENT_SEND, commentView)
         navController.navigate(Route.COMMENT_EDIT)
     }
 
@@ -101,7 +101,7 @@ class JerboaAppState(
         replyItem: ReplyItem,
         isModerator: Boolean,
     ) {
-        storeReturn(CommentEditReturn.COMMENT_SEND, replyItem)
+        sendReturnForwards(CommentEditReturn.COMMENT_SEND, replyItem)
         navController.navigate(Route.CommentReplyArgs.makeRoute(isModerator = "$isModerator"))
     }
 
@@ -113,7 +113,7 @@ class JerboaAppState(
         community: Community?,
     ) {
         if (community != null) {
-            storeReturn(CreatePostReturn.COMMUNITY_SEND, community)
+            sendReturnForwards(CreatePostReturn.COMMUNITY_SEND, community)
         }
         navController.navigate(Route.CREATE_POST)
     }
@@ -133,7 +133,7 @@ class JerboaAppState(
     }
 
     fun toCommunitySideBar(communityView: CommunityView) {
-        storeReturn(CommunityViewSidebar.COMMUNITY_VIEW, communityView)
+        sendReturnForwards(CommunityViewSidebar.COMMUNITY_VIEW, communityView)
         navController.navigate(Route.COMMUNITY_SIDEBAR)
     }
 
@@ -164,6 +164,8 @@ class JerboaAppState(
      * Stores the parcelable on the previous route
      *
      * Use this with [ConsumeReturn]
+     *
+     * When you want to pass a [Parcelable] to the previous screen/activity you came from
      */
     fun addReturn(key: String, value: Parcelable) {
         navController.previousBackStackEntry?.savedStateHandle?.set(key, value)
@@ -173,8 +175,10 @@ class JerboaAppState(
      * Stores the parcelable on the current route
      *
      * Use this with [getPrevReturn] [usePrevReturn] [getPrevReturnNullable]
+     *
+     * When you want to pass a [Parcelable] to another screen/activity
      */
-    fun storeReturn(key: String, value: Parcelable) {
+    fun sendReturnForwards(key: String, value: Parcelable) {
         navController.currentBackStackEntry?.savedStateHandle?.set(key, value)
     }
 
