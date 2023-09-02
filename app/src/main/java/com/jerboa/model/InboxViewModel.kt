@@ -235,7 +235,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             messagesRes = when (newRes) {
                 is ApiState.Success -> {
                     // see 1211, one can get a message between two pages, (especially noticeable if you dm yourself)
-                    // This makes it so it shifts one message up and the next page will have a duplicate image
+                    // This makes it so it shifts one message up and the next page will have a duplicate message
                     // This crashes because you can't have duplicate messages, as we use the id as id for the item
                     val mergedMessages = getDeduplicateMerge(
                         oldRes.data.private_messages,
