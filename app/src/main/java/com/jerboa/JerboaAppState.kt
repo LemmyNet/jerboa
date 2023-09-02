@@ -17,6 +17,7 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.model.ReplyItem
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
+import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.community.sidebar.CommunityViewSidebar
 import com.jerboa.ui.components.post.create.CreatePostReturn
@@ -101,7 +102,7 @@ class JerboaAppState(
         replyItem: ReplyItem,
         isModerator: Boolean,
     ) {
-        sendReturnForwards(CommentEditReturn.COMMENT_SEND, replyItem)
+        sendReturnForwards(CommentReplyReturn.COMMENT_SEND, replyItem)
         navController.navigate(Route.CommentReplyArgs.makeRoute(isModerator = "$isModerator"))
     }
 
