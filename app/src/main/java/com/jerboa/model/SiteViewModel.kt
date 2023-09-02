@@ -1,6 +1,7 @@
 package com.jerboa.model
 
 import android.util.Log
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+@Stable
 class SiteViewModel(private val accountRepository: AccountRepository) : ViewModel() {
 
     // Can't be private, because it needs to be set by the login viewmodel

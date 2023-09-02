@@ -32,7 +32,6 @@ import coil.Coil
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
-import com.jerboa.datatypes.types.Community
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.feat.BackConfirmation.addConfirmationDialog
 import com.jerboa.feat.BackConfirmation.addConfirmationToast
@@ -45,7 +44,6 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.AppSettingsViewModelFactory
-import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
@@ -423,15 +421,12 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             body = text
                         }
-                        val community by appState.takeNullableDepsFromRoot<Community?>()
-
                         CreatePostActivity(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             initialUrl = url,
                             initialBody = body,
                             initialImage = image,
-                            initialCommunity = community,
                         )
                         activity?.intent?.replaceExtras(Bundle())
                     }
@@ -526,10 +521,8 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.CommentReplyArgs(it)
-                        val replyItem by appState.takeDepsFromRoot<ReplyItem>()
 
                         CommentReplyActivity(
-                            replyItem = replyItem,
                             accountViewModel = accountViewModel,
                             appState = appState,
                             siteViewModel = siteViewModel,
@@ -545,27 +538,22 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(route = Route.COMMENT_EDIT) {
-                        val commentView by appState.takeDepsFromRoot<CommentEditDeps>()
                         CommentEditActivity(
-                            commentView = commentView,
                             appState = appState,
                             accountViewModel = accountViewModel,
                         )
                     }
 
                     composable(route = Route.POST_EDIT) {
-                        val postView by appState.takeDepsFromRoot<PostEditDeps>()
                         PostEditActivity(
-                            postView = postView,
                             accountViewModel = accountViewModel,
                             appState = appState,
                         )
                     }
 
                     composable(route = Route.PRIVATE_MESSAGE_REPLY) {
-                        val privateMessage by appState.takeDepsFromRoot<PrivateMessageDeps>()
                         PrivateMessageReplyActivity(
-                            privateMessageView = privateMessage,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             onBack = appState::popBackStack,

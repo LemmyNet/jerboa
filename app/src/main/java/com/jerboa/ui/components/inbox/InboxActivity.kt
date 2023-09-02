@@ -39,9 +39,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jerboa.CommentReplyDeps
 import com.jerboa.JerboaAppState
-import com.jerboa.PrivateMessageDeps
 import com.jerboa.UnreadOrAll
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -206,9 +204,6 @@ fun InboxTabs(
     padding: PaddingValues,
     blurNSFW: Boolean,
 ) {
-    val transferPrivateMessageDepsViaRoot = appState.rootChannel<PrivateMessageDeps>()
-    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
-
     val tabTitles = InboxTab.entries.map { getLocalizedStringForInboxTab(ctx, it) }
     val pagerState = rememberPagerState { tabTitles.size }
 
@@ -391,7 +386,6 @@ fun InboxTabs(
                                             },
                                             onReplyClick = { cr ->
                                                 appState.toCommentReply(
-                                                    channel = transferCommentReplyDepsViaRoot,
                                                     replyItem = ReplyItem.CommentReplyItem(cr),
                                                     isModerator = false,
                                                 )
@@ -589,7 +583,6 @@ fun InboxTabs(
                                             },
                                             onReplyClick = { pm ->
                                                 appState.toCommentReply(
-                                                    channel = transferCommentReplyDepsViaRoot,
                                                     replyItem = ReplyItem.MentionReplyItem(pm),
                                                     isModerator = false,
                                                 )
@@ -766,7 +759,6 @@ fun InboxTabs(
                                             privateMessageView = message,
                                             onReplyClick = { privateMessageView ->
                                                 appState.toPrivateMessageReply(
-                                                    channel = transferPrivateMessageDepsViaRoot,
                                                     privateMessageView = privateMessageView,
                                                 )
                                             },

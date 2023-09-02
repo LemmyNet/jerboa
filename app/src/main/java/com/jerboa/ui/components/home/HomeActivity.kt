@@ -36,10 +36,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.jerboa.ConsumeReturn
-import com.jerboa.CreatePostDeps
 import com.jerboa.JerboaAppState
-import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -96,7 +93,6 @@ fun HomeActivity(
     postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to home activity")
-    val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
 
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
@@ -171,7 +167,6 @@ fun HomeActivity(
                         loginAsToast = false,
                     ) {
                         appState.toCreatePost(
-                            channel = transferCreatePostDepsViaRoot,
                             community = null,
                         )
                     }
@@ -207,7 +202,6 @@ fun MainPostListingsContent(
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
@@ -358,7 +352,6 @@ fun MainPostListingsContent(
             },
             onEditPostClick = { postView ->
                 appState.toPostEdit(
-                    channel = transferPostEditDepsViaRoot,
                     postView = postView,
                 )
             },

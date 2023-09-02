@@ -26,11 +26,11 @@ import com.jerboa.ui.components.common.getCurrentAccount
 
 object CommentReplyReturn {
     const val COMMENT_VIEW = "comment-reply::return(comment-view)"
+    const val COMMENT_SEND = "comment-reply::send(comment-view)"
 }
 
 @Composable
 fun CommentReplyActivity(
-    replyItem: ReplyItem,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     appState: JerboaAppState,
@@ -41,6 +41,7 @@ fun CommentReplyActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val commentReplyViewModel: CommentReplyViewModel = viewModel()
+    val replyItem = appState.getPrevReturn<ReplyItem>(CommentReplyReturn.COMMENT_SEND)
 
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(

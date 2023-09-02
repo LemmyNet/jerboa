@@ -51,11 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
-import com.jerboa.CommentEditDeps
-import com.jerboa.CommentReplyDeps
-import com.jerboa.ConsumeReturn
 import com.jerboa.JerboaAppState
-import com.jerboa.PostEditDeps
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -150,9 +146,6 @@ fun PostActivity(
     postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to post activity")
-    val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
-    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
-    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     val ctx = LocalContext.current
 
@@ -362,7 +355,6 @@ fun PostActivity(
                                     onReplyClick = { pv ->
                                         val isModerator = isModerator(pv.creator, postRes.data.moderators)
                                         appState.toCommentReply(
-                                            channel = transferCommentReplyDepsViaRoot,
                                             replyItem = ReplyItem.PostItem(pv),
                                             isModerator = isModerator,
                                         )
@@ -391,7 +383,6 @@ fun PostActivity(
                                     },
                                     onEditPostClick = { pv ->
                                         appState.toPostEdit(
-                                            channel = transferPostEditDepsViaRoot,
                                             postView = pv,
                                         )
                                     },
@@ -598,7 +589,6 @@ fun PostActivity(
                                         onReplyClick = { cv ->
                                             val isModerator = isModerator(cv.creator, postRes.data.moderators)
                                             appState.toCommentReply(
-                                                channel = transferCommentReplyDepsViaRoot,
                                                 replyItem = ReplyItem.CommentItem(cv),
                                                 isModerator = isModerator,
                                             )
@@ -626,7 +616,6 @@ fun PostActivity(
                                         onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->
                                             appState.toCommentEdit(
-                                                channel = transferCommentEditDepsViaRoot,
                                                 commentView = cv,
                                             )
                                         },

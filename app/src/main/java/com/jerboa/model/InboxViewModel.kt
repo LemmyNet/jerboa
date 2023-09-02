@@ -40,6 +40,7 @@ import com.jerboa.findAndUpdateCommentReply
 import com.jerboa.findAndUpdateMention
 import com.jerboa.findAndUpdatePersonMention
 import com.jerboa.findAndUpdatePrivateMessage
+import com.jerboa.getDeduplicateMerge
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
@@ -138,12 +139,12 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
 
             repliesRes = when (newRes) {
                 is ApiState.Success -> {
-                    if (newRes.data.replies.isEmpty()) { // Hit the end of the replies
-                        pageReplies -= 1
-                    }
-                    val appended = oldRes.data.replies.toMutableList()
-                    appended.addAll(newRes.data.replies)
-                    ApiState.Success(oldRes.data.copy(replies = appended))
+                    val mergedReplies = getDeduplicateMerge(
+                        oldRes.data.replies,
+                        newRes.data.replies,
+                    ) { it.comment_reply.id }
+
+                    ApiState.Success(oldRes.data.copy(replies = mergedReplies))
                 }
 
                 else -> {
@@ -186,12 +187,12 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
 
             mentionsRes = when (newRes) {
                 is ApiState.Success -> {
-                    if (newRes.data.mentions.isEmpty()) { // Hit the end of the replies
-                        pageMentions -= 1
-                    }
-                    val appended = oldRes.data.mentions.toMutableList()
-                    appended.addAll(newRes.data.mentions)
-                    ApiState.Success(oldRes.data.copy(mentions = appended))
+                    val mergedMentions = getDeduplicateMerge(
+                        oldRes.data.mentions,
+                        newRes.data.mentions,
+                    ) { it.person_mention.id }
+
+                    ApiState.Success(oldRes.data.copy(mentions = mergedMentions))
                 }
 
                 else -> {
@@ -233,12 +234,15 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
 
             messagesRes = when (newRes) {
                 is ApiState.Success -> {
-                    if (newRes.data.private_messages.isEmpty()) { // Hit the end of the replies
-                        pageMessages -= 1
-                    }
-                    val appended = oldRes.data.private_messages.toMutableList()
-                    appended.addAll(newRes.data.private_messages)
-                    ApiState.Success(oldRes.data.copy(private_messages = appended))
+                    // see 1211, one can get a message between two pages, (especially noticeable if you dm yourself)
+                    // This makes it so it shifts one message up and the next page will have a duplicate image
+                    // This crashes because you can't have duplicate messages, as we use the id as id for the item
+                    val mergedMessages = getDeduplicateMerge(
+                        oldRes.data.private_messages,
+                        newRes.data.private_messages,
+                    ) { it.private_message.id }
+
+                    ApiState.Success(oldRes.data.copy(private_messages = mergedMessages))
                 }
 
                 else -> {

@@ -44,11 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
-import com.jerboa.CommentEditDeps
-import com.jerboa.CommentReplyDeps
-import com.jerboa.ConsumeReturn
 import com.jerboa.JerboaAppState
-import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -305,10 +301,6 @@ fun UserTabs(
     showScores: Boolean,
     postActionbarMode: Int,
 ) {
-    val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
-    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
-    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
-
     val tabTitles = if (savedMode) {
         listOf(
             getLocalizedStringForUserTab(ctx, UserTab.Posts),
@@ -521,7 +513,6 @@ fun UserTabs(
                                     },
                                     onEditPostClick = { pv ->
                                         appState.toPostEdit(
-                                            channel = transferPostEditDepsViaRoot,
                                             postView = pv,
                                         )
                                     },
@@ -743,7 +734,6 @@ fun UserTabs(
                                     },
                                     onReplyClick = { cv ->
                                         appState.toCommentReply(
-                                            channel = transferCommentReplyDepsViaRoot,
                                             replyItem = ReplyItem.CommentItem(cv),
                                             isModerator = false,
                                         )
@@ -776,7 +766,6 @@ fun UserTabs(
                                     },
                                     onEditCommentClick = { cv ->
                                         appState.toCommentEdit(
-                                            channel = transferCommentEditDepsViaRoot,
                                             commentView = cv,
                                         )
                                     },

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.entity.isAnon
@@ -24,15 +25,20 @@ import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 
+object PrivateMessage {
+    const val PM_VIEW = "private-message::return(pm-view)"
+}
+
 @Composable
 fun PrivateMessageReplyActivity(
-    privateMessageView: PrivateMessageView,
+    appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     onBack: () -> Unit,
     onProfile: (Int) -> Unit,
 ) {
     Log.d("jerboa", "got to private message reply activity")
+    val privateMessageView = appState.getPrevReturn<PrivateMessageView>(PrivateMessage.PM_VIEW)
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 

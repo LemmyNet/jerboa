@@ -36,11 +36,11 @@ import kotlinx.coroutines.launch
 
 object PostEditReturn {
     const val POST_VIEW = "post-edit::return(post-view)"
+    const val POST_SEND = "post-edit::send(post-view)"
 }
 
 @Composable
 fun PostEditActivity(
-    postView: PostView,
     accountViewModel: AccountViewModel,
     appState: JerboaAppState,
 ) {
@@ -51,6 +51,8 @@ fun PostEditActivity(
     val scope = rememberCoroutineScope()
 
     val postEditViewModel: PostEditViewModel = viewModel()
+
+    val postView = appState.getPrevReturn<PostView>(PostEditReturn.POST_SEND)
 
     var name by rememberSaveable { mutableStateOf(postView.post.name) }
     var url by rememberSaveable { mutableStateOf(postView.post.url.orEmpty()) }

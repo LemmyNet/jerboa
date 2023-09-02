@@ -31,10 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
-import com.jerboa.ConsumeReturn
-import com.jerboa.CreatePostDeps
 import com.jerboa.JerboaAppState
-import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -92,8 +89,6 @@ fun CommunityActivity(
     postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to community activity")
-    val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
-    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     val scope = rememberCoroutineScope()
     val postListState = rememberLazyListState()
@@ -341,7 +336,6 @@ fun CommunityActivity(
                             },
                             onEditPostClick = { postView ->
                                 appState.toPostEdit(
-                                    channel = transferPostEditDepsViaRoot,
                                     postView = postView,
                                 )
                             },
@@ -483,7 +477,6 @@ fun CommunityActivity(
                                 loginAsToast = false,
                             ) {
                                 appState.toCreatePost(
-                                    channel = transferCreatePostDepsViaRoot,
                                     community = communityRes.data.community_view.community,
                                 )
                             }

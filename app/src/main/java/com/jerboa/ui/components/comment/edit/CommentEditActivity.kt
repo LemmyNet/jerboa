@@ -27,11 +27,11 @@ import com.jerboa.ui.components.common.getCurrentAccount
 
 object CommentEditReturn {
     const val COMMENT_VIEW = "comment-edit::return(comment-view)"
+    const val COMMENT_SEND = "comment-edit::send(comment-view)"
 }
 
 @Composable
 fun CommentEditActivity(
-    commentView: CommentView,
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
 ) {
@@ -41,6 +41,7 @@ fun CommentEditActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val commentEditViewModel: CommentEditViewModel = viewModel()
+    val commentView = appState.getPrevReturn<CommentView>(key = CommentEditReturn.COMMENT_SEND)
 
     var content by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(commentView.comment.content))
