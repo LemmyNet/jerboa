@@ -3,7 +3,6 @@ package com.jerboa.ui.components.common
 import android.content.Context
 import android.os.Build
 import android.text.TextUtils
-import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.View
 import android.view.View.NOT_FOCUSABLE
@@ -32,6 +31,8 @@ import coil.imageLoader
 import com.jerboa.JerboaAppState
 import com.jerboa.convertSpToPx
 import com.jerboa.util.markwon.BetterLinkMovementMethod
+import com.jerboa.util.markwon.BetterLinkify
+import com.jerboa.util.markwon.BetterLinkifyPlugin
 import com.jerboa.util.markwon.MarkwonLemmyLinkPlugin
 import com.jerboa.util.markwon.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -44,7 +45,6 @@ import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.html.TagHandlerNoOp
 import io.noties.markwon.image.AsyncDrawableSpan
 import io.noties.markwon.image.coil.ClickableCoilImagesPlugin
-import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
 import java.util.regex.Pattern
 
@@ -91,7 +91,7 @@ object MarkdownHelper {
         // main markdown parser has coil + html on
         markwon = Markwon.builder(context)
             // email urls interfere with lemmy links
-            .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
+            .usePlugin(BetterLinkifyPlugin.create(BetterLinkify.WEB_URLS))
             .usePlugin(MarkwonLemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
@@ -122,7 +122,7 @@ object MarkdownHelper {
         // no image parser has html off
         previewMarkwon = Markwon.builder(context)
             // email urls interfere with lemmy links
-            .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
+            .usePlugin(BetterLinkifyPlugin.create(BetterLinkify.WEB_URLS))
             .usePlugin(MarkwonLemmyLinkPlugin())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))

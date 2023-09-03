@@ -3,7 +3,6 @@ package com.jerboa.util.markwon
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.URLSpan
-import android.text.util.Linkify
 import com.jerboa.ui.components.common.lemmyCommunityPattern
 import com.jerboa.ui.components.common.lemmyUserPattern
 import io.noties.markwon.*
@@ -49,8 +48,8 @@ class MarkwonLemmyLinkPlugin : AbstractMarkwonPlugin() {
         }
 
         fun addLinks(text: Spannable): Boolean {
-            val communityLinkAdded = Linkify.addLinks(text, lemmyCommunityPattern, null)
-            val userLinkAdded = Linkify.addLinks(text, lemmyUserPattern, null)
+            val communityLinkAdded = BetterLinkify.addLinks(text, lemmyCommunityPattern, null)
+            val userLinkAdded = BetterLinkify.addLinks(text, lemmyUserPattern, null)
 
             return communityLinkAdded || userLinkAdded
         }
