@@ -1506,3 +1506,14 @@ fun Context.startActivitySafe(intent: Intent) {
         Toast.makeText(this, this.getText(R.string.no_activity_found), Toast.LENGTH_SHORT).show()
     }
 }
+
+/**
+ * This function rewrites HTTP URLs to HTTPS
+ */
+fun String.toHttps(): String {
+    return if (this.startsWith("http://", true)) {
+        this.replaceFirst("http", "https", true)
+    } else {
+        this
+    }
+}
