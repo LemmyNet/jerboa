@@ -1496,11 +1496,11 @@ fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
 
 fun <T> getDeduplicatedList(
     oldList: List<T>,
-    newList: List<T>,
+    uniqueNewList: List<T>,
     getId: (T) -> Int,
 ): List<T> {
     val mapIds = oldList.map { getId(it) }
-    return newList.filterNot { mapIds.contains(getId(it)) }
+    return uniqueNewList.filterNot { mapIds.contains(getId(it)) }
 }
 
 fun <T> getDeduplicateMerge(oldItems: List<T>, newItems: List<T>, getId: (T) -> Int): List<T> {
@@ -1508,5 +1508,5 @@ fun <T> getDeduplicateMerge(oldItems: List<T>, newItems: List<T>, getId: (T) -> 
 }
 
 fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
-    return appendData(old, getDeduplicatedList(new, old) { it.post.id })
+    return appendData(old, getDeduplicatedList(old, new) { it.post.id })
 }
