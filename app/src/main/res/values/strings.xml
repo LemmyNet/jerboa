@@ -415,4 +415,5 @@
     <string name="copy">Copy</string>
     <string name="share_media">Share media</string>
     <string name="matrix_send_msg">Connect on Matrix</string>
+    <string name="failed_sharing_media">Failed to share media!</string>
 </resources>

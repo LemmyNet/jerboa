@@ -81,6 +81,7 @@ import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.siFormat
 import com.jerboa.toEnum
+import com.jerboa.toHttps
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.ActionBarButtonAndBadge
 import com.jerboa.ui.components.common.CircularIcon
@@ -336,7 +337,7 @@ fun PostTitleAndImageLink(
     showIfRead: Boolean,
 ) {
     // This was tested, we know it exists
-    val url = postView.post.url!!
+    val url = postView.post.url!!.toHttps()
 
     Column(
         modifier = Modifier.padding(

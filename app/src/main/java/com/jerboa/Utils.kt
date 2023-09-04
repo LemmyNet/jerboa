@@ -1383,15 +1383,21 @@ fun <I, O> ComponentActivity.registerActivityResultLauncher(
 
 /**
  *  Returns a [InputStream] for the data of the URL, but it also checks the cache first!
+ *
+ *  Doesn't clean up the [InputStream]
+ *
+ *  @throws IOException
+ *  @throws IllegalArgumentException If this is not a well-formed HTTP or HTTPS URL.
  */
 @OptIn(ExperimentalCoilApi::class)
+@Throws(IOException::class)
 fun Context.getInputStream(url: String): InputStream {
     val snapshot = this.imageLoader.diskCache?.openSnapshot(url)
 
-    return snapshot?.use {
-        it.data.toFile().inputStream()
-    } ?: API.httpClient.newCall(Request(url.toHttpUrl())).execute().use { response ->
-        response.body.byteStream()
+    return if (snapshot != null) {
+        snapshot.data.toFile().inputStream()
+    } else {
+        API.httpClient.newCall(Request(url.toHttpUrl())).execute().body.byteStream()
     }
 }
 
@@ -1416,5 +1422,16 @@ fun Context.startActivitySafe(intent: Intent) {
     } catch (e: ActivityNotFoundException) {
         Log.d("jerboa", "failed open activity", e)
         Toast.makeText(this, this.getText(R.string.no_activity_found), Toast.LENGTH_SHORT).show()
+    }
+}
+
+/**
+ * This function rewrites HTTP URLs to HTTPS
+ */
+fun String.toHttps(): String {
+    return if (this.startsWith("http://", true)) {
+        this.replaceFirst("http", "https", true)
+    } else {
+        this
     }
 }
