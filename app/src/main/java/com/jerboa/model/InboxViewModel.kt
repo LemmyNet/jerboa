@@ -133,9 +133,6 @@ class InboxViewModel : ViewModel(), Initializable {
 
             repliesRes = when (newRes) {
                 is ApiState.Success -> {
-                    if (newRes.data.replies.isEmpty()) { // Hit the end of the replies
-                        pageReplies -= 1
-                    }
                     val appended = oldRes.data.replies.toMutableList()
                     appended.addAll(newRes.data.replies)
                     ApiState.Success(oldRes.data.copy(replies = appended))
@@ -181,9 +178,6 @@ class InboxViewModel : ViewModel(), Initializable {
 
             mentionsRes = when (newRes) {
                 is ApiState.Success -> {
-                    if (newRes.data.mentions.isEmpty()) { // Hit the end of the replies
-                        pageMentions -= 1
-                    }
                     val appended = oldRes.data.mentions.toMutableList()
                     appended.addAll(newRes.data.mentions)
                     ApiState.Success(oldRes.data.copy(mentions = appended))
@@ -228,9 +222,6 @@ class InboxViewModel : ViewModel(), Initializable {
 
             messagesRes = when (newRes) {
                 is ApiState.Success -> {
-                    if (newRes.data.private_messages.isEmpty()) { // Hit the end of the replies
-                        pageMessages -= 1
-                    }
                     val appended = oldRes.data.private_messages.toMutableList()
                     appended.addAll(newRes.data.private_messages)
                     ApiState.Success(oldRes.data.copy(private_messages = appended))
