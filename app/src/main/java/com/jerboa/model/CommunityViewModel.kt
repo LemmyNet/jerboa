@@ -101,8 +101,9 @@ class CommunityViewModel : ViewModel(), Initializable {
     fun appendPosts(id: CommunityId, jwt: String?) {
         viewModelScope.launch {
             val oldRes = postsRes
-            when (oldRes) {
-                is ApiState.Success -> postsRes = ApiState.Appending(oldRes.data)
+            postsRes = when (oldRes) {
+                is ApiState.Appending -> return@launch
+                is ApiState.Holder -> ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 
@@ -118,9 +119,6 @@ class CommunityViewModel : ViewModel(), Initializable {
 
             postsRes = when (newRes) {
                 is ApiState.Success -> {
-                    if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
-                        prevPage()
-                    }
                     ApiState.Success(
                         GetPostsResponse(
                             mergePosts(
@@ -133,7 +131,7 @@ class CommunityViewModel : ViewModel(), Initializable {
 
                 else -> {
                     prevPage()
-                    oldRes
+                    ApiState.AppendingFailure(oldRes.data)
                 }
             }
         }

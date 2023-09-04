@@ -82,36 +82,38 @@ private suspend fun saveMedia(url: String, context: Context, mediaType: PostType
  * Shares the actual file from the link
  */
 fun shareMedia(scope: CoroutineScope, ctx: Context, url: String, mediaType: PostType) {
-    try {
-        val fileName = Uri.parse(url).pathSegments.last()
+    scope.launch(Dispatchers.Main) {
+        try {
+            val fileName = Uri.parse(url).pathSegments.last()
 
-        val file = File(ctx.cacheDir, fileName)
+            val file = File(ctx.cacheDir, fileName)
 
-        scope.launch(Dispatchers.IO) {
-            ctx.getInputStream(url).use { input ->
-                file.outputStream().use {
-                    input.copyTo(it)
+            withContext(Dispatchers.IO) {
+                ctx.getInputStream(url).use { input ->
+                    file.outputStream().use {
+                        input.copyTo(it)
+                    }
                 }
             }
-        }
 
-        val uri = FileProvider.getUriForFile(ctx, ctx.packageName + ".provider", file)
-        val shareIntent = Intent()
-        shareIntent.setAction(Intent.ACTION_SEND)
-        shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
-        when (mediaType) {
-            PostType.Image -> shareIntent.setType("image/*")
-            PostType.Video -> shareIntent.setType("video/*")
-            PostType.Link -> shareIntent.setType("text/*")
+            val uri = FileProvider.getUriForFile(ctx, ctx.packageName + ".provider", file)
+            val shareIntent = Intent()
+            shareIntent.setAction(Intent.ACTION_SEND)
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+            when (mediaType) {
+                PostType.Image -> shareIntent.setType("image/*")
+                PostType.Video -> shareIntent.setType("video/*")
+                PostType.Link -> shareIntent.setType("text/*")
+            }
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            ctx.startActivitySafe(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))
+        } catch (e: IOException) {
+            Log.d("shareMedia", "failed", e)
+            Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Log.d("shareMedia", "invalid URL", e)
+            Toast.makeText(ctx, R.string.failed_sharing_media, Toast.LENGTH_SHORT).show()
         }
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        ctx.startActivitySafe(Intent.createChooser(shareIntent, ctx.getString(R.string.share)))
-    } catch (e: IOException) {
-        Log.d("shareMedia", "failed", e)
-        Toast.makeText(ctx, R.string.failed_saving_media, Toast.LENGTH_SHORT).show()
-    } catch (e: Exception) {
-        Log.d("shareMedia", "invalid URL", e)
-        Toast.makeText(ctx, R.string.failed_saving_media, Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -126,4 +128,12 @@ fun shareLink(url: String, ctx: Context) {
     }
     val shareIntent = Intent.createChooser(intent, ctx.getString(R.string.share))
     ctx.startActivitySafe(shareIntent)
+}
+
+/**
+ * Opens matrix for that user
+ */
+fun openMatrix(matrixId: String, ctx: Context) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://matrix.to/#/$matrixId"))
+    ctx.startActivitySafe(intent)
 }

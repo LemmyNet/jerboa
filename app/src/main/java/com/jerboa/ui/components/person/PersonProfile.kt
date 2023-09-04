@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,21 +29,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.datatypes.types.PersonView
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.feat.openMatrix
 import com.jerboa.personNameShown
 import com.jerboa.ui.components.common.DotSpacer
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
-import com.jerboa.ui.components.common.SortOptionsDialog
-import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.components.common.TimeAgo
+import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
 import com.jerboa.ui.theme.muted
@@ -155,38 +159,12 @@ fun PersonProfileHeader(
     onBack: (() -> Unit)? = null,
     isLoggedIn: () -> Boolean,
     siteVersion: String,
+    matrixId: String?,
 ) {
+    val ctx = LocalContext.current
+
     var showSortOptions by remember { mutableStateOf(false) }
-    var showTopOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
-
-    if (showSortOptions) {
-        SortOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showSortOptions = false },
-            onClickSortType = {
-                showSortOptions = false
-                onClickSortType(it)
-            },
-            onClickSortTopOptions = {
-                showSortOptions = false
-                showTopOptions = !showTopOptions
-            },
-            siteVersion = siteVersion,
-        )
-    }
-
-    if (showTopOptions) {
-        SortTopOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showTopOptions = false },
-            onClickSortType = {
-                showTopOptions = false
-                onClickSortType(it)
-            },
-            siteVersion = siteVersion,
-        )
-    }
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -214,14 +192,28 @@ fun PersonProfileHeader(
             }
         },
         actions = {
-            IconButton(onClick = {
-                showSortOptions = !showSortOptions
-            }) {
-                Icon(
-                    Icons.Outlined.Sort,
-                    contentDescription = stringResource(R.string.selectSort),
+            Box {
+                IconButton(onClick = {
+                    showSortOptions = !showSortOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.Sort,
+                        contentDescription = stringResource(R.string.community_sortBy),
+                    )
+                }
+
+                SortOptionsDropdown(
+                    expanded = showSortOptions,
+                    onDismissRequest = { showSortOptions = false },
+                    onClickSortType = {
+                        showSortOptions = false
+                        onClickSortType(it)
+                    },
+                    selectedSortType = selectedSortType,
+                    siteVersion = siteVersion,
                 )
             }
+
             if (!myProfile && isLoggedIn()) {
                 Box {
                     IconButton(onClick = {
@@ -246,6 +238,9 @@ fun PersonProfileHeader(
                         onMessagePersonClick = {
                             showMoreOptions = false
                             onMessagePersonClick()
+                        },
+                        openMatrix = matrixId?.let {
+                            { openMatrix(matrixId, ctx) }
                         },
                     )
                 }
@@ -278,6 +273,7 @@ fun PersonProfileMoreDropdown(
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
     onMessagePersonClick: () -> Unit,
+    openMatrix: (() -> Unit)?,
 ) {
     DropdownMenu(
         expanded = expanded,
@@ -288,6 +284,22 @@ fun PersonProfileMoreDropdown(
             onClick = onMessagePersonClick,
             icon = Icons.Outlined.Message,
         )
+
+        if (openMatrix != null) {
+            MenuItem(
+                text = stringResource(R.string.matrix_send_msg),
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.matrix_favicon),
+                        contentDescription = null,
+                        modifier = Modifier.size(MARKDOWN_BAR_ICON_SIZE),
+                    )
+                },
+                onClick = openMatrix,
+            )
+        }
+
+        Divider()
         MenuItem(
             text = stringResource(R.string.person_profile_block_person),
             onClick = onBlockPersonClick,

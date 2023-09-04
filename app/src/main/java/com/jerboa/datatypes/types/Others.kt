@@ -39,7 +39,7 @@ enum class RegistrationMode {
 enum class SortType(
     @StringRes val shortForm: Int,
     @StringRes val longForm: Int,
-    val icon: ImageVector? = null,
+    val icon: ImageVector,
     val version: String = MINIMUM_API_VERSION,
 ) {
     /**
@@ -225,14 +225,14 @@ enum class SortType(
     ;
 
     companion object {
-        val getSupportedSortTypes = { siteVersion: String -> values().filter { compareVersions(siteVersion, it.version) >= 0 } }
+        val getSupportedSortTypes = { siteVersion: String -> entries.filter { compareVersions(siteVersion, it.version) >= 0 } }
     }
 }
 
 /**
  * Different comment sort types used in lemmy.
  */
-enum class CommentSortType(val text: Int, val icon: ImageVector? = null, val version: String = MINIMUM_API_VERSION) {
+enum class CommentSortType(val text: Int, val icon: ImageVector, val version: String = MINIMUM_API_VERSION) {
     /**
      * Comments sorted by a decaying rank.
      */
@@ -265,7 +265,7 @@ enum class CommentSortType(val text: Int, val icon: ImageVector? = null, val ver
     ;
 
     companion object {
-        val getSupportedSortTypes = { siteVersion: String -> values().filter { compareVersions(siteVersion, it.version) >= 0 } }
+        val getSupportedSortTypes = { siteVersion: String -> entries.filter { compareVersions(siteVersion, it.version) >= 0 } }
     }
 }
 
