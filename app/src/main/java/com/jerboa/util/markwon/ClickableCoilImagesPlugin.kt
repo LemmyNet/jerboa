@@ -8,11 +8,14 @@ import coil.ImageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
 import com.jerboa.JerboaAppState
+import com.jerboa.toHttps
 import io.noties.markwon.MarkwonConfiguration
 import io.noties.markwon.MarkwonSpansFactory
 import io.noties.markwon.RenderProps
+import io.noties.markwon.SpanFactory
 import io.noties.markwon.image.AsyncDrawable
 import io.noties.markwon.image.AsyncDrawableSpan
+import io.noties.markwon.image.ImageProps
 import io.noties.markwon.image.ImageSpanFactory
 import org.commonmark.node.Image
 
@@ -55,7 +58,7 @@ class ClickableCoilImagesPlugin(coil: CoilStore, imageLoader: ImageLoader, priva
     }
 }
 
-class ClickableImageFactory(val appState: JerboaAppState) : ImageSpanFactory() {
+internal class ClickableImageFactory(val appState: JerboaAppState) : HttpsImageSpanFactory() {
 
     override fun getSpans(configuration: MarkwonConfiguration, props: RenderProps): Any {
         val image = super.getSpans(configuration, props) as AsyncDrawableSpan
@@ -67,5 +70,24 @@ class ClickableImageFactory(val appState: JerboaAppState) : ImageSpanFactory() {
         }
 
         return arrayOf(image, clickSpan)
+    }
+}
+
+/**
+ * Custom implementation of [ImageSpanFactory] that rewrites all http:// links to https://
+ */
+internal open class HttpsImageSpanFactory : SpanFactory {
+    override fun getSpans(configuration: MarkwonConfiguration, props: RenderProps): Any? {
+        return AsyncDrawableSpan(
+            configuration.theme(),
+            AsyncDrawable(
+                ImageProps.DESTINATION.require(props).toHttps(),
+                configuration.asyncDrawableLoader(),
+                configuration.imageSizeResolver(),
+                ImageProps.IMAGE_SIZE[props],
+            ),
+            AsyncDrawableSpan.ALIGN_BOTTOM,
+            ImageProps.REPLACEMENT_TEXT_IS_LINK[props, false],
+        )
     }
 }
