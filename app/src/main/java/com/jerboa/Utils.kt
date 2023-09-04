@@ -413,6 +413,7 @@ fun openLinkRaw(url: String, navController: NavController, useCustomTab: Boolean
             .build().apply {
                 if (usePrivateTab) {
                     intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+                    intent.putExtra("private_browsing_mode", true)
                 }
             }
         intent.launchUrl(navController.context, Uri.parse(url))
