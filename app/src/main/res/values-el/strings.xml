@@ -194,7 +194,6 @@
     <string name="look_and_feel_theme_color_purple">Μωβ</string>
     <string name="look_and_feel_theme_color_woodland">Δασώδες</string>
     <string name="look_and_feel_use_custom_tabs">Χρήση εξατομικευμένων καρτελών</string>
-    <string name="look_and_feel_use_private_tabs">Χρήση ιδιωτικών εξατομικευμένων καρτελών εάν είναι διαθέσιμες</string>
     <string name="markRead">Σήμανση ως αναγνωσμένο</string>
     <string name="markUnread">Σήμανση ως μη αναγνωσμένο</string>
     <string name="markdownHelper_formatBold">Μορφοποίηση ως έντονο κείμενο</string>
