@@ -32,6 +32,7 @@ import coil.imageLoader
 import com.jerboa.JerboaAppState
 import com.jerboa.convertSpToPx
 import com.jerboa.util.markwon.BetterLinkMovementMethod
+import com.jerboa.util.markwon.ForceHttpsPlugin
 import com.jerboa.util.markwon.MarkwonLemmyLinkPlugin
 import com.jerboa.util.markwon.MarkwonSpoilerPlugin
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -90,9 +91,11 @@ object MarkdownHelper {
         val loader = context.imageLoader
         // main markdown parser has coil + html on
         markwon = Markwon.builder(context)
+            .usePlugin(ForceHttpsPlugin())
             // email urls interfere with lemmy links
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
             .usePlugin(MarkwonLemmyLinkPlugin())
+            .usePlugin(MarkwonSpoilerPlugin(true))
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
             .usePlugin(ClickableCoilImagesPlugin.create(context, loader, appState))
@@ -116,7 +119,6 @@ object MarkdownHelper {
                     }
                 }
             })
-            .usePlugin(MarkwonSpoilerPlugin(true))
             .build()
 
         // no image parser has html off
