@@ -2,7 +2,6 @@ package com.jerboa.ui.components.comment
 
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -20,20 +19,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Comment
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Flag
-import androidx.compose.material.icons.outlined.Forum
-import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -47,10 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,7 +50,6 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.calculateNewInstantScores
-import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
@@ -75,7 +61,6 @@ import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.VoteGeneric
@@ -545,37 +530,16 @@ fun CommentFooterLine(
     var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showMoreOptions) {
-        CommentOptionsDialog(
+        CommentOptionsDropdown(
             commentView = commentView,
             onDismissRequest = { showMoreOptions = false },
-            onViewSourceClick = {
-                showMoreOptions = false
-                onViewSourceClick()
-            },
-            onEditCommentClick = {
-                showMoreOptions = false
-                onEditCommentClick(commentView)
-            },
-            onDeleteCommentClick = {
-                showMoreOptions = false
-                onDeleteCommentClick(commentView)
-            },
-            onReportClick = {
-                showMoreOptions = false
-                onReportClick(commentView)
-            },
-            onBlockCreatorClick = {
-                showMoreOptions = false
-                onBlockCreatorClick(commentView.creator)
-            },
-            onCommentLinkClick = {
-                showMoreOptions = false
-                onCommentLinkClick(commentView)
-            },
-            onPersonClick = {
-                showMoreOptions = false
-                onPersonClick(commentView.creator.id)
-            },
+            onViewSourceClick = onViewSourceClick,
+            onEditCommentClick = onEditCommentClick,
+            onDeleteCommentClick = onDeleteCommentClick,
+            onReportClick = onReportClick,
+            onBlockCreatorClick = onBlockCreatorClick,
+            onCommentLinkClick = onCommentLinkClick,
+            onPersonClick = onPersonClick,
             isCreator = account.id == commentView.creator.id,
             viewSource = viewSource,
         )
@@ -693,132 +657,6 @@ fun CommentNodesPreview() {
         blurNSFW = true,
         account = AnonAccount,
         showScores = true,
-    )
-}
-
-@Composable
-fun CommentOptionsDialog(
-    onDismissRequest: () -> Unit,
-    onViewSourceClick: () -> Unit,
-    onEditCommentClick: () -> Unit,
-    onDeleteCommentClick: () -> Unit,
-    onReportClick: () -> Unit,
-    onBlockCreatorClick: () -> Unit,
-    onCommentLinkClick: () -> Unit,
-    onPersonClick: () -> Unit,
-    isCreator: Boolean,
-    commentView: CommentView,
-    viewSource: Boolean,
-) {
-    val localClipboardManager = LocalClipboardManager.current
-    val ctx = LocalContext.current
-
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_node_goto_comment),
-                    icon = Icons.Outlined.Forum,
-                    onClick = onCommentLinkClick,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(
-                        R.string.comment_node_go_to,
-                        commentView.creator.name,
-                    ),
-                    icon = Icons.Outlined.Person,
-                    onClick = onPersonClick,
-                )
-                IconAndTextDrawerItem(
-                    text = if (viewSource) {
-                        stringResource(R.string.comment_node_view_original)
-                    } else {
-                        stringResource(R.string.comment_node_view_source)
-                    },
-                    icon = Icons.Outlined.Description,
-                    onClick = onViewSourceClick,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_node_copy_permalink),
-                    icon = Icons.Outlined.Link,
-                    onClick = {
-                        val permalink = commentView.comment.ap_id
-                        localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(
-                            ctx,
-                            ctx.getString(R.string.comment_node_permalink_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        onDismissRequest()
-                    },
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_node_copy_comment),
-                    icon = Icons.Outlined.ContentCopy,
-                    onClick = {
-                        if (copyToClipboard(ctx, commentView.comment.content, "comment")) {
-                            Toast.makeText(ctx, ctx.getString(R.string.comment_node_comment_copied), Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
-                        }
-                        onDismissRequest()
-                    },
-                )
-                if (!isCreator) {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.comment_node_report_comment),
-                        icon = Icons.Outlined.Flag,
-                        onClick = onReportClick,
-                    )
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.comment_node_block, commentView.creator.name),
-                        icon = Icons.Outlined.Block,
-                        onClick = onBlockCreatorClick,
-                    )
-                }
-                if (isCreator) {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.comment_node_edit),
-                        icon = Icons.Outlined.Edit,
-                        onClick = onEditCommentClick,
-                    )
-                    val deleted = commentView.comment.deleted
-                    if (deleted) {
-                        IconAndTextDrawerItem(
-                            text = stringResource(R.string.comment_node_restore),
-                            icon = Icons.Outlined.Restore,
-                            onClick = onDeleteCommentClick,
-                        )
-                    } else {
-                        IconAndTextDrawerItem(
-                            text = stringResource(R.string.comment_node_delete),
-                            icon = Icons.Outlined.Delete,
-                            onClick = onDeleteCommentClick,
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {},
-    )
-}
-
-@Preview
-@Composable
-fun CommentOptionsDialogPreview() {
-    CommentOptionsDialog(
-        isCreator = true,
-        commentView = sampleCommentView,
-        onDismissRequest = {},
-        onEditCommentClick = {},
-        onDeleteCommentClick = {},
-        onReportClick = {},
-        onViewSourceClick = {},
-        onCommentLinkClick = {},
-        onPersonClick = {},
-        onBlockCreatorClick = {},
-        viewSource = false,
     )
 }
 

@@ -29,6 +29,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isScrolledToEnd
 import com.jerboa.rememberJerboaAppState
+import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.collections.immutable.ImmutableList
@@ -50,7 +51,7 @@ fun PostListings(
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
     onShareClick: (url: String) -> Unit,
-    isScrolledToEnd: () -> Unit,
+    loadMorePosts: () -> Unit,
     account: Account,
     showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
@@ -69,6 +70,7 @@ fun PostListings(
     showIfRead: Boolean,
     showScores: Boolean,
     postActionbarMode: Int,
+    showPostAppendRetry: Boolean,
 ) {
     LazyColumn(
         state = listState,
@@ -129,6 +131,12 @@ fun PostListings(
             }
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
         }
+
+        if (showPostAppendRetry) {
+            item(contentType = "retry_posts") {
+                RetryLoadingPosts(loadMorePosts)
+            }
+        }
     }
 
     // observer when reached end of list
@@ -139,9 +147,9 @@ fun PostListings(
     }
 
     // Act when end of list reached
-    if (endOfListReached) {
+    if (endOfListReached && !showPostAppendRetry) {
         LaunchedEffect(Unit) {
-            isScrolledToEnd()
+            loadMorePosts()
         }
     }
 }
@@ -163,7 +171,7 @@ fun PreviewPostListings() {
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
         onShareClick = {},
-        isScrolledToEnd = {},
+        loadMorePosts = {},
         account = AnonAccount,
         listState = rememberLazyListState(),
         postViewMode = PostViewMode.Card,
@@ -180,5 +188,6 @@ fun PreviewPostListings() {
         showIfRead = true,
         showScores = true,
         postActionbarMode = 0,
+        showPostAppendRetry = false,
     )
 }

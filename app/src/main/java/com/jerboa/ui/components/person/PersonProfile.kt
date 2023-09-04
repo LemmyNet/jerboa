@@ -43,8 +43,7 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
-import com.jerboa.ui.components.common.SortOptionsDialog
-import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.components.common.TimeAgo
 import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
@@ -165,36 +164,7 @@ fun PersonProfileHeader(
     val ctx = LocalContext.current
 
     var showSortOptions by remember { mutableStateOf(false) }
-    var showTopOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
-
-    if (showSortOptions) {
-        SortOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showSortOptions = false },
-            onClickSortType = {
-                showSortOptions = false
-                onClickSortType(it)
-            },
-            onClickSortTopOptions = {
-                showSortOptions = false
-                showTopOptions = !showTopOptions
-            },
-            siteVersion = siteVersion,
-        )
-    }
-
-    if (showTopOptions) {
-        SortTopOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showTopOptions = false },
-            onClickSortType = {
-                showTopOptions = false
-                onClickSortType(it)
-            },
-            siteVersion = siteVersion,
-        )
-    }
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -222,14 +192,28 @@ fun PersonProfileHeader(
             }
         },
         actions = {
-            IconButton(onClick = {
-                showSortOptions = !showSortOptions
-            }) {
-                Icon(
-                    Icons.Outlined.Sort,
-                    contentDescription = stringResource(R.string.selectSort),
+            Box {
+                IconButton(onClick = {
+                    showSortOptions = !showSortOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.Sort,
+                        contentDescription = stringResource(R.string.community_sortBy),
+                    )
+                }
+
+                SortOptionsDropdown(
+                    expanded = showSortOptions,
+                    onDismissRequest = { showSortOptions = false },
+                    onClickSortType = {
+                        showSortOptions = false
+                        onClickSortType(it)
+                    },
+                    selectedSortType = selectedSortType,
+                    siteVersion = siteVersion,
                 )
             }
+
             if (!myProfile && isLoggedIn()) {
                 Box {
                     IconButton(onClick = {

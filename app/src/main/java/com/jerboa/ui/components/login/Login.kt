@@ -54,7 +54,7 @@ import androidx.compose.ui.window.PopupProperties
 import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.R
 import com.jerboa.datatypes.types.Login
-import com.jerboa.onAutofill
+import com.jerboa.ui.components.common.onAutofill
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

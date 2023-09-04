@@ -28,35 +28,21 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.Autofill
-import androidx.compose.ui.autofill.AutofillNode
-import androidx.compose.ui.autofill.AutofillTree
-import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.LiveData
@@ -874,52 +860,6 @@ enum class PostType {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-fun Modifier.pagerTabIndicatorOffset2(
-    pagerState: PagerState,
-    tabPositions: List<TabPosition>,
-    pageIndexMapping: (Int) -> Int = { it },
-): Modifier = layout { measurable, constraints ->
-    if (tabPositions.isEmpty()) {
-        // If there are no pages, nothing to show
-        layout(constraints.maxWidth, 0) {}
-    } else {
-        val currentPage = minOf(tabPositions.lastIndex, pageIndexMapping(pagerState.currentPage))
-        val currentTab = tabPositions[currentPage]
-        val previousTab = tabPositions.getOrNull(currentPage - 1)
-        val nextTab = tabPositions.getOrNull(currentPage + 1)
-        val fraction = pagerState.currentPageOffsetFraction
-        val indicatorWidth = if (fraction > 0 && nextTab != null) {
-            lerp(currentTab.width, nextTab.width, fraction).roundToPx()
-        } else if (fraction < 0 && previousTab != null) {
-            lerp(currentTab.width, previousTab.width, -fraction).roundToPx()
-        } else {
-            currentTab.width.roundToPx()
-        }
-        val indicatorOffset = if (fraction > 0 && nextTab != null) {
-            lerp(currentTab.left, nextTab.left, fraction).roundToPx()
-        } else if (fraction < 0 && previousTab != null) {
-            lerp(currentTab.left, previousTab.left, -fraction).roundToPx()
-        } else {
-            currentTab.left.roundToPx()
-        }
-        val placeable = measurable.measure(
-            Constraints(
-                minWidth = indicatorWidth,
-                maxWidth = indicatorWidth,
-                minHeight = 0,
-                maxHeight = constraints.maxHeight,
-            ),
-        )
-        layout(constraints.maxWidth, maxOf(placeable.height, constraints.minHeight)) {
-            placeable.placeRelative(
-                indicatorOffset,
-                maxOf(constraints.minHeight - placeable.height, 0),
-            )
-        }
-    }
-}
-
 fun isSameInstance(url: String, instance: String): Boolean {
     return hostName(url) == instance
 }
@@ -1008,34 +948,6 @@ fun saveMediaP(
     // Makes it show up in gallery
     val mimeTypes = if (mimeType == null) null else arrayOf(mimeType)
     MediaScannerConnection.scanFile(context, arrayOf(dest.absolutePath), mimeTypes, null)
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-fun Modifier.onAutofill(
-    tree: AutofillTree,
-    autofill: Autofill?,
-    autofillTypes: ImmutableList<AutofillType>,
-    onFill: (String) -> Unit,
-): Modifier {
-    val autofillNode = AutofillNode(
-        autofillTypes = autofillTypes,
-        onFill = onFill,
-    )
-    tree += autofillNode
-
-    return this
-        .onGloballyPositioned {
-            autofillNode.boundingBox = it.boundsInWindow()
-        }
-        .onFocusChanged { focusState ->
-            autofill?.run {
-                if (focusState.isFocused) {
-                    requestAutofillForNode(autofillNode)
-                } else {
-                    cancelAutofillForNode(autofillNode)
-                }
-            }
-        }
 }
 
 /**

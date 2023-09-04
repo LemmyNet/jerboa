@@ -23,7 +23,6 @@ import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
-import com.jerboa.datatypes.types.GetPostResponse
 import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostResponse
@@ -42,18 +41,13 @@ import kotlinx.coroutines.launch
 class PersonProfileViewModel : ViewModel(), Initializable {
     override var initialized by mutableStateOf(false)
 
-    var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(
-        ApiState.Empty,
-    )
+    var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(ApiState.Empty)
         private set
-
-    private var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
 
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
@@ -108,8 +102,9 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     ) {
         viewModelScope.launch {
             val oldRes = personDetailsRes
-            when (oldRes) {
-                is ApiState.Success -> personDetailsRes = ApiState.Appending(oldRes.data)
+            personDetailsRes = when (oldRes) {
+                is ApiState.Appending -> return@launch
+                is ApiState.Holder -> ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 
@@ -141,7 +136,7 @@ class PersonProfileViewModel : ViewModel(), Initializable {
 
                 else -> {
                     prevPage()
-                    oldRes
+                    ApiState.AppendingFailure(oldRes.data)
                 }
             }
         }
