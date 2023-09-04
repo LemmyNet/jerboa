@@ -81,7 +81,6 @@ import com.jerboa.model.PersonProfileViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
@@ -96,6 +95,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
+import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
