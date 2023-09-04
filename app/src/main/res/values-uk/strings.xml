@@ -196,7 +196,6 @@
     <string name="look_and_feel_theme_color_purple">Фіолетова</string>
     <string name="look_and_feel_theme_color_woodland">Рідколісся</string>
     <string name="look_and_feel_use_custom_tabs">Використовувати власні вкладки</string>
-    <string name="look_and_feel_use_private_tabs">Використовувати власні приватні вкладки, якщо вони доступні</string>
     <string name="markRead">Позначити як прочитане</string>
     <string name="markUnread">Позначити як непрочитане</string>
     <string name="markdownHelper_formatBold">Форматувати жирним шрифтом</string>
