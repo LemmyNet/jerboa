@@ -76,7 +76,6 @@ import com.jerboa.model.PersonProfileViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
@@ -90,6 +89,7 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
+import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
@@ -579,7 +579,7 @@ fun UserTabs(
                                     onShareClick = { url ->
                                         shareLink(url, ctx)
                                     },
-                                    isScrolledToEnd = {
+                                    loadMorePosts = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,
                                             account.getJWT(),
@@ -588,14 +588,14 @@ fun UserTabs(
                                     account = account,
                                     listState = postListState,
                                     postViewMode = getPostViewMode(appSettingsViewModel),
+                                    showVotingArrowsInListView = showVotingArrowsInListView,
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
-                                    showVotingArrowsInListView = showVotingArrowsInListView,
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
-                                    appState = appState,
                                     showPostLinkPreviews = showPostLinkPreviews,
+                                    appState = appState,
                                     markAsReadOnScroll = markAsReadOnScroll,
                                     onMarkAsRead = {
                                         if (!account.isAnon() && !it.read) {
@@ -612,6 +612,7 @@ fun UserTabs(
                                     showIfRead = false,
                                     showScores = showScores,
                                     postActionbarMode = postActionbarMode,
+                                    showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                 )
                             }
                             else -> {}

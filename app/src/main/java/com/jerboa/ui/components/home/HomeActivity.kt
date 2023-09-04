@@ -207,7 +207,7 @@ fun MainPostListingsContent(
     when (val siteRes = siteViewModel.siteRes) {
         ApiState.Loading -> LoadingBar(padding)
         ApiState.Empty -> ApiEmptyText()
-        is ApiState.Failure -> ApiErrorText(siteRes.msg)
+        is ApiState.Failure -> ApiErrorText(siteRes.msg, padding)
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
@@ -378,13 +378,11 @@ fun MainPostListingsContent(
             onCommunityClick = { community ->
                 appState.toCommunity(id = community.id)
             },
-            onPersonClick = { personId ->
-                appState.toProfile(id = personId)
-            },
+            onPersonClick = appState::toProfile,
             onShareClick = { url ->
                 shareLink(url, ctx)
             },
-            isScrolledToEnd = {
+            loadMorePosts = {
                 homeViewModel.appendPosts(account.jwt)
             },
             account = account,
@@ -412,6 +410,7 @@ fun MainPostListingsContent(
             showIfRead = true,
             showScores = siteViewModel.showScores(),
             postActionbarMode = postActionbarMode,
+            showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
         )
     }
 }

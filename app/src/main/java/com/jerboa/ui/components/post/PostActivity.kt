@@ -90,7 +90,7 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
-import com.jerboa.ui.components.common.CommentSortOptionsDialog
+import com.jerboa.ui.components.common.CommentSortOptionsDropdown
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
@@ -186,18 +186,6 @@ fun PostActivity(
         refreshingOffset = 150.dp,
     )
 
-    if (showSortOptions) {
-        CommentSortOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showSortOptions = false },
-            onClickSortType = {
-                showSortOptions = false
-                onClickSortType(it)
-            },
-            siteVersion = siteViewModel.siteVersion(),
-        )
-    }
-
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -260,12 +248,22 @@ fun PostActivity(
                         }
                     },
                     actions = {
-                        IconButton(onClick = {
-                            showSortOptions = !showSortOptions
-                        }) {
-                            Icon(
-                                Icons.Outlined.Sort,
-                                contentDescription = stringResource(R.string.selectSort),
+                        Box {
+                            IconButton(onClick = {
+                                showSortOptions = true
+                            }) {
+                                Icon(
+                                    Icons.Outlined.Sort,
+                                    contentDescription = stringResource(R.string.selectSort),
+                                )
+                            }
+
+                            CommentSortOptionsDropdown(
+                                expanded = showSortOptions,
+                                selectedSortType = selectedSortType,
+                                onDismissRequest = { showSortOptions = false },
+                                onClickSortType = onClickSortType,
+                                siteVersion = siteViewModel.siteVersion(),
                             )
                         }
                     },

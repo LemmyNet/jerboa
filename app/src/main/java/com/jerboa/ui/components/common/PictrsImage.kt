@@ -28,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jerboa.R
@@ -100,21 +99,6 @@ fun CircularIconPreview() {
         icon = sampleCommunity.icon!!,
         contentDescription = "",
     )
-}
-
-fun Modifier.getBlurredOrRounded(
-    blur: Boolean,
-    rounded: Boolean = false,
-): Modifier {
-    var lModifier = this
-
-    if (rounded) {
-        lModifier = lModifier.clip(RoundedCornerShape(12f))
-    }
-    if (blur && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        lModifier = lModifier.blur(radius = 100.dp)
-    }
-    return lModifier
 }
 
 fun getImageRequest(

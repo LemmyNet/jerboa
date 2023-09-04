@@ -121,7 +121,6 @@
     <string name="look_and_feel_theme_color_purple">Фиолетовая</string>
     <string name="look_and_feel_theme_color_woodland">Лесистая</string>
     <string name="look_and_feel_use_custom_tabs">Использовать нестандартные вкладки</string>
-    <string name="look_and_feel_use_private_tabs">Использовать приватные нестандартные вкладки, если это доступно</string>
     <string name="markRead">Отметить как прочитанное</string>
     <string name="markUnread">Отметить как непрочитанное</string>
     <string name="markdownHelper_formatBold">Форматировать жирным</string>

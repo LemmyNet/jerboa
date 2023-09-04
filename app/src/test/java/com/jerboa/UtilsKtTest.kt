@@ -237,4 +237,11 @@ class UtilsKtTest {
         assertEquals(-1, compareVersions("0.1.2-alpha1", "0.1.2-beta1"))
         assertEquals(1, compareVersions("0.1.2-beta1", "0.1.2-alpha2"))
     }
+
+    @Test
+    fun rewriteHttpToHttps() {
+        assertEquals("https://example.com", "http://example.com".toHttps())
+        assertEquals("https://example.com", "https://example.com".toHttps())
+        assertEquals("example.com", "example.com".toHttps())
+    }
 }

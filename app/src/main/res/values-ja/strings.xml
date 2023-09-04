@@ -167,7 +167,6 @@
     <string name="look_and_feel_post_view_list">リスト</string>
     <string name="look_and_feel_show_navigation_bar">ナビゲーションバーを表示</string>
     <string name="look_and_feel_use_custom_tabs">カスタムタブを使う</string>
-    <string name="look_and_feel_use_private_tabs">私的カスタムタブを使う</string>
     <string name="settings_activity_settings">設定</string>
     <string name="settings_activity_look_and_feel">外見設定</string>
     <string name="settings_activity_account_settings">%1$s 設定</string>

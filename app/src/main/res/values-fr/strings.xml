@@ -264,7 +264,6 @@
     <string name="dialogs_old">Anciens</string>
     <string name="look_and_feel_show_action_bar_for_comments">Afficher la barre d’action par défaut pour les commentaires</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Montrer les flèches de vote dans la vue en liste</string>
-    <string name="look_and_feel_use_private_tabs">Utiliser les onglets privés personnalisés si disponible</string>
     <string name="upvote">Plusser</string>
     <string name="downvote">Moinser</string>
     <string name="upvoted">Plussé</string>

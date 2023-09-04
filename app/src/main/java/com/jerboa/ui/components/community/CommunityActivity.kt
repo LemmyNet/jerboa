@@ -413,7 +413,7 @@ fun CommunityActivity(
                             onShareClick = { url ->
                                 shareLink(url, ctx)
                             },
-                            isScrolledToEnd = {
+                            loadMorePosts = {
                                 when (val communityRes = communityViewModel.communityRes) {
                                     is ApiState.Success -> {
                                         communityViewModel.appendPosts(
@@ -430,9 +430,9 @@ fun CommunityActivity(
                             padding = padding,
                             listState = postListState,
                             postViewMode = getPostViewMode(appSettingsViewModel),
+                            showVotingArrowsInListView = showVotingArrowsInListView,
                             enableDownVotes = siteViewModel.enableDownvotes(),
                             showAvatar = siteViewModel.showAvatar(),
-                            showVotingArrowsInListView = showVotingArrowsInListView,
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
                             blurNSFW = blurNSFW,
@@ -454,6 +454,7 @@ fun CommunityActivity(
                             showIfRead = true,
                             showScores = siteViewModel.showScores(),
                             postActionbarMode = postActionbarMode,
+                            showPostAppendRetry = communityViewModel.postsRes is ApiState.AppendingFailure,
                         )
                     }
 

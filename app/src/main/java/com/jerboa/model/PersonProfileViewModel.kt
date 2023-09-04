@@ -122,8 +122,9 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     ) {
         viewModelScope.launch {
             val oldRes = personDetailsRes
-            when (oldRes) {
-                is ApiState.Success -> personDetailsRes = ApiState.Appending(oldRes.data)
+            personDetailsRes = when (oldRes) {
+                is ApiState.Appending -> return@launch
+                is ApiState.Holder -> ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 
@@ -155,7 +156,7 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
 
                 else -> {
                     prevPage()
-                    oldRes
+                    ApiState.AppendingFailure(oldRes.data)
                 }
             }
         }

@@ -266,7 +266,6 @@
     <string name="bottomBar_label_profile">Profil</string>
     <string name="look_and_feel_show_action_bar_for_comments">Aktionsleiste standardmäsig bei Kommentaren anzeigen</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Bewertungspfeile in Listenansicht anzeigen</string>
-    <string name="look_and_feel_use_private_tabs">Private angepasste Tabs nutzen falls verfügbar</string>
     <string name="upvote">Hochstimmen</string>
     <string name="downvote">Runterstimmen</string>
     <string name="upvoted">Hochgestimmt</string>
