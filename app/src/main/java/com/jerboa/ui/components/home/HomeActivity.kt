@@ -102,6 +102,10 @@ fun HomeActivity(
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    // Used for benchmarks TODO: make a .benchmark build that correctly filters
+    //  out the benchmark stuff from the actual app, like testtags
+    // val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
     // Forget snackbars of previous accounts
