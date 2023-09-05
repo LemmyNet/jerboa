@@ -1,3 +1,35 @@
+# Jerboa v0.0.46-alpha Release (2023-09-05)
+
+## What's Changed
+
+- Controversial posts and comments by @iByteABit256 in https://github.com/dessalines/jerboa/pull/1106
+- Fix broken Japanese string format for AppBars_users_month by @habbbe in https://github.com/dessalines/jerboa/pull/1194
+- Fix read post on back by @MV-GH in https://github.com/dessalines/jerboa/pull/1195
+- Bump deps by @MV-GH in https://github.com/dessalines/jerboa/pull/1197
+- Bump AGP by @MV-GH in https://github.com/dessalines/jerboa/pull/1196
+- Make nav text smaller by @MV-GH in https://github.com/dessalines/jerboa/pull/1201
+- Add spoiler template action button by @MV-GH in https://github.com/dessalines/jerboa/pull/1198
+- Sort drawer subscriptions on title instead by @MV-GH in https://github.com/dessalines/jerboa/pull/1205
+- Add connect on matrix by @MV-GH in https://github.com/dessalines/jerboa/pull/1206
+- Add resource by @MV-GH in https://github.com/dessalines/jerboa/pull/1207
+- Fix crash in share Media, fix failed download media by @MV-GH in https://github.com/dessalines/jerboa/pull/1213
+- Force HTTP links to HTTPS by @MV-GH in https://github.com/dessalines/jerboa/pull/1214
+- Fix wrong aligment sometimes for images in ImageViewer with RTL by @MV-GH in https://github.com/dessalines/jerboa/pull/1215
+- Add retry button when loading more posts fails by @MV-GH in https://github.com/dessalines/jerboa/pull/1209
+- Replace all relevant dialogs with Animated Center Popup menus by @MV-GH in https://github.com/dessalines/jerboa/pull/1200
+- Support private tabs for FireFox by @dankeast in https://github.com/dessalines/jerboa/pull/1216
+- Added dracula-theme, like in thumb-key by @0xFOSSMan in https://github.com/dessalines/jerboa/pull/1218
+- Update profiles and instance list by @MV-GH in https://github.com/dessalines/jerboa/pull/1219
+
+## New Contributors
+
+- @iByteABit256 made their first contribution in https://github.com/dessalines/jerboa/pull/1106
+- @habbbe made their first contribution in https://github.com/dessalines/jerboa/pull/1194
+- @dankeast made their first contribution in https://github.com/dessalines/jerboa/pull/1216
+- @0xFOSSMan made their first contribution in https://github.com/dessalines/jerboa/pull/1218
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.45...0.0.46
+
 # Jerboa v0.0.45-alpha Release (2023-08-22)
 
 ## What's Changed
