@@ -3,11 +3,11 @@ package com.jerboa.ui.components.community
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import arrow.core.Either
 import com.jerboa.ConsumeReturn
@@ -65,6 +64,7 @@ import com.jerboa.scrollToTop
 import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -165,8 +165,6 @@ fun CommunityActivity(
                 else -> {}
             }
         },
-        // Needs to be lower else it can hide behind the top bar
-        refreshingOffset = 150.dp,
     )
 
     Scaffold(
@@ -251,10 +249,11 @@ fun CommunityActivity(
         content = { padding ->
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
                 // zIndex needed bc some elements of a post get drawn above it.
-                PullRefreshIndicator(
+                JerboaPullRefreshIndicator(
                     communityViewModel.postsRes.isRefreshing(),
                     pullRefreshState,
                     Modifier
+                        .padding(padding)
                         .align(Alignment.TopCenter)
                         .zIndex(100F),
                 )

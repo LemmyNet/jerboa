@@ -14,10 +14,13 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -680,5 +683,30 @@ fun CreateSubmitHeader(
                 )
             }
         },
+    )
+}
+
+/**
+ * M3 doesn't have a built-in way to do this yet, so we have to do it ourselves.
+ *
+ * Supports M3 theming
+ */
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun JerboaPullRefreshIndicator(
+    refreshing: Boolean,
+    state: PullRefreshState,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    scale: Boolean = true,
+) {
+    PullRefreshIndicator(
+        refreshing,
+        state,
+        modifier,
+        backgroundColor,
+        contentColor,
+        scale,
     )
 }
