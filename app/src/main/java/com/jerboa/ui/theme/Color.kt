@@ -1318,6 +1318,7 @@ fun dracula(): Pair<JerboaColorScheme, JerboaColorScheme> {
         videoHighlight = jerboa_video_highlight,
     )
 
+
     return Pair(jerboaLight, jerboaDark)
 }
 
