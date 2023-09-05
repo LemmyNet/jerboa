@@ -1175,7 +1175,7 @@ fun woodland(): Pair<JerboaColorScheme, JerboaColorScheme> {
     return Pair(jerboaLight, jerboaDark)
 }
 
-fun dracula(): Pair<ColorScheme, ColorScheme> {
+fun dracula(): Pair<JerboaColorScheme, JerboaColorScheme> {
     val md_theme_light_primary = Color(0xFF4758A9)
     val md_theme_light_onPrimary = Color(0xFFFFFFFF)
     val md_theme_light_primaryContainer = Color(0xFFDDE1FF)
@@ -1237,6 +1237,8 @@ fun dracula(): Pair<ColorScheme, ColorScheme> {
     val md_theme_dark_surfaceTint = Color(0xFFB9C3FF)
     val md_theme_dark_outlineVariant = Color(0xFF45464F)
     val md_theme_dark_scrim = Color(0xFF000000)
+    val jerboa_image_highlight = Color(0xCCD1D1D1)
+    val jerboa_video_highlight = Color(0xCCC20000)
 
     // val seed = Color(0xFF44475A)
 
