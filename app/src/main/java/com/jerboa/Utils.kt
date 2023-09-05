@@ -394,16 +394,20 @@ suspend fun openLink(url: String, navController: NavController, useCustomTab: Bo
 }
 
 fun openLinkRaw(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    val extras = Intent().apply {
+        if (usePrivateTab) {
+            putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+            putExtra("private_browsing_mode", true)
+        }
+    }
+
     if (useCustomTab) {
-        val intent = CustomTabsIntent.Builder()
-            .build().apply {
-                if (usePrivateTab) {
-                    intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
-                }
-            }
+        val intent = CustomTabsIntent.Builder().build()
+        intent.intent.putExtras(extras)
         intent.launchUrl(navController.context, Uri.parse(url))
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        intent.putExtras(extras)
         navController.context.startActivitySafe(intent)
     }
 }

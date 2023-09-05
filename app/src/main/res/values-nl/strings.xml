@@ -227,7 +227,6 @@
     <string name="post_listing_permalink_copied">Permalink gekopieerd</string>
     <string name="comment_node_block">%1$s blokkeren</string>
     <string name="comment_reply_node_copy_permalink">Permalink kopiëren</string>
-    <string name="look_and_feel_use_private_tabs">Gebruik indien beschikbaar aangepaste privé tabbladen</string>
     <string name="markRead">Markeer als gelezen</string>
     <string name="markUnread">Markeer als niet gelezen</string>
     <string name="markdownHelper_formatBold">Opmaak als vette text</string>

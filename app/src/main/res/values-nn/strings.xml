@@ -201,7 +201,6 @@
   <string name="look_and_feel_theme_color_purple">Purpur</string>
   <string name="look_and_feel_theme_color_woodland">Trevirke</string>
   <string name="look_and_feel_use_custom_tabs">Opna lenkjer inni programmet</string>
-  <string name="look_and_feel_use_private_tabs">Bruk privatvising av lenkjer viss tilgjengeleg</string>
   <string name="markRead">Merk som lesen</string>
   <string name="markUnread">Merk som ulesen</string>
   <string name="markdownHelper_formatBold">Formater som halvfeit tekst</string>
