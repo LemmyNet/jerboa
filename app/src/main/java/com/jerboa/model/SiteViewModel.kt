@@ -42,7 +42,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
 
-    val unreadCount by derivedStateOf { getUnreadCountTotal(unreadCountRes) }
+    val unreadCount by derivedStateOf { getUnreadCountTotal(unreadCountRes, it.isAnon()) }
 
     init {
         viewModelScope.launch {
@@ -110,8 +110,8 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    private fun getUnreadCountTotal(unreadCountRes: ApiState<GetUnreadCountResponse>): Int {
-        return when (val res = unreadCountRes) {
+    private fun getUnreadCountTotal(unreadCountRes: ApiState<GetUnreadCountResponse>, isAnon: boolean): Int {
+        return when (val res = unreadCountRes && !isAnon) {
             is ApiState.Success -> {
                 val unreads = res.data
                 unreads.mentions + unreads.private_messages + unreads.replies
