@@ -24,29 +24,24 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentEditViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.util.InitializeRoute
 
 object CommentEditReturn {
     const val COMMENT_VIEW = "comment-edit::return(comment-view)"
+    const val COMMENT_SEND = "comment-edit::send(comment-view)"
 }
 
 @Composable
 fun CommentEditActivity(
-    commentView: CommentView,
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
 ) {
     Log.d("jerboa", "got to comment edit activity")
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
-    val snackbarHostState = remember {
-        SnackbarHostState()
-    }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val commentEditViewModel: CommentEditViewModel = viewModel()
-    InitializeRoute(commentEditViewModel) {
-        commentEditViewModel.initialize(commentView)
-    }
+    val commentView = appState.getPrevReturn<CommentView>(key = CommentEditReturn.COMMENT_SEND)
 
     var content by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(commentView.comment.content))
@@ -77,6 +72,7 @@ fun CommentEditActivity(
                             accountViewModel = accountViewModel,
                         ) {
                             commentEditViewModel.editComment(
+                                commentView = commentView,
                                 content = content.text,
                                 focusManager = focusManager,
                                 account = it,

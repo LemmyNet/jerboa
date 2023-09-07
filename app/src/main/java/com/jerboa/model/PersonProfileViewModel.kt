@@ -6,7 +6,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -30,16 +33,16 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
-class PersonProfileViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean, account: Account) : ViewModel() {
 
     var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -62,6 +65,23 @@ class PersonProfileViewModel : ViewModel(), Initializable {
         private set
     var savedOnly by mutableStateOf(false)
         private set
+
+    init {
+        val personId = personArg.fold({ it }, { null })
+        val personName = personArg.fold({ null }, { it })
+
+        this.resetPage()
+        this.updateSavedOnly(savedMode)
+        this.getPersonDetails(
+            GetPersonDetails(
+                person_id = personId,
+                username = personName,
+                sort = SortType.New,
+                auth = account.getJWT(),
+                saved_only = savedMode,
+            ),
+        )
+    }
 
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
@@ -305,6 +325,23 @@ class PersonProfileViewModel : ViewModel(), Initializable {
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+    companion object {
+        class Factory(
+            private val personArg: Either<PersonId, String>,
+            private val savedMode: Boolean,
+            private val account: Account,
+        ) : ViewModelProvider.Factory {
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                return PersonProfileViewModel(personArg, savedMode, account) as T
             }
         }
     }

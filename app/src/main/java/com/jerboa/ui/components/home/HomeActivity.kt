@@ -35,10 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.zIndex
-import com.jerboa.ConsumeReturn
-import com.jerboa.CreatePostDeps
 import com.jerboa.JerboaAppState
-import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -60,7 +57,6 @@ import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
@@ -97,7 +93,6 @@ fun HomeActivity(
     postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to home activity")
-    val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
 
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
@@ -111,13 +106,8 @@ fun HomeActivity(
     // Forget snackbars of previous accounts
     val snackbarHostState = remember(account) { SnackbarHostState() }
 
-    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        homeViewModel.updatePost(pv)
-    }
-
-    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
-        homeViewModel.updatePost(pv)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, homeViewModel::updatePost)
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
@@ -181,7 +171,6 @@ fun HomeActivity(
                         loginAsToast = false,
                     ) {
                         appState.toCreatePost(
-                            channel = transferCreatePostDepsViaRoot,
                             community = null,
                         )
                     }
@@ -217,7 +206,6 @@ fun MainPostListingsContent(
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
@@ -367,7 +355,6 @@ fun MainPostListingsContent(
             },
             onEditPostClick = { postView ->
                 appState.toPostEdit(
-                    channel = transferPostEditDepsViaRoot,
                     postView = postView,
                 )
             },

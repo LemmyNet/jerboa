@@ -51,11 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
-import com.jerboa.CommentEditDeps
-import com.jerboa.CommentReplyDeps
-import com.jerboa.ConsumeReturn
 import com.jerboa.JerboaAppState
-import com.jerboa.PostEditDeps
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -86,7 +82,6 @@ import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.rootChannel
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
@@ -105,7 +100,6 @@ import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
-import com.jerboa.util.InitializeRoute
 import kotlinx.collections.immutable.toImmutableSet
 
 object PostViewReturn {
@@ -153,32 +147,16 @@ fun PostActivity(
     postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to post activity")
-    val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
-    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
-    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     val ctx = LocalContext.current
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val postViewModel: PostViewModel = viewModel()
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id, account))
 
-    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        if (postViewModel.initialized) postViewModel.updatePost(pv)
-    }
-
-    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
-        if (postViewModel.initialized) postViewModel.appendComment(cv)
-    }
-
-    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
-        if (postViewModel.initialized) postViewModel.updateComment(cv)
-    }
-
-    InitializeRoute(postViewModel) {
-        postViewModel.initialize(id = id)
-        postViewModel.getData(account)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
+    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
@@ -379,7 +357,6 @@ fun PostActivity(
                                     onReplyClick = { pv ->
                                         val isModerator = isModerator(pv.creator, postRes.data.moderators)
                                         appState.toCommentReply(
-                                            channel = transferCommentReplyDepsViaRoot,
                                             replyItem = ReplyItem.PostItem(pv),
                                             isModerator = isModerator,
                                         )
@@ -408,7 +385,6 @@ fun PostActivity(
                                     },
                                     onEditPostClick = { pv ->
                                         appState.toPostEdit(
-                                            channel = transferPostEditDepsViaRoot,
                                             postView = pv,
                                         )
                                     },
@@ -615,7 +591,6 @@ fun PostActivity(
                                         onReplyClick = { cv ->
                                             val isModerator = isModerator(cv.creator, postRes.data.moderators)
                                             appState.toCommentReply(
-                                                channel = transferCommentReplyDepsViaRoot,
                                                 replyItem = ReplyItem.CommentItem(cv),
                                                 isModerator = isModerator,
                                             )
@@ -643,7 +618,6 @@ fun PostActivity(
                                         onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->
                                             appState.toCommentEdit(
-                                                channel = transferCommentEditDepsViaRoot,
                                                 commentView = cv,
                                             )
                                         },

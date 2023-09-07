@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -18,18 +19,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
+import com.jerboa.datatypes.types.CommunityFollowerView
 import com.jerboa.datatypes.types.Search
 import com.jerboa.datatypes.types.SearchType
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.getJWT
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommunityListViewModel
-import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.util.InitializeRoute
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -45,7 +46,7 @@ fun CommunityListActivity(
     appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     selectMode: Boolean = false,
-    siteViewModel: SiteViewModel,
+    followList: ImmutableList<CommunityFollowerView>,
     blurNSFW: Boolean,
     drawerState: DrawerState,
 ) {
@@ -54,9 +55,9 @@ fun CommunityListActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val communityListViewModel: CommunityListViewModel = viewModel()
-    InitializeRoute(communityListViewModel) {
+    LaunchedEffect(Unit) {
         // Whenever navigating here, reset the list with your followed communities
-        communityListViewModel.setCommunityListFromFollowed(siteViewModel)
+        communityListViewModel.setCommunityListFromFollowed(followList)
     }
 
     var search by rememberSaveable { mutableStateOf("") }

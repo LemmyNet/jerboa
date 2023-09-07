@@ -1153,25 +1153,6 @@ fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
         (abs((depth.minus(1) * multiplier)).dp + SMALL_PADDING)
     }
 }
-
-fun dedupePosts(
-    more: List<PostView>,
-    existing: List<PostView>,
-): List<PostView> {
-    val mapIds = existing.map { it.post.id }
-    return more.filterNot { mapIds.contains(it.post.id) }
-}
-
-fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
-    val appended = existing.toMutableList()
-    appended.addAll(more)
-    return appended.toList()
-}
-
-fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
-    return appendData(old, dedupePosts(new, old))
-}
-
 fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
     val foundIndex = posts.indexOfFirst {
         it.post.id == updatedPostView.post.id
@@ -1428,6 +1409,29 @@ fun Context.startActivitySafe(intent: Intent) {
         Log.d("jerboa", "failed open activity", e)
         Toast.makeText(this, this.getText(R.string.no_activity_found), Toast.LENGTH_SHORT).show()
     }
+}
+
+fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
+    val appended = existing.toMutableList()
+    appended.addAll(more)
+    return appended.toList()
+}
+
+fun <T> getDeduplicatedList(
+    oldList: List<T>,
+    uniqueNewList: List<T>,
+    getId: (T) -> Int,
+): List<T> {
+    val mapIds = oldList.map { getId(it) }
+    return uniqueNewList.filterNot { mapIds.contains(getId(it)) }
+}
+
+fun <T> getDeduplicateMerge(oldItems: List<T>, newItems: List<T>, getId: (T) -> Int): List<T> {
+    return appendData(oldItems, getDeduplicatedList(oldItems, newItems, getId))
+}
+
+fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
+    return appendData(old, getDeduplicatedList(old, new) { it.post.id })
 }
 
 /**

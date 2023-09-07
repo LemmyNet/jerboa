@@ -6,7 +6,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -29,16 +32,16 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
-class CommunityViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class CommunityViewModel(account: Account, communityArg: Either<CommunityId, String>) : ViewModel() {
 
     var communityRes: ApiState<GetCommunityResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -270,6 +273,48 @@ class CommunityViewModel : ViewModel(), Initializable {
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+    init {
+
+        val communityId = communityArg.fold({ it }, { null })
+        val communityName = communityArg.fold({ null }, { it })
+
+        this.resetPage()
+
+        this.getCommunity(
+            form = GetCommunity(
+                id = communityId,
+                name = communityName,
+                auth = account.getJWT(),
+            ),
+        )
+        this.getPosts(
+            form =
+            GetPosts(
+                community_id = communityId,
+                community_name = communityName,
+                page = this.page,
+                sort = this.sortType,
+                auth = account.getJWT(),
+            ),
+        )
+    }
+
+    companion object {
+        class Factory(
+            private val account: Account,
+            private val id: Either<CommunityId, String>,
+        ) : ViewModelProvider.Factory {
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                return CommunityViewModel(account, id) as T
             }
         }
     }

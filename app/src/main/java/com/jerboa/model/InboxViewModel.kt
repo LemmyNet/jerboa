@@ -6,7 +6,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -23,6 +25,7 @@ import com.jerboa.datatypes.types.GetPersonMentionsResponse
 import com.jerboa.datatypes.types.GetPrivateMessages
 import com.jerboa.datatypes.types.GetReplies
 import com.jerboa.datatypes.types.GetRepliesResponse
+import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.MarkAllAsRead
 import com.jerboa.datatypes.types.MarkCommentReplyAsRead
 import com.jerboa.datatypes.types.MarkPersonMentionAsRead
@@ -31,18 +34,19 @@ import com.jerboa.datatypes.types.PersonMentionResponse
 import com.jerboa.datatypes.types.PrivateMessageResponse
 import com.jerboa.datatypes.types.PrivateMessagesResponse
 import com.jerboa.datatypes.types.SaveComment
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.isAnon
 import com.jerboa.findAndUpdateCommentReply
 import com.jerboa.findAndUpdateMention
 import com.jerboa.findAndUpdatePersonMention
 import com.jerboa.findAndUpdatePrivateMessage
+import com.jerboa.getDeduplicateMerge
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
-class InboxViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel() {
 
     var repliesRes: ApiState<GetRepliesResponse> by mutableStateOf(
         ApiState.Empty,
@@ -91,9 +95,11 @@ class InboxViewModel : ViewModel(), Initializable {
     fun resetPageMentions() {
         pageMentions = 1
     }
+
     fun resetPageMessages() {
         pageMessages = 1
     }
+
     fun resetPageReplies() {
         pageReplies = 1
     }
@@ -133,9 +139,12 @@ class InboxViewModel : ViewModel(), Initializable {
 
             repliesRes = when (newRes) {
                 is ApiState.Success -> {
-                    val appended = oldRes.data.replies.toMutableList()
-                    appended.addAll(newRes.data.replies)
-                    ApiState.Success(oldRes.data.copy(replies = appended))
+                    val mergedReplies = getDeduplicateMerge(
+                        oldRes.data.replies,
+                        newRes.data.replies,
+                    ) { it.comment_reply.id }
+
+                    ApiState.Success(oldRes.data.copy(replies = mergedReplies))
                 }
 
                 else -> {
@@ -178,9 +187,12 @@ class InboxViewModel : ViewModel(), Initializable {
 
             mentionsRes = when (newRes) {
                 is ApiState.Success -> {
-                    val appended = oldRes.data.mentions.toMutableList()
-                    appended.addAll(newRes.data.mentions)
-                    ApiState.Success(oldRes.data.copy(mentions = appended))
+                    val mergedMentions = getDeduplicateMerge(
+                        oldRes.data.mentions,
+                        newRes.data.mentions,
+                    ) { it.person_mention.id }
+
+                    ApiState.Success(oldRes.data.copy(mentions = mergedMentions))
                 }
 
                 else -> {
@@ -222,9 +234,15 @@ class InboxViewModel : ViewModel(), Initializable {
 
             messagesRes = when (newRes) {
                 is ApiState.Success -> {
-                    val appended = oldRes.data.private_messages.toMutableList()
-                    appended.addAll(newRes.data.private_messages)
-                    ApiState.Success(oldRes.data.copy(private_messages = appended))
+                    // see 1211, one can get a message between two pages, (especially noticeable if you dm yourself)
+                    // This makes it so it shifts one message up and the next page will have a duplicate message
+                    // This crashes because you can't have duplicate messages, as we use the id as id for the item
+                    val mergedMessages = getDeduplicateMerge(
+                        oldRes.data.private_messages,
+                        newRes.data.private_messages,
+                    ) { it.private_message.id }
+
+                    ApiState.Success(oldRes.data.copy(private_messages = mergedMessages))
                 }
 
                 else -> {
@@ -449,6 +467,7 @@ class InboxViewModel : ViewModel(), Initializable {
             }
         }
     }
+
     fun blockCommunity(form: BlockCommunity, ctx: Context) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
@@ -531,5 +550,37 @@ class InboxViewModel : ViewModel(), Initializable {
             page = pageMessages,
             auth = jwt,
         )
+    }
+
+    init {
+        if (!account.isAnon()) {
+            this.resetPages()
+            this.getReplies(
+                this.getFormReplies(account.jwt),
+            )
+            this.getMentions(
+                this.getFormMentions(account.jwt),
+            )
+            this.getMessages(
+                this.getFormMessages(account.jwt),
+            )
+            siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
+        }
+    }
+
+    companion object {
+        class Factory(
+            private val account: Account,
+            private val siteViewModel: SiteViewModel,
+        ) : ViewModelProvider.Factory {
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                return InboxViewModel(account, siteViewModel) as T
+            }
+        }
     }
 }

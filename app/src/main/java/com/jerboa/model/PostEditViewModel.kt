@@ -11,22 +11,12 @@ import com.jerboa.api.apiWrapper
 import com.jerboa.datatypes.types.EditPost
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
-class PostEditViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class PostEditViewModel : ViewModel() {
 
-    var postView by mutableStateOf<PostView?>(null)
-        private set
     var editPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
         private set
-
-    fun initialize(
-        newPostView: PostView,
-    ) {
-        postView = newPostView
-    }
 
     fun editPost(
         form: EditPost,
@@ -42,9 +32,9 @@ class PostEditViewModel : ViewModel(), Initializable {
             when (val res = editPostRes) {
                 is ApiState.Success -> {
                     val post = res.data.post_view
-                    postView = post
                     onSuccess(post)
                 }
+
                 else -> {}
             }
         }
