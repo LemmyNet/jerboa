@@ -796,6 +796,7 @@ enum class ThemeColor(val mode: Int) {
     Pink(R.string.look_and_feel_theme_color_pink),
     Purple(R.string.look_and_feel_theme_color_purple),
     Woodland(R.string.look_and_feel_theme_color_woodland),
+    Dracula(R.string.look_and_feel_theme_color_dracula),
 }
 
 enum class PostViewMode(val mode: Int) {

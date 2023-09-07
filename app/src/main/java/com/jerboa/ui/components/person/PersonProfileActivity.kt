@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
@@ -82,6 +81,7 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
@@ -433,7 +433,7 @@ fun UserTabs(
                             .pullRefresh(pullRefreshState)
                             .fillMaxSize(),
                     ) {
-                        PullRefreshIndicator(
+                        JerboaPullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
                             pullRefreshState,
                             // zIndex needed bc some elements of a post get drawn above it.
@@ -675,7 +675,7 @@ fun UserTabs(
                                     .pullRefresh(pullRefreshState)
                                     .fillMaxSize(),
                             ) {
-                                PullRefreshIndicator(
+                                JerboaPullRefreshIndicator(
                                     personProfileViewModel.personDetailsRes.isRefreshing(),
                                     pullRefreshState,
                                     // zIndex needed bc some elements of a post get drawn above it.

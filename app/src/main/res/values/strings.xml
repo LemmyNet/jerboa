@@ -204,6 +204,7 @@
     <string name="look_and_feel_theme_color_pink">Pink</string>
     <string name="look_and_feel_theme_color_purple">Purple</string>
     <string name="look_and_feel_theme_color_woodland">Woodland</string>
+    <string name="look_and_feel_theme_color_dracula">Dracula</string>
     <string name="look_and_feel_use_custom_tabs">Use custom tabs</string>
     <string name="look_and_feel_use_private_tabs">Use private tabs if available</string>
     <string name="markRead">Mark as read</string>

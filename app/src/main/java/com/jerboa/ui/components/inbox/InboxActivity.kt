@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
@@ -66,6 +65,7 @@ import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeInbox
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
@@ -321,7 +321,7 @@ fun InboxTabs(
                     }
 
                     Box(modifier = Modifier.pullRefresh(refreshState)) {
-                        PullRefreshIndicator(
+                        JerboaPullRefreshIndicator(
                             refreshing,
                             refreshState,
                             Modifier
@@ -518,7 +518,7 @@ fun InboxTabs(
                             .pullRefresh(refreshState)
                             .fillMaxSize(),
                     ) {
-                        PullRefreshIndicator(
+                        JerboaPullRefreshIndicator(
                             refreshing,
                             refreshState,
                             Modifier
@@ -727,7 +727,7 @@ fun InboxTabs(
                             .pullRefresh(refreshState)
                             .fillMaxSize(),
                     ) {
-                        PullRefreshIndicator(
+                        JerboaPullRefreshIndicator(
                             refreshing,
                             refreshState,
                             Modifier
