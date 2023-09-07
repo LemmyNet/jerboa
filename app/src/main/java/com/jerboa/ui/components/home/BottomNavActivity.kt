@@ -225,7 +225,7 @@ fun BottomNavActivity(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             selectMode = false,
-                            siteViewModel = siteViewModel,
+                            followList = siteViewModel.getFollowList(),
                             blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
                         )

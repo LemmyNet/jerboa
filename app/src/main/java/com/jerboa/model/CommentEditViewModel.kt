@@ -13,52 +13,41 @@ import com.jerboa.datatypes.types.CommentResponse
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.EditComment
 import com.jerboa.db.entity.Account
-import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
-class CommentEditViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class CommentEditViewModel : ViewModel() {
 
-    var commentView = mutableStateOf<CommentView?>(null)
-        private set
     var editCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
         private set
 
-    fun initialize(
-        newCommentView: CommentView,
-    ) {
-        commentView.value = newCommentView
-    }
-
     fun editComment(
+        commentView: CommentView,
         content: String,
         focusManager: FocusManager,
         account: Account,
         onSuccess: (CommentView) -> Unit,
     ) {
         viewModelScope.launch {
-            commentView.value?.also { cv ->
-                val form = EditComment(
-                    content = content,
-                    comment_id = cv.comment.id,
-                    auth = account.jwt,
+            val form = EditComment(
+                content = content,
+                comment_id = commentView.comment.id,
+                auth = account.jwt,
+            )
+
+            editCommentRes = ApiState.Loading
+            editCommentRes =
+                apiWrapper(
+                    API.getInstance().editComment(form),
                 )
+            focusManager.clearFocus()
 
-                editCommentRes = ApiState.Loading
-                editCommentRes =
-                    apiWrapper(
-                        API.getInstance().editComment(form),
-                    )
-                focusManager.clearFocus()
-
-                // Update all the views which might have your comment
-                when (val res = editCommentRes) {
-                    is ApiState.Success -> {
-                        onSuccess(res.data.comment_view)
-                    }
-
-                    else -> {}
+            // Update all the views which might have your comment
+            when (val res = editCommentRes) {
+                is ApiState.Success -> {
+                    onSuccess(res.data.comment_view)
                 }
+
+                else -> {}
             }
         }
     }

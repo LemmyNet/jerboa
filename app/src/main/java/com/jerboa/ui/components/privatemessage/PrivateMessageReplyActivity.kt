@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.db.entity.isAnon
@@ -23,24 +24,25 @@ import com.jerboa.model.PrivateMessageReplyViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.util.InitializeRoute
+
+object PrivateMessage {
+    const val PM_VIEW = "private-message::return(pm-view)"
+}
 
 @Composable
 fun PrivateMessageReplyActivity(
-    privateMessageView: PrivateMessageView,
+    appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     onBack: () -> Unit,
     onProfile: (Int) -> Unit,
 ) {
     Log.d("jerboa", "got to private message reply activity")
+    val privateMessageView = appState.getPrevReturn<PrivateMessageView>(PrivateMessage.PM_VIEW)
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val privateMessageReplyViewModel: PrivateMessageReplyViewModel = viewModel()
-    InitializeRoute(privateMessageReplyViewModel) {
-        privateMessageReplyViewModel.initialize(privateMessageView)
-    }
 
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
 
@@ -60,6 +62,7 @@ fun PrivateMessageReplyActivity(
                     onSendClick = {
                         if (!account.isAnon()) {
                             privateMessageReplyViewModel.createPrivateMessage(
+                                recipientId = privateMessageView.creator.id,
                                 content = reply.text,
                                 account = account,
                                 onGoBack = onBack,
@@ -73,19 +76,17 @@ fun PrivateMessageReplyActivity(
                 if (loading) {
                     LoadingBar(padding)
                 } else {
-                    privateMessageReplyViewModel.replyItem?.also { pmv ->
-                        PrivateMessageReply(
-                            privateMessageView = pmv,
-                            account = account,
-                            reply = reply,
-                            onReplyChange = { reply = it },
-                            onPersonClick = onProfile,
-                            modifier = Modifier
-                                .padding(padding)
-                                .imePadding(),
-                            showAvatar = siteViewModel.showAvatar(),
-                        )
-                    }
+                    PrivateMessageReply(
+                        privateMessageView = privateMessageView,
+                        account = account,
+                        reply = reply,
+                        onReplyChange = { reply = it },
+                        onPersonClick = onProfile,
+                        modifier = Modifier
+                            .padding(padding)
+                            .imePadding(),
+                        showAvatar = siteViewModel.showAvatar(),
+                    )
                 }
             },
         )

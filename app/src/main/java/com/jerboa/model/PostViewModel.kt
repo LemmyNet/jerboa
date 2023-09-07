@@ -6,7 +6,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import arrow.core.Either
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
@@ -40,22 +42,16 @@ import com.jerboa.findAndUpdateComment
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.util.Initializable
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6
 
-class PostViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewModel() {
 
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     var commentsRes: ApiState<GetCommentsResponse> by mutableStateOf(ApiState.Empty)
-        private set
-
-    // If this is set, its a comment type view
-    var id by mutableStateOf<Either<PostId, CommentId>?>(null)
         private set
     var sortType by mutableStateOf(CommentSortType.Hot)
         private set
@@ -69,15 +65,11 @@ class PostViewModel : ViewModel(), Initializable {
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
-    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     val unExpandedComments = mutableStateListOf<Int>()
     val commentsWithToggledActionBar = mutableStateListOf<Int>()
-
-    fun initialize(
-        id: Either<PostId, CommentId>,
-    ) {
-        this.id = id
+    init {
+        this.getData(account)
     }
 
     fun updateSortType(sortType: CommentSortType) {
@@ -90,44 +82,41 @@ class PostViewModel : ViewModel(), Initializable {
     ) {
         viewModelScope.launch {
             // Set the commentId for the right case
-            id?.also { id ->
+            val postForm = id.fold({
+                GetPost(id = it, auth = account.getJWT())
+            }, {
+                GetPost(comment_id = it, auth = account.getJWT())
+            })
 
-                val postForm = id.fold({
-                    GetPost(id = it, auth = account.getJWT())
-                }, {
-                    GetPost(comment_id = it, auth = account.getJWT())
-                })
+            postRes = state
+            postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
 
-                postRes = state
-                postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
+            val commentsForm = id.fold({
+                GetComments(
+                    max_depth = COMMENTS_DEPTH_MAX,
+                    type_ = ListingType.All,
+                    post_id = it,
+                    auth = account.getJWT(),
+                    sort = sortType,
+                )
+            }, {
+                GetComments(
+                    max_depth = COMMENTS_DEPTH_MAX,
+                    type_ = ListingType.All,
+                    parent_id = it,
+                    auth = account.getJWT(),
+                    sort = sortType,
+                )
+            })
 
-                val commentsForm = id.fold({
-                    GetComments(
-                        max_depth = COMMENTS_DEPTH_MAX,
-                        type_ = ListingType.All,
-                        post_id = it,
-                        auth = account.getJWT(),
-                        sort = sortType,
-                    )
-                }, {
-                    GetComments(
-                        max_depth = COMMENTS_DEPTH_MAX,
-                        type_ = ListingType.All,
-                        parent_id = it,
-                        auth = account.getJWT(),
-                        sort = sortType,
-                    )
-                })
-
-                commentsRes = ApiState.Loading
-                commentsRes =
-                    apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
-            }
+            commentsRes = ApiState.Loading
+            commentsRes =
+                apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
         }
     }
 
     fun isCommentView(): Boolean {
-        return id?.isRight() ?: false
+        return id.isRight()
     }
 
     fun fetchMoreChildren(
@@ -314,6 +303,22 @@ class PostViewModel : ViewModel(), Initializable {
             }
 
             else -> {}
+        }
+    }
+
+    companion object {
+        class Factory(
+            private val id: Either<PostId, CommentId>,
+            private val account: Account,
+        ) : ViewModelProvider.Factory {
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                return PostViewModel(id, account) as T
+            }
         }
     }
 }

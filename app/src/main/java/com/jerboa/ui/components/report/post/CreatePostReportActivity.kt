@@ -22,7 +22,6 @@ import com.jerboa.model.CreateReportViewModel
 import com.jerboa.ui.components.common.CreateSubmitHeader
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
-import com.jerboa.util.InitializeRoute
 
 @Composable
 fun CreatePostReportActivity(
@@ -36,9 +35,6 @@ fun CreatePostReportActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val createReportViewModel: CreateReportViewModel = viewModel()
-    InitializeRoute(createReportViewModel) {
-        createReportViewModel.setPostId(postId)
-    }
 
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
 
@@ -57,6 +53,7 @@ fun CreatePostReportActivity(
                 onSubmitClick = {
                     if (!account.isAnon()) {
                         createReportViewModel.createPostReport(
+                            postId = postId,
                             reason = reason.text,
                             ctx = ctx,
                             focusManager = focusManager,

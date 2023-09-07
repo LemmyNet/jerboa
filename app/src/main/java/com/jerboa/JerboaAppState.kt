@@ -4,27 +4,28 @@ import android.os.Parcelable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.PrivateMessageView
 import com.jerboa.model.ReplyItem
+import com.jerboa.ui.components.comment.edit.CommentEditReturn
+import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.Route
+import com.jerboa.ui.components.community.sidebar.CommunityViewSidebar
+import com.jerboa.ui.components.post.create.CreatePostReturn
+import com.jerboa.ui.components.post.edit.PostEditReturn
+import com.jerboa.ui.components.privatemessage.PrivateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -52,10 +53,9 @@ class JerboaAppState(
     val linkDropdownExpanded = mutableStateOf<String?>(null)
 
     fun toPrivateMessageReply(
-        channel: RouteChannel<PrivateMessageDeps>,
         privateMessageView: PrivateMessageView,
     ) {
-        channel.put(privateMessageView)
+        sendReturnForwards(PrivateMessage.PM_VIEW, privateMessageView)
         navController.navigate(Route.PRIVATE_MESSAGE_REPLY)
     }
 
@@ -83,29 +83,26 @@ class JerboaAppState(
     }
 
     fun toPostEdit(
-        channel: RouteChannel<PostEditDeps>,
         postView: PostView,
     ) {
-        channel.put(postView)
+        sendReturnForwards(PostEditReturn.POST_SEND, postView)
         navController.navigate(Route.POST_EDIT)
     }
 
     fun toCommentEdit(
-        channel: RouteChannel<CommentEditDeps>,
         commentView: CommentView,
     ) {
-        channel.put(commentView)
+        sendReturnForwards(CommentEditReturn.COMMENT_SEND, commentView)
         navController.navigate(Route.COMMENT_EDIT)
     }
 
     fun toSiteSideBar() = navController.navigate(Route.SITE_SIDEBAR)
 
     fun toCommentReply(
-        channel: RouteChannel<CommentReplyDeps>,
         replyItem: ReplyItem,
         isModerator: Boolean,
     ) {
-        channel.put(replyItem)
+        sendReturnForwards(CommentReplyReturn.COMMENT_SEND, replyItem)
         navController.navigate(Route.CommentReplyArgs.makeRoute(isModerator = "$isModerator"))
     }
 
@@ -114,10 +111,11 @@ class JerboaAppState(
     }
 
     fun toCreatePost(
-        channel: RouteChannel<CreatePostDeps>,
         community: Community?,
     ) {
-        channel.put(community)
+        if (community != null) {
+            sendReturnForwards(CreatePostReturn.COMMUNITY_SEND, community)
+        }
         navController.navigate(Route.CREATE_POST)
     }
 
@@ -135,7 +133,10 @@ class JerboaAppState(
         navController.navigate(Route.CommunityFromIdArgs.makeRoute(id = "$id"))
     }
 
-    fun toCommunitySideBar() = navController.navigate(Route.COMMUNITY_SIDEBAR)
+    fun toCommunitySideBar(communityView: CommunityView) {
+        sendReturnForwards(CommunityViewSidebar.COMMUNITY_VIEW, communityView)
+        navController.navigate(Route.COMMUNITY_SIDEBAR)
+    }
 
     fun toProfile(id: Int, saved: Boolean = false) {
         navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "$saved"))
@@ -160,12 +161,26 @@ class JerboaAppState(
         }
     }
 
+    /**
+     * Stores the parcelable on the previous route
+     *
+     * Use this with [ConsumeReturn]
+     *
+     * When you want to pass a [Parcelable] to the previous screen/activity you came from
+     */
     fun addReturn(key: String, value: Parcelable) {
         navController.previousBackStackEntry?.savedStateHandle?.set(key, value)
     }
 
-    fun getBackStackEntry(route: String): NavBackStackEntry {
-        return navController.getBackStackEntry(route)
+    /**
+     * Stores the parcelable on the current route
+     *
+     * Use this with [getPrevReturn] [usePrevReturn] [getPrevReturnNullable]
+     *
+     * When you want to pass a [Parcelable] to another screen/activity
+     */
+    fun sendReturnForwards(key: String, value: Parcelable) {
+        navController.currentBackStackEntry?.savedStateHandle?.set(key, value)
     }
 
     fun toPostWithPopUpTo(postId: Int) {
@@ -174,10 +189,6 @@ class JerboaAppState(
         ) {
             popUpTo(Route.CREATE_POST) { inclusive = true }
         }
-    }
-
-    fun navigate(route: String) {
-        navController.navigate(route)
     }
 
     fun toCreatePrivateMessage(id: Int, name: String) {
@@ -191,86 +202,76 @@ class JerboaAppState(
     fun showLinkPopup(url: String) {
         linkDropdownExpanded.value = url
     }
-}
 
-// A view model stored higher up the tree used for moving navigation arguments from one route
-// to another. Since this will be reused, the value inside this should be moved out ASAP.
-// The value inside this will also not survive process death, so should be saved elsewhere.
-class RouteChannel<D> : ViewModel() {
-    private var value: D? = null
+    /**
+     * Gets the parcelable from the current route, and consume it (removes it)
+     * So that the action will not be repeated
+     */
 
-    fun put(value: D) {
-        this.value = value
-    }
-
-    fun take(): D? {
-        val value = this.value
-        this.value = null
-        return value
-    }
-}
-
-typealias CreatePostDeps = Community?
-
-typealias CommentReplyDeps = ReplyItem
-
-typealias CommentEditDeps = CommentView
-
-typealias PostEditDeps = PostView
-
-typealias PrivateMessageDeps = PrivateMessageView
-
-@Composable
-fun<D> JerboaAppState.rootChannel(): RouteChannel<D> {
-    // This will create a ViewModel<D> on the fly and will be stored on the nav stack entry
-    //  with route = Route.Graph.ROOT.
-    val root = remember(this.navController.currentBackStackEntry) { this.navController.getBackStackEntry(Route.Graph.ROOT) }
-    return viewModel(root)
-}
-
-@Parcelize
-data class NullableWrapper<T : Parcelable?>(val data: T) : Parcelable
-
-@Composable
-inline fun <reified D : Parcelable> JerboaAppState.takeDepsFromRoot(): State<D> {
-    val deps = rootChannel<D>().take()
-
-    // This will survive process death
-    val depsSaved = rememberSaveable { deps!! }
-
-    // After process death, deps will be null
-    return remember(depsSaved) {
-        derivedStateOf {
-            deps ?: depsSaved
+    @Composable
+    inline fun<reified T : Parcelable> ConsumeReturn(
+        key: String,
+        crossinline consumeBlock: (T) -> Unit,
+    ) {
+        LaunchedEffect(key) {
+            val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+            if (savedStateHandle?.contains(key) == true) {
+                savedStateHandle.get<T>(key)?.also(consumeBlock)
+                savedStateHandle.remove<String>(key)
+            }
         }
     }
-}
 
-@Composable
-inline fun <reified D : Parcelable?> JerboaAppState.takeNullableDepsFromRoot(): State<D?> {
-    val deps = rootChannel<D>().take()
-
-    // This will survive process death
-    val depsSaved = rememberSaveable { NullableWrapper(deps) }
-
-    // After process death, deps will be null
-    return remember(depsSaved) {
-        derivedStateOf {
-            deps ?: depsSaved.data
+    /**
+     * Gets the parcelable from the previous route, but does not consume it
+     * This is important as, we could navigate further up the tree and return again
+     * which wouldn't work
+     *
+     * This function makes a few assumptions, and will throw a error else
+     * - There is a backstack entry, e.g. you are not calling this from the root
+     * - It actually contains the key
+     */
+    @Composable
+    inline fun <reified D : Parcelable> getPrevReturn(key: String): D {
+        // This will survive process death
+        return rememberSaveable {
+            navController.previousBackStackEntry!!.savedStateHandle.get<D>(key)
+                ?: throw IllegalStateException("This route doesn't contain this key `$key`")
         }
     }
-}
 
-@Composable
-inline fun<reified T : Parcelable> JerboaAppState.ConsumeReturn(
-    key: String,
-    crossinline consumeBlock: (T) -> Unit,
-) {
-    LaunchedEffect(key) {
-        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+    /**
+     * Gets the parcelable from the previous route, but does not consume it
+     * This is important as, we could navigate further up the tree and back again
+     * but when you consume on second return it will be gone
+     */
+    inline fun <reified T : Parcelable> getPrevReturnNullable(
+        key: String,
+    ): T? {
+        val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
+
         if (savedStateHandle?.contains(key) == true) {
-            savedStateHandle.get<T>(key)?.also(consumeBlock)
-            savedStateHandle.remove<String>(key)
+            return savedStateHandle.get<T>(key)
+        }
+        return null
+    }
+
+    /**
+     * Gets the parcelable from the previous route, but does not consume it
+     * This is important as, we could navigate further up the tree and back again
+     * but when you consume on second return it will be gone
+     *
+     */
+    @Composable
+    inline fun<reified T : Parcelable> usePrevReturn(
+        key: String,
+        crossinline consumeBlock: (T) -> Unit,
+    ) {
+        LaunchedEffect(key) {
+            val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
+            if (savedStateHandle?.contains(key) == true) {
+                savedStateHandle.get<T>(key)?.also(consumeBlock)
+            }
         }
     }
 }
