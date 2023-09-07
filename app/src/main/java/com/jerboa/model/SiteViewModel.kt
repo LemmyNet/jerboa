@@ -66,6 +66,8 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
 
                     if (!it.isAnon()) {
                         fetchUnreadCounts(GetUnreadCount(auth = it.jwt))
+                    } else {
+                        unreadCount = 0
                     }
                 }
         }
