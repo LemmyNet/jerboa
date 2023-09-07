@@ -236,7 +236,8 @@ fun DrawerItemsMain(
                         onSelectTab(it)
                         closeDrawer()
                     },
-                    iconBadgeCount = if (it == NavTab.Inbox) unreadCount else null,
+                    // This is a very dirty fix, remove if you have a better idea
+                    iconBadgeCount = if (it == NavTab.Inbox && !isAnon) unreadCount else null,
                     contentDescription = stringResource(id = it.contentDescriptionId),
                 )
             }
