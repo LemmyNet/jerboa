@@ -5,6 +5,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +14,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Sort
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -96,6 +96,7 @@ import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
 import com.jerboa.ui.components.common.CommentSortOptionsDropdown
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
@@ -204,8 +205,6 @@ fun PostActivity(
         onRefresh = {
             postViewModel.getData(account, ApiState.Refreshing)
         },
-        // Needs to be lower else it can hide behind the top bar
-        refreshingOffset = 150.dp,
     )
 
     LaunchedEffect(Unit) {
@@ -294,14 +293,19 @@ fun PostActivity(
             }
         },
         content = { padding ->
-            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pullRefresh(pullRefreshState),
+            ) {
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
-                PullRefreshIndicator(
+                JerboaPullRefreshIndicator(
                     postViewModel.postRes.isRefreshing(),
                     pullRefreshState,
                     // zIndex needed bc some elements of a post get drawn above it.
                     Modifier
+                        .padding(padding)
                         .align(Alignment.TopCenter)
                         .zIndex(100f),
                 )

@@ -5,11 +5,11 @@ import androidx.activity.compose.ReportDrawn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
@@ -34,7 +34,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.jerboa.ConsumeReturn
 import com.jerboa.CreatePostDeps
@@ -65,6 +64,7 @@ import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
@@ -102,6 +102,10 @@ fun HomeActivity(
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    // Used for benchmarks TODO: make a .benchmark build that correctly filters
+    //  out the benchmark stuff from the actual app, like testtags
+    // val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
     // Forget snackbars of previous accounts
@@ -233,16 +237,15 @@ fun MainPostListingsContent(
         onRefresh = {
             homeViewModel.refreshPosts(account)
         },
-        // Needs to be lower else it can hide behind the top bar
-        refreshingOffset = 150.dp,
     )
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         // zIndex needed bc some elements of a post get drawn above it.
-        PullRefreshIndicator(
+        JerboaPullRefreshIndicator(
             homeViewModel.postsRes.isRefreshing(),
             pullRefreshState,
             Modifier
+                .padding(padding)
                 .align(Alignment.TopCenter)
                 .zIndex(100f),
         )
