@@ -17,4 +17,5 @@
     <locale android:name="el"/>
     <locale android:name="uk"/>
     <locale android:name="az"/>
+    <locale android:name="ar"/>
 </locale-config>
