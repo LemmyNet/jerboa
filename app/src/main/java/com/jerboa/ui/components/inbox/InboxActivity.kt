@@ -54,6 +54,7 @@ import com.jerboa.datatypes.types.MarkCommentReplyAsRead
 import com.jerboa.datatypes.types.MarkPersonMentionAsRead
 import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -90,7 +91,7 @@ fun InboxActivity(
     drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -222,7 +223,7 @@ fun InboxTabs(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     padding: PaddingValues,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
 ) {
     val transferPrivateMessageDepsViaRoot = appState.rootChannel<PrivateMessageDeps>()
     val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()

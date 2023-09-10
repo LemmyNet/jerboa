@@ -85,12 +85,14 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.PostActionbarMode
 import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
+import com.jerboa.needNsfwBlur
 import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.siFormat
@@ -139,7 +141,7 @@ fun PostHeaderLine(
     modifier: Modifier = Modifier,
     showCommunityName: Boolean = true,
     showAvatar: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showScores: Boolean,
 ) {
     val community = postView.community
@@ -160,7 +162,7 @@ fun PostHeaderLine(
                             size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
                             thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-                            blur = blurNSFW && community.nsfw,
+                            blur = needNsfwBlur(blurNSFW, community.nsfw, postView.post.nsfw),
                         )
                     }
                 }
@@ -249,7 +251,7 @@ fun PostHeaderLinePreview() {
         onCommunityClick = {},
         onPersonClick = {},
         showAvatar = true,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         showScores = true,
     )
 }
@@ -289,7 +291,7 @@ fun PostTitleBlock(
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
@@ -344,7 +346,7 @@ fun PostName(
 @Composable
 fun PostTitleAndImageLink(
     postView: PostView,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
@@ -367,7 +369,7 @@ fun PostTitleAndImageLink(
 
     PictrsUrlImage(
         url = url,
-        blur = blurNSFW && nsfwCheck(postView),
+        blur = needNsfwBlur(blurNSFW, postView.community.nsfw, postView.post.nsfw),
         modifier = Modifier
             .combinedClickable(
                 onClick = { appState.openImageViewer(url) },
@@ -382,7 +384,7 @@ fun PostTitleAndThumbnail(
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     appState: JerboaAppState,
     showIfRead: Boolean,
 ) {
@@ -431,7 +433,7 @@ fun PostBody(
     account: Account,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     clickBody: () -> Unit = {},
@@ -517,7 +519,7 @@ fun PreviewStoryTitleAndMetadata() {
         account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -535,7 +537,7 @@ fun PreviewSourcePost() {
         account = AnonAccount,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -829,7 +831,7 @@ fun PreviewPostListingCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -865,7 +867,7 @@ fun PreviewLinkPostListing() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -901,7 +903,7 @@ fun PreviewImagePostListingCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -937,7 +939,7 @@ fun PreviewImagePostListingSmallCard() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -973,7 +975,7 @@ fun PreviewLinkNoThumbnailPostListing() {
         showVotingArrowsInListView = true,
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showIfRead = true,
@@ -1009,7 +1011,7 @@ fun PostListing(
     showVotingArrowsInListView: Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     appState: JerboaAppState,
     showPostLinkPreview: Boolean,
     showIfRead: Boolean,
@@ -1228,7 +1230,7 @@ fun PostListingList(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     appState: JerboaAppState,
     showIfRead: Boolean,
     enableDownVotes: Boolean,
@@ -1350,7 +1352,7 @@ private fun ThumbnailTile(
     postView: PostView,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     appState: JerboaAppState,
 ) {
     postView.post.url?.also { url ->
@@ -1380,7 +1382,7 @@ private fun ThumbnailTile(
             postView.post.thumbnail_url?.also { thumbnail ->
                 PictrsThumbnailImage(
                     thumbnail = thumbnail,
-                    blur = blurNSFW && nsfwCheck(postView),
+                    blur = needNsfwBlur(blurNSFW, postView.community.nsfw, postView.post.nsfw),
                     roundBottomEndCorner = postType != PostType.Link,
                     modifier = postLinkPicMod,
                 )
@@ -1444,7 +1446,7 @@ fun PostListingListPreview() {
         showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
@@ -1475,7 +1477,7 @@ fun PostListingListWithThumbPreview() {
         showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         appState = rememberJerboaAppState(),
         showIfRead = true,
         enableDownVotes = false,
@@ -1512,7 +1514,7 @@ fun PostListingCard(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showPostLinkPreview: Boolean,
     appState: JerboaAppState,
     showIfRead: Boolean = false,

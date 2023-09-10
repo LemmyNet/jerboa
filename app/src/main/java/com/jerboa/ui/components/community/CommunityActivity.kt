@@ -49,6 +49,7 @@ import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
@@ -89,7 +90,7 @@ fun CommunityActivity(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,

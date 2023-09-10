@@ -35,6 +35,7 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.Community
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.feat.BackConfirmation.addConfirmationDialog
 import com.jerboa.feat.BackConfirmation.addConfirmationToast
@@ -266,7 +267,7 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
+                                blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
                                 showPostLinkPreviews = appSettings.showPostLinkPreviews,
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
                                 postActionbarMode = appSettings.postActionbarMode,
@@ -308,7 +309,7 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
+                                blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
                                 showPostLinkPreviews = appSettings.showPostLinkPreviews,
                                 markAsReadOnScroll = appSettings.markAsReadOnScroll,
                                 postActionbarMode = appSettings.postActionbarMode,
@@ -379,7 +380,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             onBack = appState::popBackStack,
@@ -415,7 +416,7 @@ class MainActivity : AppCompatActivity() {
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
@@ -438,7 +439,7 @@ class MainActivity : AppCompatActivity() {
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             selectMode = args.select,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
                             drawerState = drawerState,
                         )
                     }
@@ -493,7 +494,7 @@ class MainActivity : AppCompatActivity() {
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
                             drawerState = drawerState,
                         )
                     }
@@ -527,7 +528,7 @@ class MainActivity : AppCompatActivity() {
                                 siteViewModel = siteViewModel,
                                 useCustomTabs = appSettings.useCustomTabs,
                                 usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
+                                blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionbarMode = appSettings.postActionbarMode,
                             )
@@ -558,7 +559,7 @@ class MainActivity : AppCompatActivity() {
                             showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
                             navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
                             siteViewModel = siteViewModel,
-                            blurNSFW = appSettings.blurNSFW,
+                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
                             postActionbarMode = appSettings.postActionbarMode,
                         )

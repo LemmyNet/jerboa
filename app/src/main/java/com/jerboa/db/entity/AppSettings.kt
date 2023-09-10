@@ -85,9 +85,9 @@ data class AppSettings(
     val secureWindow: Boolean,
     @ColumnInfo(
         name = "blur_nsfw",
-        defaultValue = "1",
+        defaultValue = "0",
     )
-    val blurNSFW: Boolean,
+    val blurNSFW: Int,
     @ColumnInfo(
         name = "show_text_descriptions_in_navbar",
         defaultValue = "1",

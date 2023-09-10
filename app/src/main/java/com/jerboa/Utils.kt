@@ -939,6 +939,14 @@ fun nsfwCheck(postView: PostView): Boolean {
     return postView.post.nsfw || postView.community.nsfw
 }
 
+fun needNsfwBlur(settings: ShowNsfwTypes, isCommunityNsfw: Boolean, isPostNsfw: Boolean = true): Boolean {
+    return isPostNsfw && when(settings){
+        ShowNsfwTypes.BlurEverywhere -> true
+        ShowNsfwTypes.DoNotBlur -> false
+        ShowNsfwTypes.BlurEverywhereExceptNsfw -> !isCommunityNsfw
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.Q)
 @Throws(IOException::class)
 fun saveMediaQ(

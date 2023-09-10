@@ -27,6 +27,8 @@ import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityView
+import com.jerboa.datatypes.types.ShowNsfwTypes
+import com.jerboa.needNsfwBlur
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
 import com.jerboa.ui.theme.ICON_SIZE
@@ -73,7 +75,7 @@ fun CommunityLink(
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -90,7 +92,7 @@ fun CommunityLink(
                 contentDescription = null,
                 size = size,
                 thumbnailSize = thumbnailSize,
-                blur = blurNSFW && community.nsfw,
+                blur = needNsfwBlur(blurNSFW, community.nsfw),
             )
         } ?: run {
             if (showDefaultIcon) {
@@ -118,7 +120,7 @@ fun CommunityLinkLarger(
     community: Community,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
 ) {
     CommunityLink(
         community = community,
@@ -141,7 +143,7 @@ fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -167,7 +169,7 @@ fun CommunityLinkPreview() {
         community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
     )
 }
 
@@ -178,6 +180,6 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
     )
 }

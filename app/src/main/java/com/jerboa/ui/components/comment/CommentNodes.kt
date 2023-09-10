@@ -12,6 +12,7 @@ import com.jerboa.CommentNodeData
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.entity.Account
 import kotlinx.collections.immutable.ImmutableList
 
@@ -50,7 +51,7 @@ fun CommentNodes(
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showScores: Boolean,
 ) {
     LazyColumn(state = listState) {
@@ -129,7 +130,7 @@ fun LazyListScope.commentNodeItems(
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showScores: Boolean,
 ) {
     nodes.forEach { node ->

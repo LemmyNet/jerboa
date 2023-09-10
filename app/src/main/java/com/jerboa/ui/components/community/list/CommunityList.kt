@@ -71,7 +71,7 @@ fun CommunityListings(
     communities: List<CommunityView>,
     onClickCommunity: (community: Community) -> Unit,
     modifier: Modifier = Modifier,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
 ) {
     val listState = rememberLazyListState()
 
@@ -111,7 +111,7 @@ fun CommunityListingsPreview() {
     CommunityListings(
         communities = communities,
         onClickCommunity = {},
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
     )
 }
 

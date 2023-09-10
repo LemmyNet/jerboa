@@ -43,6 +43,7 @@ import com.jerboa.datatypes.samplePersonMentionView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PersonMentionView
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
@@ -336,7 +337,7 @@ fun CommentMentionNode(
     onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account,
     showAvatar: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     enableDownvotes: Boolean,
     showScores: Boolean,
 ) {

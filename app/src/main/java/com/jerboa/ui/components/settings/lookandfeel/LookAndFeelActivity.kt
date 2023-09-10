@@ -38,6 +38,7 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.ThemeColor
 import com.jerboa.ThemeMode
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BackConfirmationMode
@@ -89,7 +90,7 @@ fun LookAndFeelActivity(
     val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs)
 
     val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
-    val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
+    val blurNSFW = rememberIntSettingState(settings.blurNSFW)
     val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
     val showPostLinkPreviewMode = rememberBooleanSettingState(settings.showPostLinkPreviews)
     val postActionbarMode = rememberIntSettingState(settings.postActionbarMode)
@@ -353,12 +354,26 @@ fun LookAndFeelActivity(
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
-                SettingsCheckbox(
+                SettingsList(
                     state = blurNSFW,
-                    title = {
-                        Text(stringResource(id = R.string.blur_nsfw))
+                    items = listOf(
+                        stringResource(R.string.account_settings_blur_everywhere),
+                        stringResource(R.string.account_settings_blur_everywhere_except_nsfw),
+                        stringResource(R.string.account_settings_do_not_blur),
+                    ),
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.ViewList,
+                            contentDescription = null,
+                        )
                     },
-                    onCheckedChange = { updateAppSettings() },
+                    title = {
+                        Text(text = stringResource(R.string.look_and_feel_post_view))
+                    },
+                    onItemSelected = { i, _ ->
+                        postViewModeState.value = i
+                        updateAppSettings()
+                    },
                 )
                 SettingsCheckbox(
                     state = showPostLinkPreviewMode,

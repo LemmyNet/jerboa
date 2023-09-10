@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import com.jerboa.api.ApiState
 import com.jerboa.closeDrawer
 import com.jerboa.datatypes.types.CommunityFollowerView
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.model.AccountViewModel
@@ -31,7 +32,7 @@ fun MainDrawer(
     onCommunityClick: (Int) -> Unit,
     onClickLogin: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showBottomNav: Boolean,
 ) {
     val account = getCurrentAccount(accountViewModel)

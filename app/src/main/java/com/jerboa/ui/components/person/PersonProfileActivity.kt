@@ -67,6 +67,7 @@ import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.getJWT
@@ -119,7 +120,7 @@ fun PersonProfileActivity(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showPostLinkPreviews: Boolean,
     drawerState: DrawerState,
     markAsReadOnScroll: Boolean,
@@ -322,7 +323,7 @@ fun UserTabs(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     snackbarHostState: SnackbarHostState,

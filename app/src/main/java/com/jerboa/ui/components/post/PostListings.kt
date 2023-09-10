@@ -25,6 +25,7 @@ import com.jerboa.datatypes.samplePostView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PostView
+import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isScrolledToEnd
@@ -61,7 +62,7 @@ fun PostListings(
     showAvatar: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: ShowNsfwTypes,
     showPostLinkPreviews: Boolean,
     appState: JerboaAppState,
     markAsReadOnScroll: Boolean,
@@ -172,7 +173,7 @@ fun PreviewPostListings() {
         showAvatar = true,
         useCustomTabs = false,
         usePrivateTabs = false,
-        blurNSFW = true,
+        blurNSFW = ShowNsfwTypes.BlurEverywhere,
         showPostLinkPreviews = true,
         appState = rememberJerboaAppState(),
         markAsReadOnScroll = false,

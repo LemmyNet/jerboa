@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Immutable
 @Parcelize
 data class SaveUserSettings(
-    val show_nsfw: Boolean? = null,
+    val show_nsfw: ShowNsfwTypes?  /* "BlurEverywhere" | "BlurEverywhereExceptNsfw" | "DoNotBlur" */ = null,
     val show_scores: Boolean? = null,
     val theme: String? = null,
     val default_sort_type: SortType? /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" | "TopHour" | "TopSixHour" | "TopTwelveHour" */ = null,

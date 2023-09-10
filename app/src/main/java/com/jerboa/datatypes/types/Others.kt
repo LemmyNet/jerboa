@@ -382,6 +382,22 @@ enum class ModlogActionType {
     AdminPurgeComment,
 }
 
+/**
+ * Different show nsfw states
+ */
+enum class ShowNsfwTypes {
+
+    @SerializedName("BlurEverywhere")
+    BlurEverywhere,
+
+    @SerializedName("BlurEverywhereExceptNsfw")
+    BlurEverywhereExceptNsfw,
+
+    @SerializedName("DoNotBlur")
+    DoNotBlur;
+
+}
+
 @Parcelize
 data class PictrsImage(
     val file: String,
