@@ -41,7 +41,6 @@ import androidx.navigation.compose.rememberNavController
 import arrow.core.Either
 import com.jerboa.JerboaAppState
 import com.jerboa.R
-import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
@@ -166,7 +165,7 @@ fun BottomNavActivity(
                         scope = scope,
                         drawerState = drawerState,
                         onSelectTab = onSelectTab,
-                        blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
+                        blurNSFW = appSettings.blurNSFW,
                         showBottomNav = appSettings.showBottomNav,
                         onCommunityClick = appState::toCommunity,
                         onSettingsClick = appState::toSettings,
@@ -214,7 +213,7 @@ fun BottomNavActivity(
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             drawerState = drawerState,
-                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
+                            blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
@@ -227,7 +226,7 @@ fun BottomNavActivity(
                             accountViewModel = accountViewModel,
                             selectMode = false,
                             siteViewModel = siteViewModel,
-                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
+                            blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
                         )
                     }
@@ -237,7 +236,7 @@ fun BottomNavActivity(
                             appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
-                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
+                            blurNSFW = appSettings.blurNSFW,
                             drawerState = drawerState,
                         )
                     }
@@ -253,7 +252,7 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
+                            blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
@@ -272,7 +271,7 @@ fun BottomNavActivity(
                             siteViewModel = siteViewModel,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
-                            blurNSFW = ShowNsfwTypes.entries[appSettings.blurNSFW],
+                            blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreviews = appSettings.showPostLinkPreviews,
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,

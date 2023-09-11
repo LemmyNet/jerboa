@@ -74,7 +74,6 @@ import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.shareLink
@@ -148,7 +147,7 @@ fun PostActivity(
     showVotingArrowsInListView: Boolean,
     showParentCommentNavigationButtons: Boolean,
     navigateParentCommentsWithVolumeButtons: Boolean,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
     showPostLinkPreview: Boolean,
     postActionbarMode: Int,
 ) {

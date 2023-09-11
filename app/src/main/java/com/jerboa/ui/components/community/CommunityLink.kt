@@ -27,8 +27,6 @@ import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.datatypes.types.ShowNsfwTypes
-import com.jerboa.needNsfwBlur
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
 import com.jerboa.ui.theme.ICON_SIZE
@@ -75,7 +73,7 @@ fun CommunityLink(
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -92,7 +90,7 @@ fun CommunityLink(
                 contentDescription = null,
                 size = size,
                 thumbnailSize = thumbnailSize,
-                blur = needNsfwBlur(blurNSFW, community.nsfw),
+                blur = blurNSFW && community.nsfw,
             )
         } ?: run {
             if (showDefaultIcon) {
@@ -120,7 +118,7 @@ fun CommunityLinkLarger(
     community: Community,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
 ) {
     CommunityLink(
         community = community,
@@ -143,7 +141,7 @@ fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -169,7 +167,7 @@ fun CommunityLinkPreview() {
         community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = ShowNsfwTypes.BlurEverywhere,
+        blurNSFW = true,
     )
 }
 
@@ -180,6 +178,6 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = ShowNsfwTypes.BlurEverywhere,
+        blurNSFW = true,
     )
 }

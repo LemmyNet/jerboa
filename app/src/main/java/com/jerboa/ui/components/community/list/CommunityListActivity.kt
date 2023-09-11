@@ -20,7 +20,6 @@ import com.jerboa.JerboaAppState
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.Search
 import com.jerboa.datatypes.types.SearchType
-import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.getJWT
 import com.jerboa.model.AccountViewModel
@@ -47,7 +46,7 @@ fun CommunityListActivity(
     accountViewModel: AccountViewModel,
     selectMode: Boolean = false,
     siteViewModel: SiteViewModel,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
     drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to community list activity")

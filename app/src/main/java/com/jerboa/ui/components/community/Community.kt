@@ -16,10 +16,8 @@ import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.needNsfwBlur
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -33,7 +31,7 @@ fun CommunityTopSection(
     communityView: CommunityView,
     modifier: Modifier = Modifier,
     onClickFollowCommunity: (communityView: CommunityView) -> Unit,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,11 +45,11 @@ fun CommunityTopSection(
                 PictrsBannerImage(
                     url = it,
                     modifier = Modifier.height(DRAWER_BANNER_SIZE),
-                    blur = needNsfwBlur(blurNSFW, communityView.community.nsfw),
+                    blur = blurNSFW && communityView.community.nsfw,
                 )
             }
             communityView.community.icon?.also {
-                LargerCircularIcon(icon = it, blur = needNsfwBlur(blurNSFW, communityView.community.nsfw))
+                LargerCircularIcon(icon = it, blur = blurNSFW && communityView.community.nsfw)
             }
         }
         Column(
@@ -121,7 +119,7 @@ fun CommunityTopSectionPreview() {
     CommunityTopSection(
         communityView = sampleCommunityView,
         onClickFollowCommunity = {},
-        blurNSFW = ShowNsfwTypes.BlurEverywhere,
+        blurNSFW = true,
     )
 }
 

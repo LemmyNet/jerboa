@@ -28,7 +28,6 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.SaveUserSettings
-import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
@@ -129,7 +128,7 @@ fun SettingsForm(
     val defaultListingType =
         rememberIntSettingState(luv?.local_user?.default_listing_type?.ordinal ?: 0)
     val showAvatars = rememberBooleanSettingState(luv?.local_user?.show_avatars ?: false)
-    val showNsfw = rememberIntSettingState(luv?.local_user?.show_nsfw?.ordinal ?: 0)
+    val showNsfw = rememberBooleanSettingState(luv?.local_user?.show_nsfw ?: false)
     val showScores = rememberBooleanSettingState(luv?.local_user?.show_scores ?: false)
     val showBotAccount = rememberBooleanSettingState(luv?.local_user?.show_bot_accounts ?: false)
     val botAccount = rememberBooleanSettingState(luv?.person?.bot_account ?: false)
@@ -155,7 +154,7 @@ fun SettingsForm(
         send_notifications_to_email = sendNotificationsToEmail.value,
         show_avatars = showAvatars.value,
         show_bot_accounts = showBotAccount.value,
-        show_nsfw = ShowNsfwTypes.entries[showNsfw.value],
+        show_nsfw = showNsfw.value,
         default_listing_type = ListingType.entries[defaultListingType.value],
         show_new_post_notifs = showNewPostNotifs.value,
         show_read_posts = showReadPosts.value,
@@ -259,14 +258,12 @@ fun SettingsForm(
             title = { Text(text = stringResource(R.string.account_settings_default_sort_type)) },
             items = sortTypeNames,
         )
-        SettingsListDropdown(
+
+        SettingsCheckbox(
             state = showNsfw,
-            title = { Text(text = stringResource(R.string.account_settings_show_nsfw)) },
-            items = listOf(
-                stringResource(R.string.account_settings_blur_everywhere),
-                stringResource(R.string.account_settings_blur_everywhere_except_nsfw),
-                stringResource(R.string.account_settings_do_not_blur),
-            ),
+            title = {
+                Text(text = stringResource(R.string.account_settings_show_nsfw))
+            },
         )
         SettingsCheckbox(
             state = showAvatars,

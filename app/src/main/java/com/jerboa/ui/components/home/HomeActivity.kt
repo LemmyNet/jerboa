@@ -50,7 +50,6 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.datatypes.types.Tagline
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
@@ -92,7 +91,7 @@ fun HomeActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     drawerState: DrawerState,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
@@ -206,7 +205,7 @@ fun MainPostListingsContent(
     showVotingArrowsInListView: Boolean,
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
     showPostLinkPreviews: Boolean,
     snackbarHostState: SnackbarHostState,
     markAsReadOnScroll: Boolean,

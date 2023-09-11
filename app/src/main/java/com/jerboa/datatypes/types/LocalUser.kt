@@ -8,7 +8,7 @@ data class LocalUser(
     val id: LocalUserId,
     val person_id: PersonId,
     val email: String? = null,
-    val show_nsfw: ShowNsfwTypes /* "BlurEverywhere" | "BlurEverywhereExceptNsfw" | "DoNotBlur" */,
+    val show_nsfw: Boolean,
     val theme: String,
     val default_sort_type: SortType /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" | "TopHour" | "TopSixHour" | "TopTwelveHour" */,
     val default_listing_type: ListingType /* "All" | "Local" | "Subscribed" */,

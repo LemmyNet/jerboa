@@ -50,7 +50,6 @@ import com.jerboa.datatypes.types.CommunityFollowerView
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.MyUserInfo
 import com.jerboa.datatypes.types.Person
-import com.jerboa.datatypes.types.ShowNsfwTypes
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.isAnon
@@ -87,7 +86,7 @@ fun Drawer(
     onCommunityClick: (community: Community) -> Unit,
     onClickSettings: () -> Unit,
     isOpen: Boolean,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -137,7 +136,7 @@ fun DrawerContent(
     onClickSettings: () -> Unit,
     myUserInfo: MyUserInfo?,
     unreadCount: Int,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -181,7 +180,7 @@ fun DrawerItemsMain(
     onClickListingType: (ListingType) -> Unit,
     onCommunityClick: (community: Community) -> Unit,
     unreadCount: Int,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
     showBottomNav: Boolean,
     closeDrawer: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
@@ -293,7 +292,7 @@ fun DrawerItemsMainPreview() {
         onCommunityClick = {},
         onClickSettings = {},
         unreadCount = 2,
-        blurNSFW = ShowNsfwTypes.BlurEverywhere,
+        blurNSFW = true,
         showBottomNav = false,
         closeDrawer = {},
         onSelectTab = {},

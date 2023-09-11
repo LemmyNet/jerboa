@@ -32,7 +32,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
     useCustomTabs = true,
     usePrivateTabs = false,
     secureWindow = false,
-    blurNSFW = 0,
+    blurNSFW = true,
     showTextDescriptionsInNavbar = true,
     backConfirmationMode = 1,
     markAsReadOnScroll = false,
@@ -42,7 +42,7 @@ val APP_SETTINGS_DEFAULT = AppSettings(
 )
 
 @Database(
-    version = 27,
+    version = 26,
     entities = [Account::class, AppSettings::class],
     exportSchema = true,
 )

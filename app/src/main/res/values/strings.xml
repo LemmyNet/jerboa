@@ -12,13 +12,10 @@
     <string name="account_settings_avatar">Avatar</string>
     <string name="account_settings_banner">Banner</string>
     <string name="account_settings_bio">Bio</string>
-    <string name="account_settings_blur_everywhere">Blur everywhere</string>
-    <string name="account_settings_blur_everywhere_except_nsfw">Blur everywhere except NSFW</string>
     <string name="account_settings_bot_account">Bot Account</string>
     <string name="account_settings_default_listing_type">Default Listing Type</string>
     <string name="account_settings_default_sort_type">Default Sort Type</string>
     <string name="account_settings_display_name">Display Name</string>
-    <string name="account_settings_do_not_blur">Do not blur</string>
     <string name="account_settings_email">Email</string>
     <string name="account_settings_local">Local</string>
     <string name="account_settings_matrix_user">Matrix User</string>

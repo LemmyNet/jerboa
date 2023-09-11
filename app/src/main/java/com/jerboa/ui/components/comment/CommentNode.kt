@@ -216,7 +216,7 @@ fun LazyListScope.commentNodeItem(
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
     showScores: Boolean,
 ) {
     val commentView = node.commentView
@@ -483,7 +483,7 @@ fun PostAndCommunityContextHeader(
     community: Community,
     onCommunityClick: (community: Community) -> Unit,
     onPostClick: (postId: Int) -> Unit,
-    blurNSFW: ShowNsfwTypes,
+    blurNSFW: Boolean,
 ) {
     Column(
         modifier = Modifier.padding(top = LARGE_PADDING),
@@ -515,7 +515,7 @@ fun PostAndCommunityContextHeaderPreview() {
         community = sampleCommunity,
         onCommunityClick = {},
         onPostClick = {},
-        blurNSFW = ShowNsfwTypes.BlurEverywhere,
+        blurNSFW = true,
     )
 }
 
@@ -690,7 +690,7 @@ fun CommentNodesPreview() {
         showActionBar = { _ -> true },
         enableDownVotes = true,
         showAvatar = true,
-        blurNSFW = ShowNsfwTypes.BlurEverywhere,
+        blurNSFW = true,
         account = AnonAccount,
         showScores = true,
     )
