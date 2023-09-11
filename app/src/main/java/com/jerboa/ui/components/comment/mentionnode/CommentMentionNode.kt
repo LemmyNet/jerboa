@@ -336,7 +336,7 @@ fun CommentMentionNode(
     onBlockCreatorClick: (creator: Person) -> Unit,
     account: Account,
     showAvatar: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
     enableDownvotes: Boolean,
     showScores: Boolean,
 ) {

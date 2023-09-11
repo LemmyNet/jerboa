@@ -46,7 +46,7 @@ fun CommunityListActivity(
     accountViewModel: AccountViewModel,
     selectMode: Boolean = false,
     siteViewModel: SiteViewModel,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
     drawerState: DrawerState,
 ) {
     Log.d("jerboa", "got to community list activity")

@@ -31,7 +31,7 @@ fun MainDrawer(
     onCommunityClick: (Int) -> Unit,
     onClickLogin: () -> Unit,
     onSelectTab: (NavTab) -> Unit,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
     showBottomNav: Boolean,
 ) {
     val account = getCurrentAccount(accountViewModel)

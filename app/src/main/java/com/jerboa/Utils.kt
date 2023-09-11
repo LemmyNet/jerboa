@@ -74,6 +74,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.*
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
+import com.jerboa.feat.BlurNsfwTypes
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
@@ -937,6 +938,15 @@ fun getDepthFromComment(comment: Comment?): Int? {
 
 fun nsfwCheck(postView: PostView): Boolean {
     return postView.post.nsfw || postView.community.nsfw
+}
+
+fun needNsfwBlur(settings: BlurNsfwTypes, isCommunityNsfw: Boolean, isPostNsfw: Boolean = isCommunityNsfw): Boolean {
+    return isPostNsfw && when(settings){
+        BlurNsfwTypes.DoNotBlur -> false
+        BlurNsfwTypes.BlurEverywhere -> true
+        BlurNsfwTypes.BlurEverywhereExceptNsfw -> !isCommunityNsfw
+        BlurNsfwTypes.BlurOnlyNsfwCommunity -> isCommunityNsfw
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)

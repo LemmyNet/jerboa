@@ -89,7 +89,7 @@ fun LookAndFeelActivity(
     val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs)
 
     val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
-    val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
+    val blurNSFW = rememberIntSettingState(settings.blurNSFW)
     val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
     val showPostLinkPreviewMode = rememberBooleanSettingState(settings.showPostLinkPreviews)
     val postActionbarMode = rememberIntSettingState(settings.postActionbarMode)
@@ -354,13 +354,6 @@ fun LookAndFeelActivity(
                     onCheckedChange = { updateAppSettings() },
                 )
                 SettingsCheckbox(
-                    state = blurNSFW,
-                    title = {
-                        Text(stringResource(id = R.string.blur_nsfw))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
                     state = showPostLinkPreviewMode,
                     title = {
                         Text(stringResource(id = R.string.show_post_link_previews))
@@ -380,6 +373,17 @@ fun LookAndFeelActivity(
                         Text(stringResource(id = R.string.settings_autoplaygifs))
                     },
                     onCheckedChange = { updateAppSettings() },
+                )
+                SettingsListDropdown(
+                    state = blurNSFW,
+                    title = { Text(stringResource(id = R.string.blur_nsfw)) },
+                    items = listOf(
+                        stringResource(R.string.app_settings_do_not_blur),
+                        stringResource(R.string.app_settings_blur_everywhere),
+                        stringResource(R.string.app_settings_blur_everywhere_except_nsfw),
+                        stringResource(R.string.app_settings_blur_only_nsfw_community),
+                    ),
+                    onItemSelected = { _,_ -> updateAppSettings() },
                 )
             }
         },

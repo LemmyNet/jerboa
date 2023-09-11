@@ -90,7 +90,7 @@ fun InboxActivity(
     drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -222,7 +222,7 @@ fun InboxTabs(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     padding: PaddingValues,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
 ) {
     val transferPrivateMessageDepsViaRoot = appState.rootChannel<PrivateMessageDeps>()
     val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
