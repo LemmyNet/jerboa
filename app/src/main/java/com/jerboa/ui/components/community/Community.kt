@@ -18,10 +18,8 @@ import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.feat.BlurNsfwTypes
+import com.jerboa.feat.needNsfwBlur
 import com.jerboa.feat.PostActionbarMode
-import com.jerboa.needNsfwBlur
-import com.jerboa.toEnum
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -29,6 +27,7 @@ import com.jerboa.ui.components.common.PostViewModeDialog
 import com.jerboa.ui.components.common.SortOptionsDialog
 import com.jerboa.ui.components.common.SortTopOptionsDialog
 import com.jerboa.ui.theme.*
+
 
 @Composable
 fun CommunityTopSection(
@@ -49,11 +48,11 @@ fun CommunityTopSection(
                 PictrsBannerImage(
                     url = it,
                     modifier = Modifier.height(DRAWER_BANNER_SIZE),
-                    blur = needNsfwBlur(blurNSFW.toEnum(), communityView.community.nsfw),
+                    blur = blurNSFW.needNsfwBlur(communityView.community.nsfw),
                 )
             }
             communityView.community.icon?.also {
-                LargerCircularIcon(icon = it, blur = needNsfwBlur(blurNSFW.toEnum(), communityView.community.nsfw))
+                LargerCircularIcon(icon = it, blur = blurNSFW.needNsfwBlur(communityView.community.nsfw))
             }
         }
         Column(

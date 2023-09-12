@@ -160,6 +160,17 @@ fun LookAndFeelActivity(
                         )
                     },
                 )
+                SettingsListDropdown(
+                    state = blurNSFW,
+                    title = { Text(stringResource(id = R.string.blur_nsfw)) },
+                    items = listOf(
+                        stringResource(R.string.app_settings_do_not_blur),
+                        stringResource(R.string.app_settings_blur_everywhere),
+                        stringResource(R.string.app_settings_blur_everywhere_except_nsfw),
+                        stringResource(R.string.app_settings_blur_only_nsfw_community),
+                    ),
+                    onItemSelected = { _,_ -> updateAppSettings() },
+                )
                 SettingsSlider(
                     modifier = Modifier.padding(top = 10.dp),
                     valueRange = 8f..48f,
@@ -373,17 +384,6 @@ fun LookAndFeelActivity(
                         Text(stringResource(id = R.string.settings_autoplaygifs))
                     },
                     onCheckedChange = { updateAppSettings() },
-                )
-                SettingsListDropdown(
-                    state = blurNSFW,
-                    title = { Text(stringResource(id = R.string.blur_nsfw)) },
-                    items = listOf(
-                        stringResource(R.string.app_settings_do_not_blur),
-                        stringResource(R.string.app_settings_blur_everywhere),
-                        stringResource(R.string.app_settings_blur_everywhere_except_nsfw),
-                        stringResource(R.string.app_settings_blur_only_nsfw_community),
-                    ),
-                    onItemSelected = { _,_ -> updateAppSettings() },
                 )
             }
         },

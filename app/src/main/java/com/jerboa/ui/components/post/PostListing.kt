@@ -91,7 +91,7 @@ import com.jerboa.feat.PostActionbarMode
 import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
-import com.jerboa.needNsfwBlur
+import com.jerboa.feat.needNsfwBlur
 import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.siFormat
@@ -161,7 +161,7 @@ fun PostHeaderLine(
                             size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
                             thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-                            blur = needNsfwBlur(blurNSFW.toEnum(), community.nsfw),
+                            blur = blurNSFW.needNsfwBlur(community.nsfw),
                         )
                     }
                 }
@@ -368,7 +368,7 @@ fun PostTitleAndImageLink(
 
     PictrsUrlImage(
         url = url,
-        blur = needNsfwBlur(blurNSFW.toEnum(), postView.community.nsfw, postView.post.nsfw),
+        blur = blurNSFW.needNsfwBlur(postView),
         modifier = Modifier
             .combinedClickable(
                 onClick = { appState.openImageViewer(url) },
@@ -1381,7 +1381,7 @@ private fun ThumbnailTile(
             postView.post.thumbnail_url?.also { thumbnail ->
                 PictrsThumbnailImage(
                     thumbnail = thumbnail,
-                    blur = needNsfwBlur(blurNSFW.toEnum(), postView.community.nsfw, postView.post.nsfw),
+                    blur = blurNSFW.needNsfwBlur(postView),
                     roundBottomEndCorner = postType != PostType.Link,
                     modifier = postLinkPicMod,
                 )
