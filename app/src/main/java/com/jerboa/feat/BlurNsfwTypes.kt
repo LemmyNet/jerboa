@@ -15,11 +15,11 @@ enum class BlurNsfwTypes(@StringRes val resId: Int) : Parcelable {
     BlurOnlyNsfwCommunity(R.string.app_settings_blur_only_nsfw_community);
 }
 
-fun Int.needNsfwBlur(postView : PostView) =
+fun BlurNsfwTypes.needNsfwBlur(postView : PostView) =
     this.needNsfwBlur(postView.community.nsfw, postView.post.nsfw)
 
-fun Int.needNsfwBlur(isCommunityNsfw: Boolean, isPostNsfw: Boolean = isCommunityNsfw): Boolean {
-    return isPostNsfw && when(this.toEnum<BlurNsfwTypes>()){
+fun BlurNsfwTypes.needNsfwBlur(isCommunityNsfw: Boolean, isPostNsfw: Boolean = isCommunityNsfw): Boolean {
+    return isPostNsfw && when(this){
         BlurNsfwTypes.DoNotBlur -> false
         BlurNsfwTypes.BlurEverywhere -> true
         BlurNsfwTypes.BlurEverywhereExceptNsfw -> !isCommunityNsfw
