@@ -32,7 +32,6 @@ import com.jerboa.ui.theme.muted
 import java.time.Instant
 import java.time.format.DateTimeParseException
 import java.util.Date
-import kotlin.jvm.Throws
 
 @Composable
 fun TimeAgo(
