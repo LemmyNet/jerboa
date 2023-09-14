@@ -95,7 +95,6 @@ fun TimeAgo(
  * @param longTimeFormat If true, use a long time format like "2 hours, 3 minutes ago"
  * @return The pretty string, or null if the date string could not be parsed
  */
-@Throws(DateTimeParseException::class)
 fun dateStringToPretty(dateStr: String, longTimeFormat: Boolean = false): String? {
     return try {
         // TODO: Remove this hack once backward API compatibility is implemented
