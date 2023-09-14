@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.common
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,7 +30,9 @@ import com.jerboa.formatDuration
 import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.muted
 import java.time.Instant
+import java.time.format.DateTimeParseException
 import java.util.Date
+import kotlin.jvm.Throws
 
 @Composable
 fun TimeAgo(
@@ -39,6 +42,15 @@ fun TimeAgo(
     longTimeFormat: Boolean = false,
 ) {
     val publishedPretty = dateStringToPretty(published, longTimeFormat)
+
+    if (publishedPretty == null) {
+        Text(
+            text = stringResource(R.string.time_ago_failed_to_parse),
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.labelSmall,
+        )
+        return
+    }
 
     val afterPreceding = precedingString?.let {
         stringResource(R.string.time_ago_ago, it, publishedPretty)
@@ -52,28 +64,52 @@ fun TimeAgo(
         )
 
         updated?.also {
-            val updatedPretty = dateStringToPretty(it, longTimeFormat)
-
             DotSpacer(
                 padding = SMALL_PADDING,
                 style = MaterialTheme.typography.bodyMedium,
             )
-            Text(
-                text = "($updatedPretty)",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground.muted,
-                fontStyle = FontStyle.Italic,
-            )
+            val updatedPretty = dateStringToPretty(it, longTimeFormat)
+
+            if (updatedPretty == null) {
+                Text(
+                    text = stringResource(R.string.time_ago_failed_to_parse),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            } else {
+                Text(
+                    text = "($updatedPretty)",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground.muted,
+                    fontStyle = FontStyle.Italic,
+                )
+            }
         }
     }
 }
 
-fun dateStringToPretty(dateStr: String, longTimeFormat: Boolean = false): String {
-    val publishedDate = Date.from(Instant.parse(dateStr + "Z"))
-    return formatDuration(publishedDate, longTimeFormat)
+/**
+ * Converts a date string to a pretty string like "2 hours" or "2h"
+ *
+ * @param dateStr The date string to convert
+ * @param longTimeFormat If true, use a long time format like "2 hours, 3 minutes ago"
+ * @return The pretty string, or null if the date string could not be parsed
+ */
+@Throws(DateTimeParseException::class)
+fun dateStringToPretty(dateStr: String, longTimeFormat: Boolean = false): String? {
+    return try {
+        // TODO: Remove this hack once backward API compatibility is implemented
+        // pre 0.19 Datetimes didn't have a timezone, so we add one here
+        val withTimezone = if (dateStr.last() == 'Z') dateStr else dateStr + "Z"
+        val publishedDate = Date.from(Instant.parse(withTimezone))
+        formatDuration(publishedDate, longTimeFormat)
+    } catch (e: DateTimeParseException) {
+        Log.d("TimeAgo", "Failed to parse date string: $dateStr", e)
+        null
+    }
 }
 
-@Preview
+@Preview(backgroundColor = 0x00000000)
 @Composable
 fun TimeAgoPreview() {
     TimeAgo(samplePerson.published, samplePerson.updated)
