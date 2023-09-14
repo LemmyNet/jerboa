@@ -395,10 +395,11 @@ suspend fun openLink(url: String, navController: NavController, useCustomTab: Bo
 
 fun openLinkRaw(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
     val extras = Intent().apply {
-        if (usePrivateTab) {
+        // In non CustomTab mode this causes it to not open the link in Chrome
+        if (useCustomTab) {
             putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
-            putExtra("private_browsing_mode", true)
         }
+        putExtra("private_browsing_mode", true)
     }
 
     if (useCustomTab) {
