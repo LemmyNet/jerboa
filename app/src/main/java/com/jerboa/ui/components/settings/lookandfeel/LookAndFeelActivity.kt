@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.FormatSize
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.LensBlur
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Swipe
 import androidx.compose.material.icons.outlined.ViewList
@@ -41,6 +42,7 @@ import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.BlurNsfwTypes
 import com.jerboa.feat.PostActionbarMode
 import com.jerboa.feat.PostNavigationGestureMode
 import com.jerboa.getLangPreferenceDropdownEntries
@@ -160,17 +162,7 @@ fun LookAndFeelActivity(
                         )
                     },
                 )
-                SettingsListDropdown(
-                    state = blurNSFW,
-                    title = { Text(stringResource(id = R.string.blur_nsfw)) },
-                    items = listOf(
-                        stringResource(R.string.app_settings_do_not_blur),
-                        stringResource(R.string.app_settings_blur_everywhere),
-                        stringResource(R.string.app_settings_blur_everywhere_except_nsfw),
-                        stringResource(R.string.app_settings_blur_only_nsfw_community),
-                    ),
-                    onItemSelected = { _,_ -> updateAppSettings() },
-                )
+
                 SettingsSlider(
                     modifier = Modifier.padding(top = 10.dp),
                     valueRange = 8f..48f,
@@ -292,6 +284,18 @@ fun LookAndFeelActivity(
                             contentDescription = null,
                         )
                     },
+                )
+                SettingsListDropdown(
+                    state = blurNSFW,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.LensBlur,
+                            contentDescription = null,
+                        )
+                    },
+                    title = { Text(stringResource(id = R.string.blur_nsfw)) },
+                    items = BlurNsfwTypes.entries.map { stringResource(it.resId) },
+                    onItemSelected = { _, _ -> updateAppSettings() },
                 )
                 SettingsCheckbox(
                     state = showBottomNavState,

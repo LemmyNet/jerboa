@@ -22,14 +22,12 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.feat.BlurNsfwTypes
 import com.jerboa.feat.needNsfwBlur
-import com.jerboa.feat.PostActionbarMode
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.*
 import com.jerboa.util.cascade.CascadeDropdownMenu
-
 
 @Composable
 fun CommunityTopSection(

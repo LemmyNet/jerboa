@@ -75,10 +75,10 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.feat.BlurNsfwTypes
 import com.jerboa.feat.PostActionbarMode
+import com.jerboa.feat.needNsfwBlur
 import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
-import com.jerboa.feat.needNsfwBlur
 import com.jerboa.nsfwCheck
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.siFormat
