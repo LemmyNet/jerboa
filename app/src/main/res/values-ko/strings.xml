@@ -199,7 +199,6 @@
     <string name="look_and_feel_theme_color_purple">보라색</string>
     <string name="look_and_feel_theme_color_woodland">우드랜드</string>
     <string name="look_and_feel_use_custom_tabs">커스텀 탭 사용</string>
-    <string name="look_and_feel_use_private_tabs">가능하면 개인 커스텀 탭 이용하기</string>
     <string name="markRead">읽음으로 처리</string>
     <string name="markUnread">안읽음으로 처리</string>
     <string name="markdownHelper_formatBold">볼드로 표시</string>

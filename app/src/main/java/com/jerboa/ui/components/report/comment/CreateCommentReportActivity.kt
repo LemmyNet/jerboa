@@ -21,7 +21,6 @@ import com.jerboa.model.CreateReportViewModel
 import com.jerboa.ui.components.common.CreateSubmitHeader
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
-import com.jerboa.util.InitializeRoute
 
 @Composable
 fun CreateCommentReportActivity(
@@ -35,9 +34,6 @@ fun CreateCommentReportActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
     val createReportViewModel: CreateReportViewModel = viewModel()
-    InitializeRoute(createReportViewModel) {
-        createReportViewModel.setCommentId(commentId)
-    }
 
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
     val loading = when (createReportViewModel.commentReportRes) {
@@ -55,6 +51,7 @@ fun CreateCommentReportActivity(
                 onSubmitClick = {
                     if (!account.isAnon()) {
                         createReportViewModel.createCommentReport(
+                            commentId = commentId,
                             reason = reason.text,
                             ctx = ctx,
                             onBack = onBack,

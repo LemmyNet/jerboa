@@ -5,6 +5,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +14,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Sort
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,11 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
-import com.jerboa.CommentEditDeps
-import com.jerboa.CommentReplyDeps
-import com.jerboa.ConsumeReturn
 import com.jerboa.JerboaAppState
-import com.jerboa.PostEditDeps
 import com.jerboa.PostViewMode
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -86,7 +82,6 @@ import com.jerboa.model.PostViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.rootChannel
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.ui.components.comment.ShowCommentContextButtons
@@ -95,7 +90,8 @@ import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiErrorText
 import com.jerboa.ui.components.common.CommentNavigationBottomAppBar
-import com.jerboa.ui.components.common.CommentSortOptionsDialog
+import com.jerboa.ui.components.common.CommentSortOptionsDropdown
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
@@ -104,7 +100,6 @@ import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.post.edit.PostEditReturn
-import com.jerboa.util.InitializeRoute
 import kotlinx.collections.immutable.toImmutableSet
 
 object PostViewReturn {
@@ -152,32 +147,16 @@ fun PostActivity(
     postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to post activity")
-    val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
-    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
-    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     val ctx = LocalContext.current
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val postViewModel: PostViewModel = viewModel()
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id, account))
 
-    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        if (postViewModel.initialized) postViewModel.updatePost(pv)
-    }
-
-    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
-        if (postViewModel.initialized) postViewModel.appendComment(cv)
-    }
-
-    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
-        if (postViewModel.initialized) postViewModel.updateComment(cv)
-    }
-
-    InitializeRoute(postViewModel) {
-        postViewModel.initialize(id = id)
-        postViewModel.getData(account)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
+    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
@@ -204,21 +183,7 @@ fun PostActivity(
         onRefresh = {
             postViewModel.getData(account, ApiState.Refreshing)
         },
-        // Needs to be lower else it can hide behind the top bar
-        refreshingOffset = 150.dp,
     )
-
-    if (showSortOptions) {
-        CommentSortOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showSortOptions = false },
-            onClickSortType = {
-                showSortOptions = false
-                onClickSortType(it)
-            },
-            siteVersion = siteViewModel.siteVersion(),
-        )
-    }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -282,12 +247,22 @@ fun PostActivity(
                         }
                     },
                     actions = {
-                        IconButton(onClick = {
-                            showSortOptions = !showSortOptions
-                        }) {
-                            Icon(
-                                Icons.Outlined.Sort,
-                                contentDescription = stringResource(R.string.selectSort),
+                        Box {
+                            IconButton(onClick = {
+                                showSortOptions = true
+                            }) {
+                                Icon(
+                                    Icons.Outlined.Sort,
+                                    contentDescription = stringResource(R.string.selectSort),
+                                )
+                            }
+
+                            CommentSortOptionsDropdown(
+                                expanded = showSortOptions,
+                                selectedSortType = selectedSortType,
+                                onDismissRequest = { showSortOptions = false },
+                                onClickSortType = onClickSortType,
+                                siteVersion = siteViewModel.siteVersion(),
                             )
                         }
                     },
@@ -296,14 +271,19 @@ fun PostActivity(
             }
         },
         content = { padding ->
-            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pullRefresh(pullRefreshState),
+            ) {
                 parentListStateIndexes.clear()
                 lazyListIndexTracker = 2
-                PullRefreshIndicator(
+                JerboaPullRefreshIndicator(
                     postViewModel.postRes.isRefreshing(),
                     pullRefreshState,
                     // zIndex needed bc some elements of a post get drawn above it.
                     Modifier
+                        .padding(padding)
                         .align(Alignment.TopCenter)
                         .zIndex(100f),
                 )
@@ -377,7 +357,6 @@ fun PostActivity(
                                     onReplyClick = { pv ->
                                         val isModerator = isModerator(pv.creator, postRes.data.moderators)
                                         appState.toCommentReply(
-                                            channel = transferCommentReplyDepsViaRoot,
                                             replyItem = ReplyItem.PostItem(pv),
                                             isModerator = isModerator,
                                         )
@@ -406,7 +385,6 @@ fun PostActivity(
                                     },
                                     onEditPostClick = { pv ->
                                         appState.toPostEdit(
-                                            channel = transferPostEditDepsViaRoot,
                                             postView = pv,
                                         )
                                     },
@@ -613,7 +591,6 @@ fun PostActivity(
                                         onReplyClick = { cv ->
                                             val isModerator = isModerator(cv.creator, postRes.data.moderators)
                                             appState.toCommentReply(
-                                                channel = transferCommentReplyDepsViaRoot,
                                                 replyItem = ReplyItem.CommentItem(cv),
                                                 isModerator = isModerator,
                                             )
@@ -641,7 +618,6 @@ fun PostActivity(
                                         onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                         onEditCommentClick = { cv ->
                                             appState.toCommentEdit(
-                                                channel = transferCommentEditDepsViaRoot,
                                                 commentView = cv,
                                             )
                                         },

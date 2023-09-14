@@ -3,6 +3,7 @@ package com.jerboa.ui.theme
 import androidx.compose.ui.unit.dp
 
 val ACTION_BAR_ICON_SIZE = 16.dp
+val MARKDOWN_BAR_ICON_SIZE = 24.dp
 
 val SMALL_PADDING = 4.dp
 val MEDIUM_PADDING = 8.dp
@@ -31,3 +32,5 @@ const val ICON_THUMBNAIL_SIZE = 96
 const val LARGER_ICON_THUMBNAIL_SIZE = 256
 const val THUMBNAIL_SIZE = 256
 const val MAX_IMAGE_SIZE = 3000
+
+const val POPUP_MENU_WIDTH_RATIO = 0.86f

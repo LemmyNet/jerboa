@@ -49,7 +49,7 @@ fun MainDrawer(
                 if (!account.isAnon() && account.isReady() && res.data.my_user == null) {
                     accountViewModel.invalidateAccount(account)
                 }
-                follows = res.data.my_user?.follows?.sortedBy { it.community.name }.orEmpty()
+                follows = res.data.my_user?.follows?.sortedBy { it.community.title }.orEmpty()
                 res.data.my_user
             }
             is ApiState.Failure -> {

@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
@@ -44,11 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
-import com.jerboa.CommentEditDeps
-import com.jerboa.CommentReplyDeps
-import com.jerboa.ConsumeReturn
 import com.jerboa.JerboaAppState
-import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -67,7 +62,6 @@ import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
@@ -81,14 +75,13 @@ import com.jerboa.model.PersonProfileViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.pagerTabIndicatorOffset2
-import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
@@ -96,13 +89,13 @@ import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
+import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
 import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
-import com.jerboa.util.InitializeRoute
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -135,26 +128,20 @@ fun PersonProfileActivity(
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val personProfileViewModel: PersonProfileViewModel = viewModel()
+    val personProfileViewModel: PersonProfileViewModel =
+        viewModel(factory = PersonProfileViewModel.Companion.Factory(personArg, savedMode, account))
 
-    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)
-    }
-
-    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
-        if (personProfileViewModel.initialized) personProfileViewModel.updateComment(cv)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, personProfileViewModel::updatePost)
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
 
     appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
-        if (personProfileViewModel.initialized) {
-            when (val res = personProfileViewModel.personDetailsRes) {
-                is ApiState.Success -> {
-                    if (account.id == res.data.person_view.person.id) {
-                        personProfileViewModel.insertComment(cv)
-                    }
+        when (val res = personProfileViewModel.personDetailsRes) {
+            is ApiState.Success -> {
+                if (account.id == res.data.person_view.person.id) {
+                    personProfileViewModel.insertComment(cv)
                 }
-                else -> {}
             }
+            else -> {}
         }
     }
 
@@ -162,23 +149,6 @@ fun PersonProfileActivity(
         scope.launch {
             drawerState.open()
         }
-    }
-
-    InitializeRoute(personProfileViewModel) {
-        val personId = personArg.fold({ it }, { null })
-        val personName = personArg.fold({ null }, { it })
-
-        personProfileViewModel.resetPage()
-        personProfileViewModel.updateSavedOnly(savedMode)
-        personProfileViewModel.getPersonDetails(
-            GetPersonDetails(
-                person_id = personId,
-                username = personName,
-                sort = SortType.New,
-                auth = account.getJWT(),
-                saved_only = savedMode,
-            ),
-        )
     }
 
     Scaffold(
@@ -190,18 +160,19 @@ fun PersonProfileActivity(
                 ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
-                        scrollBehavior = scrollBehavior,
                         personName = ctx.getString(R.string.loading),
                         myProfile = false,
-                        selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = {},
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
                         onMessagePersonClick = {},
+                        selectedSortType = personProfileViewModel.sortType,
                         openDrawer = ::openDrawer,
+                        scrollBehavior = scrollBehavior,
                         onBack = onBack,
                         isLoggedIn = { false },
                         siteVersion = siteViewModel.siteVersion(),
+                        matrixId = null,
                     )
                 }
                 is ApiState.Holder -> {
@@ -267,6 +238,7 @@ fun PersonProfileActivity(
                         onBack = onBack,
                         isLoggedIn = { !account.isAnon() },
                         siteVersion = siteViewModel.siteVersion(),
+                        matrixId = person.matrix_user_id,
                     )
                 }
                 else -> {}
@@ -329,10 +301,6 @@ fun UserTabs(
     showScores: Boolean,
     postActionbarMode: Int,
 ) {
-    val transferCommentEditDepsViaRoot = appState.rootChannel<CommentEditDeps>()
-    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
-    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
-
     val tabTitles = if (savedMode) {
         listOf(
             getLocalizedStringForUserTab(ctx, UserTab.Posts),
@@ -345,9 +313,7 @@ fun UserTabs(
 
     val loading = personProfileViewModel.personDetailsRes.isLoading()
 
-    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
-        if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)
-    }
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, personProfileViewModel::updatePost)
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -467,7 +433,7 @@ fun UserTabs(
                             .pullRefresh(pullRefreshState)
                             .fillMaxSize(),
                     ) {
-                        PullRefreshIndicator(
+                        JerboaPullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
                             pullRefreshState,
                             // zIndex needed bc some elements of a post get drawn above it.
@@ -547,7 +513,6 @@ fun UserTabs(
                                     },
                                     onEditPostClick = { pv ->
                                         appState.toPostEdit(
-                                            channel = transferPostEditDepsViaRoot,
                                             postView = pv,
                                         )
                                     },
@@ -614,7 +579,7 @@ fun UserTabs(
                                     onShareClick = { url ->
                                         shareLink(url, ctx)
                                     },
-                                    isScrolledToEnd = {
+                                    loadMorePosts = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,
                                             account.getJWT(),
@@ -623,14 +588,14 @@ fun UserTabs(
                                     account = account,
                                     listState = postListState,
                                     postViewMode = getPostViewMode(appSettingsViewModel),
+                                    showVotingArrowsInListView = showVotingArrowsInListView,
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
-                                    showVotingArrowsInListView = showVotingArrowsInListView,
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
-                                    appState = appState,
                                     showPostLinkPreviews = showPostLinkPreviews,
+                                    appState = appState,
                                     markAsReadOnScroll = markAsReadOnScroll,
                                     onMarkAsRead = {
                                         if (!account.isAnon() && !it.read) {
@@ -647,6 +612,7 @@ fun UserTabs(
                                     showIfRead = false,
                                     showScores = showScores,
                                     postActionbarMode = postActionbarMode,
+                                    showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                 )
                             }
                             else -> {}
@@ -709,7 +675,7 @@ fun UserTabs(
                                     .pullRefresh(pullRefreshState)
                                     .fillMaxSize(),
                             ) {
-                                PullRefreshIndicator(
+                                JerboaPullRefreshIndicator(
                                     personProfileViewModel.personDetailsRes.isRefreshing(),
                                     pullRefreshState,
                                     // zIndex needed bc some elements of a post get drawn above it.
@@ -769,7 +735,6 @@ fun UserTabs(
                                     },
                                     onReplyClick = { cv ->
                                         appState.toCommentReply(
-                                            channel = transferCommentReplyDepsViaRoot,
                                             replyItem = ReplyItem.CommentItem(cv),
                                             isModerator = false,
                                         )
@@ -802,7 +767,6 @@ fun UserTabs(
                                     },
                                     onEditCommentClick = { cv ->
                                         appState.toCommentEdit(
-                                            channel = transferCommentEditDepsViaRoot,
                                             commentView = cv,
                                         )
                                     },

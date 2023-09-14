@@ -28,35 +28,21 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.Autofill
-import androidx.compose.ui.autofill.AutofillNode
-import androidx.compose.ui.autofill.AutofillTree
-import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.LiveData
@@ -408,16 +394,20 @@ suspend fun openLink(url: String, navController: NavController, useCustomTab: Bo
 }
 
 fun openLinkRaw(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    val extras = Intent().apply {
+        if (usePrivateTab) {
+            putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+            putExtra("private_browsing_mode", true)
+        }
+    }
+
     if (useCustomTab) {
-        val intent = CustomTabsIntent.Builder()
-            .build().apply {
-                if (usePrivateTab) {
-                    intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
-                }
-            }
+        val intent = CustomTabsIntent.Builder().build()
+        intent.intent.putExtras(extras)
         intent.launchUrl(navController.context, Uri.parse(url))
     } else {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        intent.putExtras(extras)
         navController.context.startActivitySafe(intent)
     }
 }
@@ -806,6 +796,7 @@ enum class ThemeColor(val mode: Int) {
     Pink(R.string.look_and_feel_theme_color_pink),
     Purple(R.string.look_and_feel_theme_color_purple),
     Woodland(R.string.look_and_feel_theme_color_woodland),
+    Dracula(R.string.look_and_feel_theme_color_dracula),
 }
 
 enum class PostViewMode(val mode: Int) {
@@ -866,52 +857,6 @@ enum class PostType {
             Image -> Environment.DIRECTORY_PICTURES
             Video -> Environment.DIRECTORY_MOVIES
             Link -> Environment.DIRECTORY_DOCUMENTS
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-fun Modifier.pagerTabIndicatorOffset2(
-    pagerState: PagerState,
-    tabPositions: List<TabPosition>,
-    pageIndexMapping: (Int) -> Int = { it },
-): Modifier = layout { measurable, constraints ->
-    if (tabPositions.isEmpty()) {
-        // If there are no pages, nothing to show
-        layout(constraints.maxWidth, 0) {}
-    } else {
-        val currentPage = minOf(tabPositions.lastIndex, pageIndexMapping(pagerState.currentPage))
-        val currentTab = tabPositions[currentPage]
-        val previousTab = tabPositions.getOrNull(currentPage - 1)
-        val nextTab = tabPositions.getOrNull(currentPage + 1)
-        val fraction = pagerState.currentPageOffsetFraction
-        val indicatorWidth = if (fraction > 0 && nextTab != null) {
-            lerp(currentTab.width, nextTab.width, fraction).roundToPx()
-        } else if (fraction < 0 && previousTab != null) {
-            lerp(currentTab.width, previousTab.width, -fraction).roundToPx()
-        } else {
-            currentTab.width.roundToPx()
-        }
-        val indicatorOffset = if (fraction > 0 && nextTab != null) {
-            lerp(currentTab.left, nextTab.left, fraction).roundToPx()
-        } else if (fraction < 0 && previousTab != null) {
-            lerp(currentTab.left, previousTab.left, -fraction).roundToPx()
-        } else {
-            currentTab.left.roundToPx()
-        }
-        val placeable = measurable.measure(
-            Constraints(
-                minWidth = indicatorWidth,
-                maxWidth = indicatorWidth,
-                minHeight = 0,
-                maxHeight = constraints.maxHeight,
-            ),
-        )
-        layout(constraints.maxWidth, maxOf(placeable.height, constraints.minHeight)) {
-            placeable.placeRelative(
-                indicatorOffset,
-                maxOf(constraints.minHeight - placeable.height, 0),
-            )
         }
     }
 }
@@ -1004,34 +949,6 @@ fun saveMediaP(
     // Makes it show up in gallery
     val mimeTypes = if (mimeType == null) null else arrayOf(mimeType)
     MediaScannerConnection.scanFile(context, arrayOf(dest.absolutePath), mimeTypes, null)
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-fun Modifier.onAutofill(
-    tree: AutofillTree,
-    autofill: Autofill?,
-    autofillTypes: ImmutableList<AutofillType>,
-    onFill: (String) -> Unit,
-): Modifier {
-    val autofillNode = AutofillNode(
-        autofillTypes = autofillTypes,
-        onFill = onFill,
-    )
-    tree += autofillNode
-
-    return this
-        .onGloballyPositioned {
-            autofillNode.boundingBox = it.boundsInWindow()
-        }
-        .onFocusChanged { focusState ->
-            autofill?.run {
-                if (focusState.isFocused) {
-                    requestAutofillForNode(autofillNode)
-                } else {
-                    cancelAutofillForNode(autofillNode)
-                }
-            }
-        }
 }
 
 /**
@@ -1236,25 +1153,6 @@ fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
         (abs((depth.minus(1) * multiplier)).dp + SMALL_PADDING)
     }
 }
-
-fun dedupePosts(
-    more: List<PostView>,
-    existing: List<PostView>,
-): List<PostView> {
-    val mapIds = existing.map { it.post.id }
-    return more.filterNot { mapIds.contains(it.post.id) }
-}
-
-fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
-    val appended = existing.toMutableList()
-    appended.addAll(more)
-    return appended.toList()
-}
-
-fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
-    return appendData(old, dedupePosts(new, old))
-}
-
 fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
     val foundIndex = posts.indexOfFirst {
         it.post.id == updatedPostView.post.id
@@ -1471,15 +1369,21 @@ fun <I, O> ComponentActivity.registerActivityResultLauncher(
 
 /**
  *  Returns a [InputStream] for the data of the URL, but it also checks the cache first!
+ *
+ *  Doesn't clean up the [InputStream]
+ *
+ *  @throws IOException
+ *  @throws IllegalArgumentException If this is not a well-formed HTTP or HTTPS URL.
  */
 @OptIn(ExperimentalCoilApi::class)
+@Throws(IOException::class)
 fun Context.getInputStream(url: String): InputStream {
     val snapshot = this.imageLoader.diskCache?.openSnapshot(url)
 
-    return snapshot?.use {
-        it.data.toFile().inputStream()
-    } ?: API.httpClient.newCall(Request(url.toHttpUrl())).execute().use { response ->
-        response.body.byteStream()
+    return if (snapshot != null) {
+        snapshot.data.toFile().inputStream()
+    } else {
+        API.httpClient.newCall(Request(url.toHttpUrl())).execute().body.byteStream()
     }
 }
 
@@ -1504,5 +1408,39 @@ fun Context.startActivitySafe(intent: Intent) {
     } catch (e: ActivityNotFoundException) {
         Log.d("jerboa", "failed open activity", e)
         Toast.makeText(this, this.getText(R.string.no_activity_found), Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
+    val appended = existing.toMutableList()
+    appended.addAll(more)
+    return appended.toList()
+}
+
+fun <T> getDeduplicatedList(
+    oldList: List<T>,
+    uniqueNewList: List<T>,
+    getId: (T) -> Int,
+): List<T> {
+    val mapIds = oldList.map { getId(it) }
+    return uniqueNewList.filterNot { mapIds.contains(getId(it)) }
+}
+
+fun <T> getDeduplicateMerge(oldItems: List<T>, newItems: List<T>, getId: (T) -> Int): List<T> {
+    return appendData(oldItems, getDeduplicatedList(oldItems, newItems, getId))
+}
+
+fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
+    return appendData(old, getDeduplicatedList(old, new) { it.post.id })
+}
+
+/**
+ * This function rewrites HTTP URLs to HTTPS
+ */
+fun String.toHttps(): String {
+    return if (this.startsWith("http://", true)) {
+        this.replaceFirst("http", "https", true)
+    } else {
+        this
     }
 }

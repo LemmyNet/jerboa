@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
@@ -39,9 +38,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jerboa.CommentReplyDeps
 import com.jerboa.JerboaAppState
-import com.jerboa.PrivateMessageDeps
 import com.jerboa.UnreadOrAll
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -55,7 +52,6 @@ import com.jerboa.datatypes.types.MarkPersonMentionAsRead
 import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.getCommentParentId
 import com.jerboa.getLocalizedStringForInboxTab
@@ -65,21 +61,20 @@ import com.jerboa.model.InboxViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.pagerTabIndicatorOffset2
-import com.jerboa.rootChannel
 import com.jerboa.ui.components.comment.mentionnode.CommentMentionNode
 import com.jerboa.ui.components.comment.replynode.CommentReplyNodeInbox
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
+import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.components.privatemessage.PrivateMessage
 import com.jerboa.unreadOrAllFromBool
-import com.jerboa.util.InitializeRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -101,22 +96,7 @@ fun InboxActivity(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val inboxViewModel: InboxViewModel = viewModel()
-    InitializeRoute(inboxViewModel) {
-        if (!account.isAnon()) {
-            inboxViewModel.resetPages()
-            inboxViewModel.getReplies(
-                inboxViewModel.getFormReplies(account.jwt),
-            )
-            inboxViewModel.getMentions(
-                inboxViewModel.getFormMentions(account.jwt),
-            )
-            inboxViewModel.getMessages(
-                inboxViewModel.getFormMessages(account.jwt),
-            )
-            siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
-        }
-    }
+    val inboxViewModel: InboxViewModel = viewModel(factory = InboxViewModel.Companion.Factory(account, siteViewModel))
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -224,9 +204,6 @@ fun InboxTabs(
     padding: PaddingValues,
     blurNSFW: Int,
 ) {
-    val transferPrivateMessageDepsViaRoot = appState.rootChannel<PrivateMessageDeps>()
-    val transferCommentReplyDepsViaRoot = appState.rootChannel<CommentReplyDeps>()
-
     val tabTitles = InboxTab.entries.map { getLocalizedStringForInboxTab(ctx, it) }
     val pagerState = rememberPagerState { tabTitles.size }
 
@@ -344,7 +321,7 @@ fun InboxTabs(
                     }
 
                     Box(modifier = Modifier.pullRefresh(refreshState)) {
-                        PullRefreshIndicator(
+                        JerboaPullRefreshIndicator(
                             refreshing,
                             refreshState,
                             Modifier
@@ -409,7 +386,6 @@ fun InboxTabs(
                                             },
                                             onReplyClick = { cr ->
                                                 appState.toCommentReply(
-                                                    channel = transferCommentReplyDepsViaRoot,
                                                     replyItem = ReplyItem.CommentReplyItem(cr),
                                                     isModerator = false,
                                                 )
@@ -542,7 +518,7 @@ fun InboxTabs(
                             .pullRefresh(refreshState)
                             .fillMaxSize(),
                     ) {
-                        PullRefreshIndicator(
+                        JerboaPullRefreshIndicator(
                             refreshing,
                             refreshState,
                             Modifier
@@ -607,7 +583,6 @@ fun InboxTabs(
                                             },
                                             onReplyClick = { pm ->
                                                 appState.toCommentReply(
-                                                    channel = transferCommentReplyDepsViaRoot,
                                                     replyItem = ReplyItem.MentionReplyItem(pm),
                                                     isModerator = false,
                                                 )
@@ -752,7 +727,7 @@ fun InboxTabs(
                             .pullRefresh(refreshState)
                             .fillMaxSize(),
                     ) {
-                        PullRefreshIndicator(
+                        JerboaPullRefreshIndicator(
                             refreshing,
                             refreshState,
                             Modifier
@@ -784,7 +759,6 @@ fun InboxTabs(
                                             privateMessageView = message,
                                             onReplyClick = { privateMessageView ->
                                                 appState.toPrivateMessageReply(
-                                                    channel = transferPrivateMessageDepsViaRoot,
                                                     privateMessageView = privateMessageView,
                                                 )
                                             },

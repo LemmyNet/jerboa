@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -19,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jerboa.ConsumeReturn
 import com.jerboa.DEBOUNCE_DELAY
 import com.jerboa.JerboaAppState
 import com.jerboa.R
@@ -50,6 +48,10 @@ private var fetchSiteMetadataJob: Job? = null
 
 data class MetaDataRes(val title: String?, val loading: Boolean)
 
+object CreatePostReturn {
+    const val COMMUNITY_SEND = "create-post::send(community)"
+}
+
 @Composable
 fun CreatePostActivity(
     accountViewModel: AccountViewModel,
@@ -57,7 +59,6 @@ fun CreatePostActivity(
     initialUrl: String,
     initialBody: String,
     initialImage: Uri?,
-    initialCommunity: Community?,
 ) {
     Log.d("jerboa", "got to create post activity")
 
@@ -67,7 +68,12 @@ fun CreatePostActivity(
 
     val createPostViewModel: CreatePostViewModel = viewModel()
 
-    var selectedCommunity: Community? by remember { mutableStateOf(initialCommunity) }
+    var selectedCommunity: Community? by rememberSaveable {
+        // Init return from Community post creation
+        mutableStateOf(appState.getPrevReturnNullable<Community>(CreatePostReturn.COMMUNITY_SEND))
+    }
+
+    // On return from the community picker
     appState.ConsumeReturn<Community>(CommunityListReturn.COMMUNITY) { community ->
         selectedCommunity = community
     }

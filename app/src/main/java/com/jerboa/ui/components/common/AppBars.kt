@@ -14,10 +14,13 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -37,8 +40,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
@@ -131,6 +137,8 @@ fun BottomAppBarAll(
                 label = {
                     if (showTextDescriptionsInNavbar) {
                         Text(
+                            textAlign = TextAlign.Center,
+                            fontSize = TextUnit(10f, TextUnitType.Sp),
                             text = stringResource(tab.textId),
                             color = MaterialTheme.colorScheme.onSurface,
                         )
@@ -627,7 +635,10 @@ fun LoadingBar(
     padding: PaddingValues = PaddingValues(0.dp),
 ) {
     LinearProgressIndicator(
-        modifier = Modifier.fillMaxWidth().padding(padding).testTag("jerboa:loading"),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(padding)
+            .testTag("jerboa:loading"),
     )
 }
 
@@ -672,5 +683,30 @@ fun CreateSubmitHeader(
                 )
             }
         },
+    )
+}
+
+/**
+ * M3 doesn't have a built-in way to do this yet, so we have to do it ourselves.
+ *
+ * Supports M3 theming
+ */
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun JerboaPullRefreshIndicator(
+    refreshing: Boolean,
+    state: PullRefreshState,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    scale: Boolean = true,
+) {
+    PullRefreshIndicator(
+        refreshing,
+        state,
+        modifier,
+        backgroundColor,
+        contentColor,
+        scale,
     )
 }

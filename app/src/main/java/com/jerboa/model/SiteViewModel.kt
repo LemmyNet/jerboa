@@ -1,6 +1,7 @@
 package com.jerboa.model
 
 import android.util.Log
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +16,7 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.api.apiWrapper
+import com.jerboa.datatypes.types.CommunityFollowerView
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.datatypes.types.GetUnreadCount
@@ -25,10 +27,14 @@ import com.jerboa.db.entity.isAnon
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.jerboaApplication
 import com.jerboa.serializeToMap
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+@Stable
 class SiteViewModel(private val accountRepository: AccountRepository) : ViewModel() {
 
     // Can't be private, because it needs to be set by the login viewmodel
@@ -155,6 +161,13 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         return when (val res = siteRes) {
             is ApiState.Success -> res.data.version
             else -> MINIMUM_API_VERSION
+        }
+    }
+
+    fun getFollowList(): ImmutableList<CommunityFollowerView> {
+        return when (val res = siteRes) {
+            is ApiState.Success -> res.data.my_user?.follows?.toImmutableList() ?: persistentListOf()
+            else -> persistentListOf()
         }
     }
 

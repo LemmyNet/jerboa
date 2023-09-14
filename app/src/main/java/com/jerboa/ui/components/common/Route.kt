@@ -6,7 +6,6 @@ import androidx.navigation.NavType
 object Route {
     object Graph {
         const val ROOT = "graph_root"
-        const val COMMUNITY = "graph_community"
     }
 
     const val LOGIN = "login"

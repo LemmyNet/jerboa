@@ -167,7 +167,6 @@
     <string name="look_and_feel_post_view_list">Lista</string>
     <string name="look_and_feel_show_navigation_bar">Pokaż pasek nawigacji</string>
     <string name="look_and_feel_use_custom_tabs">Używaj niestandardowych kart</string>
-    <string name="look_and_feel_use_private_tabs">Używaj prywatnych niestandardowych kart jeśli są dostępne</string>
     <string name="settings_activity_settings">Ustawienia</string>
     <string name="settings_activity_look_and_feel">Wygląd i preferencje</string>
     <string name="settings_activity_account_settings">Ustawienia %1$s</string>

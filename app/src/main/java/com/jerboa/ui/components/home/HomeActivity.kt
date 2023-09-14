@@ -5,11 +5,11 @@ import androidx.activity.compose.ReportDrawn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DrawerState
@@ -34,12 +34,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.jerboa.ConsumeReturn
-import com.jerboa.CreatePostDeps
 import com.jerboa.JerboaAppState
-import com.jerboa.PostEditDeps
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
@@ -61,10 +57,10 @@ import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.rootChannel
 import com.jerboa.scrollToTop
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.apiErrorToast
@@ -97,23 +93,21 @@ fun HomeActivity(
     postActionbarMode: Int,
 ) {
     Log.d("jerboa", "got to home activity")
-    val transferCreatePostDepsViaRoot = appState.rootChannel<CreatePostDeps>()
 
     val scope = rememberCoroutineScope()
     val postListState = homeViewModel.lazyListState
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    // Used for benchmarks TODO: make a .benchmark build that correctly filters
+    //  out the benchmark stuff from the actual app, like testtags
+    // val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     val ctx = LocalContext.current
     val account = getCurrentAccount(accountViewModel)
     // Forget snackbars of previous accounts
     val snackbarHostState = remember(account) { SnackbarHostState() }
 
-    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        homeViewModel.updatePost(pv)
-    }
-
-    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW) { pv ->
-        homeViewModel.updatePost(pv)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, homeViewModel::updatePost)
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, homeViewModel::updatePost)
 
     LaunchedEffect(account) {
         if (!account.isAnon() && !account.isReady()) {
@@ -177,7 +171,6 @@ fun HomeActivity(
                         loginAsToast = false,
                     ) {
                         appState.toCreatePost(
-                            channel = transferCreatePostDepsViaRoot,
                             community = null,
                         )
                     }
@@ -213,13 +206,12 @@ fun MainPostListingsContent(
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    val transferPostEditDepsViaRoot = appState.rootChannel<PostEditDeps>()
 
     var taglines: List<Tagline>? = null
     when (val siteRes = siteViewModel.siteRes) {
         ApiState.Loading -> LoadingBar(padding)
         ApiState.Empty -> ApiEmptyText()
-        is ApiState.Failure -> ApiErrorText(siteRes.msg)
+        is ApiState.Failure -> ApiErrorText(siteRes.msg, padding)
         is ApiState.Success -> {
             taglines = siteRes.data.taglines
         }
@@ -233,16 +225,15 @@ fun MainPostListingsContent(
         onRefresh = {
             homeViewModel.refreshPosts(account)
         },
-        // Needs to be lower else it can hide behind the top bar
-        refreshingOffset = 150.dp,
     )
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         // zIndex needed bc some elements of a post get drawn above it.
-        PullRefreshIndicator(
+        JerboaPullRefreshIndicator(
             homeViewModel.postsRes.isRefreshing(),
             pullRefreshState,
             Modifier
+                .padding(padding)
                 .align(Alignment.TopCenter)
                 .zIndex(100f),
         )
@@ -364,7 +355,6 @@ fun MainPostListingsContent(
             },
             onEditPostClick = { postView ->
                 appState.toPostEdit(
-                    channel = transferPostEditDepsViaRoot,
                     postView = postView,
                 )
             },
@@ -391,13 +381,11 @@ fun MainPostListingsContent(
             onCommunityClick = { community ->
                 appState.toCommunity(id = community.id)
             },
-            onPersonClick = { personId ->
-                appState.toProfile(id = personId)
-            },
+            onPersonClick = appState::toProfile,
             onShareClick = { url ->
                 shareLink(url, ctx)
             },
-            isScrolledToEnd = {
+            loadMorePosts = {
                 homeViewModel.appendPosts(account.jwt)
             },
             account = account,
@@ -425,6 +413,7 @@ fun MainPostListingsContent(
             showIfRead = true,
             showScores = siteViewModel.showScores(),
             postActionbarMode = postActionbarMode,
+            showPostAppendRetry = homeViewModel.postsRes is ApiState.AppendingFailure,
         )
     }
 }

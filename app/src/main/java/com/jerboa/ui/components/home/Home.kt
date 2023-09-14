@@ -1,5 +1,6 @@
 package com.jerboa.ui.components.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material.icons.outlined.ViewAgenda
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,10 +47,9 @@ import com.jerboa.datatypes.types.Tagline
 import com.jerboa.getLocalizedListingTypeName
 import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
-import com.jerboa.ui.components.common.PostViewModeDialog
-import com.jerboa.ui.components.common.SortOptionsDialog
-import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.LARGE_PADDING
+import com.jerboa.util.cascade.CascadeDropdownMenu
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -85,49 +86,9 @@ fun HomeHeader(
     siteVersion: String,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
-    var showTopOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
-    var showPostViewModeOptions by remember { mutableStateOf(false) }
 
-    if (showSortOptions) {
-        SortOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showSortOptions = false },
-            onClickSortType = {
-                showSortOptions = false
-                onClickSortType(it)
-            },
-            onClickSortTopOptions = {
-                showSortOptions = false
-                showTopOptions = !showTopOptions
-            },
-            siteVersion = siteVersion,
-        )
-    }
-
-    if (showTopOptions) {
-        SortTopOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showTopOptions = false },
-            onClickSortType = {
-                showTopOptions = false
-                onClickSortType(it)
-            },
-            siteVersion = siteVersion,
-        )
-    }
-
-    if (showPostViewModeOptions) {
-        PostViewModeDialog(
-            onDismissRequest = { showPostViewModeOptions = false },
-            selectedPostViewMode = selectedPostViewMode,
-            onClickPostViewMode = {
-                showPostViewModeOptions = false
-                onClickPostViewMode(it)
-            },
-        )
-    }
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
@@ -166,12 +127,26 @@ fun HomeHeader(
                     selectedListingType = selectedListingType,
                 )
             }
-            IconButton(modifier = Modifier.testTag("jerboa:sortoptions"), onClick = {
-                showSortOptions = !showSortOptions
-            }) {
-                Icon(
-                    Icons.Outlined.Sort,
-                    contentDescription = stringResource(R.string.selectSort),
+
+            Box {
+                IconButton(modifier = Modifier.testTag("jerboa:sortoptions"), onClick = {
+                    showSortOptions = !showSortOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.Sort,
+                        contentDescription = stringResource(R.string.selectSort),
+                    )
+                }
+
+                SortOptionsDropdown(
+                    expanded = showSortOptions,
+                    onDismissRequest = { showSortOptions = false },
+                    onClickSortType = {
+                        showSortOptions = false
+                        onClickSortType(it)
+                    },
+                    selectedSortType = selectedSortType,
+                    siteVersion = siteVersion,
                 )
             }
             Box {
@@ -188,11 +163,9 @@ fun HomeHeader(
                     expanded = showMoreOptions,
                     onDismissRequest = { showMoreOptions = false },
                     onClickRefresh = onClickRefresh,
-                    onClickShowPostViewModeDialog = {
-                        showMoreOptions = false
-                        showPostViewModeOptions = !showPostViewModeOptions
-                    },
                     onClickSiteInfo = onClickSiteInfo,
+                    selectedPostViewMode = selectedPostViewMode,
+                    onClickPostViewMode = onClickPostViewMode,
                 )
             }
         },
@@ -225,37 +198,50 @@ fun HomeMoreDropdown(
     onDismissRequest: () -> Unit,
     onClickSiteInfo: () -> Unit,
     onClickRefresh: () -> Unit,
-    onClickShowPostViewModeDialog: () -> Unit,
+    onClickPostViewMode: (PostViewMode) -> Unit,
+    selectedPostViewMode: PostViewMode,
 ) {
-    DropdownMenu(
+    CascadeDropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
         modifier = Modifier.semantics { testTagsAsResourceId = true },
     ) {
-        MenuItem(
-            text = stringResource(R.string.home_refresh),
-            icon = Icons.Outlined.Refresh,
+        DropdownMenuItem(
+            text = { Text(text = stringResource(R.string.home_refresh)) },
+            leadingIcon = { Icon(Icons.Outlined.Refresh, contentDescription = null) },
             onClick = {
                 onDismissRequest()
                 onClickRefresh()
             },
             modifier = Modifier.testTag("jerboa:refresh"),
         )
-        MenuItem(
-            text = stringResource(R.string.home_post_view_mode),
-            icon = Icons.Outlined.ViewAgenda,
-            onClick = {
-                onDismissRequest()
-                onClickShowPostViewModeDialog()
+        DropdownMenuItem(
+            text = { Text(text = stringResource(R.string.home_post_view_mode)) },
+            leadingIcon = { Icon(Icons.Outlined.ViewAgenda, contentDescription = null) },
+            children = {
+                PostViewMode.entries.map {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(it.mode)) },
+                        onClick = {
+                            onDismissRequest()
+                            onClickPostViewMode(it)
+                        },
+                        modifier = if (selectedPostViewMode == it) {
+                            Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                        } else {
+                            Modifier
+                        }.testTag("jerboa:postviewmode_${it.name}"),
+                    )
+                }
             },
             modifier = Modifier.testTag("jerboa:postviewmode"),
         )
-        MenuItem(
-            text = stringResource(R.string.home_site_info),
-            icon = Icons.Outlined.Info,
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.home_site_info)) },
+            leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
             onClick = {
-                onClickSiteInfo()
                 onDismissRequest()
+                onClickSiteInfo()
             },
         )
     }

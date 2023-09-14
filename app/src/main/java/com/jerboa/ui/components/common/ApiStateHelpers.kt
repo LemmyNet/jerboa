@@ -2,16 +2,26 @@ package com.jerboa.ui.components.common
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.jerboa.api.ApiState
 
 @Composable
 fun ApiErrorText(
     msg: Throwable,
+    paddingValues: PaddingValues = PaddingValues(),
 ) {
-    msg.message?.also { Text(text = it, color = MaterialTheme.colorScheme.error) }
+    msg.message?.also {
+        Text(
+            text = it,
+            modifier = Modifier.padding(paddingValues),
+            color = MaterialTheme.colorScheme.error,
+        )
+    }
 }
 
 fun apiErrorToast(

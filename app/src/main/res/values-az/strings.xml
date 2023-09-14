@@ -199,7 +199,6 @@
     <string name="look_and_feel_theme_color_purple">Bənövşəyi</string>
     <string name="look_and_feel_theme_color_woodland">Meşəlik</string>
     <string name="look_and_feel_use_custom_tabs">Şəxsi panellərdən istifadə et</string>
-    <string name="look_and_feel_use_private_tabs">Mümkünsə, ayrı fərdi panellərdən istifadə et</string>
     <string name="markRead">Oxunan kimi işarələ</string>
     <string name="markUnread">Oxunmamış kimi işarələ</string>
     <string name="markdownHelper_formatBold">Qalın mətn kimi formatla</string>
