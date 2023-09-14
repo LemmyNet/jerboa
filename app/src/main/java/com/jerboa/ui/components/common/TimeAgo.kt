@@ -108,7 +108,7 @@ fun dateStringToPretty(dateStr: String, longTimeFormat: Boolean = false): String
     }
 }
 
-@Preview(backgroundColor = 0x00000000)
+@Preview
 @Composable
 fun TimeAgoPreview() {
     TimeAgo(samplePerson.published, samplePerson.updated)
