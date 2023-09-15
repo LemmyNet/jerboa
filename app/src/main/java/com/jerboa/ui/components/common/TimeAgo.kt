@@ -43,11 +43,7 @@ fun TimeAgo(
     val publishedPretty = dateStringToPretty(published, longTimeFormat)
 
     if (publishedPretty == null) {
-        Text(
-            text = stringResource(R.string.time_ago_failed_to_parse),
-            color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.labelSmall,
-        )
+        SmallErrorLabel(text = stringResource(R.string.time_ago_failed_to_parse))
         return
     }
 
@@ -70,11 +66,7 @@ fun TimeAgo(
             val updatedPretty = dateStringToPretty(it, longTimeFormat)
 
             if (updatedPretty == null) {
-                Text(
-                    text = stringResource(R.string.time_ago_failed_to_parse),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.labelSmall,
-                )
+                SmallErrorLabel(text = stringResource(R.string.time_ago_failed_to_parse))
             } else {
                 Text(
                     text = "($updatedPretty)",
@@ -96,7 +88,7 @@ fun TimeAgo(
  */
 fun dateStringToPretty(dateStr: String, longTimeFormat: Boolean = false): String? {
     return try {
-        // TODO: Remove this hack once backward API compatibility is implemented
+        // TODO: v0.18.4_deprecated Remove this hack once backward API compatibility is implemented
         // pre 0.19 Datetimes didn't have a timezone, so we add one here
         val withTimezone = if (dateStr.last() == 'Z') dateStr else dateStr + "Z"
         val publishedDate = Date.from(Instant.parse(withTimezone))
@@ -213,4 +205,19 @@ fun NsfwBadge(visible: Boolean) {
 @Composable
 fun NsfwBadgePreview() {
     NsfwBadge(visible = true)
+}
+
+@Composable
+fun SmallErrorLabel(text: String) {
+    Text(
+        text = text,
+        color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.labelSmall,
+    )
+}
+
+@Preview
+@Composable
+fun SmallErrorLabelPreview() {
+    SmallErrorLabel(stringResource(id = R.string.time_ago_failed_to_parse))
 }
