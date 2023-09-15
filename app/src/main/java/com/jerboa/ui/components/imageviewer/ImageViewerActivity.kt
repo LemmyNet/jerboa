@@ -8,11 +8,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +29,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,6 +58,10 @@ import com.jerboa.feat.storeMedia
 import com.jerboa.rememberJerboaAppState
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.util.downloadprogress.DownloadProgress
+import kotlinx.coroutines.delay
+import me.saket.telephoto.flick.FlickToDismiss
+import me.saket.telephoto.flick.FlickToDismissState
+import me.saket.telephoto.flick.rememberFlickToDismissState
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -75,9 +76,6 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
     var showTopBar by remember { mutableStateOf(true) }
 
     val imageGifLoader = (ctx.applicationContext as JerboaApplication).imageViewerLoader
-    var debounce by remember {
-        mutableStateOf(false)
-    }
     val systemUiController = rememberSystemUiController()
 
     val window = (ctx as Activity).window
@@ -139,27 +137,24 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
 
     val zoomableState = rememberZoomableState(ZoomSpec(20F, preventOverOrUnderZoom = false))
     val zoomableImageState = rememberZoomableImageState(zoomableState)
+    val flickState = rememberFlickToDismissState()
+
+    (flickState.gestureState as? FlickToDismissState.GestureState.Dismissing)?.let { gestureState ->
+        LaunchedEffect(Unit) {
+            delay(gestureState.animationDuration / 6)
+            appState.navigateUp()
+        }
+    }
 
     Scaffold(
         topBar = {
             ViewerHeader(showTopBar, url, appState)
         },
         content = {
-            Box(
-                Modifier
-                    .background(backColor)
-                    .scrollable(
-                        orientation = Orientation.Vertical,
-                        state = rememberScrollableState(
-                            consumeScrollDelta = {
-                                if (it < -70 && !debounce) {
-                                    debounce = true
-                                    appState.navigateUp()
-                                }
-                                it
-                            },
-                        ),
-                    ),
+            FlickToDismiss(
+                flickState,
+                modifier = Modifier
+                    .background(backColor),
             ) {
                 if (imageState == ImageState.FAILED) {
                     Column(
