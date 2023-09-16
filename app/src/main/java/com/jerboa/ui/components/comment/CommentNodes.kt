@@ -8,7 +8,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import arrow.core.Either
 import com.jerboa.CommentNodeData
+import com.jerboa.FullCommentNode
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
@@ -17,7 +19,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentNodes(
-    nodes: ImmutableList<CommentNodeData>,
+    nodes: ImmutableList<CommentNodeData<FullCommentNode, FullCommentNode>>,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -97,7 +99,7 @@ fun CommentNodes(
 }
 
 fun LazyListScope.commentNodeItems(
-    nodes: ImmutableList<CommentNodeData>,
+    nodes: ImmutableList<CommentNodeData<FullCommentNode, FullCommentNode>>,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -133,41 +135,80 @@ fun LazyListScope.commentNodeItems(
     showScores: Boolean,
 ) {
     nodes.forEach { node ->
-        commentNodeItem(
-            node = node,
-            increaseLazyListIndexTracker = increaseLazyListIndexTracker,
-            addToParentIndexes = addToParentIndexes,
-            isFlat = isFlat,
-            isExpanded = isExpanded,
-            toggleExpanded = toggleExpanded,
-            toggleActionBar = toggleActionBar,
-            onUpvoteClick = onUpvoteClick,
-            onDownvoteClick = onDownvoteClick,
-            onReplyClick = onReplyClick,
-            onSaveClick = onSaveClick,
-            account = account,
-            isModerator = isModerator,
-            onMarkAsReadClick = onMarkAsReadClick,
-            onCommentClick = onCommentClick,
-            onPersonClick = onPersonClick,
-            onHeaderClick = onHeaderClick,
-            onHeaderLongClick = onHeaderLongClick,
-            onCommunityClick = onCommunityClick,
-            onPostClick = onPostClick,
-            onEditCommentClick = onEditCommentClick,
-            onDeleteCommentClick = onDeleteCommentClick,
-            onReportClick = onReportClick,
-            onCommentLinkClick = onCommentLinkClick,
-            onFetchChildrenClick = onFetchChildrenClick,
-            onBlockCreatorClick = onBlockCreatorClick,
-            showPostAndCommunityContext = showPostAndCommunityContext,
-            showCollapsedCommentContent = showCollapsedCommentContent,
-            isCollapsedByParent = isCollapsedByParent,
-            showActionBar = showActionBar,
-            enableDownVotes = enableDownVotes,
-            showAvatar = showAvatar,
-            blurNSFW = blurNSFW,
-            showScores = showScores,
-        )
+        when (val data = node.data) {
+            is Either.Right -> commentNodeItem(
+                node = CommentNodeData(data.value, node.depth, node.children, node.parent),
+                increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+                addToParentIndexes = addToParentIndexes,
+                isFlat = isFlat,
+                isExpanded = isExpanded,
+                toggleExpanded = toggleExpanded,
+                toggleActionBar = toggleActionBar,
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
+                onReplyClick = onReplyClick,
+                onSaveClick = onSaveClick,
+                account = account,
+                isModerator = isModerator,
+                onMarkAsReadClick = onMarkAsReadClick,
+                onCommentClick = onCommentClick,
+                onPersonClick = onPersonClick,
+                onHeaderClick = onHeaderClick,
+                onHeaderLongClick = onHeaderLongClick,
+                onCommunityClick = onCommunityClick,
+                onPostClick = onPostClick,
+                onEditCommentClick = onEditCommentClick,
+                onDeleteCommentClick = onDeleteCommentClick,
+                onReportClick = onReportClick,
+                onCommentLinkClick = onCommentLinkClick,
+                onFetchChildrenClick = onFetchChildrenClick,
+                onBlockCreatorClick = onBlockCreatorClick,
+                showPostAndCommunityContext = showPostAndCommunityContext,
+                showCollapsedCommentContent = showCollapsedCommentContent,
+                isCollapsedByParent = isCollapsedByParent,
+                showActionBar = showActionBar,
+                enableDownVotes = enableDownVotes,
+                showAvatar = showAvatar,
+                blurNSFW = blurNSFW,
+                showScores = showScores,
+            )
+
+            is Either.Left -> missingCommentNodeItem(
+                node = CommentNodeData(data.value, node.depth, node.children, node.parent),
+                increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+                addToParentIndexes = addToParentIndexes,
+                isFlat = isFlat,
+                isExpanded = isExpanded,
+                toggleExpanded = toggleExpanded,
+                toggleActionBar = toggleActionBar,
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
+                onReplyClick = onReplyClick,
+                onSaveClick = onSaveClick,
+                account = account,
+                isModerator = isModerator,
+                onMarkAsReadClick = onMarkAsReadClick,
+                onCommentClick = onCommentClick,
+                onPersonClick = onPersonClick,
+                onHeaderClick = onHeaderClick,
+                onHeaderLongClick = onHeaderLongClick,
+                onCommunityClick = onCommunityClick,
+                onPostClick = onPostClick,
+                onEditCommentClick = onEditCommentClick,
+                onDeleteCommentClick = onDeleteCommentClick,
+                onReportClick = onReportClick,
+                onCommentLinkClick = onCommentLinkClick,
+                onFetchChildrenClick = onFetchChildrenClick,
+                onBlockCreatorClick = onBlockCreatorClick,
+                showPostAndCommunityContext = showPostAndCommunityContext,
+                showCollapsedCommentContent = showCollapsedCommentContent,
+                isCollapsedByParent = isCollapsedByParent,
+                showActionBar = showActionBar,
+                enableDownVotes = enableDownVotes,
+                showAvatar = showAvatar,
+                blurNSFW = blurNSFW,
+                showScores = showScores,
+            )
+        }
     }
 }

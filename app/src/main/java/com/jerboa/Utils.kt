@@ -49,6 +49,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
+import arrow.core.Either
 import arrow.core.compareTo
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
@@ -80,6 +81,7 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.collections.ArrayDeque
 import kotlin.math.abs
 import kotlin.math.pow
 
@@ -238,62 +240,122 @@ data class InstantScores(
     val downvotes: Int,
 )
 
-data class CommentNodeData(
-    val commentView: CommentView,
+@Stable
+data class CommentNodeData<T, G>(
+    val data: T,
+    val depth: Int,
     // Must use a SnapshotStateList and not a MutableList here, otherwise changes in the tree children won't trigger a UI update
-    val children: SnapshotStateList<CommentNodeData>?,
-    var depth: Int,
+    val children: SnapshotStateList<CommentNodeData<G, G>> = mutableStateListOf(),
+    var parent: CommentNodeData<G, G>? = null,
 )
+
+data class MissingCommentNode(
+    val commentId: Int,
+    val path: String,
+)
+
+typealias FullCommentNode = Either<MissingCommentNode, CommentView>
 
 fun commentsToFlatNodes(
     comments: List<CommentView>,
-): ImmutableList<CommentNodeData> {
-    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }.toImmutableList()
+): ImmutableList<CommentNodeData<FullCommentNode, FullCommentNode>> {
+    return comments.map { c -> CommentNodeData<FullCommentNode, FullCommentNode>(data = Either.Right(c), depth = 0) }.toImmutableList()
 }
 
 fun buildCommentsTree(
     comments: List<CommentView>,
-    isCommentView: Boolean,
-): ImmutableList<CommentNodeData> {
-    val map = LinkedHashMap<Number, CommentNodeData>()
+    rootCommentId: Int?, // If it's in CommentView, then we need to know the root comment id
+): ImmutableList<CommentNodeData<FullCommentNode, FullCommentNode>> {
+    val isCommentView = rootCommentId != null
+    val map = LinkedHashMap<Number, CommentNodeData<FullCommentNode, FullCommentNode>>()
     val firstComment = comments.firstOrNull()?.comment
 
-    val depthOffset = if (!isCommentView) {
-        0
+    val depthOffset = if (isCommentView && firstComment != null) {
+        getCommentIdDepthFromPath(firstComment.path, rootCommentId!!)
     } else {
-        getDepthFromComment(firstComment) ?: 0
+        0
     }
 
     comments.forEach { cv ->
-        val depth = getDepthFromComment(cv.comment)?.minus(depthOffset) ?: 0
-        val node = CommentNodeData(
-            commentView = cv,
-            children = mutableStateListOf(),
-            depth,
+        val depth = getDepthFromComment(cv.comment).minus(depthOffset)
+        val node = CommentNodeData<FullCommentNode, FullCommentNode>(
+            data = Either.Right(cv),
+            depth = depth,
         )
         map[cv.comment.id] = node
     }
 
-    val tree = mutableListOf<CommentNodeData>()
+    val tree = ArrayDeque<CommentNodeData<FullCommentNode, FullCommentNode>>(comments.size)
 
     comments.forEach { cv ->
         val child = map[cv.comment.id]
-        child?.let { cChild ->
-            val parentId = getCommentParentId(cv.comment)
-            parentId?.let { cParentId ->
-                val parent = map[cParentId]
-
-                // Necessary because blocked comment might not exist
-                parent?.let { cParent ->
-                    cParent.children?.add(cChild)
-                }
-            } ?: run {
-                tree.add(cChild)
-            }
+        child?.let {
+            recCreateAndGenMissingCommentData(map, tree, cv.comment.path, it)
         }
     }
 
+    /**
+     * For commentView it will only receive partial comments, so we need to prune the missing nodes that it generates
+     * But only the ones that are at the top level, otherwise we'll prune nodes that are actually missing
+     */
+    if (isCommentView) {
+        pruneMissingCommentNodesToComment(tree, rootCommentId!!)
+    }
+
     return tree.toImmutableList()
+}
+
+fun pruneMissingCommentNodesToComment(tree: MutableList<CommentNodeData<FullCommentNode, FullCommentNode>>, rootCommentId: Int) {
+    while (tree.isNotEmpty()) {
+        val node = tree.first()
+        if (node.data.isLeft() && node.data.leftOrNull()?.commentId != rootCommentId) {
+            tree.removeFirst()
+            tree.addAll(node.children)
+        } else {
+            node.parent = null
+            return
+        }
+    }
+}
+
+fun recCreateAndGenMissingCommentData(
+    map: LinkedHashMap<Number, CommentNodeData<FullCommentNode, FullCommentNode>>,
+    tree: MutableList<CommentNodeData<FullCommentNode, FullCommentNode>>,
+    currCommentPath: String,
+    currCommentNodeData: CommentNodeData<FullCommentNode, FullCommentNode>,
+) {
+    val parentId = getCommentParentId(currCommentPath)
+
+    // if no parent then add it to the root of the three
+    if (parentId != null) {
+        val parent = map[parentId]
+        // If the parent doesn't exist, then we need to add a placeholder node
+
+        if (parent == null) {
+            val parentPath = getParentPath(currCommentPath)
+            val missingNode = CommentNodeData<FullCommentNode, FullCommentNode>(
+                data = Either.Left(
+                    MissingCommentNode(
+                        parentId,
+                        parentPath,
+                    ),
+                ),
+                depth = currCommentNodeData.depth - 1,
+            )
+            map[parentId] = missingNode
+            missingNode.children.add(currCommentNodeData)
+            currCommentNodeData.parent = missingNode
+            // The the missing parent needs to be correctly weaved into the tree
+            // It needs a parent, and it needs to be added to the parent's children
+            // The parent may also be missing, so we need to recursively call this function
+            recCreateAndGenMissingCommentData(map, tree, parentPath, missingNode)
+        } else {
+            currCommentNodeData.parent = parent
+            parent.children.add(currCommentNodeData)
+        }
+    } else {
+        tree.add(currCommentNodeData)
+    }
 }
 
 fun LazyListState.isScrolledToEnd(): Boolean {
@@ -868,19 +930,29 @@ fun isSameInstance(url: String, instance: String): Boolean {
     return hostName(url) == instance
 }
 
-fun getCommentParentId(comment: Comment?): Int? {
-    val split = comment?.path?.split(".")?.toMutableList()
+fun getCommentParentId(comment: Comment): Int? = getCommentParentId(comment.path)
+fun getCommentParentId(commentPath: String): Int? {
+    val split = commentPath.split(".").toMutableList()
     // remove the 0
-    split?.removeFirst()
-    return if (split !== null && split.size > 1) {
+    split.removeFirst()
+    return if (split.size > 1) {
         split[split.size - 2].toInt()
     } else {
         null
     }
 }
 
-fun getDepthFromComment(comment: Comment?): Int? {
-    return comment?.path?.split(".")?.size?.minus(2)
+fun getParentPath(path: String) = path.split(".").dropLast(1).joinToString(".")
+
+fun getDepthFromComment(commentPath: String): Int {
+    return commentPath.split(".").size.minus(2)
+}
+
+fun getDepthFromComment(comment: Comment): Int = getDepthFromComment(comment.path)
+
+fun getCommentIdDepthFromPath(commentPath: String, commentId: Int): Int {
+    val split = commentPath.split(".").toMutableList()
+    return split.indexOf(commentId.toString()).minus(2)
 }
 
 fun nsfwCheck(postView: PostView): Boolean {

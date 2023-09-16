@@ -491,14 +491,11 @@ fun PostActivity(
                                 is ApiState.Holder -> {
                                     val commentTree = buildCommentsTree(
                                         commentsRes.data.comments,
-                                        postViewModel.isCommentView(),
+                                        id.fold(
+                                            { null },
+                                            { it },
+                                        ),
                                     )
-
-                                    val firstComment =
-                                        commentTree.firstOrNull()?.commentView?.comment
-                                    val depth = getDepthFromComment(firstComment)
-                                    val commentParentId = getCommentParentId(firstComment)
-                                    val showContextButton = depth != null && depth > 0
 
                                     val toggleExpanded: (Int) -> Unit = { commentId: Int ->
                                         if (unExpandedComments.contains(commentId)) {
@@ -518,10 +515,22 @@ fun PostActivity(
 
                                     item(key = "${postView.post.id}_is_comment_view", contentType = "contextButtons") {
                                         if (postViewModel.isCommentView()) {
+                                            val firstCommentNodeData = commentTree.firstOrNull()
+
+                                            val firstCommentPath = when (val t = firstCommentNodeData?.data) {
+                                                is Either.Left -> t.value.path
+                                                is Either.Right -> t.value.comment.path
+                                                else -> null
+                                            }
+
+                                            val hasParent = firstCommentPath != null && getDepthFromComment(firstCommentPath) > 0
+
+                                            val commentParentId = firstCommentPath?.let(::getCommentParentId)
+
                                             ShowCommentContextButtons(
                                                 postView.post.id,
                                                 commentParentId = commentParentId,
-                                                showContextButton = showContextButton,
+                                                showContextButton = hasParent,
                                                 onPostClick = appState::toPost,
                                                 onCommentClick = appState::toComment,
                                             )
