@@ -203,6 +203,7 @@ fun LazyListScope.commentNodeItem(
     showAvatar: Boolean,
     blurNSFW: Boolean,
     showScores: Boolean,
+    topCommentOnly: Boolean,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -374,43 +375,46 @@ fun LazyListScope.commentNodeItem(
         }
     }
 
-    node.children?.also { nodes ->
-        commentNodeItems(
-            nodes = nodes.toImmutableList(),
-            increaseLazyListIndexTracker = increaseLazyListIndexTracker,
-            addToParentIndexes = addToParentIndexes,
-            isFlat = isFlat,
-            toggleExpanded = toggleExpanded,
-            toggleActionBar = toggleActionBar,
-            isExpanded = isExpanded,
-            onUpvoteClick = onUpvoteClick,
-            onDownvoteClick = onDownvoteClick,
-            onSaveClick = onSaveClick,
-            onMarkAsReadClick = onMarkAsReadClick,
-            onCommentClick = onCommentClick,
-            onEditCommentClick = onEditCommentClick,
-            onDeleteCommentClick = onDeleteCommentClick,
-            onPersonClick = onPersonClick,
-            onHeaderClick = onHeaderClick,
-            onHeaderLongClick = onHeaderLongClick,
-            onCommunityClick = onCommunityClick,
-            onPostClick = onPostClick,
-            showPostAndCommunityContext = showPostAndCommunityContext,
-            onReportClick = onReportClick,
-            onCommentLinkClick = onCommentLinkClick,
-            onFetchChildrenClick = onFetchChildrenClick,
-            onReplyClick = onReplyClick,
-            onBlockCreatorClick = onBlockCreatorClick,
-            account = account,
-            isModerator = isModerator,
-            isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
-            showCollapsedCommentContent = showCollapsedCommentContent,
-            showActionBar = showActionBar,
-            enableDownVotes = enableDownVotes,
-            showAvatar = showAvatar,
-            blurNSFW = blurNSFW,
-            showScores = showScores,
-        )
+    if(!topCommentOnly){
+        node.children?.also { nodes ->
+            commentNodeItems(
+                nodes = nodes.toImmutableList(),
+                increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+                addToParentIndexes = addToParentIndexes,
+                isFlat = isFlat,
+                toggleExpanded = toggleExpanded,
+                toggleActionBar = toggleActionBar,
+                isExpanded = isExpanded,
+                onUpvoteClick = onUpvoteClick,
+                onDownvoteClick = onDownvoteClick,
+                onSaveClick = onSaveClick,
+                onMarkAsReadClick = onMarkAsReadClick,
+                onCommentClick = onCommentClick,
+                onEditCommentClick = onEditCommentClick,
+                onDeleteCommentClick = onDeleteCommentClick,
+                onPersonClick = onPersonClick,
+                onHeaderClick = onHeaderClick,
+                onHeaderLongClick = onHeaderLongClick,
+                onCommunityClick = onCommunityClick,
+                onPostClick = onPostClick,
+                showPostAndCommunityContext = showPostAndCommunityContext,
+                onReportClick = onReportClick,
+                onCommentLinkClick = onCommentLinkClick,
+                onFetchChildrenClick = onFetchChildrenClick,
+                onReplyClick = onReplyClick,
+                onBlockCreatorClick = onBlockCreatorClick,
+                account = account,
+                isModerator = isModerator,
+                isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
+                showCollapsedCommentContent = showCollapsedCommentContent,
+                showActionBar = showActionBar,
+                enableDownVotes = enableDownVotes,
+                showAvatar = showAvatar,
+                blurNSFW = blurNSFW,
+                showScores = showScores,
+                topCommentOnly = topCommentOnly,
+            )
+        }
     }
 }
 
@@ -657,6 +661,7 @@ fun CommentNodesPreview() {
         blurNSFW = true,
         account = AnonAccount,
         showScores = true,
+        topCommentOnly = false,
     )
 }
 

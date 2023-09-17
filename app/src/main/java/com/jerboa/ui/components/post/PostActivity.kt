@@ -145,6 +145,7 @@ fun PostActivity(
     blurNSFW: Boolean,
     showPostLinkPreview: Boolean,
     postActionbarMode: Int,
+    topCommentOnly: Boolean,
 ) {
     Log.d("jerboa", "got to post activity")
 
@@ -688,6 +689,7 @@ fun PostActivity(
                                         },
                                         blurNSFW = blurNSFW,
                                         showScores = siteViewModel.showScores(),
+                                        topCommentOnly = topCommentOnly,
                                     )
                                     item {
                                         Spacer(modifier = Modifier.height(100.dp))

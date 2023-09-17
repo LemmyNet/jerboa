@@ -257,6 +257,7 @@ fun BottomNavActivity(
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            topCommentOnly =  appSettings.topCommentOnly
                         )
                     }
 
@@ -276,6 +277,7 @@ fun BottomNavActivity(
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            topCommentOnly =  appSettings.topCommentOnly
                         )
                     }
                 }

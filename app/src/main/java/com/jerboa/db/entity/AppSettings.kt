@@ -118,4 +118,9 @@ data class AppSettings(
         defaultValue = "0",
     )
     val autoPlayGifs: Boolean,
+    @ColumnInfo(
+        name = "top_comment_only",
+        defaultValue = "0",
+    )
+    val topCommentOnly: Boolean,
 )

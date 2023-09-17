@@ -29,6 +29,7 @@
     <string name="account_settings_show_read_posts">Show Read Posts</string>
     <string name="account_settings_show_scores">Show Scores</string>
     <string name="account_settings_subscribed">Subscribed</string>
+    <string name="account_settings_top_comment_only">Top comment only</string>
     <string name="addBookmark">Add to bookmarks</string>
     <string name="app_bars_dot_spacer" translatable="false">·</string>
     <string name="app_name" translatable="false">Jerboa</string>

@@ -52,6 +52,7 @@ fun CommentNodes(
     showAvatar: Boolean,
     blurNSFW: Boolean,
     showScores: Boolean,
+    topCommentOnly: Boolean,
 ) {
     LazyColumn(state = listState) {
         commentNodeItems(
@@ -89,6 +90,7 @@ fun CommentNodes(
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
             showScores = showScores,
+            topCommentOnly = topCommentOnly,
         )
         item {
             Spacer(modifier = Modifier.height(100.dp))
@@ -131,6 +133,7 @@ fun LazyListScope.commentNodeItems(
     showAvatar: Boolean,
     blurNSFW: Boolean,
     showScores: Boolean,
+    topCommentOnly: Boolean,
 ) {
     nodes.forEach { node ->
         commentNodeItem(
@@ -168,6 +171,7 @@ fun LazyListScope.commentNodeItems(
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
             showScores = showScores,
+            topCommentOnly = topCommentOnly,
         )
     }
 }

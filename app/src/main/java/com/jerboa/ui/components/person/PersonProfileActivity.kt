@@ -118,6 +118,7 @@ fun PersonProfileActivity(
     markAsReadOnScroll: Boolean,
     postActionbarMode: Int,
     onBack: (() -> Unit)? = null,
+    topCommentOnly: Boolean
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -266,6 +267,7 @@ fun PersonProfileActivity(
                 snackbarHostState = snackbarHostState,
                 showScores = siteViewModel.showScores(),
                 postActionbarMode = postActionbarMode,
+                topCommentOnly = topCommentOnly
             )
         },
     )
@@ -300,6 +302,7 @@ fun UserTabs(
     snackbarHostState: SnackbarHostState,
     showScores: Boolean,
     postActionbarMode: Int,
+    topCommentOnly: Boolean
 ) {
     val tabTitles = if (savedMode) {
         listOf(
@@ -824,6 +827,7 @@ fun UserTabs(
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
                                     showScores = showScores,
+                                    topCommentOnly = topCommentOnly
                                 )
                             }
                         }

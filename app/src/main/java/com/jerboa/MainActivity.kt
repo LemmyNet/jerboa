@@ -336,6 +336,7 @@ class MainActivity : AppCompatActivity() {
                             onBack = appState::popBackStack,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            topCommentOnly =  appSettings.topCommentOnly
                         )
                     }
 
@@ -371,6 +372,7 @@ class MainActivity : AppCompatActivity() {
                             drawerState = drawerState,
                             markAsReadOnScroll = appSettings.markAsReadOnScroll,
                             postActionbarMode = appSettings.postActionbarMode,
+                            topCommentOnly =  appSettings.topCommentOnly
                         )
                     }
 
@@ -478,6 +480,7 @@ class MainActivity : AppCompatActivity() {
                                 blurNSFW = appSettings.blurNSFW,
                                 showPostLinkPreview = appSettings.showPostLinkPreviews,
                                 postActionbarMode = appSettings.postActionbarMode,
+                                topCommentOnly =  appSettings.topCommentOnly
                             )
                         }
                     }
@@ -509,6 +512,7 @@ class MainActivity : AppCompatActivity() {
                             blurNSFW = appSettings.blurNSFW,
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
                             postActionbarMode = appSettings.postActionbarMode,
+                            topCommentOnly =  appSettings.topCommentOnly
                         )
                     }
 

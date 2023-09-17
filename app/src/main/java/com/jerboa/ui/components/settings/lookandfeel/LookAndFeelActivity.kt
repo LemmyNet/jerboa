@@ -101,6 +101,8 @@ fun LookAndFeelActivity(
     val markAsReadOnScroll = rememberBooleanSettingState(settings.markAsReadOnScroll)
     val autoPlayGifs = rememberBooleanSettingState(settings.autoPlayGifs)
 
+    val topCommentOnly = rememberBooleanSettingState(settings.topCommentOnly)
+
     fun updateAppSettings() {
         appSettingsViewModel.update(
             AppSettings(
@@ -127,6 +129,7 @@ fun LookAndFeelActivity(
                 postActionbarMode = postActionbarMode.value,
                 autoPlayGifs = autoPlayGifs.value,
                 postNavigationGestureMode = postNavigationGestureModeState.value,
+                topCommentOnly = topCommentOnly.value
             ),
         )
     }
@@ -378,6 +381,13 @@ fun LookAndFeelActivity(
                     state = autoPlayGifs,
                     title = {
                         Text(stringResource(id = R.string.settings_autoplaygifs))
+                    },
+                    onCheckedChange = { updateAppSettings() },
+                )
+                SettingsCheckbox(
+                    state = topCommentOnly,
+                    title = {
+                        Text(stringResource(id = R.string.account_settings_top_comment_only))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
