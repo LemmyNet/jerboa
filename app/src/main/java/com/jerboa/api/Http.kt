@@ -2,28 +2,34 @@ package com.jerboa.api
 
 import android.content.Context
 import android.util.Log
+import com.jerboa.DEFAULT_LEMMY_INSTANCES
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.toastException
 import com.jerboa.util.CustomHttpLoggingInterceptor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody.Companion.toResponseBody
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.io.InputStream
-import okhttp3.Response as HttpResponse
+import java.net.MalformedURLException
+import java.net.URL
+import java.util.concurrent.TimeUnit
 
 const val VERSION = "v3"
 const val DEFAULT_INSTANCE = "lemmy.ml"
 const val MINIMUM_API_VERSION: String = "0.18"
 val REDACTED_QUERY_PARAMS = setOf("auth")
-val REDACTED_BODY_FIELDS = setOf("jwt", "password")
+val REDACTED_BODY_FIELDS = setOf("jwt", "password", "auth")
 
 interface API {
     @GET("site")
@@ -52,6 +58,12 @@ interface API {
      */
     @POST("post/like")
     suspend fun likePost(@Body form: CreatePostLike): Response<PostResponse>
+
+    /**
+     * Mark post as read.
+     */
+    @POST("post/mark_as_read")
+    suspend fun markAsRead(@Body form: MarkPostAsRead): Response<PostResponse>
 
     /**
      * Like / vote on a comment.
@@ -245,43 +257,57 @@ interface API {
         var currentInstance: String = DEFAULT_INSTANCE
             private set
 
+        private val TEMP_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
+        private val TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES = mutableSetOf<String>()
+
+        val httpClient: OkHttpClient = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addNetworkInterceptor { chain ->
+                chain.request().newBuilder()
+                    .header("User-Agent", "Jerboa")
+                    .build()
+                    .let(chain::proceed)
+            }
+            .build()
+
         private fun buildUrl(): String {
             return "https://$currentInstance/api/$VERSION/"
         }
 
         fun changeLemmyInstance(instance: String): API {
             currentInstance = instance
-            api = buildApi()
+            api = buildApi(buildUrl())
             return api!!
         }
 
         fun getInstance(): API {
             if (api == null) {
-                api = buildApi()
+                api = buildApi(buildUrl())
             }
             return api!!
         }
 
-        private fun buildApi(): API {
-            val client: OkHttpClient = OkHttpClient.Builder()
-                .addInterceptor { chain ->
-                    val requestBuilder = chain.request().newBuilder()
-                        .header("User-Agent", "Jerboa")
-                    val newRequest = requestBuilder.build()
-                    chain.proceed(newRequest)
-                }
-                // this should probably be a network interceptor,
+        fun createTempInstance(host: String, customErrorHandler: ((Exception) -> Exception?)? = null): API {
+            return buildApi("https://$host/api/$VERSION/", customErrorHandler)
+        }
+
+        private fun buildApi(baseUrl: String, customErrorHandler: ((Exception) -> Exception?)? = null): API {
+            val currErrorHandler = customErrorHandler ?: errorHandler
+
+            val client = httpClient.newBuilder()
                 .addInterceptor { chain ->
                     val request = chain.request()
                     try {
                         chain.proceed(request)
                     } catch (e: Exception) {
-                        val err = errorHandler(e)
+                        val err = currErrorHandler(e)
                         if (err != null) {
                             throw err
                         }
 
-                        HttpResponse.Builder()
+                        okhttp3.Response.Builder()
                             .request(request)
                             .code(999)
                             .protocol(Protocol.HTTP_1_1)
@@ -294,11 +320,39 @@ interface API {
                 .build()
 
             return Retrofit.Builder()
-                .baseUrl(buildUrl())
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
                 .create(API::class.java)
+        }
+
+        suspend fun checkIfLemmyInstance(url: String): Boolean {
+            try {
+                val host = URL(url).host
+
+                if (DEFAULT_LEMMY_INSTANCES.contains(host) || TEMP_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
+                    return true
+                } else if (TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.contains(host)) {
+                    return false
+                } else {
+                    val api = createTempInstance(host)
+                    return withContext(Dispatchers.IO) {
+                        return@withContext when (apiWrapper(api.getSite(emptyMap()))) {
+                            is ApiState.Success -> {
+                                TEMP_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
+                                true
+                            }
+                            else -> {
+                                TEMP_NOT_RECOGNISED_AS_LEMMY_INSTANCES.add(host)
+                                false
+                            }
+                        }
+                    }
+                }
+            } catch (_: MalformedURLException) {
+                return false
+            }
         }
     }
 }
@@ -308,10 +362,11 @@ sealed class ApiState<out T> {
     abstract class Holder<T>(val data: T) : ApiState<T>()
     class Success<T>(data: T) : Holder<T>(data)
     class Appending<T>(data: T) : Holder<T>(data)
+    class AppendingFailure<T>(data: T) : Holder<T>(data)
     class Failure(val msg: Throwable) : ApiState<Nothing>()
-    object Loading : ApiState<Nothing>()
-    object Refreshing : ApiState<Nothing>()
-    object Empty : ApiState<Nothing>()
+    data object Loading : ApiState<Nothing>()
+    data object Refreshing : ApiState<Nothing>()
+    data object Empty : ApiState<Nothing>()
 }
 
 fun <T> apiWrapper(
@@ -351,10 +406,12 @@ fun <T> retrofitErrorHandler(res: Response<T>): T {
         return res.body()!!
     } else {
         val errMsg = res.errorBody()?.string()?.let {
-            JSONObject(it).getString("error")
-        } ?: run {
-            res.code().toString()
-        }
+            try { // Prevent Could not convert to JSON messages everywhere
+                JSONObject(it).getString("error")
+            } catch (_: JSONException) {
+                it
+            }
+        } ?: res.code().toString()
 
         throw Exception(errMsg)
     }

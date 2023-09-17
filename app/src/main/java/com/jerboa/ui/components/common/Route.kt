@@ -2,6 +2,8 @@ package com.jerboa.ui.components.common
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
+import com.jerboa.datatypes.types.CommunityId
+import com.jerboa.datatypes.types.PostId
 
 object Route {
     object Graph {
@@ -13,9 +15,6 @@ object Route {
     const val LOGIN = "login"
     const val INBOX = "inbox"
     const val HOME = "home"
-
-    val POST_FROM_ID = PostArgs.route
-    val POST_FROM_URL = PostArgs.route
 
     val COMMUNITY_FROM_ID = CommunityFromIdArgs.route
     val COMMUNITY_FROM_URL = CommunityFromUrlArgs.route
@@ -38,6 +37,7 @@ object Route {
     const val COMMENT_EDIT = "commentEdit"
     const val POST_EDIT = "postEdit"
     const val PRIVATE_MESSAGE_REPLY = "privateMessageReply"
+    val CREATE_PRIVATE_MESSAGE = CreatePrivateMessageArgs.route
 
     val COMMENT_REPORT = CommentReportArgs.route
     val POST_REPORT = PostReportArgs.route
@@ -46,6 +46,9 @@ object Route {
     const val LOOK_AND_FEEL = "lookAndFeel"
     const val ACCOUNT_SETTINGS = "accountSettings"
     const val ABOUT = "about"
+    const val CRASH_LOGS = "crashLogs"
+
+    val VIEW = ViewArgs.route
 
     class CommunityFromIdArgs(val id: Int) {
         constructor(navBackStackEntry: NavBackStackEntry) :
@@ -142,16 +145,21 @@ object Route {
         }
     }
 
-    class CommunityPostArgs(val id: Int) {
+    class CommunityPostArgs(val communityId: CommunityId, val postId: PostId) {
         constructor(navBackStackEntry: NavBackStackEntry) :
-            this(id = navBackStackEntry.arguments?.getInt(ID)!!)
+            this(
+                communityId = navBackStackEntry.arguments?.getInt(COMMUNITY_ID)!!,
+                postId = navBackStackEntry.arguments?.getInt(POST_ID)!!
+            )
 
         companion object {
-            const val ID = "id"
-            val ID_TYPE = NavType.IntType
+            const val POST_ID = "post_id"
+            val POST_ID_TYPE = NavType.IntType
+            const val COMMUNITY_ID = "community_id"
+            val COMMUNITY_ID_TYPE = NavType.IntType
 
-            fun makeRoute(id: String) = "community_post/$id"
-            internal val route by lazy { makeRoute(id = "{$ID}") }
+            fun makeRoute(communityId: String, postId: String) = "community_post/$communityId/$postId"
+            internal val route by lazy { makeRoute(communityId = "{$COMMUNITY_ID}", postId = "{$POST_ID}") }
         }
     }
 
@@ -204,6 +212,38 @@ object Route {
 
             fun makeRoute(id: String) = "postReport/$id"
             internal val route by lazy { makeRoute(id = "{$ID}") }
+        }
+    }
+
+    class ViewArgs(val url: String) {
+        constructor(navBackStackEntry: NavBackStackEntry) :
+            this(url = navBackStackEntry.arguments?.getString(URL)!!)
+
+        companion object {
+            const val URL = "url"
+            val URL_TYPE = NavType.StringType
+
+            fun makeRoute(url: String) = "view/$url"
+            internal val route by lazy { makeRoute(url = "{$URL}") }
+        }
+    }
+
+    class CreatePrivateMessageArgs(val personId: Int, val personName: String) {
+        constructor(navBackStackEntry: NavBackStackEntry) :
+            this(
+                personId = navBackStackEntry.arguments?.getInt(PERSON_ID)!!,
+                personName = navBackStackEntry.arguments?.getString(PERSON_NAME)!!,
+            )
+
+        companion object {
+            const val PERSON_ID = "person_id"
+            val PERSON_ID_TYPE = NavType.IntType
+
+            const val PERSON_NAME = "person_name"
+            val PERSON_NAME_TYPE = NavType.StringType
+
+            fun makeRoute(personId: String, personName: String) = "createPrivateMessage/$personId/$personName"
+            internal val route by lazy { makeRoute(personId = "{$PERSON_ID}", personName = "{$PERSON_NAME}") }
         }
     }
 }

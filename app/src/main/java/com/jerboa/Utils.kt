@@ -1,6 +1,7 @@
 package com.jerboa
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentValues
@@ -10,62 +11,65 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.media.MediaScannerConnection
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.webkit.MimeTypeMap.getFileExtensionFromUrl
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TabPosition
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.Autofill
-import androidx.compose.ui.autofill.AutofillNode
-import androidx.compose.ui.autofill.AutofillTree
-import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.core.os.LocaleListCompat
 import androidx.core.util.PatternsCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import arrow.core.compareTo
+import coil.annotation.ExperimentalCoilApi
+import coil.imageLoader
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jerboa.api.API
+import com.jerboa.api.API.Companion.checkIfLemmyInstance
 import com.jerboa.api.ApiState
-import com.jerboa.api.DEFAULT_INSTANCE
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.Account
-import com.jerboa.model.HomeViewModel
-import com.jerboa.model.SiteViewModel
+import com.jerboa.db.APP_SETTINGS_DEFAULT
+import com.jerboa.db.entity.AppSettings
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.inbox.InboxTab
 import com.jerboa.ui.components.person.UserTab
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.Request
 import org.ocpsoft.prettytime.PrettyTime
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -100,13 +104,10 @@ inline fun <I, reified O> I.convert(): O {
 
 // / This should be done in a UI wrapper
 fun toastException(ctx: Context, error: Exception) {
-    Log.e("jerboa", error.toString())
-//    if (ctx !== null) {
+    Log.e("jerboa", "error", error)
     Toast.makeText(ctx, error.message, Toast.LENGTH_SHORT).show()
-//    }
 }
 
-// TODO also navigate to login page
 fun loginFirstToast(ctx: Context) {
     Toast.makeText(ctx, ctx.getString(R.string.utils_login_first), Toast.LENGTH_SHORT).show()
 }
@@ -168,9 +169,11 @@ fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
             1 -> {
                 currentScore - 1
             }
+
             -1 -> {
                 currentScore + 2
             }
+
             else -> {
                 currentScore + 1
             }
@@ -180,9 +183,11 @@ fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
             -1 -> {
                 currentScore + 1
             }
+
             1 -> {
                 currentScore - 2
             }
+
             else -> {
                 currentScore - 1
             }
@@ -196,9 +201,11 @@ fun newVoteCount(votes: Pair<Int, Int>, currentVote: Int?, voteType: VoteType): 
             1 -> {
                 Pair(votes.first - 1, votes.second)
             }
+
             -1 -> {
                 Pair(votes.first + 1, votes.second - 1)
             }
+
             else -> {
                 Pair(votes.first + 1, votes.second)
             }
@@ -208,9 +215,11 @@ fun newVoteCount(votes: Pair<Int, Int>, currentVote: Int?, voteType: VoteType): 
             -1 -> {
                 Pair(votes.first, votes.second - 1)
             }
+
             1 -> {
                 Pair(votes.first - 1, votes.second + 1)
             }
+
             else -> {
                 Pair(votes.first, votes.second + 1)
             }
@@ -238,18 +247,20 @@ data class CommentNodeData(
 
 fun commentsToFlatNodes(
     comments: List<CommentView>,
-): List<CommentNodeData> {
-    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }
+): ImmutableList<CommentNodeData> {
+    return comments.map { c -> CommentNodeData(commentView = c, children = null, depth = 0) }.toImmutableList()
 }
 
 fun buildCommentsTree(
     comments: List<CommentView>,
     isCommentView: Boolean,
-): List<CommentNodeData> {
+): ImmutableList<CommentNodeData> {
     val map = LinkedHashMap<Number, CommentNodeData>()
     val firstComment = comments.firstOrNull()?.comment
 
-    val depthOffset = if (!isCommentView) { 0 } else {
+    val depthOffset = if (!isCommentView) {
+        0
+    } else {
         getDepthFromComment(firstComment) ?: 0
     }
 
@@ -282,7 +293,7 @@ fun buildCommentsTree(
         }
     }
 
-    return tree
+    return tree.toImmutableList()
 }
 
 fun LazyListState.isScrolledToEnd(): Boolean {
@@ -296,8 +307,8 @@ fun LazyListState.isScrolledToEnd(): Boolean {
     }
 }
 
-/*
- * Parses a "url" and returns a spec-compliant Url:
+/**
+ * Parses a "url" and returns a spec-compliant URL:
  *
  * - https://host/path - leave as-is
  * - http://host/path - leave as-is
@@ -305,34 +316,39 @@ fun LazyListState.isScrolledToEnd(): Boolean {
  * - /c/community@instance -> https://instance/c/community
  * - !community@instance -> https://instance/c/community
  * - @user@instance -> https://instance/u/user
+ *
+ * @return A pair of a boolean and a string where the
+ * string represents the spec-compliant URL. The boolean
+ * represents true if the given string as argument was
+ * formatted in a lemmy specific format. Such as "/c/community"
  */
-fun parseUrl(url: String): String? {
+fun parseUrl(url: String): Pair<Boolean, String>? {
     if (url.startsWith("https://") || url.startsWith("http://")) {
-        return url
+        return Pair(false, url)
     } else if (url.startsWith("/c/")) {
-        if (url.count({ c -> c == '@' }) == 1) {
+        if (url.count { c -> c == '@' } == 1) {
             val (community, host) = url.split("@", limit = 2)
-            return "https://$host$community"
+            return Pair(true, "https://$host$community")
         }
-        return "https://${API.currentInstance}$url"
+        return Pair(true, "https://${API.currentInstance}$url")
     } else if (url.startsWith("/u/")) {
-        if (url.count({ c -> c == '@' }) == 1) {
+        if (url.count { c -> c == '@' } == 1) {
             val (userPath, host) = url.split("@", limit = 2)
-            return "https://$host$userPath"
+            return Pair(true, "https://$host$userPath")
         }
-        return "https://${API.currentInstance}$url"
+        return Pair(true, "https://${API.currentInstance}$url")
     } else if (url.startsWith("!")) {
-        if (url.count({ c -> c == '@' }) == 1) {
+        if (url.count { c -> c == '@' } == 1) {
             val (community, host) = url.substring(1).split("@", limit = 2)
-            return "https://$host/c/$community"
+            return Pair(true, "https://$host/c/$community")
         }
-        return "https://${API.currentInstance}/c/${url.substring(1)}"
+        return Pair(true, "https://${API.currentInstance}/c/${url.substring(1)}")
     } else if (url.startsWith("@")) {
-        if (url.count({ c -> c == '@' }) == 2) {
+        if (url.count { c -> c == '@' } == 2) {
             val (user, host) = url.substring(1).split("@", limit = 2)
-            return "https://$host/u/$user"
+            return Pair(true, "https://$host/u/$user")
         }
-        return "https://${API.currentInstance}/u/${url.substring(1)}"
+        return Pair(true, "https://${API.currentInstance}/u/${url.substring(1)}")
     }
     return null
 }
@@ -357,44 +373,42 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
     return null
 }
 
-/**
- * Open a sharesheet for the given URL.
- */
-fun shareLink(url: String, ctx: Context) {
-    val intent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_TEXT, url)
-        type = "text/plain"
+// Current logic is that if the url matches a community url or user url then it confirms
+// if the host is an actual lemmy instance unless it was originally formatted in a user/community format
+
+suspend fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    val (formatted, parsedUrl) = parseUrl(url) ?: return
+
+    val userUrl = looksLikeUserUrl(parsedUrl)
+    val communityUrl = looksLikeCommunityUrl(parsedUrl)
+
+    if (userUrl != null && (formatted || checkIfLemmyInstance(url))) {
+        val route = Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
+        navController.navigate(route)
+    } else if (communityUrl != null && (formatted || checkIfLemmyInstance(url))) {
+        val route = Route.CommunityFromUrlArgs.makeRoute(instance = communityUrl.first, name = communityUrl.second)
+        navController.navigate(route)
+    } else {
+        openLinkRaw(url, navController, useCustomTab, usePrivateTab)
     }
-    val shareIntent = Intent.createChooser(intent, null)
-    ctx.startActivity(shareIntent)
 }
 
-fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
-    val parsedUrl = parseUrl(url) ?: return
-
-    looksLikeUserUrl(parsedUrl)?.let { it ->
-        val route = Route.ProfileFromUrlArgs.makeRoute(instance = it.first, name = it.second)
-        navController.navigate(route)
-        return
-    }
-    looksLikeCommunityUrl(parsedUrl)?.let { it ->
-        val route = Route.CommunityFromUrlArgs.makeRoute(instance = it.first, name = it.second)
-        navController.navigate(route)
-        return
+fun openLinkRaw(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
+    val extras = Intent().apply {
+        if (usePrivateTab) {
+            putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+            putExtra("private_browsing_mode", true)
+        }
     }
 
     if (useCustomTab) {
-        val intent = CustomTabsIntent.Builder()
-            .build().apply {
-                if (usePrivateTab) {
-                    intent.putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
-                }
-            }
-        intent.launchUrl(navController.context, Uri.parse(parsedUrl))
+        val intent = CustomTabsIntent.Builder().build()
+        intent.intent.putExtras(extras)
+        intent.launchUrl(navController.context, Uri.parse(url))
     } else {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(parsedUrl))
-        navController.context.startActivity(intent)
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        intent.putExtras(extras)
+        navController.context.startActivitySafe(intent)
     }
 }
 
@@ -465,12 +479,14 @@ fun isImage(url: String): Boolean {
     return imageRegex.matches(url)
 }
 
+fun getPostType(url: String): PostType {
+    return if (isImage(url)) PostType.Image else PostType.Link
+}
+
 val imageRegex = Regex(
     pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",
 )
 
-// Todo is the scope.launch still necessary?
-@OptIn(ExperimentalMaterial3Api::class)
 fun closeDrawer(
     scope: CoroutineScope,
     drawerState: DrawerState,
@@ -491,13 +507,6 @@ fun personNameShown(person: Person, federatedName: Boolean = false): String {
             "$name@${hostName(person.actor_id)}"
         }
     }
-}
-
-/**
- * In cases where there should be no ambiguity as to the given Person's federated name.
- */
-fun federatedNameShown(person: Person): String {
-    return "${person.name}@${hostName(person.actor_id)}"
 }
 
 fun communityNameShown(community: Community): String {
@@ -658,42 +667,44 @@ data class InputField(
 )
 
 fun validatePostName(
+    ctx: Context,
     name: String,
 ): InputField {
     return if (name.isEmpty()) {
         InputField(
-            label = "Title required",
+            label = ctx.getString(R.string.title_required),
             hasError = true,
         )
     } else if (name.length < 3) {
         InputField(
-            label = "Title must be > 3 chars",
+            label = ctx.getString(R.string.title_min_3_chars),
             hasError = true,
         )
     } else if (name.length >= MAX_POST_TITLE_LENGTH) {
         InputField(
-            label = "Title cannot be > 200 chars",
+            label = ctx.getString(R.string.title_less_than_200_chars),
             hasError = true,
         )
     } else {
         InputField(
-            label = "Title",
+            label = ctx.getString(R.string.title),
             hasError = false,
         )
     }
 }
 
 fun validateUrl(
+    ctx: Context,
     url: String,
 ): InputField {
     return if (url.isNotEmpty() && !PatternsCompat.WEB_URL.matcher(url).matches()) {
         InputField(
-            label = "Invalid Url",
+            label = ctx.getString(R.string.url_invalid),
             hasError = true,
         )
     } else {
         InputField(
-            label = "Url",
+            label = ctx.getString(R.string.url),
             hasError = false,
         )
     }
@@ -718,48 +729,6 @@ fun siFormat(num: Int): String {
         formattedNumber
     }
 }
-
-fun fetchInitialData(
-    account: Account?,
-    siteViewModel: SiteViewModel,
-) {
-    if (account != null) {
-        API.changeLemmyInstance(account.instance)
-        siteViewModel.fetchUnreadCounts(GetUnreadCount(auth = account.jwt))
-    } else {
-        API.changeLemmyInstance(DEFAULT_INSTANCE)
-    }
-
-    siteViewModel.getSite(
-        GetSite(
-            auth = account?.jwt,
-        ),
-    )
-}
-
-fun fetchHomePosts(account: Account?, homeViewModel: HomeViewModel) {
-    if (account != null) {
-        homeViewModel.updateFromAccount(account)
-        homeViewModel.resetPage()
-        homeViewModel.getPosts(
-            GetPosts(
-                type_ = homeViewModel.listingType,
-                sort = homeViewModel.sortType,
-                auth = account.jwt,
-            ),
-        )
-    } else {
-        Log.d("jerboa", "Fetching posts for anonymous user")
-        homeViewModel.resetPage()
-        homeViewModel.getPosts(
-            GetPosts(
-                type_ = ListingType.Local,
-                sort = SortType.Active,
-            ),
-        )
-    }
-}
-
 fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
     return ctx.contentResolver.openInputStream(uri)!!
 }
@@ -781,6 +750,24 @@ fun scrollToTop(
 ) {
     scope.launch {
         listState.animateScrollToItem(index = 0)
+    }
+}
+
+fun showSnackbar(
+    scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    message: String,
+    actionLabel: String?,
+    withDismissAction: Boolean = false,
+    snackbarDuration: SnackbarDuration,
+) {
+    scope.launch {
+        snackbarHostState.showSnackbar(
+            message,
+            actionLabel,
+            withDismissAction,
+            snackbarDuration,
+        )
     }
 }
 
@@ -809,6 +796,7 @@ enum class ThemeColor(val mode: Int) {
     Pink(R.string.look_and_feel_theme_color_pink),
     Purple(R.string.look_and_feel_theme_color_purple),
     Woodland(R.string.look_and_feel_theme_color_woodland),
+    Dracula(R.string.look_and_feel_theme_color_dracula),
 }
 
 enum class PostViewMode(val mode: Int) {
@@ -829,54 +817,52 @@ enum class PostViewMode(val mode: Int) {
     List(R.string.look_and_feel_post_view_list),
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-fun Modifier.pagerTabIndicatorOffset2(
-    pagerState: PagerState,
-    tabPositions: List<TabPosition>,
-    pageIndexMapping: (Int) -> Int = { it },
-): Modifier = layout { measurable, constraints ->
-    if (tabPositions.isEmpty()) {
-        // If there are no pages, nothing to show
-        layout(constraints.maxWidth, 0) {}
-    } else {
-        val currentPage = minOf(tabPositions.lastIndex, pageIndexMapping(pagerState.currentPage))
-        val currentTab = tabPositions[currentPage]
-        val previousTab = tabPositions.getOrNull(currentPage - 1)
-        val nextTab = tabPositions.getOrNull(currentPage + 1)
-        val fraction = pagerState.currentPageOffsetFraction
-        val indicatorWidth = if (fraction > 0 && nextTab != null) {
-            lerp(currentTab.width, nextTab.width, fraction).roundToPx()
-        } else if (fraction < 0 && previousTab != null) {
-            lerp(currentTab.width, previousTab.width, -fraction).roundToPx()
-        } else {
-            currentTab.width.roundToPx()
+/**
+ * For a given post, what sort of content Jerboa treats it as.
+ */
+enum class PostType {
+    /**
+     * A Link to an external website. Opens the browser.
+     */
+    Link,
+
+    /**
+     * An Image. Opens the built-in image viewer.
+     */
+    Image,
+
+    /**
+     * A Video. Should open the built-in video viewer.
+     * Also matches audio only
+     * (Not currently available).
+     */
+    Video,
+
+    ;
+
+    companion object {
+        fun fromURL(url: String): PostType {
+            return if (isImage(url)) {
+                Image
+            } else if (isVideo(url)) {
+                Video
+            } else {
+                Link
+            }
         }
-        val indicatorOffset = if (fraction > 0 && nextTab != null) {
-            lerp(currentTab.left, nextTab.left, fraction).roundToPx()
-        } else if (fraction < 0 && previousTab != null) {
-            lerp(currentTab.left, previousTab.left, -fraction).roundToPx()
-        } else {
-            currentTab.left.roundToPx()
-        }
-        val placeable = measurable.measure(
-            Constraints(
-                minWidth = indicatorWidth,
-                maxWidth = indicatorWidth,
-                minHeight = 0,
-                maxHeight = constraints.maxHeight,
-            ),
-        )
-        layout(constraints.maxWidth, maxOf(placeable.height, constraints.minHeight)) {
-            placeable.placeRelative(
-                indicatorOffset,
-                maxOf(constraints.minHeight - placeable.height, 0),
-            )
+    }
+
+    fun toMediaDir(): String {
+        return when (this) {
+            Image -> Environment.DIRECTORY_PICTURES
+            Video -> Environment.DIRECTORY_MOVIES
+            Link -> Environment.DIRECTORY_DOCUMENTS
         }
     }
 }
 
-fun isSameInstance(url: String?, instance: String?): Boolean {
-    return url?.let { hostName(it) } == instance
+fun isSameInstance(url: String, instance: String): Boolean {
+    return hostName(url) == instance
 }
 
 fun getCommentParentId(comment: Comment?): Int? {
@@ -894,29 +880,36 @@ fun getDepthFromComment(comment: Comment?): Int? {
     return comment?.path?.split(".")?.size?.minus(2)
 }
 
-// TODO add a check for your account, view nsfw
 fun nsfwCheck(postView: PostView): Boolean {
     return postView.post.nsfw || postView.community.nsfw
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Throws(IOException::class)
-fun saveBitmap(
+fun saveMediaQ(
     ctx: Context,
     inputStream: InputStream,
     mimeType: String?,
     displayName: String,
+    mediaType: PostType,
 ): Uri {
     val values = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
         put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Jerboa")
+        put(MediaStore.MediaColumns.RELATIVE_PATH, mediaType.toMediaDir() + "/Jerboa")
     }
 
     val resolver = ctx.contentResolver
     var uri: Uri? = null
 
     try {
-        uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        val insert = when (mediaType) {
+            PostType.Image -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            PostType.Video -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            PostType.Link -> MediaStore.Downloads.EXTERNAL_CONTENT_URI
+        }
+
+        uri = resolver.insert(insert, values)
             ?: throw IOException("Failed to create new MediaStore record.")
 
         resolver.openOutputStream(uri)?.use {
@@ -934,18 +927,19 @@ fun saveBitmap(
     }
 }
 
-// saveBitmap that works for Android 9 and below
-fun saveBitmapP(
+// saveMedia that works for Android 9 and below
+fun saveMediaP(
     context: Context,
     inputStream: InputStream,
     mimeType: String?,
     displayName: String,
+    mediaType: PostType, // Link is here more like other media (think of PDF, doc, txt)
 ) {
-    val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-    val picsDir = File(dir, "Jerboa")
-    val dest = File(picsDir, displayName)
+    val dir = Environment.getExternalStoragePublicDirectory(mediaType.toMediaDir())
+    val mediaDir = File(dir, "Jerboa")
+    val dest = File(mediaDir, displayName)
 
-    picsDir.mkdirs() // make if not exist
+    mediaDir.mkdirs() // make if not exist
 
     inputStream.use { input ->
         dest.outputStream().use {
@@ -957,92 +951,12 @@ fun saveBitmapP(
     MediaScannerConnection.scanFile(context, arrayOf(dest.absolutePath), mimeTypes, null)
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
-fun Modifier.onAutofill(tree: AutofillTree, autofill: Autofill?, autofillTypes: ImmutableList<AutofillType>, onFill: (String) -> Unit): Modifier {
-    val autofillNode = AutofillNode(
-        autofillTypes = autofillTypes,
-        onFill = onFill,
-    )
-    tree += autofillNode
-
-    return this
-        .onGloballyPositioned {
-            autofillNode.boundingBox = it.boundsInWindow()
-        }
-        .onFocusChanged { focusState ->
-            autofill?.run {
-                if (focusState.isFocused) {
-                    requestAutofillForNode(autofillNode)
-                } else {
-                    cancelAutofillForNode(autofillNode)
-                }
-            }
-        }
-}
-
 /**
  * Converts a scalable pixel (sp) to an actual pixel (px)
  */
 fun convertSpToPx(sp: TextUnit, ctx: Context): Int {
     return (sp.value * ctx.resources.displayMetrics.scaledDensity).toInt()
 }
-
-/**
- * Returns localized Strings for SortingType Enum
- */
-
-fun getLocalizedSortingTypeShortName(ctx: Context, sortingType: SortType): String {
-    return ctx.getString(MAP_SORT_TYPE_SHORT_FORM[sortingType] ?: throw IllegalStateException("Someone forgot to update the MAP_SORT_TYPE_SHORT_FORM"))
-}
-
-// ORDER MUST BE THE SAME AS THE ENUM
-val MAP_SORT_TYPE_SHORT_FORM = mapOf(
-    SortType.Active to R.string.sorttype_active,
-    SortType.Hot to R.string.sorttype_hot,
-    SortType.New to R.string.sorttype_new,
-    SortType.Old to R.string.sorttype_old,
-    SortType.TopDay to R.string.sorttype_topday,
-    SortType.TopWeek to R.string.sorttype_topweek,
-    SortType.TopMonth to R.string.sorttype_topmonth,
-    SortType.TopYear to R.string.sorttype_topyear,
-    SortType.TopAll to R.string.sorttype_topall,
-    SortType.MostComments to R.string.sorttype_mostcomments,
-    SortType.NewComments to R.string.sorttype_newcomments,
-    SortType.TopHour to R.string.sorttype_tophour,
-    SortType.TopSixHour to R.string.sorttype_topsixhour,
-    SortType.TopTwelveHour to R.string.sorttype_toptwelvehour,
-    SortType.TopThreeMonths to R.string.sorttype_topthreemonths,
-    SortType.TopSixMonths to R.string.sorttype_topsixmonths,
-    SortType.TopNineMonths to R.string.sorttype_topninemonths,
-)
-
-/**
- * Returns localized Strings for SortingType Enum
- */
-
-fun getLocalizedSortingTypeLongName(ctx: Context, sortingType: SortType): String {
-    return ctx.getString(MAP_SORT_TYPE_LONG_FORM[sortingType] ?: throw IllegalStateException("Someone forgot to update the MAP_SORT_TYPE_LONG_FORM"))
-}
-
-val MAP_SORT_TYPE_LONG_FORM = mapOf(
-    SortType.Active to R.string.sorttype_active,
-    SortType.Hot to R.string.sorttype_hot,
-    SortType.New to R.string.sorttype_new,
-    SortType.Old to R.string.sorttype_old,
-    SortType.TopDay to R.string.dialogs_top_day,
-    SortType.TopWeek to R.string.dialogs_top_week,
-    SortType.TopMonth to R.string.dialogs_top_month,
-    SortType.TopYear to R.string.dialogs_top_year,
-    SortType.TopAll to R.string.sorttype_topall,
-    SortType.MostComments to R.string.dialogs_most_comments,
-    SortType.NewComments to R.string.dialogs_new_comments,
-    SortType.TopHour to R.string.dialogs_top_hour,
-    SortType.TopSixHour to R.string.dialogs_top_six_hour,
-    SortType.TopTwelveHour to R.string.dialogs_top_twelve_hour,
-    SortType.TopThreeMonths to R.string.dialogs_top_three_month,
-    SortType.TopSixMonths to R.string.dialogs_top_six_month,
-    SortType.TopNineMonths to R.string.dialogs_top_nine_month,
-)
 
 /**
  * Returns localized Strings for UserTab Enum
@@ -1077,6 +991,7 @@ fun getLocalizedCommentSortTypeName(ctx: Context, commentSortType: CommentSortTy
         CommentSortType.New -> ctx.getString(R.string.sorttype_new)
         CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
         CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
+        CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
     }
     return returnString
 }
@@ -1140,17 +1055,30 @@ fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>,
         is ApiState.Success -> {
             Toast.makeText(
                 ctx,
-                "${blockCommunityRes.data.community_view.community.name} Blocked",
+                ctx.getString(
+                    if (blockCommunityRes.data.blocked) {
+                        R.string.blocked_community_toast
+                    } else R.string.unblocked_community_toast,
+                    blockCommunityRes.data.community_view.community.name,
+                ),
                 Toast.LENGTH_SHORT,
-            )
-                .show()
+            ).show()
         }
 
-        else -> {}
+        else -> {
+            Toast.makeText(
+                ctx,
+                ctx.getText(R.string.community_block_toast_failure),
+                Toast.LENGTH_SHORT,
+            ).show()
+        }
     }
 }
 
-fun findAndUpdatePersonMention(mentions: List<PersonMentionView>, updatedCommentView: CommentView): List<PersonMentionView> {
+fun findAndUpdatePersonMention(
+    mentions: List<PersonMentionView>,
+    updatedCommentView: CommentView,
+): List<PersonMentionView> {
     val foundIndex = mentions.indexOfFirst {
         it.person_mention.comment_id == updatedCommentView.comment.id
     }
@@ -1197,7 +1125,10 @@ fun findAndUpdateComment(comments: List<CommentView>, updated: CommentView): Lis
     }
 }
 
-fun findAndUpdateCommentReply(replies: List<CommentReplyView>, updatedCommentView: CommentView): List<CommentReplyView> {
+fun findAndUpdateCommentReply(
+    replies: List<CommentReplyView>,
+    updatedCommentView: CommentView,
+): List<CommentReplyView> {
     val foundIndex = replies.indexOfFirst {
         it.comment_reply.comment_id == updatedCommentView.comment.id
     }
@@ -1222,25 +1153,6 @@ fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
         (abs((depth.minus(1) * multiplier)).dp + SMALL_PADDING)
     }
 }
-
-fun dedupePosts(
-    more: List<PostView>,
-    existing: List<PostView>,
-): List<PostView> {
-    val mapIds = existing.map { it.post.id }
-    return more.filterNot { mapIds.contains(it.post.id) }
-}
-
-fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
-    val appended = existing.toMutableList()
-    appended.addAll(more)
-    return appended.toList()
-}
-
-fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
-    return appendData(old, dedupePosts(new, old))
-}
-
 fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
     val foundIndex = posts.indexOfFirst {
         it.post.id == updatedPostView.post.id
@@ -1383,11 +1295,152 @@ fun LocaleListCompat.convertToLanguageRange(): MutableList<Locale.LanguageRange>
     }
     return l
 }
+inline fun <reified E : Enum<E>> getEnumFromIntSetting(
+    appSettings: LiveData<AppSettings>,
+    getter: (AppSettings) -> Int,
+): E {
+    val enums = enumValues<E>()
+    val setting = appSettings.value ?: APP_SETTINGS_DEFAULT
+    val index = getter(setting)
 
-fun <T> ApiState<T>.isLoading(): Boolean {
-    return this is ApiState.Appending || this == ApiState.Loading || this == ApiState.Refreshing
+    return if (index >= enums.size) { // Fallback to default
+        enums[getter(APP_SETTINGS_DEFAULT)]
+    } else {
+        enums[index]
+    }
 }
 
-fun <T> ApiState<T>.isRefreshing(): Boolean {
-    return this == ApiState.Refreshing
+fun triggerRebirth(context: Context) {
+    val packageManager = context.packageManager
+    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+    val componentName = intent!!.component
+    val mainIntent = Intent.makeRestartActivityTask(componentName)
+    context.startActivity(mainIntent)
+    Runtime.getRuntime().exit(0)
+}
+
+fun CreationExtras.jerboaApplication(): JerboaApplication =
+    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as JerboaApplication)
+
+@Throws(IndexOutOfBoundsException::class)
+inline fun <reified T : Enum<T>> Int.toEnum(): T {
+    return enumValues<T>()[this]
+}
+
+inline fun <reified T : Enum<T>> Int.toEnumSafe(): T {
+    val vals = enumValues<T>()
+    return if (vals.size >= this) vals[this] else vals[0]
+}
+
+fun matchLoginErrorMsgToStringRes(ctx: Context, e: Throwable): String {
+    return when (e.message) {
+        "incorrect_login" -> ctx.getString(R.string.login_view_model_incorrect_login)
+        "email_not_verified" -> ctx.getString(R.string.login_view_model_email_not_verified)
+        "registration_denied" -> ctx.getString(R.string.login_view_model_registration_denied)
+        "registration_application_pending", "registration_application_is_pending" ->
+            ctx.getString(R.string.login_view_model_registration_pending)
+        "missing_totp_token" -> ctx.getString(R.string.login_view_model_missing_totp)
+        "incorrect_totp_token" -> ctx.getString(R.string.login_view_model_incorrect_totp)
+        else -> {
+            Log.d("login", "failed", e)
+            ctx.getString(R.string.login_view_model_login_failed)
+        }
+    }
+}
+
+fun ConnectivityManager?.isCurrentlyConnected(): Boolean =
+    this?.activeNetwork
+        ?.let(::getNetworkCapabilities)
+        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        ?: true
+
+/**
+ * When calling this, you must call ActivityResultLauncher.unregister()
+ * on the returned ActivityResultLauncher when the launcher is no longer
+ * needed to release any values that might be captured in the registered callback.
+ */
+fun <I, O> ComponentActivity.registerActivityResultLauncher(
+    contract: ActivityResultContract<I, O>,
+    callback: ActivityResultCallback<O>,
+): ActivityResultLauncher<I> {
+    val key = UUID.randomUUID().toString()
+    return activityResultRegistry.register(key, contract, callback)
+}
+
+/**
+ *  Returns a [InputStream] for the data of the URL, but it also checks the cache first!
+ *
+ *  Doesn't clean up the [InputStream]
+ *
+ *  @throws IOException
+ *  @throws IllegalArgumentException If this is not a well-formed HTTP or HTTPS URL.
+ */
+@OptIn(ExperimentalCoilApi::class)
+@Throws(IOException::class)
+fun Context.getInputStream(url: String): InputStream {
+    val snapshot = this.imageLoader.diskCache?.openSnapshot(url)
+
+    return if (snapshot != null) {
+        snapshot.data.toFile().inputStream()
+    } else {
+        API.httpClient.newCall(Request(url.toHttpUrl())).execute().body.byteStream()
+    }
+}
+
+val videoRgx = Regex(
+    pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov))",
+)
+fun isVideo(url: String): Boolean {
+    return url.matches(videoRgx)
+}
+
+val nonMediaExt = setOf("html", "htm", "xhtml", "")
+
+// Fast guess at checking if the link could be a file that we consider as Media
+fun isMedia(url: String): Boolean {
+    val ext = getFileExtensionFromUrl(url)
+    return !nonMediaExt.contains(ext)
+}
+
+fun Context.startActivitySafe(intent: Intent) {
+    try {
+        this.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Log.d("jerboa", "failed open activity", e)
+        Toast.makeText(this, this.getText(R.string.no_activity_found), Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
+    val appended = existing.toMutableList()
+    appended.addAll(more)
+    return appended.toList()
+}
+
+fun <T> getDeduplicatedList(
+    oldList: List<T>,
+    uniqueNewList: List<T>,
+    getId: (T) -> Int,
+): List<T> {
+    val mapIds = oldList.map { getId(it) }
+    return uniqueNewList.filterNot { mapIds.contains(getId(it)) }
+}
+
+fun <T> getDeduplicateMerge(oldItems: List<T>, newItems: List<T>, getId: (T) -> Int): List<T> {
+    return appendData(oldItems, getDeduplicatedList(oldItems, newItems, getId))
+}
+
+fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
+    return appendData(old, getDeduplicatedList(old, new) { it.post.id })
+}
+
+/**
+ * This function rewrites HTTP URLs to HTTPS
+ */
+fun String.toHttps(): String {
+    return if (this.startsWith("http://", true)) {
+        this.replaceFirst("http", "https", true)
+    } else {
+        this
+    }
 }

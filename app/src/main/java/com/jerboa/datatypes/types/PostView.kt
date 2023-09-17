@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class PostView(
     val post: Post,
     val creator: Person,
@@ -12,4 +16,4 @@ data class PostView(
     val creator_blocked: Boolean,
     val my_vote: Int? = null,
     val unread_comments: Int,
-)
+) : Parcelable

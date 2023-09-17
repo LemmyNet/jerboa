@@ -35,7 +35,6 @@
     <string name="dialogs_top_week">Top hebdomadaire</string>
     <string name="dialogs_top_month">Top mensuel</string>
     <string name="dialogs_top_year">Top annuel</string>
-    <string name="dialogs_top_all_time">Top de tous les temps</string>
     <string name="dialogs_subscribed">Communautés abonnées</string>
     <string name="dialogs_local">Communautés locales</string>
     <string name="dialogs_all">Toutes les communautés</string>
@@ -67,9 +66,6 @@
     <string name="home_subscribed">Communautés abonnées</string>
     <string name="home_local">Communautés locales</string>
     <string name="home_all">Toutes les communautés</string>
-    <string name="home_saved">Publications/commentaires enregistrés</string>
-    <string name="home_profile">Profil</string>
-    <string name="home_inbox">Messages</string>
     <string name="home_settings">Paramètres</string>
     <string name="home_subscriptions">Abonnements</string>
     <string name="home_add_account">Ajouter un compte</string>
@@ -178,7 +174,6 @@
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s n’est pas une instance Lemmy</string>
     <string name="create_report_view_model_report_created">Signalement créé</string>
     <string name="about_social">Social</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="comment_node_in">"dans "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Afficher le contenu des commentaires minimisés</string>
     <string name="comment_node_permalink_copied">Permalien copié</string>
@@ -260,7 +255,6 @@
     <string name="postListing_reply">Répondre à la publication</string>
     <string name="privateMessage_reply">Répondre au message</string>
     <string name="topAppBar_back">Précédent</string>
-    <string name="home_communities">Abonnements</string>
     <string name="bottomBar_label_bookmarks">Enregistrés</string>
     <string name="bottomBar_label_home">Accueil</string>
     <string name="bottomBar_label_inbox">Messages</string>
@@ -270,7 +264,6 @@
     <string name="dialogs_old">Anciens</string>
     <string name="look_and_feel_show_action_bar_for_comments">Afficher la barre d’action par défaut pour les commentaires</string>
     <string name="look_and_feel_show_voting_arrows_list_view">Montrer les flèches de vote dans la vue en liste</string>
-    <string name="look_and_feel_use_private_tabs">Utiliser les onglets privés personnalisés si disponible</string>
     <string name="upvote">Plusser</string>
     <string name="downvote">Moinser</string>
     <string name="upvoted">Plussé</string>

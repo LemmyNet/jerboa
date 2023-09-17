@@ -1,12 +1,20 @@
 package com.jerboa
 
+import android.content.Context
 import androidx.compose.ui.unit.dp
 import com.jerboa.api.API
 import com.jerboa.ui.theme.SMALL_PADDING
 import junitparams.JUnitParamsRunner
+import junitparams.Parameters
 import org.junit.Assert.*
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 import org.ocpsoft.prettytime.PrettyTime
 import java.time.Duration
 import java.time.Instant
@@ -15,6 +23,11 @@ import java.util.Locale
 
 @RunWith(JUnitParamsRunner::class)
 class UtilsKtTest {
+
+    @JvmField
+    @Rule
+    val rule: MockitoRule = MockitoJUnit.rule()
+
     @Test
     fun testCalculateCommentOffset() {
         assertEquals(0.dp, calculateCommentOffset(0, 0))
@@ -83,20 +96,31 @@ class UtilsKtTest {
 
     @Test
     fun testValidatePostName() {
-        assertTrue(validatePostName("").hasError)
-        assertTrue(validatePostName("a").hasError)
-        assertTrue(validatePostName("a".repeat(MAX_POST_TITLE_LENGTH)).hasError)
+        val ctx = mock<Context> {
+            on { getString(anyInt()) } doReturn ""
+        }
 
-        assertFalse(validatePostName("totally fine").hasError)
-        assertFalse(validatePostName("a".repeat(MAX_POST_TITLE_LENGTH - 1)).hasError)
+        assertTrue(validatePostName(ctx, "").hasError)
+        assertTrue(validatePostName(ctx, "a").hasError)
+        assertTrue(validatePostName(ctx, "a".repeat(MAX_POST_TITLE_LENGTH)).hasError)
+
+        assertFalse(validatePostName(ctx, "totally fine").hasError)
+        assertFalse(validatePostName(ctx, "a".repeat(MAX_POST_TITLE_LENGTH - 1)).hasError)
     }
 
     @Test
     fun testValidateUrl() {
-        assertTrue(validateUrl("nonsense").hasError)
+        val ctx = mock<Context> {
+            on { getString(R.string.url) } doReturn "url"
+            on { getString(R.string.url_invalid) } doReturn "url_invalid"
+        }
 
-        assertFalse(validateUrl("").hasError)
-        assertFalse(validateUrl("https://example.com").hasError)
+        assertTrue(validateUrl(ctx, "nonsense").hasError)
+        assertSame("url_invalid", validateUrl(ctx, "nonsense").label)
+
+        assertFalse(validateUrl(ctx, "").hasError)
+        assertFalse(validateUrl(ctx, "https://example.com").hasError)
+        assertSame("url", validateUrl(ctx, "https://example.com").label)
     }
 
     @Test
@@ -154,14 +178,19 @@ class UtilsKtTest {
     }
 
     @Test
-    fun testSiFormat() {
-        assertEquals("0", siFormat(0))
-        assertEquals("1K", siFormat(1000))
-        assertEquals("1.1K", siFormat(1100))
-        assertEquals("1M", siFormat(1000000))
-        assertEquals("1.2M", siFormat(1234500))
-        assertEquals("12M", siFormat(12345000))
+    @Parameters(method = "siFormatCases")
+    fun testSiFormat(expected: String, input: Int) {
+        assertEquals(expected, siFormat(input))
     }
+
+    fun siFormatCases() = listOf(
+        listOf("0", 0),
+        listOf("1K", 1000),
+        listOf("1.1K", 1100),
+        listOf("1M", 1000000),
+        listOf("1.2M", 1234500),
+        listOf("12M", 12345000),
+    )
 
     @Test
     fun testParseUrl() {
@@ -176,7 +205,7 @@ class UtilsKtTest {
             "@user@instance.ml" to "https://instance.ml/u/user",
         )
 
-        cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)) }
+        cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)?.second) }
     }
 
     @Test
@@ -207,5 +236,12 @@ class UtilsKtTest {
         assertEquals(0, compareVersions("0.1.2", "0.1.2"))
         assertEquals(-1, compareVersions("0.1.2-alpha1", "0.1.2-beta1"))
         assertEquals(1, compareVersions("0.1.2-beta1", "0.1.2-alpha2"))
+    }
+
+    @Test
+    fun rewriteHttpToHttps() {
+        assertEquals("https://example.com", "http://example.com".toHttps())
+        assertEquals("https://example.com", "https://example.com".toHttps())
+        assertEquals("example.com", "example.com".toHttps())
     }
 }

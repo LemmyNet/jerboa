@@ -30,7 +30,6 @@
     <string name="account_settings_show_scores">점수 표시</string>
     <string name="account_settings_subscribed">구독</string>
     <string name="addBookmark">북마크에 추가</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="bottomBar_bookmarks">내 북마크로 가기</string>
     <string name="bottomBar_home">홈으로 가기</string>
     <string name="bottomBar_inbox">내 수신함으로 가기</string>
@@ -76,6 +75,7 @@
     <string name="comment_node_report_comment">댓글 신고</string>
     <string name="comment_node_restore">복구</string>
     <string name="comment_node_view_context">문맥 보기</string>
+    <string name="comment_node_view_original">원본 보기</string>
     <string name="comment_node_view_post">게시물 보기</string>
     <string name="comment_node_view_source">소스 보기</string>
     <string name="comment_reply_back">뒤로</string>
@@ -101,6 +101,10 @@
     <string name="community_sortBy">정렬</string>
     <string name="community_subscribe">구독</string>
     <string name="community_users_month">%1$s 사용자 / 월</string>
+    <string name="crash_logs">크래시 기록</string>
+    <string name="crash_logs_all_deleted">모든 크래시 기록이 삭제 되었습니다</string>
+    <string name="crash_logs_copy">크래시 기록 복사</string>
+    <string name="crash_logs_delete">모든 크래시 기록 삭제</string>
     <string name="createPost_selectCommunity">목록에서 커뮤니티 선택</string>
     <string name="create_post_a_title_here">여기에 제목....</string>
     <string name="create_post_community">커뮤니티</string>
@@ -123,12 +127,11 @@
     <string name="dialogs_new_comments">신규 댓글</string>
     <string name="dialogs_subscribed">구독함</string>
     <string name="dialogs_top">최고</string>
-    <string name="dialogs_top_all_time">전체 최고</string>
     <string name="dialogs_top_day">일 최고</string>
     <string name="dialogs_top_month">월 최고</string>
     <string name="dialogs_top_week">주 최고</string>
     <string name="dialogs_top_year">연 최고</string>
-    <string name="dialogs_old">Old</string>
+    <string name="dialogs_old">오래됨</string>
     <string name="dialogs_unread">안읽음</string>
     <string name="dialogs_server_version_outdated">서버의 버전(%1$s)이 최소 지원 버전(%2$s)보다 아래입니다.\n\n관리자에게 알리고 다른 인스턴스로 로그인하거나, 로그아웃 후 기본 인스턴스를 사용하세요.</string>
     <string name="dialogs_server_version_outdated_short">서버 버전(%1$s)이 너무 오래 되었습니다.</string>
@@ -137,14 +140,10 @@
     <string name="homeHeader_filter">목록 필터 선택</string>
     <string name="home_add_account">계정 추가</string>
     <string name="home_all">전체</string>
-    <string name="home_communities">커뮤니티</string>
-    <string name="home_inbox">수신함</string>
     <string name="home_local">로컬</string>
     <string name="home_menu">메뉴</string>
     <string name="home_post_view_mode">게시물 표시 모드</string>
-    <string name="home_profile">프로필</string>
     <string name="home_refresh">새로고침</string>
-    <string name="home_saved">저장됨</string>
     <string name="home_settings">설정</string>
     <string name="home_sign_out">로그아웃</string>
     <string name="home_site_info">사이트 정보</string>
@@ -179,6 +178,7 @@
     <string name="look_and_feel_secure_window">스크린샷 방지</string>
     <string name="look_and_feel_show_action_bar_for_comments">댓글에 액션바 기본으로 보이기</string>
     <string name="look_and_feel_show_navigation_bar">네비게이션 바 보기</string>
+    <string name="look_and_feel_show_text_descriptions_in_navbar">네비게이션 바에서 텍스트 설명 보기</string>
     <string name="look_and_feel_show_voting_arrows_list_view">목록 화면에서 찬반 화살표 보이기</string>
     <string name="look_and_feel_show_parent_comment_navigation_buttons">부모 댓글 이동 버튼 보이기</string>
     <string name="look_and_feel_navigate_parent_comments_with_volume_buttons">볼륨 버튼으로 부모 댓글 이동하기</string>
@@ -199,7 +199,6 @@
     <string name="look_and_feel_theme_color_purple">보라색</string>
     <string name="look_and_feel_theme_color_woodland">우드랜드</string>
     <string name="look_and_feel_use_custom_tabs">커스텀 탭 사용</string>
-    <string name="look_and_feel_use_private_tabs">가능하면 개인 커스텀 탭 이용하기</string>
     <string name="markRead">읽음으로 처리</string>
     <string name="markUnread">안읽음으로 처리</string>
     <string name="markdownHelper_formatBold">볼드로 표시</string>
@@ -220,6 +219,7 @@
     <string name="personProfile_viewBanner">배너 이미지 보기</string>
     <string name="person_iconAdmin">관리자</string>
     <string name="person_iconBanned">차단됨</string>
+    <string name="person_iconBot">봇</string>
     <string name="person_iconModerator">운영진</string>
     <string name="person_profile_activity_about">정보</string>
     <string name="person_profile_activity_comments">댓글</string>
@@ -318,6 +318,7 @@
     <string name="lang_language">언어</string>
     <string name="loading">불러오는 중</string>
     <string name="blur_nsfw">후방주의 이미지 뿌옇게 보이기</string>
+    <string name="show_post_link_previews">게시물 링크 미리보기 보이기</string>
     <string name="sorttype_tophour">TopHour</string>
     <string name="sorttype_topsixhour">TopSixHour</string>
     <string name="sorttype_toptwelvehour">TopTwelveHour</string>
@@ -332,4 +333,13 @@
     <string name="dialogs_top_nine_month">9개월 내 최고</string>
     <string name="post_listing_view_source">소스 보기</string>
     <string name="post_listing_view_original">원본 보기</string>
+    <string name="download">다운로드</string>
+    <string name="back_confirmation">백 버튼을 다시 눌러 종료하세요</string>
+    <string name="no_back_confirmation">종료 확인 묻지 않기</string>
+    <string name="press_again_confirmation">백 버튼을 두 번 눌러 종료하기</string>
+    <string name="confirm_exit">종료 확인 동작</string>
+    <string name="back_dialog">종료 확인 창 띄우기</string>
+    <string name="exit">종료</string>
+    <string name="back_dialog_title">정말로 종료하시겠습니까?</string>
+    <string name="failed_saving_image">이미지 저장 실패!</string>
 </resources>

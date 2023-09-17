@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Community(
     val id: CommunityId,
     val name: String,
@@ -17,4 +21,4 @@ data class Community(
     val hidden: Boolean,
     val posting_restricted_to_mods: Boolean,
     val instance_id: InstanceId,
-)
+) : Parcelable

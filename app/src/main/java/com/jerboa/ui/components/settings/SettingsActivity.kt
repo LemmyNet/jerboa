@@ -6,31 +6,33 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.ManageAccounts
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
-import com.jerboa.db.AccountViewModel
+import com.jerboa.db.entity.isAnon
+import com.jerboa.model.AccountViewModel
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.components.common.getCurrentAccount
-import com.jerboa.ui.components.common.toAbout
-import com.jerboa.ui.components.common.toAccountSettings
-import com.jerboa.ui.components.common.toLookAndFeel
 
 @Composable
 fun SettingsActivity(
-    navController: NavController,
     accountViewModel: AccountViewModel,
+    onBack: () -> Unit,
+    onClickLookAndFeel: () -> Unit,
+    onClickAccountSettings: () -> Unit,
+    onClickAbout: () -> Unit,
 ) {
     Log.d("jerboa", "Got to settings activity")
 
@@ -38,9 +40,9 @@ fun SettingsActivity(
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.settings_activity_settings), navController = navController)
+            SimpleTopAppBar(text = stringResource(R.string.settings_activity_settings), onClickBack = onBack)
         },
         content = { padding ->
             Column(modifier = Modifier.padding(padding)) {
@@ -52,15 +54,15 @@ fun SettingsActivity(
                             contentDescription = null,
                         )
                     },
-                    onClick = { navController.toLookAndFeel() },
+                    onClick = onClickLookAndFeel,
                 )
-                account?.also { acct ->
+                if (!account.isAnon()) {
                     SettingsMenuLink(
                         title = {
                             Text(
                                 stringResource(
                                     R.string.settings_activity_account_settings,
-                                    acct.name,
+                                    account.name,
                                 ),
                             )
                         },
@@ -70,7 +72,7 @@ fun SettingsActivity(
                                 contentDescription = null,
                             )
                         },
-                        onClick = { navController.toAccountSettings() },
+                        onClick = onClickAccountSettings,
                     )
                 }
                 SettingsMenuLink(
@@ -81,7 +83,7 @@ fun SettingsActivity(
                             contentDescription = null,
                         )
                     },
-                    onClick = { navController.toAbout() },
+                    onClick = onClickAbout,
                 )
             }
         },

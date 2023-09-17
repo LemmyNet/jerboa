@@ -5,20 +5,23 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("androidx.baselineprofile")
+    id("kotlin-parcelize")
+
 }
 
 apply(from = "update_instances.gradle.kts")
 
 android {
-    compileSdk = 33
+    buildToolsVersion = "34.0.0-rc3"
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.jerboa"
         namespace = "com.jerboa"
         minSdk = 26
-        targetSdk = 33
-        versionCode = 38
-        versionName = "0.0.38"
+        targetSdk = 34
+        versionCode = 46
+        versionName = "0.0.46"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -90,15 +93,15 @@ android {
     }
     buildFeatures {
         compose = true
+        dataBinding = true
+        viewBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
 
 dependencies {
-    val composeVersion = "1.5.0-beta03"
-
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.github.alorma:compose-settings-ui-m3:0.27.0")
 
@@ -113,19 +116,27 @@ dependencies {
     implementation("io.noties.markwon:linkify:4.6.2")
 
     // Accompanist
-    val accompanistVersion = "0.31.4-beta"
+    val accompanistVersion = "0.32.0"
     implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-flowlayout:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-permissions:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
 
-    // gif support
+    // Images
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("io.coil-kt:coil-gif:2.4.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
+    // Allows for proper subsampling of large images
+    implementation("me.saket.telephoto:zoomable-image-coil:0.6.0-20230904.055636-11")
+
+    // crash handling
+    implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
     // To use Kotlin annotation processing tool
     ksp("androidx.room:room-compiler:2.5.2")
@@ -144,30 +155,35 @@ dependencies {
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:2.5.2")
 
-    implementation("io.arrow-kt:arrow-core:1.1.5")
+    implementation("io.arrow-kt:arrow-core:1.2.0")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
     implementation("androidx.compose.material3:material3:1.1.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
-    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
+
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("androidx.navigation:navigation-compose:2.7.0-beta01")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    implementation("androidx.navigation:navigation-compose:2.7.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    val composeVersion = "1.5.0"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
+    debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
+    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
+
     implementation("androidx.activity:activity-compose:1.7.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
-    implementation("net.engawapg.lib:zoomable:1.4.3")
-    implementation("androidx.browser:browser:1.5.0")
+
+    testImplementation("org.mockito:mockito-core:5.5.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+
+    implementation("androidx.browser:browser:1.6.0")
 
     implementation("me.saket.swipe:swipe:1.2.0")
 

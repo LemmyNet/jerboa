@@ -1,43 +1,22 @@
 package com.jerboa.ui.components.home
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.ExpandLess
-import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.LocationCity
-import androidx.compose.material.icons.outlined.Login
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Sort
 import androidx.compose.material.icons.outlined.ViewAgenda
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,15 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -62,415 +37,20 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.PostViewMode
 import com.jerboa.R
-import com.jerboa.api.ApiState
-import com.jerboa.datatypes.samplePerson
-import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.GetSiteResponse
+import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.MyUserInfo
-import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.Tagline
-import com.jerboa.db.Account
-import com.jerboa.db.AccountViewModel
-import com.jerboa.federatedNameShown
 import com.jerboa.getLocalizedListingTypeName
-import com.jerboa.getLocalizedSortingTypeShortName
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
-import com.jerboa.ui.components.common.LargerCircularIcon
-import com.jerboa.ui.components.common.ListingTypeOptionsDialog
+import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
-import com.jerboa.ui.components.common.PictrsBannerImage
-import com.jerboa.ui.components.common.PostViewModeDialog
-import com.jerboa.ui.components.common.SortOptionsDialog
-import com.jerboa.ui.components.common.SortTopOptionsDialog
-import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.common.toLogin
-import com.jerboa.ui.components.common.toSiteSideBar
-import com.jerboa.ui.components.community.CommunityLinkLarger
-import com.jerboa.ui.components.person.PersonName
-import com.jerboa.ui.theme.DRAWER_BANNER_SIZE
+import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.LARGE_PADDING
-import com.jerboa.ui.theme.SMALL_PADDING
-import com.jerboa.ui.theme.XL_PADDING
-import com.jerboa.ui.theme.muted
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-
-@Composable
-fun Drawer(
-    siteRes: ApiState<GetSiteResponse>,
-    unreadCount: Int,
-    navController: NavController = rememberNavController(),
-    accountViewModel: AccountViewModel,
-    onSwitchAccountClick: (account: Account) -> Unit,
-    onSignOutClick: () -> Unit,
-    onClickListingType: (ListingType) -> Unit,
-    onCommunityClick: (community: Community) -> Unit,
-    onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit,
-    onClickSaved: () -> Unit,
-    onClickSettings: () -> Unit,
-    onClickCommunities: () -> Unit,
-    isOpen: Boolean,
-    blurNSFW: Boolean,
-) {
-    var showAccountAddMode by rememberSaveable { mutableStateOf(false) }
-
-    if (!isOpen) showAccountAddMode = false
-
-    val myUserInfo = when (siteRes) {
-        is ApiState.Success -> siteRes.data.my_user
-        else -> null
-    }
-
-    DrawerHeader(
-        myPerson = myUserInfo?.local_user_view?.person,
-        showAccountAddMode = showAccountAddMode,
-        onClickShowAccountAddMode = { showAccountAddMode = !showAccountAddMode },
-        showAvatar = myUserInfo?.local_user_view?.local_user?.show_avatars ?: true,
-    )
-    // Drawer items
-    DrawerContent(
-        accountViewModel = accountViewModel,
-        unreadCount = unreadCount,
-        myUserInfo = myUserInfo,
-        showAccountAddMode = showAccountAddMode,
-        navController = navController,
-        onSwitchAccountClick = onSwitchAccountClick,
-        onSignOutClick = onSignOutClick,
-        onClickListingType = onClickListingType,
-        onCommunityClick = onCommunityClick,
-        onClickProfile = onClickProfile,
-        onClickInbox = onClickInbox,
-        onClickSaved = onClickSaved,
-        onClickSettings = onClickSettings,
-        onClickCommunities = onClickCommunities,
-        blurNSFW = blurNSFW,
-    )
-}
-
-@Composable
-fun DrawerContent(
-    showAccountAddMode: Boolean,
-    navController: NavController,
-    accountViewModel: AccountViewModel,
-    onSwitchAccountClick: (account: Account) -> Unit,
-    onSignOutClick: () -> Unit,
-    onClickListingType: (ListingType) -> Unit,
-    onCommunityClick: (community: Community) -> Unit,
-    onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit,
-    onClickSaved: () -> Unit,
-    onClickSettings: () -> Unit,
-    onClickCommunities: () -> Unit,
-    myUserInfo: MyUserInfo?,
-    unreadCount: Int,
-    blurNSFW: Boolean,
-) {
-    AnimatedVisibility(
-        visible = showAccountAddMode,
-        enter = expandVertically(),
-        exit = shrinkVertically(),
-    ) {
-        Divider()
-        DrawerAddAccountMode(
-            accountViewModel = accountViewModel,
-            navController = navController,
-            onSwitchAccountClick = onSwitchAccountClick,
-            onSignOutClick = onSignOutClick,
-        )
-    }
-
-    Divider()
-    DrawerItemsMain(
-        myUserInfo = myUserInfo,
-        onClickListingType = onClickListingType,
-        onCommunityClick = onCommunityClick,
-        onClickProfile = onClickProfile,
-        onClickInbox = onClickInbox,
-        onClickSaved = onClickSaved,
-        unreadCount = unreadCount,
-        onClickSettings = onClickSettings,
-        onClickCommunities = onClickCommunities,
-        blurNSFW = blurNSFW,
-    )
-}
-
-@Composable
-fun DrawerItemsMain(
-    myUserInfo: MyUserInfo?,
-    onClickSaved: () -> Unit,
-    onClickProfile: () -> Unit,
-    onClickInbox: () -> Unit,
-    onClickSettings: () -> Unit,
-    onClickCommunities: () -> Unit,
-    onClickListingType: (ListingType) -> Unit,
-    onCommunityClick: (community: Community) -> Unit,
-    unreadCount: Int,
-    blurNSFW: Boolean,
-) {
-    val listState = rememberLazyListState()
-
-    val follows = myUserInfo?.follows
-
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.simpleVerticalScrollbar(listState),
-    ) {
-        if (!follows.isNullOrEmpty()) {
-            item {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_subscribed),
-                    icon = Icons.Outlined.Bookmarks,
-                    onClick = { onClickListingType(ListingType.Subscribed) },
-                )
-            }
-        }
-        item {
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_local),
-                icon = Icons.Outlined.LocationCity,
-                onClick = { onClickListingType(ListingType.Local) },
-            )
-        }
-        item {
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_all),
-                icon = Icons.Outlined.Public,
-                onClick = { onClickListingType(ListingType.All) },
-            )
-        }
-        item {
-            myUserInfo?.also {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_saved),
-                    icon = Icons.Outlined.Bookmarks,
-                    onClick = onClickSaved,
-                )
-            }
-        }
-        item {
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_communities),
-                icon = Icons.Outlined.List,
-                onClick = onClickCommunities,
-            )
-        }
-        item {
-            Divider()
-        }
-        item {
-            myUserInfo?.also {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_profile),
-                    icon = Icons.Outlined.Person,
-                    onClick = onClickProfile,
-                )
-            }
-        }
-        item {
-            myUserInfo?.also {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_inbox),
-                    icon = Icons.Outlined.Email,
-                    onClick = onClickInbox,
-                    iconBadgeCount = unreadCount,
-                )
-            }
-        }
-        item {
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_settings),
-                icon = Icons.Outlined.Settings,
-                onClick = onClickSettings,
-            )
-        }
-        item {
-            myUserInfo?.also {
-                Divider()
-            }
-        }
-
-        follows?.also { follows ->
-            item {
-                Text(
-                    text = stringResource(R.string.home_subscriptions),
-                    modifier = Modifier.padding(LARGE_PADDING),
-                    color = MaterialTheme.colorScheme.onBackground.muted,
-                )
-            }
-            items(
-                follows,
-                key = { follow -> follow.community.id },
-            ) { follow ->
-                CommunityLinkLarger(
-                    community = follow.community,
-                    onClick = onCommunityClick,
-                    showDefaultIcon = true,
-                    blurNSFW = blurNSFW,
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun DrawerItemsMainPreview() {
-    DrawerItemsMain(
-        myUserInfo = null,
-        onClickListingType = {},
-        onClickProfile = {},
-        onClickInbox = {},
-        onCommunityClick = {},
-        onClickSaved = {},
-        onClickSettings = {},
-        onClickCommunities = {},
-        unreadCount = 2,
-        blurNSFW = true,
-    )
-}
-
-@Composable
-fun DrawerAddAccountMode(
-    navController: NavController = rememberNavController(),
-    accountViewModel: AccountViewModel?,
-    onSwitchAccountClick: (account: Account) -> Unit,
-    onSignOutClick: () -> Unit,
-) {
-    val accountsWithoutCurrent = accountViewModel?.allAccounts?.value?.toMutableList()
-    val currentAccount = accountsWithoutCurrent?.firstOrNull { it.current }
-    accountsWithoutCurrent?.remove(currentAccount)
-
-    Column {
-        IconAndTextDrawerItem(
-            text = stringResource(R.string.home_add_account),
-            icon = Icons.Outlined.Add,
-            onClick = { navController.toLogin() },
-        )
-        accountsWithoutCurrent?.forEach {
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_switch_to, it.name, it.instance),
-                icon = Icons.Outlined.Login,
-                onClick = { onSwitchAccountClick(it) },
-            )
-        }
-        currentAccount?.also {
-            IconAndTextDrawerItem(
-                text = stringResource(R.string.home_sign_out),
-                icon = Icons.Outlined.Close,
-                onClick = onSignOutClick,
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun DrawerAddAccountModePreview() {
-    DrawerAddAccountMode(
-        onSignOutClick = {},
-        onSwitchAccountClick = {},
-        accountViewModel = null,
-    )
-}
-
-@Composable
-fun DrawerHeader(
-    myPerson: Person?,
-    onClickShowAccountAddMode: () -> Unit,
-    showAccountAddMode: Boolean = false,
-    showAvatar: Boolean,
-) {
-    val sizeMod = Modifier
-        .fillMaxWidth()
-        .height(DRAWER_BANNER_SIZE)
-
-    Box(
-        modifier = sizeMod
-            .clickable(onClick = onClickShowAccountAddMode),
-    ) {
-        myPerson?.banner?.also {
-            PictrsBannerImage(
-                url = it,
-            )
-        }
-        // banner
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = sizeMod
-                .padding(XL_PADDING),
-        ) {
-            Box(modifier = Modifier.weight(0.9f)) {
-                AvatarAndAccountName(myPerson, showAvatar)
-            }
-            Icon(
-                modifier = Modifier.weight(0.1f),
-                imageVector = if (showAccountAddMode) {
-                    Icons.Outlined.ExpandLess
-                } else {
-                    Icons.Outlined.ExpandMore
-                },
-                contentDescription = if (showAccountAddMode) {
-                    stringResource(R.string.moreOptions)
-                } else {
-                    stringResource(R.string.lessOptions)
-                },
-            )
-        }
-    }
-}
-
-@Composable
-fun AvatarAndAccountName(myPerson: Person?, showAvatar: Boolean) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-    ) {
-        if (showAvatar) {
-            myPerson?.avatar?.also {
-                LargerCircularIcon(icon = it)
-            }
-        }
-        Column() {
-            PersonName(
-                person = myPerson,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = myPerson?.let { federatedNameShown(it) } ?: "",
-                color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.labelSmall,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 2,
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun AvatarAndAccountNamePreview() {
-    AvatarAndAccountName(myPerson = samplePerson, showAvatar = true)
-}
-
-@Preview
-@Composable
-fun DrawerHeaderPreview() {
-    DrawerHeader(
-        myPerson = samplePerson,
-        onClickShowAccountAddMode = {},
-        showAvatar = true,
-    )
-}
+import com.jerboa.util.cascade.CascadeDropdownMenu
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun HomeHeaderTitle(
@@ -484,7 +64,7 @@ fun HomeHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeShortName(ctx, selectedSortType),
+            text = ctx.getString(selectedSortType.shortForm),
             style = MaterialTheme.typography.titleSmall,
         )
     }
@@ -493,8 +73,7 @@ fun HomeHeaderTitle(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeHeader(
-    scope: CoroutineScope,
-    drawerState: DrawerState,
+    openDrawer: () -> Unit,
     onClickSortType: (SortType) -> Unit,
     onClickListingType: (ListingType) -> Unit,
     onClickRefresh: () -> Unit,
@@ -502,74 +81,14 @@ fun HomeHeader(
     selectedSortType: SortType,
     selectedListingType: ListingType,
     selectedPostViewMode: PostViewMode,
-    navController: NavController,
+    onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    siteVersion: String,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
-    var showTopOptions by remember { mutableStateOf(false) }
     var showListingTypeOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
-    var showPostViewModeOptions by remember { mutableStateOf(false) }
 
-    if (showSortOptions) {
-        SortOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showSortOptions = false },
-            onClickSortType = {
-                showSortOptions = false
-                onClickSortType(it)
-            },
-            onClickSortTopOptions = {
-                showSortOptions = false
-                showTopOptions = !showTopOptions
-            },
-        )
-    }
-
-    if (showTopOptions) {
-        SortTopOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showTopOptions = false },
-            onClickSortType = {
-                showTopOptions = false
-                onClickSortType(it)
-            },
-        )
-    }
-
-    if (showListingTypeOptions) {
-        ListingTypeOptionsDialog(
-            selectedListingType = selectedListingType,
-            onDismissRequest = { showListingTypeOptions = false },
-            onClickListingType = {
-                showListingTypeOptions = false
-                onClickListingType(it)
-            },
-        )
-    }
-
-    if (showMoreOptions) {
-        HomeMoreDialog(
-            onDismissRequest = { showMoreOptions = false },
-            onClickRefresh = onClickRefresh,
-            onClickShowPostViewModeDialog = {
-                showMoreOptions = false
-                showPostViewModeOptions = !showPostViewModeOptions
-            },
-            navController = navController,
-        )
-    }
-
-    if (showPostViewModeOptions) {
-        PostViewModeDialog(
-            onDismissRequest = { showPostViewModeOptions = false },
-            selectedPostViewMode = selectedPostViewMode,
-            onClickPostViewMode = {
-                showPostViewModeOptions = false
-                onClickPostViewMode(it)
-            },
-        )
-    }
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
@@ -579,11 +98,7 @@ fun HomeHeader(
             )
         },
         navigationIcon = {
-            IconButton(onClick = {
-                scope.launch {
-                    drawerState.open()
-                }
-            }) {
+            IconButton(onClick = openDrawer) {
                 Icon(
                     Icons.Outlined.Menu,
                     contentDescription = stringResource(R.string.home_menu),
@@ -592,28 +107,65 @@ fun HomeHeader(
         },
         // No Idea why, but the tint for this is muted?
         actions = {
-            IconButton(onClick = {
-                showListingTypeOptions = !showListingTypeOptions
-            }) {
-                Icon(
-                    Icons.Outlined.FilterList,
-                    contentDescription = stringResource(R.string.homeHeader_filter),
+            Box {
+                IconButton(onClick = {
+                    showListingTypeOptions = !showListingTypeOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.FilterList,
+                        contentDescription = stringResource(R.string.homeHeader_filter),
+                    )
+                }
+
+                ListingTypeOptionsDropDown(
+                    expanded = showListingTypeOptions,
+                    onDismissRequest = { showListingTypeOptions = false },
+                    onClickListingType = {
+                        showListingTypeOptions = false
+                        onClickListingType(it)
+                    },
+                    selectedListingType = selectedListingType,
                 )
             }
-            IconButton(onClick = {
-                showSortOptions = !showSortOptions
-            }) {
-                Icon(
-                    Icons.Outlined.Sort,
-                    contentDescription = stringResource(R.string.selectSort),
+
+            Box {
+                IconButton(modifier = Modifier.testTag("jerboa:sortoptions"), onClick = {
+                    showSortOptions = !showSortOptions
+                }) {
+                    Icon(
+                        Icons.Outlined.Sort,
+                        contentDescription = stringResource(R.string.selectSort),
+                    )
+                }
+
+                SortOptionsDropdown(
+                    expanded = showSortOptions,
+                    onDismissRequest = { showSortOptions = false },
+                    onClickSortType = {
+                        showSortOptions = false
+                        onClickSortType(it)
+                    },
+                    selectedSortType = selectedSortType,
+                    siteVersion = siteVersion,
                 )
             }
-            IconButton(modifier = Modifier.testTag("jerboa:options"), onClick = {
-                showMoreOptions = !showMoreOptions
-            }) {
-                Icon(
-                    Icons.Outlined.MoreVert,
-                    contentDescription = stringResource(R.string.moreOptions),
+            Box {
+                IconButton(
+                    modifier = Modifier.testTag("jerboa:options"),
+                    onClick = { showMoreOptions = !showMoreOptions },
+                ) {
+                    Icon(
+                        Icons.Outlined.MoreVert,
+                        contentDescription = stringResource(R.string.moreOptions),
+                    )
+                }
+                HomeMoreDropdown(
+                    expanded = showMoreOptions,
+                    onDismissRequest = { showMoreOptions = false },
+                    onClickRefresh = onClickRefresh,
+                    onClickSiteInfo = onClickSiteInfo,
+                    selectedPostViewMode = selectedPostViewMode,
+                    onClickPostViewMode = onClickPostViewMode,
                 )
             }
         },
@@ -624,69 +176,114 @@ fun HomeHeader(
 @Preview
 @Composable
 fun HomeHeaderPreview() {
-    val scope = rememberCoroutineScope()
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
     HomeHeader(
-        scope,
-        drawerState,
+        openDrawer = {},
         onClickSortType = {},
         onClickListingType = {},
         onClickRefresh = {},
         onClickPostViewMode = {},
+        onClickSiteInfo = {},
         selectedSortType = SortType.Hot,
         selectedListingType = ListingType.All,
         selectedPostViewMode = PostViewMode.Card,
-        navController = rememberNavController(),
         scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+        siteVersion = MINIMUM_API_VERSION,
     )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HomeMoreDialog(
+fun HomeMoreDropdown(
+    expanded: Boolean,
     onDismissRequest: () -> Unit,
-    navController: NavController,
+    onClickSiteInfo: () -> Unit,
     onClickRefresh: () -> Unit,
-    onClickShowPostViewModeDialog: () -> Unit,
+    onClickPostViewMode: (PostViewMode) -> Unit,
+    selectedPostViewMode: PostViewMode,
 ) {
-    AlertDialog(
+    CascadeDropdownMenu(
+        expanded = expanded,
         onDismissRequest = onDismissRequest,
         modifier = Modifier.semantics { testTagsAsResourceId = true },
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_refresh),
-                    icon = Icons.Outlined.Refresh,
-                    onClick = {
-                        onDismissRequest()
-                        onClickRefresh()
-                    },
-                    modifier = Modifier.testTag("jerboa:refresh"),
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_post_view_mode),
-                    icon = Icons.Outlined.ViewAgenda,
-                    onClick = {
-                        onDismissRequest()
-                        onClickShowPostViewModeDialog()
-                    },
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.home_site_info),
-                    icon = Icons.Outlined.Info,
-                    onClick = {
-                        navController.toSiteSideBar()
-                        onDismissRequest()
-                    },
-                )
-            }
-        },
-        confirmButton = {},
-    )
+    ) {
+        DropdownMenuItem(
+            text = { Text(text = stringResource(R.string.home_refresh)) },
+            leadingIcon = { Icon(Icons.Outlined.Refresh, contentDescription = null) },
+            onClick = {
+                onDismissRequest()
+                onClickRefresh()
+            },
+            modifier = Modifier.testTag("jerboa:refresh"),
+        )
+        DropdownMenuItem(
+            text = { Text(text = stringResource(R.string.home_post_view_mode)) },
+            leadingIcon = { Icon(Icons.Outlined.ViewAgenda, contentDescription = null) },
+            children = {
+                PostViewMode.entries.map {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(it.mode)) },
+                        onClick = {
+                            onDismissRequest()
+                            onClickPostViewMode(it)
+                        },
+                        modifier = if (selectedPostViewMode == it) {
+                            Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                        } else {
+                            Modifier
+                        }.testTag("jerboa:postviewmode_${it.name}"),
+                    )
+                }
+            },
+            modifier = Modifier.testTag("jerboa:postviewmode"),
+        )
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.home_site_info)) },
+            leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
+            onClick = {
+                onDismissRequest()
+                onClickSiteInfo()
+            },
+        )
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun ListingTypeOptionsDropDown(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onClickListingType: (ListingType) -> Unit,
+    selectedListingType: ListingType,
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
+    ) {
+        MenuItem(
+            text = stringResource(R.string.dialogs_subscribed),
+            icon = Icons.Outlined.Bookmarks,
+            onClick = { onClickListingType(ListingType.Subscribed) },
+            highlight = (selectedListingType == ListingType.Subscribed),
+        )
+        // TODO hide local for non-federated instances
+        MenuItem(
+            text = stringResource(R.string.dialogs_local),
+            icon = Icons.Outlined.LocationCity,
+            onClick = { onClickListingType(ListingType.Local) },
+            highlight = (selectedListingType == ListingType.Local),
+        )
+        MenuItem(
+            text = stringResource(R.string.dialogs_all),
+            icon = Icons.Outlined.Public,
+            onClick = { onClickListingType(ListingType.All) },
+            highlight = (selectedListingType == ListingType.All),
+        )
+    }
 }
 
 @Composable
-fun Taglines(taglines: List<Tagline>) {
+fun Taglines(taglines: ImmutableList<Tagline>) {
     if (taglines.isNotEmpty()) {
         val tagline by remember { mutableStateOf(taglines.random()) }
         Column(

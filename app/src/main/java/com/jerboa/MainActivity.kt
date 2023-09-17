@@ -1,104 +1,95 @@
 package com.jerboa
 
-import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import androidx.navigation.navigation
 import arrow.core.Either
+import arrow.core.left
+import coil.Coil
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.db.APP_SETTINGS_DEFAULT
-import com.jerboa.db.AccountRepository
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AccountViewModelFactory
-import com.jerboa.db.AppDB
-import com.jerboa.db.AppSettingsRepository
-import com.jerboa.db.AppSettingsViewModel
-import com.jerboa.db.AppSettingsViewModelFactory
+import com.jerboa.feat.BackConfirmation.addConfirmationDialog
+import com.jerboa.feat.BackConfirmation.addConfirmationToast
+import com.jerboa.feat.BackConfirmation.disposeConfirmation
+import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.ShowConfirmationDialog
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
 import com.jerboa.model.CommunityViewModel
 import com.jerboa.model.HomeViewModel
-import com.jerboa.model.ReplyItem
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AccountViewModelFactory
+import com.jerboa.model.AppSettingsViewModel
+import com.jerboa.model.AppSettingsViewModelFactory
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
-import com.jerboa.ui.components.common.CommentEditDeps
+import com.jerboa.ui.components.common.LinkDropDownMenu
 import com.jerboa.ui.components.common.MarkdownHelper
-import com.jerboa.ui.components.common.PostEditDeps
-import com.jerboa.ui.components.common.PrivateMessageDeps
 import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.ShowChangelog
 import com.jerboa.ui.components.common.ShowOutdatedServerDialog
-import com.jerboa.ui.components.common.getCurrentAccountSync
-import com.jerboa.ui.components.common.takeDepsFromRoot
+import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.CommunityActivity
 import com.jerboa.ui.components.community.list.CommunityListActivity
 import com.jerboa.ui.components.community.sidebar.CommunitySidebarActivity
 import com.jerboa.ui.components.home.BottomNavActivity
 import com.jerboa.ui.components.home.sidebar.SiteSidebarActivity
+import com.jerboa.ui.components.imageviewer.ImageViewer
 import com.jerboa.ui.components.inbox.InboxActivity
 import com.jerboa.ui.components.login.LoginActivity
 import com.jerboa.ui.components.person.PersonProfileActivity
 import com.jerboa.ui.components.post.PostActivity
 import com.jerboa.ui.components.post.create.CreatePostActivity
 import com.jerboa.ui.components.post.edit.PostEditActivity
+import com.jerboa.ui.components.privatemessage.CreatePrivateMessageActivity
 import com.jerboa.ui.components.privatemessage.PrivateMessageReplyActivity
 import com.jerboa.ui.components.report.comment.CreateCommentReportActivity
 import com.jerboa.ui.components.report.post.CreatePostReportActivity
 import com.jerboa.ui.components.settings.SettingsActivity
 import com.jerboa.ui.components.settings.about.AboutActivity
 import com.jerboa.ui.components.settings.account.AccountSettingsActivity
+import com.jerboa.ui.components.settings.crashlogs.CrashLogsActivity
 import com.jerboa.ui.components.settings.lookandfeel.LookAndFeelActivity
 import com.jerboa.ui.theme.JerboaTheme
-
-class JerboaApplication : Application() {
-    private val database by lazy { AppDB.getDatabase(this) }
-    val accountRepository by lazy { AccountRepository(database.accountDao()) }
-    val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
-}
+import com.jerboa.util.markwon.BetterLinkMovementMethod
 
 class MainActivity : AppCompatActivity() {
-    private val siteViewModel by viewModels<SiteViewModel>()
-    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel> {
-        AccountSettingsViewModelFactory((application as JerboaApplication).accountRepository)
-    }
-    private val accountViewModel: AccountViewModel by viewModels {
-        AccountViewModelFactory((application as JerboaApplication).accountRepository)
-    }
-    private val appSettingsViewModel: AppSettingsViewModel by viewModels {
-        AppSettingsViewModelFactory((application as JerboaApplication).appSettingsRepository)
-    }
+    val siteViewModel by viewModels<SiteViewModel>(factoryProducer = { SiteViewModel.Factory })
+    val accountViewModel by viewModels<AccountViewModel>(factoryProducer = { AccountViewModelFactory.Factory })
+    private val appSettingsViewModel by viewModels<AppSettingsViewModel>(factoryProducer = { AppSettingsViewModelFactory.Factory })
+    private val accountSettingsViewModel by viewModels<AccountSettingsViewModel>(factoryProducer = { AccountSettingsViewModelFactory.Factory })
+    private val homeViewModel by viewModels<HomeViewModel>(factoryProducer = { HomeViewModel.Factory })
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val accountSync = getCurrentAccountSync(accountViewModel)
 
         setContent {
             val ctx = LocalContext.current
@@ -115,20 +106,64 @@ class MainActivity : AppCompatActivity() {
                 null
             }
 
-            LaunchedEffect(Unit) {
-                fetchInitialData(accountSync, siteViewModel)
+            val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
+
+            @Suppress("SENSELESS_COMPARISON")
+            if (appSettings == null) {
+                triggerRebirth(ctx)
             }
 
-            val appSettings by appSettingsViewModel.appSettings.observeAsState(APP_SETTINGS_DEFAULT)
+            if (appSettings.autoPlayGifs) {
+                Coil.setImageLoader((ctx.applicationContext as JerboaApplication).imageGifLoader)
+            } else {
+                Coil.setImageLoader(ctx.applicationContext as JerboaApplication)
+            }
 
             JerboaTheme(
                 appSettings = appSettings,
             ) {
-                val navController = rememberNavController()
+                val appState = rememberJerboaAppState()
+
+                val showConfirmationDialog = remember { mutableStateOf(false) }
+
+                if (showConfirmationDialog.value) {
+                    ShowConfirmationDialog({ showConfirmationDialog.value = false }, ::finish)
+                }
+
+                DisposableEffect(appSettings.backConfirmationMode) {
+                    when (BackConfirmationMode.entries[appSettings.backConfirmationMode]) {
+                        BackConfirmationMode.Toast -> {
+                            this@MainActivity.addConfirmationToast(appState.navController, ctx)
+                        }
+                        BackConfirmationMode.Dialog -> {
+                            this@MainActivity.addConfirmationDialog(appState.navController) { showConfirmationDialog.value = true }
+                        }
+                        BackConfirmationMode.None -> {}
+                    }
+
+                    onDispose {
+                        disposeConfirmation()
+                    }
+                }
+
                 val serverVersionOutdatedViewed = remember { mutableStateOf(false) }
 
                 MarkdownHelper.init(
-                    navController,
+                    appState,
+                    appSettings.useCustomTabs,
+                    appSettings.usePrivateTabs,
+                    object : BetterLinkMovementMethod.OnLinkLongClickListener {
+                        override fun onLongClick(textView: TextView, url: String): Boolean {
+                            appState.showLinkPopup(url)
+                            return true
+                        }
+                    },
+                )
+
+                LinkDropDownMenu(
+                    appState.linkDropdownExpanded.value,
+                    appState::hideLinkPopup,
+                    appState,
                     appSettings.useCustomTabs,
                     appSettings.usePrivateTabs,
                 )
@@ -148,14 +183,37 @@ class MainActivity : AppCompatActivity() {
                     else -> {}
                 }
 
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
+
                 NavHost(
                     route = Route.Graph.ROOT,
-                    navController = navController,
-                    startDestination = Route.Graph.HOME,
-                    enterTransition = { slideInHorizontally { it } },
-                    exitTransition = { slideOutHorizontally { -it } },
-                    popEnterTransition = { slideInHorizontally { -it } },
-                    popExitTransition = { slideOutHorizontally { it } },
+                    navController = appState.navController,
+                    startDestination = Route.HOME,
+                    enterTransition = {
+                        slideInHorizontally { it }
+                    },
+                    exitTransition =
+                    {
+                        // No animation for image viewer
+                        if (this.targetState.destination.route == Route.VIEW) {
+                            ExitTransition.None
+                        } else {
+                            slideOutHorizontally { -it }
+                        }
+                    },
+                    popEnterTransition = {
+                        // No animation for image viewer
+                        if (this.initialState.destination.route == Route.VIEW) {
+                            EnterTransition.None
+                        } else {
+                            slideInHorizontally { -it }
+                        }
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally {
+                            it
+                        }
+                    },
                 ) {
                     composable(
                         route = Route.LOGIN,
@@ -164,178 +222,84 @@ class MainActivity : AppCompatActivity() {
                         },
                     ) {
                         LoginActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                         )
                     }
 
-                    navigation(
-                        route = Route.Graph.HOME,
-                        startDestination = Route.HOME,
-                    ) {
-                        composable(route = Route.HOME) {
-                            val homeViewModel: HomeViewModel = viewModel(
-                                remember(it) { navController.getBackStackEntry(Route.Graph.HOME) },
-                            )
-                            BottomNavActivity(
-                                navController = navController,
-                                accountViewModel = accountViewModel,
-                                homeViewModel = homeViewModel,
-                                siteViewModel = siteViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
-                                appSettings = appSettings,
-                            )
-                        }
-                        composable(
-                            route = Route.POST,
-                            deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                                navDeepLink { uriPattern = "$instance/post/{${Route.PostArgs.ID}}" }
-                            },
-                            arguments = listOf(
-                                navArgument(Route.PostArgs.ID) {
-                                    type = Route.PostArgs.ID_TYPE
-                                },
-                            ),
-                        ) {
-                            val args = Route.PostArgs(it)
-                            val homeViewModel: HomeViewModel = viewModel(
-                                remember(it) { navController.getBackStackEntry(Route.Graph.HOME) },
-                            )
-                            PostActivity(
-                                id = Either.Left(args.id),
-                                accountViewModel = accountViewModel,
-                                navController = navController,
-                                showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
-                                showActionBarByDefault = appSettings.showCommentActionBarByDefault,
-                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
-                                navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
-                                siteViewModel = siteViewModel,
-                                postStream = homeViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
-                                useCustomTabs = appSettings.useCustomTabs,
-                                usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
-                            )
-                        }
+                    composable(route = Route.HOME) {
+                        BottomNavActivity(
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            siteViewModel = siteViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            appSettings = appSettings,
+                            homeViewModel = homeViewModel,
+                        )
                     }
-
-                    navigation(
-                        route = Route.Graph.COMMUNITY,
-                        startDestination = Route.COMMUNITY_FROM_ID,
-                    ) {
-                        composable(
-                            route = Route.COMMUNITY_FROM_ID,
-                            arguments = listOf(
-                                navArgument(Route.CommunityFromIdArgs.ID) {
-                                    type = Route.CommunityFromIdArgs.ID_TYPE
-                                },
-                            ),
-                        ) {
-                            val args = Route.CommunityFromIdArgs(it)
-                            val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { navController.getBackStackEntry(Route.Graph.COMMUNITY) },
-                            )
-
-                            CommunityActivity(
-                                communityArg = Either.Left(args.id),
-                                navController = navController,
-                                communityViewModel = communityViewModel,
-                                accountViewModel = accountViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
-                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                siteViewModel = siteViewModel,
-                                useCustomTabs = appSettings.useCustomTabs,
-                                usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
-                            )
-                        }
-
-                        // Only necessary for community deeplinks
-                        composable(
-                            route = Route.COMMUNITY_FROM_URL,
-                            arguments = listOf(
-                                navArgument(Route.CommunityFromUrlArgs.NAME) {
-                                    type = Route.CommunityFromUrlArgs.NAME_TYPE
-                                },
-                                navArgument(Route.CommunityFromUrlArgs.INSTANCE) {
-                                    type = Route.CommunityFromUrlArgs.INSTANCE_TYPE
-                                },
-                            ),
-                        ) {
-                            val args = Route.CommunityFromUrlArgs(it)
-                            val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { navController.getBackStackEntry(Route.Graph.COMMUNITY) },
-                            )
-
-                            val qualifiedName = "${args.name}@${args.instance}"
-                            CommunityActivity(
-                                communityArg = Either.Right(qualifiedName),
-                                navController = navController,
-                                communityViewModel = communityViewModel,
-                                accountViewModel = accountViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
-                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                siteViewModel = siteViewModel,
-                                useCustomTabs = appSettings.useCustomTabs,
-                                usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
-                            )
-                        }
-
-                        composable(route = Route.COMMUNITY_SIDEBAR) {
-                            val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { navController.getBackStackEntry(Route.Graph.COMMUNITY) },
-                            )
-
-                            CommunitySidebarActivity(
-                                communityViewModel = communityViewModel,
-                                navController = navController,
-                            )
-                        }
-
-                        composable(
-                            route = Route.COMMUNITY_POST,
-                            deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
-                                navDeepLink { uriPattern = "$instance/post/{${Route.PostArgs.ID}}" }
-                            },
-                            arguments = listOf(
-                                navArgument(Route.PostArgs.ID) {
-                                    type = Route.PostArgs.ID_TYPE
-                                },
-                            ),
-                        ) {
-                            val args = Route.PostArgs(it)
-                            val communityViewModel: CommunityViewModel = viewModel(
-                                remember(it) { navController.getBackStackEntry(Route.Graph.COMMUNITY) },
-                            )
-                            PostActivity(
-                                id = Either.Left(args.id),
-                                accountViewModel = accountViewModel,
-                                navController = navController,
-                                showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
-                                showActionBarByDefault = appSettings.showCommentActionBarByDefault,
-                                showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
-                                showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
-                                navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
-                                siteViewModel = siteViewModel,
-                                postStream = communityViewModel,
-                                appSettingsViewModel = appSettingsViewModel,
-                                useCustomTabs = appSettings.useCustomTabs,
-                                usePrivateTabs = appSettings.usePrivateTabs,
-                                blurNSFW = appSettings.blurNSFW,
-                            )
-                        }
-                    }
-
-                    // TODO: Make community side bar a tab in the community activity so they can
-                    //  reuse the same community view model.
-                    // HACK: Deep links to nested composables isn't allowed. This hack is required
-                    //  open community url from outside the application. This hack is NOT required
-                    //  for opening urls within the app itself.
                     composable(
-                        route = "redirect/${Route.COMMUNITY_FROM_URL}",
+                        route = Route.POST,
+                        deepLinks = DEFAULT_LEMMY_INSTANCES.map { instance ->
+                            navDeepLink { uriPattern = "$instance/post/{${Route.PostArgs.ID}}" }
+                        },
+                        arguments = listOf(
+                            navArgument(Route.PostArgs.ID) {
+                                type = Route.PostArgs.ID_TYPE
+                            },
+                        ),
+                    ) {
+                        val args = Route.PostArgs(it)
+
+                        PostActivity(
+                            id = Either.Left(args.id),
+                            accountViewModel = accountViewModel,
+                            showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+                            showActionBarByDefault = appSettings.showCommentActionBarByDefault,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                            showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
+                            navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
+                            siteViewModel = siteViewModel,
+                            postStream = homeViewModel,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
+                            appState = appState,
+                            appSettingsViewModel = appSettingsViewModel,
+                            postActionbarMode = appSettings.postActionbarMode,
+                            showPostLinkPreview = appSettings.showPostLinkPreviews,
+                            )
+                    }
+
+                    composable(
+                        route = Route.COMMUNITY_FROM_ID,
+                        arguments = listOf(
+                            navArgument(Route.CommunityFromIdArgs.ID) {
+                                type = Route.CommunityFromIdArgs.ID_TYPE
+                            },
+                        ),
+                    ) {
+                        val args = Route.CommunityFromIdArgs(it)
+
+                        CommunityActivity(
+                            communityArg = Either.Left(args.id),
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                            siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
+                        )
+                    }
+
+                    // Only necessary for community deeplinks
+                    composable(
+                        route = Route.COMMUNITY_FROM_URL,
                         deepLinks = listOf(
                             navDeepLink { uriPattern = Route.COMMUNITY_FROM_URL },
                         ),
@@ -349,11 +313,73 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.CommunityFromUrlArgs(it)
-                        val route = Route.CommunityFromUrlArgs.makeRoute(
-                            instance = args.instance,
-                            name = args.name,
+                        // Could be instance/c/community@otherinstance ({instance}/c/{name})
+                        // Name could contain its instance already, thus we check for it
+                        val qualifiedName = if (args.name.contains("@")) {
+                            args.name
+                        } else {
+                            "${args.name}@${args.instance}"
+                        }
+
+                        CommunityActivity(
+                            communityArg = Either.Right(qualifiedName),
+                            appState = appState,
+                            accountViewModel = accountViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                            siteViewModel = siteViewModel,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
-                        navController.navigate(route)
+                    }
+
+                    composable(route = Route.COMMUNITY_SIDEBAR) {
+                        CommunitySidebarActivity(
+                            appState = appState,
+                            onClickBack = appState::popBackStack,
+                        )
+                    }
+
+
+                    composable(
+                        route = Route.COMMUNITY_POST,
+                        deepLinks = listOf(
+                            navDeepLink { uriPattern = Route.COMMUNITY_POST },
+                        ),
+                        arguments = listOf(
+                            navArgument(Route.CommunityPostArgs.COMMUNITY_ID) {
+                                type = Route.CommunityPostArgs.COMMUNITY_ID_TYPE
+                            },
+                            navArgument(Route.CommunityPostArgs.POST_ID) {
+                                type = Route.CommunityPostArgs.POST_ID_TYPE
+                            },
+                        ),
+                    ) {
+                        val args = Route.CommunityPostArgs(it)
+                        val account = getCurrentAccount(accountViewModel)
+                        val communityViewModel by viewModels<CommunityViewModel>(factoryProducer = { CommunityViewModel.Companion.Factory(account, args.communityId.left()) } )
+                        PostActivity(
+                            id = Either.Left(args.postId),
+                            accountViewModel = accountViewModel,
+                            showCollapsedCommentContent = appSettings.showCollapsedCommentContent,
+                            showActionBarByDefault = appSettings.showCommentActionBarByDefault,
+                            showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
+                            showParentCommentNavigationButtons = appSettings.showParentCommentNavigationButtons,
+                            navigateParentCommentsWithVolumeButtons = appSettings.navigateParentCommentsWithVolumeButtons,
+                            siteViewModel = siteViewModel,
+                            postStream = communityViewModel,
+                            appSettingsViewModel = appSettingsViewModel,
+                            useCustomTabs = appSettings.useCustomTabs,
+                            usePrivateTabs = appSettings.usePrivateTabs,
+                            blurNSFW = appSettings.blurNSFW,
+                            appState = appState,
+                            postActionbarMode = appSettings.postActionbarMode,
+                            showPostLinkPreview = appSettings.showPostLinkPreviews,
+                        )
                     }
 
                     composable(
@@ -372,7 +398,7 @@ class MainActivity : AppCompatActivity() {
                         PersonProfileActivity(
                             personArg = Either.Left(args.id),
                             savedMode = args.saved,
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
@@ -380,6 +406,11 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                            drawerState = drawerState,
+                            onBack = appState::popBackStack,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -403,7 +434,7 @@ class MainActivity : AppCompatActivity() {
                         PersonProfileActivity(
                             personArg = Either.Right(qualifiedName),
                             savedMode = false,
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             appSettingsViewModel = appSettingsViewModel,
                             showVotingArrowsInListView = appSettings.showVotingArrowsInListView,
@@ -411,6 +442,10 @@ class MainActivity : AppCompatActivity() {
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
                             blurNSFW = appSettings.blurNSFW,
+                            showPostLinkPreviews = appSettings.showPostLinkPreviews,
+                            drawerState = drawerState,
+                            markAsReadOnScroll = appSettings.markAsReadOnScroll,
+                            postActionbarMode = appSettings.postActionbarMode,
                         )
                     }
 
@@ -425,11 +460,12 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.CommunityListArgs(it)
                         CommunityListActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
-                            siteViewModel = siteViewModel,
                             selectMode = args.select,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
+                            followList = siteViewModel.getFollowList(),
                         )
                     }
 
@@ -460,9 +496,8 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             body = text
                         }
-
                         CreatePostActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             initialUrl = url,
                             initialBody = body,
@@ -478,10 +513,11 @@ class MainActivity : AppCompatActivity() {
                         },
                     ) {
                         InboxActivity(
-                            navController = navController,
+                            appState = appState,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             blurNSFW = appSettings.blurNSFW,
+                            drawerState = drawerState,
                         )
                     }
 
@@ -494,12 +530,10 @@ class MainActivity : AppCompatActivity() {
                         ),
                     ) {
                         val args = Route.CommentReplyArgs(it)
-                        val replyItem by navController.takeDepsFromRoot<ReplyItem>()
 
                         CommentReplyActivity(
-                            replyItem = replyItem,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            appState = appState,
                             siteViewModel = siteViewModel,
                             isModerator = args.isModerator,
                         )
@@ -508,35 +542,31 @@ class MainActivity : AppCompatActivity() {
                     composable(route = Route.SITE_SIDEBAR) {
                         SiteSidebarActivity(
                             siteViewModel = siteViewModel,
-                            navController = navController,
+                            onBackClick = appState::popBackStack,
                         )
                     }
 
                     composable(route = Route.COMMENT_EDIT) {
-                        val commentView by navController.takeDepsFromRoot<CommentEditDeps>()
                         CommentEditActivity(
-                            commentView = commentView,
+                            appState = appState,
                             accountViewModel = accountViewModel,
-                            navController = navController,
                         )
                     }
 
                     composable(route = Route.POST_EDIT) {
-                        val postView by navController.takeDepsFromRoot<PostEditDeps>()
                         PostEditActivity(
-                            postView = postView,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            appState = appState,
                         )
                     }
 
                     composable(route = Route.PRIVATE_MESSAGE_REPLY) {
-                        val privateMessage by navController.takeDepsFromRoot<PrivateMessageDeps>()
                         PrivateMessageReplyActivity(
-                            privateMessageView = privateMessage,
+                            appState = appState,
                             accountViewModel = accountViewModel,
-                            navController = navController,
                             siteViewModel = siteViewModel,
+                            onBack = appState::popBackStack,
+                            onProfile = appState::toProfile,
                         )
                     }
 
@@ -552,7 +582,7 @@ class MainActivity : AppCompatActivity() {
                         CreateCommentReportActivity(
                             commentId = args.id,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            onBack = appState::navigateUp,
                         )
                     }
 
@@ -568,21 +598,24 @@ class MainActivity : AppCompatActivity() {
                         CreatePostReportActivity(
                             postId = args.id,
                             accountViewModel = accountViewModel,
-                            navController = navController,
+                            onBack = appState::navigateUp,
                         )
                     }
 
                     composable(route = Route.SETTINGS) {
                         SettingsActivity(
-                            navController = navController,
                             accountViewModel = accountViewModel,
+                            onBack = appState::popBackStack,
+                            onClickAbout = appState::toAbout,
+                            onClickAccountSettings = appState::toAccountSettings,
+                            onClickLookAndFeel = appState::toLookAndFeel,
                         )
                     }
 
                     composable(route = Route.LOOK_AND_FEEL) {
                         LookAndFeelActivity(
-                            navController = navController,
                             appSettingsViewModel = appSettingsViewModel,
+                            onBack = appState::popBackStack,
                         )
                     }
 
@@ -593,18 +626,64 @@ class MainActivity : AppCompatActivity() {
                         },
                     ) {
                         AccountSettingsActivity(
-                            navController = navController,
                             accountViewModel = accountViewModel,
                             siteViewModel = siteViewModel,
                             accountSettingsViewModel = accountSettingsViewModel,
+                            onBack = appState::popBackStack,
                         )
                     }
 
                     composable(route = Route.ABOUT) {
                         AboutActivity(
-                            navController = navController,
                             useCustomTabs = appSettings.useCustomTabs,
                             usePrivateTabs = appSettings.usePrivateTabs,
+                            onBack = appState::popBackStack,
+                            onClickCrashLogs = appState::toCrashLogs,
+                            openLinkRaw = appState::openLinkRaw,
+                        )
+                    }
+
+                    composable(route = Route.CRASH_LOGS) {
+                        CrashLogsActivity(
+                            onClickBack = appState::popBackStack,
+                        )
+                    }
+
+                    composable(
+                        route = Route.VIEW,
+                        arguments = listOf(
+                            navArgument(Route.ViewArgs.URL) {
+                                type = Route.ViewArgs.URL_TYPE
+                            },
+                        ),
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None },
+                        popEnterTransition = { EnterTransition.None },
+                        popExitTransition = { ExitTransition.None },
+                    ) {
+                        val args = Route.ViewArgs(it)
+
+                        ImageViewer(url = args.url, appState = appState)
+                    }
+
+                    composable(
+                        route = Route.CREATE_PRIVATE_MESSAGE,
+                        arguments = listOf(
+                            navArgument(Route.CreatePrivateMessageArgs.PERSON_ID) {
+                                type = Route.CreatePrivateMessageArgs.PERSON_ID_TYPE
+                            },
+                            navArgument(Route.CreatePrivateMessageArgs.PERSON_NAME) {
+                                type = Route.CreatePrivateMessageArgs.PERSON_NAME_TYPE
+                            },
+                        ),
+                    ) {
+                        val args = Route.CreatePrivateMessageArgs(it)
+
+                        CreatePrivateMessageActivity(
+                            args.personId,
+                            args.personName,
+                            accountViewModel,
+                            appState::popBackStack,
                         )
                     }
                 }

@@ -5,6 +5,7 @@ import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -13,15 +14,13 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -40,130 +39,116 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.jerboa.R
 import com.jerboa.datatypes.samplePerson
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.types.Person
-import com.jerboa.db.Account
-import com.jerboa.loginFirstToast
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
+import com.jerboa.feat.isReadyAndIfNotShowSimplifiedInfoToast
 import com.jerboa.scrollToNextParentComment
 import com.jerboa.scrollToPreviousParentComment
 import com.jerboa.siFormat
-import com.jerboa.ui.components.home.BottomNavTab
+import com.jerboa.ui.components.home.NavTab
 import com.jerboa.ui.components.person.PersonProfileLink
 import com.jerboa.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
-    navController: NavController,
+    onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior? = null,
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
         title = {
             Text(
                 text = text,
+                maxLines = 1,
+                modifier = Modifier.basicMarquee(),
             )
         },
         navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }, modifier = Modifier.testTag("jerboa:back")) {
+            IconButton(onClick = onClickBack, modifier = Modifier.testTag("jerboa:back")) {
                 Icon(
                     Icons.Outlined.ArrowBack,
                     contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }
         },
+        actions = actions,
     )
+}
+
+@Preview
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SimpleTopAppBarPreview() {
+    SimpleTopAppBar(text = "Preview", onClickBack = {}) {
+    }
 }
 
 @Composable
 fun BottomAppBarAll(
-    selectedTab: BottomNavTab,
-    onSelect: (BottomNavTab) -> Unit,
+    selectedTab: NavTab,
+    onSelect: (NavTab) -> Unit,
     unreadCounts: Int,
     showTextDescriptionsInNavbar: Boolean,
-    showBottomNav: Boolean? = true,
 ) {
-    if (showBottomNav == true) {
-        // Check for preview mode
-        if (LocalContext.current is Activity) {
-            val window = (LocalContext.current as Activity).window
-            val colorScheme = MaterialTheme.colorScheme
+    // Check for preview mode
+    if (LocalContext.current is Activity) {
+        val window = (LocalContext.current as Activity).window
+        val colorScheme = MaterialTheme.colorScheme
 
-            DisposableEffect(Unit) {
-                window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
+        DisposableEffect(Unit) {
+            window.navigationBarColor = colorScheme.surfaceColorAtElevation(3.dp).toArgb()
 
-                onDispose {
-                    window.navigationBarColor = colorScheme.background.toArgb()
-                }
+            onDispose {
+                window.navigationBarColor = colorScheme.background.toArgb()
             }
         }
+    }
 
-        NavigationBar {
-            for (tab in BottomNavTab.values()) {
-                val selected = tab == selectedTab
-                NavigationBarItem(
-                    icon = {
-                        InboxIconAndBadge(
-                            iconBadgeCount = if (tab == BottomNavTab.Inbox) unreadCounts else null,
-                            icon = if (selected) {
-                                when (tab) {
-                                    BottomNavTab.Home -> Icons.Filled.Home
-                                    BottomNavTab.Search -> Icons.Filled.Search
-                                    BottomNavTab.Inbox -> Icons.Filled.Email
-                                    BottomNavTab.Saved -> Icons.Filled.Bookmarks
-                                    BottomNavTab.Profile -> Icons.Filled.Person
-                                }
-                            } else {
-                                when (tab) {
-                                    BottomNavTab.Home -> Icons.Outlined.Home
-                                    BottomNavTab.Search -> Icons.Outlined.Search
-                                    BottomNavTab.Inbox -> Icons.Outlined.Email
-                                    BottomNavTab.Saved -> Icons.Outlined.Bookmarks
-                                    BottomNavTab.Profile -> Icons.Outlined.Person
-                                }
-                            },
-                            contentDescription = stringResource(
-                                when (tab) {
-                                    BottomNavTab.Home -> R.string.bottomBar_home
-                                    BottomNavTab.Search -> R.string.bottomBar_search
-                                    BottomNavTab.Inbox -> R.string.bottomBar_inbox
-                                    BottomNavTab.Saved -> R.string.bottomBar_bookmarks
-                                    BottomNavTab.Profile -> R.string.bottomBar_profile
-                                },
-                            ),
+    NavigationBar {
+        for (tab in NavTab.entries) {
+            val selected = tab == selectedTab
+            NavigationBarItem(
+                icon = {
+                    InboxIconAndBadge(
+                        iconBadgeCount = if (tab == NavTab.Inbox) unreadCounts else null,
+                        icon = if (selected) {
+                            tab.iconFilled
+                        } else {
+                            tab.iconOutlined
+                        },
+                        contentDescription = stringResource(tab.contentDescriptionId),
+                    )
+                },
+                label = {
+                    if (showTextDescriptionsInNavbar) {
+                        Text(
+                            textAlign = TextAlign.Center,
+                            fontSize = TextUnit(10f, TextUnitType.Sp),
+                            text = stringResource(tab.textId),
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
-                    },
-                    label =
-                    {
-                        if (showTextDescriptionsInNavbar) {
-                            Text(
-                                text = stringResource(
-                                    when (tab) {
-                                        BottomNavTab.Home -> R.string.bottomBar_label_home
-                                        BottomNavTab.Search -> R.string.bottomBar_label_search
-                                        BottomNavTab.Inbox -> R.string.bottomBar_label_inbox
-                                        BottomNavTab.Saved -> R.string.bottomBar_label_bookmarks
-                                        BottomNavTab.Profile -> R.string.bottomBar_label_profile
-                                    },
-                                ),
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
-                    },
-                    selected = selected,
-                    onClick = {
-                        onSelect(tab)
-                    },
-                )
-            }
+                    }
+                },
+                selected = selected,
+                onClick = {
+                    onSelect(tab)
+                },
+            )
         }
     }
 }
@@ -172,11 +157,10 @@ fun BottomAppBarAll(
 @Composable
 fun BottomAppBarAllPreview() {
     BottomAppBarAll(
-        selectedTab = BottomNavTab.Home,
+        selectedTab = NavTab.Home,
         onSelect = {},
         unreadCounts = 30,
         showTextDescriptionsInNavbar = true,
-        showBottomNav = true,
     )
 }
 
@@ -230,6 +214,7 @@ fun CommentOrPostNodeHeader(
     isExpanded: Boolean = true,
     collapsedCommentsCount: Int = 0,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -277,6 +262,7 @@ fun CommentOrPostNodeHeader(
             updated = updated,
             isExpanded = isExpanded,
             collapsedCommentsCount = collapsedCommentsCount,
+            showScores = showScores,
         )
     }
 }
@@ -298,6 +284,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onClick = {},
         onLongCLick = {},
         showAvatar = true,
+        showScores = true,
     )
 }
 
@@ -306,34 +293,21 @@ fun ActionBarButton(
     onClick: () -> Unit,
     icon: ImageVector,
     contentDescription: String?,
+    modifier: Modifier = Modifier,
     text: String? = null,
     contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
     noClick: Boolean = false,
-    account: Account?,
+    account: Account,
     requiresAccount: Boolean = true,
 ) {
     val ctx = LocalContext.current
-//    Button(
-//        onClick = onClick,
-//        colors = ButtonDefaults.buttonColors(
-//            backgroundColor = Color.Transparent,
-//            contentColor = contentColor,
-//        ),
-//        shape = MaterialTheme.shapes.large,
-//        contentPadding = PaddingValues(SMALL_PADDING),
-//        elevation = null,
-//        content = content,
-//        modifier = Modifier
-//            .defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
-//    )
+
     val barMod = if (noClick) {
-        Modifier
+        modifier
     } else {
-        Modifier.clickable(onClick = {
-            if (!requiresAccount || account !== null) {
+        modifier.clickable(onClick = {
+            if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
                 onClick()
-            } else {
-                loginFirstToast(ctx)
             }
         })
     }
@@ -352,6 +326,75 @@ fun ActionBarButton(
                 text = text,
                 color = contentColor,
                 style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ActionBarButtonAndBadgePreview() {
+    ActionBarButtonAndBadge(
+        icon = Icons.Outlined.ChatBubbleOutline,
+        iconBadgeCount = siFormat(15),
+        contentDescription = null,
+        text = siFormat(2000),
+        noClick = true,
+        account = AnonAccount,
+        onClick = {},
+    )
+}
+
+@Composable
+fun ActionBarButtonAndBadge(
+    onClick: () -> Unit,
+    icon: ImageVector,
+    iconBadgeCount: String?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    contentColor: Color = MaterialTheme.colorScheme.onBackground.muted,
+    noClick: Boolean = false,
+    account: Account,
+    requiresAccount: Boolean = true,
+) {
+    val ctx = LocalContext.current
+
+    val barMod = if (noClick) {
+        modifier
+    } else {
+        modifier.clickable(onClick = {
+            if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                onClick()
+            }
+        })
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = barMod,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = contentColor,
+        )
+        text?.also {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            Text(
+                text = text,
+                color = contentColor,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        iconBadgeCount?.also {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            TextBadge(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                text = iconBadgeCount,
+                textStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+                textColor = contentColor,
+                verticalTextPadding = 2f,
+                horizontalTextPadding = 4f,
             )
         }
     }
@@ -393,6 +436,7 @@ fun InboxIconAndBadge(
             modifier = modifier,
             badge = {
                 Badge(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
                     content = {
                         Text(
                             text = iconBadgeCount.toString(),
@@ -590,5 +634,79 @@ fun Modifier.simpleVerticalScrollbar(
 fun LoadingBar(
     padding: PaddingValues = PaddingValues(0.dp),
 ) {
-    LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(padding).testTag("jerboa:loading"))
+    LinearProgressIndicator(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(padding)
+            .testTag("jerboa:loading"),
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateSubmitHeader(
+    title: String,
+    onClickBack: () -> Unit,
+    onSubmitClick: () -> Unit,
+    loading: Boolean,
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = title,
+            )
+        },
+        actions = {
+            IconButton(
+                onClick = onSubmitClick,
+                enabled = !loading,
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.Send,
+                        contentDescription = stringResource(R.string.form_submit),
+                    )
+                }
+            }
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = onClickBack,
+            ) {
+                Icon(
+                    Icons.Outlined.Close,
+                    contentDescription = stringResource(R.string.create_report_back),
+                )
+            }
+        },
+    )
+}
+
+/**
+ * M3 doesn't have a built-in way to do this yet, so we have to do it ourselves.
+ *
+ * Supports M3 theming
+ */
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun JerboaPullRefreshIndicator(
+    refreshing: Boolean,
+    state: PullRefreshState,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    scale: Boolean = true,
+) {
+    PullRefreshIndicator(
+        refreshing,
+        state,
+        modifier,
+        backgroundColor,
+        contentColor,
+        scale,
+    )
 }

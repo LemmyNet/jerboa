@@ -30,8 +30,6 @@
     <string name="account_settings_show_scores">Εμφάνιση των scores</string>
     <string name="account_settings_subscribed">Εγγεγραμμένος</string>
     <string name="addBookmark">Προσθήκη στους σελιδοδείκτες</string>
-    <string name="app_bars_dot_spacer">·</string>
-    <string name="app_name" translatable="false">Jerboa</string>
     <string name="bottomBar_bookmarks">Πήγαινε στους σελιδοδείκτες μου</string>
     <string name="bottomBar_home">Πήγαινε στην αρχική σελίδα</string>
     <string name="bottomBar_inbox">Πήγαινε στα εισερχόμενα</string>
@@ -77,6 +75,7 @@
     <string name="comment_node_report_comment">Αναφορά σχολίου</string>
     <string name="comment_node_restore">Επαναφορά</string>
     <string name="comment_node_view_context">Προβολή Περιεχομένου</string>
+    <string name="comment_node_view_original">Προβολή πρωτότυπου</string>
     <string name="comment_node_view_post">Προβολή Ανάρτησης</string>
     <string name="comment_node_view_source">Προβολή Πηγής</string>
     <string name="comment_reply_back">Πίσω</string>
@@ -124,7 +123,6 @@
     <string name="dialogs_new_comments">Νέα Σχόλια</string>
     <string name="dialogs_subscribed">Συνδρομές</string>
     <string name="dialogs_top">Κορυφαία</string>
-    <string name="dialogs_top_all_time">Κορυφαία όλων των εποχών</string>
     <string name="dialogs_top_day">Κορυφαία της Ημέρας</string>
     <string name="dialogs_top_month">Κορυφαία του Μήνα</string>
     <string name="dialogs_top_week">Κορυφαία της Εβδομάδας</string>
@@ -138,14 +136,10 @@
     <string name="homeHeader_filter">Επιλογή ροής</string>
     <string name="home_add_account">Προσθήκη Λογαριασμού</string>
     <string name="home_all">Όλα</string>
-    <string name="home_communities">Κοινότητες</string>
-    <string name="home_inbox">Εισερχόμενα</string>
     <string name="home_local">Τοπικά</string>
     <string name="home_menu">Μενού</string>
     <string name="home_post_view_mode">Αλλαγή Τρόπου Εμφάνισης Των Ανάρτησεων</string>
-    <string name="home_profile">Λογαριασμός</string>
     <string name="home_refresh">Ανανέωση</string>
-    <string name="home_saved">Αποθηκευμένα</string>
     <string name="home_settings">Ρυθμίσεις</string>
     <string name="home_sign_out">Αποσύνδεση</string>
     <string name="home_site_info">Πληροφορίες Ιστότοπου</string>
@@ -200,7 +194,6 @@
     <string name="look_and_feel_theme_color_purple">Μωβ</string>
     <string name="look_and_feel_theme_color_woodland">Δασώδες</string>
     <string name="look_and_feel_use_custom_tabs">Χρήση εξατομικευμένων καρτελών</string>
-    <string name="look_and_feel_use_private_tabs">Χρήση ιδιωτικών εξατομικευμένων καρτελών εάν είναι διαθέσιμες</string>
     <string name="markRead">Σήμανση ως αναγνωσμένο</string>
     <string name="markUnread">Σήμανση ως μη αναγνωσμένο</string>
     <string name="markdownHelper_formatBold">Μορφοποίηση ως έντονο κείμενο</string>
@@ -333,4 +326,5 @@
     <string name="dialogs_top_nine_month">Κορυφαία Εννέα Μηνών</string>
     <string name="post_listing_view_source">Προβολή πηγής</string>
     <string name="post_listing_view_original">Προβολή πρωτότυπου</string>
+    <string name="sorttype_controversial">Αμφιλεγόμενα</string>
 </resources>

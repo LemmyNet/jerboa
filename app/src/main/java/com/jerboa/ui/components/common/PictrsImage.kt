@@ -17,6 +17,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -27,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jerboa.R
@@ -51,13 +51,18 @@ fun CircularIcon(
     thumbnailSize: Int = ICON_THUMBNAIL_SIZE,
     blur: Boolean = false,
 ) {
-    AsyncImage(
-        model = getImageRequest(
-            context = LocalContext.current,
+    val ctx = LocalContext.current
+    val imageRequest = remember {
+        getImageRequest(
+            context = ctx,
             path = icon,
             size = thumbnailSize,
             blur = blur,
-        ),
+        )
+    }
+
+    AsyncImage(
+        model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
@@ -96,21 +101,6 @@ fun CircularIconPreview() {
     )
 }
 
-fun Modifier.getBlurredOrRounded(
-    blur: Boolean,
-    rounded: Boolean = false,
-): Modifier {
-    var lModifier = this
-
-    if (rounded) {
-        lModifier = lModifier.clip(RoundedCornerShape(12f))
-    }
-    if (blur && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        lModifier = lModifier.blur(radius = 100.dp)
-    }
-    return lModifier
-}
-
 fun getImageRequest(
     context: Context,
     path: String,
@@ -139,22 +129,37 @@ fun getImageRequest(
 fun PictrsThumbnailImage(
     thumbnail: String,
     blur: Boolean,
+    roundBottomEndCorner: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    AsyncImage(
-        model = getImageRequest(
-            context = LocalContext.current,
+    val ctx = LocalContext.current
+    val imageRequest = remember {
+        getImageRequest(
+            context = ctx,
             path = thumbnail,
             size = THUMBNAIL_SIZE,
             blur = blur,
-        ),
+        )
+    }
+
+    AsyncImage(
+        model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = modifier.getBlurredOrRounded(
-            rounded = true,
-            blur = blur,
-        ),
+        modifier = modifier
+            .getBlurredOrRounded(
+                rounded = false,
+                blur = blur,
+            )
+            .clip(
+                RoundedCornerShape(
+                    12f,
+                    12f,
+                    if (roundBottomEndCorner) 0f else 12f,
+                    12f,
+                ),
+            ),
     )
 }
 
@@ -164,13 +169,18 @@ fun PictrsUrlImage(
     blur: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    AsyncImage(
-        model = getImageRequest(
-            context = LocalContext.current,
+    val ctx = LocalContext.current
+    val imageRequest = remember {
+        getImageRequest(
+            context = ctx,
             path = url,
             size = MAX_IMAGE_SIZE,
             blur = blur,
-        ),
+        )
+    }
+
+    AsyncImage(
+        model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.FillWidth,
@@ -190,13 +200,18 @@ fun PictrsBannerImage(
     contentDescription: String? = null,
     blur: Boolean = false,
 ) {
-    AsyncImage(
-        model = getImageRequest(
-            context = LocalContext.current,
+    val ctx = LocalContext.current
+    val imageRequest = remember {
+        getImageRequest(
+            context = ctx,
             path = url,
             size = MAX_IMAGE_SIZE,
             blur = blur,
-        ),
+        )
+    }
+
+    AsyncImage(
+        model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,

@@ -1,13 +1,15 @@
 package com.jerboa.ui.components.post
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -16,14 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jerboa.JerboaAppState
 import com.jerboa.PostViewMode
 import com.jerboa.datatypes.sampleLinkPostView
 import com.jerboa.datatypes.samplePostView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isScrolledToEnd
+import com.jerboa.rememberJerboaAppState
+import com.jerboa.ui.components.common.RetryLoadingPosts
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
 import com.jerboa.ui.theme.SMALL_PADDING
 import kotlinx.collections.immutable.ImmutableList
@@ -45,8 +51,8 @@ fun PostListings(
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
     onShareClick: (url: String) -> Unit,
-    isScrolledToEnd: () -> Unit,
-    account: Account?,
+    loadMorePosts: () -> Unit,
+    account: Account,
     showCommunityName: Boolean = true,
     padding: PaddingValues = PaddingValues(0.dp),
     listState: LazyListState,
@@ -57,25 +63,31 @@ fun PostListings(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
+    appState: JerboaAppState,
+    markAsReadOnScroll: Boolean,
+    onMarkAsRead: (postView: PostView) -> Unit,
+    showIfRead: Boolean,
+    showScores: Boolean,
+    postActionbarMode: Int,
+    showPostAppendRetry: Boolean,
 ) {
     LazyColumn(
         state = listState,
         modifier = Modifier
             .padding(padding)
+            .fillMaxSize()
             .simpleVerticalScrollbar(listState)
             .testTag("jerboa:posts"),
     ) {
-        // TODO this should be a .also?
-        item {
+        item(contentType = "aboveContent") {
             contentAboveListings()
         }
         // List of items
-        items(
-            posts,
-            key = { postView ->
-                postView.post.id
-            },
-        ) { postView ->
+        itemsIndexed(
+            items = posts,
+            contentType = { _, _ -> "Post" },
+        ) { index, postView ->
             PostListing(
                 postView = postView,
                 onUpvoteClick = onUpvoteClick,
@@ -101,8 +113,29 @@ fun PostListings(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
-            )
+                showPostLinkPreview = showPostLinkPreviews,
+                appState = appState,
+                showIfRead = showIfRead,
+                showScores = showScores,
+                postActionbarMode = postActionbarMode,
+            ).let {
+                if (!postView.read && markAsReadOnScroll) {
+                    DisposableEffect(key1 = postView.post.id) {
+                        onDispose {
+                            if (listState.isScrollInProgress && index < listState.firstVisibleItemIndex) {
+                                onMarkAsRead(postView)
+                            }
+                        }
+                    }
+                }
+            }
             Divider(modifier = Modifier.padding(bottom = SMALL_PADDING))
+        }
+
+        if (showPostAppendRetry) {
+            item(contentType = "retry_posts") {
+                RetryLoadingPosts(loadMorePosts)
+            }
         }
     }
 
@@ -114,9 +147,9 @@ fun PostListings(
     }
 
     // Act when end of list reached
-    if (endOfListReached) {
+    if (endOfListReached && !showPostAppendRetry) {
         LaunchedEffect(Unit) {
-            isScrolledToEnd()
+            loadMorePosts()
         }
     }
 }
@@ -138,8 +171,8 @@ fun PreviewPostListings() {
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
         onShareClick = {},
-        isScrolledToEnd = {},
-        account = null,
+        loadMorePosts = {},
+        account = AnonAccount,
         listState = rememberLazyListState(),
         postViewMode = PostViewMode.Card,
         showVotingArrowsInListView = true,
@@ -148,5 +181,13 @@ fun PreviewPostListings() {
         useCustomTabs = false,
         usePrivateTabs = false,
         blurNSFW = true,
+        showPostLinkPreviews = true,
+        appState = rememberJerboaAppState(),
+        markAsReadOnScroll = false,
+        onMarkAsRead = {},
+        showIfRead = true,
+        showScores = true,
+        postActionbarMode = 0,
+        showPostAppendRetry = false,
     )
 }

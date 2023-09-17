@@ -2,11 +2,15 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import arrow.core.Either
+import arrow.core.left
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -33,27 +37,29 @@ import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdateComment
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
 const val COMMENTS_DEPTH_MAX = 6
 
-class PostViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class PostViewModel(private var id: Either<PostId, CommentId>, private val account: Account) : ViewModel() {
+
+    var postId: PostId?
+        get() = id.leftOrNull()
+        set(value) = value?.let {
+            id = it.left()
+            getData(account)
+        } ?: Unit
 
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     var commentsRes: ApiState<GetCommentsResponse> by mutableStateOf(ApiState.Empty)
-        private set
-
-    // If this is set, its a comment type view
-    var id by mutableStateOf<Either<PostId, CommentId>?>(null)
         private set
     var sortType by mutableStateOf(CommentSortType.Hot)
         private set
@@ -68,10 +74,10 @@ class PostViewModel : ViewModel(), Initializable {
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
-    fun initialize(
-        id: Either<PostId, CommentId>,
-    ) {
-        this.id = id
+    val unExpandedComments = mutableStateListOf<Int>()
+    val commentsWithToggledActionBar = mutableStateListOf<Int>()
+    init {
+        this.getData(account)
     }
 
     fun updateSortType(sortType: CommentSortType) {
@@ -79,54 +85,51 @@ class PostViewModel : ViewModel(), Initializable {
     }
 
     fun getData(
-        account: Account?,
+        account: Account,
         state: ApiState<GetPostResponse> = ApiState.Loading,
     ) {
         viewModelScope.launch {
             // Set the commentId for the right case
-            id?.also { id ->
+            val postForm = id.fold({
+                GetPost(id = it, auth = account.getJWT())
+            }, {
+                GetPost(comment_id = it, auth = account.getJWT())
+            })
 
-                val postForm = id.fold({
-                    GetPost(id = it, auth = account?.jwt)
-                }, {
-                    GetPost(comment_id = it, auth = account?.jwt)
-                })
+            postRes = state
+            postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
 
-                postRes = state
-                postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
+            val commentsForm = id.fold({
+                GetComments(
+                    max_depth = COMMENTS_DEPTH_MAX,
+                    type_ = ListingType.All,
+                    post_id = it,
+                    auth = account.getJWT(),
+                    sort = sortType,
+                )
+            }, {
+                GetComments(
+                    max_depth = COMMENTS_DEPTH_MAX,
+                    type_ = ListingType.All,
+                    parent_id = it,
+                    auth = account.getJWT(),
+                    sort = sortType,
+                )
+            })
 
-                val commentsForm = id.fold({
-                    GetComments(
-                        max_depth = COMMENTS_DEPTH_MAX,
-                        type_ = ListingType.All,
-                        post_id = it,
-                        auth = account?.jwt,
-                        sort = sortType,
-                    )
-                }, {
-                    GetComments(
-                        max_depth = COMMENTS_DEPTH_MAX,
-                        type_ = ListingType.All,
-                        parent_id = it,
-                        auth = account?.jwt,
-                        sort = sortType,
-                    )
-                })
-
-                commentsRes = ApiState.Loading
-                commentsRes =
-                    apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
-            }
+            commentsRes = ApiState.Loading
+            commentsRes =
+                apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
         }
     }
 
     fun isCommentView(): Boolean {
-        return id?.isRight() ?: false
+        return id.isRight()
     }
 
     fun fetchMoreChildren(
         commentView: CommentView,
-        account: Account?,
+        account: Account,
     ) {
         viewModelScope.launch {
             val existing = commentsRes
@@ -139,7 +142,7 @@ class PostViewModel : ViewModel(), Initializable {
                 parent_id = commentView.comment.id,
                 max_depth = COMMENTS_DEPTH_MAX,
                 type_ = ListingType.All,
-                auth = account?.jwt,
+                auth = account.getJWT(),
             )
 
             val moreComments =
@@ -148,13 +151,16 @@ class PostViewModel : ViewModel(), Initializable {
             when (moreComments) {
                 is ApiState.Success -> {
                     // Remove the first comment, since it is a parent
+                    // Actually since a bug in 18.3 that is no longer a guarantee
+                    // see https://github.com/LemmyNet/lemmy/issues/3767
                     val newComments = moreComments.data.comments.toMutableList()
-                    newComments.removeAt(0)
+                    newComments.removeIf { it.comment.id == commentView.comment.id }
 
                     val appended = appendData(existing.data.comments, newComments.toList())
 
                     commentsRes = ApiState.Success(existing.data.copy(comments = appended))
                 }
+
                 else -> {}
             }
         }
@@ -305,6 +311,22 @@ class PostViewModel : ViewModel(), Initializable {
             }
 
             else -> {}
+        }
+    }
+
+    companion object {
+        class Factory(
+            private val id: Either<PostId, CommentId>,
+            private val account: Account,
+        ) : ViewModelProvider.Factory {
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                return PostViewModel(id, account) as T
+            }
         }
     }
 }

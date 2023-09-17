@@ -2,10 +2,15 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import arrow.core.Either
+import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -21,45 +26,62 @@ import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.ui.components.common.Initializable
 import kotlinx.coroutines.launch
 
-class PersonProfileViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean, account: Account) : ViewModel() {
 
-    var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(
-        ApiState.Empty,
-    )
+    var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
     private var likePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var savePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
     private var deletePostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
-    private var blockCommunityRes: ApiState<BlockCommunityResponse> by
-        mutableStateOf(ApiState.Empty)
+    private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
     private var likeCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var saveCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
     private var deleteCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
 
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
+
     var sortType by mutableStateOf(SortType.New)
         private set
-    var page by mutableStateOf(1)
+    var page by mutableIntStateOf(1)
         private set
     var savedOnly by mutableStateOf(false)
         private set
+
+    init {
+        val personId = personArg.fold({ it }, { null })
+        val personName = personArg.fold({ null }, { it })
+
+        this.resetPage()
+        this.updateSavedOnly(savedMode)
+        this.getPersonDetails(
+            GetPersonDetails(
+                person_id = personId,
+                username = personName,
+                sort = SortType.New,
+                auth = account.getJWT(),
+                saved_only = savedMode,
+            ),
+        )
+    }
 
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
@@ -100,8 +122,9 @@ class PersonProfileViewModel : ViewModel(), Initializable {
     ) {
         viewModelScope.launch {
             val oldRes = personDetailsRes
-            when (oldRes) {
-                is ApiState.Success -> personDetailsRes = ApiState.Appending(oldRes.data)
+            personDetailsRes = when (oldRes) {
+                is ApiState.Appending -> return@launch
+                is ApiState.Holder -> ApiState.Appending(oldRes.data)
                 else -> return@launch
             }
 
@@ -130,9 +153,10 @@ class PersonProfileViewModel : ViewModel(), Initializable {
                         ),
                     )
                 }
+
                 else -> {
                     prevPage()
-                    oldRes
+                    ApiState.AppendingFailure(oldRes.data)
                 }
             }
         }
@@ -284,6 +308,41 @@ class PersonProfileViewModel : ViewModel(), Initializable {
             }
 
             else -> {}
+        }
+    }
+
+    fun markPostAsRead(
+        form: MarkPostAsRead,
+        appState: JerboaAppState,
+    ) {
+        appState.coroutineScope.launch {
+            markPostRes = ApiState.Loading
+            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+
+            when (val markRes = markPostRes) {
+                is ApiState.Success -> {
+                    updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    companion object {
+        class Factory(
+            private val personArg: Either<PersonId, String>,
+            private val savedMode: Boolean,
+            private val account: Account,
+        ) : ViewModelProvider.Factory {
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                return PersonProfileViewModel(personArg, savedMode, account) as T
+            }
         }
     }
 }

@@ -38,7 +38,6 @@
     <string name="dialogs_top_week">Top Tygodnia</string>
     <string name="dialogs_top_month">Top Miesiąca</string>
     <string name="dialogs_top_year">Top Roku</string>
-    <string name="dialogs_top_all_time">Top Wszechczasów</string>
     <string name="dialogs_subscribed">Zasubskrybowano</string>
     <string name="dialogs_local">Lokalne</string>
     <string name="dialogs_all">Wszystkie</string>
@@ -70,10 +69,6 @@
     <string name="home_subscribed">Zasubskrybowano</string>
     <string name="home_local">Lokalne</string>
     <string name="home_all">Wszystkie</string>
-    <string name="home_saved">Zapisane</string>
-    <string name="home_communities">Społeczności</string>
-    <string name="home_profile">Profil</string>
-    <string name="home_inbox">Skrzynka Odbiorcza</string>
     <string name="home_settings">Ustawienia</string>
     <string name="home_subscriptions">Subskrypcje</string>
     <string name="home_add_account">Dodaj Konto</string>
@@ -172,7 +167,6 @@
     <string name="look_and_feel_post_view_list">Lista</string>
     <string name="look_and_feel_show_navigation_bar">Pokaż pasek nawigacji</string>
     <string name="look_and_feel_use_custom_tabs">Używaj niestandardowych kart</string>
-    <string name="look_and_feel_use_private_tabs">Używaj prywatnych niestandardowych kart jeśli są dostępne</string>
     <string name="settings_activity_settings">Ustawienia</string>
     <string name="settings_activity_look_and_feel">Wygląd i preferencje</string>
     <string name="settings_activity_account_settings">Ustawienia %1$s</string>
@@ -183,7 +177,6 @@
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s nie jest instancją Lemmy</string>
     <string name="create_report_view_model_report_created">Utwożono Zgłoszenie</string>
     <string name="about_social">Socialmedia</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="comment_node_in">"w "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Pokaż zawartość dla zwiniętych komentarzy</string>
     <string name="comment_node_permalink_copied">Permalink Skopiowany</string>

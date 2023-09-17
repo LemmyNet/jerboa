@@ -1,5 +1,7 @@
 #!/bin/bash
 
+O_CWD=$PWD
+
 # Go to the types folder
 cd ~/git/lemmy-js-client/src/types
 
@@ -13,6 +15,13 @@ for filename in *.ts;
   # Rename the file to a simple .kt
   file_without_ext=${filename%%.*}
   kt_file="${file_without_ext}.kt"
+
+  # Skip files that don't exist
+  if [ ! -f "${file_without_ext}.module_lemmy-js-client.kt" ]; then
+     continue
+  fi
+
+
   mv "${file_without_ext}.module_lemmy-js-client.kt" "$kt_file"
 
   # Remove all these weird dukat imports
@@ -45,14 +54,43 @@ for filename in *.ts;
   sed -i 's/registration_mode: String/registration_mode: RegistrationMode/g' "$kt_file"
   sed -i 's/feature_type: String/feature_type: PostFeatureType/g' "$kt_file"
   
-  # Add = null to any lines containing ?
-  sed -i '/\?/ s/$/ = null/' "$kt_file"
+  # Add = null to any lines containing ? if it is not a typealias
+  if ! grep -q "typealias" "$kt_file"; then
+      sed -i '/\?/ s/$/ = null/' "$kt_file"
+  fi
 
   # Change these interfaces to data classes
   sed -i 's/interface /data class /g' "$kt_file"
   sed -i 's/ {/(/g' "$kt_file"
   sed -i 's/}/)/g' "$kt_file"
   sed -i '/:/ s/$/,/' "$kt_file"
+
+  # Add @Parcelize annotation
+  sed -i 's/data class/import android.os.Parcelable\nimport kotlinx.parcelize.Parcelize\n\n@Parcelize\ndata class/g' "$kt_file"
+
+  # Add Parcelable inheritance
+  if grep -q "data class" "$kt_file"; then
+      echo " : Parcelable" >> "$kt_file"
+  fi
+
+  # Adds @Immutable annotation to classes containing lists, to mark them stable
+  if grep -q "List<" "$kt_file"; then
+    sed -i 's/@Parcelize/@Immutable\n@Parcelize/g' "$kt_file"
+    sed -i 's/import android.os.Parcelable/import android.os.Parcelable\nimport androidx.compose.runtime.Immutable/g' "$kt_file"
+  fi
+
+  # These must be CommentSortType
+  if [[ "$kt_file" =~ ^(GetComments|GetPersonMentions|GetReplies)\.kt$ ]]; then
+      sed -i 's/sort: SortType/sort: CommentSortType/g' "$kt_file"
+  fi
+
+  # These must be SearchType
+  if [[ "$kt_file" =~ ^(SearchResponse|Search)\.kt$ ]]; then
+      sed -i 's/type_: ListingType/type_: SearchType/g' "$kt_file"
+  fi
+
+  #  File must end with a newline
+   sed -i -e '$a\' "$kt_file"
 
 done
 
@@ -65,5 +103,5 @@ rm others.kt
 rm *.module_lemmy-js-client.kt
 
 # Move all the kotlin types to our folder
-mv *.kt ~/git/jerboa/app/src/main/java/com/jerboa/datatypes/types/
+mv *.kt "$O_CWD/app/src/main/java/com/jerboa/datatypes/types/"
 

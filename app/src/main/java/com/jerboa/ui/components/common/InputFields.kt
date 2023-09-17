@@ -1,8 +1,8 @@
-
 package com.jerboa.ui.components.common
 
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -53,29 +54,30 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.appendMarkdownImage
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarkdownTextField(
     text: TextFieldValue,
     onTextChange: (TextFieldValue) -> Unit,
-    account: Account?,
+    account: Account,
     modifier: Modifier = Modifier,
     placeholder: String = "",
     focusImmediate: Boolean = true,
@@ -143,72 +145,8 @@ fun MarkdownTextField(
 
         MarkdownHelperBar(
             imageUploading = imageUploading.value,
-            onBoldClick = {
-                simpleMarkdownSurround(
-                    "**",
-                    value = text,
-                    onValueChange = onTextChange,
-                )
-            },
-            onItalicsClick = {
-                simpleMarkdownSurround(
-                    "*",
-                    value = text,
-                    onValueChange = onTextChange,
-                )
-            },
-            onQuoteClick = {
-                simpleMarkdownSurround(
-                    "> ",
-                    value = text,
-                    onValueChange = onTextChange,
-                    surround = false,
-                )
-            },
-            onHeaderClick = {
-                simpleMarkdownSurround(
-                    "# ",
-                    value = text,
-                    onValueChange = onTextChange,
-                    surround = false,
-                )
-            },
-            onCodeClick = {
-                simpleMarkdownSurround(
-                    "`",
-                    value = text,
-                    onValueChange = onTextChange,
-                )
-            },
-            onStrikethroughClick = {
-                simpleMarkdownSurround(
-                    "~~",
-                    value = text,
-                    onValueChange = onTextChange,
-                )
-            },
-            onSubscriptClick = {
-                simpleMarkdownSurround(
-                    "~",
-                    value = text,
-                    onValueChange = onTextChange,
-                )
-            },
-            onSuperscriptClick = {
-                simpleMarkdownSurround(
-                    "^",
-                    value = text,
-                    onValueChange = onTextChange,
-                )
-            },
-            onListClick = {
-                simpleMarkdownSurround(
-                    "- ",
-                    value = text,
-                    onValueChange = onTextChange,
-                    surround = false,
-                )
-            },
+            text = text,
+            onTextChange = onTextChange,
             onImageClick = {
                 launcher.launch("image/*")
             },
@@ -343,7 +281,7 @@ fun CreateLinkDialogPreview() {
 
 @Composable
 private fun imageUploadLauncher(
-    account: Account?,
+    account: Account,
     onTextChange: (TextFieldValue) -> Unit,
     text: TextFieldValue,
     imageUploading: MutableState<Boolean>,
@@ -366,8 +304,8 @@ private fun imageUploadLauncher(
             imageUploading.value = true
             val imageIs = imageInputStreamFromUri(ctx, cUri)
             scope.launch {
-                account?.also { acct ->
-                    val url = uploadPictrsImage(acct, imageIs, ctx)
+                if (!account.isAnon()) {
+                    val url = uploadPictrsImage(account, imageIs, ctx)
                     url?.also {
                         imageUploading.value = false
                         onTextChange(TextFieldValue(appendMarkdownImage(text.text, it)))
@@ -388,7 +326,7 @@ fun simpleMarkdownSurround(
     val out = if (value.selection.start == value.selection.end) {
         var altered = value.text.insert(value.selection.start, markdownChar)
         if (surround) {
-            altered = altered.insert(value.selection.start, markdownChar)
+            altered = altered.insert(value.selection.start + markdownChar.length, markdownChar)
         }
         val cursor = TextRange(value.selection.start + markdownChar.length)
 
@@ -400,7 +338,6 @@ fun simpleMarkdownSurround(
             altered = altered
                 .insert(value.selection.end + markdownChar.length, markdownChar)
         }
-//        Log.d("jerboa", "start = ${value.selection.start}, end = ${value.selection.end}")
 
         // TODO weird glitch when its the last item
         val start = value.selection.start + markdownChar.length
@@ -423,21 +360,48 @@ fun simpleMarkdownSurround(
     onValueChange(out)
 }
 
+fun simpleMarkdownSurround(
+    startText: String,
+    endText: String,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+) {
+    val out = if (value.selection.start == value.selection.end) {
+        val altered = value.text
+            .insert(value.selection.start, startText)
+            .insert(value.selection.start + startText.length, endText)
+
+        val cursor = TextRange(value.selection.start + startText.length)
+
+        TextFieldValue(altered, cursor)
+    } else {
+        val altered = value.text
+            .insert(value.selection.start, startText)
+            .insert(value.selection.end + startText.length, endText)
+
+        val start = value.selection.start + startText.length
+        val end = value.selection.end + endText.length
+
+        val cursor = if (value.selection.end == value.text.length) {
+            TextRange(start)
+        } else {
+            TextRange(start, end)
+        }
+
+        TextFieldValue(altered, cursor)
+    }
+
+    onValueChange(out)
+}
+
 @Composable
 fun MarkdownHelperBar(
     onPreviewClick: () -> Unit,
-    onHeaderClick: () -> Unit,
     onImageClick: () -> Unit,
     onLinkClick: () -> Unit,
-    onListClick: () -> Unit,
-    onQuoteClick: () -> Unit,
-    onBoldClick: () -> Unit,
-    onItalicsClick: () -> Unit,
-    onCodeClick: () -> Unit,
-    onStrikethroughClick: () -> Unit,
-    onSubscriptClick: () -> Unit,
-    onSuperscriptClick: () -> Unit,
     imageUploading: Boolean,
+    text: TextFieldValue,
+    onTextChange: (TextFieldValue) -> Unit,
 ) {
     Row(
         modifier = Modifier.horizontalScroll(rememberScrollState()),
@@ -477,7 +441,13 @@ fun MarkdownHelperBar(
             }
         }
         IconButton(
-            onClick = onBoldClick,
+            onClick = {
+                simpleMarkdownSurround(
+                    "**",
+                    value = text,
+                    onValueChange = onTextChange,
+                )
+            },
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatBold,
@@ -486,7 +456,13 @@ fun MarkdownHelperBar(
             )
         }
         IconButton(
-            onClick = onItalicsClick,
+            onClick = {
+                simpleMarkdownSurround(
+                    "*",
+                    value = text,
+                    onValueChange = onTextChange,
+                )
+            },
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatItalic,
@@ -495,7 +471,14 @@ fun MarkdownHelperBar(
             )
         }
         IconButton(
-            onClick = onQuoteClick,
+            onClick = {
+                simpleMarkdownSurround(
+                    "> ",
+                    value = text,
+                    onValueChange = onTextChange,
+                    surround = false,
+                )
+            },
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatQuote,
@@ -504,7 +487,14 @@ fun MarkdownHelperBar(
             )
         }
         IconButton(
-            onClick = onListClick,
+            onClick = {
+                simpleMarkdownSurround(
+                    "- ",
+                    value = text,
+                    onValueChange = onTextChange,
+                    surround = false,
+                )
+            },
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatListBulleted,
@@ -513,7 +503,31 @@ fun MarkdownHelperBar(
             )
         }
         IconButton(
-            onClick = onHeaderClick,
+            onClick = {
+                simpleMarkdownSurround(
+                    startText = "::: spoiler Title\n",
+                    endText = "\n:::",
+                    value = text,
+                    onValueChange = onTextChange,
+                )
+            },
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.emergency_home_fill0_wght400_grad0_opsz48),
+                contentDescription = stringResource(R.string.markdownHelper_insertSpoiler),
+                modifier = Modifier.size(MARKDOWN_BAR_ICON_SIZE),
+                tint = MaterialTheme.colorScheme.onBackground.muted,
+            )
+        }
+        IconButton(
+            onClick = {
+                simpleMarkdownSurround(
+                    "# ",
+                    value = text,
+                    onValueChange = onTextChange,
+                    surround = false,
+                )
+            },
         ) {
             Icon(
                 imageVector = Icons.Outlined.Title,
@@ -522,7 +536,13 @@ fun MarkdownHelperBar(
             )
         }
         IconButton(
-            onClick = onCodeClick,
+            onClick = {
+                simpleMarkdownSurround(
+                    "`",
+                    value = text,
+                    onValueChange = onTextChange,
+                )
+            },
         ) {
             Icon(
                 imageVector = Icons.Outlined.Code,
@@ -531,7 +551,13 @@ fun MarkdownHelperBar(
             )
         }
         IconButton(
-            onClick = onStrikethroughClick,
+            onClick = {
+                simpleMarkdownSurround(
+                    "~~",
+                    value = text,
+                    onValueChange = onTextChange,
+                )
+            },
         ) {
             Icon(
                 imageVector = Icons.Outlined.FormatStrikethrough,
@@ -540,7 +566,13 @@ fun MarkdownHelperBar(
             )
         }
         IconButton(
-            onClick = onSubscriptClick,
+            onClick = {
+                simpleMarkdownSurround(
+                    "~",
+                    value = text,
+                    onValueChange = onTextChange,
+                )
+            },
         ) {
             Icon(
                 imageVector = Icons.Outlined.Subscript,
@@ -549,7 +581,13 @@ fun MarkdownHelperBar(
             )
         }
         IconButton(
-            onClick = onSuperscriptClick,
+            onClick = {
+                simpleMarkdownSurround(
+                    "^",
+                    value = text,
+                    onValueChange = onTextChange,
+                )
+            },
         ) {
             Icon(
                 imageVector = Icons.Outlined.Superscript,
@@ -564,48 +602,29 @@ fun MarkdownHelperBar(
 @Composable
 fun TextMarkdownBarPreview() {
     MarkdownHelperBar(
-        onHeaderClick = {},
         onPreviewClick = {},
         onImageClick = {},
-        onListClick = {},
-        onQuoteClick = {},
-        onBoldClick = {},
-        onItalicsClick = {},
-        onCodeClick = {},
-        onStrikethroughClick = {},
-        onSubscriptClick = {},
-        onSuperscriptClick = {},
         onLinkClick = {},
         imageUploading = false,
-    )
-}
-
-@Composable
-fun PreviewLines(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyMedium,
-        maxLines = 5,
-        overflow = TextOverflow.Ellipsis,
-        modifier = modifier,
+        text = TextFieldValue(),
+        onTextChange = {},
     )
 }
 
 @Composable
 fun MyMarkdownText(
     markdown: String,
+    modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit,
-    onLongClick: (() -> Unit)? = null,
+    onLongClick: ((View) -> Boolean)? = null,
 ) {
     MarkdownHelper.CreateMarkdownView(
         markdown = markdown,
         color = color,
         onClick = onClick,
         onLongClick = onLongClick,
+        modifier = modifier,
     )
 }
 

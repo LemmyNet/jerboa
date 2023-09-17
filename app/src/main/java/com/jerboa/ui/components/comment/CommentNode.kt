@@ -1,6 +1,7 @@
 package com.jerboa.ui.components.comment
 
-import android.widget.Toast
+import android.view.View
+import android.widget.TextView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -11,29 +12,17 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Flag
-import androidx.compose.material.icons.outlined.Forum
-import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Restore
-import androidx.compose.material.icons.outlined.Textsms
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -47,11 +36,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jerboa.Border
 import com.jerboa.CommentNodeData
 import com.jerboa.InstantScores
@@ -61,19 +50,17 @@ import com.jerboa.border
 import com.jerboa.buildCommentsTree
 import com.jerboa.calculateCommentOffset
 import com.jerboa.calculateNewInstantScores
-import com.jerboa.copyToClipboard
 import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.samplePost
 import com.jerboa.datatypes.sampleReplyCommentView
 import com.jerboa.datatypes.sampleSecondReplyCommentView
 import com.jerboa.datatypes.types.*
-import com.jerboa.db.Account
-import com.jerboa.isModerator
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isPostCreator
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.MarkdownHelper
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.VoteGeneric
@@ -84,6 +71,7 @@ import com.jerboa.ui.theme.SMALL_PADDING
 import com.jerboa.ui.theme.XXL_PADDING
 import com.jerboa.ui.theme.colorList
 import com.jerboa.ui.theme.muted
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun CommentNodeHeader(
@@ -97,6 +85,7 @@ fun CommentNodeHeader(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentView.creator,
@@ -114,6 +103,7 @@ fun CommentNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
+        showScores = showScores,
     )
 }
 
@@ -131,16 +121,16 @@ fun CommentNodeHeaderPreview() {
         collapsedCommentsCount = 5,
         isExpanded = false,
         showAvatar = true,
+        showScores = true,
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommentBody(
     comment: Comment,
     viewSource: Boolean,
     onClick: () -> Unit,
-    onLongClick: () -> Unit,
+    onLongClick: ((View) -> Boolean),
 ) {
     val content = if (comment.removed) {
         stringResource(R.string.comment_body_removed)
@@ -154,10 +144,7 @@ fun CommentBody(
         SelectionContainer {
             Text(
                 text = comment.content,
-                modifier = Modifier.combinedClickable(
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                ),
+                fontFamily = FontFamily.Monospace,
             )
         }
     } else {
@@ -165,6 +152,7 @@ fun CommentBody(
             markdown = content,
             onClick = onClick,
             onLongClick = onLongClick,
+            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, MEDIUM_PADDING),
         )
     }
 }
@@ -176,7 +164,7 @@ fun CommentBodyPreview() {
         comment = sampleCommentView.comment,
         viewSource = false,
         onClick = {},
-        onLongClick = {},
+        onLongClick = { true },
     )
 }
 
@@ -188,7 +176,7 @@ fun LazyListScope.commentNodeItem(
     isExpanded: (commentId: Int) -> Boolean,
     toggleExpanded: (commentId: Int) -> Unit,
     toggleActionBar: (commentId: Int) -> Unit,
-    moderators: List<CommunityModeratorView>,
+    isModerator: (Int) -> Boolean,
     onUpvoteClick: (commentView: CommentView) -> Unit,
     onDownvoteClick: (commentView: CommentView) -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
@@ -208,12 +196,13 @@ fun LazyListScope.commentNodeItem(
     onFetchChildrenClick: (commentView: CommentView) -> Unit,
     showCollapsedCommentContent: Boolean,
     showPostAndCommunityContext: Boolean = false,
-    account: Account?,
+    account: Account,
     isCollapsedByParent: Boolean,
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showScores: Boolean,
 ) {
     val commentView = node.commentView
     val commentId = commentView.comment.id
@@ -233,6 +222,8 @@ fun LazyListScope.commentNodeItem(
         .commentView.counts.child_count > 0 && !isFlat
 
     increaseLazyListIndexTracker()
+    // TODO Needs a contentType
+    // possibly "contentNodeItemL${node.depth}"
     item(key = commentId) {
         var viewSource by remember { mutableStateOf(false) }
 
@@ -262,10 +253,10 @@ fun LazyListScope.commentNodeItem(
                         start = offset,
                     ),
             ) {
-                Divider()
                 Column(
                     modifier = Modifier.border(start = border),
                 ) {
+                    Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
                     Column(
                         modifier = Modifier.padding(
                             start = offset2,
@@ -286,7 +277,7 @@ fun LazyListScope.commentNodeItem(
                             onPersonClick = onPersonClick,
                             score = instantScores.value.score,
                             myVote = instantScores.value.myVote,
-                            isModerator = isModerator(commentView.creator, moderators),
+                            isModerator = isModerator(commentView.creator.id),
                             onClick = {
                                 onHeaderClick(commentView)
                             },
@@ -296,6 +287,7 @@ fun LazyListScope.commentNodeItem(
                             collapsedCommentsCount = node.commentView.counts.child_count,
                             isExpanded = isExpanded(commentId),
                             showAvatar = showAvatar,
+                            showScores = showScores,
                         )
                         AnimatedVisibility(
                             visible = isExpanded(commentId) || showCollapsedCommentContent,
@@ -307,11 +299,17 @@ fun LazyListScope.commentNodeItem(
                                     comment = commentView.comment,
                                     viewSource = viewSource,
                                     onClick = { onCommentClick(commentView) },
-                                    onLongClick = {
-                                        toggleActionBar(commentId)
+                                    onLongClick = { v ->
+                                        if (v is TextView) {
+                                            // Also triggers for long click on links, so we check if link was hit
+                                            // Can have selection in viewSource but there are no links there
+                                            if (viewSource || (v.selectionStart == -1 && v.selectionEnd == -1)) {
+                                                toggleActionBar(commentId)
+                                            }
+                                        }
+                                        true
                                     },
                                 )
-                                Spacer(modifier = Modifier.height(MEDIUM_PADDING))
                                 AnimatedVisibility(
                                     visible = showActionBar(commentId),
                                     enter = expandVertically(),
@@ -325,14 +323,14 @@ fun LazyListScope.commentNodeItem(
                                                 instantScores.value,
                                                 voteType = VoteType.Upvote,
                                             )
-                                            onUpvoteClick(it)
+                                            onUpvoteClick(commentView)
                                         },
                                         onDownvoteClick = {
                                             instantScores.value = calculateNewInstantScores(
                                                 instantScores.value,
                                                 voteType = VoteType.Downvote,
                                             )
-                                            onDownvoteClick(it)
+                                            onDownvoteClick(commentView)
                                         },
                                         onViewSourceClick = {
                                             viewSource = !viewSource
@@ -353,6 +351,8 @@ fun LazyListScope.commentNodeItem(
                                         },
                                         account = account,
                                         enableDownVotes = enableDownVotes,
+                                        showScores = showScores,
+                                        viewSource = viewSource,
                                     )
                                 }
                             }
@@ -376,7 +376,7 @@ fun LazyListScope.commentNodeItem(
 
     node.children?.also { nodes ->
         commentNodeItems(
-            nodes = nodes,
+            nodes = nodes.toImmutableList(),
             increaseLazyListIndexTracker = increaseLazyListIndexTracker,
             addToParentIndexes = addToParentIndexes,
             isFlat = isFlat,
@@ -402,13 +402,14 @@ fun LazyListScope.commentNodeItem(
             onReplyClick = onReplyClick,
             onBlockCreatorClick = onBlockCreatorClick,
             account = account,
-            moderators = moderators,
+            isModerator = isModerator,
             isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
             showCollapsedCommentContent = showCollapsedCommentContent,
             showActionBar = showActionBar,
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
+            showScores = showScores,
         )
     }
 }
@@ -509,8 +510,8 @@ fun CommentFooterLine(
     commentView: CommentView,
     enableDownVotes: Boolean,
     instantScores: InstantScores,
-    onUpvoteClick: (commentView: CommentView) -> Unit,
-    onDownvoteClick: (commentView: CommentView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onReplyClick: (commentView: CommentView) -> Unit,
     onSaveClick: (commentView: CommentView) -> Unit,
     onViewSourceClick: () -> Unit,
@@ -522,43 +523,25 @@ fun CommentFooterLine(
     onPersonClick: (personId: Int) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    account: Account?,
+    account: Account,
+    showScores: Boolean,
+    viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showMoreOptions) {
-        CommentOptionsDialog(
+        CommentOptionsDropdown(
             commentView = commentView,
             onDismissRequest = { showMoreOptions = false },
-            onViewSourceClick = {
-                showMoreOptions = false
-                onViewSourceClick()
-            },
-            onEditCommentClick = {
-                showMoreOptions = false
-                onEditCommentClick(commentView)
-            },
-            onDeleteCommentClick = {
-                showMoreOptions = false
-                onDeleteCommentClick(commentView)
-            },
-            onReportClick = {
-                showMoreOptions = false
-                onReportClick(commentView)
-            },
-            onBlockCreatorClick = {
-                showMoreOptions = false
-                onBlockCreatorClick(commentView.creator)
-            },
-            onCommentLinkClick = {
-                showMoreOptions = false
-                onCommentLinkClick(commentView)
-            },
-            onPersonClick = {
-                showMoreOptions = false
-                onPersonClick(commentView.creator.id)
-            },
-            isCreator = account?.id == commentView.creator.id,
+            onViewSourceClick = onViewSourceClick,
+            onEditCommentClick = onEditCommentClick,
+            onDeleteCommentClick = onDeleteCommentClick,
+            onReportClick = onReportClick,
+            onBlockCreatorClick = onBlockCreatorClick,
+            onCommentLinkClick = onCommentLinkClick,
+            onPersonClick = onPersonClick,
+            isCreator = account.id == commentView.creator.id,
+            viewSource = viewSource,
         )
     }
 
@@ -566,13 +549,13 @@ fun CommentFooterLine(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick,
                 onLongClick = onLongClick,
-            ),
+            )
+            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -580,22 +563,27 @@ fun CommentFooterLine(
             VoteGeneric(
                 myVote = instantScores.myVote,
                 votes = instantScores.upvotes,
-                item = commentView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (instantScores.downvotes != 0),
+                showNumber = (instantScores.downvotes != 0) && showScores,
                 account = account,
             )
             if (enableDownVotes) {
                 VoteGeneric(
                     myVote = instantScores.myVote,
                     votes = instantScores.downvotes,
-                    item = commentView,
                     type = VoteType.Downvote,
+                    showNumber = showScores,
                     onVoteClick = onDownvoteClick,
                     account = account,
                 )
             }
+            ActionBarButton(
+                icon = Icons.Outlined.Comment,
+                onClick = { onReplyClick(commentView) },
+                contentDescription = stringResource(R.string.commentFooter_reply),
+                account = account,
+            )
             ActionBarButton(
                 icon = if (commentView.saved) { Icons.Filled.Bookmark } else {
                     Icons.Outlined.BookmarkBorder
@@ -611,12 +599,6 @@ fun CommentFooterLine(
                 } else {
                     MaterialTheme.colorScheme.onBackground.muted
                 },
-                account = account,
-            )
-            ActionBarButton(
-                icon = Icons.Outlined.Textsms,
-                onClick = { onReplyClick(commentView) },
-                contentDescription = stringResource(R.string.commentFooter_reply),
                 account = account,
             )
             ActionBarButton(
@@ -665,7 +647,7 @@ fun CommentNodesPreview() {
         onCommunityClick = {},
         onBlockCreatorClick = {},
         onPostClick = {},
-        moderators = listOf(),
+        isModerator = { false },
         listState = rememberLazyListState(),
         isCollapsedByParent = false,
         showCollapsedCommentContent = false,
@@ -673,126 +655,8 @@ fun CommentNodesPreview() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
-    )
-}
-
-@Composable
-fun CommentOptionsDialog(
-    onDismissRequest: () -> Unit,
-    onViewSourceClick: () -> Unit,
-    onEditCommentClick: () -> Unit,
-    onDeleteCommentClick: () -> Unit,
-    onReportClick: () -> Unit,
-    onBlockCreatorClick: () -> Unit,
-    onCommentLinkClick: () -> Unit,
-    onPersonClick: () -> Unit,
-    isCreator: Boolean,
-    commentView: CommentView,
-) {
-    val localClipboardManager = LocalClipboardManager.current
-    val ctx = LocalContext.current
-
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_node_goto_comment),
-                    icon = Icons.Outlined.Forum,
-                    onClick = onCommentLinkClick,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(
-                        R.string.comment_node_go_to,
-                        commentView.creator.name,
-                    ),
-                    icon = Icons.Outlined.Person,
-                    onClick = onPersonClick,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_node_view_source),
-                    icon = Icons.Outlined.Description,
-                    onClick = onViewSourceClick,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_node_copy_permalink),
-                    icon = Icons.Outlined.Link,
-                    onClick = {
-                        val permalink = commentView.comment.ap_id
-                        localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(
-                            ctx,
-                            ctx.getString(R.string.comment_node_permalink_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        onDismissRequest()
-                    },
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_node_copy_comment),
-                    icon = Icons.Outlined.ContentCopy,
-                    onClick = {
-                        if (copyToClipboard(ctx, commentView.comment.content, "comment")) {
-                            Toast.makeText(ctx, ctx.getString(R.string.comment_node_comment_copied), Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(ctx, ctx.getString(R.string.generic_error), Toast.LENGTH_SHORT).show()
-                        }
-                        onDismissRequest()
-                    },
-                )
-                if (!isCreator) {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.comment_node_report_comment),
-                        icon = Icons.Outlined.Flag,
-                        onClick = onReportClick,
-                    )
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.comment_node_block, commentView.creator.name),
-                        icon = Icons.Outlined.Block,
-                        onClick = onBlockCreatorClick,
-                    )
-                }
-                if (isCreator) {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.comment_node_edit),
-                        icon = Icons.Outlined.Edit,
-                        onClick = onEditCommentClick,
-                    )
-                    val deleted = commentView.comment.deleted
-                    if (deleted) {
-                        IconAndTextDrawerItem(
-                            text = stringResource(R.string.comment_node_restore),
-                            icon = Icons.Outlined.Restore,
-                            onClick = onDeleteCommentClick,
-                        )
-                    } else {
-                        IconAndTextDrawerItem(
-                            text = stringResource(R.string.comment_node_delete),
-                            icon = Icons.Outlined.Delete,
-                            onClick = onDeleteCommentClick,
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {},
-    )
-}
-
-@Preview
-@Composable
-fun CommentOptionsDialogPreview() {
-    CommentOptionsDialog(
-        isCreator = true,
-        commentView = sampleCommentView,
-        onDismissRequest = {},
-        onEditCommentClick = {},
-        onDeleteCommentClick = {},
-        onReportClick = {},
-        onViewSourceClick = {},
-        onCommentLinkClick = {},
-        onPersonClick = {},
-        onBlockCreatorClick = {},
+        account = AnonAccount,
+        showScores = true,
     )
 }
 

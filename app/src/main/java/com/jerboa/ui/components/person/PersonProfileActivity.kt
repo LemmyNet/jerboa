@@ -3,7 +3,11 @@ package com.jerboa.ui.components.person
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -11,11 +15,26 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -23,12 +42,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import arrow.core.Either
+import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.api.ApiState
 import com.jerboa.commentsToFlatNodes
+import com.jerboa.datatypes.getDisplayName
 import com.jerboa.datatypes.types.BlockCommunity
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentView
@@ -37,51 +57,43 @@ import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeleteComment
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPersonDetails
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
-import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.Account
-import com.jerboa.db.AccountViewModel
-import com.jerboa.db.AppSettingsViewModel
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
+import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.shareLink
 import com.jerboa.getLocalizedStringForUserTab
-import com.jerboa.isLoading
-import com.jerboa.isRefreshing
 import com.jerboa.isScrolledToEnd
+import com.jerboa.model.AccountViewModel
+import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.PersonProfileViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.newVote
-import com.jerboa.pagerTabIndicatorOffset2
 import com.jerboa.scrollToTop
-import com.jerboa.shareLink
 import com.jerboa.ui.components.comment.CommentNodes
 import com.jerboa.ui.components.comment.edit.CommentEditReturn
 import com.jerboa.ui.components.comment.reply.CommentReplyReturn
 import com.jerboa.ui.components.common.ApiEmptyText
 import com.jerboa.ui.components.common.ApiErrorText
-import com.jerboa.ui.components.common.CommentEditDeps
-import com.jerboa.ui.components.common.CommentReplyDeps
-import com.jerboa.ui.components.common.ConsumeReturn
-import com.jerboa.ui.components.common.InitializeRoute
+import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.PostEditDeps
+import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.getPostViewMode
-import com.jerboa.ui.components.common.rootChannel
+import com.jerboa.ui.components.common.isLoading
+import com.jerboa.ui.components.common.isRefreshing
+import com.jerboa.ui.components.common.pagerTabIndicatorOffset2
 import com.jerboa.ui.components.common.simpleVerticalScrollbar
-import com.jerboa.ui.components.common.toComment
-import com.jerboa.ui.components.common.toCommentEdit
-import com.jerboa.ui.components.common.toCommentReply
-import com.jerboa.ui.components.common.toCommentReport
-import com.jerboa.ui.components.common.toCommunity
-import com.jerboa.ui.components.common.toPost
-import com.jerboa.ui.components.common.toPostEdit
-import com.jerboa.ui.components.common.toPostReport
-import com.jerboa.ui.components.common.toProfile
 import com.jerboa.ui.components.community.CommunityLink
 import com.jerboa.ui.components.post.PostListings
+import com.jerboa.ui.components.post.PostViewReturn
 import com.jerboa.ui.components.post.edit.PostEditReturn
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import kotlinx.collections.immutable.toImmutableList
@@ -93,7 +105,7 @@ import kotlinx.coroutines.launch
 fun PersonProfileActivity(
     personArg: Either<PersonId, String>,
     savedMode: Boolean,
-    navController: NavController,
+    appState: JerboaAppState,
     accountViewModel: AccountViewModel,
     siteViewModel: SiteViewModel,
     appSettingsViewModel: AppSettingsViewModel,
@@ -101,6 +113,11 @@ fun PersonProfileActivity(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
+    drawerState: DrawerState,
+    markAsReadOnScroll: Boolean,
+    postActionbarMode: Int,
+    onBack: (() -> Unit)? = null,
 ) {
     Log.d("jerboa", "got to person activity")
 
@@ -111,63 +128,51 @@ fun PersonProfileActivity(
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val personProfileViewModel: PersonProfileViewModel = viewModel()
+    val personProfileViewModel: PersonProfileViewModel =
+        viewModel(factory = PersonProfileViewModel.Companion.Factory(personArg, savedMode, account))
 
-    navController.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW) { pv ->
-        if (personProfileViewModel.initialized) personProfileViewModel.updatePost(pv)
-    }
+    appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, personProfileViewModel::updatePost)
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, personProfileViewModel::updateComment)
 
-    navController.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW) { cv ->
-        if (personProfileViewModel.initialized) personProfileViewModel.updateComment(cv)
-    }
-
-    navController.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
-        if (personProfileViewModel.initialized) {
-            when (val res = personProfileViewModel.personDetailsRes) {
-                is ApiState.Success -> {
-                    if (account?.id == res.data.person_view.person.id) {
-                        personProfileViewModel.insertComment(cv)
-                    }
+    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW) { cv ->
+        when (val res = personProfileViewModel.personDetailsRes) {
+            is ApiState.Success -> {
+                if (account.id == res.data.person_view.person.id) {
+                    personProfileViewModel.insertComment(cv)
                 }
-                else -> {}
             }
+            else -> {}
         }
     }
 
-    InitializeRoute(personProfileViewModel) {
-        val personId = personArg.fold({ it }, { null })
-        val personName = personArg.fold({ null }, { it })
-
-        personProfileViewModel.resetPage()
-        personProfileViewModel.updateSavedOnly(savedMode)
-        personProfileViewModel.getPersonDetails(
-            GetPersonDetails(
-                person_id = personId,
-                username = personName,
-                sort = SortType.New,
-                auth = account?.jwt,
-                saved_only = savedMode,
-            ),
-        )
+    fun openDrawer() {
+        scope.launch {
+            drawerState.open()
+        }
     }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             when (val profileRes = personProfileViewModel.personDetailsRes) {
-                is ApiState.Failure -> ApiErrorText(profileRes.msg)
+                is ApiState.Failure -> apiErrorToast(ctx, profileRes.msg)
                 ApiState.Loading, ApiState.Refreshing -> {
                     // Prevents tabs from jumping around during loading/refreshing
                     PersonProfileHeader(
-                        scrollBehavior = scrollBehavior,
                         personName = ctx.getString(R.string.loading),
                         myProfile = false,
-                        selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = {},
                         onBlockPersonClick = {},
                         onReportPersonClick = {},
-                        navController = navController,
+                        onMessagePersonClick = {},
+                        selectedSortType = personProfileViewModel.sortType,
+                        openDrawer = ::openDrawer,
+                        scrollBehavior = scrollBehavior,
+                        onBack = onBack,
+                        isLoggedIn = { false },
+                        siteVersion = siteViewModel.siteVersion(),
+                        matrixId = null,
                     )
                 }
                 is ApiState.Holder -> {
@@ -179,7 +184,7 @@ fun PersonProfileActivity(
                         } else {
                             person.name
                         },
-                        myProfile = account?.id == person.id,
+                        myProfile = account.id == person.id,
                         selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = { sortType ->
                             scrollToTop(scope, postListState)
@@ -191,17 +196,24 @@ fun PersonProfileActivity(
                                     sort = personProfileViewModel.sortType,
                                     page = personProfileViewModel.page,
                                     saved_only = personProfileViewModel.savedOnly,
-                                    auth = account?.jwt,
+                                    auth = account.getJWT(),
                                 ),
                             )
                         },
                         onBlockPersonClick = {
-                            account?.also { acct ->
+                            account.doIfReadyElseDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                scope,
+                                siteViewModel,
+                                accountViewModel,
+                            ) {
                                 personProfileViewModel.blockPerson(
                                     BlockPerson(
                                         person_id = person.id,
                                         block = true,
-                                        auth = acct.jwt,
+                                        auth = it.jwt,
                                     ),
                                     ctx,
                                 )
@@ -211,12 +223,22 @@ fun PersonProfileActivity(
                             val firstComment = profileRes.data.comments.firstOrNull()
                             val firstPost = profileRes.data.posts.firstOrNull()
                             if (firstComment !== null) {
-                                navController.toCommentReport(id = firstComment.comment.id)
+                                appState.toCommentReport(id = firstComment.comment.id)
                             } else if (firstPost !== null) {
-                                navController.toPostReport(id = firstPost.post.id)
+                                appState.toPostReport(id = firstPost.post.id)
                             }
                         },
-                        navController = navController,
+                        onMessagePersonClick = {
+                            appState.toCreatePrivateMessage(
+                                profileRes.data.person_view.person.id,
+                                profileRes.data.person_view.person.getDisplayName(),
+                            )
+                        },
+                        openDrawer = ::openDrawer,
+                        onBack = onBack,
+                        isLoggedIn = { !account.isAnon() },
+                        siteVersion = siteViewModel.siteVersion(),
+                        matrixId = person.matrix_user_id,
                     )
                 }
                 else -> {}
@@ -226,7 +248,7 @@ fun PersonProfileActivity(
             UserTabs(
                 savedMode = savedMode,
                 padding = it,
-                navController = navController,
+                appState = appState,
                 personProfileViewModel = personProfileViewModel,
                 ctx = ctx,
                 account = account,
@@ -239,6 +261,11 @@ fun PersonProfileActivity(
                 useCustomTabs = useCustomTabs,
                 usePrivateTabs = usePrivateTabs,
                 blurNSFW = blurNSFW,
+                showPostLinkPreviews = showPostLinkPreviews,
+                markAsReadOnScroll = markAsReadOnScroll,
+                snackbarHostState = snackbarHostState,
+                showScores = siteViewModel.showScores(),
+                postActionbarMode = postActionbarMode,
             )
         },
     )
@@ -253,11 +280,11 @@ enum class UserTab {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun UserTabs(
+    appState: JerboaAppState,
     savedMode: Boolean,
-    navController: NavController,
     personProfileViewModel: PersonProfileViewModel,
     ctx: Context,
-    account: Account?,
+    account: Account,
     scope: CoroutineScope,
     postListState: LazyListState,
     padding: PaddingValues,
@@ -268,22 +295,25 @@ fun UserTabs(
     useCustomTabs: Boolean,
     usePrivateTabs: Boolean,
     blurNSFW: Boolean,
+    showPostLinkPreviews: Boolean,
+    markAsReadOnScroll: Boolean,
+    snackbarHostState: SnackbarHostState,
+    showScores: Boolean,
+    postActionbarMode: Int,
 ) {
-    val transferCommentEditDepsViaRoot = navController.rootChannel<CommentEditDeps>()
-    val transferCommentReplyDepsViaRoot = navController.rootChannel<CommentReplyDeps>()
-    val transferPostEditDepsViaRoot = navController.rootChannel<PostEditDeps>()
-
     val tabTitles = if (savedMode) {
         listOf(
             getLocalizedStringForUserTab(ctx, UserTab.Posts),
             getLocalizedStringForUserTab(ctx, UserTab.Comments),
         )
     } else {
-        UserTab.values().map { getLocalizedStringForUserTab(ctx, it) }
+        UserTab.entries.map { getLocalizedStringForUserTab(ctx, it) }
     }
     val pagerState = rememberPagerState { tabTitles.size }
 
     val loading = personProfileViewModel.personDetailsRes.isLoading()
+
+    appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, personProfileViewModel::updatePost)
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -297,7 +327,7 @@ fun UserTabs(
                             sort = personProfileViewModel.sortType,
                             page = personProfileViewModel.page,
                             saved_only = personProfileViewModel.savedOnly,
-                            auth = account?.jwt,
+                            auth = account.getJWT(),
                         ),
                         ApiState.Refreshing,
                     )
@@ -359,10 +389,11 @@ fun UserTabs(
                                     .fillMaxSize()
                                     .simpleVerticalScrollbar(listState),
                             ) {
-                                item {
+                                item(contentType = "topSection") {
                                     PersonProfileTopSection(
                                         personView = profileRes.data.person_view,
                                         showAvatar = showAvatar,
+                                        openImageViewer = appState::openImageViewer,
                                     )
                                 }
                                 val moderates = profileRes.data.moderates
@@ -378,12 +409,13 @@ fun UserTabs(
                                 items(
                                     moderates,
                                     key = { cmv -> cmv.community.id },
+                                    contentType = { "communitylink" },
                                 ) { cmv ->
                                     CommunityLink(
                                         community = cmv.community,
                                         modifier = Modifier.padding(MEDIUM_PADDING),
                                         onClick = { community ->
-                                            navController.toCommunity(id = community.id)
+                                            appState.toCommunity(id = community.id)
                                         },
                                         showDefaultIcon = true,
                                         blurNSFW = blurNSFW,
@@ -401,7 +433,7 @@ fun UserTabs(
                             .pullRefresh(pullRefreshState)
                             .fillMaxSize(),
                     ) {
-                        PullRefreshIndicator(
+                        JerboaPullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
                             pullRefreshState,
                             // zIndex needed bc some elements of a post get drawn above it.
@@ -420,7 +452,13 @@ fun UserTabs(
                                 PostListings(
                                     posts = profileRes.data.posts.toImmutableList(),
                                     onUpvoteClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
@@ -428,13 +466,19 @@ fun UserTabs(
                                                         pv.my_vote,
                                                         VoteType.Upvote,
                                                     ),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onDownvoteClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
@@ -442,70 +486,91 @@ fun UserTabs(
                                                         pv.my_vote,
                                                         VoteType.Downvote,
                                                     ),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onPostClick = { pv ->
-                                        navController.toPost(id = pv.post.id)
+                                        appState.toPost(id = pv.post.id)
                                     },
                                     onSaveClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.savePost(
                                                 SavePost(
                                                     post_id = pv.post.id,
                                                     save = !pv.saved,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onEditPostClick = { pv ->
-                                        navController.toPostEdit(
-                                            channel = transferPostEditDepsViaRoot,
+                                        appState.toPostEdit(
                                             postView = pv,
                                         )
                                     },
                                     onDeletePostClick = { pv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.deletePost(
                                                 DeletePost(
                                                     post_id = pv.post.id,
                                                     deleted = !pv.post.deleted,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onReportClick = { pv ->
-                                        navController.toPostReport(id = pv.post.id)
+                                        appState.toPostReport(id = pv.post.id)
                                     },
                                     onCommunityClick = { community ->
-                                        navController.toCommunity(id = community.id)
+                                        appState.toCommunity(id = community.id)
                                     },
-                                    onPersonClick = { personId ->
-                                        navController.toProfile(id = personId)
-                                    },
+                                    onPersonClick = appState::toProfile,
                                     onBlockCommunityClick = { community ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.blockCommunity(
                                                 BlockCommunity(
                                                     community_id = community.id,
                                                     block = true,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
                                         }
                                     },
                                     onBlockCreatorClick = { person ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.blockPerson(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                                 ctx = ctx,
                                             )
@@ -514,21 +579,40 @@ fun UserTabs(
                                     onShareClick = { url ->
                                         shareLink(url, ctx)
                                     },
-                                    isScrolledToEnd = {
+                                    loadMorePosts = {
                                         personProfileViewModel.appendData(
                                             profileRes.data.person_view.person.id,
-                                            account?.jwt,
+                                            account.getJWT(),
                                         )
                                     },
                                     account = account,
                                     listState = postListState,
                                     postViewMode = getPostViewMode(appSettingsViewModel),
+                                    showVotingArrowsInListView = showVotingArrowsInListView,
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
-                                    showVotingArrowsInListView = showVotingArrowsInListView,
                                     useCustomTabs = useCustomTabs,
                                     usePrivateTabs = usePrivateTabs,
                                     blurNSFW = blurNSFW,
+                                    showPostLinkPreviews = showPostLinkPreviews,
+                                    appState = appState,
+                                    markAsReadOnScroll = markAsReadOnScroll,
+                                    onMarkAsRead = {
+                                        if (!account.isAnon() && !it.read) {
+                                            personProfileViewModel.markPostAsRead(
+                                                MarkPostAsRead(
+                                                    post_id = it.post.id,
+                                                    read = true,
+                                                    auth = account.jwt,
+                                                ),
+                                                appState,
+                                            )
+                                        }
+                                    },
+                                    showIfRead = false,
+                                    showScores = showScores,
+                                    postActionbarMode = postActionbarMode,
+                                    showPostAppendRetry = personProfileViewModel.personDetailsRes is ApiState.AppendingFailure,
                                 )
                             }
                             else -> {}
@@ -581,7 +665,7 @@ fun UserTabs(
                                 LaunchedEffect(Unit) {
                                     personProfileViewModel.appendData(
                                         profileRes.data.person_view.person.id,
-                                        account?.jwt,
+                                        account.getJWT(),
                                     )
                                 }
                             }
@@ -591,7 +675,7 @@ fun UserTabs(
                                     .pullRefresh(pullRefreshState)
                                     .fillMaxSize(),
                             ) {
-                                PullRefreshIndicator(
+                                JerboaPullRefreshIndicator(
                                     personProfileViewModel.personDetailsRes.isRefreshing(),
                                     pullRefreshState,
                                     // zIndex needed bc some elements of a post get drawn above it.
@@ -613,90 +697,118 @@ fun UserTabs(
                                     toggleActionBar = { commentId -> toggleActionBar(commentId) },
                                     onMarkAsReadClick = {},
                                     onCommentClick = { cv ->
-                                        navController.toComment(id = cv.comment.id)
+                                        // TODO navigate to comment (using appState.toComment()) once the route is supported
+                                        appState.toPost(id = cv.post.id)
                                     },
                                     onUpvoteClick = { cv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
                                                     score = newVote(cv.my_vote, VoteType.Upvote),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onDownvoteClick = { cv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.likeComment(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
                                                     score = newVote(cv.my_vote, VoteType.Downvote),
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onReplyClick = { cv ->
-                                        navController.toCommentReply(
-                                            channel = transferCommentReplyDepsViaRoot,
+                                        appState.toCommentReply(
                                             replyItem = ReplyItem.CommentItem(cv),
                                             isModerator = false,
                                         )
                                     },
                                     onSaveClick = { cv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.saveComment(
                                                 SaveComment(
                                                     comment_id = cv.comment.id,
                                                     save = !cv.saved,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
-                                    onPersonClick = { personId ->
-                                        navController.toProfile(id = personId)
-                                    },
+                                    onPersonClick = appState::toProfile,
                                     onHeaderClick = {},
                                     onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
                                     onCommunityClick = { community ->
-                                        navController.toCommunity(id = community.id)
+                                        appState.toCommunity(id = community.id)
                                     },
                                     onPostClick = { postId ->
-                                        navController.toPost(id = postId)
+                                        appState.toPost(id = postId)
                                     },
                                     onEditCommentClick = { cv ->
-                                        navController.toCommentEdit(
-                                            channel = transferCommentEditDepsViaRoot,
+                                        appState.toCommentEdit(
                                             commentView = cv,
                                         )
                                     },
                                     onDeleteCommentClick = { cv ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.deleteComment(
                                                 DeleteComment(
                                                     comment_id = cv.comment.id,
                                                     deleted = !cv.comment.deleted,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
                                     },
                                     onReportClick = { cv ->
-                                        navController.toCommentReport(id = cv.comment.id)
+                                        appState.toCommentReport(id = cv.comment.id)
                                     },
                                     onCommentLinkClick = { cv ->
-                                        navController.toComment(id = cv.comment.id)
+                                        // TODO navigate to comment (using appState.toComment()) once the route is supported
+                                        appState.toPost(id = cv.post.id)
                                     },
                                     onFetchChildrenClick = {},
                                     onBlockCreatorClick = { person ->
-                                        account?.also { acct ->
+                                        account.doIfReadyElseDisplayInfo(
+                                            appState,
+                                            ctx,
+                                            snackbarHostState,
+                                            scope,
+                                            loginAsToast = true,
+                                        ) {
                                             personProfileViewModel.blockPerson(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = acct.jwt,
+                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
@@ -709,10 +821,11 @@ fun UserTabs(
                                         showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                                     },
                                     account = account,
-                                    moderators = listOf(),
+                                    isModerator = { false },
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
+                                    showScores = showScores,
                                 )
                             }
                         }

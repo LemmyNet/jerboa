@@ -2,10 +2,15 @@ package com.jerboa.model
 
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import arrow.core.Either
+import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -22,24 +27,23 @@ import com.jerboa.datatypes.types.GetCommunity
 import com.jerboa.datatypes.types.GetCommunityResponse
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.ui.components.common.Initializable
 import com.jerboa.ui.components.common.PostStream
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
-class CommunityViewModel : ViewModel(), Initializable, PostStream {
-    override var initialized by mutableStateOf(false)
+class CommunityViewModel(account: Account, communityArg: Either<CommunityId, String>) : ViewModel(), PostStream {
 
     var communityRes: ApiState<GetCommunityResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -56,16 +60,14 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by
         mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
-
-    var communityId: CommunityId? by mutableStateOf(null)
-    var communityName: String? by mutableStateOf(null)
+    private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
     var fetchingMore by mutableStateOf(false)
         private set
 
     var sortType by mutableStateOf(SortType.Active)
         private set
-    var page by mutableStateOf(1)
+    var page by mutableIntStateOf(1)
         private set
 
     fun updateSortType(sortType: SortType) {
@@ -110,11 +112,12 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
         }
     }
 
-    private fun fetchMore(id: CommunityId, jwt: String?) = runBlocking {
+    private fun fetchMore(id: CommunityId, jwt: String?) = viewModelScope.launch {
         val oldRes = postsRes
-        when (oldRes) {
-            is ApiState.Success -> postsRes = ApiState.Appending(oldRes.data)
-            else -> return@runBlocking
+        postsRes = when (oldRes) {
+            is ApiState.Appending -> return@launch
+            is ApiState.Holder -> ApiState.Appending(oldRes.data)
+            else -> return@launch
         }
 
         nextPage()
@@ -127,20 +130,28 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
 
         val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
 
-        postsRes = when (newRes) {
-            is ApiState.Success -> {
-                if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
-                    prevPage()
+            postsRes = when (newRes) {
+                is ApiState.Success -> {
+                    if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
+                        prevPage()
+                    }
+                    ApiState.Success(
+                        GetPostsResponse(
+                            mergePosts(
+                                oldRes.data.posts,
+                                newRes.data.posts,
+                            ),
+                        ),
+                    )
                 }
-                ApiState.Success(GetPostsResponse(mergePosts(oldRes.data.posts, newRes.data.posts)))
-            }
 
-            else -> {
-                prevPage()
-                oldRes
+                else -> {
+                    prevPage()
+                    ApiState.AppendingFailure(oldRes.data)
+                }
             }
         }
-    }
+
 
     fun followCommunity(form: FollowCommunity, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
@@ -214,13 +225,12 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
     fun blockCommunity(form: BlockCommunity, ctx: Context) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
-            blockCommunityRes =
-                apiWrapper(API.getInstance().blockCommunity(form))
+            blockCommunityRes = apiWrapper(API.getInstance().blockCommunity(form))
+
+            showBlockCommunityToast(blockCommunityRes, ctx)
 
             when (val blockCommunity = blockCommunityRes) {
                 is ApiState.Success -> {
-                    showBlockCommunityToast(blockCommunity, ctx)
-
                     when (val existing = communityRes) {
                         is ApiState.Success -> {
                             val newRes =
@@ -262,6 +272,24 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
         }
     }
 
+    fun markPostAsRead(
+        form: MarkPostAsRead,
+        appState: JerboaAppState,
+    ) {
+        appState.coroutineScope.launch {
+            markPostRes = ApiState.Loading
+            markPostRes = apiWrapper(API.getInstance().markAsRead(form))
+
+            when (val markRes = markPostRes) {
+                is ApiState.Success -> {
+                    updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
     override fun getNextPost(current: PostId?, account: Account?): PostId? {
         val res = postsRes
         return if (res is ApiState.Success) {
@@ -272,24 +300,21 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
                     .mapIndexed { index, postView -> index to postView }
                     .firstOrNull { it.second.post.id == current }
                     ?.first?.let { currIndex ->
-                        if (currIndex + 1 >= res.data.posts.size - 1) {
-                            val nextIndex = res.data.posts.size
-                            communityId?.let {
-                                fetchMore(
-                                    it,
-                                    account?.jwt,
-                                )
-                                val newRes = postsRes
-                                if (newRes is ApiState.Success && newRes.data.posts.size > nextIndex) {
-                                    newRes.data.posts[nextIndex].post.id
-                                } else {
-                                    null
-                                }
+                        if (currIndex >= res.data.posts.size - 7) {
+                            val community = communityRes
+                            if(community is ApiState.Success) {
+                                appendPosts(community.data.community_view.community.id, account?.jwt)
+                            }
+                            val nextIndex = currIndex + 1
+                            if (res.data.posts.size > nextIndex) {
+                                res.data.posts[nextIndex].post.id
+                            } else {
+                                null
                             }
                         } else if (currIndex >= 0) {
                             res.data.posts[currIndex + 1].post.id
                         } else {
-                            null
+                            res.data.posts.firstOrNull()?.post?.id
                         }
                     }
             }
@@ -320,4 +345,46 @@ class CommunityViewModel : ViewModel(), Initializable, PostStream {
     }
 
     override fun isFetchingMore(): Boolean = fetchingMore
+
+    init {
+
+        val communityId = communityArg.fold({ it }, { null })
+        val communityName = communityArg.fold({ null }, { it })
+
+        this.resetPage()
+
+        this.getCommunity(
+            form = GetCommunity(
+                id = communityId,
+                name = communityName,
+                auth = account.getJWT(),
+            ),
+        )
+        this.getPosts(
+            form =
+            GetPosts(
+                community_id = communityId,
+                community_name = communityName,
+                page = this.page,
+                sort = this.sortType,
+                auth = account.getJWT(),
+            ),
+        )
+    }
+
+    companion object {
+        class Factory(
+            private val account: Account,
+            private val id: Either<CommunityId, String>,
+        ) : ViewModelProvider.Factory {
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                return CommunityViewModel(account, id) as T
+            }
+        }
+    }
 }

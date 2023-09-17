@@ -1,6 +1,5 @@
 package com.jerboa.ui.components.comment.replynode
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -11,17 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.MarkChatRead
 import androidx.compose.material.icons.outlined.MarkChatUnread
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Textsms
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -30,10 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jerboa.R
 import com.jerboa.VoteType
@@ -41,12 +33,11 @@ import com.jerboa.datatypes.sampleCommentReplyView
 import com.jerboa.datatypes.types.CommentReplyView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.comment.CommentBody
 import com.jerboa.ui.components.comment.PostAndCommunityContextHeader
 import com.jerboa.ui.components.common.ActionBarButton
 import com.jerboa.ui.components.common.CommentOrPostNodeHeader
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
 import com.jerboa.ui.components.common.VoteGeneric
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
@@ -62,6 +53,7 @@ fun CommentReplyNodeHeader(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     showAvatar: Boolean,
+    showScores: Boolean,
 ) {
     CommentOrPostNodeHeader(
         creator = commentReplyView.creator,
@@ -77,6 +69,7 @@ fun CommentReplyNodeHeader(
         onClick = onClick,
         onLongCLick = onLongClick,
         showAvatar = showAvatar,
+        showScores = showScores,
     )
 }
 
@@ -91,14 +84,15 @@ fun CommentReplyNodeHeaderPreview() {
         onClick = {},
         onLongClick = {},
         showAvatar = true,
+        showScores = true,
     )
 }
 
 @Composable
-fun CommentReplyNodeFooterLine(
+fun CommentReplyNodeInboxFooterLine(
     commentReplyView: CommentReplyView,
-    onUpvoteClick: (commentReplyView: CommentReplyView) -> Unit,
-    onDownvoteClick: (commentReplyView: CommentReplyView) -> Unit,
+    onUpvoteClick: () -> Unit,
+    onDownvoteClick: () -> Unit,
     onReplyClick: (commentReplyView: CommentReplyView) -> Unit,
     onSaveClick: (commentReplyView: CommentReplyView) -> Unit,
     onMarkAsReadClick: (commentReplyView: CommentReplyView) -> Unit,
@@ -110,31 +104,24 @@ fun CommentReplyNodeFooterLine(
     myVote: Int?,
     upvotes: Int,
     downvotes: Int,
-    account: Account?,
+    account: Account,
+    enableDownvotes: Boolean,
+    showScores: Boolean,
+    viewSource: Boolean,
 ) {
     var showMoreOptions by remember { mutableStateOf(false) }
 
     if (showMoreOptions) {
-        CommentReplyNodeOptionsDialog(
+        CommentReplyOptionsDropdown(
             commentReplyView = commentReplyView,
             onDismissRequest = { showMoreOptions = false },
-            onPersonClick = {
-                showMoreOptions = false
-                onPersonClick(commentReplyView.creator.id)
-            },
-            onViewSourceClick = {
-                showMoreOptions = false
-                onViewSourceClick()
-            },
-            onReportClick = {
-                showMoreOptions = false
-                onReportClick(commentReplyView)
-            },
-            onBlockCreatorClick = {
-                showMoreOptions = false
-                onBlockCreatorClick(commentReplyView.creator)
-            },
-            isCreator = account?.id == commentReplyView.creator.id,
+            onPersonClick = onPersonClick,
+            onViewSourceClick = onViewSourceClick,
+            onReportClick = onReportClick,
+            onBlockCreatorClick = onBlockCreatorClick,
+            isCreator = account.id == commentReplyView.creator.id,
+            onCommentLinkClick = onCommentLinkClick,
+            viewSource = viewSource,
         )
     }
 
@@ -150,20 +137,21 @@ fun CommentReplyNodeFooterLine(
             VoteGeneric(
                 myVote = myVote,
                 votes = upvotes,
-                item = commentReplyView,
                 type = VoteType.Upvote,
                 onVoteClick = onUpvoteClick,
-                showNumber = (downvotes != 0),
+                showNumber = (downvotes != 0) && showScores,
                 account = account,
             )
-            VoteGeneric(
-                myVote = myVote,
-                votes = downvotes,
-                item = commentReplyView,
-                type = VoteType.Downvote,
-                onVoteClick = onDownvoteClick,
-                account = account,
-            )
+            if (enableDownvotes) {
+                VoteGeneric(
+                    myVote = myVote,
+                    votes = downvotes,
+                    type = VoteType.Downvote,
+                    showNumber = showScores,
+                    onVoteClick = onDownvoteClick,
+                    account = account,
+                )
+            }
             ActionBarButton(
                 icon = Icons.Outlined.Link,
                 contentDescription = stringResource(R.string.commentReply_link),
@@ -207,9 +195,9 @@ fun CommentReplyNodeFooterLine(
                 account = account,
             )
             // Don't let you respond to your own comment.
-            if (commentReplyView.creator.id != account?.id) {
+            if (commentReplyView.creator.id != account.id) {
                 ActionBarButton(
-                    icon = Icons.Outlined.Textsms,
+                    icon = Icons.Outlined.Comment,
                     contentDescription = stringResource(R.string.commentFooter_reply),
                     onClick = { onReplyClick(commentReplyView) },
                     account = account,
@@ -227,72 +215,7 @@ fun CommentReplyNodeFooterLine(
 }
 
 @Composable
-fun CommentReplyNodeOptionsDialog(
-    commentReplyView: CommentReplyView,
-    onDismissRequest: () -> Unit,
-    onPersonClick: () -> Unit,
-    onViewSourceClick: () -> Unit,
-    onReportClick: () -> Unit,
-    onBlockCreatorClick: () -> Unit,
-    isCreator: Boolean,
-) {
-    val localClipboardManager = LocalClipboardManager.current
-    val ctx = LocalContext.current
-
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(
-                        R.string.comment_reply_node_go_to,
-                        commentReplyView.creator.name,
-                    ),
-                    icon = Icons.Outlined.Person,
-                    onClick = onPersonClick,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_reply_node_view_source),
-                    icon = Icons.Outlined.Description,
-                    onClick = onViewSourceClick,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.comment_reply_node_copy_permalink),
-                    icon = Icons.Outlined.Link,
-                    onClick = {
-                        val permalink = commentReplyView.comment.ap_id
-                        localClipboardManager.setText(AnnotatedString(permalink))
-                        Toast.makeText(
-                            ctx,
-                            ctx.getString(R.string.comment_reply_node_permalink_copied),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        onDismissRequest()
-                    },
-                )
-                if (!isCreator) {
-                    IconAndTextDrawerItem(
-                        text = stringResource(R.string.comment_reply_node_report_comment),
-                        icon = Icons.Outlined.Flag,
-                        onClick = onReportClick,
-                    )
-                    IconAndTextDrawerItem(
-                        text = stringResource(
-                            R.string.comment_reply_node_block,
-                            commentReplyView.creator.name,
-                        ),
-                        icon = Icons.Outlined.Block,
-                        onClick = onBlockCreatorClick,
-                    )
-                }
-            }
-        },
-        confirmButton = {},
-    )
-}
-
-@Composable
-fun CommentReplyNode(
+fun CommentReplyNodeInbox(
     commentReplyView: CommentReplyView,
     onUpvoteClick: (commentReplyView: CommentReplyView) -> Unit,
     onDownvoteClick: (commentReplyView: CommentReplyView) -> Unit,
@@ -306,9 +229,11 @@ fun CommentReplyNode(
     onReportClick: (commentReplyView: CommentReplyView) -> Unit,
     onCommentLinkClick: (commentReplyView: CommentReplyView) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
-    account: Account?,
+    account: Account,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    enableDownvotes: Boolean,
+    showScores: Boolean,
 ) {
     // These are necessary for instant comment voting
     val score = commentReplyView.counts.score
@@ -343,6 +268,7 @@ fun CommentReplyNode(
                 isActionBarExpanded = !isActionBarExpanded
             },
             showAvatar = showAvatar,
+            showScores = showScores,
         )
         AnimatedVisibility(
             visible = isExpanded,
@@ -356,6 +282,7 @@ fun CommentReplyNode(
                     onClick = { onCommentClick(commentReplyView) },
                     onLongClick = {
                         isActionBarExpanded = !isActionBarExpanded
+                        true
                     },
                 )
                 AnimatedVisibility(
@@ -363,13 +290,13 @@ fun CommentReplyNode(
                     enter = expandVertically(),
                     exit = shrinkVertically(),
                 ) {
-                    CommentReplyNodeFooterLine(
+                    CommentReplyNodeInboxFooterLine(
                         commentReplyView = commentReplyView,
                         onUpvoteClick = {
-                            onUpvoteClick(it)
+                            onUpvoteClick(commentReplyView)
                         },
                         onDownvoteClick = {
-                            onDownvoteClick(it)
+                            onDownvoteClick(commentReplyView)
                         },
                         onPersonClick = onPersonClick,
                         onViewSourceClick = {
@@ -385,6 +312,9 @@ fun CommentReplyNode(
                         upvotes = upvotes,
                         downvotes = downvotes,
                         account = account,
+                        enableDownvotes = enableDownvotes,
+                        showScores = showScores,
+                        viewSource = viewSource,
                     )
                 }
             }

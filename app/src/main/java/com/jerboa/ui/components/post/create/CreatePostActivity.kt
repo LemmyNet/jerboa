@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -19,21 +18,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jerboa.DEBOUNCE_DELAY
+import com.jerboa.JerboaAppState
 import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.api.uploadPictrsImage
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CreatePost
 import com.jerboa.datatypes.types.GetSiteMetadata
-import com.jerboa.db.Account
-import com.jerboa.db.AccountViewModel
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
+import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreatePostViewModel
-import com.jerboa.ui.components.common.ConsumeReturn
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.Route
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListReturn
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
@@ -50,10 +48,14 @@ private var fetchSiteMetadataJob: Job? = null
 
 data class MetaDataRes(val title: String?, val loading: Boolean)
 
+object CreatePostReturn {
+    const val COMMUNITY_SEND = "create-post::send(community)"
+}
+
 @Composable
 fun CreatePostActivity(
     accountViewModel: AccountViewModel,
-    navController: NavController,
+    appState: JerboaAppState,
     initialUrl: String,
     initialBody: String,
     initialImage: Uri?,
@@ -66,8 +68,13 @@ fun CreatePostActivity(
 
     val createPostViewModel: CreatePostViewModel = viewModel()
 
-    var selectedCommunity: Community? by remember { mutableStateOf(null) }
-    navController.ConsumeReturn<Community>(CommunityListReturn.COMMUNITY) { community ->
+    var selectedCommunity: Community? by rememberSaveable {
+        // Init return from Community post creation
+        mutableStateOf(appState.getPrevReturnNullable<Community>(CreatePostReturn.COMMUNITY_SEND))
+    }
+
+    // On return from the community picker
+    appState.ConsumeReturn<Community>(CommunityListReturn.COMMUNITY) { community ->
         selectedCommunity = community
     }
 
@@ -83,8 +90,8 @@ fun CreatePostActivity(
     }
     var isUploadingImage by rememberSaveable { mutableStateOf(false) }
 
-    val nameField = validatePostName(name)
-    val urlField = validateUrl(url)
+    val nameField = validatePostName(ctx, name)
+    val urlField = validateUrl(ctx, url)
     val formValid = !nameField.hasError && !urlField.hasError && (selectedCommunity !== null)
 
     LaunchedEffect(initialUrl) {
@@ -115,25 +122,27 @@ fun CreatePostActivity(
                         else -> false
                     }
                     CreateEditPostHeader(
-                        navController = navController,
                         formValid = formValid,
                         loading = loading,
                         onSubmitClick = {
-                            onSubmitClick(
-                                name = name,
-                                body = body,
-                                url = url,
-                                isNsfw = isNsfw,
-                                account = account,
-                                createPostViewModel = createPostViewModel,
-                                selectedCommunity = selectedCommunity,
-                                navController = navController,
-                            )
+                            if (!account.isAnon()) {
+                                onSubmitClick(
+                                    name = name,
+                                    body = body,
+                                    url = url,
+                                    isNsfw = isNsfw,
+                                    account = account,
+                                    createPostViewModel = createPostViewModel,
+                                    selectedCommunity = selectedCommunity,
+                                    onSuccess = appState::toPostWithPopUpTo,
+                                )
+                            }
                         },
                         submitIcon = {
                             CreatePostSubmitIcon(formValid)
                         },
                         title = stringResource(R.string.create_post_create_post),
+                        onClickBack = appState::popBackStack,
                     )
                     if (loading) {
                         LoadingBar()
@@ -164,13 +173,11 @@ fun CreatePostActivity(
                     sharedImage = initialImage,
                     isUploadingImage = isUploadingImage,
                     onImagePicked = { uri ->
-                        if (uri != Uri.EMPTY) {
+                        if (!account.isAnon() && uri != Uri.EMPTY) {
                             val imageIs = imageInputStreamFromUri(ctx, uri)
                             scope.launch {
                                 isUploadingImage = true
-                                account?.also { acct ->
-                                    url = uploadPictrsImage(acct, imageIs, ctx).orEmpty()
-                                }
+                                url = uploadPictrsImage(account, imageIs, ctx).orEmpty()
                                 isUploadingImage = false
                             }
                         }
@@ -182,7 +189,7 @@ fun CreatePostActivity(
                     communitySelector = {
                         PostCommunitySelector(
                             community = selectedCommunity,
-                            navController = navController,
+                            onClickCommunityList = { appState.toCommunityList(select = true) },
                         )
                     },
                 )
@@ -196,33 +203,26 @@ fun onSubmitClick(
     body: TextFieldValue,
     url: String,
     isNsfw: Boolean,
-    account: Account?,
+    account: Account,
     selectedCommunity: Community?,
     createPostViewModel: CreatePostViewModel,
-    navController: NavController,
+    onSuccess: (Int) -> Unit,
 ) {
-    account?.also { acct ->
-        selectedCommunity?.id?.also {
-            // Clean up that data
-            val nameOut = name.trim()
-            val bodyOut = body.text.trim().ifEmpty { null }
-            val urlOut = url.trim().ifEmpty { null }
-            createPostViewModel.createPost(
-                CreatePost(
-                    name = nameOut,
-                    community_id = it,
-                    url = urlOut,
-                    body = bodyOut,
-                    auth = acct.jwt,
-                    nsfw = isNsfw,
-                ),
-            ) { postId ->
-                navController.navigate(
-                    Route.PostArgs.makeRoute(id = "$postId"),
-                ) {
-                    popUpTo(Route.CREATE_POST) { inclusive = true }
-                }
-            }
-        }
+    selectedCommunity?.id?.also {
+        // Clean up that data
+        val nameOut = name.trim()
+        val bodyOut = body.text.trim().ifEmpty { null }
+        val urlOut = url.trim().ifEmpty { null }
+        createPostViewModel.createPost(
+            CreatePost(
+                name = nameOut,
+                community_id = it,
+                url = urlOut,
+                body = bodyOut,
+                auth = account.jwt,
+                nsfw = isNsfw,
+            ),
+            onSuccess = onSuccess,
+        )
     }
 }

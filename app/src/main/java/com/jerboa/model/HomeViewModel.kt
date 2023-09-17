@@ -1,11 +1,18 @@
 package com.jerboa.model
 
 import android.content.Context
+import android.util.Log
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jerboa.JerboaAppState
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -19,24 +26,28 @@ import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.PostId
+import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
+import com.jerboa.db.entity.getJWT
+import com.jerboa.db.repository.AccountRepository
 import com.jerboa.findAndUpdatePost
+import com.jerboa.jerboaApplication
 import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.toEnumSafe
+import kotlinx.coroutines.flow.map
 import com.jerboa.ui.components.common.PostStream
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class HomeViewModel : ViewModel(), Initializable, PostStream {
-    override var initialized by mutableStateOf(false)
-
+class HomeViewModel(private val accountRepository: AccountRepository) : ViewModel(), PostStream {
     var postsRes: ApiState<GetPostsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -46,12 +57,28 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
     private var blockCommunityRes: ApiState<BlockCommunityResponse> by mutableStateOf(ApiState.Empty)
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
 
+    val lazyListState = LazyListState()
+
     var sortType by mutableStateOf(SortType.Active)
         private set
     var listingType by mutableStateOf(ListingType.Local)
         private set
-    var page by mutableStateOf(1)
+    var page by mutableIntStateOf(1)
         private set
+
+    init {
+        viewModelScope.launch {
+            accountRepository.currentAccount
+                .asFlow()
+                .map { it ?: AnonAccount }
+                .collect { account ->
+                    updateSortType(account.defaultSortType.toEnumSafe())
+                    updateListingType(account.defaultListingType.toEnumSafe())
+                    Log.d("jerboa", "Fetching posts")
+                    resetPosts(account)
+                }
+        }
+    }
 
     fun updateSortType(sortType: SortType) {
         this.sortType = sortType
@@ -76,10 +103,9 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
     fun getPosts(form: GetPosts, state: ApiState<GetPostsResponse> = ApiState.Loading) {
         viewModelScope.launch {
             postsRes = state
-            postsRes =
-                apiWrapper(
-                    API.getInstance().getPosts(form.serializeToMap()),
-                )
+            postsRes = apiWrapper(
+                API.getInstance().getPosts(form.serializeToMap()),
+            )
         }
     }
 
@@ -88,11 +114,11 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
             fetchMore(jwt)
         }
     }
-
     private suspend fun fetchMore(jwt: String?) {
         val oldRes = postsRes
-        when (oldRes) {
-            is ApiState.Success -> postsRes = ApiState.Appending(oldRes.data)
+        postsRes = when (oldRes) {
+            is ApiState.Appending -> return
+            is ApiState.Holder -> ApiState.Appending(oldRes.data)
             else -> return
         }
 
@@ -101,15 +127,19 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
 
         postsRes = when (newRes) {
             is ApiState.Success -> {
-                if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
-                    prevPage()
-                }
-                ApiState.Success(GetPostsResponse(mergePosts(oldRes.data.posts, newRes.data.posts)))
+                ApiState.Success(
+                    GetPostsResponse(
+                        mergePosts(
+                            oldRes.data.posts,
+                            newRes.data.posts,
+                        ),
+                    ),
+                )
             }
 
             else -> {
                 prevPage()
-                oldRes
+                ApiState.AppendingFailure(oldRes.data)
             }
         }
     }
@@ -174,13 +204,6 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
         }
     }
 
-    fun updateFromAccount(account: Account) {
-        updateSortType(SortType.values().getOrElse(account.defaultSortType) { sortType })
-        updateListingType(
-            ListingType.values().getOrElse(account.defaultListingType) { listingType },
-        )
-    }
-
     fun updatePost(postView: PostView) {
         when (val existing = postsRes) {
             is ApiState.Success -> {
@@ -193,26 +216,25 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
         }
     }
 
-    fun resetPosts(account: Account?) {
+    fun resetPosts(account: Account) {
         resetPage()
         getPosts(
             GetPosts(
-                page = page,
                 sort = sortType,
                 type_ = listingType,
-                auth = account?.jwt,
+                auth = account.getJWT(),
             ),
         )
     }
 
-    fun refreshPosts(account: Account?) {
+    fun refreshPosts(account: Account) {
         resetPage()
         getPosts(
             GetPosts(
                 page = page,
                 sort = sortType,
                 type_ = listingType,
-                auth = account?.jwt,
+                auth = account.getJWT(),
             ),
             ApiState.Refreshing,
         )
@@ -231,25 +253,25 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
         val res = postsRes
         if (res is ApiState.Success) {
             if (current == null) {
+                Log.i("HomeViewModel", "No current post selected")
                 res.data.posts.firstOrNull()?.post?.id
             } else {
                 res.data.posts
                     .mapIndexed { index, postView -> index to postView }
                     .firstOrNull { it.second.post.id == current }
                     ?.first?.let { currIndex ->
-                        if (currIndex + 1 >= res.data.posts.size - 1) {
-                            val nextIndex = res.data.posts.size
-                            fetchMore(account?.jwt)
-                            val newRes = postsRes
-                            if (newRes is ApiState.Success && newRes.data.posts.size > nextIndex) {
-                                newRes.data.posts[nextIndex].post.id
+                        if (currIndex >= res.data.posts.size - 7) {
+                            appendPosts(account?.jwt)
+                            val nextIndex = currIndex + 1
+                            if (res.data.posts.size > nextIndex) {
+                                res.data.posts[nextIndex].post.id
                             } else {
                                 null
                             }
                         } else if (currIndex >= 0) {
                             res.data.posts[currIndex + 1].post.id
                         } else {
-                            null
+                            res.data.posts.firstOrNull()?.post?.id
                         }
                     }
             }
@@ -262,6 +284,7 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
         val res = postsRes
         return if (res is ApiState.Success) {
             if (current == null) {
+                Log.i("HomeViewModel", "No current post selected")
                 res.data.posts.firstOrNull()?.post?.id
             } else {
                 val currIndex = res.data.posts
@@ -282,5 +305,28 @@ class HomeViewModel : ViewModel(), Initializable, PostStream {
     override fun isFetchingMore(): Boolean = when (this.postsRes) {
         is ApiState.Loading -> true
         else -> false
+    }
+
+    fun markPostAsRead(
+        form: MarkPostAsRead,
+        appState: JerboaAppState,
+    ) {
+        appState.coroutineScope.launch {
+            when (val markRes = apiWrapper(API.getInstance().markAsRead(form))) {
+                is ApiState.Success -> {
+                    updatePost(markRes.data.post_view)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    companion object {
+        val Factory = viewModelFactory {
+            initializer {
+                HomeViewModel(jerboaApplication().container.accountRepository)
+            }
+        }
     }
 }

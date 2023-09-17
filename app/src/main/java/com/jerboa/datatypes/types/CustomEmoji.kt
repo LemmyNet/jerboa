@@ -1,5 +1,9 @@
 package com.jerboa.datatypes.types
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class CustomEmoji(
     val id: CustomEmojiId,
     val local_site_id: LocalSiteId,
@@ -9,4 +13,4 @@ data class CustomEmoji(
     val category: String,
     val published: String,
     val updated: String? = null,
-)
+) : Parcelable

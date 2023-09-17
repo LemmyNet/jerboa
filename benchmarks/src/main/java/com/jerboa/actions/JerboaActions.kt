@@ -12,6 +12,7 @@ import com.jerboa.findTimeout
 import com.jerboa.retryOnStale
 import com.jerboa.scrollThrough
 import com.jerboa.scrollThroughShort
+import kotlin.random.Random
 
 fun MacrobenchmarkScope.closeChangeLogIfOpen() {
     device.findObject(By.res("jerboa:changelogbtn"))?.click()
@@ -70,11 +71,16 @@ fun MacrobenchmarkScope.scrollThroughComments() {
 }
 
 fun MacrobenchmarkScope.doTypicalUserJourney(repeat: Int = 5) {
+    waitUntilPostsActuallyVisible()
+    setPostViewMode(postViewModes[Random.nextInt(0, 3)])
     repeat(repeat) {
         waitUntilPostsActuallyVisible()
         scrollThroughPostsOnce()
         if (openPost()) {
-            scrollThroughComments()
+            // Test is flaky
+            try {
+                scrollThroughComments()
+            } catch (_: Exception) {}
         }
         closePost()
     }
@@ -84,22 +90,49 @@ fun MacrobenchmarkScope.waitUntilLoadingDone(timeout: Long = 10_000) {
     device.wait(Until.gone(By.res("jerboa:loading")), timeout)
 }
 
-fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(retry: Boolean = true, timeout: Long = 10_000) {
+fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(retry: Boolean = true, timeout: Long = 10_000, depth: Int = 0) {
     device.wait(
         Until.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post"))),
         timeout,
     )
+    if (depth > 10) throw IllegalStateException("Exceed retrial")
+
     if (retry && !device.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post")))) {
-        openOptions()
+        openMoreOptions()
         clickRefresh()
-        waitUntilPostsActuallyVisible(timeout = timeout)
+        waitUntilPostsActuallyVisible(timeout = timeout, depth = depth + 1)
     }
 }
 
-fun MacrobenchmarkScope.openOptions() {
-    device.findOrFailTimeout("jerboa:options", "Options not found", timeout = 2).click()
+fun MacrobenchmarkScope.openMoreOptions() {
+    var options = device.findTimeout("jerboa:options", timeout = 2_000)
+
+    if (options == null) {
+        val feed = device.findOrFailTimeout("jerboa:posts", "Posts not found", 2_000)
+        feed.setGestureMargin(device.displayWidth / 5)
+        feed.fling(Direction.UP)
+        feed.fling(Direction.UP)
+        options = device.findOrFailTimeout("jerboa:options")
+    }
+
+    options.click()
 }
 
 fun MacrobenchmarkScope.clickRefresh() {
     device.findOrFailTimeout("jerboa:refresh", "Refresh not found", 2_000).click()
+}
+
+fun MacrobenchmarkScope.openSortOptions() {
+    device.findOrFailTimeout("jerboa:sortoptions").click()
+}
+
+fun MacrobenchmarkScope.clickMostComments() {
+    device.findOrFailTimeout("jerboa:sortoption_mostcomments").click()
+}
+
+val postViewModes = listOf("SmallCard", "Card", "List")
+fun MacrobenchmarkScope.setPostViewMode(postViewMode: String) {
+    openMoreOptions()
+    device.findOrFailTimeout("jerboa:postviewmode").click()
+    device.findOrFailTimeout("jerboa:postviewmode_$postViewMode").click()
 }

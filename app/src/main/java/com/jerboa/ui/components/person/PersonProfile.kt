@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,26 +28,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.R
 import com.jerboa.datatypes.samplePersonView
 import com.jerboa.datatypes.types.PersonView
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.getLocalizedSortingTypeShortName
+import com.jerboa.feat.openMatrix
 import com.jerboa.personNameShown
-import com.jerboa.ui.components.common.DefaultBackButton
 import com.jerboa.ui.components.common.DotSpacer
-import com.jerboa.ui.components.common.IconAndTextDrawerItem
-import com.jerboa.ui.components.common.ImageViewerDialog
 import com.jerboa.ui.components.common.LargerCircularIcon
+import com.jerboa.ui.components.common.MenuItem
 import com.jerboa.ui.components.common.MyMarkdownText
 import com.jerboa.ui.components.common.PictrsBannerImage
-import com.jerboa.ui.components.common.SortOptionsDialog
-import com.jerboa.ui.components.common.SortTopOptionsDialog
+import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.components.common.TimeAgo
+import com.jerboa.ui.theme.MARKDOWN_BAR_ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.PROFILE_BANNER_SIZE
 import com.jerboa.ui.theme.muted
@@ -55,16 +55,8 @@ fun PersonProfileTopSection(
     personView: PersonView,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
+    openImageViewer: (url: String) -> Unit,
 ) {
-    var showImage by remember { mutableStateOf<String?>(null) }
-
-    if (showImage != null) {
-        ImageViewerDialog(
-            url = showImage!!,
-            onBackRequest = { showImage = null },
-        )
-    }
-
     Column {
         Box(
             modifier = modifier.fillMaxWidth(),
@@ -77,7 +69,7 @@ fun PersonProfileTopSection(
                     modifier = Modifier
                         .height(PROFILE_BANNER_SIZE)
                         .clickable {
-                            showImage = personView.person.banner
+                            openImageViewer(personView.person.banner)
                         },
                 )
             }
@@ -88,7 +80,7 @@ fun PersonProfileTopSection(
                             icon = it,
                             contentDescription = stringResource(R.string.personProfile_viewAvatar),
                             modifier = Modifier.clickable {
-                                showImage = personView.person.avatar
+                                openImageViewer(personView.person.avatar)
                             },
                         )
                     }
@@ -148,6 +140,7 @@ fun PersonProfileTopSectionPreview() {
     PersonProfileTopSection(
         personView = samplePersonView,
         showAvatar = true,
+        openImageViewer = {},
     )
 }
 
@@ -159,53 +152,19 @@ fun PersonProfileHeader(
     onClickSortType: (SortType) -> Unit,
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
+    onMessagePersonClick: () -> Unit,
     selectedSortType: SortType,
-    navController: NavController = rememberNavController(),
+    openDrawer: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    onBack: (() -> Unit)? = null,
+    isLoggedIn: () -> Boolean,
+    siteVersion: String,
+    matrixId: String?,
 ) {
+    val ctx = LocalContext.current
+
     var showSortOptions by remember { mutableStateOf(false) }
-    var showTopOptions by remember { mutableStateOf(false) }
     var showMoreOptions by remember { mutableStateOf(false) }
-
-    if (showSortOptions) {
-        SortOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showSortOptions = false },
-            onClickSortType = {
-                showSortOptions = false
-                onClickSortType(it)
-            },
-            onClickSortTopOptions = {
-                showSortOptions = false
-                showTopOptions = !showTopOptions
-            },
-        )
-    }
-
-    if (showTopOptions) {
-        SortTopOptionsDialog(
-            selectedSortType = selectedSortType,
-            onDismissRequest = { showTopOptions = false },
-            onClickSortType = {
-                showTopOptions = false
-                onClickSortType(it)
-            },
-        )
-    }
-
-    if (showMoreOptions) {
-        PersonProfileMoreDialog(
-            onDismissRequest = { showMoreOptions = false },
-            onBlockPersonClick = {
-                showMoreOptions = false
-                onBlockPersonClick()
-            },
-            onReportPersonClick = {
-                showMoreOptions = false
-                onReportPersonClick()
-            },
-        )
-    }
 
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -215,23 +174,74 @@ fun PersonProfileHeader(
                 selectedSortType = selectedSortType,
             )
         },
-        navigationIcon = { DefaultBackButton(navController) },
-        actions = {
-            IconButton(onClick = {
-                showSortOptions = !showSortOptions
-            }) {
-                Icon(
-                    Icons.Outlined.Sort,
-                    contentDescription = stringResource(R.string.selectSort),
-                )
+        navigationIcon = {
+            if (onBack == null) {
+                IconButton(onClick = openDrawer) {
+                    Icon(
+                        Icons.Outlined.Menu,
+                        contentDescription = stringResource(R.string.home_menu),
+                    )
+                }
+            } else {
+                IconButton(onClick = onBack, modifier = Modifier.testTag("jerboa:back")) {
+                    Icon(
+                        Icons.Outlined.ArrowBack,
+                        contentDescription = stringResource(R.string.topAppBar_back),
+                    )
+                }
             }
-            if (!myProfile) {
+        },
+        actions = {
+            Box {
                 IconButton(onClick = {
-                    showMoreOptions = !showMoreOptions
+                    showSortOptions = !showSortOptions
                 }) {
                     Icon(
-                        Icons.Outlined.MoreVert,
-                        contentDescription = stringResource(R.string.moreOptions),
+                        Icons.Outlined.Sort,
+                        contentDescription = stringResource(R.string.community_sortBy),
+                    )
+                }
+
+                SortOptionsDropdown(
+                    expanded = showSortOptions,
+                    onDismissRequest = { showSortOptions = false },
+                    onClickSortType = {
+                        showSortOptions = false
+                        onClickSortType(it)
+                    },
+                    selectedSortType = selectedSortType,
+                    siteVersion = siteVersion,
+                )
+            }
+
+            if (!myProfile && isLoggedIn()) {
+                Box {
+                    IconButton(onClick = {
+                        showMoreOptions = !showMoreOptions
+                    }) {
+                        Icon(
+                            Icons.Outlined.MoreVert,
+                            contentDescription = stringResource(R.string.moreOptions),
+                        )
+                    }
+                    PersonProfileMoreDropdown(
+                        expanded = showMoreOptions,
+                        onDismissRequest = { showMoreOptions = false },
+                        onBlockPersonClick = {
+                            showMoreOptions = false
+                            onBlockPersonClick()
+                        },
+                        onReportPersonClick = {
+                            showMoreOptions = false
+                            onReportPersonClick()
+                        },
+                        onMessagePersonClick = {
+                            showMoreOptions = false
+                            onMessagePersonClick()
+                        },
+                        openMatrix = matrixId?.let {
+                            { openMatrix(matrixId, ctx) }
+                        },
                     )
                 }
             }
@@ -250,34 +260,55 @@ fun PersonProfileHeaderTitle(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = getLocalizedSortingTypeShortName(LocalContext.current, selectedSortType),
+            text = LocalContext.current.getString(selectedSortType.shortForm),
             style = MaterialTheme.typography.titleMedium,
         )
     }
 }
 
 @Composable
-fun PersonProfileMoreDialog(
+fun PersonProfileMoreDropdown(
+    expanded: Boolean,
     onDismissRequest: () -> Unit,
     onBlockPersonClick: () -> Unit,
     onReportPersonClick: () -> Unit,
+    onMessagePersonClick: () -> Unit,
+    openMatrix: (() -> Unit)?,
 ) {
-    AlertDialog(
+    DropdownMenu(
+        expanded = expanded,
         onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.person_profile_block_person),
-                    icon = Icons.Outlined.Block,
-                    onClick = onBlockPersonClick,
-                )
-                IconAndTextDrawerItem(
-                    text = stringResource(R.string.person_profile_report_person),
-                    icon = Icons.Outlined.Flag,
-                    onClick = onReportPersonClick,
-                )
-            }
-        },
-        confirmButton = {},
-    )
+    ) {
+        MenuItem(
+            text = stringResource(R.string.person_profile_dm_person),
+            onClick = onMessagePersonClick,
+            icon = Icons.Outlined.Message,
+        )
+
+        if (openMatrix != null) {
+            MenuItem(
+                text = stringResource(R.string.matrix_send_msg),
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.matrix_favicon),
+                        contentDescription = null,
+                        modifier = Modifier.size(MARKDOWN_BAR_ICON_SIZE),
+                    )
+                },
+                onClick = openMatrix,
+            )
+        }
+
+        Divider()
+        MenuItem(
+            text = stringResource(R.string.person_profile_block_person),
+            onClick = onBlockPersonClick,
+            icon = Icons.Outlined.Block,
+        )
+        MenuItem(
+            text = stringResource(R.string.person_profile_report_person),
+            onClick = onReportPersonClick,
+            icon = Icons.Outlined.Flag,
+        )
+    }
 }

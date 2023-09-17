@@ -1,19 +1,23 @@
 package com.jerboa.ui.components.comment
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.jerboa.CommentNodeData
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.Community
-import com.jerboa.datatypes.types.CommunityModeratorView
 import com.jerboa.datatypes.types.Person
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentNodes(
-    nodes: List<CommentNodeData>,
+    nodes: ImmutableList<CommentNodeData>,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -38,8 +42,8 @@ fun CommentNodes(
     onCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
-    account: Account? = null,
-    moderators: List<CommunityModeratorView>,
+    account: Account,
+    isModerator: (Int) -> Boolean,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
@@ -47,6 +51,7 @@ fun CommentNodes(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showScores: Boolean,
 ) {
     LazyColumn(state = listState) {
         commentNodeItems(
@@ -62,7 +67,7 @@ fun CommentNodes(
             onReplyClick = onReplyClick,
             onSaveClick = onSaveClick,
             account = account,
-            moderators = moderators,
+            isModerator = isModerator,
             onMarkAsReadClick = onMarkAsReadClick,
             onCommentClick = onCommentClick,
             onPersonClick = onPersonClick,
@@ -83,12 +88,16 @@ fun CommentNodes(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
+            showScores = showScores,
         )
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
+        }
     }
 }
 
 fun LazyListScope.commentNodeItems(
-    nodes: List<CommentNodeData>,
+    nodes: ImmutableList<CommentNodeData>,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -112,8 +121,8 @@ fun LazyListScope.commentNodeItems(
     onCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (creator: Person) -> Unit,
     onPostClick: (postId: Int) -> Unit,
-    account: Account? = null,
-    moderators: List<CommunityModeratorView>,
+    account: Account,
+    isModerator: (Int) -> Boolean,
     showPostAndCommunityContext: Boolean = false,
     showCollapsedCommentContent: Boolean,
     isCollapsedByParent: Boolean,
@@ -121,6 +130,7 @@ fun LazyListScope.commentNodeItems(
     enableDownVotes: Boolean,
     showAvatar: Boolean,
     blurNSFW: Boolean,
+    showScores: Boolean,
 ) {
     nodes.forEach { node ->
         commentNodeItem(
@@ -136,7 +146,7 @@ fun LazyListScope.commentNodeItems(
             onReplyClick = onReplyClick,
             onSaveClick = onSaveClick,
             account = account,
-            moderators = moderators,
+            isModerator = isModerator,
             onMarkAsReadClick = onMarkAsReadClick,
             onCommentClick = onCommentClick,
             onPersonClick = onPersonClick,
@@ -157,6 +167,7 @@ fun LazyListScope.commentNodeItems(
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             blurNSFW = blurNSFW,
+            showScores = showScores,
         )
     }
 }

@@ -1,3 +1,216 @@
+# Jerboa v0.0.46-alpha Release (2023-09-05)
+
+## What's Changed
+
+- Controversial posts and comments by @iByteABit256 in https://github.com/dessalines/jerboa/pull/1106
+- Fix broken Japanese string format for AppBars_users_month by @habbbe in https://github.com/dessalines/jerboa/pull/1194
+- Fix read post on back by @MV-GH in https://github.com/dessalines/jerboa/pull/1195
+- Bump deps by @MV-GH in https://github.com/dessalines/jerboa/pull/1197
+- Bump AGP by @MV-GH in https://github.com/dessalines/jerboa/pull/1196
+- Make nav text smaller by @MV-GH in https://github.com/dessalines/jerboa/pull/1201
+- Add spoiler template action button by @MV-GH in https://github.com/dessalines/jerboa/pull/1198
+- Sort drawer subscriptions on title instead by @MV-GH in https://github.com/dessalines/jerboa/pull/1205
+- Add connect on matrix by @MV-GH in https://github.com/dessalines/jerboa/pull/1206
+- Add resource by @MV-GH in https://github.com/dessalines/jerboa/pull/1207
+- Fix crash in share Media, fix failed download media by @MV-GH in https://github.com/dessalines/jerboa/pull/1213
+- Force HTTP links to HTTPS by @MV-GH in https://github.com/dessalines/jerboa/pull/1214
+- Fix wrong aligment sometimes for images in ImageViewer with RTL by @MV-GH in https://github.com/dessalines/jerboa/pull/1215
+- Add retry button when loading more posts fails by @MV-GH in https://github.com/dessalines/jerboa/pull/1209
+- Replace all relevant dialogs with Animated Center Popup menus by @MV-GH in https://github.com/dessalines/jerboa/pull/1200
+- Support private tabs for FireFox by @dankeast in https://github.com/dessalines/jerboa/pull/1216
+- Added dracula-theme, like in thumb-key by @0xFOSSMan in https://github.com/dessalines/jerboa/pull/1218
+- Update profiles and instance list by @MV-GH in https://github.com/dessalines/jerboa/pull/1219
+
+## New Contributors
+
+- @iByteABit256 made their first contribution in https://github.com/dessalines/jerboa/pull/1106
+- @habbbe made their first contribution in https://github.com/dessalines/jerboa/pull/1194
+- @dankeast made their first contribution in https://github.com/dessalines/jerboa/pull/1216
+- @0xFOSSMan made their first contribution in https://github.com/dessalines/jerboa/pull/1218
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.45...0.0.46
+
+# Jerboa v0.0.45-alpha Release (2023-08-22)
+
+## What's Changed
+
+- Update Norwegian Nynorsk translation by @huftis in https://github.com/dessalines/jerboa/pull/1165
+- Make accounts list in drawer scrollable by @MV-GH in https://github.com/dessalines/jerboa/pull/1174
+- Add option to auto play GIFs by @MV-GH in https://github.com/dessalines/jerboa/pull/1164
+- Update deps, notable update to kotlin 1.9 by @MV-GH in https://github.com/dessalines/jerboa/pull/1173
+- Update docs requirements by @MV-GH in https://github.com/dessalines/jerboa/pull/1178
+- Fix comment click deadzones by @camporter in https://github.com/dessalines/jerboa/pull/1175
+- Refactor sort type handling, and fetching initData/Posts, fixes default sort in community by @MV-GH in https://github.com/dessalines/jerboa/pull/1166
+- Add long click link popup menu, including actions by @MV-GH in https://github.com/dessalines/jerboa/pull/1189
+- Change the default of isCurrentlyConnected by @MV-GH in https://github.com/dessalines/jerboa/pull/1181
+- Add setting to enable swipe to go back in Look and Feel settings by @sthomas727 in https://github.com/dessalines/jerboa/pull/1191
+- Update community block msg to display unblock if blocked already by @MV-GH in https://github.com/dessalines/jerboa/pull/1185
+- Improve woodpecker build times by @MV-GH in https://github.com/dessalines/jerboa/pull/1139
+
+## New Contributors
+
+- @sthomas727 made their first contribution in https://github.com/dessalines/jerboa/pull/1191
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.44...0.0.45
+
+# Jerboa v0.0.44-alpha Release (2023-08-08)
+
+## What's Changed
+
+- Small changes by @MV-GH in https://github.com/dessalines/jerboa/pull/1133
+- Replace gson.tojson with Parcelable implementation by @MV-GH in https://github.com/dessalines/jerboa/pull/1124
+- Add share functionality to imageviewer by @MV-GH in https://github.com/dessalines/jerboa/pull/1144
+- Add strings for the validateUrl and validatePostName utils. by @camporter in https://github.com/dessalines/jerboa/pull/1145
+- Make app bar 'more' buttons use dropdowns rather than dialogs by @camporter in https://github.com/dessalines/jerboa/pull/1146
+- Add 2FA user setting by @MV-GH in https://github.com/dessalines/jerboa/pull/1137
+- Use listing type use M3 dropdown instead of dialog by @MV-GH in https://github.com/dessalines/jerboa/pull/1150
+- Update woodpecker config by @MV-GH in https://github.com/dessalines/jerboa/pull/1138
+- Fixing woodpecker env vars. by @dessalines in https://github.com/dessalines/jerboa/pull/1157
+- Use M3 menu dropdown for inbox unread sort by @MV-GH in https://github.com/dessalines/jerboa/pull/1152
+- Allow post mode change in Community by @ZJouba in https://github.com/dessalines/jerboa/pull/1158
+- Increase the zoom capability of the imageviewer by @MV-GH in https://github.com/dessalines/jerboa/pull/1159
+- Post actionbar design rework and options for it. by @MV-GH in https://github.com/dessalines/jerboa/pull/1155
+- Fix appbar rework by @MV-GH in https://github.com/dessalines/jerboa/pull/1160
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.42...0.0.44
+
+# Jerboa v0.0.42-alpha Release (2023-08-03)
+
+## What's Changed
+
+- Fix menubar icon when viewing someones profile by @MV-GH in https://github.com/dessalines/jerboa/pull/1083
+- Prevent duplicate accounts from logging in by @MV-GH in https://github.com/dessalines/jerboa/pull/1082
+- Add switch to anonymous option by @MV-GH in https://github.com/dessalines/jerboa/pull/1084
+- Don't show posts as read in saved and profile views by @twizmwazin in https://github.com/dessalines/jerboa/pull/1090
+- Scroll to top if homepage button pressed when on the home... (#1080) by @aaronkh in https://github.com/dessalines/jerboa/pull/1092
+- Fetch unreadCount on refresh, make unreadCount use less API calls, fix mark unread reply bug by @MV-GH in https://github.com/dessalines/jerboa/pull/1086
+- Add long-form ‘Top All’ string by @huftis in https://github.com/dessalines/jerboa/pull/1103
+- Add Norwegian Nynorsk translation by @huftis in https://github.com/dessalines/jerboa/pull/1102
+- Add instance to community name by @MV-GH in https://github.com/dessalines/jerboa/pull/1104
+- Fix `Value X cannot be converted to json` in error messages by @MV-GH in https://github.com/dessalines/jerboa/pull/1098
+- Add warning in instance file for auto generated instance list by @MV-GH in https://github.com/dessalines/jerboa/pull/1112
+- Add failure toast for creating comments by @MV-GH in https://github.com/dessalines/jerboa/pull/1114
+- Temp fix for crash sometimes on read more replies to bug introduced in lemmy 18.3 by @MV-GH in https://github.com/dessalines/jerboa/pull/1113
+- Add direct message person option and screen by @MV-GH in https://github.com/dessalines/jerboa/pull/1108
+- Fix Inbox Spanish Translation, closes #1110 by @ogarcia in https://github.com/dessalines/jerboa/pull/1118
+- Add account verification, improve login error messages, fix "account removal" and more by @MV-GH in https://github.com/dessalines/jerboa/pull/1099
+- Update deps, gradle and target SDK 34 by @MV-GH in https://github.com/dessalines/jerboa/pull/1120
+- Respect show score user setting by @MV-GH in https://github.com/dessalines/jerboa/pull/1122
+- Remove account_approved and account_email_verified add account_banned checks by @MV-GH in https://github.com/dessalines/jerboa/pull/1126
+- Use marquee for instance in topbar, and add it to communitysidebar by @MV-GH in https://github.com/dessalines/jerboa/pull/1107
+- Properly fix read more replies bug introduced in lemmy 18.3 by @MV-GH in https://github.com/dessalines/jerboa/pull/1127
+- Mark as Read on Open and Scroll by @ZJouba in https://github.com/dessalines/jerboa/pull/1025
+- Go to comment when clicking on reply comment in inbox, fixes #1089 by @twizmwazin in https://github.com/dessalines/jerboa/pull/1091
+- Update moderator list to be a isModerator function by @MV-GH in https://github.com/dessalines/jerboa/pull/1130
+- Update drawer Subscriptions by @ZJouba in https://github.com/dessalines/jerboa/pull/1131
+- Enchance imageviewer: Downloadprogressbar, error placeholder + retry, large images subsampling, SVG support by @MV-GH in https://github.com/dessalines/jerboa/pull/1111
+
+## New Contributors
+
+- @aaronkh made their first contribution in https://github.com/dessalines/jerboa/pull/1092
+- @huftis made their first contribution in https://github.com/dessalines/jerboa/pull/1103
+- @ogarcia made their first contribution in https://github.com/dessalines/jerboa/pull/1118
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.41...0.0.42
+
+# Jerboa v0.0.41-alpha Release (2023-07-21)
+
+## What's Changed
+
+- Add missing and shorten some german translations (fixes #818) by @yjiang-yh135 in https://github.com/dessalines/jerboa/pull/1047
+- Navigate to home tab after selecting feed type in sidebar by @twizmwazin in https://github.com/dessalines/jerboa/pull/1049
+- Fix image viewer adding unneeded padding on android 10 and below by @MV-GH in https://github.com/dessalines/jerboa/pull/1046
+- Change all issue templates to github issue forms by @bappitybup in https://github.com/dessalines/jerboa/pull/1031
+- Improve stableness by @MV-GH in https://github.com/dessalines/jerboa/pull/1040
+- Make datatypes Parcelable and Stable by @MV-GH in https://github.com/dessalines/jerboa/pull/1044
+- Fix thumbnail link not opening in SmallCard mode by @MV-GH in https://github.com/dessalines/jerboa/pull/1055
+- Fix unread inbox counter badge not properly updating by @MV-GH in https://github.com/dessalines/jerboa/pull/1051
+- Create strings.xml by @Fish25op in https://github.com/dessalines/jerboa/pull/1052
+- Update Azerbaijani translation by @Fish25op in https://github.com/dessalines/jerboa/pull/1058
+- Update Brazilian Portuguese translation by @Gustavo-Martins in https://github.com/dessalines/jerboa/pull/1062
+- Clean up strings.xml by @MV-GH in https://github.com/dessalines/jerboa/pull/1056
+- Update bug report to include how to get the full logs step by @MV-GH in https://github.com/dessalines/jerboa/pull/1059
+- Add contenttypes to lazy columns by @MV-GH in https://github.com/dessalines/jerboa/pull/984
+- Add divider to section for report actions by @MV-GH in https://github.com/dessalines/jerboa/pull/1064
+- Add caret to indicate thumbnails that open in the image viewer by @LilithSilver in https://github.com/dessalines/jerboa/pull/932
+- Add error handling for saving images by @MV-GH in https://github.com/dessalines/jerboa/pull/1066
+- Fix dropdown popup issue by @MV-GH in https://github.com/dessalines/jerboa/pull/1063
+- Fix links looking like lemmy links being used as one by @MV-GH in https://github.com/dessalines/jerboa/pull/1048
+- Make images in markdown open in imageviewer by @MV-GH in https://github.com/dessalines/jerboa/pull/1069
+- Increase timeout of connections to 30s by @MV-GH in https://github.com/dessalines/jerboa/pull/1071
+- Retain scroll position of feed after swapping navigation by @MV-GH in https://github.com/dessalines/jerboa/pull/1072
+- Move unExpandedComments and commentsWithToggledActionBar from PostActivity to PostViewModel by @twizmwazin in https://github.com/dessalines/jerboa/pull/1068
+- Update strings.xml for `ko` by @meinside in https://github.com/dessalines/jerboa/pull/1073
+- Show comment divider inside the left side border by @twizmwazin in https://github.com/dessalines/jerboa/pull/1075
+- Add spacer to bottom of comment lists by @twizmwazin in https://github.com/dessalines/jerboa/pull/1074
+- Don't color posts as read in post activity by @twizmwazin in https://github.com/dessalines/jerboa/pull/1076
+
+## New Contributors
+
+- @yjiang-yh135 made their first contribution in https://github.com/dessalines/jerboa/pull/1047
+- @bappitybup made their first contribution in https://github.com/dessalines/jerboa/pull/1031
+- @Fish25op made their first contribution in https://github.com/dessalines/jerboa/pull/1052
+- @Gustavo-Martins made their first contribution in https://github.com/dessalines/jerboa/pull/1062
+- @LilithSilver made their first contribution in https://github.com/dessalines/jerboa/pull/932
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.40...0.0.41
+
+# Jerboa v0.0.40-alpha Release (2023-07-14)
+
+## What's Changed
+
+- Update baseline profiles by @MV-GH in https://github.com/dessalines/jerboa/pull/1013
+- Add separate screen for ImageViewer by @MV-GH in https://github.com/dessalines/jerboa/pull/980
+- Pull-to-refresh fix on post loading fail by @ZJouba in https://github.com/dessalines/jerboa/pull/1014
+- Add confirmation on exit by @MV-GH in https://github.com/dessalines/jerboa/pull/998
+- Adding spoiler tag support by @ZJouba in https://github.com/dessalines/jerboa/pull/990
+- Indicate persons that are bots by @camporter in https://github.com/dessalines/jerboa/pull/1019
+- Fix and update of the Ukrainian translation by @Digharatta in https://github.com/dessalines/jerboa/pull/1022
+- db refactor by @yate in https://github.com/dessalines/jerboa/pull/973
+- Add local crash tracking and viewing by @camporter in https://github.com/dessalines/jerboa/pull/945
+- Update italian translations by @andscape-dev in https://github.com/dessalines/jerboa/pull/1024
+- Add general small fixes by @MV-GH in https://github.com/dessalines/jerboa/pull/1026
+- Fix thumbnail links not working with deeplinks by @MV-GH in https://github.com/dessalines/jerboa/pull/1023
+- Change default of show_parent_comment_navigation_buttons by @MV-GH in https://github.com/dessalines/jerboa/pull/1027
+- Fix rare edgecase crash when deleting app DB by @MV-GH in https://github.com/dessalines/jerboa/pull/1028
+- Revert #767 should fix post opens the wrong one sometimes by @MV-GH in https://github.com/dessalines/jerboa/pull/1029
+- Add option to show/hide post previews by @twizmwazin in https://github.com/dessalines/jerboa/pull/1033
+- Auto fill in community name for posts created in community by @MV-GH in https://github.com/dessalines/jerboa/pull/1030
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.39...0.0.40
+
+# Jerboa v0.0.39-alpha Release (2023-07-10)
+
+## What's Changed
+
+- Fix deprecations by @MV-GH in https://github.com/dessalines/jerboa/pull/962
+- Use overloaded AndroidView in MarkdownHelper by @yate in https://github.com/dessalines/jerboa/pull/767
+- Update subscribed communities in sidebar when user subscribes by @twizmwazin in https://github.com/dessalines/jerboa/pull/948
+- Fixes in Greek Translation by @sv1sjp in https://github.com/dessalines/jerboa/pull/971
+- Update strings.xml for `ko` by @meinside in https://github.com/dessalines/jerboa/pull/965
+- Add DB migrations tests by @MV-GH in https://github.com/dessalines/jerboa/pull/899
+- Fix clear backstack not working properly by @MV-GH in https://github.com/dessalines/jerboa/pull/988
+- Fix regression due to deprecations change by @MV-GH in https://github.com/dessalines/jerboa/pull/986
+- Add "..." for too long community names by @MV-GH in https://github.com/dessalines/jerboa/pull/985
+- Improve login form by @MV-GH in https://github.com/dessalines/jerboa/pull/953
+- Fix recompositions due to autofill by @MV-GH in https://github.com/dessalines/jerboa/pull/975
+- Move view models to com.jerboa.model by @twizmwazin in https://github.com/dessalines/jerboa/pull/994
+- Add Ukrainian Language Support to Jerboa - values-uk strings.xml by @Digharatta in https://github.com/dessalines/jerboa/pull/996
+- Update CONTRIBUTION.md by @MV-GH in https://github.com/dessalines/jerboa/pull/997
+- Move more viewmodels into com.jerboa.model package by @twizmwazin in https://github.com/dessalines/jerboa/pull/1000
+- Add toggle in settings to hide descriptions in navbar by @Sir-Photch in https://github.com/dessalines/jerboa/pull/995
+- Update instance list by @MV-GH in https://github.com/dessalines/jerboa/pull/982
+- Fix inbox loading all pages on startup instead of set unread/all mode by @MV-GH in https://github.com/dessalines/jerboa/pull/1007
+- Add markdown preview by @MV-GH in https://github.com/dessalines/jerboa/pull/1002
+- Add drawer to all main tabs and general drawer changes by @MV-GH in https://github.com/dessalines/jerboa/pull/991
+
+## New Contributors
+
+- @Digharatta made their first contribution in https://github.com/dessalines/jerboa/pull/996
+- @Sir-Photch made their first contribution in https://github.com/dessalines/jerboa/pull/995
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.38...0.0.39
+
 # Jerboa v0.0.38-alpha Release (2023-07-03)
 
 ## What's Changed

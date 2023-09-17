@@ -30,7 +30,7 @@
     <string name="AppBars_created">作成</string>
     <string name="AppBars_users_day">1日のユーザー%1$s名</string>
     <string name="AppBars_users_week">1週間のユーザー%1$s名</string>
-    <string name="AppBars_users_month">1ヶ月のユーザー%1$名</string>
+    <string name="AppBars_users_month">1ヶ月のユーザー%1$s名</string>
     <string name="AppBars_users_6_months">6ヶ月のユーザー%1$s名</string>
     <string name="AppBars_posts">%1$sの投稿</string>
     <string name="AppBars_comments">%1$sのコメント</string>
@@ -38,7 +38,6 @@
     <string name="dialogs_top_week">今週の人気順</string>
     <string name="dialogs_top_month">今月の人気順</string>
     <string name="dialogs_top_year">今年の人気順</string>
-    <string name="dialogs_top_all_time">すべての期間の人気順</string>
     <string name="dialogs_subscribed">登録済み</string>
     <string name="dialogs_local">ローカル</string>
     <string name="dialogs_all">すべて</string>
@@ -70,10 +69,6 @@
     <string name="home_subscribed">登録済み</string>
     <string name="home_local">ローカル</string>
     <string name="home_all">すべて</string>
-    <string name="home_saved">保存済み</string>
-    <string name="home_communities">コミュニティ一覧</string>
-    <string name="home_profile">ユーザー</string>
-    <string name="home_inbox">受信トレイ</string>
     <string name="home_settings">設定</string>
     <string name="home_subscriptions">登録コミュニティ</string>
     <string name="home_add_account">アカウントを連携</string>
@@ -172,7 +167,6 @@
     <string name="look_and_feel_post_view_list">リスト</string>
     <string name="look_and_feel_show_navigation_bar">ナビゲーションバーを表示</string>
     <string name="look_and_feel_use_custom_tabs">カスタムタブを使う</string>
-    <string name="look_and_feel_use_private_tabs">私的カスタムタブを使う</string>
     <string name="settings_activity_settings">設定</string>
     <string name="settings_activity_look_and_feel">外見設定</string>
     <string name="settings_activity_account_settings">%1$s 設定</string>
@@ -183,7 +177,6 @@
     <string name="login_view_model_is_not_a_lemmy_instance">%1$sはLemmyサーバーではありません</string>
     <string name="create_report_view_model_report_created">報告作成完了</string>
     <string name="about_social">ソーシャル</string>
-    <string name="app_bars_dot_spacer">·</string>
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">折りたたんだコメントのコンテンツを表示</string>
     <string name="comment_node_permalink_copied">元リンクをコピーしました</string>

@@ -1,5 +1,8 @@
 package com.jerboa.model
 
+import android.content.Context
+import android.os.Parcelable
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,38 +18,32 @@ import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.CreateComment
 import com.jerboa.datatypes.types.PersonMentionView
 import com.jerboa.datatypes.types.PostView
-import com.jerboa.db.Account
-import com.jerboa.ui.components.common.Initializable
+import com.jerboa.db.entity.Account
+import com.jerboa.ui.components.common.apiErrorToast
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
-sealed class ReplyItem {
+@Parcelize
+sealed class ReplyItem : Parcelable {
     class PostItem(val item: PostView) : ReplyItem()
     class CommentItem(val item: CommentView) : ReplyItem()
     class CommentReplyItem(val item: CommentReplyView) : ReplyItem()
     class MentionReplyItem(val item: PersonMentionView) : ReplyItem()
 }
 
-class CommentReplyViewModel : ViewModel(), Initializable {
-    override var initialized by mutableStateOf(false)
+class CommentReplyViewModel : ViewModel() {
 
     var createCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
         private set
-    var replyItem by mutableStateOf<ReplyItem?>(null)
-        private set
-
-    fun initialize(
-        newReplyItem: ReplyItem,
-    ) {
-        replyItem = newReplyItem
-    }
 
     fun createComment(
+        reply: ReplyItem,
+        ctx: Context,
         content: String,
         account: Account,
         focusManager: FocusManager,
         onSuccess: (CommentView) -> Unit,
     ) {
-        val reply = replyItem!! // This should have been initialized
         val (postId, commentParentId) = when (reply) {
             is ReplyItem.PostItem -> Pair(reply.item.post.id, null)
             is ReplyItem.CommentItem -> Pair(
@@ -80,6 +77,10 @@ class CommentReplyViewModel : ViewModel(), Initializable {
 
                     focusManager.clearFocus()
                     onSuccess(commentView)
+                }
+                is ApiState.Failure -> {
+                    Log.d("createComment", "failed", res.msg)
+                    apiErrorToast(msg = res.msg, ctx = ctx)
                 }
                 else -> {}
             }

@@ -38,19 +38,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.jerboa.InputField
 import com.jerboa.R
 import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.types.Community
-import com.jerboa.db.Account
+import com.jerboa.db.entity.Account
+import com.jerboa.db.entity.AnonAccount
 import com.jerboa.isImage
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.PickImage
 import com.jerboa.ui.components.common.PictrsUrlImage
-import com.jerboa.ui.components.common.toCommunityList
 import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
@@ -59,7 +57,7 @@ import com.jerboa.ui.theme.muted
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateEditPostHeader(
-    navController: NavController = rememberNavController(),
+    onClickBack: () -> Unit,
     onSubmitClick: () -> Unit,
     formValid: Boolean,
     loading: Boolean,
@@ -87,9 +85,7 @@ fun CreateEditPostHeader(
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
+                onClick = onClickBack,
             ) {
                 // TODO add are you sure cancel dialog
                 Icon(
@@ -119,7 +115,7 @@ fun CreateEditPostBody(
     suggestedTitle: String? = null,
     suggestedTitleLoading: Boolean = false,
     communitySelector: @Composable () -> Unit,
-    account: Account?,
+    account: Account,
     padding: PaddingValues,
 ) {
     val scrollState = rememberScrollState()
@@ -226,7 +222,7 @@ fun CreateEditPostBody(
 @Composable
 fun PostCommunitySelector(
     community: Community?,
-    navController: NavController,
+    onClickCommunityList: () -> Unit,
 ) {
     Box {
         community?.also {
@@ -273,7 +269,7 @@ fun PostCommunitySelector(
                 .height(60.dp)
                 .fillMaxWidth()
                 .clickable {
-                    navController.toCommunityList(select = true)
+                    onClickCommunityList()
                 },
         )
     }
@@ -334,7 +330,7 @@ fun CreatePostBodyPreview() {
         urlField = InputField(label = "", hasError = false),
         onUrlChange = {},
         onImagePicked = {},
-        account = null,
+        account = AnonAccount,
         padding = PaddingValues(),
         suggestedTitle = null,
         suggestedTitleLoading = false,
@@ -343,7 +339,7 @@ fun CreatePostBodyPreview() {
         communitySelector = {
             PostCommunitySelector(
                 community = sampleCommunity,
-                navController = rememberNavController(),
+                onClickCommunityList = {},
             )
         },
     )
@@ -363,6 +359,7 @@ fun CreatePostHeaderPreview() {
             )
         },
         title = "Create post",
+        onClickBack = {},
     )
 }
 
@@ -380,6 +377,7 @@ fun EditPostHeaderPreview() {
             )
         },
         title = "Edit post",
+        onClickBack = {},
     )
 }
 
@@ -398,14 +396,14 @@ fun CreatePostBodyPreviewNoCommunity() {
         onImagePicked = {},
         suggestedTitle = stringResource(R.string.create_post_a_title_here),
         suggestedTitleLoading = false,
-        account = null,
+        account = AnonAccount,
         padding = PaddingValues(),
         isNsfw = false,
         onIsNsfwChange = {},
         communitySelector = {
             PostCommunitySelector(
                 community = null,
-                navController = rememberNavController(),
+                onClickCommunityList = {},
             )
         },
     )
@@ -424,7 +422,7 @@ fun EditPostBodyPreview() {
         onNameChange = {},
         onImagePicked = {},
         onUrlChange = {},
-        account = null,
+        account = AnonAccount,
         isNsfw = false,
         onIsNsfwChange = {},
         padding = PaddingValues(),
