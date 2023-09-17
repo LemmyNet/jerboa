@@ -130,28 +130,27 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
 
         val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
 
-            postsRes = when (newRes) {
-                is ApiState.Success -> {
-                    if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
-                        prevPage()
-                    }
-                    ApiState.Success(
-                        GetPostsResponse(
-                            mergePosts(
-                                oldRes.data.posts,
-                                newRes.data.posts,
-                            ),
-                        ),
-                    )
-                }
-
-                else -> {
+        postsRes = when (newRes) {
+            is ApiState.Success -> {
+                if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
                     prevPage()
-                    ApiState.AppendingFailure(oldRes.data)
                 }
+                ApiState.Success(
+                    GetPostsResponse(
+                        mergePosts(
+                            oldRes.data.posts,
+                            newRes.data.posts,
+                        ),
+                    ),
+                )
+            }
+
+            else -> {
+                prevPage()
+                ApiState.AppendingFailure(oldRes.data)
             }
         }
-
+    }
 
     fun followCommunity(form: FollowCommunity, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
@@ -302,7 +301,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                     ?.first?.let { currIndex ->
                         if (currIndex >= res.data.posts.size - 7) {
                             val community = communityRes
-                            if(community is ApiState.Success) {
+                            if (community is ApiState.Success) {
                                 appendPosts(community.data.community_view.community.id, account?.jwt)
                             }
                             val nextIndex = currIndex + 1

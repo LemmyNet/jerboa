@@ -12,7 +12,6 @@ import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.jerboa.feat.PostNavigationGestureMode
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

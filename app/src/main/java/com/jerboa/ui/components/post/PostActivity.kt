@@ -95,8 +95,8 @@ import com.jerboa.ui.components.common.JerboaPullRefreshIndicator
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.PostStream
-import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.PostSwipeWrapper
+import com.jerboa.ui.components.common.apiErrorToast
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.common.isLoading
 import com.jerboa.ui.components.common.isRefreshing
@@ -156,11 +156,18 @@ fun PostActivity(
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id, account))
+    val postViewModel: PostViewModel =
+        viewModel(factory = PostViewModel.Companion.Factory(id, account))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
-    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
-    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
+    appState.ConsumeReturn<CommentView>(
+        CommentReplyReturn.COMMENT_VIEW,
+        postViewModel::appendComment,
+    )
+    appState.ConsumeReturn<CommentView>(
+        CommentEditReturn.COMMENT_VIEW,
+        postViewModel::updateComment,
+    )
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
@@ -197,7 +204,8 @@ fun PostActivity(
         appSettingsViewModel = appSettingsViewModel,
     ) {
         Scaffold(
-            snackbarHost = { JerboaSnackbarHost(snackbarHostState) },modifier = Modifier
+            snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
+            modifier = Modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .semantics { testTagsAsResourceId = true }
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -256,21 +264,25 @@ fun PostActivity(
                                 )
                             }
                         },
-                        actions = {Box {
-                            IconButton(onClick = {
-                                showSortOptions = true
-                            }) {
-                                Icon(
-                                    Icons.Outlined.Sort,
-                                    contentDescription = stringResource(R.string.selectSort),)
-                            }
+                        actions = {
+                            Box {
+                                IconButton(
+                                    onClick = {
+                                        showSortOptions = true
+                                    },
+                                ) {
+                                    Icon(
+                                        Icons.Outlined.Sort,
+                                        contentDescription = stringResource(R.string.selectSort),
+                                    )
+                                }
 
-                            CommentSortOptionsDropdown(
-                                expanded = showSortOptions,
-                                selectedSortType = selectedSortType,
-                                onDismissRequest = { showSortOptions = false },
-                                onClickSortType = onClickSortType,
-                                siteVersion = siteViewModel.siteVersion(),
+                                CommentSortOptionsDropdown(
+                                    expanded = showSortOptions,
+                                    selectedSortType = selectedSortType,
+                                    onDismissRequest = { showSortOptions = false },
+                                    onClickSortType = onClickSortType,
+                                    siteVersion = siteViewModel.siteVersion(),
                                 )
                             }
                         },
@@ -279,10 +291,12 @@ fun PostActivity(
                 }
             },
             content = { padding ->
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .pullRefresh(pullRefreshState),
-                ) {    parentListStateIndexes.clear()
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pullRefresh(pullRefreshState),
+                ) {
+                    parentListStateIndexes.clear()
                     lazyListIndexTracker = 2
                     JerboaPullRefreshIndicator(
                         postViewModel.postRes.isRefreshing(),
@@ -296,18 +310,24 @@ fun PostActivity(
                     when (val postRes = postViewModel.postRes) {
                         is ApiState.Loading ->
                             LoadingBar(padding)
+
                         is ApiState.Failure -> ApiErrorText(postRes.msg)
                         is ApiState.Success -> {
                             val postView = postRes.data.post_view
                             val setIdModerators = postRes.data.moderators
-                            .map { it.moderator.id }
-                            .toImmutableSet()
+                                .map { it.moderator.id }
+                                .toImmutableSet()
 
                             fun isModerator(id: Int): Boolean {
-                            return setIdModerators.contains(id)
-                        }
+                                return setIdModerators.contains(id)
+                            }
 
-                        if (!account.isAnon()) appState.addReturn(PostViewReturn.POST_VIEW, postView.copy(read = true))
+                            if (!account.isAnon()) {
+                                appState.addReturn(
+                                    PostViewReturn.POST_VIEW,
+                                    postView.copy(read = true),
+                                )
+                            }
                             LazyColumn(
                                 state = listState,
                                 modifier = Modifier
@@ -320,13 +340,13 @@ fun PostActivity(
                                         postView = postView,
                                         onUpvoteClick = { pv ->
                                             account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.likePost(
                                                     CreatePostLike(
                                                         post_id = pv.post.id,
@@ -338,17 +358,16 @@ fun PostActivity(
                                                     ),
                                                 )
                                             }
-
                                         },
                                         onDownvoteClick = { pv ->
                                             account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.likePost(
                                                     CreatePostLike(
                                                         post_id = pv.post.id,
@@ -362,7 +381,8 @@ fun PostActivity(
                                             }
                                         },
                                         onReplyClick = { pv ->
-                                            val isModerator = isModerator(pv.creator, postRes.data.moderators)
+                                            val isModerator =
+                                                isModerator(pv.creator, postRes.data.moderators)
                                             appState.toCommentReply(
 
                                                 replyItem = ReplyItem.PostItem(pv),
@@ -372,13 +392,13 @@ fun PostActivity(
                                         onPostClick = {},
                                         onSaveClick = { pv ->
                                             account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.savePost(
                                                     SavePost(
                                                         post_id = pv.post.id,
@@ -399,13 +419,13 @@ fun PostActivity(
                                         },
                                         onDeletePostClick = { pv ->
                                             account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.deletePost(
                                                     DeletePost(
                                                         post_id = pv.post.id,
@@ -421,13 +441,13 @@ fun PostActivity(
                                         onPersonClick = appState::toProfile,
                                         onBlockCommunityClick = { c ->
                                             account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.blockCommunity(
                                                     BlockCommunity(
                                                         community_id = c.id,
@@ -440,13 +460,13 @@ fun PostActivity(
                                         },
                                         onBlockCreatorClick = { person ->
                                             account.doIfReadyElseDisplayInfo(
-                                            appState,
-                                            ctx,
-                                            snackbarHostState,
-                                            scope,
-                                            siteViewModel,
-                                            accountViewModel,
-                                        ) {
+                                                appState,
+                                                ctx,
+                                                snackbarHostState,
+                                                scope,
+                                                siteViewModel,
+                                                accountViewModel,
+                                            ) {
                                                 postViewModel.blockPerson(
                                                     BlockPerson(
                                                         person_id = person.id,
@@ -474,11 +494,11 @@ fun PostActivity(
                                         showVotingArrowsInListView = showVotingArrowsInListView,
                                         useCustomTabs = useCustomTabs,
                                         usePrivateTabs = usePrivateTabs,
-                                        blurNSFW = blurNSFW,appState = appState,
-                                    showPostLinkPreview = showPostLinkPreview,
-                                    showIfRead = false,
-                                    showScores = siteViewModel.showScores(),
-                                    postActionbarMode = postActionbarMode,
+                                        blurNSFW = blurNSFW, appState = appState,
+                                        showPostLinkPreview = showPostLinkPreview,
+                                        showIfRead = false,
+                                        showScores = siteViewModel.showScores(),
+                                        postActionbarMode = postActionbarMode,
                                     )
                                 }
 
@@ -491,7 +511,7 @@ fun PostActivity(
                                 when (val commentsRes = postViewModel.commentsRes) {
                                     is ApiState.Failure -> item(key = "error") {
                                         apiErrorToast(
-                                        ctx,
+                                            ctx,
                                             commentsRes.msg,
                                         )
                                     }
@@ -524,7 +544,10 @@ fun PostActivity(
                                             }
                                         }
 
-                                        item(key = "${postView.post.id}_is_comment_view", contentType = "contextButtons") {
+                                        item(
+                                            key = "${postView.post.id}_is_comment_view",
+                                            contentType = "contextButtons",
+                                        ) {
                                             if (postViewModel.isCommentView()) {
                                                 ShowCommentContextButtons(
                                                     postView.post.id,
@@ -555,16 +578,20 @@ fun PostActivity(
                                             toggleExpanded = toggleExpanded,
                                             toggleActionBar = toggleActionBar,
                                             onMarkAsReadClick = {},
-                                            onCommentClick = { commentView -> toggleExpanded(commentView.comment.id) },
+                                            onCommentClick = { commentView ->
+                                                toggleExpanded(
+                                                    commentView.comment.id,
+                                                )
+                                            },
                                             onUpvoteClick = { cv ->
                                                 account.doIfReadyElseDisplayInfo(
-                                                appState,
-                                                ctx,
-                                                snackbarHostState,
-                                                scope,
-                                                siteViewModel,
-                                                accountViewModel,
-                                            ) {
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                    accountViewModel,
+                                                ) {
                                                     postViewModel.likeComment(
                                                         CreateCommentLike(
                                                             comment_id = cv.comment.id,
@@ -579,13 +606,13 @@ fun PostActivity(
                                             },
                                             onDownvoteClick = { cv ->
                                                 account.doIfReadyElseDisplayInfo(
-                                                appState,
-                                                ctx,
-                                                snackbarHostState,
-                                                scope,
-                                                siteViewModel,
-                                                accountViewModel,
-                                            ) {
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                    accountViewModel,
+                                                ) {
                                                     postViewModel.likeComment(
                                                         CreateCommentLike(
                                                             comment_id = cv.comment.id,
@@ -599,7 +626,8 @@ fun PostActivity(
                                                 }
                                             },
                                             onReplyClick = { cv ->
-                                                val isModerator = isModerator(cv.creator, postRes.data.moderators)
+                                                val isModerator =
+                                                    isModerator(cv.creator, postRes.data.moderators)
                                                 appState.toCommentReply(
 
                                                     replyItem = ReplyItem.CommentItem(cv),
@@ -608,13 +636,13 @@ fun PostActivity(
                                             },
                                             onSaveClick = { cv ->
                                                 account.doIfReadyElseDisplayInfo(
-                                                appState,
-                                                ctx,
-                                                snackbarHostState,
-                                                scope,
-                                                siteViewModel,
-                                                accountViewModel,
-                                            ) {
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                    accountViewModel,
+                                                ) {
                                                     postViewModel.saveComment(
                                                         SaveComment(
                                                             comment_id = cv.comment.id,
@@ -625,23 +653,30 @@ fun PostActivity(
                                                 }
                                             },
                                             onPersonClick = appState::toProfile,
-                                            onHeaderClick = { commentView -> toggleExpanded(commentView.comment.id) },
-                                            onHeaderLongClick = { commentView -> toggleActionBar(commentView.comment.id) },
+                                            onHeaderClick = { commentView ->
+                                                toggleExpanded(
+                                                    commentView.comment.id,
+                                                )
+                                            },
+                                            onHeaderLongClick = { commentView ->
+                                                toggleActionBar(
+                                                    commentView.comment.id,
+                                                )
+                                            },
                                             onEditCommentClick = { cv ->
                                                 appState.toCommentEdit(
-
                                                     commentView = cv,
                                                 )
                                             },
                                             onDeleteCommentClick = { cv ->
                                                 account.doIfReadyElseDisplayInfo(
-                                                appState,
-                                                ctx,
-                                                snackbarHostState,
-                                                scope,
-                                                siteViewModel,
-                                                accountViewModel,
-                                            ) {
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                    accountViewModel,
+                                                ) {
                                                     postViewModel.deleteComment(
                                                         DeleteComment(
                                                             comment_id = cv.comment.id,
@@ -661,18 +696,17 @@ fun PostActivity(
                                                 postViewModel.fetchMoreChildren(
                                                     commentView = cv,
                                                     account = account,
-
                                                 )
                                             },
                                             onBlockCreatorClick = { person ->
                                                 account.doIfReadyElseDisplayInfo(
-                                                appState,
-                                                ctx,
-                                                snackbarHostState,
-                                                scope,
-                                                siteViewModel,
-                                                accountViewModel,
-                                            ) {
+                                                    appState,
+                                                    ctx,
+                                                    snackbarHostState,
+                                                    scope,
+                                                    siteViewModel,
+                                                    accountViewModel,
+                                                ) {
                                                     postViewModel.blockPerson(
                                                         BlockPerson(
                                                             person_id = person.id,
@@ -698,10 +732,11 @@ fun PostActivity(
                                                     commentId,
                                                 )
                                             },
-                                            blurNSFW = blurNSFW,showScores = siteViewModel.showScores(),
-                                    )
-                                    item {
-                                        Spacer(modifier = Modifier.height(100.dp))
+                                            blurNSFW = blurNSFW,
+                                            showScores = siteViewModel.showScores(),
+                                        )
+                                        item {
+                                            Spacer(modifier = Modifier.height(100.dp))
                                         }
                                     }
 

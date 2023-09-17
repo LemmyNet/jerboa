@@ -16,7 +16,6 @@ fun PostSwipeWrapper(
     account: Account,
     content: @Composable () -> Unit,
 ) {
-
     when (appSettingsViewModel.appSettings.value?.postNavigationGestureMode) {
         PostNavigationGestureMode.SwipeBetween.ordinal -> {
             SwipeBetweenPosts(

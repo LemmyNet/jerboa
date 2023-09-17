@@ -149,7 +149,7 @@ object Route {
         constructor(navBackStackEntry: NavBackStackEntry) :
             this(
                 communityId = navBackStackEntry.arguments?.getInt(COMMUNITY_ID)!!,
-                postId = navBackStackEntry.arguments?.getInt(POST_ID)!!
+                postId = navBackStackEntry.arguments?.getInt(POST_ID)!!,
             )
 
         companion object {

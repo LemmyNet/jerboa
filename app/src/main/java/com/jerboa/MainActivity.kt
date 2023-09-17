@@ -1,5 +1,4 @@
 package com.jerboa
-
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -25,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import arrow.core.Either
@@ -42,12 +40,12 @@ import com.jerboa.feat.BackConfirmationMode
 import com.jerboa.feat.ShowConfirmationDialog
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountSettingsViewModelFactory
-import com.jerboa.model.CommunityViewModel
-import com.jerboa.model.HomeViewModel
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AccountViewModelFactory
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.AppSettingsViewModelFactory
+import com.jerboa.model.CommunityViewModel
+import com.jerboa.model.HomeViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.comment.edit.CommentEditActivity
 import com.jerboa.ui.components.comment.reply.CommentReplyActivity
@@ -268,7 +266,7 @@ class MainActivity : AppCompatActivity() {
                             appSettingsViewModel = appSettingsViewModel,
                             postActionbarMode = appSettings.postActionbarMode,
                             showPostLinkPreview = appSettings.showPostLinkPreviews,
-                            )
+                        )
                     }
 
                     composable(
@@ -344,7 +342,6 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-
                     composable(
                         route = Route.COMMUNITY_POST,
                         deepLinks = listOf(
@@ -361,7 +358,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val args = Route.CommunityPostArgs(it)
                         val account = getCurrentAccount(accountViewModel)
-                        val communityViewModel by viewModels<CommunityViewModel>(factoryProducer = { CommunityViewModel.Companion.Factory(account, args.communityId.left()) } )
+                        val communityViewModel by viewModels<CommunityViewModel>(factoryProducer = { CommunityViewModel.Companion.Factory(account, args.communityId.left()) })
                         PostActivity(
                             id = Either.Left(args.postId),
                             accountViewModel = accountViewModel,

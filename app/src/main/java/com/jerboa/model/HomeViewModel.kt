@@ -1,5 +1,4 @@
 package com.jerboa.model
-
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
@@ -25,8 +24,8 @@ import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.ListingType
-import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.MarkPostAsRead
+import com.jerboa.datatypes.types.PostId
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
@@ -42,8 +41,8 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.toEnumSafe
-import kotlinx.coroutines.flow.map
 import com.jerboa.ui.components.common.PostStream
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 

@@ -139,8 +139,8 @@ class JerboaAppState(
         navController.navigate(
             Route.CommunityPostArgs.makeRoute(
                 communityId = "$communityId",
-                postId = "$postId"
-            )
+                postId = "$postId",
+            ),
         )
     }
 

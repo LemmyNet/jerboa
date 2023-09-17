@@ -53,7 +53,6 @@ import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.db.entity.Account
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.getCommentParentId
 import com.jerboa.getLocalizedStringForInboxTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
