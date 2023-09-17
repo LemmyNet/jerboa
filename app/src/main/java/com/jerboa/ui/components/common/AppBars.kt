@@ -2,6 +2,7 @@ package com.jerboa.ui.components.common
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -642,50 +643,6 @@ fun LoadingBar(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CreateSubmitHeader(
-    title: String,
-    onClickBack: () -> Unit,
-    onSubmitClick: () -> Unit,
-    loading: Boolean,
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = title,
-            )
-        },
-        actions = {
-            IconButton(
-                onClick = onSubmitClick,
-                enabled = !loading,
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.Send,
-                        contentDescription = stringResource(R.string.form_submit),
-                    )
-                }
-            }
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = onClickBack,
-            ) {
-                Icon(
-                    Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.create_report_back),
-                )
-            }
-        },
-    )
-}
-
 /**
  * M3 doesn't have a built-in way to do this yet, so we have to do it ourselves.
  *
@@ -708,5 +665,52 @@ fun JerboaPullRefreshIndicator(
         backgroundColor,
         contentColor,
         scale,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SaveTopBar(
+    onBackClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    loading: Boolean,
+    title: String,
+    @StringRes saveText: Int = R.string.save,
+    saveIcon: ImageVector = Icons.Outlined.Save,
+    formValid: Boolean = true,
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = title,
+            )
+        },
+        actions = {
+            IconButton(
+                onClick = onSaveClick,
+                enabled = formValid && !loading,
+            ) {
+                if (loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                } else {
+                    Icon(
+                        imageVector = saveIcon,
+                        contentDescription = stringResource(saveText),
+                    )
+                }
+            }
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = onBackClick,
+            ) {
+                Icon(
+                    Icons.Outlined.ArrowBack,
+                    contentDescription = stringResource(R.string.topAppBar_back),
+                )
+            }
+        },
     )
 }

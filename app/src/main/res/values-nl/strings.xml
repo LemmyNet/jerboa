@@ -21,7 +21,7 @@
     <string name="bottomBar_label_search">Zoeken</string>
     <string name="bottomBar_profile">Ga naar mijn profiel</string>
     <string name="bottomBar_search">Ga naar zoeken</string>
-    <string name="commentEdit_save">Bewaar reactie aanpassing</string>
+    <string name="comment_edit_save">Bewaar reactie aanpassing</string>
     <string name="commentFooter_reply">Antwoord op deze reactie</string>
     <string name="commentMention_link">Ga naar reactie</string>
     <string name="commentOrPostHeader_deleted">Bericht of reactie is verwijderd</string>
@@ -30,19 +30,8 @@
     <string name="comment_body_deleted">*Gewist*</string>
     <string name="comment_edit_edit">Bewerk</string>
     <string name="comment_edit_type_your_comment">Typ je opmerking</string>
-    <string name="comment_edit_back">Terug</string>
-    <string name="comment_mention_node_go_to">Ga naar %1$s</string>
-    <string name="comment_mention_node_view_source">Bekijk bron</string>
-    <string name="comment_mention_node_copy_permalink">Kopieer permalink</string>
-    <string name="comment_mention_node_report_comment">Rapporteer reactie</string>
-    <string name="comment_mention_node_block">Blokkeer %1$s</string>
     <string name="comment_reply_reply">Antwoord</string>
-    <string name="comment_reply_back">Terug</string>
     <string name="comment_reply_type_your_comment">Typ je opmerking</string>
-    <string name="comment_reply_node_go_to">Ga naar %1$s</string>
-    <string name="comment_reply_node_view_source">Bekijk bron</string>
-    <string name="comment_reply_node_report_comment">Rapporteer opmerking</string>
-    <string name="comment_reply_node_block">Blokkeer %1$s</string>
     <string name="AppBars_created">Aangemaakt</string>
     <string name="AppBars_users_day">%1$s gebruikers / dag</string>
     <string name="AppBars_users_week">%1$s gebruikers / week</string>
@@ -58,11 +47,8 @@
     <string name="dialogs_local">Lokaal</string>
     <string name="dialogs_all">Alles</string>
     <string name="dialog_moreOptions">Meer opties</string>
-    <string name="dialogs_active">Actief</string>
     <string name="dialogs_hot">Populair</string>
     <string name="dialogs_new">Nieuw</string>
-    <string name="dialogs_most_comments">Meeste opmerkingen</string>
-    <string name="dialogs_new_comments">Nieuwe opmerkingen</string>
     <string name="dialogs_top">Boven</string>
     <string name="dialogs_old">Oud</string>
     <string name="dialogs_unread">Ongelezen</string>
@@ -84,8 +70,6 @@
     <string name="community_pending">In behandeling</string>
     <string name="comment_save">Bewaar reactie</string>
     <string name="comment_unsave">Reactie niet bewaren</string>
-    <string name="community_back">Terug</string>
-    <string name="community_refresh">Vernieuwen</string>
     <string name="community_community_info">Community informatie</string>
     <string name="community_block_community">Community blokkeren</string>
     <string name="community_link_users_month">%1$s gebruikers / maand</string>
@@ -112,7 +96,6 @@
     <string name="login_email_or_username">E-mail of gebruikersnaam</string>
     <string name="login_login">Aanmelden</string>
     <string name="lessOptions">Toon minder opties</string>
-    <string name="login_back">Terug</string>
     <string name="person_profile_joined">Lid geworden</string>
     <string name="person_profile_posts">%1$s berichten</string>
     <string name="person_profile_comments">%1$s reacties</string>
@@ -133,7 +116,6 @@
     <string name="postListing_locked">Vergrendeld</string>
     <string name="postListing_reply">Antwoorden op bericht</string>
     <string name="post_activity_comments">Reacties</string>
-    <string name="post_listing_comments">%1$s reacties</string>
     <string name="post_listing_new">( %1$s nieuw )</string>
     <string name="post_listing_comments_count">%1$s reacties</string>
     <string name="post_listing_go_to">Ga naar %1$s</string>
@@ -148,10 +130,8 @@
     <string name="privateMessage_reply">Antwoorden op bericht</string>
     <string name="private_message_from">"van "</string>
     <string name="private_message_reply_reply">Beantwoorden</string>
-    <string name="private_message_reply_back">Terug</string>
     <string name="private_message_reply_type_your_message_placeholder">Typ je bericht</string>
     <string name="create_report_report">Rapporteren</string>
-    <string name="create_report_back">Terug</string>
     <string name="create_report_type_your_reason">Typ je reden</string>
     <string name="removeBookmark">Verwijder van bladwijzers</string>
     <string name="selectSort">Sorteer op</string>
@@ -211,7 +191,6 @@
     <string name="settings_activity_look_and_feel">Uiterlijk</string>
     <string name="settings_activity_account_settings">%1$s instellingen</string>
     <string name="settings_activity_about">Over</string>
-    <string name="comment_mention_node_permalink_copied">Permalink gekopieerd</string>
     <string name="topAppBar_back">Terug</string>
     <string name="utils_login_first">Eerst inloggen</string>
     <string name="login_view_model_incorrect_login">Onjuiste inloggegevens</string>
@@ -222,11 +201,9 @@
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Inhoud tonen voor samengevouwde reacties</string>
     <string name="comment_node_permalink_copied">Permalink gekopieerd</string>
-    <string name="comment_reply_node_permalink_copied">Permalink gekopieerd</string>
     <string name="post_listing_link_copied">Link gekopieerd</string>
     <string name="post_listing_permalink_copied">Permalink gekopieerd</string>
     <string name="comment_node_block">%1$s blokkeren</string>
-    <string name="comment_reply_node_copy_permalink">Permalink kopiëren</string>
     <string name="markRead">Markeer als gelezen</string>
     <string name="markUnread">Markeer als niet gelezen</string>
     <string name="markdownHelper_formatBold">Opmaak als vette text</string>

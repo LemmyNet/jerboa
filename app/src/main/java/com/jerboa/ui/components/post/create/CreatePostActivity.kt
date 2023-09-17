@@ -4,6 +4,9 @@ import android.net.Uri
 import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -32,11 +35,10 @@ import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreatePostViewModel
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.SaveTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListReturn
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
-import com.jerboa.ui.components.post.composables.CreateEditPostHeader
-import com.jerboa.ui.components.post.composables.CreatePostSubmitIcon
 import com.jerboa.ui.components.post.composables.PostCommunitySelector
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
@@ -121,10 +123,10 @@ fun CreatePostActivity(
                         ApiState.Loading -> true
                         else -> false
                     }
-                    CreateEditPostHeader(
+                    SaveTopBar(
                         formValid = formValid,
                         loading = loading,
-                        onSubmitClick = {
+                        onSaveClick = {
                             if (!account.isAnon()) {
                                 onSubmitClick(
                                     name = name,
@@ -138,11 +140,14 @@ fun CreatePostActivity(
                                 )
                             }
                         },
-                        submitIcon = {
-                            CreatePostSubmitIcon(formValid)
+                        saveIcon = if (formValid) {
+                            Icons.Filled.Send
+                        } else {
+                            Icons.Outlined.Send
                         },
+                        saveText = R.string.form_submit,
                         title = stringResource(R.string.create_post_create_post),
-                        onClickBack = appState::popBackStack,
+                        onBackClick = appState::popBackStack,
                     )
                     if (loading) {
                         LoadingBar()

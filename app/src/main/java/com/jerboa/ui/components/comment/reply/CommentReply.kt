@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -29,49 +28,6 @@ import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.post.PostNodeHeader
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CommentReplyHeader(
-    onClickBack: () -> Unit,
-    onSendClick: () -> Unit,
-    loading: Boolean,
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.comment_reply_reply),
-            )
-        },
-        actions = {
-            IconButton(
-                onClick = onSendClick,
-                enabled = !loading,
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.Send,
-                        contentDescription = stringResource(R.string.commentReply_send),
-                    )
-                }
-            }
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = onClickBack,
-            ) {
-                Icon(
-                    Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.comment_reply_back),
-                )
-            }
-        },
-    )
-}
 
 @Composable
 fun RepliedComment(

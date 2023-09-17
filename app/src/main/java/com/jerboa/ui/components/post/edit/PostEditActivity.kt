@@ -26,10 +26,9 @@ import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostEditViewModel
 import com.jerboa.ui.components.common.LoadingBar
+import com.jerboa.ui.components.common.SaveTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
-import com.jerboa.ui.components.post.composables.CreateEditPostHeader
-import com.jerboa.ui.components.post.composables.EditPostSubmitIcon
 import com.jerboa.validatePostName
 import com.jerboa.validateUrl
 import kotlinx.coroutines.launch
@@ -77,15 +76,12 @@ fun PostEditActivity(
                     ApiState.Loading -> true
                     else -> false
                 }
-                CreateEditPostHeader(
-                    onClickBack = appState::popBackStack,
+                SaveTopBar(
+                    onBackClick = appState::popBackStack,
                     formValid = formValid,
                     loading = loading,
-                    submitIcon = {
-                        EditPostSubmitIcon()
-                    },
                     title = stringResource(R.string.post_edit_edit_post),
-                    onSubmitClick = {
+                    onSaveClick = {
                         if (!account.isAnon()) {
                             onSubmitClick(
                                 postId = postView.post.id,

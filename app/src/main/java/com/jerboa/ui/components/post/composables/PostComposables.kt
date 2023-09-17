@@ -15,21 +15,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.ArrowDropDown
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Save
-import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,49 +45,6 @@ import com.jerboa.ui.theme.ICON_SIZE
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.THUMBNAIL_SIZE
 import com.jerboa.ui.theme.muted
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CreateEditPostHeader(
-    onClickBack: () -> Unit,
-    onSubmitClick: () -> Unit,
-    formValid: Boolean,
-    loading: Boolean,
-    title: String,
-    submitIcon: @Composable () -> Unit,
-) {
-    TopAppBar(
-        title = {
-            Text(text = title)
-        },
-        actions = {
-            IconButton(
-                enabled = formValid && !loading,
-                onClick = onSubmitClick,
-            ) {
-                if (loading) {
-                    //  TODO is this color necessary? If not, remove all of them!
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                } else {
-                    submitIcon()
-                }
-            }
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = onClickBack,
-            ) {
-                // TODO add are you sure cancel dialog
-                Icon(
-                    imageVector = Icons.Outlined.Close,
-                    contentDescription = stringResource(R.string.create_edit_post_close),
-                )
-            }
-        },
-    )
-}
 
 @Composable
 fun CreateEditPostBody(
@@ -295,28 +244,6 @@ fun CheckboxIsNsfw(
     }
 }
 
-@Composable
-fun CreatePostSubmitIcon(
-    formValid: Boolean,
-) {
-    Icon(
-        if (formValid) {
-            Icons.Filled.Send
-        } else {
-            Icons.Outlined.Send
-        },
-        stringResource(R.string.form_submit),
-    )
-}
-
-@Composable
-fun EditPostSubmitIcon() {
-    Icon(
-        Icons.Outlined.Save,
-        contentDescription = stringResource(R.string.form_submit),
-    )
-}
-
 @Preview
 @Composable
 fun CreatePostBodyPreview() {
@@ -342,42 +269,6 @@ fun CreatePostBodyPreview() {
                 onClickCommunityList = {},
             )
         },
-    )
-}
-
-@Preview
-@Composable
-fun CreatePostHeaderPreview() {
-    CreateEditPostHeader(
-        onSubmitClick = {},
-        formValid = true,
-        loading = false,
-        submitIcon = {
-            Icon(
-                Icons.Filled.Send,
-                "Send",
-            )
-        },
-        title = "Create post",
-        onClickBack = {},
-    )
-}
-
-@Preview
-@Composable
-fun EditPostHeaderPreview() {
-    CreateEditPostHeader(
-        onSubmitClick = {},
-        formValid = true,
-        loading = false,
-        submitIcon = {
-            Icon(
-                Icons.Filled.Save,
-                "Save",
-            )
-        },
-        title = "Edit post",
-        onClickBack = {},
     )
 }
 

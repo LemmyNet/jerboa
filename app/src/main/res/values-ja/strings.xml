@@ -14,19 +14,8 @@
     <string name="comment_body_deleted">*投稿者が削除*</string>
     <string name="comment_edit_edit">編集</string>
     <string name="comment_edit_type_your_comment">コメントを入力</string>
-    <string name="comment_edit_back">戻る</string>
-    <string name="comment_mention_node_go_to">%1$sへ行く</string>
-    <string name="comment_mention_node_view_source">原文を見る</string>
-    <string name="comment_mention_node_copy_permalink">リンクをコピー</string>
-    <string name="comment_mention_node_report_comment">コメントを報告</string>
-    <string name="comment_mention_node_block">%1$sをブロック</string>
     <string name="comment_reply_reply">返信</string>
-    <string name="comment_reply_back">戻る</string>
     <string name="comment_reply_type_your_comment">コメントを入力</string>
-    <string name="comment_reply_node_go_to">%1$sへ行く</string>
-    <string name="comment_reply_node_view_source">原文を見る</string>
-    <string name="comment_reply_node_report_comment">コメントを報告</string>
-    <string name="comment_reply_node_block">%1$sをブロック</string>
     <string name="AppBars_created">作成</string>
     <string name="AppBars_users_day">1日のユーザー%1$s名</string>
     <string name="AppBars_users_week">1週間のユーザー%1$s名</string>
@@ -41,11 +30,8 @@
     <string name="dialogs_subscribed">登録済み</string>
     <string name="dialogs_local">ローカル</string>
     <string name="dialogs_all">すべて</string>
-    <string name="dialogs_active">活発</string>
     <string name="dialogs_hot">人気</string>
     <string name="dialogs_new">新着</string>
-    <string name="dialogs_most_comments">コメントが多い順</string>
-    <string name="dialogs_new_comments">コメントが新しい順</string>
     <string name="dialogs_top">人気</string>
     <string name="dialogs_unread">未読</string>
     <string name="dialogs_done">確定</string>
@@ -61,8 +47,6 @@
     <string name="community_joined">参加済み</string>
     <string name="community_subscribe">登録</string>
     <string name="community_pending">検討中</string>
-    <string name="community_back">戻る</string>
-    <string name="community_refresh">再読み込み</string>
     <string name="community_community_info">コミュニティ情報</string>
     <string name="community_block_community">コミュニティをブロック</string>
     <string name="community_link_users_month">1ヶ月のユーザー%1$s名</string>
@@ -84,7 +68,6 @@
     <string name="login_instance_placeholder">例: lemmy.ml</string>
     <string name="login_email_or_username">Eメールまたはユーザー名</string>
     <string name="login_login">ログイン</string>
-    <string name="login_back">戻る</string>
     <string name="person_profile_joined">参加</string>
     <string name="person_profile_posts">投稿%1$s件</string>
     <string name="person_profile_comments">コメント%1$s件</string>
@@ -98,7 +81,6 @@
     <string name="post_edit_edit_post">投稿を編集</string>
     <string name="post_edit_body_placeholder">本文</string>
     <string name="post_activity_comments">コメント</string>
-    <string name="post_listing_comments">コメント%1$s件</string>
     <string name="post_listing_new">(新着 %1$s 件)</string>
     <string name="post_listing_comments_count">コメント%1$s件</string>
     <string name="post_listing_go_to">%1$sへ行く</string>
@@ -112,10 +94,8 @@
     <string name="private_message_to">"受信者"</string>
     <string name="private_message_from">"送信者"</string>
     <string name="private_message_reply_reply">返信</string>
-    <string name="private_message_reply_back">戻る</string>
     <string name="private_message_reply_type_your_message_placeholder">メッセージを入力</string>
     <string name="create_report_report">報告</string>
-    <string name="create_report_back">戻る</string>
     <string name="create_report_type_your_reason">理由を入力</string>
     <string name="settings_about_about">このアプリについて</string>
     <string name="settings_about_what_s_new">アプリ　ニュース</string>
@@ -171,7 +151,6 @@
     <string name="settings_activity_look_and_feel">外見設定</string>
     <string name="settings_activity_account_settings">%1$s 設定</string>
     <string name="settings_activity_about">アプリについて</string>
-    <string name="comment_mention_node_permalink_copied">元リンクがコピーされました</string>
     <string name="utils_login_first">先にログインしてください</string>
     <string name="login_view_model_incorrect_login">ログインが誤っています</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$sはLemmyサーバーではありません</string>
@@ -180,11 +159,9 @@
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">折りたたんだコメントのコンテンツを表示</string>
     <string name="comment_node_permalink_copied">元リンクをコピーしました</string>
-    <string name="comment_reply_node_permalink_copied">元リンクをコピーしました</string>
     <string name="post_listing_link_copied">リンクをコピーしました</string>
     <string name="post_listing_permalink_copied">元リンクをコピーしました</string>
     <string name="comment_node_block">%1$sをブロック</string>
-    <string name="comment_reply_node_copy_permalink">元リンクをコピー</string>
     <string name="moreOptions">追加オプションを表示</string>
     <string name="lessOptions">追加オプションを非表示</string>
     <string name="bottomBar_home">ホームへ行く</string>
@@ -197,7 +174,7 @@
     <string name="removeBookmark">ブックマークから外す</string>
     <string name="commentFooter_reply">このコメントに返信する</string>
     <string name="dialog_moreOptions">追加オプションを表示</string>
-    <string name="commentEdit_save">コメント編集を保存</string>
+    <string name="comment_edit_save">コメント編集を保存</string>
     <string name="commentReply_send">返信を送る</string>
     <string name="community_sortBy">並び替え</string>
     <string name="floating_createPost">投稿を作成</string>

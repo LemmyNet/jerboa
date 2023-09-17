@@ -1,6 +1,8 @@
 package com.jerboa.ui.components.report.comment
 
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,7 +20,7 @@ import com.jerboa.datatypes.types.CommentId
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
-import com.jerboa.ui.components.common.CreateSubmitHeader
+import com.jerboa.ui.components.common.SaveTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 
@@ -44,11 +46,11 @@ fun CreateCommentReportActivity(
     val focusManager = LocalFocusManager.current
     Scaffold(
         topBar = {
-            CreateSubmitHeader(
+            SaveTopBar(
                 title = stringResource(R.string.create_report_report),
                 loading = loading,
-                onClickBack = onBack,
-                onSubmitClick = {
+                onBackClick = onBack,
+                onSaveClick = {
                     if (!account.isAnon()) {
                         createReportViewModel.createCommentReport(
                             commentId = commentId,
@@ -60,6 +62,8 @@ fun CreateCommentReportActivity(
                         )
                     }
                 },
+                saveText = R.string.form_submit,
+                saveIcon = Icons.Outlined.Send,
             )
         },
         content = { padding ->
