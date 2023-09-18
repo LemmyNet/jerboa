@@ -62,9 +62,6 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
     private var blockPersonRes: ApiState<BlockPersonResponse> by mutableStateOf(ApiState.Empty)
     private var markPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
 
-    var fetchingMore by mutableStateOf(false)
-        private set
-
     var sortType by mutableStateOf(SortType.Active)
         private set
     var page by mutableIntStateOf(1)
@@ -336,7 +333,10 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
         }
     }
 
-    override fun isFetchingMore(): Boolean = fetchingMore
+    override fun isFetchingMore(): Boolean = when (this.postsRes) {
+        is ApiState.Loading -> true
+        else -> false
+    }
 
     init {
 
