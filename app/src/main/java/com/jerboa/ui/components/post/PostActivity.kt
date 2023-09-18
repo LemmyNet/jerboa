@@ -156,18 +156,11 @@ fun PostActivity(
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val postViewModel: PostViewModel =
-        viewModel(factory = PostViewModel.Companion.Factory(id, account))
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModel.Companion.Factory(id, account))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, postViewModel::updatePost)
-    appState.ConsumeReturn<CommentView>(
-        CommentReplyReturn.COMMENT_VIEW,
-        postViewModel::appendComment,
-    )
-    appState.ConsumeReturn<CommentView>(
-        CommentEditReturn.COMMENT_VIEW,
-        postViewModel::updateComment,
-    )
+    appState.ConsumeReturn<CommentView>(CommentReplyReturn.COMMENT_VIEW, postViewModel::appendComment)
+    appState.ConsumeReturn<CommentView>(CommentEditReturn.COMMENT_VIEW, postViewModel::updateComment)
 
     val onClickSortType = { commentSortType: CommentSortType ->
         postViewModel.updateSortType(commentSortType)
