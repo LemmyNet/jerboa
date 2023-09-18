@@ -256,8 +256,8 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
                     .mapIndexed { index, postView -> index to postView }
                     .firstOrNull { it.second.post.id == current }
                     ?.first?.let { currIndex ->
-                        if (currIndex >= res.data.posts.size - 7) {
-                            appendPosts(account?.jwt)
+                        if (currIndex + PostStream.POST_BUFFER_COUNT > res.data.posts.size - 1) {
+                            appendPosts(account.jwt)
                             val nextIndex = currIndex + 1
                             if (res.data.posts.size > nextIndex) {
                                 res.data.posts[nextIndex].post.id

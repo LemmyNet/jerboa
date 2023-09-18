@@ -9,6 +9,10 @@ interface PostStream {
     fun isFetchingMore(): Boolean
 
     companion object {
-        const val POST_BUFFER_COUNT = 7
+        /**
+         * The minimum number of posts to pre-load in a PostStream to prevent
+         * the user running out of posts during a swipe left.
+         */
+        const val POST_BUFFER_COUNT = 5
     }
 }

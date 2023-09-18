@@ -292,7 +292,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                     .mapIndexed { index, postView -> index to postView }
                     .firstOrNull { it.second.post.id == current }
                     ?.first?.let { currIndex ->
-                        if (currIndex >= res.data.posts.size - PostStream.POST_BUFFER_COUNT) {
+                        if (currIndex + PostStream.POST_BUFFER_COUNT > res.data.posts.size - 1) {
                             val community = communityRes
                             if (community is ApiState.Success) {
                                 appendPosts(community.data.community_view.community.id, account?.jwt)
