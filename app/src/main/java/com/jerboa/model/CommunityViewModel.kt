@@ -41,6 +41,7 @@ import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.ui.components.common.PostStream
+import com.jerboa.ui.components.common.isLoading
 import kotlinx.coroutines.launch
 
 class CommunityViewModel(account: Account, communityArg: Either<CommunityId, String>) : ViewModel(), PostStream {
@@ -333,10 +334,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
         }
     }
 
-    override fun isFetchingMore(): Boolean = when (this.postsRes) {
-        is ApiState.Loading -> true
-        else -> false
-    }
+    override fun isFetchingMore(): Boolean = this.postsRes.isLoading()
 
     init {
 

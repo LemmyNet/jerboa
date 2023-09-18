@@ -42,6 +42,7 @@ import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
 import com.jerboa.toEnumSafe
 import com.jerboa.ui.components.common.PostStream
+import com.jerboa.ui.components.common.isLoading
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -298,10 +299,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    override fun isFetchingMore(): Boolean = when (this.postsRes) {
-        is ApiState.Loading -> true
-        else -> false
-    }
+    override fun isFetchingMore(): Boolean = this.postsRes.isLoading()
 
     fun markPostAsRead(
         form: MarkPostAsRead,
