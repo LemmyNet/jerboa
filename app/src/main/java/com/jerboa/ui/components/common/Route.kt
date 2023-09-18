@@ -7,9 +7,7 @@ import com.jerboa.datatypes.types.PostId
 
 object Route {
     object Graph {
-        const val HOME = "graph_post"
         const val ROOT = "graph_root"
-        const val COMMUNITY = "graph_community"
     }
 
     const val LOGIN = "login"

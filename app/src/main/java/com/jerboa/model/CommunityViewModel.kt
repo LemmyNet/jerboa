@@ -108,46 +108,39 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
 
     fun appendPosts(id: CommunityId, jwt: String?) {
         viewModelScope.launch {
-            fetchMore(id, jwt)
-        }
-    }
-
-    private fun fetchMore(id: CommunityId, jwt: String?) = viewModelScope.launch {
-        val oldRes = postsRes
-        postsRes = when (oldRes) {
-            is ApiState.Appending -> return@launch
-            is ApiState.Holder -> ApiState.Appending(oldRes.data)
-            else -> return@launch
-        }
-
-        nextPage()
-        val form = GetPosts(
-            community_id = id,
-            page = page,
-            sort = sortType,
-            auth = jwt,
-        )
-
-        val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
-
-        postsRes = when (newRes) {
-            is ApiState.Success -> {
-                if (newRes.data.posts.isEmpty()) { // Hit the end of the posts
-                    prevPage()
-                }
-                ApiState.Success(
-                    GetPostsResponse(
-                        mergePosts(
-                            oldRes.data.posts,
-                            newRes.data.posts,
-                        ),
-                    ),
-                )
+            val oldRes = postsRes
+            postsRes = when (oldRes) {
+                is ApiState.Appending -> return@launch
+                is ApiState.Holder -> ApiState.Appending(oldRes.data)
+                else -> return@launch
             }
 
-            else -> {
-                prevPage()
-                ApiState.AppendingFailure(oldRes.data)
+            nextPage()
+            val form = GetPosts(
+                community_id = id,
+                page = page,
+                sort = sortType,
+                auth = jwt,
+            )
+
+            val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
+
+            postsRes = when (newRes) {
+                is ApiState.Success -> {
+                    ApiState.Success(
+                        GetPostsResponse(
+                            mergePosts(
+                                oldRes.data.posts,
+                                newRes.data.posts,
+                            ),
+                        ),
+                    )
+                }
+
+                else -> {
+                    prevPage()
+                    ApiState.AppendingFailure(oldRes.data)
+                }
             }
         }
     }
@@ -289,7 +282,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
         }
     }
 
-    override fun getNextPost(current: PostId?, account: Account?): PostId? {
+    override fun getNextPost(current: PostId?, account: Account): PostId? {
         val res = postsRes
         return if (res is ApiState.Success) {
             if (current == null) {
@@ -299,7 +292,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                     .mapIndexed { index, postView -> index to postView }
                     .firstOrNull { it.second.post.id == current }
                     ?.first?.let { currIndex ->
-                        if (currIndex >= res.data.posts.size - 7) {
+                        if (currIndex >= res.data.posts.size - PostStream.POST_BUFFER_COUNT) {
                             val community = communityRes
                             if (community is ApiState.Success) {
                                 appendPosts(community.data.community_view.community.id, account?.jwt)
@@ -322,7 +315,7 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
         }
     }
 
-    override fun getPreviousPost(current: PostId?, account: Account?): PostId? {
+    override fun getPreviousPost(current: PostId?, account: Account): PostId? {
         val res = postsRes
         return if (res is ApiState.Success) {
             if (current == null) {

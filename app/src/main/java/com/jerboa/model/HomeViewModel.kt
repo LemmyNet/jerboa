@@ -110,35 +110,32 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
 
     fun appendPosts(jwt: String?) {
         viewModelScope.launch {
-            fetchMore(jwt)
-        }
-    }
-    private suspend fun fetchMore(jwt: String?) {
-        val oldRes = postsRes
-        postsRes = when (oldRes) {
-            is ApiState.Appending -> return
-            is ApiState.Holder -> ApiState.Appending(oldRes.data)
-            else -> return
-        }
-
-        nextPage()
-        val newRes = apiWrapper(API.getInstance().getPosts(getForm(jwt).serializeToMap()))
-
-        postsRes = when (newRes) {
-            is ApiState.Success -> {
-                ApiState.Success(
-                    GetPostsResponse(
-                        mergePosts(
-                            oldRes.data.posts,
-                            newRes.data.posts,
-                        ),
-                    ),
-                )
+            val oldRes = postsRes
+            postsRes = when (oldRes) {
+                is ApiState.Appending -> return@launch
+                is ApiState.Holder -> ApiState.Appending(oldRes.data)
+                else -> return@launch
             }
 
-            else -> {
-                prevPage()
-                ApiState.AppendingFailure(oldRes.data)
+            nextPage()
+            val newRes = apiWrapper(API.getInstance().getPosts(getForm(jwt).serializeToMap()))
+
+            postsRes = when (newRes) {
+                is ApiState.Success -> {
+                    ApiState.Success(
+                        GetPostsResponse(
+                            mergePosts(
+                                oldRes.data.posts,
+                                newRes.data.posts,
+                            ),
+                        ),
+                    )
+                }
+
+                else -> {
+                    prevPage()
+                    ApiState.AppendingFailure(oldRes.data)
+                }
             }
         }
     }
@@ -248,7 +245,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         )
     }
 
-    override fun getNextPost(current: PostId?, account: Account?): PostId? = runBlocking {
+    override fun getNextPost(current: PostId?, account: Account): PostId? = runBlocking {
         val res = postsRes
         if (res is ApiState.Success) {
             if (current == null) {
@@ -279,7 +276,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    override fun getPreviousPost(current: PostId?, account: Account?): PostId? {
+    override fun getPreviousPost(current: PostId?, account: Account): PostId? {
         val res = postsRes
         return if (res is ApiState.Success) {
             if (current == null) {
