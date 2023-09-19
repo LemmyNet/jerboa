@@ -26,7 +26,7 @@ import com.jerboa.model.CommentReplyViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.SaveTopBar
+import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 
 object CommentReplyReturn {
@@ -63,7 +63,7 @@ fun CommentReplyActivity(
 
     Scaffold(
         topBar = {
-            SaveTopBar(
+            ActionTopBar(
                 title = stringResource(R.string.comment_reply_reply),
                 loading = loading,
                 onBackClick = appState::popBackStack,

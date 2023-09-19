@@ -670,7 +670,7 @@ fun JerboaPullRefreshIndicator(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SaveTopBar(
+fun ActionTopBar(
     onBackClick: () -> Unit,
     onSaveClick: () -> Unit,
     loading: Boolean,

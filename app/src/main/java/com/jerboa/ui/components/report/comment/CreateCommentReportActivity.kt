@@ -20,7 +20,7 @@ import com.jerboa.datatypes.types.CommentId
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
-import com.jerboa.ui.components.common.SaveTopBar
+import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 
@@ -46,7 +46,7 @@ fun CreateCommentReportActivity(
     val focusManager = LocalFocusManager.current
     Scaffold(
         topBar = {
-            SaveTopBar(
+            ActionTopBar(
                 title = stringResource(R.string.create_report_report),
                 loading = loading,
                 onBackClick = onBack,

@@ -35,7 +35,7 @@ import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreatePostViewModel
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.SaveTopBar
+import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListReturn
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
@@ -123,7 +123,7 @@ fun CreatePostActivity(
                         ApiState.Loading -> true
                         else -> false
                     }
-                    SaveTopBar(
+                    ActionTopBar(
                         formValid = formValid,
                         loading = loading,
                         onSaveClick = {

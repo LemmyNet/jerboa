@@ -32,7 +32,7 @@ import com.jerboa.datatypes.types.PrivateMessageResponse
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.ui.components.common.MarkdownTextField
-import com.jerboa.ui.components.common.SaveTopBar
+import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,7 +60,7 @@ fun CreatePrivateMessageActivity(
     val focusManager = LocalFocusManager.current
     Scaffold(
         topBar = {
-            SaveTopBar(
+            ActionTopBar(
                 title = personName,
                 loading = loading,
                 onBackClick = onBack,

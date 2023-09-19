@@ -27,7 +27,7 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PrivateMessageReplyViewModel
 import com.jerboa.model.SiteViewModel
 import com.jerboa.ui.components.common.LoadingBar
-import com.jerboa.ui.components.common.SaveTopBar
+import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 
 object PrivateMessage {
@@ -61,7 +61,7 @@ fun PrivateMessageReplyActivity(
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             topBar = {
-                SaveTopBar(
+                ActionTopBar(
                     loading = loading,
                     onBackClick = onBack,
                     onSaveClick = {

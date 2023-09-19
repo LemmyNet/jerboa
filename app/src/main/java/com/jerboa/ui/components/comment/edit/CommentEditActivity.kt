@@ -25,7 +25,7 @@ import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentEditViewModel
 import com.jerboa.ui.components.common.JerboaSnackbarHost
-import com.jerboa.ui.components.common.SaveTopBar
+import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 
 object CommentEditReturn {
@@ -63,7 +63,7 @@ fun CommentEditActivity(
         Scaffold(
             snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
             topBar = {
-                SaveTopBar(
+                ActionTopBar(
                     loading = loading,
                     onBackClick = appState::popBackStack,
                     onSaveClick = {
