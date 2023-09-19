@@ -25,8 +25,8 @@ import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentReplyViewModel
 import com.jerboa.model.ReplyItem
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.ActionTopBar
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 
 object CommentReplyReturn {

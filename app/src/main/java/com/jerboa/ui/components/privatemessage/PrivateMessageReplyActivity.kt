@@ -26,8 +26,8 @@ import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PrivateMessageReplyViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.ActionTopBar
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 
 object PrivateMessage {

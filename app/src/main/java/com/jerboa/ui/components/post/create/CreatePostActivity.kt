@@ -34,8 +34,8 @@ import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreatePostViewModel
-import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.ActionTopBar
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.community.list.CommunityListReturn
 import com.jerboa.ui.components.post.composables.CreateEditPostBody

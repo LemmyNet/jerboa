@@ -31,8 +31,8 @@ import com.jerboa.datatypes.types.CreatePrivateMessage
 import com.jerboa.datatypes.types.PrivateMessageResponse
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
-import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.ActionTopBar
+import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.getCurrentAccount
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

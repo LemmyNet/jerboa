@@ -25,8 +25,8 @@ import com.jerboa.db.entity.isAnon
 import com.jerboa.imageInputStreamFromUri
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.PostEditViewModel
-import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.ActionTopBar
+import com.jerboa.ui.components.common.LoadingBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.post.composables.CreateEditPostBody
 import com.jerboa.validatePostName

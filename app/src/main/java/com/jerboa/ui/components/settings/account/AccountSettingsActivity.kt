@@ -14,8 +14,8 @@ import com.jerboa.api.ApiState
 import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.SiteViewModel
-import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.ActionTopBar
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
 
 @OptIn(ExperimentalMaterial3Api::class)

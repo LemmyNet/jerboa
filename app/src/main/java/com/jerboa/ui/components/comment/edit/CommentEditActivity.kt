@@ -24,8 +24,8 @@ import com.jerboa.datatypes.types.CommentView
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentEditViewModel
-import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.ActionTopBar
+import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
 
 object CommentEditReturn {
