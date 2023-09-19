@@ -66,7 +66,7 @@ fun CommentEditActivity(
                 ActionTopBar(
                     loading = loading,
                     onBackClick = appState::popBackStack,
-                    onSaveClick = {
+                    onActionClick = {
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
@@ -88,7 +88,7 @@ fun CommentEditActivity(
                         }
                     },
                     title = stringResource(R.string.comment_edit_edit),
-                    saveText = R.string.comment_edit_save,
+                    actionText = R.string.comment_edit_save,
                 )
             },
             content = { padding ->

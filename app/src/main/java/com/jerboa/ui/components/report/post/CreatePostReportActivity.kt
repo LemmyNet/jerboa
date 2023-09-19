@@ -52,7 +52,7 @@ fun CreatePostReportActivity(
                 title = stringResource(R.string.create_report_report),
                 loading = loading,
                 onBackClick = onBack,
-                onSaveClick = {
+                onActionClick = {
                     if (!account.isAnon()) {
                         createReportViewModel.createPostReport(
                             postId = postId,
@@ -64,8 +64,8 @@ fun CreatePostReportActivity(
                         )
                     }
                 },
-                saveText = R.string.form_submit,
-                saveIcon = Icons.Outlined.Send,
+                actionText = R.string.form_submit,
+                actionIcon = Icons.Outlined.Send,
             )
         },
         content = { padding ->

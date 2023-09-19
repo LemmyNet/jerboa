@@ -67,7 +67,7 @@ fun CommentReplyActivity(
                 title = stringResource(R.string.comment_reply_reply),
                 loading = loading,
                 onBackClick = appState::popBackStack,
-                onSaveClick = {
+                onActionClick = {
                     if (!account.isAnon()) {
                         commentReplyViewModel.createComment(
                             replyItem,
@@ -83,8 +83,8 @@ fun CommentReplyActivity(
                         }
                     }
                 },
-                saveText = R.string.commentReply_send,
-                saveIcon = Icons.Outlined.Send,
+                actionText = R.string.commentReply_send,
+                actionIcon = Icons.Outlined.Send,
             )
         },
         content = { padding ->

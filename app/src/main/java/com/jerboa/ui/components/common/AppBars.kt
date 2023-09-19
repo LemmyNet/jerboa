@@ -668,15 +668,19 @@ fun JerboaPullRefreshIndicator(
     )
 }
 
+/**
+ * A simple top bar with a action that defaults to save
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActionTopBar(
     onBackClick: () -> Unit,
-    onSaveClick: () -> Unit,
+    onActionClick: () -> Unit,
     loading: Boolean,
     title: String,
-    @StringRes saveText: Int = R.string.save,
-    saveIcon: ImageVector = Icons.Outlined.Save,
+    @StringRes actionText: Int = R.string.save,
+    actionIcon: ImageVector = Icons.Outlined.Save,
     formValid: Boolean = true,
 ) {
     TopAppBar(
@@ -687,7 +691,7 @@ fun ActionTopBar(
         },
         actions = {
             IconButton(
-                onClick = onSaveClick,
+                onClick = onActionClick,
                 enabled = formValid && !loading,
             ) {
                 if (loading) {
@@ -696,8 +700,8 @@ fun ActionTopBar(
                     )
                 } else {
                     Icon(
-                        imageVector = saveIcon,
-                        contentDescription = stringResource(saveText),
+                        imageVector = actionIcon,
+                        contentDescription = stringResource(actionText),
                     )
                 }
             }

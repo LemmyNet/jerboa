@@ -50,7 +50,7 @@ fun CreateCommentReportActivity(
                 title = stringResource(R.string.create_report_report),
                 loading = loading,
                 onBackClick = onBack,
-                onSaveClick = {
+                onActionClick = {
                     if (!account.isAnon()) {
                         createReportViewModel.createCommentReport(
                             commentId = commentId,
@@ -62,8 +62,8 @@ fun CreateCommentReportActivity(
                         )
                     }
                 },
-                saveText = R.string.form_submit,
-                saveIcon = Icons.Outlined.Send,
+                actionText = R.string.form_submit,
+                actionIcon = Icons.Outlined.Send,
             )
         },
         content = { padding ->

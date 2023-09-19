@@ -41,7 +41,7 @@ fun AccountSettingsActivity(
         topBar = {
             ActionTopBar(
                 onBackClick = onBack,
-                onSaveClick = {
+                onActionClick = {
                     accountSettingsViewModel.saveSettings(
                         siteViewModel.saveUserSettings,
                         siteViewModel = siteViewModel,
@@ -52,7 +52,7 @@ fun AccountSettingsActivity(
                 },
                 loading = loading,
                 title = stringResource(R.string.account_settings_activity_account_settings),
-                saveText = R.string.account_settings_save_settings,
+                actionText = R.string.account_settings_save_settings,
             )
         },
         content = { padding ->

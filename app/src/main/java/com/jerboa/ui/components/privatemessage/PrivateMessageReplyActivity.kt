@@ -64,7 +64,7 @@ fun PrivateMessageReplyActivity(
                 ActionTopBar(
                     loading = loading,
                     onBackClick = onBack,
-                    onSaveClick = {
+                    onActionClick = {
                         if (!account.isAnon()) {
                             privateMessageReplyViewModel.createPrivateMessage(
                                 recipientId = privateMessageView.creator.id,
@@ -76,8 +76,8 @@ fun PrivateMessageReplyActivity(
                         }
                     },
                     title = stringResource(R.string.private_message_reply_reply),
-                    saveText = R.string.form_submit,
-                    saveIcon = Icons.Outlined.Send,
+                    actionText = R.string.form_submit,
+                    actionIcon = Icons.Outlined.Send,
                 )
             },
             content = { padding ->

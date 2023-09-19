@@ -126,7 +126,7 @@ fun CreatePostActivity(
                     ActionTopBar(
                         formValid = formValid,
                         loading = loading,
-                        onSaveClick = {
+                        onActionClick = {
                             if (!account.isAnon()) {
                                 onSubmitClick(
                                     name = name,
@@ -140,12 +140,12 @@ fun CreatePostActivity(
                                 )
                             }
                         },
-                        saveIcon = if (formValid) {
+                        actionIcon = if (formValid) {
                             Icons.Filled.Send
                         } else {
                             Icons.Outlined.Send
                         },
-                        saveText = R.string.form_submit,
+                        actionText = R.string.form_submit,
                         title = stringResource(R.string.create_post_create_post),
                         onBackClick = appState::popBackStack,
                     )

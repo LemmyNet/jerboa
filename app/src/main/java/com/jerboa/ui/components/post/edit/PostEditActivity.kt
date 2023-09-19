@@ -81,7 +81,7 @@ fun PostEditActivity(
                     formValid = formValid,
                     loading = loading,
                     title = stringResource(R.string.post_edit_edit_post),
-                    onSaveClick = {
+                    onActionClick = {
                         if (!account.isAnon()) {
                             onSubmitClick(
                                 postId = postView.post.id,

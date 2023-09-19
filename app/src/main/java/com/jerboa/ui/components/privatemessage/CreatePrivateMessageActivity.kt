@@ -64,7 +64,7 @@ fun CreatePrivateMessageActivity(
                 title = personName,
                 loading = loading,
                 onBackClick = onBack,
-                onSaveClick = {
+                onActionClick = {
                     if (!account.isAnon()) {
                         scope.launch {
                             loading = true
@@ -95,8 +95,8 @@ fun CreatePrivateMessageActivity(
                         }
                     }
                 },
-                saveText = R.string.form_submit,
-                saveIcon = Icons.Outlined.Send,
+                actionText = R.string.form_submit,
+                actionIcon = Icons.Outlined.Send,
             )
         },
         content = { padding ->
