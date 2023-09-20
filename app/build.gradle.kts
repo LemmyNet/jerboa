@@ -132,9 +132,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.4.0")
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:0.6.0-20230904.055636-11")
-    // Allows to swipe close the image viewer, original approach used nested scroll
-    // Which causes weird behaviour as nested scroll is not supported in compose
-    implementation("me.saket.telephoto:flick:0.6.0-SNAPSHOT")
+
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
