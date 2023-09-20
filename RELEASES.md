@@ -1,3 +1,24 @@
+# Jerboa v0.0.47-alpha Release (2023-09-20)
+
+## What's Changed
+
+- Fix PullRefreshIndicator theming and placement by @MV-GH in https://github.com/dessalines/jerboa/pull/1220
+- Refactor initiazable, Community navhost navigation and fix rare crash in inbox by @MV-GH in https://github.com/dessalines/jerboa/pull/1210
+- Add Arabic Translations by @Ali-x98 in https://github.com/dessalines/jerboa/pull/1226
+- Bump deps by @MV-GH in https://github.com/dessalines/jerboa/pull/1236
+- Fix unread count not resetting when swapping to anon by @MV-GH in https://github.com/dessalines/jerboa/pull/1233
+- Fix link not opening in Chrome If private tabs setting is on without CustomTab being on by @MV-GH in https://github.com/dessalines/jerboa/pull/1234
+- Fix zooming difficulties by @MV-GH in https://github.com/dessalines/jerboa/pull/1237
+- Fix datetime parse failures causing app crash by @MV-GH in https://github.com/dessalines/jerboa/pull/1235
+- Revert "Fix zooming difficulties" and temporary remove Swipe to exit in ImageViewer by @dessalines in https://github.com/dessalines/jerboa/pull/1238
+- Move save to the topbar of user settings and deduplicate topbar code by @MV-GH in https://github.com/dessalines/jerboa/pull/1243
+
+## New Contributors
+
+- @Ali-x98 made their first contribution in https://github.com/dessalines/jerboa/pull/1226
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.46...0.0.47
+
 # Jerboa v0.0.46-alpha Release (2023-09-05)
 
 ## What's Changed
