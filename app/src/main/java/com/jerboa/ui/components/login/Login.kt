@@ -273,7 +273,7 @@ fun LoginHeader(
             ) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.login_back),
+                    contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }
         },

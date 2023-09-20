@@ -13,17 +13,8 @@
     <string name="comment_body_deleted">*Deletado*</string>
     <string name="comment_edit_edit">Editar</string>
     <string name="comment_edit_type_your_comment">Digite seu comentário</string>
-    <string name="comment_edit_back">Voltar</string>
-    <string name="comment_mention_node_view_source">Ver Fonte</string>
-    <string name="comment_mention_node_copy_permalink">Copiar Link do Comentário</string>
-    <string name="comment_mention_node_report_comment">Denunciar Comentário</string>
-    <string name="comment_mention_node_block">Bloquear %1$s</string>
     <string name="comment_reply_reply">Responder</string>
-    <string name="comment_reply_back">Voltar</string>
     <string name="comment_reply_type_your_comment">Digite seu comentário</string>
-    <string name="comment_reply_node_view_source">Ver Fonte</string>
-    <string name="comment_reply_node_report_comment">Denunciar Comentário</string>
-    <string name="comment_reply_node_block">Bloquear %1$s</string>
     <string name="AppBars_created">Criada</string>
     <string name="AppBars_users_day">%1$s usuáries / dia</string>
     <string name="AppBars_users_week">%1$s usuáries / semana</string>
@@ -38,11 +29,8 @@
     <string name="dialogs_subscribed">Participando</string>
     <string name="dialogs_local">Local</string>
     <string name="dialogs_all">Tudo</string>
-    <string name="dialogs_active">Ativos</string>
     <string name="dialogs_hot">Em Alta</string>
     <string name="dialogs_new">Novos</string>
-    <string name="dialogs_most_comments">Mais Comentários</string>
-    <string name="dialogs_new_comments">Novos Comentários</string>
     <string name="dialogs_top">Melhores</string>
     <string name="dialogs_unread">Não Lido</string>
     <string name="dialogs_done">Feito</string>
@@ -58,8 +46,6 @@
     <string name="community_joined">Participando</string>
     <string name="community_subscribe">Participe</string>
     <string name="community_pending">Pendente</string>
-    <string name="community_back">Voltar</string>
-    <string name="community_refresh">Recarregar</string>
     <string name="community_community_info">Sobre a Comunidade</string>
     <string name="community_block_community">Bloquear Comunidade</string>
     <string name="community_link_users_month">%1$s usuáries / mês</string>
@@ -81,7 +67,6 @@
     <string name="login_instance_placeholder">ex: lemmy.ml</string>
     <string name="login_email_or_username">E-mail ou Nome da Conta</string>
     <string name="login_login">Entrar</string>
-    <string name="login_back">Voltar</string>
     <string name="person_profile_joined">Chegou</string>
     <string name="person_profile_posts">%1$s publicações</string>
     <string name="person_profile_comments">%1$s comentários</string>
@@ -95,7 +80,6 @@
     <string name="post_edit_edit_post">Editar Publicação</string>
     <string name="post_edit_body_placeholder">Conteúdo</string>
     <string name="post_activity_comments">Comentários</string>
-    <string name="post_listing_comments">%1$s comentários</string>
     <string name="post_listing_new">( %1$s novos )</string>
     <string name="post_listing_comments_count">%1$s comentários</string>
     <string name="post_listing_go_to">Ir para %1$s</string>
@@ -109,10 +93,8 @@
     <string name="private_message_to">"para "</string>
     <string name="private_message_from">"de "</string>
     <string name="private_message_reply_reply">Responder</string>
-    <string name="private_message_reply_back">Voltar</string>
     <string name="private_message_reply_type_your_message_placeholder">Digite sua mensagem</string>
     <string name="create_report_report">Denúncia</string>
-    <string name="create_report_back">Voltar</string>
     <string name="create_report_type_your_reason">Digite o motivo</string>
     <string name="settings_about_about">Sobre</string>
     <string name="settings_about_what_s_new">As Novidades</string>
@@ -168,7 +150,6 @@
     <string name="settings_activity_look_and_feel">Aparência e comportamento</string>
     <string name="settings_activity_account_settings">Configurações de %1$s</string>
     <string name="settings_activity_about">Sobre</string>
-    <string name="comment_mention_node_permalink_copied">Link do Comentário Copiado</string>
     <string name="utils_login_first">Entre com uma conta antes</string>
     <string name="login_view_model_incorrect_login">Login Incorreto</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s não é uma Instância Lemmy</string>
@@ -177,11 +158,9 @@
     <string name="comment_node_in">"em "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Mostrar conteúdo dos comentários retraídos</string>
     <string name="comment_node_permalink_copied">Link do Comentário Copiado</string>
-    <string name="comment_reply_node_permalink_copied">Link do Comentário Copiado</string>
     <string name="post_listing_link_copied">Link Copiado</string>
     <string name="post_listing_permalink_copied">Link da Publicação Copiado</string>
     <string name="comment_node_block">Bloquear %1$s</string>
-    <string name="comment_reply_node_copy_permalink">Copiar Link do Comentário</string>
     <string name="person_profile_activity_about">Sobre</string>
     <string name="person_profile_activity_posts">Publicações</string>
     <string name="person_profile_activity_comments">Comentários</string>

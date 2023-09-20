@@ -14,14 +14,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jerboa.JerboaAppState
+import com.jerboa.R
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CommentEditViewModel
+import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.getCurrentAccount
 
@@ -60,10 +63,10 @@ fun CommentEditActivity(
         Scaffold(
             snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
             topBar = {
-                CommentEditHeader(
+                ActionTopBar(
                     loading = loading,
                     onBackClick = appState::popBackStack,
-                    onSaveClick = {
+                    onActionClick = {
                         account.doIfReadyElseDisplayInfo(
                             appState,
                             ctx,
@@ -84,6 +87,8 @@ fun CommentEditActivity(
                             }
                         }
                     },
+                    title = stringResource(R.string.comment_edit_edit),
+                    actionText = R.string.comment_edit_save,
                 )
             },
             content = { padding ->

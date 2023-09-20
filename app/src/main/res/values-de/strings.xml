@@ -14,19 +14,8 @@
     <string name="comment_body_deleted">*Gelöscht*</string>
     <string name="comment_edit_edit">Bearbeiten</string>
     <string name="comment_edit_type_your_comment">Schreibe deinen Kommentar</string>
-    <string name="comment_edit_back">Zurück</string>
-    <string name="comment_mention_node_go_to">Gehe zu %1$s</string>
-    <string name="comment_mention_node_view_source">Quelle anzeigen</string>
-    <string name="comment_mention_node_copy_permalink">Permalink kopieren</string>
-    <string name="comment_mention_node_report_comment">Kommentar melden</string>
-    <string name="comment_mention_node_block">"Blockiere %1$s "</string>
     <string name="comment_reply_reply">Antworten</string>
-    <string name="comment_reply_back">Zurück</string>
     <string name="comment_reply_type_your_comment">Schreibe deinen Kommentar</string>
-    <string name="comment_reply_node_go_to">Gehe zu %1$s</string>
-    <string name="comment_reply_node_view_source">Quelle anzeigen</string>
-    <string name="comment_reply_node_report_comment">Kommentar melden</string>
-    <string name="comment_reply_node_block">"Blockiere %1$s "</string>
     <string name="AppBars_created">Erstellt</string>
     <string name="AppBars_users_day">%1$s Nutzer / Tag</string>
     <string name="AppBars_users_week">%1$s Nutzer / Woche</string>
@@ -47,11 +36,8 @@
     <string name="dialogs_subscribed">Abonniert</string>
     <string name="dialogs_local">Lokal</string>
     <string name="dialogs_all">Alle</string>
-    <string name="dialogs_active">Aktiv</string>
     <string name="dialogs_hot">Heiß</string>
     <string name="dialogs_new">Neu</string>
-    <string name="dialogs_most_comments">Meiste Kommentare</string>
-    <string name="dialogs_new_comments">Neue Kommentare</string>
     <string name="dialogs_top">Top</string>
     <string name="dialogs_old">Alt</string>
     <string name="dialogs_unread">Ungelesen</string>
@@ -68,8 +54,6 @@
     <string name="community_joined">Beigetreten</string>
     <string name="community_subscribe">Abonnieren</string>
     <string name="community_pending">Wartend</string>
-    <string name="community_back">Zurück</string>
-    <string name="community_refresh">Aktualisieren</string>
     <string name="community_community_info">Community Info</string>
     <string name="community_block_community">Community blockieren</string>
     <string name="community_link_users_month">%1$s Nutzer / Monat</string>
@@ -91,7 +75,6 @@
     <string name="login_instance_placeholder">z.B.: lemmy.ml</string>
     <string name="login_email_or_username">Email oder Benutzername</string>
     <string name="login_login">Login</string>
-    <string name="login_back">Zurück</string>
     <string name="person_profile_joined">Beigetreten</string>
     <string name="person_profile_posts">%1$s Beiträge</string>
     <string name="person_profile_comments">%1$s Kommentare</string>
@@ -105,7 +88,6 @@
     <string name="post_edit_edit_post">Beitrag bearbeiten</string>
     <string name="post_edit_body_placeholder">Inhalt</string>
     <string name="post_activity_comments">Kommentare</string>
-    <string name="post_listing_comments">%1$s Kommentare</string>
     <string name="post_listing_new">( %1$s neu)</string>
     <string name="post_listing_comments_count">%1$s Kommentare</string>
     <string name="post_listing_go_to">Gehe zu %1$s</string>
@@ -119,10 +101,8 @@
     <string name="private_message_to">"zu "</string>
     <string name="private_message_from">"von "</string>
     <string name="private_message_reply_reply">Antworten</string>
-    <string name="private_message_reply_back">Zurück</string>
     <string name="private_message_reply_type_your_message_placeholder">Schreibe deine Nachricht</string>
     <string name="create_report_report">Melden</string>
-    <string name="create_report_back">Zurück</string>
     <string name="create_report_type_your_reason">Schreibe deine Begründung</string>
     <string name="settings_about_about">Über</string>
     <string name="settings_about_what_s_new">Was ist neu</string>
@@ -179,7 +159,6 @@
     <string name="settings_activity_look_and_feel">Erscheinungsbild</string>
     <string name="settings_activity_account_settings">%1$s Einstellungen</string>
     <string name="settings_activity_about">Über</string>
-    <string name="comment_mention_node_permalink_copied">Permalink kopiert</string>
     <string name="utils_login_first">Zuerst einloggen</string>
     <string name="login_view_model_incorrect_login">Falscher Login</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s ist keine Lemmy Instanz</string>
@@ -188,11 +167,9 @@
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Zeige Inhalt für eingeklappte Kommentare</string>
     <string name="comment_node_permalink_copied">Permalink kopiert</string>
-    <string name="comment_reply_node_permalink_copied">Permalink kopiert</string>
     <string name="post_listing_link_copied">Link kopiert</string>
     <string name="post_listing_permalink_copied">Permalink kopiert</string>
     <string name="comment_node_block">Blockiere %1$s</string>
-    <string name="comment_reply_node_copy_permalink">Kopiere Permalink</string>
     <string name="moreOptions">Zeige mehr Optionen</string>
     <string name="lessOptions">Zeige weniger Optionen</string>
     <string name="bottomBar_home">Gehe zur Startseite</string>
@@ -204,7 +181,7 @@
     <string name="removeBookmark">Aus Lesezeichen entfernen</string>
     <string name="commentFooter_reply">Auf dieses Kommentar antworten</string>
     <string name="dialog_moreOptions">Zeige mehr Optionen</string>
-    <string name="commentEdit_save">Kommentarbearbeitung speichern</string>
+    <string name="comment_edit_save">Kommentarbearbeitung speichern</string>
     <string name="commentReply_send">Antwort senden</string>
     <string name="community_sortBy">Sortieren nach</string>
     <string name="floating_createPost">Beitrag erstellen</string>

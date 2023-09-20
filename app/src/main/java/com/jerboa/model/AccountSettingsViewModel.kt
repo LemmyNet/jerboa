@@ -33,6 +33,7 @@ class AccountSettingsViewModel(
         siteViewModel: SiteViewModel,
         account: Account,
         ctx: Context,
+        onSuccess: () -> Unit,
     ) {
         viewModelScope.launch {
             saveUserSettingsRes = ApiState.Loading
@@ -45,6 +46,7 @@ class AccountSettingsViewModel(
                     )
 
                     maybeUpdateAccountSettings(account, form)
+                    onSuccess()
                 }
 
                 is ApiState.Failure -> {

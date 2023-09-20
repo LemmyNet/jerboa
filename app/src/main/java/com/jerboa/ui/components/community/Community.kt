@@ -154,7 +154,7 @@ fun CommunityHeader(
             IconButton(onClick = onClickBack) {
                 Icon(
                     Icons.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.community_back),
+                    contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }
         },
