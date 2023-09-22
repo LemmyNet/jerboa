@@ -448,9 +448,6 @@ fun PostActivity(
                                             )
                                         }
                                     },
-                                    onShareClick = { url ->
-                                        shareLink(url, ctx)
-                                    },
                                     showReply = true, // Do nothing
                                     isModerator = isModerator(
                                         postView.creator,
