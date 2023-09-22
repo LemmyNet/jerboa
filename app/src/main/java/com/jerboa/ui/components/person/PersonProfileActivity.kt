@@ -66,7 +66,6 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.feat.shareLink
 import com.jerboa.getLocalizedStringForUserTab
 import com.jerboa.isScrolledToEnd
 import com.jerboa.model.AccountViewModel
@@ -575,9 +574,6 @@ fun UserTabs(
                                                 ctx = ctx,
                                             )
                                         }
-                                    },
-                                    onShareClick = { url ->
-                                        shareLink(url, ctx)
                                     },
                                     loadMorePosts = {
                                         personProfileViewModel.appendData(

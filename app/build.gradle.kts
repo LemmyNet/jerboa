@@ -101,7 +101,7 @@ android {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.github.alorma:compose-settings-ui-m3:0.27.0")
+    implementation("com.github.alorma:compose-settings-ui-m3:1.0.1")
 
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
 
@@ -131,7 +131,7 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.4.0")
     implementation("io.coil-kt:coil-svg:2.4.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.6.0-20230904.055636-11")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.7.0-20230922.054002-2")
 
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
