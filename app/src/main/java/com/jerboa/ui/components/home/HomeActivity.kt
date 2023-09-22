@@ -51,7 +51,6 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
 import com.jerboa.db.entity.isReady
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.feat.shareLink
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
 import com.jerboa.model.HomeViewModel
@@ -252,7 +251,10 @@ fun MainPostListingsContent(
         }
 
         PostListings(
+            listState = postListState,
+            padding = padding,
             posts = posts,
+            postViewMode = getPostViewMode(appSettingsViewModel),
             contentAboveListings = { if (taglines !== null) Taglines(taglines = taglines.toImmutableList()) },
             onUpvoteClick = { postView ->
                 account.doIfReadyElseDisplayInfo(
@@ -314,35 +316,6 @@ fun MainPostListingsContent(
                     )
                 }
             },
-            onEditPostClick = { postView ->
-                appState.toPostEdit(
-                    postView = postView,
-                )
-            },
-            onDeletePostClick = { postView ->
-                account.doIfReadyElseDisplayInfo(
-                    appState,
-                    ctx,
-                    snackbarHostState,
-                    scope,
-                    siteViewModel,
-                ) {
-                    homeViewModel.deletePost(
-                        DeletePost(
-                            post_id = postView.post.id,
-                            deleted = !postView.post.deleted,
-                            auth = it.jwt,
-                        ),
-                    )
-                }
-            },
-            onReportClick = { postView ->
-                appState.toPostReport(id = postView.post.id)
-            },
-            onCommunityClick = { community ->
-                appState.toCommunity(id = community.id)
-            },
-            onPersonClick = appState::toProfile,
             onBlockCommunityClick = { community ->
                 account.doIfReadyElseDisplayInfo(
                     appState,
@@ -379,16 +352,42 @@ fun MainPostListingsContent(
                     )
                 }
             },
+            onEditPostClick = { postView ->
+                appState.toPostEdit(
+                    postView = postView,
+                )
+            },
+            onDeletePostClick = { postView ->
+                account.doIfReadyElseDisplayInfo(
+                    appState,
+                    ctx,
+                    snackbarHostState,
+                    scope,
+                    siteViewModel,
+                ) {
+                    homeViewModel.deletePost(
+                        DeletePost(
+                            post_id = postView.post.id,
+                            deleted = !postView.post.deleted,
+                            auth = it.jwt,
+                        ),
+                    )
+                }
+            },
+            onReportClick = { postView ->
+                appState.toPostReport(id = postView.post.id)
+            },
+            onCommunityClick = { community ->
+                appState.toCommunity(id = community.id)
+            },
+            onPersonClick = appState::toProfile,
             loadMorePosts = {
                 homeViewModel.appendPosts(account.jwt)
             },
             account = account,
-            padding = padding,
-            listState = postListState,
-            postViewMode = getPostViewMode(appSettingsViewModel),
-            showVotingArrowsInListView = showVotingArrowsInListView,
             enableDownVotes = siteViewModel.enableDownvotes(),
             showAvatar = siteViewModel.showAvatar(),
+            showVotingArrowsInListView = showVotingArrowsInListView,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
