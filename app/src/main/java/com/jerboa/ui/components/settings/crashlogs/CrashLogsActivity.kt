@@ -21,7 +21,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,11 +34,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.crazylegend.crashyreporter.CrashyReporter
 import com.jerboa.R
 import com.jerboa.copyToClipboard
+import com.jerboa.formatDuration
 import com.jerboa.showSnackbar
 import com.jerboa.ui.components.common.JerboaSnackbarHost
 import com.jerboa.ui.components.common.SimpleTopAppBar
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.SMALL_PADDING
+import java.time.Instant
+import java.util.Date
 
 @Composable
 fun CrashLogsActivity(
@@ -47,15 +49,18 @@ fun CrashLogsActivity(
 ) {
     Log.d("jerboa", "Got to Crash log activity")
 
-    val crashes = CrashyReporter.getLogsAsStrings()?.toMutableStateList() ?: run { mutableStateListOf() }
-
-    CrashLogs(onClickBack = onClickBack, crashes = crashes)
+    CrashLogs(onClickBack = onClickBack)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrashLogs(onClickBack: () -> Unit, crashes: MutableList<String>) {
+fun CrashLogs(onClickBack: () -> Unit) {
     val scope = rememberCoroutineScope()
+    val logs = remember {
+        (CrashyReporter.getLogFiles() ?: listOf())
+            .sortedByDescending { it.lastModified() }
+            .toMutableStateList()
+    }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val deleteMessage = stringResource(R.string.crash_logs_all_deleted)
@@ -70,7 +75,7 @@ fun CrashLogs(onClickBack: () -> Unit, crashes: MutableList<String>) {
                     IconButton(
                         onClick = {
                             CrashyReporter.purgeLogs()
-                            crashes.clear()
+                            logs.clear()
                             showSnackbar(
                                 scope,
                                 snackbarHostState,
@@ -95,8 +100,8 @@ fun CrashLogs(onClickBack: () -> Unit, crashes: MutableList<String>) {
                     .verticalScroll(rememberScrollState())
                     .padding(padding),
             ) {
-                crashes.forEachIndexed { _, crash ->
-                    CrashLog(crash = crash)
+                logs.map {
+                    CrashLog(crash = it.readText(), modified = it.lastModified())
                 }
             }
         },
@@ -104,7 +109,7 @@ fun CrashLogs(onClickBack: () -> Unit, crashes: MutableList<String>) {
 }
 
 @Composable
-fun CrashLog(crash: String) {
+fun CrashLog(crash: String, modified: Long) {
     var expanded by remember { mutableStateOf(false) }
     val textModifier = Modifier.clickable(onClick = { expanded = !expanded })
     val ctx = LocalContext.current
@@ -125,6 +130,7 @@ fun CrashLog(crash: String) {
                     contentDescription = stringResource(R.string.crash_logs_copy),
                 )
             }
+            Text(text = formatDuration(Date(modified)))
         }
         if (expanded) {
             Text(
@@ -145,12 +151,9 @@ fun CrashLog(crash: String) {
 
 @Preview
 @Composable
-fun CrashLogsPreview() {
-    CrashLogs(
-        onClickBack = {},
-        crashes = mutableListOf(
-            "A really bad one\nlots\nof\ntrace\nlines\nhere",
-            "NullPointerException!",
-        ),
+fun CrashLogPreview() {
+    CrashLog(
+        crash = "A really bad one\nlots\nof\ntrace\nlines\nhere",
+        Instant.now().toEpochMilli() - 1000 * 60 * 60 * 24 * 10,
     )
 }
