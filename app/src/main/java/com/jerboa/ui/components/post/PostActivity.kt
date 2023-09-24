@@ -399,7 +399,7 @@ fun PostActivity(
                                             postViewModel.deletePost(
                                                 DeletePost(
                                                     post_id = pv.post.id,
-                                                    deleted = pv.post.deleted,
+                                                    deleted = !pv.post.deleted,
                                                     auth = it.jwt,
                                                 ),
                                             )

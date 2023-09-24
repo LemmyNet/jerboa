@@ -202,6 +202,13 @@ fun PostHeaderLine(
                         }
                     }
                 }
+                if (postView.post.deleted) {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = stringResource(R.string.postListing_deleted),
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
             }
             ScoreAndTime(
                 score = score,
@@ -211,16 +218,6 @@ fun PostHeaderLine(
                 isNsfw = nsfwCheck(postView),
                 showScores = showScores,
             )
-        }
-        Row {
-            if (postView.post.deleted) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = stringResource(R.string.postListing_deleted),
-                    tint = MaterialTheme.colorScheme.error,
-                )
-                DotSpacer(0.dp)
-            }
         }
     }
 }
