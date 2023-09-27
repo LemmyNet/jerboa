@@ -1,3 +1,13 @@
+# Jerboa v0.0.48-alpha Release (2023-09-27)
+
+## What's Changed
+
+- Sort crash logs by new, and display elapsed time by @MV-GH in https://github.com/dessalines/jerboa/pull/1244
+- Small refactor for shareLink and bump telephoto by @MV-GH in https://github.com/dessalines/jerboa/pull/1246
+- Fix post delete not working from within PostActivity by @MV-GH in https://github.com/dessalines/jerboa/pull/1249
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.47...0.0.48
+
 # Jerboa v0.0.47-alpha Release (2023-09-20)
 
 ## What's Changed
