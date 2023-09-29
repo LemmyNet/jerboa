@@ -48,6 +48,7 @@ import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SubscribedType
 import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
+import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.doIfReadyElseDisplayInfo
 import com.jerboa.feat.shareLink
 import com.jerboa.hostName
@@ -263,7 +264,7 @@ fun CommunityActivity(
                                                     )
                                                 }
                                             },
-                                            blurNSFW = blurNSFW,
+                                            blurNSFW = BlurTypes.changeBlurTypeInsideCommunity(blurNSFW),
                                         )
                                     }
 
@@ -434,7 +435,7 @@ fun CommunityActivity(
                             showAvatar = siteViewModel.showAvatar(),
                             useCustomTabs = useCustomTabs,
                             usePrivateTabs = usePrivateTabs,
-                            blurNSFW = blurNSFW,
+                            blurNSFW = BlurTypes.changeBlurTypeInsideCommunity(blurNSFW),
                             showPostLinkPreviews = showPostLinkPreviews,
                             appState = appState,
                             markAsReadOnScroll = markAsReadOnScroll,

@@ -20,8 +20,8 @@ import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.feat.BlurNsfwTypes
-import com.jerboa.feat.needNsfwBlur
+import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.needBlur
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
@@ -48,11 +48,11 @@ fun CommunityTopSection(
                 PictrsBannerImage(
                     url = it,
                     modifier = Modifier.height(DRAWER_BANNER_SIZE),
-                    blur = blurNSFW.toEnum<BlurNsfwTypes>().needNsfwBlur(communityView.community.nsfw),
+                    blur = blurNSFW.toEnum<BlurTypes>().needBlur(communityView.community.nsfw),
                 )
             }
             communityView.community.icon?.also {
-                LargerCircularIcon(icon = it, blur = blurNSFW.toEnum<BlurNsfwTypes>().needNsfwBlur(communityView.community.nsfw))
+                LargerCircularIcon(icon = it, blur = blurNSFW.toEnum<BlurTypes>().needBlur(communityView.community.nsfw))
             }
         }
         Column(

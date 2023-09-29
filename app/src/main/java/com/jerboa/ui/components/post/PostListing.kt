@@ -73,9 +73,9 @@ import com.jerboa.datatypes.types.Post
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.feat.BlurNsfwTypes
+import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.PostActionbarMode
-import com.jerboa.feat.needNsfwBlur
+import com.jerboa.feat.needBlur
 import com.jerboa.getPostType
 import com.jerboa.hostName
 import com.jerboa.isSameInstance
@@ -150,7 +150,7 @@ fun PostHeaderLine(
                             size = MEDIUM_ICON_SIZE,
                             modifier = Modifier.clickable { onCommunityClick(community) },
                             thumbnailSize = LARGER_ICON_THUMBNAIL_SIZE,
-                            blur = blurNSFW.toEnum<BlurNsfwTypes>().needNsfwBlur(community.nsfw),
+                            blur = blurNSFW.toEnum<BlurTypes>().needBlur(community.nsfw),
                         )
                     }
                 }
@@ -357,7 +357,7 @@ fun PostTitleAndImageLink(
 
     PictrsUrlImage(
         url = url,
-        blur = blurNSFW.toEnum<BlurNsfwTypes>().needNsfwBlur(postView),
+        blur = blurNSFW.toEnum<BlurTypes>().needBlur(postView),
         modifier = Modifier
             .combinedClickable(
                 onClick = { appState.openImageViewer(url) },
@@ -1349,7 +1349,7 @@ private fun ThumbnailTile(
             postView.post.thumbnail_url?.also { thumbnail ->
                 PictrsThumbnailImage(
                     thumbnail = thumbnail,
-                    blur = blurNSFW.toEnum<BlurNsfwTypes>().needNsfwBlur(postView),
+                    blur = blurNSFW.toEnum<BlurTypes>().needBlur(postView),
                     roundBottomEndCorner = postType != PostType.Link,
                     modifier = postLinkPicMod,
                 )

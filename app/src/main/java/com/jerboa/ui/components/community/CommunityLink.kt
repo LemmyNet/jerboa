@@ -27,8 +27,8 @@ import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityView
-import com.jerboa.feat.BlurNsfwTypes
-import com.jerboa.feat.needNsfwBlur
+import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.needBlur
 import com.jerboa.toEnum
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
@@ -93,7 +93,7 @@ fun CommunityLink(
                 contentDescription = null,
                 size = size,
                 thumbnailSize = thumbnailSize,
-                blur = blurNSFW.toEnum<BlurNsfwTypes>().needNsfwBlur(community.nsfw),
+                blur = blurNSFW.toEnum<BlurTypes>().needBlur(community.nsfw),
             )
         } ?: run {
             if (showDefaultIcon) {
