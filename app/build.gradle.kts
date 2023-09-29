@@ -122,9 +122,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.5.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
     // Images
     implementation("io.coil-kt:coil-compose:2.4.0")
@@ -132,7 +132,9 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.4.0")
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:0.6.0-20230904.055636-11")
-
+    // Allows to swipe close the image viewer, original approach used nested scroll
+    // Which causes weird behaviour as nested scroll is not supported in compose
+    implementation("me.saket.telephoto:flick:0.6.0-SNAPSHOT")
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
@@ -153,19 +155,19 @@ dependencies {
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:2.5.2")
 
-    implementation("io.arrow-kt:arrow-core:1.2.0")
+    implementation("io.arrow-kt:arrow-core:1.2.1")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
     implementation("androidx.compose.material3:material3:1.1.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
-    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("androidx.navigation:navigation-compose:2.7.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    val composeVersion = "1.5.0"
+    val composeVersion = "1.5.1"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
