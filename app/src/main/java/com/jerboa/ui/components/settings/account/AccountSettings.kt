@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.core.content.ContextCompat.startActivity
 import com.alorma.compose.settings.storage.base.rememberBooleanSettingState
 import com.alorma.compose.settings.storage.base.rememberIntSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
@@ -31,8 +30,8 @@ import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.imageInputStreamFromUri
-import com.jerboa.model.AccountSettingsViewModel
 import com.jerboa.model.SiteViewModel
+import com.jerboa.startActivitySafe
 import com.jerboa.ui.components.common.*
 import com.jerboa.ui.theme.MEDIUM_PADDING
 import com.jerboa.ui.theme.muted
@@ -90,22 +89,13 @@ fun ImageWithClose(
 
 @Composable
 fun SettingsForm(
-    accountSettingsViewModel: AccountSettingsViewModel,
     siteViewModel: SiteViewModel,
     account: Account,
-    onClickSave: (form: SaveUserSettings) -> Unit,
     padding: PaddingValues,
 ) {
     val luv = when (val siteRes = siteViewModel.siteRes) {
         is ApiState.Success -> siteRes.data.my_user?.local_user_view
-        else -> {
-            null
-        }
-    }
-
-    val loading = when (accountSettingsViewModel.saveUserSettingsRes) {
-        ApiState.Loading -> true
-        else -> false
+        else -> null
     }
 
     val scope = rememberCoroutineScope()
@@ -140,7 +130,8 @@ fun SettingsForm(
     val curr2FAEnabled = luv?.local_user?.totp_2fa_url != null
     val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
     val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.shortForm) } }
-    val form = SaveUserSettings(
+
+    siteViewModel.saveUserSettings = SaveUserSettings(
         display_name = displayName,
         bio = bio.text,
         email = email,
@@ -309,7 +300,6 @@ fun SettingsForm(
                 Text(text = stringResource(R.string.account_settings_send_notifications_to_email))
             },
         )
-
         SettingsCheckbox(
             title = {
                 Text(text = stringResource(R.string.settings_enable_2fa))
@@ -325,24 +315,13 @@ fun SettingsForm(
                 OutlinedButton(
                     onClick = {
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
-                        ctx.startActivity(intent)
+                        ctx.startActivitySafe(intent)
                     },
 
                 ) {
                     Text(stringResource(R.string.settings_2fa_link))
                 }
             }
-        }
-
-        // Todo: Remove this
-        Button(
-            enabled = !loading,
-            onClick = { onClickSave(form) },
-            modifier = Modifier
-                .padding(MEDIUM_PADDING)
-                .fillMaxWidth(),
-        ) {
-            Text(text = stringResource(R.string.account_settings_save_settings))
         }
     }
 }

@@ -227,7 +227,7 @@ fun ViewerHeader(
                 Icon(
                     Icons.Outlined.ArrowBack,
                     tint = Color.White,
-                    contentDescription = stringResource(R.string.login_back),
+                    contentDescription = stringResource(R.string.topAppBar_back),
                 )
             }
         },

@@ -14,19 +14,8 @@
     <string name="comment_body_deleted">*Raderad*</string>
     <string name="comment_edit_edit">Redigera</string>
     <string name="comment_edit_type_your_comment">Skriv din kommentar</string>
-    <string name="comment_edit_back">Tillbaka</string>
-    <string name="comment_mention_node_go_to">Gå till %1$s</string>
-    <string name="comment_mention_node_view_source">Visa Källa</string>
-    <string name="comment_mention_node_copy_permalink">Kopiera Permalänk</string>
-    <string name="comment_mention_node_report_comment">Rapportera Kommentar</string>
-    <string name="comment_mention_node_block">Blockera %1$s</string>
     <string name="comment_reply_reply">Svara</string>
-    <string name="comment_reply_back">Tillbaka</string>
     <string name="comment_reply_type_your_comment">Skriv din kommentar</string>
-    <string name="comment_reply_node_go_to">Gå till %1$s</string>
-    <string name="comment_reply_node_view_source">Visa Källa</string>
-    <string name="comment_reply_node_report_comment">Rapportera Kommentar</string>
-    <string name="comment_reply_node_block">Blockera %1$s</string>
     <string name="AppBars_created">Skapad</string>
     <string name="AppBars_users_day">%1$s användare / dag</string>
     <string name="AppBars_users_week">%1$s användare / vecka</string>
@@ -41,11 +30,8 @@
     <string name="dialogs_subscribed">Prenumererade</string>
     <string name="dialogs_local">Lokala</string>
     <string name="dialogs_all">Samtliga</string>
-    <string name="dialogs_active">Aktiva</string>
     <string name="dialogs_hot">Heta</string>
     <string name="dialogs_new">Nya</string>
-    <string name="dialogs_most_comments">Mest Kommenterade</string>
-    <string name="dialogs_new_comments">Nya Kommentarer</string>
     <string name="dialogs_top">Poppis</string>
     <string name="dialogs_unread">Olästa</string>
     <string name="dialogs_done">Klar</string>
@@ -61,8 +47,6 @@
     <string name="community_joined">Gick med i</string>
     <string name="community_subscribe">Gå med i</string>
     <string name="community_pending">Bearbetar</string>
-    <string name="community_back">Tillbaka</string>
-    <string name="community_refresh">Uppdatera</string>
     <string name="community_community_info">Om Gemenskap</string>
     <string name="community_block_community">Blockera Community</string>
     <string name="community_link_users_month">%1$s användare / månad</string>
@@ -84,7 +68,6 @@
     <string name="login_instance_placeholder">ex: lemmy.ml</string>
     <string name="login_email_or_username">Mejl eller användarnamn</string>
     <string name="login_login">Logga in</string>
-    <string name="login_back">Tillbaka</string>
     <string name="person_profile_joined">Gick med i</string>
     <string name="person_profile_posts">%1$s inlägg</string>
     <string name="person_profile_comments">%1$s kommentarer</string>
@@ -98,7 +81,6 @@
     <string name="post_edit_edit_post">Redigera Inlägg</string>
     <string name="post_edit_body_placeholder">Huvuddel</string>
     <string name="post_activity_comments">Kommentarer</string>
-    <string name="post_listing_comments">%1$s kommentarer</string>
     <string name="post_listing_new">( %1$s nya )</string>
     <string name="post_listing_comments_count">%1$s kommentarer</string>
     <string name="post_listing_go_to">Gå till %1$s</string>
@@ -112,10 +94,8 @@
     <string name="private_message_to">"till "</string>
     <string name="private_message_from">"från "</string>
     <string name="private_message_reply_reply">Svara</string>
-    <string name="private_message_reply_back">Tillbaka</string>
     <string name="private_message_reply_type_your_message_placeholder">Skriv ditt meddelande</string>
     <string name="create_report_report">Report</string>
-    <string name="create_report_back">Tillbaka</string>
     <string name="create_report_type_your_reason">Skriv din anledning</string>
     <string name="settings_about_about">Om</string>
     <string name="settings_about_what_s_new">Vad är nytt</string>
@@ -171,7 +151,6 @@
     <string name="settings_activity_look_and_feel">Stil och känsla</string>
     <string name="settings_activity_account_settings">%1$s inställningar</string>
     <string name="settings_activity_about">Om</string>
-    <string name="comment_mention_node_permalink_copied">Permalänk Kopierad</string>
     <string name="utils_login_first">Logga in först</string>
     <string name="login_view_model_incorrect_login">Felaktiga Inloggningsuppgifter</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s är inte en Lemmy-instans</string>
@@ -180,11 +159,9 @@
     <string name="comment_node_in">"in "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Visa Innehållet av Kollapsade Kommentarer</string>
     <string name="comment_node_permalink_copied">Permalänk Kopierad</string>
-    <string name="comment_reply_node_permalink_copied">Permalänk Kopierad</string>
     <string name="post_listing_link_copied">Länk Kopierad</string>
     <string name="post_listing_permalink_copied">Permaliänk Kopierad</string>
     <string name="comment_node_block">Blockera %1$s</string>
-    <string name="comment_reply_node_copy_permalink">Kopiera Permalänk</string>
     <string name="moreOptions">Visa fler alternativ</string>
     <string name="lessOptions">Visa färre alternativ</string>
     <string name="bottomBar_home">Gå hem</string>
@@ -196,7 +173,7 @@
     <string name="removeBookmark">Ta bort bokmärke</string>
     <string name="commentFooter_reply">Svara på denna kommentar</string>
     <string name="dialog_moreOptions">Visa fler alternativ</string>
-    <string name="commentEdit_save">Spara redigerad kommentar</string>
+    <string name="comment_edit_save">Spara redigerad kommentar</string>
     <string name="commentReply_send">Skicka svar</string>
     <string name="community_sortBy">Sortera efter</string>
     <string name="floating_createPost">Skapa inlägg</string>

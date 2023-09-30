@@ -21,6 +21,7 @@ import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.datatypes.types.GetUnreadCount
 import com.jerboa.datatypes.types.GetUnreadCountResponse
+import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
@@ -43,6 +44,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     private var unreadCountRes: ApiState<GetUnreadCountResponse> by mutableStateOf(ApiState.Empty)
 
     val unreadCount by derivedStateOf { getUnreadCountTotal(unreadCountRes) }
+    lateinit var saveUserSettings: SaveUserSettings
 
     init {
         viewModelScope.launch {

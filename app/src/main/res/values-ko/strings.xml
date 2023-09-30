@@ -40,7 +40,7 @@
     <string name="bottomBar_label_search">검색</string>
     <string name="bottomBar_profile">내 프로필로 가기</string>
     <string name="bottomBar_search">검색으로 가기</string>
-    <string name="commentEdit_save">댓글 수정사항 저장</string>
+    <string name="comment_edit_save">댓글 수정사항 저장</string>
     <string name="commentFooter_reply">이 댓글에 답장하기</string>
     <string name="commentMention_link">댓글로 가기</string>
     <string name="commentOrPostHeader_deleted">게시물 또는 댓글이 삭제되었습니다</string>
@@ -48,17 +48,8 @@
     <string name="commentReply_send">답장 발송</string>
     <string name="comment_body_deleted">*삭제됨*</string>
     <string name="comment_body_removed">*제거됨*</string>
-    <string name="comment_edit_back">뒤로</string>
     <string name="comment_edit_edit">수정</string>
     <string name="comment_edit_type_your_comment">댓글을 입력하세요</string>
-    <string name="comment_mention_node_block">%1$s 차단</string>
-    <string name="comment_mention_node_copy_permalink">퍼머링크 복사</string>
-    <string name="comment_mention_node_copy_comment">댓글 텍스트 복사</string>
-    <string name="comment_mention_node_go_to">%1$s로 가기</string>
-    <string name="comment_mention_node_permalink_copied">퍼머링크가 복사되었습니다</string>
-    <string name="comment_mention_node_comment_copied">댓글 텍스트가 복사되었습니다</string>
-    <string name="comment_mention_node_report_comment">댓글 신고</string>
-    <string name="comment_mention_node_view_source">소스 보기</string>
     <string name="comment_next_parent">다음 부모 댓글</string>
     <string name="comment_previous_parent">이전 부모 댓글</string>
     <string name="comment_node_block">%1$s 차단</string>
@@ -78,18 +69,10 @@
     <string name="comment_node_view_original">원본 보기</string>
     <string name="comment_node_view_post">게시물 보기</string>
     <string name="comment_node_view_source">소스 보기</string>
-    <string name="comment_reply_back">뒤로</string>
-    <string name="comment_reply_node_block">%1$s 차단</string>
-    <string name="comment_reply_node_copy_permalink">퍼머링크 복사</string>
-    <string name="comment_reply_node_go_to">%1$s로 가기</string>
-    <string name="comment_reply_node_permalink_copied">퍼머링크가 복사되었습니다</string>
-    <string name="comment_reply_node_report_comment">댓글 신고</string>
-    <string name="comment_reply_node_view_source">소스 보기</string>
     <string name="comment_reply_reply">답장</string>
     <string name="comment_reply_type_your_comment">댓글을 입력하세요</string>
     <string name="comment_save">댓글 저장</string>
     <string name="comment_unsave">댓글 저장 삭제</string>
-    <string name="community_back">뒤로</string>
     <string name="community_block_community">커뮤니티 차단</string>
     <string name="community_community_info">커뮤니티 정보</string>
     <string name="community_icon">커뮤니티 아이콘</string>
@@ -97,7 +80,6 @@
     <string name="community_link_users_month">%1$s 사용자 / 월</string>
     <string name="community_list_search">검색…</string>
     <string name="community_pending">보류 중</string>
-    <string name="community_refresh">새로고침</string>
     <string name="community_sortBy">정렬</string>
     <string name="community_subscribe">구독</string>
     <string name="community_users_month">%1$s 사용자 / 월</string>
@@ -111,20 +93,16 @@
     <string name="create_post_copy_suggested_title">추천 제목 복사: %1$s</string>
     <string name="create_post_create_post">게시물 작성</string>
     <string name="create_post_tag_nsfw">게시물을 후방주의로 표시</string>
-    <string name="create_report_back">뒤로</string>
     <string name="create_report_report">신고</string>
     <string name="create_report_type_your_reason">사유를 입력하세요</string>
     <string name="create_report_view_model_report_created">신고 되었습니다</string>
     <string name="create_report_view_model_report_fail">신고할 수 없습니다: %1$s</string>
     <string name="dialog_moreOptions">옵션 더 보기</string>
-    <string name="dialogs_active">활발</string>
     <string name="dialogs_all">전체</string>
     <string name="dialogs_done">완료</string>
     <string name="dialogs_hot">인기</string>
     <string name="dialogs_local">로컬</string>
-    <string name="dialogs_most_comments">최다 댓글</string>
     <string name="dialogs_new">신규</string>
-    <string name="dialogs_new_comments">신규 댓글</string>
     <string name="dialogs_subscribed">구독함</string>
     <string name="dialogs_top">최고</string>
     <string name="dialogs_top_day">일 최고</string>
@@ -159,7 +137,6 @@
     <string name="input_fields_cancel">취소</string>
     <string name="input_fields_ok">확인</string>
     <string name="lessOptions">옵션 덜 보기</string>
-    <string name="login_back">뒤로</string>
     <string name="login_email_or_username">이메일 또는 사용자명</string>
     <string name="login_instance">인스턴스</string>
     <string name="login_instance_placeholder">예: lemmy.ml</string>
@@ -241,7 +218,6 @@
     <string name="post_edit_body_placeholder">본문</string>
     <string name="post_edit_edit_post">게시물 수정</string>
     <string name="post_listing_block">%1$s 차단</string>
-    <string name="post_listing_comments">%1$s 개의 댓글</string>
     <string name="post_listing_comments_count">%1$s 개의 댓글</string>
     <string name="post_listing_copy_link">링크 복사</string>
     <string name="post_listing_copy_permalink">퍼머링크 복사</string>
@@ -265,7 +241,6 @@
     <string name="post_listing_share_post">게시물 공유</string>
     <string name="privateMessage_reply">메시지에 답장하기</string>
     <string name="private_message_from">"from "</string>
-    <string name="private_message_reply_back">뒤로</string>
     <string name="private_message_reply_reply">답장</string>
     <string name="private_message_reply_type_your_message_placeholder">메시지를 입력하세요</string>
     <string name="private_message_to">"to "</string>
@@ -341,5 +316,4 @@
     <string name="back_dialog">종료 확인 창 띄우기</string>
     <string name="exit">종료</string>
     <string name="back_dialog_title">정말로 종료하시겠습니까?</string>
-    <string name="failed_saving_image">이미지 저장 실패!</string>
 </resources>

@@ -14,19 +14,8 @@
     <string name="comment_body_deleted">Slettet</string>
     <string name="comment_edit_edit">Rediger</string>
     <string name="comment_edit_type_your_comment">Skriv din kommentar</string>
-    <string name="comment_edit_back">Tilbage</string>
-    <string name="comment_mention_node_go_to">Gå til %1$s</string>
-    <string name="comment_mention_node_view_source">Vis kilde</string>
-    <string name="comment_mention_node_copy_permalink">Kopier permalink</string>
-    <string name="comment_mention_node_report_comment">Rapportér kommentar</string>
-    <string name="comment_mention_node_block">Bloker %1$s</string>
     <string name="comment_reply_reply">Svar</string>
-    <string name="comment_reply_back">Tilbage</string>
     <string name="comment_reply_type_your_comment">Skriv din kommentar</string>
-    <string name="comment_reply_node_go_to">Gå til %1$s</string>
-    <string name="comment_reply_node_view_source">Vis kilde</string>
-    <string name="comment_reply_node_report_comment">Rapportér kommentar</string>
-    <string name="comment_reply_node_block">Bloker %1$s</string>
     <string name="AppBars_created">Oprettet</string>
     <string name="AppBars_users_day">%1$s brugere / dag</string>
     <string name="AppBars_users_week">%1$s brugere / uge</string>
@@ -41,11 +30,8 @@
     <string name="dialogs_subscribed">Abonneret</string>
     <string name="dialogs_local">Lokalt</string>
     <string name="dialogs_all">Alle</string>
-    <string name="dialogs_active">Aktive</string>
     <string name="dialogs_hot">Populære</string>
     <string name="dialogs_new">Nye</string>
-    <string name="dialogs_most_comments">Mest kommenterede</string>
-    <string name="dialogs_new_comments">Nye kommentarer</string>
     <string name="dialogs_top">Populære</string>
     <string name="dialogs_unread">Ulæste</string>
     <string name="dialogs_done">Færdige</string>
@@ -61,8 +47,6 @@
     <string name="community_joined">Blev medlem af</string>
     <string name="community_subscribe">Bliv medlem af</string>
     <string name="community_pending">Afventer</string>
-    <string name="community_back">Tilbage</string>
-    <string name="community_refresh">Opdater</string>
     <string name="community_community_info">Om Fællesskab</string>
     <string name="community_block_community">Bloker fællesskab</string>
     <string name="community_link_users_month">%1$s brugere / måned</string>
@@ -84,7 +68,6 @@
     <string name="login_instance_placeholder">f.eks.: lemmy.ml</string>
     <string name="login_email_or_username">E-mail eller brugernavn</string>
     <string name="login_login">Log ind</string>
-    <string name="login_back">Tilbage</string>
     <string name="person_profile_joined">Blev medlem af</string>
     <string name="person_profile_posts">%1$s indlæg</string>
     <string name="person_profile_comments">%1$s kommentarer</string>
@@ -98,7 +81,6 @@
     <string name="post_edit_edit_post">Rediger indlæg</string>
     <string name="post_edit_body_placeholder">Hovedtekst</string>
     <string name="post_activity_comments">Kommentarer</string>
-    <string name="post_listing_comments">%1$s kommentarer</string>
     <string name="post_listing_new">( %1$s nye )</string>
     <string name="post_listing_comments_count">%1$s kommentarer</string>
     <string name="post_listing_go_to">Gå til %1$s</string>
@@ -112,10 +94,8 @@
     <string name="private_message_to">Til </string>
     <string name="private_message_from">Fra </string>
     <string name="private_message_reply_reply">Svar</string>
-    <string name="private_message_reply_back">Tilbage</string>
     <string name="private_message_reply_type_your_message_placeholder">Skriv din besked</string>
     <string name="create_report_report">Rapport</string>
-    <string name="create_report_back">Tilbage</string>
     <string name="create_report_type_your_reason">Skriv din begrundelse</string>
     <string name="settings_about_about">Om</string>
     <string name="settings_about_what_s_new">Hvad er nyt</string>
@@ -171,7 +151,6 @@
     <string name="settings_activity_look_and_feel">Udseende og fornemmelse</string>
     <string name="settings_activity_account_settings">%1$s indstillinger</string>
     <string name="settings_activity_about">Om</string>
-    <string name="comment_mention_node_permalink_copied">Permanent link kopieret</string>
     <string name="utils_login_first">Log ind først</string>
     <string name="login_view_model_incorrect_login">Forkert login</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s er ikke en Lemmy-instans</string>
@@ -180,11 +159,9 @@
     <string name="comment_node_in">"i "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Vis indholdet af sammenfoldede kommentarer</string>
     <string name="comment_node_permalink_copied">Permanent link kopieret</string>
-    <string name="comment_reply_node_permalink_copied">Permanent link kopieret</string>
     <string name="post_listing_link_copied">Link kopieret</string>
     <string name="post_listing_permalink_copied">Permanent link kopieret</string>
     <string name="comment_node_block">Bloker %1$s</string>
-    <string name="comment_reply_node_copy_permalink">Kopier permanent link</string>
     <string name="moreOptions">Vis flere muligheder</string>
     <string name="lessOptions">Vis færre muligheder</string>
     <string name="bottomBar_home">Gå til startsiden</string>
@@ -196,7 +173,7 @@
     <string name="removeBookmark">Fjern bogmærke</string>
     <string name="commentFooter_reply">Svar på denne kommentar</string>
     <string name="dialog_moreOptions">Vis flere muligheder</string>
-    <string name="commentEdit_save">Gem redigeret kommentar</string>
+    <string name="comment_edit_save">Gem redigeret kommentar</string>
     <string name="commentReply_send">Send svar</string>
     <string name="community_sortBy">Sorter efter</string>
     <string name="floating_createPost">Opret indlæg</string>

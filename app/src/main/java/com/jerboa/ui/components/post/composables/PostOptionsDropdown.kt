@@ -28,6 +28,7 @@ import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
 import com.jerboa.datatypes.types.PersonId
 import com.jerboa.datatypes.types.PostView
+import com.jerboa.feat.shareLink
 import com.jerboa.feat.shareMedia
 import com.jerboa.isMedia
 import com.jerboa.ui.components.common.PopupMenuItem
@@ -45,7 +46,6 @@ fun PostOptionsDropdown(
     onReportClick: (PostView) -> Unit,
     onBlockCreatorClick: (Person) -> Unit,
     onBlockCommunityClick: (Community) -> Unit,
-    onShareClick: (shareUrl: String) -> Unit,
     onViewSourceClick: () -> Unit,
     isCreator: Boolean,
     viewSource: Boolean,
@@ -225,7 +225,7 @@ fun PostOptionsDropdown(
                     icon = Icons.Outlined.Share,
                     onClick = {
                         onDismissRequest()
-                        onShareClick(url)
+                        shareLink(url, ctx)
                     },
                 )
 
@@ -271,7 +271,7 @@ fun PostOptionsDropdown(
                 icon = Icons.Outlined.Share,
                 onClick = {
                     onDismissRequest()
-                    onShareClick(postView.post.ap_id)
+                    shareLink(postView.post.ap_id, ctx)
                 },
             )
         }

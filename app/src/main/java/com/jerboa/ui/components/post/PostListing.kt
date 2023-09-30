@@ -202,6 +202,13 @@ fun PostHeaderLine(
                         }
                     }
                 }
+                if (postView.post.deleted) {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = stringResource(R.string.postListing_deleted),
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
             }
             ScoreAndTime(
                 score = score,
@@ -211,16 +218,6 @@ fun PostHeaderLine(
                 isNsfw = nsfwCheck(postView),
                 showScores = showScores,
             )
-        }
-        Row {
-            if (postView.post.deleted) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = stringResource(R.string.postListing_deleted),
-                    tint = MaterialTheme.colorScheme.error,
-                )
-                DotSpacer(0.dp)
-            }
         }
     }
 }
@@ -545,7 +542,6 @@ fun PostFooterLine(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
-    onShareClick: (url: String) -> Unit,
     onViewSourceClick: () -> Unit,
     modifier: Modifier = Modifier,
     showReply: Boolean = false,
@@ -570,7 +566,6 @@ fun PostFooterLine(
             onReportClick = onReportClick,
             onBlockCreatorClick = onBlockCreatorClick,
             onBlockCommunityClick = onBlockCommunityClick,
-            onShareClick = onShareClick,
             onViewSourceClick = onViewSourceClick,
             isCreator = account.id == postView.creator.id,
             viewSource = viewSource,
@@ -757,7 +752,6 @@ fun PostFooterLinePreview() {
         onPersonClick = {},
         onBlockCreatorClick = {},
         onBlockCommunityClick = {},
-        onShareClick = {},
         onViewSourceClick = {},
         account = AnonAccount,
         enableDownVotes = true,
@@ -788,7 +782,6 @@ fun PreviewPostListingCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
-        onShareClick = {},
         isModerator = true,
         fullBody = false,
         account = AnonAccount,
@@ -797,8 +790,8 @@ fun PreviewPostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
+        showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -824,7 +817,6 @@ fun PreviewLinkPostListing() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
-        onShareClick = {},
         isModerator = false,
         fullBody = false,
         account = AnonAccount,
@@ -833,8 +825,8 @@ fun PreviewLinkPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
+        showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -860,7 +852,6 @@ fun PreviewImagePostListingCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
-        onShareClick = {},
         isModerator = false,
         fullBody = false,
         account = AnonAccount,
@@ -869,8 +860,8 @@ fun PreviewImagePostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
+        showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -896,7 +887,6 @@ fun PreviewImagePostListingSmallCard() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
-        onShareClick = {},
         isModerator = false,
         fullBody = false,
         account = AnonAccount,
@@ -905,8 +895,8 @@ fun PreviewImagePostListingSmallCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
+        showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -932,7 +922,6 @@ fun PreviewLinkNoThumbnailPostListing() {
         onPersonClick = {},
         onBlockCommunityClick = {},
         onBlockCreatorClick = {},
-        onShareClick = {},
         isModerator = true,
         fullBody = false,
         account = AnonAccount,
@@ -941,8 +930,8 @@ fun PreviewLinkNoThumbnailPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = true,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
+        showPostLinkPreview = true,
         showIfRead = true,
         showScores = true,
         postActionbarMode = PostActionbarMode.Long.ordinal,
@@ -966,7 +955,6 @@ fun PostListing(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
-    onShareClick: (url: String) -> Unit,
     showReply: Boolean = false,
     isModerator: Boolean,
     showCommunityName: Boolean = true,
@@ -1025,7 +1013,6 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
-            onShareClick = onShareClick,
             onViewSourceClick = {
                 viewSource = !viewSource
             },
@@ -1041,8 +1028,8 @@ fun PostListing(
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            appState = appState,
             showPostLinkPreview = showPostLinkPreview,
+            appState = appState,
             showIfRead = showIfRead,
             showScores = showScores,
             postActionbarMode = postActionbarMode,
@@ -1075,7 +1062,6 @@ fun PostListing(
             onPersonClick = onPersonClick,
             onBlockCommunityClick = onBlockCommunityClick,
             onBlockCreatorClick = onBlockCreatorClick,
-            onShareClick = onShareClick,
             onViewSourceClick = {
                 viewSource = !viewSource
             },
@@ -1083,16 +1069,16 @@ fun PostListing(
             showReply = showReply,
             isModerator = isModerator,
             showCommunityName = showCommunityName,
-            account = account,
             fullBody = false,
+            account = account,
             expandedImage = false,
             enableDownVotes = enableDownVotes,
             showAvatar = showAvatar,
             useCustomTabs = useCustomTabs,
             usePrivateTabs = usePrivateTabs,
             blurNSFW = blurNSFW,
-            appState = appState,
             showPostLinkPreview = showPostLinkPreview,
+            appState = appState,
             showScores = showScores,
             postActionbarMode = postActionbarMode,
         )
@@ -1466,7 +1452,6 @@ fun PostListingCard(
     onPersonClick: (personId: Int) -> Unit,
     onBlockCommunityClick: (community: Community) -> Unit,
     onBlockCreatorClick: (person: Person) -> Unit,
-    onShareClick: (url: String) -> Unit,
     onViewSourceClick: () -> Unit,
     viewSource: Boolean,
     showReply: Boolean = false,
@@ -1535,25 +1520,24 @@ fun PostListingCard(
             instantScores = instantScores,
             onUpvoteClick = onUpvoteClick,
             onDownvoteClick = onDownvoteClick,
-            onSaveClick = onSaveClick,
             onReplyClick = onReplyClick,
-            onCommunityClick = onCommunityClick,
-            onPersonClick = onPersonClick,
+            onSaveClick = onSaveClick,
             onEditPostClick = onEditPostClick,
             onDeletePostClick = onDeletePostClick,
             onReportClick = onReportClick,
-            onBlockCommunityClick = onBlockCommunityClick,
+            onCommunityClick = onCommunityClick,
+            onPersonClick = onPersonClick,
             onBlockCreatorClick = onBlockCreatorClick,
+            onBlockCommunityClick = onBlockCommunityClick,
             onViewSourceClick = onViewSourceClick,
-            onShareClick = onShareClick,
+            modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             showReply = showReply,
             account = account,
-            modifier = Modifier.padding(horizontal = MEDIUM_PADDING),
             enableDownVotes = enableDownVotes,
             viewSource = viewSource,
-            fromPostActivity = fullBody,
             showScores = showScores,
             postActionbarMode = postActionbarMode,
+            fromPostActivity = fullBody,
             scope = appState.coroutineScope,
         )
     }

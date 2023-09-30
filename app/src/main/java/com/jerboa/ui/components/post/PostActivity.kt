@@ -72,7 +72,6 @@ import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.feat.shareLink
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
@@ -400,7 +399,7 @@ fun PostActivity(
                                             postViewModel.deletePost(
                                                 DeletePost(
                                                     post_id = pv.post.id,
-                                                    deleted = pv.post.deleted,
+                                                    deleted = !pv.post.deleted,
                                                     auth = it.jwt,
                                                 ),
                                             )
@@ -447,9 +446,6 @@ fun PostActivity(
                                                 ctx,
                                             )
                                         }
-                                    },
-                                    onShareClick = { url ->
-                                        shareLink(url, ctx)
                                     },
                                     showReply = true, // Do nothing
                                     isModerator = isModerator(
