@@ -8,9 +8,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import arrow.core.Either
+import com.jerboa.CommentNode
 import com.jerboa.CommentNodeData
-import com.jerboa.FullCommentNode
+import com.jerboa.MissingCommentNode
 import com.jerboa.datatypes.types.CommentView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.Person
@@ -19,7 +19,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommentNodes(
-    nodes: ImmutableList<CommentNodeData<FullCommentNode, FullCommentNode>>,
+    nodes: ImmutableList<CommentNodeData>,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -99,7 +99,7 @@ fun CommentNodes(
 }
 
 fun LazyListScope.commentNodeItems(
-    nodes: ImmutableList<CommentNodeData<FullCommentNode, FullCommentNode>>,
+    nodes: ImmutableList<CommentNodeData>,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -135,9 +135,9 @@ fun LazyListScope.commentNodeItems(
     showScores: Boolean,
 ) {
     nodes.forEach { node ->
-        when (val data = node.data) {
-            is Either.Right -> commentNodeItem(
-                node = CommentNodeData(data.value, node.depth, node.children, node.parent),
+        when (node) {
+            is CommentNode -> commentNodeItem(
+                node = node,
                 increaseLazyListIndexTracker = increaseLazyListIndexTracker,
                 addToParentIndexes = addToParentIndexes,
                 isFlat = isFlat,
@@ -173,8 +173,8 @@ fun LazyListScope.commentNodeItems(
                 showScores = showScores,
             )
 
-            is Either.Left -> missingCommentNodeItem(
-                node = CommentNodeData(data.value, node.depth, node.children, node.parent),
+            is MissingCommentNode -> missingCommentNodeItem(
+                node = node,
                 increaseLazyListIndexTracker = increaseLazyListIndexTracker,
                 addToParentIndexes = addToParentIndexes,
                 isFlat = isFlat,

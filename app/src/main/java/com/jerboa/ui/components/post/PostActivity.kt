@@ -513,11 +513,7 @@ fun PostActivity(
                                         if (postViewModel.isCommentView()) {
                                             val firstCommentNodeData = commentTree.firstOrNull()
 
-                                            val firstCommentPath = when (val t = firstCommentNodeData?.data) {
-                                                is Either.Left -> t.value.path
-                                                is Either.Right -> t.value.comment.path
-                                                else -> null
-                                            }
+                                            val firstCommentPath = firstCommentNodeData?.getPath()
 
                                             val hasParent = firstCommentPath != null && getDepthFromComment(firstCommentPath) > 0
 

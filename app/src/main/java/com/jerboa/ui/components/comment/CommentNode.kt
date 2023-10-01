@@ -42,8 +42,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.Border
-import com.jerboa.CommentNodeData
-import com.jerboa.FullCommentNode
+import com.jerboa.CommentNode
 import com.jerboa.InstantScores
 import com.jerboa.MissingCommentNode
 import com.jerboa.R
@@ -171,7 +170,7 @@ fun CommentBodyPreview() {
 }
 
 fun LazyListScope.commentNodeItem(
-    node: CommentNodeData<CommentView, FullCommentNode>,
+    node: CommentNode,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -206,7 +205,7 @@ fun LazyListScope.commentNodeItem(
     blurNSFW: Boolean,
     showScores: Boolean,
 ) {
-    val commentView = node.data
+    val commentView = node.commentView
     val commentId = commentView.comment.id
 
     val offset = calculateCommentOffset(node.depth, 4) // The ones with a border on
@@ -415,7 +414,7 @@ fun LazyListScope.commentNodeItem(
 }
 
 fun LazyListScope.missingCommentNodeItem(
-    node: CommentNodeData<MissingCommentNode, FullCommentNode>,
+    node: MissingCommentNode,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -450,7 +449,7 @@ fun LazyListScope.missingCommentNodeItem(
     blurNSFW: Boolean,
     showScores: Boolean,
 ) {
-    val commentId = node.data.commentId
+    val commentId = node.missingCommentView.commentId
 
     val offset = calculateCommentOffset(node.depth, 4) // The ones with a border on
     val offset2 = if (node.depth == 0) {
