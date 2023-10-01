@@ -309,4 +309,11 @@ class UtilsKtTest {
         assertTrue(tree6[0].children[0].children[0] is CommentNode)
         assertEquals(3, tree6[0].children[0].children[0].getId())
     }
+
+    @Test
+    fun testGetParentPath(){
+        assertEquals("0", getParentPath("0.1"))
+        assertEquals("0.1", getParentPath("0.1.2"))
+        assertEquals("0.1.2", getParentPath("0.1.2.3"))
+    }
 }

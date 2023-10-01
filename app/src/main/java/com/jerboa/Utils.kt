@@ -284,7 +284,8 @@ fun commentsToFlatNodes(
  * This function takes a list of comments and builds a tree from it
  *
  * In commentView it should be giving a id of the root comment
- * Else it would generate a
+ * Else it would generate a chain of missingCommentNodes to the first comment
+ * Because the commentView doesn't start with the actual root comment
  */
 fun buildCommentsTree(
     comments: List<CommentView>,
@@ -307,7 +308,7 @@ fun buildCommentsTree(
         map[cv.comment.id] = node
     }
 
-    val tree = ArrayDeque<CommentNodeData>(comments.size)
+    val tree = mutableListOf<CommentNodeData>()
 
     comments.forEach { cv ->
         val child = map[cv.comment.id]
@@ -953,7 +954,12 @@ fun getCommentParentId(commentPath: String): Int? {
     }
 }
 
-fun getParentPath(path: String) = path.split(".").dropLast(1).joinToString(".")
+/**
+ * Returns the path of the parent
+ *
+ * Ex: 0.1.2.3 -> 0.1.2
+ */
+fun getParentPath(path: String) = path.substringBeforeLast(".")
 
 fun getDepthFromComment(commentPath: String): Int {
     return commentPath.split(".").size.minus(2)
