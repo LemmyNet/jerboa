@@ -221,7 +221,9 @@ suspend fun Account.checkAccountVerification(
     var checkState: CheckState = CheckState.Passed
     var curVerificationState: Int = if (this.verificationState >= AccountVerificationState.size) {
         AccountVerificationState.NOT_CHECKED.ordinal
-    } else this.verificationState
+    } else {
+        this.verificationState
+    }
     var userRes: ApiState.Success<GetPersonDetailsResponse>? = null
 
     // No check for the final state
@@ -278,8 +280,10 @@ suspend fun Account.checkAccountVerification(
             this@checkAccountVerification.id,
             if (curVerificationState == AccountVerificationState.CHECKS_COMPLETE.ordinal) {
                 curVerificationState
-            } else // Verification failed, thus we restart procedure
-                AccountVerificationState.NOT_CHECKED.ordinal,
+            } else {
+                // Verification failed, thus we restart procedure
+                AccountVerificationState.NOT_CHECKED.ordinal
+            },
         )
     }
 

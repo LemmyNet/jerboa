@@ -286,7 +286,9 @@ fun CommunityMoreDropdown(
                     stringResource(
                         if (isBlocked) {
                             R.string.community_unblock_community
-                        } else R.string.community_block_community,
+                        } else {
+                            R.string.community_block_community
+                        },
                     ),
                 )
             },
