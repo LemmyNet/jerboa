@@ -110,8 +110,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
             })
 
             commentsRes = ApiState.Loading
-            commentsRes =
-                apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
+            commentsRes = apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
         }
     }
 
