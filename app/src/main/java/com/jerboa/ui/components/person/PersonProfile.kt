@@ -240,7 +240,9 @@ fun PersonProfileHeader(
                             onMessagePersonClick()
                         },
                         openMatrix = matrixId?.let {
-                            { openMatrix(matrixId, ctx) }
+                            {
+                                openMatrix(matrixId, ctx)
+                            }
                         },
                     )
                 }

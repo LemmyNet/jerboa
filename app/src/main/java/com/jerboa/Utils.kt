@@ -1149,7 +1149,9 @@ fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>,
                 ctx.getString(
                     if (blockCommunityRes.data.blocked) {
                         R.string.blocked_community_toast
-                    } else R.string.unblocked_community_toast,
+                    } else {
+                        R.string.unblocked_community_toast
+                    },
                     blockCommunityRes.data.community_view.community.name,
                 ),
                 Toast.LENGTH_SHORT,
