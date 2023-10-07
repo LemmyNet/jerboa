@@ -134,6 +134,7 @@ fun CommunityHeader(
     selectedSortType: SortType,
     selectedPostViewMode: PostViewMode,
     onClickCommunityInfo: () -> Unit,
+    onClickCommunityShare: () -> Unit,
     onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     siteVersion: String,
@@ -196,6 +197,7 @@ fun CommunityHeader(
                     onClickRefresh = onClickRefresh,
                     onBlockCommunityClick = onBlockCommunityClick,
                     onClickCommunityInfo = onClickCommunityInfo,
+                    onClickCommunityShare = onClickCommunityShare,
                     onClickPostViewMode = onClickPostViewMode,
                     selectedPostViewMode = selectedPostViewMode,
                     isBlocked = isBlocked,
@@ -233,6 +235,7 @@ fun CommunityMoreDropdown(
     onBlockCommunityClick: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickCommunityInfo: () -> Unit,
+    onClickCommunityShare: () -> Unit,
     onClickPostViewMode: (PostViewMode) -> Unit,
     selectedPostViewMode: PostViewMode,
     isBlocked: Boolean,
@@ -277,6 +280,14 @@ fun CommunityMoreDropdown(
             onClick = {
                 onDismissRequest()
                 onClickCommunityInfo()
+            },
+        )
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.share)) },
+            leadingIcon = { Icon(Icons.Outlined.Share, contentDescription = null) },
+            onClick = {
+                onDismissRequest()
+                onClickCommunityShare()
             },
         )
         Divider()
