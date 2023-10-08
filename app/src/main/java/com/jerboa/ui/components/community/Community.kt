@@ -24,7 +24,7 @@ import com.jerboa.ui.components.common.LargerCircularIcon
 import com.jerboa.ui.components.common.PictrsBannerImage
 import com.jerboa.ui.components.common.SortOptionsDropdown
 import com.jerboa.ui.theme.*
-import com.jerboa.util.cascade.CascadeDropdownMenu
+import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
 fun CommunityTopSection(

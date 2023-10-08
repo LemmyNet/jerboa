@@ -1,3 +1,7 @@
+// This hack is needed to depend on internal components of Cascade
+// Author did not want to upstream this animated centered popup
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+
 package com.jerboa.util.cascade
 
 import androidx.compose.animation.core.MutableTransitionState
@@ -5,12 +9,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
@@ -19,9 +22,14 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
-import com.jerboa.util.cascade.internal.clickableWithoutRipple
-import com.jerboa.util.cascade.internal.copy
-import com.jerboa.util.cascade.internal.then
+import me.saket.cascade.CascadeColumnScope
+import me.saket.cascade.CascadeDefaults
+import me.saket.cascade.CascadeState
+import me.saket.cascade.rememberCascadeState
+import me.saket.cascade.PopupContent as CascadePopupContent
+import me.saket.cascade.internal.clickableWithoutRipple as clickableWithoutRippleCascade
+import me.saket.cascade.internal.copy as copy
+import me.saket.cascade.internal.then as thenCascade
 
 @Composable
 fun CascadeCenteredDropdownMenu(
@@ -29,9 +37,10 @@ fun CascadeCenteredDropdownMenu(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     fixedWidth: Dp = LocalConfiguration.current.screenWidthDp.dp * POPUP_MENU_WIDTH_RATIO,
-    shadowElevation: Dp = 3.dp,
+    shadowElevation: Dp = CascadeDefaults.shadowElevation,
     properties: PopupProperties = PopupProperties(focusable = true),
     state: CascadeState = rememberCascadeState(),
+    shape: Shape = CascadeDefaults.shape,
     content: @Composable CascadeColumnScope.() -> Unit,
 ) {
     val expandedStates = remember { MutableTransitionState(false) }
@@ -51,17 +60,17 @@ fun CascadeCenteredDropdownMenu(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .then(properties.dismissOnClickOutside) {
-                        clickableWithoutRipple(onClick = onDismissRequest)
+                    .thenCascade(properties.dismissOnClickOutside) {
+                        clickableWithoutRippleCascade(onClick = onDismissRequest)
                     },
                 Alignment.Center,
             ) {
-                PopupContent(
+                CascadePopupContent(
                     modifier = Modifier
                         // Prevent clicks from leaking behind. Otherwise, they'll get picked up as outside
                         // clicks to dismiss the popup. This must be set _before_ the downstream modifiers to
                         // avoid overriding any clickable modifiers registered by the developer.
-                        .clickableWithoutRipple {}
+                        .clickableWithoutRippleCascade {}
                         .padding(vertical = LARGE_PADDING)
                         .then(modifier),
                     state = state,
@@ -69,7 +78,7 @@ fun CascadeCenteredDropdownMenu(
                     expandedStates = expandedStates,
                     transformOriginState = transformOriginState,
                     shadowElevation = shadowElevation,
-                    tonalElevation = 3.dp,
+                    shape = shape,
                     content = content,
                 )
             }
