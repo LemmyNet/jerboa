@@ -132,6 +132,8 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.4.0")
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:0.7.0-20230922.054002-2")
+    // Animated dropdowns
+    implementation("me.saket.cascade:cascade-compose:2.3.0")
 
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")

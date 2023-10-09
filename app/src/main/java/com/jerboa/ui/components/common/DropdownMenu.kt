@@ -31,8 +31,8 @@ import com.jerboa.datatypes.types.SortType
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.POPUP_MENU_WIDTH_RATIO
 import com.jerboa.ui.theme.Shapes
-import com.jerboa.util.cascade.CascadeColumnScope
-import com.jerboa.util.cascade.CascadeDropdownMenu
+import me.saket.cascade.CascadeColumnScope
+import me.saket.cascade.CascadeDropdownMenu
 
 val isTopSort = { sort: SortType -> sort.name.startsWith("Top") }
 
