@@ -1,3 +1,18 @@
+# Jerboa v0.0.49-alpha Release (2023-10-09)
+
+## What's Changed
+
+- Add Bulgarian translation by @salif in https://github.com/dessalines/jerboa/pull/1252
+- Fixes missing comments causing `X more replies` to show instead the missing comments by @MV-GH in https://github.com/dessalines/jerboa/pull/1240
+- Upgrading gradle to 8.3 by @dessalines in https://github.com/dessalines/jerboa/pull/1253
+- Depend on upstream Cascade by @MV-GH in https://github.com/dessalines/jerboa/pull/1256
+
+## New Contributors
+
+- @salif made their first contribution in https://github.com/dessalines/jerboa/pull/1252
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.48...0.0.49
+
 # Jerboa v0.0.48-alpha Release (2023-09-27)
 
 ## What's Changed
