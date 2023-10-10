@@ -72,7 +72,6 @@ import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.feat.shareLink
 import com.jerboa.getCommentParentId
 import com.jerboa.getDepthFromComment
 import com.jerboa.getLocalizedCommentSortTypeName
@@ -400,7 +399,7 @@ fun PostActivity(
                                             postViewModel.deletePost(
                                                 DeletePost(
                                                     post_id = pv.post.id,
-                                                    deleted = pv.post.deleted,
+                                                    deleted = !pv.post.deleted,
                                                     auth = it.jwt,
                                                 ),
                                             )
@@ -448,9 +447,6 @@ fun PostActivity(
                                             )
                                         }
                                     },
-                                    onShareClick = { url ->
-                                        shareLink(url, ctx)
-                                    },
                                     showReply = true, // Do nothing
                                     isModerator = isModerator(
                                         postView.creator,
@@ -491,14 +487,11 @@ fun PostActivity(
                                 is ApiState.Holder -> {
                                     val commentTree = buildCommentsTree(
                                         commentsRes.data.comments,
-                                        postViewModel.isCommentView(),
+                                        id.fold(
+                                            { null },
+                                            { it },
+                                        ),
                                     )
-
-                                    val firstComment =
-                                        commentTree.firstOrNull()?.commentView?.comment
-                                    val depth = getDepthFromComment(firstComment)
-                                    val commentParentId = getCommentParentId(firstComment)
-                                    val showContextButton = depth != null && depth > 0
 
                                     val toggleExpanded: (Int) -> Unit = { commentId: Int ->
                                         if (unExpandedComments.contains(commentId)) {
@@ -518,10 +511,18 @@ fun PostActivity(
 
                                     item(key = "${postView.post.id}_is_comment_view", contentType = "contextButtons") {
                                         if (postViewModel.isCommentView()) {
+                                            val firstCommentNodeData = commentTree.firstOrNull()
+
+                                            val firstCommentPath = firstCommentNodeData?.getPath()
+
+                                            val hasParent = firstCommentPath != null && getDepthFromComment(firstCommentPath) > 0
+
+                                            val commentParentId = firstCommentPath?.let(::getCommentParentId)
+
                                             ShowCommentContextButtons(
                                                 postView.post.id,
                                                 commentParentId = commentParentId,
-                                                showContextButton = showContextButton,
+                                                showContextButton = hasParent,
                                                 onPostClick = appState::toPost,
                                                 onCommentClick = appState::toComment,
                                             )

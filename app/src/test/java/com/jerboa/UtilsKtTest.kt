@@ -3,6 +3,7 @@ package com.jerboa
 import android.content.Context
 import androidx.compose.ui.unit.dp
 import com.jerboa.api.API
+import com.jerboa.datatypes.sampleCommentView
 import com.jerboa.ui.theme.SMALL_PADDING
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
@@ -243,5 +244,76 @@ class UtilsKtTest {
         assertEquals("https://example.com", "http://example.com".toHttps())
         assertEquals("https://example.com", "https://example.com".toHttps())
         assertEquals("example.com", "example.com".toHttps())
+    }
+
+    @Test
+    fun testBuildCommentsTree() {
+        val tree1 = buildCommentsTree(listOf(sampleCommentView), null)
+        assertEquals(1, tree1.size)
+        assertTrue(tree1[0] is CommentNode)
+
+        val sampleCV2 = sampleCommentView.copy(comment = sampleCommentView.comment.copy(path = "0.1.2", id = 2))
+
+        val tree2 = buildCommentsTree(listOf(sampleCommentView, sampleCV2), null)
+        assertEquals(1, tree2.size)
+        val root2 = tree2[0] as CommentNode
+        assertEquals(1, root2.children.size)
+        assertEquals(0, root2.depth)
+        assertTrue(root2.children[0] is CommentNode)
+        assertEquals(root2, root2.children[0].parent)
+        assertEquals(1, root2.children[0].depth)
+
+        // Should not generate a missing comment as parent, because we said that root is sampleCV2
+        val tree3 = buildCommentsTree(listOf(sampleCV2), sampleCV2.comment.id)
+        assertEquals(1, tree3.size)
+        assertTrue(tree3[0] is CommentNode)
+        val root3 = tree3[0] as CommentNode
+        assertEquals(sampleCV2, root3.commentView)
+        assertEquals(0, root3.depth)
+        assertEquals(0, root3.children.size)
+
+        // Should generate a missing comment as parent
+        val tree4 = buildCommentsTree(listOf(sampleCV2), null)
+        assertEquals(1, tree4.size)
+        assertTrue(tree4[0] is MissingCommentNode)
+        val root4 = tree4[0] as MissingCommentNode
+        assertEquals(0, root4.depth)
+        assertEquals(null, root4.parent)
+        assertEquals(1, root4.children.size)
+        assertEquals(1, root4.missingCommentView.commentId)
+        assertTrue(root4.children[0] is CommentNode)
+        val child4 = root4.children[0] as CommentNode
+        assertEquals(sampleCV2, child4.commentView)
+        assertEquals(1, child4.depth)
+        assertEquals(root4, child4.parent)
+
+        val sampleCV5 = sampleCommentView.copy(comment = sampleCommentView.comment.copy(path = "0.1.2.3", id = 3))
+
+        // Confirm recursive missing parent behaviour
+        val tree5 = buildCommentsTree(listOf(sampleCV5), null)
+        assertEquals(1, tree5.size)
+        assertTrue(tree5[0] is MissingCommentNode)
+        assertEquals(1, tree5[0].children.size)
+        assertTrue(tree5[0].children[0] is MissingCommentNode)
+        assertEquals(1, tree5[0].children[0].children.size)
+        assertTrue(tree5[0].children[0].children[0] is CommentNode)
+        assertEquals(3, tree5[0].children[0].children[0].getId())
+
+        // Confirm that it can generate a missing comment between two comments
+        val tree6 = buildCommentsTree(listOf(sampleCommentView, sampleCV5), null)
+        assertEquals(1, tree6.size)
+        assertTrue(tree6[0] is CommentNode)
+        assertEquals(1, tree6[0].children.size)
+        assertTrue(tree6[0].children[0] is MissingCommentNode) // The missing comment between sampleCommentView and sampleCV5
+        assertEquals(1, tree6[0].children[0].children.size)
+        assertTrue(tree6[0].children[0].children[0] is CommentNode)
+        assertEquals(3, tree6[0].children[0].children[0].getId())
+    }
+
+    @Test
+    fun testGetParentPath() {
+        assertEquals("0", getParentPath("0.1"))
+        assertEquals("0.1", getParentPath("0.1.2"))
+        assertEquals("0.1.2", getParentPath("0.1.2.3"))
     }
 }

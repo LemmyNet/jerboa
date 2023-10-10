@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -39,11 +38,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jerboa.Border
-import com.jerboa.CommentNodeData
+import com.jerboa.CommentNode
 import com.jerboa.InstantScores
+import com.jerboa.MissingCommentNode
 import com.jerboa.R
 import com.jerboa.VoteType
 import com.jerboa.border
@@ -169,7 +170,7 @@ fun CommentBodyPreview() {
 }
 
 fun LazyListScope.commentNodeItem(
-    node: CommentNodeData,
+    node: CommentNode,
     increaseLazyListIndexTracker: () -> Unit,
     addToParentIndexes: () -> Unit,
     isFlat: Boolean,
@@ -218,8 +219,8 @@ fun LazyListScope.commentNodeItem(
         addToParentIndexes()
     }
 
-    val showMoreChildren = isExpanded(commentId) && node.children.isNullOrEmpty() && node
-        .commentView.counts.child_count > 0 && !isFlat
+    val showMoreChildren = isExpanded(commentId) && node.children.isEmpty() &&
+        commentView.counts.child_count > 0 && !isFlat
 
     increaseLazyListIndexTracker()
     // TODO Needs a contentType
@@ -284,7 +285,7 @@ fun LazyListScope.commentNodeItem(
                             onLongClick = {
                                 onHeaderLongClick(commentView)
                             },
-                            collapsedCommentsCount = node.commentView.counts.child_count,
+                            collapsedCommentsCount = commentView.counts.child_count,
                             isExpanded = isExpanded(commentId),
                             showAvatar = showAvatar,
                             showScores = showScores,
@@ -374,44 +375,177 @@ fun LazyListScope.commentNodeItem(
         }
     }
 
-    node.children?.also { nodes ->
-        commentNodeItems(
-            nodes = nodes.toImmutableList(),
-            increaseLazyListIndexTracker = increaseLazyListIndexTracker,
-            addToParentIndexes = addToParentIndexes,
-            isFlat = isFlat,
-            toggleExpanded = toggleExpanded,
-            toggleActionBar = toggleActionBar,
-            isExpanded = isExpanded,
-            onUpvoteClick = onUpvoteClick,
-            onDownvoteClick = onDownvoteClick,
-            onSaveClick = onSaveClick,
-            onMarkAsReadClick = onMarkAsReadClick,
-            onCommentClick = onCommentClick,
-            onEditCommentClick = onEditCommentClick,
-            onDeleteCommentClick = onDeleteCommentClick,
-            onPersonClick = onPersonClick,
-            onHeaderClick = onHeaderClick,
-            onHeaderLongClick = onHeaderLongClick,
-            onCommunityClick = onCommunityClick,
-            onPostClick = onPostClick,
-            showPostAndCommunityContext = showPostAndCommunityContext,
-            onReportClick = onReportClick,
-            onCommentLinkClick = onCommentLinkClick,
-            onFetchChildrenClick = onFetchChildrenClick,
-            onReplyClick = onReplyClick,
-            onBlockCreatorClick = onBlockCreatorClick,
-            account = account,
-            isModerator = isModerator,
-            isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
-            showCollapsedCommentContent = showCollapsedCommentContent,
-            showActionBar = showActionBar,
-            enableDownVotes = enableDownVotes,
-            showAvatar = showAvatar,
-            blurNSFW = blurNSFW,
-            showScores = showScores,
-        )
+    commentNodeItems(
+        nodes = node.children.toImmutableList(),
+        increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+        addToParentIndexes = addToParentIndexes,
+        isFlat = isFlat,
+        toggleExpanded = toggleExpanded,
+        toggleActionBar = toggleActionBar,
+        isExpanded = isExpanded,
+        onUpvoteClick = onUpvoteClick,
+        onDownvoteClick = onDownvoteClick,
+        onSaveClick = onSaveClick,
+        onMarkAsReadClick = onMarkAsReadClick,
+        onCommentClick = onCommentClick,
+        onEditCommentClick = onEditCommentClick,
+        onDeleteCommentClick = onDeleteCommentClick,
+        onPersonClick = onPersonClick,
+        onHeaderClick = onHeaderClick,
+        onHeaderLongClick = onHeaderLongClick,
+        onCommunityClick = onCommunityClick,
+        onPostClick = onPostClick,
+        showPostAndCommunityContext = showPostAndCommunityContext,
+        onReportClick = onReportClick,
+        onCommentLinkClick = onCommentLinkClick,
+        onFetchChildrenClick = onFetchChildrenClick,
+        onReplyClick = onReplyClick,
+        onBlockCreatorClick = onBlockCreatorClick,
+        account = account,
+        isModerator = isModerator,
+        isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
+        showCollapsedCommentContent = showCollapsedCommentContent,
+        showActionBar = showActionBar,
+        enableDownVotes = enableDownVotes,
+        showAvatar = showAvatar,
+        blurNSFW = blurNSFW,
+        showScores = showScores,
+    )
+}
+
+fun LazyListScope.missingCommentNodeItem(
+    node: MissingCommentNode,
+    increaseLazyListIndexTracker: () -> Unit,
+    addToParentIndexes: () -> Unit,
+    isFlat: Boolean,
+    isExpanded: (commentId: Int) -> Boolean,
+    toggleExpanded: (commentId: Int) -> Unit,
+    toggleActionBar: (commentId: Int) -> Unit,
+    isModerator: (Int) -> Boolean,
+    onUpvoteClick: (commentView: CommentView) -> Unit,
+    onDownvoteClick: (commentView: CommentView) -> Unit,
+    onReplyClick: (commentView: CommentView) -> Unit,
+    onSaveClick: (commentView: CommentView) -> Unit,
+    onMarkAsReadClick: (commentView: CommentView) -> Unit,
+    onCommentClick: (commentView: CommentView) -> Unit,
+    onEditCommentClick: (commentView: CommentView) -> Unit,
+    onDeleteCommentClick: (commentView: CommentView) -> Unit,
+    onPersonClick: (personId: Int) -> Unit,
+    onHeaderClick: (commentView: CommentView) -> Unit,
+    onHeaderLongClick: (commentView: CommentView) -> Unit,
+    onCommunityClick: (community: Community) -> Unit,
+    onPostClick: (postId: Int) -> Unit,
+    onReportClick: (commentView: CommentView) -> Unit,
+    onCommentLinkClick: (commentView: CommentView) -> Unit,
+    onBlockCreatorClick: (creator: Person) -> Unit,
+    onFetchChildrenClick: (commentView: CommentView) -> Unit,
+    showCollapsedCommentContent: Boolean,
+    showPostAndCommunityContext: Boolean = false,
+    account: Account,
+    isCollapsedByParent: Boolean,
+    showActionBar: (commentId: Int) -> Boolean,
+    enableDownVotes: Boolean,
+    showAvatar: Boolean,
+    blurNSFW: Boolean,
+    showScores: Boolean,
+) {
+    val commentId = node.missingCommentView.commentId
+
+    val offset = calculateCommentOffset(node.depth, 4) // The ones with a border on
+    val offset2 = if (node.depth == 0) {
+        MEDIUM_PADDING
+    } else {
+        XXL_PADDING
     }
+
+    if (node.depth == 0) {
+        addToParentIndexes()
+    }
+
+    increaseLazyListIndexTracker()
+    // TODO Needs a contentType
+    // possibly "contentNodeItemL${node.depth}"
+    item(key = commentId) {
+        val backgroundColor = MaterialTheme.colorScheme.background
+        val borderColor = calculateBorderColor(backgroundColor, node.depth)
+        val border = Border(SMALL_PADDING, borderColor)
+
+        AnimatedVisibility(
+            visible = !isCollapsedByParent,
+            enter = expandVertically(),
+            exit = shrinkVertically(),
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(
+                        start = offset,
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier.border(start = border),
+                ) {
+                    Divider(modifier = Modifier.padding(start = if (node.depth == 0) 0.dp else border.strokeWidth))
+                    Column(
+                        modifier = Modifier.padding(
+                            start = offset2,
+                            end = MEDIUM_PADDING,
+                        ),
+                    ) {
+                        AnimatedVisibility(
+                            visible = isExpanded(commentId) || showCollapsedCommentContent,
+                            enter = expandVertically(),
+                            exit = shrinkVertically(),
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.comment_gone),
+                                fontStyle = FontStyle.Italic,
+                                modifier = Modifier.padding(vertical = SMALL_PADDING),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    increaseLazyListIndexTracker()
+
+    commentNodeItems(
+        nodes = node.children.toImmutableList(),
+        increaseLazyListIndexTracker = increaseLazyListIndexTracker,
+        addToParentIndexes = addToParentIndexes,
+        isFlat = isFlat,
+        toggleExpanded = toggleExpanded,
+        toggleActionBar = toggleActionBar,
+        isExpanded = isExpanded,
+        onUpvoteClick = onUpvoteClick,
+        onDownvoteClick = onDownvoteClick,
+        onSaveClick = onSaveClick,
+        onMarkAsReadClick = onMarkAsReadClick,
+        onCommentClick = onCommentClick,
+        onEditCommentClick = onEditCommentClick,
+        onDeleteCommentClick = onDeleteCommentClick,
+        onPersonClick = onPersonClick,
+        onHeaderClick = onHeaderClick,
+        onHeaderLongClick = onHeaderLongClick,
+        onCommunityClick = onCommunityClick,
+        onPostClick = onPostClick,
+        showPostAndCommunityContext = showPostAndCommunityContext,
+        onReportClick = onReportClick,
+        onCommentLinkClick = onCommentLinkClick,
+        onFetchChildrenClick = onFetchChildrenClick,
+        onReplyClick = onReplyClick,
+        onBlockCreatorClick = onBlockCreatorClick,
+        account = account,
+        isModerator = isModerator,
+        isCollapsedByParent = isCollapsedByParent || !isExpanded(commentId),
+        showCollapsedCommentContent = showCollapsedCommentContent,
+        showActionBar = showActionBar,
+        enableDownVotes = enableDownVotes,
+        showAvatar = showAvatar,
+        blurNSFW = blurNSFW,
+        showScores = showScores,
+    )
 }
 
 @Composable
@@ -621,7 +755,7 @@ fun CommentNodesPreview() {
         sampleCommentView,
         sampleReplyCommentView,
     )
-    val tree = buildCommentsTree(comments, false)
+    val tree = buildCommentsTree(comments, null)
     CommentNodes(
         nodes = tree,
         increaseLazyListIndexTracker = {},

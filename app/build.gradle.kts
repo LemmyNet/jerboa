@@ -20,8 +20,8 @@ android {
         namespace = "com.jerboa"
         minSdk = 26
         targetSdk = 34
-        versionCode = 46
-        versionName = "0.0.46"
+        versionCode = 49
+        versionName = "0.0.49"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -95,13 +95,13 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 }
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.github.alorma:compose-settings-ui-m3:0.27.0")
+    implementation("com.github.alorma:compose-settings-ui-m3:1.0.2")
 
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
 
@@ -122,7 +122,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
@@ -131,10 +131,10 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.4.0")
     implementation("io.coil-kt:coil-svg:2.4.0")
     // Allows for proper subsampling of large images
-    implementation("me.saket.telephoto:zoomable-image-coil:0.6.0-20230904.055636-11")
-    // Allows to swipe close the image viewer, original approach used nested scroll
-    // Which causes weird behaviour as nested scroll is not supported in compose
-    implementation("me.saket.telephoto:flick:0.6.0-SNAPSHOT")
+    implementation("me.saket.telephoto:zoomable-image-coil:0.7.0-20230922.054002-2")
+    // Animated dropdowns
+    implementation("me.saket.cascade:cascade-compose:2.3.0")
+
     // crash handling
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
@@ -157,17 +157,17 @@ dependencies {
 
     implementation("io.arrow-kt:arrow-core:1.2.1")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
-    implementation("androidx.compose.material3:material3:1.1.1")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
-    implementation("androidx.navigation:navigation-compose:2.7.2")
+    implementation("androidx.navigation:navigation-compose:2.7.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    val composeVersion = "1.5.1"
+    val composeVersion = "1.5.2"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")

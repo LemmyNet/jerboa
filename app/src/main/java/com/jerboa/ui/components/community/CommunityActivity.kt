@@ -50,7 +50,6 @@ import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.doIfReadyElseDisplayInfo
-import com.jerboa.feat.shareLink
 import com.jerboa.hostName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -409,9 +408,6 @@ fun CommunityActivity(
                                         ctx = ctx,
                                     )
                                 }
-                            },
-                            onShareClick = { url ->
-                                shareLink(url, ctx)
                             },
                             loadMorePosts = {
                                 when (val communityRes = communityViewModel.communityRes) {

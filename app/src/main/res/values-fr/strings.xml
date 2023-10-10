@@ -13,17 +13,8 @@
     <string name="comment_body_deleted">*Effacé*</string>
     <string name="comment_edit_edit">Modifier</string>
     <string name="comment_edit_type_your_comment">Saisissez votre commentaire</string>
-    <string name="comment_edit_back">Précédent</string>
-    <string name="comment_mention_node_view_source">Afficher la source</string>
-    <string name="comment_mention_node_copy_permalink">Copier le lien permanent</string>
-    <string name="comment_mention_node_report_comment">Signaler le commentaire</string>
-    <string name="comment_mention_node_block">Bloquer %1$s</string>
     <string name="comment_reply_reply">Répondre</string>
-    <string name="comment_reply_back">Précédent</string>
     <string name="comment_reply_type_your_comment">Saisissez votre commentaire</string>
-    <string name="comment_reply_node_view_source">Afficher la source</string>
-    <string name="comment_reply_node_report_comment">Signaler le commentaire</string>
-    <string name="comment_reply_node_block">Bloquer %1$s</string>
     <string name="AppBars_created">Créé</string>
     <string name="AppBars_users_day">%1$s utilisateurs/jour</string>
     <string name="AppBars_users_week">%1$s utilisateurs/semaine</string>
@@ -38,11 +29,8 @@
     <string name="dialogs_subscribed">Communautés abonnées</string>
     <string name="dialogs_local">Communautés locales</string>
     <string name="dialogs_all">Toutes les communautés</string>
-    <string name="dialogs_active">Actif</string>
     <string name="dialogs_hot">Tendances</string>
     <string name="dialogs_new">Nouveaux</string>
-    <string name="dialogs_most_comments">Plus commentés</string>
-    <string name="dialogs_new_comments">Nouveaux commentaires</string>
     <string name="dialogs_top">Top</string>
     <string name="dialogs_unread">Non lues</string>
     <string name="dialogs_done">Fermer</string>
@@ -58,8 +46,6 @@
     <string name="community_joined">Rejointe</string>
     <string name="community_subscribe">S’abonner</string>
     <string name="community_pending">En attente</string>
-    <string name="community_back">Précédent</string>
-    <string name="community_refresh">Rafraîchir</string>
     <string name="community_community_info">Informations sur la communauté</string>
     <string name="community_block_community">Bloquer la communauté</string>
     <string name="community_link_users_month">%1$s utilisateurs/mois</string>
@@ -81,7 +67,6 @@
     <string name="login_instance_placeholder">p. ex. : lemmy.ml</string>
     <string name="login_email_or_username">Courriel ou nom d’utilisateur</string>
     <string name="login_login">Se connecter</string>
-    <string name="login_back">Précédent</string>
     <string name="person_profile_joined">Profil créé</string>
     <string name="person_profile_posts">%1$s publication(s)</string>
     <string name="person_profile_comments">%1$s commentaires</string>
@@ -95,7 +80,6 @@
     <string name="post_edit_edit_post">Modifier la publication</string>
     <string name="post_edit_body_placeholder">Corps de la publication</string>
     <string name="post_activity_comments">Commentaires</string>
-    <string name="post_listing_comments">%1$s commentaires</string>
     <string name="post_listing_new">(%1$s nouveau(x))</string>
     <string name="post_listing_comments_count">%1$s commentaires</string>
     <string name="post_listing_go_to">Aller à %1$s</string>
@@ -109,10 +93,8 @@
     <string name="private_message_to">"à "</string>
     <string name="private_message_from">"de "</string>
     <string name="private_message_reply_reply">Répondre</string>
-    <string name="private_message_reply_back">Précédent</string>
     <string name="private_message_reply_type_your_message_placeholder">Saisissez votre message</string>
     <string name="create_report_report">Signaler</string>
-    <string name="create_report_back">Précédent</string>
     <string name="create_report_type_your_reason">Saisissez la raison</string>
     <string name="settings_about_about">À propos</string>
     <string name="settings_about_what_s_new">Quoi de neuf ?</string>
@@ -168,7 +150,6 @@
     <string name="settings_activity_look_and_feel">Apparence</string>
     <string name="settings_activity_account_settings">Paramètres de %1$s</string>
     <string name="settings_activity_about">À propos</string>
-    <string name="comment_mention_node_permalink_copied">Permalien copié</string>
     <string name="utils_login_first">Veuillez vous connecter</string>
     <string name="login_view_model_incorrect_login">Nom d’utilisateur ou mot de passe incorrect</string>
     <string name="login_view_model_is_not_a_lemmy_instance">%1$s n’est pas une instance Lemmy</string>
@@ -177,13 +158,11 @@
     <string name="comment_node_in">"dans "</string>
     <string name="look_and_feel_activity_show_content_for_collapsed_comments">Afficher le contenu des commentaires minimisés</string>
     <string name="comment_node_permalink_copied">Permalien copié</string>
-    <string name="comment_reply_node_permalink_copied">Permalien copié</string>
     <string name="post_listing_link_copied">Lien copié</string>
     <string name="post_listing_permalink_copied">Permalien copié</string>
     <string name="comment_next_parent">Commentaire parent suivant</string>
     <string name="comment_previous_parent">Commentaire parent précédent</string>
     <string name="comment_node_block">Bloquer %1$s</string>
-    <string name="comment_reply_node_copy_permalink">Copier le permalien</string>
     <string name="person_profile_activity_about">À propos</string>
     <string name="person_profile_activity_posts">Publications</string>
     <string name="person_profile_activity_comments">Commentaires</string>
@@ -199,8 +178,6 @@
     <string name="sorttype_mostcomments">Plus commentés</string>
     <string name="sorttype_newcomments">Nouveaux commentaires</string>
     <string name="comment_node_go_to">Aller à %1$s</string>
-    <string name="comment_mention_node_go_to">Aller à %1$s</string>
-    <string name="comment_reply_node_go_to">Aller à %1$s</string>
     <string name="moreOptions">Afficher plus d’options</string>
     <string name="lessOptions">Afficher moins d’options</string>
     <string name="bottomBar_home">Accueil</string>
@@ -212,7 +189,7 @@
     <string name="removeBookmark">Supprimer des favoris</string>
     <string name="commentFooter_reply">Répondre à ce commentaire</string>
     <string name="dialog_moreOptions">Plus d’options</string>
-    <string name="commentEdit_save">Enregistrer les modifications</string>
+    <string name="comment_edit_save">Enregistrer les modifications</string>
     <string name="commentReply_send">Envoyer la réponse</string>
     <string name="community_sortBy">Trier par</string>
     <string name="dialogs_server_version_outdated">La version du serveur (%1$s) est inférieure à la version minimale prise en charge (%2$s). Veuillez informer l’administrateur de l’instance et vous connecter à une autre instance, ou vous déconnecter et utiliser l’instance par défaut.</string>

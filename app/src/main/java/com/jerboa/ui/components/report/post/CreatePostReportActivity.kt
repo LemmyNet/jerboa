@@ -2,6 +2,8 @@
 package com.jerboa.ui.components.report.post
 
 import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,7 +21,7 @@ import com.jerboa.datatypes.types.PostId
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.CreateReportViewModel
-import com.jerboa.ui.components.common.CreateSubmitHeader
+import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.getCurrentAccount
 import com.jerboa.ui.components.report.CreateReportBody
 
@@ -46,11 +48,11 @@ fun CreatePostReportActivity(
 
     Scaffold(
         topBar = {
-            CreateSubmitHeader(
+            ActionTopBar(
                 title = stringResource(R.string.create_report_report),
                 loading = loading,
-                onClickBack = onBack,
-                onSubmitClick = {
+                onBackClick = onBack,
+                onActionClick = {
                     if (!account.isAnon()) {
                         createReportViewModel.createPostReport(
                             postId = postId,
@@ -62,6 +64,8 @@ fun CreatePostReportActivity(
                         )
                     }
                 },
+                actionText = R.string.form_submit,
+                actionIcon = Icons.Outlined.Send,
             )
         },
         content = { padding ->

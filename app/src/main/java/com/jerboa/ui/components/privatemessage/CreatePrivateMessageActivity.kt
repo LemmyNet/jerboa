@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +31,7 @@ import com.jerboa.datatypes.types.CreatePrivateMessage
 import com.jerboa.datatypes.types.PrivateMessageResponse
 import com.jerboa.db.entity.isAnon
 import com.jerboa.model.AccountViewModel
-import com.jerboa.ui.components.common.CreateSubmitHeader
+import com.jerboa.ui.components.common.ActionTopBar
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.components.common.getCurrentAccount
 import kotlinx.coroutines.Dispatchers
@@ -58,11 +60,11 @@ fun CreatePrivateMessageActivity(
     val focusManager = LocalFocusManager.current
     Scaffold(
         topBar = {
-            CreateSubmitHeader(
+            ActionTopBar(
                 title = personName,
                 loading = loading,
-                onClickBack = onBack,
-                onSubmitClick = {
+                onBackClick = onBack,
+                onActionClick = {
                     if (!account.isAnon()) {
                         scope.launch {
                             loading = true
@@ -93,6 +95,8 @@ fun CreatePrivateMessageActivity(
                         }
                     }
                 },
+                actionText = R.string.form_submit,
+                actionIcon = Icons.Outlined.Send,
             )
         },
         content = { padding ->
