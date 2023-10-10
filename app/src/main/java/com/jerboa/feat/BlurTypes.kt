@@ -12,21 +12,15 @@ import kotlinx.parcelize.Parcelize
 enum class BlurTypes(@StringRes val resId: Int) : Parcelable {
     Nothing(R.string.app_settings_nothing),
     NSFW(R.string.app_settings_blur_nsfw),
-    NsfwExceptFromNsfwCommunities(R.string.app_settings_blur_nsfw_except_from_nsfw_communities),
-    ExceptFromNsfwInsideCommunity(R.string.app_settings_blur_nsfw_except_from_nsfw_inside_community);
+    NsfwExceptFromNsfwCommunities(R.string.app_settings_blur_nsfw_except_from_nsfw_communities);
 
     companion object {
-        fun usersEntries() : List<BlurTypes> = entries.filter {
-            it != ExceptFromNsfwInsideCommunity
-        }
-
         fun changeBlurTypeInsideCommunity(blurTypes: Int): Int =
             if (blurTypes.toEnum<BlurTypes>() == NsfwExceptFromNsfwCommunities) {
-                ExceptFromNsfwInsideCommunity.ordinal
+                Nothing.ordinal
             } else {
                 blurTypes
             }
-
     }
 }
 
@@ -37,7 +31,6 @@ fun BlurTypes.needBlur(isCommunityNsfw: Boolean, isPostNsfw: Boolean = isCommuni
     return when (this) {
         BlurTypes.Nothing -> false
         BlurTypes.NSFW, BlurTypes.NsfwExceptFromNsfwCommunities -> isPostNsfw
-        BlurTypes.ExceptFromNsfwInsideCommunity -> isPostNsfw && !isCommunityNsfw
     }
 }
 

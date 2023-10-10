@@ -294,7 +294,7 @@ fun LookAndFeelActivity(
                         )
                     },
                     title = { Text(stringResource(id = R.string.blur_nsfw)) },
-                    items = BlurTypes.usersEntries().map { stringResource(it.resId) },
+                    items = BlurTypes.entries.map { stringResource(it.resId) },
                     onItemSelected = { _, _ -> updateAppSettings() },
                 )
                 SettingsCheckbox(
