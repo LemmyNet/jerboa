@@ -2,7 +2,6 @@ package com.jerboa.feat
 
 import android.os.Parcelable
 import androidx.annotation.StringRes
-import androidx.compose.ui.res.stringResource
 import com.jerboa.R
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.toEnum
@@ -12,7 +11,8 @@ import kotlinx.parcelize.Parcelize
 enum class BlurTypes(@StringRes val resId: Int) : Parcelable {
     Nothing(R.string.app_settings_nothing),
     NSFW(R.string.app_settings_blur_nsfw),
-    NsfwExceptFromNsfwCommunities(R.string.app_settings_blur_nsfw_except_from_nsfw_communities);
+    NsfwExceptFromNsfwCommunities(R.string.app_settings_blur_nsfw_except_from_nsfw_communities),
+    ;
 
     companion object {
         fun changeBlurTypeInsideCommunity(blurTypes: Int): Int =
@@ -33,6 +33,3 @@ fun BlurTypes.needBlur(isCommunityNsfw: Boolean, isPostNsfw: Boolean = isCommuni
         BlurTypes.NSFW, BlurTypes.NsfwExceptFromNsfwCommunities -> isPostNsfw
     }
 }
-
-
-
