@@ -8,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,11 +53,8 @@ fun CommunityListActivity(
 
     val account = getCurrentAccount(accountViewModel = accountViewModel)
 
-    val communityListViewModel: CommunityListViewModel = viewModel()
-    LaunchedEffect(Unit) {
-        // Whenever navigating here, reset the list with your followed communities
-        communityListViewModel.setCommunityListFromFollowed(followList)
-    }
+    val communityListViewModel: CommunityListViewModel =
+        viewModel(factory = CommunityListViewModel.Companion.Factory(followList))
 
     var search by rememberSaveable { mutableStateOf("") }
 
@@ -118,6 +114,7 @@ fun CommunityListActivity(
                             blurNSFW = blurNSFW,
                         )
                     }
+
                     else -> {}
                 }
             },
