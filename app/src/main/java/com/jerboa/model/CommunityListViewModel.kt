@@ -4,7 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
@@ -19,7 +21,7 @@ import com.jerboa.serializeToMap
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
-class CommunityListViewModel : ViewModel() {
+class CommunityListViewModel(communities: ImmutableList<CommunityFollowerView>) : ViewModel() {
 
     var searchRes: ApiState<SearchResponse> by mutableStateOf(ApiState.Empty)
         private set
@@ -31,7 +33,11 @@ class CommunityListViewModel : ViewModel() {
         }
     }
 
-    fun setCommunityListFromFollowed(myFollows: ImmutableList<CommunityFollowerView>) {
+    init {
+        setCommunityListFromFollowed(communities)
+    }
+
+    private fun setCommunityListFromFollowed(myFollows: ImmutableList<CommunityFollowerView>) {
         // A hack to convert communityFollowerView into CommunityView
         val followsIntoCommunityViews = myFollows.map { cfv ->
             CommunityView(
@@ -63,5 +69,19 @@ class CommunityListViewModel : ViewModel() {
                 users = emptyList(),
             ),
         )
+    }
+
+    companion object {
+        class Factory(
+            private val followedCommunities: ImmutableList<CommunityFollowerView>,
+        ) : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                return CommunityListViewModel(followedCommunities) as T
+            }
+        }
     }
 }
