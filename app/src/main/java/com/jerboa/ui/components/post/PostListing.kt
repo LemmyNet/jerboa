@@ -530,7 +530,7 @@ fun PreviewSourcePost() {
 }
 
 @Composable
-fun /FooterLine(
+fun PostFooterLine(
     postView: PostView,
     instantScores: InstantScores,
     onUpvoteClick: () -> Unit,
@@ -792,7 +792,6 @@ fun PreviewPostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = 1,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
@@ -828,7 +827,6 @@ fun PreviewLinkPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = 1,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
@@ -864,7 +862,6 @@ fun PreviewImagePostListingCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = 1,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
@@ -900,7 +897,6 @@ fun PreviewImagePostListingSmallCard() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = 1,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,
@@ -936,7 +932,6 @@ fun PreviewLinkNoThumbnailPostListing() {
         enableDownVotes = true,
         showAvatar = true,
         blurNSFW = 1,
-        showPostLinkPreview = true,
         appState = rememberJerboaAppState(),
         showPostLinkPreview = true,
         showIfRead = true,

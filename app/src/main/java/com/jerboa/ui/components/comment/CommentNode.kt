@@ -446,7 +446,7 @@ fun LazyListScope.missingCommentNodeItem(
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
     showScores: Boolean,
 ) {
     val commentId = node.missingCommentView.commentId

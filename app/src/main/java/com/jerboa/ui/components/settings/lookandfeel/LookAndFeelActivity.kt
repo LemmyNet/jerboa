@@ -162,7 +162,6 @@ fun LookAndFeelActivity(
                         )
                     },
                 )
-
                 SettingsSlider(
                     modifier = Modifier.padding(top = 10.dp),
                     valueRange = 8f..48f,
