@@ -50,6 +50,7 @@ import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.doIfReadyElseDisplayInfo
+import com.jerboa.feat.shareLink
 import com.jerboa.hostName
 import com.jerboa.model.AccountViewModel
 import com.jerboa.model.AppSettingsViewModel
@@ -201,6 +202,7 @@ fun CommunityActivity(
                                 }
                             },
                             onClickCommunityInfo = { appState.toCommunitySideBar(communityRes.data.community_view) },
+                            onClickCommunityShare = { shareLink(communityRes.data.community_view.community.actor_id, ctx) },
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                             isBlocked = communityRes.data.community_view.blocked,
