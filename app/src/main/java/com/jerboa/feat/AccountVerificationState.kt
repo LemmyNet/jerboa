@@ -193,9 +193,9 @@ suspend fun checkIfSiteRetrievalSucceeded(
 }
 
 sealed class CheckState {
-    object Passed : CheckState()
-    object Failed : FailedMsg()
-    object ConnectionFailed : ConnectionFailedMsg()
+    data object Passed : CheckState()
+    data object Failed : FailedMsg()
+    data object ConnectionFailed : ConnectionFailedMsg()
 
     open class ConnectionFailedMsg(val msg: String = "") : CheckState()
     open class FailedMsg(val msg: String = "") : CheckState()
@@ -235,36 +235,17 @@ suspend fun Account.checkAccountVerification(
                 // Anon account does not do any checks
                 CheckState.from(this.id != -1)
             }
-
-            AccountVerificationState.HAS_INTERNET -> {
-                checkInternet(ctx)
-            }
-
-            AccountVerificationState.INSTANCE_ALIVE -> {
-                checkInstance(this.instance)
-            }
-
+            AccountVerificationState.HAS_INTERNET -> checkInternet(ctx)
+            AccountVerificationState.INSTANCE_ALIVE -> checkInstance(this.instance)
             AccountVerificationState.ACCOUNT_DELETED -> {
                 val p = checkIfAccountIsDeleted(this, api)
                 userRes = p.second
                 p.first
             }
-
-            AccountVerificationState.ACCOUNT_BANNED -> {
-                checkIfAccountIsBanned(userRes!!.data)
-            }
-
-            AccountVerificationState.JWT_VERIFIED -> {
-                checkIfJWTValid(this, api)
-            }
-
-            AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> {
-                checkIfSiteRetrievalSucceeded(siteViewModel, this).first
-            }
-
-            AccountVerificationState.CHECKS_COMPLETE -> {
-                CheckState.Passed
-            }
+            AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
+            AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(this, api)
+            AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> checkIfSiteRetrievalSucceeded(siteViewModel, this).first
+            AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
         }
 
         Log.d("verification", "Verified ${verifyState.name} with ${checkState::class.simpleName}")
@@ -487,6 +468,7 @@ suspend fun SnackbarHostState.doSnackbarAction(
     actionPerform: suspend () -> Unit,
     duration: SnackbarDuration = SnackbarDuration.Long,
 ) {
+    Log.d("verification", "Showing snackbar action with [$msg]")
     if (this.showSnackbar(msg, btnText, true, duration) == SnackbarResult.ActionPerformed) {
         actionPerform()
     }

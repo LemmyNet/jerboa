@@ -37,6 +37,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
+import com.jerboa.getDeduplicateMerge
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
 import com.jerboa.showBlockPersonToast
@@ -140,11 +141,10 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
 
             personDetailsRes = when (newRes) {
                 is ApiState.Success -> {
-                    val appendedPosts = oldRes.data.posts.toMutableList()
-                    appendedPosts.addAll(newRes.data.posts)
-
-                    val appendedComments = oldRes.data.comments.toMutableList()
-                    appendedComments.addAll(newRes.data.comments)
+                    val appendedPosts = getDeduplicateMerge(oldRes.data.posts, newRes.data.posts) { it.post.id }
+                    val appendedComments = getDeduplicateMerge(
+                        oldRes.data.comments, newRes.data.comments,
+                    ) { it.comment.id }
 
                     ApiState.Success(
                         oldRes.data.copy(
