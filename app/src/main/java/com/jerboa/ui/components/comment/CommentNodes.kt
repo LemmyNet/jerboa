@@ -52,7 +52,7 @@ fun CommentNodes(
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
     showScores: Boolean,
 ) {
     LazyColumn(state = listState) {
@@ -131,7 +131,7 @@ fun LazyListScope.commentNodeItems(
     showActionBar: (commentId: Int) -> Boolean,
     enableDownVotes: Boolean,
     showAvatar: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
     showScores: Boolean,
 ) {
     nodes.forEach { node ->

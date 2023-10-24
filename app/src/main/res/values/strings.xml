@@ -392,6 +392,10 @@
     <string name="matrix_send_msg">Connect on Matrix</string>
     <string name="posts_failed_loading">Posts failed loading, retry</string>
     <string name="failed_sharing_media">Failed to share media!</string>
+    <string name="app_settings_nothing">Nothing</string>
+    <string name="app_settings_blur_nsfw">NSFW</string>
+    <string name="app_settings_blur_nsfw_except_from_nsfw_communities">NSFW except from NSFW communities</string>
+    <string name="app_settings_blur_nsfw_except_from_nsfw_inside_community">Except NSFW inside community</string>
     <string name="time_ago_failed_to_parse">Failed to parse datetime</string>
     <string name="comment_gone">There is no record of this comment</string>
 </resources>

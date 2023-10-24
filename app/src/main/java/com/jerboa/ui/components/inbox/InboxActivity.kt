@@ -85,7 +85,7 @@ fun InboxActivity(
     drawerState: DrawerState,
     siteViewModel: SiteViewModel,
     accountViewModel: AccountViewModel,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
 ) {
     Log.d("jerboa", "got to inbox activity")
 
@@ -202,7 +202,7 @@ fun InboxTabs(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     padding: PaddingValues,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
 ) {
     val tabTitles = InboxTab.entries.map { getLocalizedStringForInboxTab(ctx, it) }
     val pagerState = rememberPagerState { tabTitles.size }

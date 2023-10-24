@@ -141,7 +141,7 @@ fun PostActivity(
     showVotingArrowsInListView: Boolean,
     showParentCommentNavigationButtons: Boolean,
     navigateParentCommentsWithVolumeButtons: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
     showPostLinkPreview: Boolean,
     postActionbarMode: Int,
 ) {

@@ -27,6 +27,9 @@ import com.jerboa.datatypes.sampleCommunity
 import com.jerboa.datatypes.sampleCommunityView
 import com.jerboa.datatypes.types.Community
 import com.jerboa.datatypes.types.CommunityView
+import com.jerboa.feat.BlurTypes
+import com.jerboa.feat.needBlur
+import com.jerboa.toEnum
 import com.jerboa.ui.components.common.CircularIcon
 import com.jerboa.ui.theme.DRAWER_ITEM_SPACING
 import com.jerboa.ui.theme.ICON_SIZE
@@ -73,7 +76,7 @@ fun CommunityLink(
     onClick: (community: Community) -> Unit,
     clickable: Boolean = true,
     showDefaultIcon: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -90,7 +93,7 @@ fun CommunityLink(
                 contentDescription = null,
                 size = size,
                 thumbnailSize = thumbnailSize,
-                blur = blurNSFW && community.nsfw,
+                blur = blurNSFW.toEnum<BlurTypes>().needBlur(community.nsfw),
             )
         } ?: run {
             if (showDefaultIcon) {
@@ -118,7 +121,7 @@ fun CommunityLinkLarger(
     community: Community,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
 ) {
     CommunityLink(
         community = community,
@@ -141,7 +144,7 @@ fun CommunityLinkLargerWithUserCount(
     communityView: CommunityView,
     onClick: (community: Community) -> Unit,
     showDefaultIcon: Boolean,
-    blurNSFW: Boolean,
+    blurNSFW: Int,
 ) {
     CommunityLink(
         community = communityView.community,
@@ -167,7 +170,7 @@ fun CommunityLinkPreview() {
         community = sampleCommunity,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = true,
+        blurNSFW = 1,
     )
 }
 
@@ -178,6 +181,6 @@ fun CommunityLinkWithUsersPreview() {
         communityView = sampleCommunityView,
         onClick = {},
         showDefaultIcon = true,
-        blurNSFW = true,
+        blurNSFW = 1,
     )
 }

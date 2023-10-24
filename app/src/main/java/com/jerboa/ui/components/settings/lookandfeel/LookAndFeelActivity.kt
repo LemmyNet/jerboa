@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.FormatSize
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.LensBlur
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Swipe
 import androidx.compose.material.icons.outlined.ViewList
@@ -41,6 +42,7 @@ import com.jerboa.ThemeMode
 import com.jerboa.db.APP_SETTINGS_DEFAULT
 import com.jerboa.db.entity.AppSettings
 import com.jerboa.feat.BackConfirmationMode
+import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.PostActionbarMode
 import com.jerboa.feat.PostNavigationGestureMode
 import com.jerboa.getLangPreferenceDropdownEntries
@@ -89,7 +91,7 @@ fun LookAndFeelActivity(
     val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs)
 
     val secureWindowState = rememberBooleanSettingState(settings.secureWindow)
-    val blurNSFW = rememberBooleanSettingState(settings.blurNSFW)
+    val blurNSFW = rememberIntSettingState(settings.blurNSFW)
     val backConfirmationMode = rememberIntSettingState(settings.backConfirmationMode)
     val showPostLinkPreviewMode = rememberBooleanSettingState(settings.showPostLinkPreviews)
     val postActionbarMode = rememberIntSettingState(settings.postActionbarMode)
@@ -282,6 +284,18 @@ fun LookAndFeelActivity(
                         )
                     },
                 )
+                SettingsListDropdown(
+                    state = blurNSFW,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Outlined.LensBlur,
+                            contentDescription = null,
+                        )
+                    },
+                    title = { Text(stringResource(id = R.string.blur_nsfw)) },
+                    items = BlurTypes.entries.map { stringResource(it.resId) },
+                    onItemSelected = { _, _ -> updateAppSettings() },
+                )
                 SettingsCheckbox(
                     state = showBottomNavState,
                     title = {
@@ -350,13 +364,6 @@ fun LookAndFeelActivity(
                     state = secureWindowState,
                     title = {
                         Text(text = stringResource(R.string.look_and_feel_secure_window))
-                    },
-                    onCheckedChange = { updateAppSettings() },
-                )
-                SettingsCheckbox(
-                    state = blurNSFW,
-                    title = {
-                        Text(stringResource(id = R.string.blur_nsfw))
                     },
                     onCheckedChange = { updateAppSettings() },
                 )
