@@ -1,3 +1,23 @@
+# Jerboa v0.0.50-alpha Release (2023-11-02)
+
+## What's Changed
+
+- Fix search list repopulating on return by @MV-GH in https://github.com/dessalines/jerboa/pull/1260
+- Community: Add Share drop down in community view. by @lubosz in https://github.com/dessalines/jerboa/pull/1255
+- Fix CI instability by lowering gradle memory. by @dessalines in https://github.com/dessalines/jerboa/pull/1265
+- Upgrading deps. by @dessalines in https://github.com/dessalines/jerboa/pull/1266
+- Adding a theming guide. by @dessalines in https://github.com/dessalines/jerboa/pull/1267
+- Fix missing deduplication guard on profile by @MV-GH in https://github.com/dessalines/jerboa/pull/1269
+- Add BlurNsfwExceptFromNsfwCommunities to blur types by @MakcNmyc in https://github.com/dessalines/jerboa/pull/1229
+- Upgrading deps and gradle to 8.4 by @dessalines in https://github.com/dessalines/jerboa/pull/1271
+
+## New Contributors
+
+- @lubosz made their first contribution in https://github.com/dessalines/jerboa/pull/1255
+- @MakcNmyc made their first contribution in https://github.com/dessalines/jerboa/pull/1229
+
+**Full Changelog**: https://github.com/dessalines/jerboa/compare/0.0.49...0.0.50
+
 # Jerboa v0.0.49-alpha Release (2023-10-09)
 
 ## What's Changed
