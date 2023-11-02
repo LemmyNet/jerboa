@@ -122,14 +122,14 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
 
     // LiveData
-    implementation("androidx.compose.runtime:runtime-livedata:1.5.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
     // Images
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("io.coil-kt:coil-gif:2.4.0")
-    implementation("io.coil-kt:coil-svg:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-gif:2.5.0")
+    implementation("io.coil-kt:coil-svg:2.5.0")
     // Allows for proper subsampling of large images
     implementation("me.saket.telephoto:zoomable-image-coil:0.7.0-20230922.054002-2")
     // Animated dropdowns
@@ -139,21 +139,21 @@ dependencies {
     implementation("com.github.FunkyMuse:Crashy:1.2.0")
 
     // To use Kotlin annotation processing tool
-    ksp("androidx.room:room-compiler:2.5.2")
+    ksp("androidx.room:room-compiler:2.6.0")
 
-    implementation("androidx.room:room-runtime:2.5.2")
-    annotationProcessor("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-runtime:2.6.0")
+    annotationProcessor("androidx.room:room-compiler:2.6.0")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.5.2")
+    implementation("androidx.room:room-ktx:2.6.0")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.5.2")
+    testImplementation("androidx.room:room-testing:2.6.0")
     testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-    androidTestImplementation("androidx.room:room-testing:2.5.2")
+    androidTestImplementation("androidx.room:room-testing:2.6.0")
 
     // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:2.5.2")
+    implementation("androidx.room:room-paging:2.6.0")
 
     implementation("io.arrow-kt:arrow-core:1.2.1")
     // Unfortunately, ui tooling, and the markdown thing, still brings in the other material2 dependencies
@@ -161,18 +161,18 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
 
     implementation("org.ocpsoft.prettytime:prettytime:5.0.6.Final")
-    implementation("androidx.navigation:navigation-compose:2.7.4")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    implementation("androidx.compose.ui:ui:1.5.3")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.5.3")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.3")
-    implementation("androidx.compose.material:material-icons-extended:1.5.3")
+    implementation("androidx.compose.ui:ui:1.5.4")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.4")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.4")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.4")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
     implementation("androidx.activity:activity-compose:1.8.0")
     testImplementation("junit:junit:4.13.2")
