@@ -110,28 +110,29 @@ fun CommunityActivity(
         }
     }
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = communityViewModel.postsRes.isRefreshing(),
-        onRefresh = {
-            when (val communityRes = communityViewModel.communityRes) {
-                is ApiState.Success -> {
-                    communityViewModel.resetPage()
-                    communityViewModel.getPosts(
-                        form =
-                        GetPosts(
-                            community_id = communityRes.data.community_view.community.id,
-                            page = communityViewModel.page,
-                            sort = communityViewModel.sortType,
-                            auth = account.getJWT(),
-                        ),
-                        ApiState.Refreshing,
-                    )
-                }
+    val pullRefreshState =
+        rememberPullRefreshState(
+            refreshing = communityViewModel.postsRes.isRefreshing(),
+            onRefresh = {
+                when (val communityRes = communityViewModel.communityRes) {
+                    is ApiState.Success -> {
+                        communityViewModel.resetPage()
+                        communityViewModel.getPosts(
+                            form =
+                                GetPosts(
+                                    community_id = communityRes.data.community_view.community.id,
+                                    page = communityViewModel.page,
+                                    sort = communityViewModel.sortType,
+                                    auth = account.getJWT(),
+                                ),
+                            ApiState.Refreshing,
+                        )
+                    }
 
-                else -> {}
-            }
-        },
-    )
+                    else -> {}
+                }
+            },
+        )
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -148,8 +149,9 @@ fun CommunityActivity(
                     is ApiState.Success -> {
                         val communityId = communityRes.data.community_view.community.id
                         val instance = hostName(communityRes.data.community_view.community.actor_id)
-                        val communityName = communityRes.data.community_view.community.name +
-                            if (instance != null) "@$instance" else ""
+                        val communityName =
+                            communityRes.data.community_view.community.name +
+                                if (instance != null) "@$instance" else ""
                         CommunityHeader(
                             scrollBehavior = scrollBehavior,
                             communityName = communityName,
@@ -250,16 +252,18 @@ fun CommunityActivity(
                                                     accountViewModel,
                                                 ) {
                                                     communityViewModel.followCommunity(
-                                                        form = FollowCommunity(
-                                                            community_id = cfv.community.id,
-                                                            follow = cfv.subscribed == SubscribedType.NotSubscribed,
-                                                            auth = it.jwt,
-                                                        ),
+                                                        form =
+                                                            FollowCommunity(
+                                                                community_id = cfv.community.id,
+                                                                follow = cfv.subscribed == SubscribedType.NotSubscribed,
+                                                                auth = it.jwt,
+                                                            ),
                                                         onSuccess = {
                                                             siteViewModel.getSite(
-                                                                form = GetSite(
-                                                                    auth = it.jwt,
-                                                                ),
+                                                                form =
+                                                                    GetSite(
+                                                                        auth = it.jwt,
+                                                                    ),
                                                             )
                                                         },
                                                     )
@@ -282,14 +286,16 @@ fun CommunityActivity(
                                     accountViewModel,
                                 ) {
                                     communityViewModel.likePost(
-                                        form = CreatePostLike(
-                                            post_id = postView.post.id,
-                                            score = newVote(
-                                                currentVote = postView.my_vote,
-                                                voteType = VoteType.Upvote,
+                                        form =
+                                            CreatePostLike(
+                                                post_id = postView.post.id,
+                                                score =
+                                                    newVote(
+                                                        currentVote = postView.my_vote,
+                                                        voteType = VoteType.Upvote,
+                                                    ),
+                                                auth = it.jwt,
                                             ),
-                                            auth = it.jwt,
-                                        ),
                                     )
                                 }
                             },
@@ -303,14 +309,16 @@ fun CommunityActivity(
                                     accountViewModel,
                                 ) {
                                     communityViewModel.likePost(
-                                        form = CreatePostLike(
-                                            post_id = postView.post.id,
-                                            score = newVote(
-                                                currentVote = postView.my_vote,
-                                                voteType = VoteType.Downvote,
+                                        form =
+                                            CreatePostLike(
+                                                post_id = postView.post.id,
+                                                score =
+                                                    newVote(
+                                                        currentVote = postView.my_vote,
+                                                        voteType = VoteType.Downvote,
+                                                    ),
+                                                auth = it.jwt,
                                             ),
-                                            auth = it.jwt,
-                                        ),
                                     )
                                 }
                             },
@@ -327,11 +335,12 @@ fun CommunityActivity(
                                     accountViewModel,
                                 ) {
                                     communityViewModel.savePost(
-                                        form = SavePost(
-                                            post_id = postView.post.id,
-                                            save = !postView.saved,
-                                            auth = it.jwt,
-                                        ),
+                                        form =
+                                            SavePost(
+                                                post_id = postView.post.id,
+                                                save = !postView.saved,
+                                                auth = it.jwt,
+                                            ),
                                     )
                                 }
                             },
@@ -379,11 +388,12 @@ fun CommunityActivity(
                                             accountViewModel,
                                         ) {
                                             communityViewModel.blockCommunity(
-                                                form = BlockCommunity(
-                                                    community_id = communityRes.data.community_view.community.id,
-                                                    block = !communityRes.data.community_view.blocked,
-                                                    auth = it.jwt,
-                                                ),
+                                                form =
+                                                    BlockCommunity(
+                                                        community_id = communityRes.data.community_view.community.id,
+                                                        block = !communityRes.data.community_view.blocked,
+                                                        auth = it.jwt,
+                                                    ),
                                                 ctx = ctx,
                                             )
                                         }
@@ -402,11 +412,12 @@ fun CommunityActivity(
                                     accountViewModel,
                                 ) {
                                     communityViewModel.blockPerson(
-                                        form = BlockPerson(
-                                            person_id = person.id,
-                                            block = true,
-                                            auth = it.jwt,
-                                        ),
+                                        form =
+                                            BlockPerson(
+                                                person_id = person.id,
+                                                block = true,
+                                                auth = it.jwt,
+                                            ),
                                         ctx = ctx,
                                     )
                                 }

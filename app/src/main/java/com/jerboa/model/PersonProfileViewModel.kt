@@ -44,7 +44,6 @@ import com.jerboa.showBlockPersonToast
 import kotlinx.coroutines.launch
 
 class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boolean, account: Account) : ViewModel() {
-
     var personDetailsRes: ApiState<GetPersonDetailsResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -123,42 +122,46 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
     ) {
         viewModelScope.launch {
             val oldRes = personDetailsRes
-            personDetailsRes = when (oldRes) {
-                is ApiState.Appending -> return@launch
-                is ApiState.Holder -> ApiState.Appending(oldRes.data)
-                else -> return@launch
-            }
+            personDetailsRes =
+                when (oldRes) {
+                    is ApiState.Appending -> return@launch
+                    is ApiState.Holder -> ApiState.Appending(oldRes.data)
+                    else -> return@launch
+                }
 
             nextPage()
-            val form = GetPersonDetails(
-                person_id = profileId,
-                sort = sortType,
-                page = page,
-                saved_only = savedOnly,
-                auth = jwt,
-            )
+            val form =
+                GetPersonDetails(
+                    person_id = profileId,
+                    sort = sortType,
+                    page = page,
+                    saved_only = savedOnly,
+                    auth = jwt,
+                )
             val newRes = apiWrapper(API.getInstance().getPersonDetails(form.serializeToMap()))
 
-            personDetailsRes = when (newRes) {
-                is ApiState.Success -> {
-                    val appendedPosts = getDeduplicateMerge(oldRes.data.posts, newRes.data.posts) { it.post.id }
-                    val appendedComments = getDeduplicateMerge(
-                        oldRes.data.comments, newRes.data.comments,
-                    ) { it.comment.id }
+            personDetailsRes =
+                when (newRes) {
+                    is ApiState.Success -> {
+                        val appendedPosts = getDeduplicateMerge(oldRes.data.posts, newRes.data.posts) { it.post.id }
+                        val appendedComments =
+                            getDeduplicateMerge(
+                                oldRes.data.comments, newRes.data.comments,
+                            ) { it.comment.id }
 
-                    ApiState.Success(
-                        oldRes.data.copy(
-                            posts = appendedPosts,
-                            comments = appendedComments,
-                        ),
-                    )
-                }
+                        ApiState.Success(
+                            oldRes.data.copy(
+                                posts = appendedPosts,
+                                comments = appendedComments,
+                            ),
+                        )
+                    }
 
-                else -> {
-                    prevPage()
-                    ApiState.AppendingFailure(oldRes.data)
+                    else -> {
+                        prevPage()
+                        ApiState.AppendingFailure(oldRes.data)
+                    }
                 }
-            }
         }
     }
 
@@ -205,7 +208,10 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         }
     }
 
-    fun blockCommunity(form: BlockCommunity, ctx: Context) {
+    fun blockCommunity(
+        form: BlockCommunity,
+        ctx: Context,
+    ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
             blockCommunityRes =
@@ -214,7 +220,10 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
         }
     }
 
-    fun blockPerson(form: BlockPerson, ctx: Context) {
+    fun blockPerson(
+        form: BlockPerson,
+        ctx: Context,
+    ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
             blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
@@ -335,7 +344,6 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
             private val savedMode: Boolean,
             private val account: Account,
         ) : ViewModelProvider.Factory {
-
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,

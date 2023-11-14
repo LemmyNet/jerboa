@@ -26,7 +26,12 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 
-fun storeMedia(scope: CoroutineScope, ctx: Context, url: String, mediaType: PostType) {
+fun storeMedia(
+    scope: CoroutineScope,
+    ctx: Context,
+    url: String,
+    mediaType: PostType,
+) {
     if (SDK_INT < 29 && ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         val appCompat = (ctx as MainActivity)
 
@@ -42,14 +47,23 @@ fun storeMedia(scope: CoroutineScope, ctx: Context, url: String, mediaType: Post
     }
 }
 
-private fun actualStoreImage(scope: CoroutineScope, ctx: Context, url: String, mediaType: PostType) {
+private fun actualStoreImage(
+    scope: CoroutineScope,
+    ctx: Context,
+    url: String,
+    mediaType: PostType,
+) {
     scope.launch {
         saveMedia(url, ctx, mediaType)
     }
 }
 
 // Needs to check for permission before this for API 29 and below
-private suspend fun saveMedia(url: String, context: Context, mediaType: PostType) {
+private suspend fun saveMedia(
+    url: String,
+    context: Context,
+    mediaType: PostType,
+) {
     val toastId = if (mediaType == PostType.Image) R.string.saving_image else R.string.saving_media
     Toast.makeText(context, context.getString(toastId), Toast.LENGTH_SHORT).show()
 
@@ -81,7 +95,12 @@ private suspend fun saveMedia(url: String, context: Context, mediaType: PostType
 /**
  * Shares the actual file from the link
  */
-fun shareMedia(scope: CoroutineScope, ctx: Context, url: String, mediaType: PostType) {
+fun shareMedia(
+    scope: CoroutineScope,
+    ctx: Context,
+    url: String,
+    mediaType: PostType,
+) {
     scope.launch(Dispatchers.Main) {
         try {
             val fileName = Uri.parse(url).pathSegments.last()
@@ -120,12 +139,16 @@ fun shareMedia(scope: CoroutineScope, ctx: Context, url: String, mediaType: Post
 /**
  * Just shares the link
  */
-fun shareLink(url: String, ctx: Context) {
-    val intent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_TEXT, url)
-        type = "text/plain"
-    }
+fun shareLink(
+    url: String,
+    ctx: Context,
+) {
+    val intent =
+        Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, url)
+            type = "text/plain"
+        }
     val shareIntent = Intent.createChooser(intent, ctx.getString(R.string.share))
     ctx.startActivitySafe(shareIntent)
 }
@@ -133,7 +156,10 @@ fun shareLink(url: String, ctx: Context) {
 /**
  * Opens matrix for that user
  */
-fun openMatrix(matrixId: String, ctx: Context) {
+fun openMatrix(
+    matrixId: String,
+    ctx: Context,
+) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://matrix.to/#/$matrixId"))
     ctx.startActivitySafe(intent)
 }

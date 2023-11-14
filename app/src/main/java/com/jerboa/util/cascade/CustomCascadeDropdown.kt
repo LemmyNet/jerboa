@@ -66,13 +66,14 @@ fun CascadeCenteredDropdownMenu(
                 Alignment.Center,
             ) {
                 CascadePopupContent(
-                    modifier = Modifier
-                        // Prevent clicks from leaking behind. Otherwise, they'll get picked up as outside
-                        // clicks to dismiss the popup. This must be set _before_ the downstream modifiers to
-                        // avoid overriding any clickable modifiers registered by the developer.
-                        .clickableWithoutRippleCascade {}
-                        .padding(vertical = LARGE_PADDING)
-                        .then(modifier),
+                    modifier =
+                        Modifier
+                            // Prevent clicks from leaking behind. Otherwise, they'll get picked up as outside
+                            // clicks to dismiss the popup. This must be set _before_ the downstream modifiers to
+                            // avoid overriding any clickable modifiers registered by the developer.
+                            .clickableWithoutRippleCascade {}
+                            .padding(vertical = LARGE_PADDING)
+                            .then(modifier),
                     state = state,
                     fixedWidth = fixedWidth,
                     expandedStates = expandedStates,

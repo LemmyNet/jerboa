@@ -52,26 +52,28 @@ fun CircularIcon(
     blur: Boolean = false,
 ) {
     val ctx = LocalContext.current
-    val imageRequest = remember {
-        getImageRequest(
-            context = ctx,
-            path = icon,
-            size = thumbnailSize,
-            blur = blur,
-        )
-    }
+    val imageRequest =
+        remember {
+            getImageRequest(
+                context = ctx,
+                path = icon,
+                size = thumbnailSize,
+                blur = blur,
+            )
+        }
 
     AsyncImage(
         model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
-        modifier = modifier
-            .getBlurredOrRounded(
-                rounded = true,
-                blur = blur,
-            )
-            .size(size),
+        modifier =
+            modifier
+                .getBlurredOrRounded(
+                    rounded = true,
+                    blur = blur,
+                )
+                .size(size),
     )
 }
 
@@ -107,9 +109,10 @@ fun getImageRequest(
     size: Int,
     blur: Boolean,
 ): ImageRequest {
-    val builder = ImageRequest.Builder(context)
-        .data(pictrsImageThumbnail(path, size))
-        .crossfade(true)
+    val builder =
+        ImageRequest.Builder(context)
+            .data(pictrsImageThumbnail(path, size))
+            .crossfade(true)
 
     if (blur && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
         builder.transformations(
@@ -133,33 +136,35 @@ fun PictrsThumbnailImage(
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
-    val imageRequest = remember {
-        getImageRequest(
-            context = ctx,
-            path = thumbnail,
-            size = THUMBNAIL_SIZE,
-            blur = blur,
-        )
-    }
+    val imageRequest =
+        remember {
+            getImageRequest(
+                context = ctx,
+                path = thumbnail,
+                size = THUMBNAIL_SIZE,
+                blur = blur,
+            )
+        }
 
     AsyncImage(
         model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = modifier
-            .getBlurredOrRounded(
-                rounded = false,
-                blur = blur,
-            )
-            .clip(
-                RoundedCornerShape(
-                    12f,
-                    12f,
-                    if (roundBottomEndCorner) 0f else 12f,
-                    12f,
+        modifier =
+            modifier
+                .getBlurredOrRounded(
+                    rounded = false,
+                    blur = blur,
+                )
+                .clip(
+                    RoundedCornerShape(
+                        12f,
+                        12f,
+                        if (roundBottomEndCorner) 0f else 12f,
+                        12f,
+                    ),
                 ),
-            ),
     )
 }
 
@@ -170,26 +175,28 @@ fun PictrsUrlImage(
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
-    val imageRequest = remember {
-        getImageRequest(
-            context = ctx,
-            path = url,
-            size = MAX_IMAGE_SIZE,
-            blur = blur,
-        )
-    }
+    val imageRequest =
+        remember {
+            getImageRequest(
+                context = ctx,
+                path = url,
+                size = MAX_IMAGE_SIZE,
+                blur = blur,
+            )
+        }
 
     AsyncImage(
         model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = null,
         contentScale = ContentScale.FillWidth,
-        modifier = modifier
-            .getBlurredOrRounded(
-                rounded = false,
-                blur = blur,
-            )
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .getBlurredOrRounded(
+                    rounded = false,
+                    blur = blur,
+                )
+                .fillMaxWidth(),
     )
 }
 
@@ -201,25 +208,27 @@ fun PictrsBannerImage(
     blur: Boolean = false,
 ) {
     val ctx = LocalContext.current
-    val imageRequest = remember {
-        getImageRequest(
-            context = ctx,
-            path = url,
-            size = MAX_IMAGE_SIZE,
-            blur = blur,
-        )
-    }
+    val imageRequest =
+        remember {
+            getImageRequest(
+                context = ctx,
+                path = url,
+                size = MAX_IMAGE_SIZE,
+                blur = blur,
+            )
+        }
 
     AsyncImage(
         model = imageRequest,
         placeholder = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillWidth,
-        modifier = modifier
-            .getBlurredOrRounded(
-                blur = blur,
-            )
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .getBlurredOrRounded(
+                    blur = blur,
+                )
+                .fillMaxWidth(),
     )
 }
 
@@ -243,13 +252,14 @@ fun ColumnScope.PickImage(
         }
     }
 
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent(),
-    ) { uri ->
-        uri?.let {
-            initiateUpload(it)
+    val launcher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent(),
+        ) { uri ->
+            uri?.let {
+                initiateUpload(it)
+            }
         }
-    }
 
     OutlinedButton(
         modifier = modifier.align(horizontalAlignment),

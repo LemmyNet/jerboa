@@ -269,25 +269,26 @@ fun InboxTabs(
 
                     val refreshing = inboxViewModel.repliesRes.isRefreshing()
 
-                    val refreshState = rememberPullRefreshState(
-                        refreshing = refreshing,
-                        onRefresh = {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                inboxViewModel.resetPageReplies()
-                                inboxViewModel.getReplies(
-                                    inboxViewModel.getFormReplies(it.jwt),
-                                    ApiState.Refreshing,
-                                )
-                                siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
-                            }
-                        },
-                    )
+                    val refreshState =
+                        rememberPullRefreshState(
+                            refreshing = refreshing,
+                            onRefresh = {
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                ) {
+                                    inboxViewModel.resetPageReplies()
+                                    inboxViewModel.getReplies(
+                                        inboxViewModel.getFormReplies(it.jwt),
+                                        ApiState.Refreshing,
+                                    )
+                                    siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
+                                }
+                            },
+                        )
 
                     val goToComment = { crv: CommentReplyView ->
                         // Go to the parent comment or post instead for context
@@ -339,9 +340,10 @@ fun InboxTabs(
                                 val replies = repliesRes.data.replies
                                 LazyColumn(
                                     state = listState,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .simpleVerticalScrollbar(listState),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxSize()
+                                            .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         replies,
@@ -494,29 +496,31 @@ fun InboxTabs(
 
                     val refreshing = inboxViewModel.mentionsRes.isRefreshing()
 
-                    val refreshState = rememberPullRefreshState(
-                        refreshing = refreshing,
-                        onRefresh = {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                inboxViewModel.resetPageMentions()
-                                inboxViewModel.getMentions(
-                                    inboxViewModel.getFormMentions(it.jwt),
-                                    ApiState.Refreshing,
-                                )
-                                siteViewModel.fetchUnreadCounts(GetUnreadCount(it.jwt))
-                            }
-                        },
-                    )
+                    val refreshState =
+                        rememberPullRefreshState(
+                            refreshing = refreshing,
+                            onRefresh = {
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                ) {
+                                    inboxViewModel.resetPageMentions()
+                                    inboxViewModel.getMentions(
+                                        inboxViewModel.getFormMentions(it.jwt),
+                                        ApiState.Refreshing,
+                                    )
+                                    siteViewModel.fetchUnreadCounts(GetUnreadCount(it.jwt))
+                                }
+                            },
+                        )
                     Box(
-                        modifier = Modifier
-                            .pullRefresh(refreshState)
-                            .fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .pullRefresh(refreshState)
+                                .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             refreshing,
@@ -536,9 +540,10 @@ fun InboxTabs(
                                 val mentions = mentionsRes.data.mentions
                                 LazyColumn(
                                     state = listState,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .simpleVerticalScrollbar(listState),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxSize()
+                                            .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         mentions,
@@ -619,7 +624,9 @@ fun InboxTabs(
                                                             auth = it.jwt,
                                                         ),
                                                         onSuccess = {
-                                                            siteViewModel.updateUnreadCounts(dMentions = if (pm.person_mention.read) 1 else -1)
+                                                            siteViewModel.updateUnreadCounts(
+                                                                dMentions = if (pm.person_mention.read) 1 else -1,
+                                                            )
                                                         },
                                                     )
                                                 }
@@ -703,29 +710,31 @@ fun InboxTabs(
                     val loading = inboxViewModel.messagesRes.isLoading()
                     val refreshing = inboxViewModel.mentionsRes.isRefreshing()
 
-                    val refreshState = rememberPullRefreshState(
-                        refreshing = refreshing,
-                        onRefresh = {
-                            account.doIfReadyElseDisplayInfo(
-                                appState,
-                                ctx,
-                                snackbarHostState,
-                                scope,
-                                siteViewModel,
-                            ) {
-                                inboxViewModel.resetPageMessages()
-                                inboxViewModel.getMessages(
-                                    inboxViewModel.getFormMessages(it.jwt),
-                                    ApiState.Refreshing,
-                                )
-                                siteViewModel.fetchUnreadCounts(GetUnreadCount(it.jwt))
-                            }
-                        },
-                    )
+                    val refreshState =
+                        rememberPullRefreshState(
+                            refreshing = refreshing,
+                            onRefresh = {
+                                account.doIfReadyElseDisplayInfo(
+                                    appState,
+                                    ctx,
+                                    snackbarHostState,
+                                    scope,
+                                    siteViewModel,
+                                ) {
+                                    inboxViewModel.resetPageMessages()
+                                    inboxViewModel.getMessages(
+                                        inboxViewModel.getFormMessages(it.jwt),
+                                        ApiState.Refreshing,
+                                    )
+                                    siteViewModel.fetchUnreadCounts(GetUnreadCount(it.jwt))
+                                }
+                            },
+                        )
                     Box(
-                        modifier = Modifier
-                            .pullRefresh(refreshState)
-                            .fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .pullRefresh(refreshState)
+                                .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             refreshing,
@@ -745,9 +754,10 @@ fun InboxTabs(
                                 val messages = messagesRes.data.private_messages
                                 LazyColumn(
                                     state = listState,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .simpleVerticalScrollbar(listState),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxSize()
+                                            .simpleVerticalScrollbar(listState),
                                 ) {
                                     items(
                                         messages,

@@ -74,11 +74,12 @@ fun PersonProfileLink(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
-        modifier = if (clickable) {
-            Modifier.clickable { onClick(person.id) }
-        } else {
-            Modifier
-        },
+        modifier =
+            if (clickable) {
+                Modifier.clickable { onClick(person.id) }
+            } else {
+                Modifier
+            },
     ) {
         if (showAvatar) {
             person.avatar?.also {

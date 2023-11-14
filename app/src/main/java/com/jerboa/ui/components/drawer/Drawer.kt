@@ -368,13 +368,15 @@ fun DrawerHeader(
     val account = getCurrentAccount(accountViewModel)
     val showWarningIcon = !account.isAnon() && !account.isReady()
 
-    val sizeMod = Modifier
-        .fillMaxWidth()
-        .height(DRAWER_BANNER_SIZE)
+    val sizeMod =
+        Modifier
+            .fillMaxWidth()
+            .height(DRAWER_BANNER_SIZE)
 
     Box(
-        modifier = sizeMod
-            .clickable(onClick = onClickShowAccountAddMode),
+        modifier =
+            sizeMod
+                .clickable(onClick = onClickShowAccountAddMode),
     ) {
         myPerson?.banner?.also {
             PictrsBannerImage(
@@ -385,14 +387,16 @@ fun DrawerHeader(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = sizeMod
-                .padding(XL_PADDING),
+            modifier =
+                sizeMod
+                    .padding(XL_PADDING),
         ) {
             if (showWarningIcon) {
                 Icon(
-                    modifier = Modifier
-                        .weight(0.1f)
-                        .padding(end = SMALL_PADDING),
+                    modifier =
+                        Modifier
+                            .weight(0.1f)
+                            .padding(end = SMALL_PADDING),
                     imageVector = Icons.Outlined.WarningAmber,
                     contentDescription = stringResource(R.string.warning),
                     tint = MaterialTheme.colorScheme.error,
@@ -403,23 +407,29 @@ fun DrawerHeader(
             }
             Icon(
                 modifier = Modifier.weight(0.1f),
-                imageVector = if (showAccountAddMode) {
-                    Icons.Outlined.ExpandLess
-                } else {
-                    Icons.Outlined.ExpandMore
-                },
-                contentDescription = if (showAccountAddMode) {
-                    stringResource(R.string.moreOptions)
-                } else {
-                    stringResource(R.string.lessOptions)
-                },
+                imageVector =
+                    if (showAccountAddMode) {
+                        Icons.Outlined.ExpandLess
+                    } else {
+                        Icons.Outlined.ExpandMore
+                    },
+                contentDescription =
+                    if (showAccountAddMode) {
+                        stringResource(R.string.moreOptions)
+                    } else {
+                        stringResource(R.string.lessOptions)
+                    },
             )
         }
     }
 }
 
 @Composable
-fun AvatarAndAccountName(account: Account, myPerson: Person?, showAvatar: Boolean) {
+fun AvatarAndAccountName(
+    account: Account,
+    myPerson: Person?,
+    showAvatar: Boolean,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),

@@ -47,7 +47,6 @@ import com.jerboa.showBlockPersonToast
 import kotlinx.coroutines.launch
 
 class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel() {
-
     var repliesRes: ApiState<GetRepliesResponse> by mutableStateOf(
         ApiState.Empty,
     )
@@ -124,9 +123,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun appendReplies(
-        jwt: String,
-    ) {
+    fun appendReplies(jwt: String) {
         viewModelScope.launch {
             val oldRes = repliesRes
             when (oldRes) {
@@ -137,21 +134,23 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             pageReplies += 1
             val newRes = apiWrapper(API.getInstance().getReplies(getFormReplies(jwt).serializeToMap()))
 
-            repliesRes = when (newRes) {
-                is ApiState.Success -> {
-                    val mergedReplies = getDeduplicateMerge(
-                        oldRes.data.replies,
-                        newRes.data.replies,
-                    ) { it.comment_reply.id }
+            repliesRes =
+                when (newRes) {
+                    is ApiState.Success -> {
+                        val mergedReplies =
+                            getDeduplicateMerge(
+                                oldRes.data.replies,
+                                newRes.data.replies,
+                            ) { it.comment_reply.id }
 
-                    ApiState.Success(oldRes.data.copy(replies = mergedReplies))
-                }
+                        ApiState.Success(oldRes.data.copy(replies = mergedReplies))
+                    }
 
-                else -> {
-                    pageReplies -= 1
-                    oldRes
+                    else -> {
+                        pageReplies -= 1
+                        oldRes
+                    }
                 }
-            }
         }
     }
 
@@ -165,9 +164,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun appendMentions(
-        jwt: String,
-    ) {
+    fun appendMentions(jwt: String) {
         viewModelScope.launch {
             val oldRes = mentionsRes
             when (oldRes) {
@@ -176,30 +173,33 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             }
 
             pageMentions += 1
-            val form = GetPersonMentions(
-                unread_only = unreadOnly,
-                sort = CommentSortType.New,
-                page = pageMentions,
-                auth = jwt,
-            )
+            val form =
+                GetPersonMentions(
+                    unread_only = unreadOnly,
+                    sort = CommentSortType.New,
+                    page = pageMentions,
+                    auth = jwt,
+                )
 
             val newRes = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
 
-            mentionsRes = when (newRes) {
-                is ApiState.Success -> {
-                    val mergedMentions = getDeduplicateMerge(
-                        oldRes.data.mentions,
-                        newRes.data.mentions,
-                    ) { it.person_mention.id }
+            mentionsRes =
+                when (newRes) {
+                    is ApiState.Success -> {
+                        val mergedMentions =
+                            getDeduplicateMerge(
+                                oldRes.data.mentions,
+                                newRes.data.mentions,
+                            ) { it.person_mention.id }
 
-                    ApiState.Success(oldRes.data.copy(mentions = mergedMentions))
-                }
+                        ApiState.Success(oldRes.data.copy(mentions = mergedMentions))
+                    }
 
-                else -> {
-                    pageMentions -= 1
-                    oldRes
+                    else -> {
+                        pageMentions -= 1
+                        oldRes
+                    }
                 }
-            }
         }
     }
 
@@ -213,9 +213,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun appendMessages(
-        jwt: String,
-    ) {
+    fun appendMessages(jwt: String) {
         viewModelScope.launch {
             val oldRes = messagesRes
             when (oldRes) {
@@ -224,38 +222,39 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             }
 
             pageMessages += 1
-            val form = GetPrivateMessages(
-                unread_only = unreadOnly,
-                page = pageMessages,
-                auth = jwt,
-            )
+            val form =
+                GetPrivateMessages(
+                    unread_only = unreadOnly,
+                    page = pageMessages,
+                    auth = jwt,
+                )
 
             val newRes = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
 
-            messagesRes = when (newRes) {
-                is ApiState.Success -> {
-                    // see 1211, one can get a message between two pages, (especially noticeable if you dm yourself)
-                    // This makes it so it shifts one message up and the next page will have a duplicate message
-                    // This crashes because you can't have duplicate messages, as we use the id as id for the item
-                    val mergedMessages = getDeduplicateMerge(
-                        oldRes.data.private_messages,
-                        newRes.data.private_messages,
-                    ) { it.private_message.id }
+            messagesRes =
+                when (newRes) {
+                    is ApiState.Success -> {
+                        // see 1211, one can get a message between two pages, (especially noticeable if you dm yourself)
+                        // This makes it so it shifts one message up and the next page will have a duplicate message
+                        // This crashes because you can't have duplicate messages, as we use the id as id for the item
+                        val mergedMessages =
+                            getDeduplicateMerge(
+                                oldRes.data.private_messages,
+                                newRes.data.private_messages,
+                            ) { it.private_message.id }
 
-                    ApiState.Success(oldRes.data.copy(private_messages = mergedMessages))
-                }
+                        ApiState.Success(oldRes.data.copy(private_messages = mergedMessages))
+                    }
 
-                else -> {
-                    pageMessages -= 1
-                    oldRes
+                    else -> {
+                        pageMessages -= 1
+                        oldRes
+                    }
                 }
-            }
         }
     }
 
-    fun likeReply(
-        form: CreateCommentLike,
-    ) {
+    fun likeReply(form: CreateCommentLike) {
         viewModelScope.launch {
             likeReplyRes = ApiState.Loading
             likeReplyRes = apiWrapper(API.getInstance().likeComment(form))
@@ -282,9 +281,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun saveReply(
-        form: SaveComment,
-    ) {
+    fun saveReply(form: SaveComment) {
         viewModelScope.launch {
             saveReplyRes = ApiState.Loading
             saveReplyRes = apiWrapper(API.getInstance().saveComment(form))
@@ -311,9 +308,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun likeMention(
-        form: CreateCommentLike,
-    ) {
+    fun likeMention(form: CreateCommentLike) {
         viewModelScope.launch {
             likeMentionRes = ApiState.Loading
             likeMentionRes = apiWrapper(API.getInstance().likeComment(form))
@@ -341,9 +336,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun saveMention(
-        form: SaveComment,
-    ) {
+    fun saveMention(form: SaveComment) {
         viewModelScope.launch {
             saveReplyRes = ApiState.Loading
             saveReplyRes = apiWrapper(API.getInstance().saveComment(form))
@@ -384,9 +377,10 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
                     when (val existing = repliesRes) {
                         is ApiState.Success -> {
                             val mutable = existing.data.replies.toMutableList()
-                            val foundIndex = mutable.indexOfFirst {
-                                it.comment_reply.comment_id == readRes.data.comment_reply_view.comment.id
-                            }
+                            val foundIndex =
+                                mutable.indexOfFirst {
+                                    it.comment_reply.comment_id == readRes.data.comment_reply_view.comment.id
+                                }
                             val cr = mutable[foundIndex].comment_reply
                             val newCr = cr.copy(read = !cr.read)
                             mutable[foundIndex] = mutable[foundIndex].copy(comment_reply = newCr)
@@ -468,7 +462,10 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun blockCommunity(form: BlockCommunity, ctx: Context) {
+    fun blockCommunity(
+        form: BlockCommunity,
+        ctx: Context,
+    ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
             blockCommunityRes =
@@ -477,7 +474,10 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun blockPerson(form: BlockPerson, ctx: Context) {
+    fun blockPerson(
+        form: BlockPerson,
+        ctx: Context,
+    ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
             blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
@@ -573,7 +573,6 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             private val account: Account,
             private val siteViewModel: SiteViewModel,
         ) : ViewModelProvider.Factory {
-
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,

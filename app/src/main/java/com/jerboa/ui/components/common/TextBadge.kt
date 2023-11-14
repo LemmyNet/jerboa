@@ -25,9 +25,10 @@ fun TextBadge(
     containerRadius: Float = 4f,
 ) {
     Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(containerRadius.dp))
-            .background(containerColor),
+        modifier =
+            Modifier
+                .clip(RoundedCornerShape(containerRadius.dp))
+                .background(containerColor),
     ) {
         Text(
             text = text,
@@ -35,8 +36,9 @@ fun TextBadge(
             overflow = TextOverflow.Clip,
             maxLines = 1,
             color = textColor,
-            modifier = Modifier
-                .padding(horizontalTextPadding.dp, verticalTextPadding.dp),
+            modifier =
+                Modifier
+                    .padding(horizontalTextPadding.dp, verticalTextPadding.dp),
         )
     }
 }

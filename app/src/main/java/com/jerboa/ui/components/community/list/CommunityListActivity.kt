@@ -73,17 +73,19 @@ fun CommunityListActivity(
                     onSearchChange = {
                         search = it
                         fetchCommunitiesJob?.cancel()
-                        fetchCommunitiesJob = scope.launch {
-                            delay(DEBOUNCE_DELAY)
-                            communityListViewModel.searchCommunities(
-                                form = Search(
-                                    q = search,
-                                    type_ = SearchType.Communities,
-                                    sort = SortType.TopAll,
-                                    auth = account.getJWT(),
-                                ),
-                            )
-                        }
+                        fetchCommunitiesJob =
+                            scope.launch {
+                                delay(DEBOUNCE_DELAY)
+                                communityListViewModel.searchCommunities(
+                                    form =
+                                        Search(
+                                            q = search,
+                                            type_ = SearchType.Communities,
+                                            sort = SortType.TopAll,
+                                            auth = account.getJWT(),
+                                        ),
+                                )
+                            }
                     },
                 )
             },
@@ -108,9 +110,10 @@ fun CommunityListActivity(
                                     appState.toCommunity(id = cs.id)
                                 }
                             },
-                            modifier = Modifier
-                                .padding(padding)
-                                .imePadding(),
+                            modifier =
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
                             blurNSFW = blurNSFW,
                         )
                     }

@@ -41,10 +41,11 @@ fun CreatePostReportActivity(
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
 
     val focusManager = LocalFocusManager.current
-    val loading = when (createReportViewModel.postReportRes) {
-        ApiState.Loading -> true
-        else -> false
-    }
+    val loading =
+        when (createReportViewModel.postReportRes) {
+            ApiState.Loading -> true
+            else -> false
+        }
 
     Scaffold(
         topBar = {

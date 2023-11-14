@@ -30,11 +30,11 @@ import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.jerboa.R
 import com.jerboa.ui.components.common.SimpleTopAppBar
 
-const val githubUrl = "https://github.com/dessalines/jerboa"
-const val jerboaMatrixChat = "https://matrix.to/#/#jerboa-dev:matrix.org"
-const val donateLink = "https://join-lemmy.org/donate"
-const val jerboaLemmyLink = "https://lemmy.ml/c/jerboa"
-const val mastodonLink = "https://mastodon.social/@LemmyDev"
+const val GITHUB_URL = "https://github.com/dessalines/jerboa"
+const val JERBOA_MATRIX_CHAT = "https://matrix.to/#/#jerboa-dev:matrix.org"
+const val DONATE_LINK = "https://join-lemmy.org/donate"
+const val JERBOA_LEMMY_ML_LINK = "https://lemmy.ml/c/jerboa"
+const val MASTODON_LINK = "https://mastodon.social/@LemmyDev"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,9 +65,10 @@ fun AboutActivity(
         },
         content = { padding ->
             Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(padding),
+                modifier =
+                    Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(padding),
             ) {
                 SettingsMenuLink(
                     title = { Text(stringResource(R.string.settings_about_what_s_new)) },
@@ -79,7 +80,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/blob/main/RELEASES.md")
+                        openLink("$GITHUB_URL/blob/main/RELEASES.md")
                     },
                 )
                 SettingsDivider()
@@ -93,7 +94,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink("$githubUrl/issues")
+                        openLink("$GITHUB_URL/issues")
                     },
                 )
                 SettingsMenuLink(
@@ -115,7 +116,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaMatrixChat)
+                        openLink(JERBOA_MATRIX_CHAT)
                     },
                 )
                 SettingsMenuLink(
@@ -127,7 +128,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(donateLink)
+                        openLink(DONATE_LINK)
                     },
                 )
                 SettingsDivider()
@@ -142,7 +143,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(jerboaLemmyLink)
+                        openLink(JERBOA_LEMMY_ML_LINK)
                     },
                 )
                 SettingsMenuLink(
@@ -154,7 +155,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(mastodonLink)
+                        openLink(MASTODON_LINK)
                     },
                 )
                 SettingsDivider()
@@ -175,7 +176,7 @@ fun AboutActivity(
                         )
                     },
                     onClick = {
-                        openLink(githubUrl)
+                        openLink(GITHUB_URL)
                     },
                 )
             }

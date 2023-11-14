@@ -8,7 +8,10 @@ import com.jerboa.datatypes.types.SiteView
 import com.jerboa.ui.components.common.Sidebar
 
 @Composable
-fun SiteSidebar(siteView: SiteView, padding: PaddingValues) {
+fun SiteSidebar(
+    siteView: SiteView,
+    padding: PaddingValues,
+) {
     val site = siteView.site
     val counts = siteView.counts
     Sidebar(

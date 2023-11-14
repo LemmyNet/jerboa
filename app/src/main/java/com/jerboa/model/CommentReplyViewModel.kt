@@ -26,13 +26,15 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 sealed class ReplyItem : Parcelable {
     class PostItem(val item: PostView) : ReplyItem()
+
     class CommentItem(val item: CommentView) : ReplyItem()
+
     class CommentReplyItem(val item: CommentReplyView) : ReplyItem()
+
     class MentionReplyItem(val item: PersonMentionView) : ReplyItem()
 }
 
 class CommentReplyViewModel : ViewModel() {
-
     var createCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -44,29 +46,34 @@ class CommentReplyViewModel : ViewModel() {
         focusManager: FocusManager,
         onSuccess: (CommentView) -> Unit,
     ) {
-        val (postId, commentParentId) = when (reply) {
-            is ReplyItem.PostItem -> Pair(reply.item.post.id, null)
-            is ReplyItem.CommentItem -> Pair(
-                reply.item.post.id,
-                reply.item.comment.id,
-            )
-            is ReplyItem.CommentReplyItem -> Pair(
-                reply.item.post.id,
-                reply.item.comment.id,
-            )
-            is ReplyItem.MentionReplyItem -> Pair(
-                reply.item.post.id,
-                reply.item.comment.id,
-            )
-        }
+        val (postId, commentParentId) =
+            when (reply) {
+                is ReplyItem.PostItem -> Pair(reply.item.post.id, null)
+                is ReplyItem.CommentItem ->
+                    Pair(
+                        reply.item.post.id,
+                        reply.item.comment.id,
+                    )
+                is ReplyItem.CommentReplyItem ->
+                    Pair(
+                        reply.item.post.id,
+                        reply.item.comment.id,
+                    )
+                is ReplyItem.MentionReplyItem ->
+                    Pair(
+                        reply.item.post.id,
+                        reply.item.comment.id,
+                    )
+            }
 
         viewModelScope.launch {
-            val form = CreateComment(
-                content = content,
-                parent_id = commentParentId,
-                post_id = postId,
-                auth = account.jwt,
-            )
+            val form =
+                CreateComment(
+                    content = content,
+                    parent_id = commentParentId,
+                    post_id = postId,
+                    auth = account.jwt,
+                )
 
             createCommentRes = ApiState.Loading
             createCommentRes = apiWrapper(API.getInstance().createComment(form))

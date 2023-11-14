@@ -16,7 +16,6 @@ import com.jerboa.db.entity.Account
 import kotlinx.coroutines.launch
 
 class CommentEditViewModel : ViewModel() {
-
     var editCommentRes: ApiState<CommentResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -28,11 +27,12 @@ class CommentEditViewModel : ViewModel() {
         onSuccess: (CommentView) -> Unit,
     ) {
         viewModelScope.launch {
-            val form = EditComment(
-                content = content,
-                comment_id = commentView.comment.id,
-                auth = account.jwt,
-            )
+            val form =
+                EditComment(
+                    content = content,
+                    comment_id = commentView.comment.id,
+                    auth = account.jwt,
+                )
 
             editCommentRes = ApiState.Loading
             editCommentRes =

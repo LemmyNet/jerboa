@@ -16,46 +16,56 @@ import com.jerboa.R
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-enum class BackConfirmationMode(@StringRes val resId: Int) {
+enum class BackConfirmationMode(
+    @StringRes val resId: Int,
+) {
     None(R.string.no_back_confirmation),
     Toast(R.string.press_again_confirmation),
     Dialog(R.string.back_dialog),
 }
 
 object BackConfirmation {
-
     private var isBackPressedOnce = false
     private var ref: OnBackPressedCallback? = null
-    fun ComponentActivity.addConfirmationToast(navController: NavController, ctx: Context) {
+
+    fun ComponentActivity.addConfirmationToast(
+        navController: NavController,
+        ctx: Context,
+    ) {
         if (ref != null) disposeConfirmation()
 
-        ref = this.onBackPressedDispatcher.addCallback(this) {
-            val isRoot = navController.previousBackStackEntry == null
-            if (isRoot && isBackPressedOnce) {
-                finish()
-            } else if (isRoot) {
-                Toast.makeText(ctx, ctx.getText(R.string.back_confirmation), Toast.LENGTH_SHORT).show()
-                isBackPressedOnce = true
-                Executors.newSingleThreadScheduledExecutor().schedule({
-                    isBackPressedOnce = false
-                }, 2, TimeUnit.SECONDS)
-            } else {
-                navController.navigateUp()
+        ref =
+            this.onBackPressedDispatcher.addCallback(this) {
+                val isRoot = navController.previousBackStackEntry == null
+                if (isRoot && isBackPressedOnce) {
+                    finish()
+                } else if (isRoot) {
+                    Toast.makeText(ctx, ctx.getText(R.string.back_confirmation), Toast.LENGTH_SHORT).show()
+                    isBackPressedOnce = true
+                    Executors.newSingleThreadScheduledExecutor().schedule({
+                        isBackPressedOnce = false
+                    }, 2, TimeUnit.SECONDS)
+                } else {
+                    navController.navigateUp()
+                }
             }
-        }
     }
 
-    fun ComponentActivity.addConfirmationDialog(navController: NavController, showDialog: () -> Unit) {
+    fun ComponentActivity.addConfirmationDialog(
+        navController: NavController,
+        showDialog: () -> Unit,
+    ) {
         if (ref != null) disposeConfirmation()
 
-        ref = this.onBackPressedDispatcher.addCallback(this) {
-            val isRoot = navController.previousBackStackEntry == null
-            if (isRoot) {
-                showDialog()
-            } else {
-                navController.navigateUp()
+        ref =
+            this.onBackPressedDispatcher.addCallback(this) {
+                val isRoot = navController.previousBackStackEntry == null
+                if (isRoot) {
+                    showDialog()
+                } else {
+                    navController.navigateUp()
+                }
             }
-        }
     }
 
     fun disposeConfirmation() {
@@ -65,7 +75,10 @@ object BackConfirmation {
 }
 
 @Composable
-fun ShowConfirmationDialog(close: () -> Unit, exit: () -> Unit) {
+fun ShowConfirmationDialog(
+    close: () -> Unit,
+    exit: () -> Unit,
+) {
     AlertDialog(
         onDismissRequest = close,
         confirmButton = {

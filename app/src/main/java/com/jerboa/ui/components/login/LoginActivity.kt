@@ -39,9 +39,10 @@ fun LoginActivity(
         content = { padding ->
             LoginForm(
                 loading = loginViewModel.loading,
-                modifier = Modifier
-                    .padding(padding)
-                    .imePadding(),
+                modifier =
+                    Modifier
+                        .padding(padding)
+                        .imePadding(),
                 onClickLogin = { form, instance ->
                     loginViewModel.login(
                         form = form,

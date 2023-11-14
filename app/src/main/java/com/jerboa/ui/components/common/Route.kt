@@ -54,6 +54,7 @@ object Route {
             val ID_TYPE = NavType.IntType
 
             internal fun makeRoute(id: String) = "community/$id"
+
             internal val route by lazy { makeRoute(id = "{$ID}") }
         }
     }
@@ -71,7 +72,11 @@ object Route {
             const val NAME = "name"
             val NAME_TYPE = NavType.StringType
 
-            fun makeRoute(instance: String, name: String) = "$instance/c/$name"
+            fun makeRoute(
+                instance: String,
+                name: String,
+            ) = "$instance/c/$name"
+
             internal val route by lazy { makeRoute(instance = "{$INSTANCE}", name = "{$NAME}") }
         }
     }
@@ -86,6 +91,7 @@ object Route {
             val SELECT_TYPE = NavType.BoolType
 
             fun makeRoute(select: String) = "communityList?select=$select"
+
             internal val route by lazy { makeRoute(select = "{$SELECT}") }
         }
     }
@@ -104,7 +110,11 @@ object Route {
             val SAVED_TYPE = NavType.BoolType
             const val SAVED_DEFAULT = false
 
-            fun makeRoute(id: String, saved: String) = "profile/$id?saved=$saved"
+            fun makeRoute(
+                id: String,
+                saved: String,
+            ) = "profile/$id?saved=$saved"
+
             internal val route by lazy { makeRoute(id = "{$ID}", saved = "{$SAVED}") }
         }
     }
@@ -122,7 +132,11 @@ object Route {
             const val NAME = "name"
             val NAME_TYPE = NavType.StringType
 
-            fun makeRoute(instance: String, name: String) = "$instance/u/$name"
+            fun makeRoute(
+                instance: String,
+                name: String,
+            ) = "$instance/u/$name"
+
             internal val route by lazy { makeRoute(instance = "{$INSTANCE}", name = "{$NAME}") }
         }
     }
@@ -136,6 +150,7 @@ object Route {
             val ID_TYPE = NavType.IntType
 
             fun makeRoute(id: String) = "post/$id"
+
             internal val route by lazy { makeRoute(id = "{$ID}") }
         }
     }
@@ -149,6 +164,7 @@ object Route {
             val ID_TYPE = NavType.IntType
 
             fun makeRoute(id: String) = "comment/$id"
+
             internal val route by lazy { makeRoute(id = "{$ID}") }
         }
     }
@@ -162,6 +178,7 @@ object Route {
             val IS_MODERATOR_TYPE = NavType.BoolType
 
             fun makeRoute(isModerator: String) = "commentReply?isModerator=$isModerator"
+
             internal val route by lazy { makeRoute(isModerator = "{$IS_MODERATOR}") }
         }
     }
@@ -175,6 +192,7 @@ object Route {
             val ID_TYPE = NavType.IntType
 
             fun makeRoute(id: String) = "commentReport/$id"
+
             internal val route by lazy { makeRoute(id = "{$ID}") }
         }
     }
@@ -188,6 +206,7 @@ object Route {
             val ID_TYPE = NavType.IntType
 
             fun makeRoute(id: String) = "postReport/$id"
+
             internal val route by lazy { makeRoute(id = "{$ID}") }
         }
     }
@@ -201,6 +220,7 @@ object Route {
             val URL_TYPE = NavType.StringType
 
             fun makeRoute(url: String) = "view/$url"
+
             internal val route by lazy { makeRoute(url = "{$URL}") }
         }
     }
@@ -219,7 +239,11 @@ object Route {
             const val PERSON_NAME = "person_name"
             val PERSON_NAME_TYPE = NavType.StringType
 
-            fun makeRoute(personId: String, personName: String) = "createPrivateMessage/$personId/$personName"
+            fun makeRoute(
+                personId: String,
+                personName: String,
+            ) = "createPrivateMessage/$personId/$personName"
+
             internal val route by lazy { makeRoute(personId = "{$PERSON_ID}", personName = "{$PERSON_NAME}") }
         }
     }

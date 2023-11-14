@@ -24,7 +24,6 @@ import com.jerboa.serializeToMap
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
-
     var loading by mutableStateOf(false)
         private set
 
@@ -46,10 +45,11 @@ class LoginViewModel : ViewModel() {
                 jwt = retrofitErrorHandler(api.login(form = form)).jwt!!
             } catch (e: java.net.UnknownHostException) {
                 loading = false
-                val msg = ctx.getString(
-                    R.string.login_view_model_is_not_a_lemmy_instance,
-                    instance,
-                )
+                val msg =
+                    ctx.getString(
+                        R.string.login_view_model_is_not_a_lemmy_instance,
+                        instance,
+                    )
                 Log.d("login", msg, e)
                 Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
                 return@launch
@@ -73,10 +73,11 @@ class LoginViewModel : ViewModel() {
                     is ApiState.Success -> {
                         val siteVersion = siteRes.data.version
                         if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0) {
-                            val message = ctx.resources.getString(
-                                R.string.dialogs_server_version_outdated_short,
-                                siteVersion,
-                            )
+                            val message =
+                                ctx.resources.getString(
+                                    R.string.dialogs_server_version_outdated_short,
+                                    siteVersion,
+                                )
                             Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
                         }
 
@@ -92,16 +93,17 @@ class LoginViewModel : ViewModel() {
                             throw RuntimeException(ctx.getString(R.string.login_already_logged_in))
                         }
 
-                        val account = Account(
-                            id = luv.person.id,
-                            name = luv.person.name,
-                            current = true,
-                            instance = instance,
-                            jwt = jwt,
-                            defaultListingType = luv.local_user.default_listing_type.ordinal,
-                            defaultSortType = luv.local_user.default_sort_type.ordinal,
-                            verificationState = 0,
-                        )
+                        val account =
+                            Account(
+                                id = luv.person.id,
+                                name = luv.person.name,
+                                current = true,
+                                instance = instance,
+                                jwt = jwt,
+                                defaultListingType = luv.local_user.default_listing_type.ordinal,
+                                defaultSortType = luv.local_user.default_sort_type.ordinal,
+                                verificationState = 0,
+                            )
 
                         // Remove the default account
                         accountViewModel.removeCurrent()

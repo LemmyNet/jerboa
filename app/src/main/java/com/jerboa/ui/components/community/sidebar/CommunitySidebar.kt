@@ -6,7 +6,10 @@ import com.jerboa.datatypes.types.CommunityView
 import com.jerboa.ui.components.common.Sidebar
 
 @Composable
-fun CommunitySidebar(communityView: CommunityView, padding: PaddingValues) {
+fun CommunitySidebar(
+    communityView: CommunityView,
+    padding: PaddingValues,
+) {
     val community = communityView.community
     val counts = communityView.counts
     Sidebar(

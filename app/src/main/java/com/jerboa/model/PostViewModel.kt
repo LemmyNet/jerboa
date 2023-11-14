@@ -47,7 +47,6 @@ import kotlinx.coroutines.launch
 const val COMMENTS_DEPTH_MAX = 6
 
 class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewModel() {
-
     var postRes: ApiState<GetPostResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -68,6 +67,7 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
 
     val unExpandedComments = mutableStateListOf<Int>()
     val commentsWithToggledActionBar = mutableStateListOf<Int>()
+
     init {
         this.getData(account)
     }
@@ -82,32 +82,34 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
     ) {
         viewModelScope.launch {
             // Set the commentId for the right case
-            val postForm = id.fold({
-                GetPost(id = it, auth = account.getJWT())
-            }, {
-                GetPost(comment_id = it, auth = account.getJWT())
-            })
+            val postForm =
+                id.fold({
+                    GetPost(id = it, auth = account.getJWT())
+                }, {
+                    GetPost(comment_id = it, auth = account.getJWT())
+                })
 
             postRes = state
             postRes = apiWrapper(API.getInstance().getPost(postForm.serializeToMap()))
 
-            val commentsForm = id.fold({
-                GetComments(
-                    max_depth = COMMENTS_DEPTH_MAX,
-                    type_ = ListingType.All,
-                    post_id = it,
-                    auth = account.getJWT(),
-                    sort = sortType,
-                )
-            }, {
-                GetComments(
-                    max_depth = COMMENTS_DEPTH_MAX,
-                    type_ = ListingType.All,
-                    parent_id = it,
-                    auth = account.getJWT(),
-                    sort = sortType,
-                )
-            })
+            val commentsForm =
+                id.fold({
+                    GetComments(
+                        max_depth = COMMENTS_DEPTH_MAX,
+                        type_ = ListingType.All,
+                        post_id = it,
+                        auth = account.getJWT(),
+                        sort = sortType,
+                    )
+                }, {
+                    GetComments(
+                        max_depth = COMMENTS_DEPTH_MAX,
+                        type_ = ListingType.All,
+                        parent_id = it,
+                        auth = account.getJWT(),
+                        sort = sortType,
+                    )
+                })
 
             commentsRes = ApiState.Loading
             commentsRes = apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
@@ -129,12 +131,13 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
                 else -> return@launch
             }
 
-            val commentsForm = GetComments(
-                parent_id = commentView.comment.id,
-                max_depth = COMMENTS_DEPTH_MAX,
-                type_ = ListingType.All,
-                auth = account.getJWT(),
-            )
+            val commentsForm =
+                GetComments(
+                    parent_id = commentView.comment.id,
+                    max_depth = COMMENTS_DEPTH_MAX,
+                    type_ = ListingType.All,
+                    auth = account.getJWT(),
+                )
 
             val moreComments =
                 apiWrapper(API.getInstance().getComments(commentsForm.serializeToMap()))
@@ -245,7 +248,10 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
         }
     }
 
-    fun blockCommunity(form: BlockCommunity, ctx: Context) {
+    fun blockCommunity(
+        form: BlockCommunity,
+        ctx: Context,
+    ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
             blockCommunityRes =
@@ -254,7 +260,10 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
         }
     }
 
-    fun blockPerson(form: BlockPerson, ctx: Context) {
+    fun blockPerson(
+        form: BlockPerson,
+        ctx: Context,
+    ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
             blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
@@ -310,7 +319,6 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
             private val id: Either<PostId, CommentId>,
             private val account: Account,
         ) : ViewModelProvider.Factory {
-
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,

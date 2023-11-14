@@ -72,10 +72,11 @@ fun PostEditActivity(
     Scaffold(
         topBar = {
             Column {
-                val loading = when (postEditViewModel.editPostRes) {
-                    ApiState.Loading -> true
-                    else -> false
-                }
+                val loading =
+                    when (postEditViewModel.editPostRes) {
+                        ApiState.Loading -> true
+                        else -> false
+                    }
                 ActionTopBar(
                     onBackClick = appState::popBackStack,
                     formValid = formValid,
@@ -148,14 +149,15 @@ fun onSubmitClick(
     val urlOut = url.trim().ifEmpty { null }
 
     postEditViewModel.editPost(
-        form = EditPost(
-            post_id = postId,
-            name = nameOut,
-            url = urlOut,
-            body = bodyOut,
-            auth = account.jwt,
-            nsfw = isNsfw,
-        ),
+        form =
+            EditPost(
+                post_id = postId,
+                name = nameOut,
+                url = urlOut,
+                body = bodyOut,
+                auth = account.jwt,
+                nsfw = isNsfw,
+            ),
     ) { postView ->
         appState.apply {
             addReturn(PostEditReturn.POST_VIEW, postView)

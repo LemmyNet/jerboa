@@ -178,7 +178,6 @@ fun BottomNavActivity(
         content = {
             Scaffold(
                 snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
-
                 bottomBar = {
                     if (appSettings.showBottomNav) {
                         BottomAppBarAll(

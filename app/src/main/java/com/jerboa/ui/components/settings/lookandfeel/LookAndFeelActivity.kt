@@ -64,16 +64,18 @@ fun LookAndFeelActivity(
     val themeState = rememberIntSettingState(settings.theme)
     val themeColorState = rememberIntSettingState(settings.themeColor)
 
-    val localeMap = remember {
-        getLangPreferenceDropdownEntries(ctx)
-    }
+    val localeMap =
+        remember {
+            getLangPreferenceDropdownEntries(ctx)
+        }
 
     val currentAppLocale = matchLocale(localeMap)
     val langState = rememberIntSettingState(localeMap.keys.indexOf(currentAppLocale))
 
-    val fontSizeState = rememberFloatSettingState(
-        settings.fontSize.toFloat(),
-    )
+    val fontSizeState =
+        rememberFloatSettingState(
+            settings.fontSize.toFloat(),
+        )
     val postViewModeState = rememberIntSettingState(settings.postViewMode)
     val postNavigationGestureModeState = rememberIntSettingState(settings.postNavigationGestureMode)
     val showBottomNavState = rememberBooleanSettingState(settings.showBottomNav)
@@ -81,12 +83,14 @@ fun LookAndFeelActivity(
     val showCollapsedCommentContentState = rememberBooleanSettingState(settings.showCollapsedCommentContent)
     val showCommentActionBarByDefaultState = rememberBooleanSettingState(settings.showCommentActionBarByDefault)
     val showVotingArrowsInListViewState = rememberBooleanSettingState(settings.showVotingArrowsInListView)
-    val showParentCommentNavigationButtonsState = rememberBooleanSettingState(
-        settings.showParentCommentNavigationButtons,
-    )
-    val navigateParentCommentsWithVolumeButtonsState = rememberBooleanSettingState(
-        settings.navigateParentCommentsWithVolumeButtons,
-    )
+    val showParentCommentNavigationButtonsState =
+        rememberBooleanSettingState(
+            settings.showParentCommentNavigationButtons,
+        )
+    val navigateParentCommentsWithVolumeButtonsState =
+        rememberBooleanSettingState(
+            settings.navigateParentCommentsWithVolumeButtons,
+        )
     val useCustomTabsState = rememberBooleanSettingState(settings.useCustomTabs)
     val usePrivateTabsState = rememberBooleanSettingState(settings.usePrivateTabs)
 
@@ -140,9 +144,10 @@ fun LookAndFeelActivity(
         },
         content = { padding ->
             Column(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .padding(padding),
+                modifier =
+                    Modifier
+                        .verticalScroll(scrollState)
+                        .padding(padding),
             ) {
                 SettingsListDropdown(
                     title = {
@@ -174,10 +179,11 @@ fun LookAndFeelActivity(
                     },
                     title = {
                         Text(
-                            text = stringResource(
-                                R.string.look_and_feel_font_size,
-                                fontSizeState.value.toInt(),
-                            ),
+                            text =
+                                stringResource(
+                                    R.string.look_and_feel_font_size,
+                                    fontSizeState.value.toInt(),
+                                ),
                         )
                     },
                     onValueChangeFinished = { updateAppSettings() },

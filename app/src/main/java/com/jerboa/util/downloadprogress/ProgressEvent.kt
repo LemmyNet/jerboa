@@ -7,7 +7,6 @@ data class ProgressEvent(
     val bytesRead: Long,
     val progressAvailable: Boolean,
 ) {
-
     constructor(downloadIdentifier: String, contentLength: Long, bytesRead: Long) :
         this(
             progress = (bytesRead.toFloat() / contentLength),

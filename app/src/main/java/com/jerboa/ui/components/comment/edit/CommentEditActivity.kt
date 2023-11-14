@@ -50,10 +50,11 @@ fun CommentEditActivity(
         mutableStateOf(TextFieldValue(commentView.comment.content))
     }
 
-    val loading = when (commentEditViewModel.editCommentRes) {
-        ApiState.Loading -> true
-        else -> false
-    }
+    val loading =
+        when (commentEditViewModel.editCommentRes) {
+            ApiState.Loading -> true
+            else -> false
+        }
 
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current

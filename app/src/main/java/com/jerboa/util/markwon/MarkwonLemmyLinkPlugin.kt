@@ -20,11 +20,16 @@ class MarkwonLemmyLinkPlugin : AbstractMarkwonPlugin() {
     }
 
     private class LemmyTextAddedListener : CorePlugin.OnTextAddedListener {
-        override fun onTextAdded(visitor: MarkwonVisitor, text: String, start: Int) {
+        override fun onTextAdded(
+            visitor: MarkwonVisitor,
+            text: String,
+            start: Int,
+        ) {
             // we will be using the link that is used by markdown (instead of directly applying URLSpan)
-            val spanFactory = visitor.configuration().spansFactory().get(
-                Link::class.java,
-            ) ?: return
+            val spanFactory =
+                visitor.configuration().spansFactory().get(
+                    Link::class.java,
+                ) ?: return
 
             // don't re-use builder (thread safety achieved for
             // render calls from different threads and ... better performance)

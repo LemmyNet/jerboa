@@ -22,27 +22,29 @@ fun SwipeToNavigateBack(
     content: @Composable () -> Unit,
 ) {
     if (useSwipeBack == PostNavigationGestureMode.SwipeLeft.ordinal) {
-        val dismissState = rememberDismissState(
-            confirmStateChange = {
-                when (it) {
-                    DismissValue.DismissedToEnd -> {
-                        onSwipeBack()
-                        true
-                    }
+        val dismissState =
+            rememberDismissState(
+                confirmStateChange = {
+                    when (it) {
+                        DismissValue.DismissedToEnd -> {
+                            onSwipeBack()
+                            true
+                        }
 
-                    else -> {
-                        false
+                        else -> {
+                            false
+                        }
                     }
-                }
-            },
-        )
+                },
+            )
         SwipeToDismiss(
             state = dismissState,
             background = {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background),
                 )
             },
             dismissContent = {

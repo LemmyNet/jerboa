@@ -115,11 +115,12 @@ fun MarkdownTextField(
                 onValueChange = onTextChange,
                 label = { Text(text = placeholder) },
                 modifier = modifier.focusRequester(focusRequester),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text,
-                    // autoCorrect = true,
-                ),
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Text,
+                        // autoCorrect = true,
+                    ),
             )
         } else {
             TextField(
@@ -127,19 +128,21 @@ fun MarkdownTextField(
                 onValueChange = onTextChange,
                 placeholder = { Text(text = placeholder) },
                 modifier = modifier.focusRequester(focusRequester),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text,
-                    // autoCorrect = true,
-                ),
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Text,
+                        // autoCorrect = true,
+                    ),
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ),
             )
         }
 
@@ -183,9 +186,10 @@ fun CreateLinkDialog(
         onDismissRequest = onDismissRequest,
         text = {
             Column(
-                modifier = Modifier
-                    .padding(MEDIUM_PADDING)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(MEDIUM_PADDING)
+                        .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
             ) {
                 Text(
@@ -225,11 +229,12 @@ fun CreateLinkDialog(
             TextButton(
                 onClick = {
                     val replacement = "[$text]($link)"
-                    val out = value.text.replaceRange(
-                        value.selection.start,
-                        value.selection.end,
-                        replacement,
-                    )
+                    val out =
+                        value.text.replaceRange(
+                            value.selection.start,
+                            value.selection.end,
+                            replacement,
+                        )
                     val end = value.selection.start + replacement.length
                     val cursor = TextRange(end, end)
                     onClickOk(TextFieldValue(out, cursor))
@@ -294,26 +299,27 @@ private fun imageUploadLauncher(
         mutableStateOf<Uri?>(null)
     }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-    ) { uri: Uri? ->
-        imageUri = uri
-        Log.d("jerboa", imageUri.toString())
+    val launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+        ) { uri: Uri? ->
+            imageUri = uri
+            Log.d("jerboa", imageUri.toString())
 
-        uri?.also { cUri ->
-            imageUploading.value = true
-            val imageIs = imageInputStreamFromUri(ctx, cUri)
-            scope.launch {
-                if (!account.isAnon()) {
-                    val url = uploadPictrsImage(account, imageIs, ctx)
-                    url?.also {
-                        imageUploading.value = false
-                        onTextChange(TextFieldValue(appendMarkdownImage(text.text, it)))
+            uri?.also { cUri ->
+                imageUploading.value = true
+                val imageIs = imageInputStreamFromUri(ctx, cUri)
+                scope.launch {
+                    if (!account.isAnon()) {
+                        val url = uploadPictrsImage(account, imageIs, ctx)
+                        url?.also {
+                            imageUploading.value = false
+                            onTextChange(TextFieldValue(appendMarkdownImage(text.text, it)))
+                        }
                     }
                 }
             }
         }
-    }
     return launcher
 }
 
@@ -323,39 +329,44 @@ fun simpleMarkdownSurround(
     onValueChange: (TextFieldValue) -> Unit,
     surround: Boolean = true,
 ) {
-    val out = if (value.selection.start == value.selection.end) {
-        var altered = value.text.insert(value.selection.start, markdownChar)
-        if (surround) {
-            altered = altered.insert(value.selection.start + markdownChar.length, markdownChar)
-        }
-        val cursor = TextRange(value.selection.start + markdownChar.length)
+    val out =
+        if (value.selection.start == value.selection.end) {
+            var altered = value.text.insert(value.selection.start, markdownChar)
+            if (surround) {
+                altered = altered.insert(value.selection.start + markdownChar.length, markdownChar)
+            }
+            val cursor = TextRange(value.selection.start + markdownChar.length)
 
-        TextFieldValue(altered, cursor)
-    } else {
-        var altered = value.text
-            .insert(value.selection.start, markdownChar)
-        if (surround) {
-            altered = altered
-                .insert(value.selection.end + markdownChar.length, markdownChar)
-        }
+            TextFieldValue(altered, cursor)
+        } else {
+            var altered =
+                value.text
+                    .insert(value.selection.start, markdownChar)
+            if (surround) {
+                altered =
+                    altered
+                        .insert(value.selection.end + markdownChar.length, markdownChar)
+            }
 
-        // TODO weird glitch when its the last item
-        val start = value.selection.start + markdownChar.length
-        val end = if (surround) {
-            value.selection.end + markdownChar.length
-        } else {
-            value.selection.end
+            // TODO weird glitch when its the last item
+            val start = value.selection.start + markdownChar.length
+            val end =
+                if (surround) {
+                    value.selection.end + markdownChar.length
+                } else {
+                    value.selection.end
+                }
+            val cursor =
+                if (value.selection.end == value.text.length) {
+                    TextRange(start)
+                } else {
+                    TextRange(
+                        start,
+                        end,
+                    )
+                }
+            TextFieldValue(altered, cursor)
         }
-        val cursor = if (value.selection.end == value.text.length) {
-            TextRange(start)
-        } else {
-            TextRange(
-                start,
-                end,
-            )
-        }
-        TextFieldValue(altered, cursor)
-    }
 
     onValueChange(out)
 }
@@ -366,30 +377,34 @@ fun simpleMarkdownSurround(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
 ) {
-    val out = if (value.selection.start == value.selection.end) {
-        val altered = value.text
-            .insert(value.selection.start, startText)
-            .insert(value.selection.start + startText.length, endText)
+    val out =
+        if (value.selection.start == value.selection.end) {
+            val altered =
+                value.text
+                    .insert(value.selection.start, startText)
+                    .insert(value.selection.start + startText.length, endText)
 
-        val cursor = TextRange(value.selection.start + startText.length)
+            val cursor = TextRange(value.selection.start + startText.length)
 
-        TextFieldValue(altered, cursor)
-    } else {
-        val altered = value.text
-            .insert(value.selection.start, startText)
-            .insert(value.selection.end + startText.length, endText)
-
-        val start = value.selection.start + startText.length
-        val end = value.selection.end + endText.length
-
-        val cursor = if (value.selection.end == value.text.length) {
-            TextRange(start)
+            TextFieldValue(altered, cursor)
         } else {
-            TextRange(start, end)
-        }
+            val altered =
+                value.text
+                    .insert(value.selection.start, startText)
+                    .insert(value.selection.end + startText.length, endText)
 
-        TextFieldValue(altered, cursor)
-    }
+            val start = value.selection.start + startText.length
+            val end = value.selection.end + endText.length
+
+            val cursor =
+                if (value.selection.end == value.text.length) {
+                    TextRange(start)
+                } else {
+                    TextRange(start, end)
+                }
+
+            TextFieldValue(altered, cursor)
+        }
 
     onValueChange(out)
 }
@@ -628,6 +643,9 @@ fun MyMarkdownText(
     )
 }
 
-fun String.insert(index: Int, string: String): String {
+fun String.insert(
+    index: Int,
+    string: String,
+): String {
     return this.substring(0, index) + string + this.substring(index, this.length)
 }

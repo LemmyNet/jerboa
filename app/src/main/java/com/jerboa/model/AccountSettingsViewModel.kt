@@ -62,10 +62,11 @@ class AccountSettingsViewModel(
         account: Account,
         form: SaveUserSettings,
     ): Account {
-        val newAccount = account.copy(
-            defaultListingType = form.default_listing_type?.ordinal ?: account.defaultListingType,
-            defaultSortType = form.default_sort_type?.ordinal ?: account.defaultSortType,
-        )
+        val newAccount =
+            account.copy(
+                defaultListingType = form.default_listing_type?.ordinal ?: account.defaultListingType,
+                defaultSortType = form.default_sort_type?.ordinal ?: account.defaultSortType,
+            )
         if (newAccount != account) {
             accountRepository.update(newAccount)
         }
@@ -74,9 +75,10 @@ class AccountSettingsViewModel(
 }
 
 object AccountSettingsViewModelFactory {
-    val Factory = viewModelFactory {
-        initializer {
-            AccountSettingsViewModel(jerboaApplication().container.accountRepository)
+    val Factory =
+        viewModelFactory {
+            initializer {
+                AccountSettingsViewModel(jerboaApplication().container.accountRepository)
+            }
         }
-    }
 }

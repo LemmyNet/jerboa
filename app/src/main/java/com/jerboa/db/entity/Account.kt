@@ -29,16 +29,17 @@ data class Account(
     val verificationState: Int,
 )
 
-val AnonAccount = Account(
-    -1,
-    true,
-    "",
-    "Anonymous",
-    "",
-    1,
-    0,
-    verificationState = 0,
-)
+val AnonAccount =
+    Account(
+        -1,
+        true,
+        "",
+        "Anonymous",
+        "",
+        1,
+        0,
+        verificationState = 0,
+    )
 
 fun Account.isAnon(): Boolean {
     return this.id == -1

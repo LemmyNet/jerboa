@@ -36,7 +36,6 @@ import okhttp3.Request
 
 // Order is important, as it classifies in which order it does the checks
 enum class AccountVerificationState {
-
     /**
      * Base state, it has not done any checks yet.
      */
@@ -95,9 +94,10 @@ fun checkInternet(ctx: Context): CheckState {
 suspend fun checkInstance(instance: String): CheckState {
     return withContext(Dispatchers.IO) {
         try {
-            val response = API.httpClient
-                .newCall(Request("https://$instance".toHttpUrlOrNull()!!))
-                .execute()
+            val response =
+                API.httpClient
+                    .newCall(Request("https://$instance".toHttpUrlOrNull()!!))
+                    .execute()
 
             if (response.isSuccessful) {
                 CheckState.Passed
@@ -142,9 +142,7 @@ suspend fun checkIfAccountIsDeleted(
     }
 }
 
-fun checkIfAccountIsBanned(
-    userRes: GetPersonDetailsResponse,
-): CheckState {
+fun checkIfAccountIsBanned(userRes: GetPersonDetailsResponse): CheckState {
     return if (userRes.person_view.person.banned) {
         CheckState.FailedMsg(userRes.person_view.person.ban_expires ?: "TIME_NOT_SPECIFIED")
     } else {
@@ -152,7 +150,10 @@ fun checkIfAccountIsBanned(
     }
 }
 
-suspend fun checkIfJWTValid(account: Account, api: API): CheckState {
+suspend fun checkIfJWTValid(
+    account: Account,
+    api: API,
+): CheckState {
     return withContext(Dispatchers.IO) {
         // I could use any API endpoint that correctly checks the auth (there are some that don't ex: /site)
         val resp = api.getPersonMentions(GetPersonMentions(auth = account.jwt).serializeToMap())
@@ -194,11 +195,15 @@ suspend fun checkIfSiteRetrievalSucceeded(
 
 sealed class CheckState {
     data object Passed : CheckState()
+
     data object Failed : FailedMsg()
+
     data object ConnectionFailed : ConnectionFailedMsg()
 
     open class ConnectionFailedMsg(val msg: String = "") : CheckState()
+
     open class FailedMsg(val msg: String = "") : CheckState()
+
     companion object {
         fun from(boolean: Boolean): CheckState {
             return if (boolean) Passed else Failed
@@ -214,39 +219,42 @@ suspend fun Account.checkAccountVerification(
     Log.d("verification", "Verification started")
 
     // Exceptions create by this API don't need to be shown, they are already handled
-    val api = API.createTempInstance(this.instance) {
-        Log.d("verification", "API ERROR", it)
-        null
-    }
+    val api =
+        API.createTempInstance(this.instance) {
+            Log.d("verification", "API ERROR", it)
+            null
+        }
     var checkState: CheckState = CheckState.Passed
-    var curVerificationState: Int = if (this.verificationState >= AccountVerificationState.size) {
-        AccountVerificationState.NOT_CHECKED.ordinal
-    } else {
-        this.verificationState
-    }
+    var curVerificationState: Int =
+        if (this.verificationState >= AccountVerificationState.size) {
+            AccountVerificationState.NOT_CHECKED.ordinal
+        } else {
+            this.verificationState
+        }
     var userRes: ApiState.Success<GetPersonDetailsResponse>? = null
 
     // No check for the final state
     while (curVerificationState < AccountVerificationState.size - 1) {
         val verifyState = curVerificationState.toEnum<AccountVerificationState>()
 
-        checkState = when (verifyState) {
-            AccountVerificationState.NOT_CHECKED -> {
-                // Anon account does not do any checks
-                CheckState.from(this.id != -1)
+        checkState =
+            when (verifyState) {
+                AccountVerificationState.NOT_CHECKED -> {
+                    // Anon account does not do any checks
+                    CheckState.from(this.id != -1)
+                }
+                AccountVerificationState.HAS_INTERNET -> checkInternet(ctx)
+                AccountVerificationState.INSTANCE_ALIVE -> checkInstance(this.instance)
+                AccountVerificationState.ACCOUNT_DELETED -> {
+                    val p = checkIfAccountIsDeleted(this, api)
+                    userRes = p.second
+                    p.first
+                }
+                AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
+                AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(this, api)
+                AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> checkIfSiteRetrievalSucceeded(siteViewModel, this).first
+                AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
             }
-            AccountVerificationState.HAS_INTERNET -> checkInternet(ctx)
-            AccountVerificationState.INSTANCE_ALIVE -> checkInstance(this.instance)
-            AccountVerificationState.ACCOUNT_DELETED -> {
-                val p = checkIfAccountIsDeleted(this, api)
-                userRes = p.second
-                p.first
-            }
-            AccountVerificationState.ACCOUNT_BANNED -> checkIfAccountIsBanned(userRes!!.data)
-            AccountVerificationState.JWT_VERIFIED -> checkIfJWTValid(this, api)
-            AccountVerificationState.SITE_RETRIEVAL_SUCCEEDED -> checkIfSiteRetrievalSucceeded(siteViewModel, this).first
-            AccountVerificationState.CHECKS_COMPLETE -> CheckState.Passed
-        }
 
         Log.d("verification", "Verified ${verifyState.name} with ${checkState::class.simpleName}")
 
@@ -419,14 +427,15 @@ suspend fun Account.isReadyAndIfNotDisplayInfo(
                             appState.toLogin()
                         }
 
-                        else -> this.isReadyAndIfNotDisplayInfo(
-                            appState,
-                            ctx,
-                            snackbarHostState,
-                            siteVM,
-                            accountVM,
-                            loginAsToast,
-                        )
+                        else ->
+                            this.isReadyAndIfNotDisplayInfo(
+                                appState,
+                                ctx,
+                                snackbarHostState,
+                                siteVM,
+                                accountVM,
+                                loginAsToast,
+                            )
                     }
                 }
                 return it.first == AccountVerificationState.CHECKS_COMPLETE
