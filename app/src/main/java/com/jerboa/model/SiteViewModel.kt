@@ -37,7 +37,6 @@ import kotlinx.coroutines.launch
 
 @Stable
 class SiteViewModel(private val accountRepository: AccountRepository) : ViewModel() {
-
     // Can't be private, because it needs to be set by the login viewmodel
     var siteRes: ApiState<GetSiteResponse> by mutableStateOf(ApiState.Empty)
 
@@ -75,9 +74,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun getSite(
-        form: GetSite,
-    ): Job {
+    fun getSite(form: GetSite): Job {
         return viewModelScope.launch {
             siteRes = ApiState.Loading
             siteRes = apiWrapper(API.getInstance().getSite(form.serializeToMap()))
@@ -87,10 +84,11 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
                     res.data.my_user?.local_user_view?.local_user?.let {
                         val currAcc = accountRepository.currentAccount.value
                         if (currAcc != null) {
-                            val newAccount = currAcc.copy(
-                                defaultListingType = it.default_listing_type.ordinal,
-                                defaultSortType = it.default_sort_type.ordinal,
-                            )
+                            val newAccount =
+                                currAcc.copy(
+                                    defaultListingType = it.default_listing_type.ordinal,
+                                    defaultSortType = it.default_sort_type.ordinal,
+                                )
 
                             if (currAcc != newAccount) {
                                 accountRepository.update(newAccount)
@@ -103,9 +101,7 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun fetchUnreadCounts(
-        form: GetUnreadCount,
-    ) {
+    fun fetchUnreadCounts(form: GetUnreadCount) {
         viewModelScope.launch {
             viewModelScope.launch {
                 unreadCountRes = ApiState.Loading
@@ -124,16 +120,21 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun updateUnreadCounts(dReplies: Int = 0, dMentions: Int = 0, dMessages: Int = 0) {
+    fun updateUnreadCounts(
+        dReplies: Int = 0,
+        dMentions: Int = 0,
+        dMessages: Int = 0,
+    ) {
         when (val res = unreadCountRes) {
             is ApiState.Success -> {
-                unreadCountRes = ApiState.Success(
-                    GetUnreadCountResponse(
-                        private_messages = res.data.private_messages + dMessages,
-                        mentions = res.data.mentions + dMentions,
-                        replies = res.data.replies + dReplies,
-                    ),
-                )
+                unreadCountRes =
+                    ApiState.Success(
+                        GetUnreadCountResponse(
+                            private_messages = res.data.private_messages + dMessages,
+                            mentions = res.data.mentions + dMentions,
+                            replies = res.data.replies + dReplies,
+                        ),
+                    )
             }
 
             else -> {}
@@ -176,10 +177,11 @@ class SiteViewModel(private val accountRepository: AccountRepository) : ViewMode
     }
 
     companion object {
-        val Factory = viewModelFactory {
-            initializer {
-                SiteViewModel(jerboaApplication().container.accountRepository)
+        val Factory =
+            viewModelFactory {
+                initializer {
+                    SiteViewModel(jerboaApplication().container.accountRepository)
+                }
             }
-        }
     }
 }

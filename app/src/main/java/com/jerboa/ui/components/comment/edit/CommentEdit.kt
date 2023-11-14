@@ -28,10 +28,11 @@ fun CommentEdit(
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .padding(padding)
-            .imePadding(),
+        modifier =
+            Modifier
+                .verticalScroll(scrollState)
+                .padding(padding)
+                .imePadding(),
     ) {
         MarkdownTextField(
             text = content,

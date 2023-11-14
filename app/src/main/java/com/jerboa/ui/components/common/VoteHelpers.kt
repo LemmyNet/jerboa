@@ -20,33 +20,36 @@ fun VoteGeneric(
     showNumber: Boolean = true,
     account: Account,
 ) {
-    val iconAndColor = when (type) {
-        VoteType.Upvote -> upvoteIconAndColor(myVote = myVote)
-        else -> downvoteIconAndColor(myVote = myVote)
-    }
+    val iconAndColor =
+        when (type) {
+            VoteType.Upvote -> upvoteIconAndColor(myVote = myVote)
+            else -> downvoteIconAndColor(myVote = myVote)
+        }
 
-    val votesStr = if (showNumber) {
-        if (type == VoteType.Downvote && votes == 0) {
+    val votesStr =
+        if (showNumber) {
+            if (type == VoteType.Downvote && votes == 0) {
+                null
+            } else {
+                votes.toString()
+            }
+        } else {
             null
-        } else {
-            votes.toString()
         }
-    } else {
-        null
-    }
-    val contentDescription: String = if (type == VoteType.Upvote) {
-        if (myVote == 1) {
-            stringResource(R.string.upvoted)
+    val contentDescription: String =
+        if (type == VoteType.Upvote) {
+            if (myVote == 1) {
+                stringResource(R.string.upvoted)
+            } else {
+                stringResource(R.string.upvote)
+            }
         } else {
-            stringResource(R.string.upvote)
+            if (myVote == 1) {
+                stringResource(R.string.downvoted)
+            } else {
+                stringResource(R.string.downvote)
+            }
         }
-    } else {
-        if (myVote == 1) {
-            stringResource(R.string.downvoted)
-        } else {
-            stringResource(R.string.downvote)
-        }
-    }
     ActionBarButton(
         onClick = onVoteClick,
         contentColor = iconAndColor.second,
@@ -60,29 +63,33 @@ fun VoteGeneric(
 @Composable
 fun upvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
     return when (myVote) {
-        1 -> Pair(
-            ImageVector.vectorResource(id = R.drawable.up_filled),
-            scoreColor(myVote = myVote),
-        )
-        else -> Pair(
-            ImageVector.vectorResource(id = R.drawable.up_outline),
-            MaterialTheme
-                .colorScheme.onBackground.muted,
-        )
+        1 ->
+            Pair(
+                ImageVector.vectorResource(id = R.drawable.up_filled),
+                scoreColor(myVote = myVote),
+            )
+        else ->
+            Pair(
+                ImageVector.vectorResource(id = R.drawable.up_outline),
+                MaterialTheme
+                    .colorScheme.onBackground.muted,
+            )
     }
 }
 
 @Composable
 fun downvoteIconAndColor(myVote: Int?): Pair<ImageVector, Color> {
     return when (myVote) {
-        -1 -> Pair(
-            ImageVector.vectorResource(id = R.drawable.down_filled),
-            scoreColor(myVote = myVote),
-        )
-        else -> Pair(
-            ImageVector.vectorResource(id = R.drawable.down_outline),
-            MaterialTheme
-                .colorScheme.onBackground.muted,
-        )
+        -1 ->
+            Pair(
+                ImageVector.vectorResource(id = R.drawable.down_filled),
+                scoreColor(myVote = myVote),
+            )
+        else ->
+            Pair(
+                ImageVector.vectorResource(id = R.drawable.down_outline),
+                MaterialTheme
+                    .colorScheme.onBackground.muted,
+            )
     }
 }

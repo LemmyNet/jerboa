@@ -307,13 +307,14 @@ fun PostName(
     postView: PostView,
     showIfRead: Boolean,
 ) {
-    var color = if (postView.post.featured_local) {
-        MaterialTheme.colorScheme.primary
-    } else if (postView.post.featured_community) {
-        MaterialTheme.colorScheme.secondary
-    } else {
-        MaterialTheme.colorScheme.onSurface
-    }
+    var color =
+        if (postView.post.featured_local) {
+            MaterialTheme.colorScheme.primary
+        } else if (postView.post.featured_community) {
+            MaterialTheme.colorScheme.secondary
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
 
     if (showIfRead && postView.read) {
         color = color.muted
@@ -339,11 +340,11 @@ fun PostTitleAndImageLink(
     val url = postView.post.url!!.toHttps()
 
     Column(
-        modifier = Modifier.padding(
-            vertical = MEDIUM_PADDING,
-            horizontal = MEDIUM_PADDING,
-        ),
-
+        modifier =
+            Modifier.padding(
+                vertical = MEDIUM_PADDING,
+                horizontal = MEDIUM_PADDING,
+            ),
     ) {
         // Title of the post
         PostName(
@@ -355,11 +356,12 @@ fun PostTitleAndImageLink(
     PictrsUrlImage(
         url = url,
         blur = blurNSFW.toEnum<BlurTypes>().needBlur(postView),
-        modifier = Modifier
-            .combinedClickable(
-                onClick = { appState.openImageViewer(url) },
-                onLongClick = { appState.showLinkPopup(url) },
-            ),
+        modifier =
+            Modifier
+                .combinedClickable(
+                    onClick = { appState.openImageViewer(url) },
+                    onLongClick = { appState.showLinkPopup(url) },
+                ),
     )
 }
 
@@ -452,14 +454,16 @@ fun PostBody(
             Card(
                 colors = CARD_COLORS,
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier
-                    .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                        .fillMaxWidth(),
                 content = {
                     if (fullBody) {
                         Column(
-                            modifier = Modifier
-                                .padding(MEDIUM_PADDING),
+                            modifier =
+                                Modifier
+                                    .padding(MEDIUM_PADDING),
                         ) {
                             if (viewSource) {
                                 SelectionContainer {
@@ -578,18 +582,20 @@ fun PostFooterLine(
 
     val postActionbar = postActionbarMode.toEnum<PostActionbarMode>()
 
-    val horizontalArrangement = when (postActionbar) {
-        PostActionbarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
-        PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(LARGE_PADDING)
-        PostActionbarMode.RightHandShort -> Arrangement.spacedBy(LARGE_PADDING)
-    }
+    val horizontalArrangement =
+        when (postActionbar) {
+            PostActionbarMode.Long -> Arrangement.spacedBy(XXL_PADDING)
+            PostActionbarMode.LeftHandShort -> Arrangement.spacedBy(LARGE_PADDING)
+            PostActionbarMode.RightHandShort -> Arrangement.spacedBy(LARGE_PADDING)
+        }
 
     Row(
         horizontalArrangement = horizontalArrangement,
         verticalAlignment = Alignment.Bottom,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = SMALL_PADDING),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(bottom = SMALL_PADDING),
     ) {
         // Right handside shows the comments on the left side
         if (postActionbar == PostActionbarMode.RightHandShort) {
@@ -638,22 +644,25 @@ fun PostFooterLine(
             )
         }
         ActionBarButton(
-            icon = if (postView.saved) {
-                Icons.Filled.Bookmark
-            } else {
-                Icons.Outlined.BookmarkBorder
-            },
-            contentDescription = if (postView.saved) {
-                stringResource(R.string.removeBookmark)
-            } else {
-                stringResource(R.string.addBookmark)
-            },
+            icon =
+                if (postView.saved) {
+                    Icons.Filled.Bookmark
+                } else {
+                    Icons.Outlined.BookmarkBorder
+                },
+            contentDescription =
+                if (postView.saved) {
+                    stringResource(R.string.removeBookmark)
+                } else {
+                    stringResource(R.string.addBookmark)
+                },
             onClick = { onSaveClick(postView) },
-            contentColor = if (postView.saved) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onBackground.muted
-            },
+            contentColor =
+                if (postView.saved) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onBackground.muted
+                },
             account = account,
         )
         ActionBarButton(
@@ -682,11 +691,12 @@ fun CommentNewCountRework(
     account: Account,
     modifier: Modifier = Modifier,
 ) {
-    val unread = if (unreadCount == 0 || comments == unreadCount) {
-        null
-    } else {
-        (if (unreadCount > 0) "+" else "") + siFormat(unreadCount)
-    }
+    val unread =
+        if (unreadCount == 0 || comments == unreadCount) {
+            null
+        } else {
+            (if (unreadCount > 0) "+" else "") + siFormat(unreadCount)
+        }
 
     ActionBarButtonAndBadge(
         icon = Icons.Outlined.Forum,
@@ -707,11 +717,12 @@ fun CommentNewCount(
     style: TextStyle = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
     spacing: Dp = 0.dp,
 ) {
-    val unread = if (unreadCount == 0 || comments == unreadCount) {
-        null
-    } else {
-        unreadCount
-    }
+    val unread =
+        if (unreadCount == 0 || comments == unreadCount) {
+            null
+        } else {
+            unreadCount
+        }
     if (unread != null) {
         Spacer(Modifier.padding(horizontal = spacing))
 
@@ -974,148 +985,158 @@ fun PostListing(
     postActionbarMode: Int,
 ) {
     // This stores vote data
-    val instantScores = remember {
-        mutableStateOf(
-            InstantScores(
-                myVote = postView.my_vote,
-                score = postView.counts.score,
-                upvotes = postView.counts.upvotes,
-                downvotes = postView.counts.downvotes,
-            ),
-        )
-    }
+    val instantScores =
+        remember {
+            mutableStateOf(
+                InstantScores(
+                    myVote = postView.my_vote,
+                    score = postView.counts.score,
+                    upvotes = postView.counts.upvotes,
+                    downvotes = postView.counts.downvotes,
+                ),
+            )
+        }
 
     var viewSource by remember { mutableStateOf(false) }
 
     when (postViewMode) {
-        PostViewMode.Card -> PostListingCard(
-            postView = postView,
-            instantScores = instantScores.value,
-            onUpvoteClick = {
-                instantScores.value = calculateNewInstantScores(
-                    instantScores.value,
-                    voteType = VoteType.Upvote,
-                )
-                onUpvoteClick(postView)
-            },
-            onDownvoteClick = {
-                instantScores.value = calculateNewInstantScores(
-                    instantScores.value,
-                    voteType = VoteType.Downvote,
-                )
-                onDownvoteClick(postView)
-            },
-            onReplyClick = onReplyClick,
-            onPostClick = onPostClick,
-            onSaveClick = onSaveClick,
-            onCommunityClick = onCommunityClick,
-            onEditPostClick = onEditPostClick,
-            onDeletePostClick = onDeletePostClick,
-            onReportClick = onReportClick,
-            onPersonClick = onPersonClick,
-            onBlockCommunityClick = onBlockCommunityClick,
-            onBlockCreatorClick = onBlockCreatorClick,
-            onViewSourceClick = {
-                viewSource = !viewSource
-            },
-            viewSource = viewSource,
-            showReply = showReply,
-            isModerator = isModerator,
-            showCommunityName = showCommunityName,
-            fullBody = fullBody,
-            account = account,
-            expandedImage = true,
-            enableDownVotes = enableDownVotes,
-            showAvatar = showAvatar,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            blurNSFW = blurNSFW,
-            showPostLinkPreview = showPostLinkPreview,
-            appState = appState,
-            showIfRead = showIfRead,
-            showScores = showScores,
-            postActionbarMode = postActionbarMode,
-        )
+        PostViewMode.Card ->
+            PostListingCard(
+                postView = postView,
+                instantScores = instantScores.value,
+                onUpvoteClick = {
+                    instantScores.value =
+                        calculateNewInstantScores(
+                            instantScores.value,
+                            voteType = VoteType.Upvote,
+                        )
+                    onUpvoteClick(postView)
+                },
+                onDownvoteClick = {
+                    instantScores.value =
+                        calculateNewInstantScores(
+                            instantScores.value,
+                            voteType = VoteType.Downvote,
+                        )
+                    onDownvoteClick(postView)
+                },
+                onReplyClick = onReplyClick,
+                onPostClick = onPostClick,
+                onSaveClick = onSaveClick,
+                onCommunityClick = onCommunityClick,
+                onEditPostClick = onEditPostClick,
+                onDeletePostClick = onDeletePostClick,
+                onReportClick = onReportClick,
+                onPersonClick = onPersonClick,
+                onBlockCommunityClick = onBlockCommunityClick,
+                onBlockCreatorClick = onBlockCreatorClick,
+                onViewSourceClick = {
+                    viewSource = !viewSource
+                },
+                viewSource = viewSource,
+                showReply = showReply,
+                isModerator = isModerator,
+                showCommunityName = showCommunityName,
+                fullBody = fullBody,
+                account = account,
+                expandedImage = true,
+                enableDownVotes = enableDownVotes,
+                showAvatar = showAvatar,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
+                showPostLinkPreview = showPostLinkPreview,
+                appState = appState,
+                showIfRead = showIfRead,
+                showScores = showScores,
+                postActionbarMode = postActionbarMode,
+            )
 
-        PostViewMode.SmallCard -> PostListingCard(
-            postView = postView,
-            instantScores = instantScores.value,
-            onUpvoteClick = {
-                instantScores.value = calculateNewInstantScores(
-                    instantScores.value,
-                    voteType = VoteType.Upvote,
-                )
-                onUpvoteClick(postView)
-            },
-            onDownvoteClick = {
-                instantScores.value = calculateNewInstantScores(
-                    instantScores.value,
-                    voteType = VoteType.Downvote,
-                )
-                onDownvoteClick(postView)
-            },
-            onReplyClick = onReplyClick,
-            onPostClick = onPostClick,
-            onSaveClick = onSaveClick,
-            onCommunityClick = onCommunityClick,
-            onEditPostClick = onEditPostClick,
-            onDeletePostClick = onDeletePostClick,
-            onReportClick = onReportClick,
-            onPersonClick = onPersonClick,
-            onBlockCommunityClick = onBlockCommunityClick,
-            onBlockCreatorClick = onBlockCreatorClick,
-            onViewSourceClick = {
-                viewSource = !viewSource
-            },
-            viewSource = viewSource,
-            showReply = showReply,
-            isModerator = isModerator,
-            showCommunityName = showCommunityName,
-            fullBody = false,
-            account = account,
-            expandedImage = false,
-            enableDownVotes = enableDownVotes,
-            showAvatar = showAvatar,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            blurNSFW = blurNSFW,
-            showPostLinkPreview = showPostLinkPreview,
-            appState = appState,
-            showScores = showScores,
-            postActionbarMode = postActionbarMode,
-        )
+        PostViewMode.SmallCard ->
+            PostListingCard(
+                postView = postView,
+                instantScores = instantScores.value,
+                onUpvoteClick = {
+                    instantScores.value =
+                        calculateNewInstantScores(
+                            instantScores.value,
+                            voteType = VoteType.Upvote,
+                        )
+                    onUpvoteClick(postView)
+                },
+                onDownvoteClick = {
+                    instantScores.value =
+                        calculateNewInstantScores(
+                            instantScores.value,
+                            voteType = VoteType.Downvote,
+                        )
+                    onDownvoteClick(postView)
+                },
+                onReplyClick = onReplyClick,
+                onPostClick = onPostClick,
+                onSaveClick = onSaveClick,
+                onCommunityClick = onCommunityClick,
+                onEditPostClick = onEditPostClick,
+                onDeletePostClick = onDeletePostClick,
+                onReportClick = onReportClick,
+                onPersonClick = onPersonClick,
+                onBlockCommunityClick = onBlockCommunityClick,
+                onBlockCreatorClick = onBlockCreatorClick,
+                onViewSourceClick = {
+                    viewSource = !viewSource
+                },
+                viewSource = viewSource,
+                showReply = showReply,
+                isModerator = isModerator,
+                showCommunityName = showCommunityName,
+                fullBody = false,
+                account = account,
+                expandedImage = false,
+                enableDownVotes = enableDownVotes,
+                showAvatar = showAvatar,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
+                showPostLinkPreview = showPostLinkPreview,
+                appState = appState,
+                showScores = showScores,
+                postActionbarMode = postActionbarMode,
+            )
 
-        PostViewMode.List -> PostListingList(
-            postView = postView,
-            instantScores = instantScores.value,
-            onUpvoteClick = {
-                instantScores.value = calculateNewInstantScores(
-                    instantScores.value,
-                    voteType = VoteType.Upvote,
-                )
-                onUpvoteClick(postView)
-            },
-            onDownvoteClick = {
-                instantScores.value = calculateNewInstantScores(
-                    instantScores.value,
-                    voteType = VoteType.Downvote,
-                )
-                onDownvoteClick(postView)
-            },
-            onPostClick = onPostClick,
-            isModerator = isModerator,
-            showCommunityName = showCommunityName,
-            account = account,
-            showVotingArrowsInListView = showVotingArrowsInListView,
-            showAvatar = showAvatar,
-            useCustomTabs = useCustomTabs,
-            usePrivateTabs = usePrivateTabs,
-            blurNSFW = blurNSFW,
-            appState = appState,
-            showIfRead = showIfRead,
-            enableDownVotes = enableDownVotes,
-            showScores = showScores,
-        )
+        PostViewMode.List ->
+            PostListingList(
+                postView = postView,
+                instantScores = instantScores.value,
+                onUpvoteClick = {
+                    instantScores.value =
+                        calculateNewInstantScores(
+                            instantScores.value,
+                            voteType = VoteType.Upvote,
+                        )
+                    onUpvoteClick(postView)
+                },
+                onDownvoteClick = {
+                    instantScores.value =
+                        calculateNewInstantScores(
+                            instantScores.value,
+                            voteType = VoteType.Downvote,
+                        )
+                    onDownvoteClick(postView)
+                },
+                onPostClick = onPostClick,
+                isModerator = isModerator,
+                showCommunityName = showCommunityName,
+                account = account,
+                showVotingArrowsInListView = showVotingArrowsInListView,
+                showAvatar = showAvatar,
+                useCustomTabs = useCustomTabs,
+                usePrivateTabs = usePrivateTabs,
+                blurNSFW = blurNSFW,
+                appState = appState,
+                showIfRead = showIfRead,
+                enableDownVotes = enableDownVotes,
+                showScores = showScores,
+            )
     }
 }
 
@@ -1130,9 +1151,10 @@ fun PostVotingTile(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxHeight()
-            .padding(end = MEDIUM_PADDING),
+        modifier =
+            Modifier
+                .fillMaxHeight()
+                .padding(end = MEDIUM_PADDING),
     ) {
         VoteGeneric(
             myVote = instantScores.myVote,
@@ -1190,18 +1212,20 @@ fun PostListingList(
     showScores: Boolean,
 ) {
     Column(
-        modifier = Modifier
-            .padding(
-                horizontal = MEDIUM_PADDING,
-                vertical = MEDIUM_PADDING,
-            )
-            .testTag("jerboa:post"),
+        modifier =
+            Modifier
+                .padding(
+                    horizontal = MEDIUM_PADDING,
+                    vertical = MEDIUM_PADDING,
+                )
+                .testTag("jerboa:post"),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(
-                SMALL_PADDING,
-            ),
+            horizontalArrangement =
+                Arrangement.spacedBy(
+                    SMALL_PADDING,
+                ),
         ) {
             if (showVotingArrowsInListView) {
                 PostVotingTile(
@@ -1214,17 +1238,16 @@ fun PostListingList(
                 )
             }
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { onPostClick(postView) },
-
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .clickable { onPostClick(postView) },
                 verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             ) {
                 PostName(postView = postView, showIfRead = showIfRead)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING, Alignment.Start),
                     verticalArrangement = Arrangement.Center,
-
                 ) {
                     if (showCommunityName) {
                         CommunityLink(
@@ -1273,10 +1296,11 @@ fun PostListingList(
                         DotSpacer(0.dp)
                     }
                     Text(
-                        text = stringResource(
-                            R.string.post_listing_comments_count,
-                            postView.counts.comments,
-                        ),
+                        text =
+                            stringResource(
+                                R.string.post_listing_comments_count,
+                                postView.counts.comments,
+                            ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.muted,
                     )
@@ -1311,25 +1335,25 @@ private fun ThumbnailTile(
     postView.post.url?.also { url ->
         val postType = getPostType(url)
 
-        val postLinkPicMod = Modifier
-            .size(POST_LINK_PIC_SIZE)
-            .combinedClickable(
-                onClick = {
-                    if (postType != PostType.Link) {
-                        appState.openImageViewer(url)
-                    } else {
-                        appState.openLink(
-                            url,
-                            useCustomTabs,
-                            usePrivateTabs,
-                        )
-                    }
-                },
-                onLongClick = {
-                    appState.showLinkPopup(url)
-                },
-
-            )
+        val postLinkPicMod =
+            Modifier
+                .size(POST_LINK_PIC_SIZE)
+                .combinedClickable(
+                    onClick = {
+                        if (postType != PostType.Link) {
+                            appState.openImageViewer(url)
+                        } else {
+                            appState.openLink(
+                                url,
+                                useCustomTabs,
+                                usePrivateTabs,
+                            )
+                        }
+                    },
+                    onLongClick = {
+                        appState.showLinkPopup(url)
+                    },
+                )
 
         Box {
             postView.post.thumbnail_url?.also { thumbnail ->
@@ -1363,13 +1387,15 @@ private fun ThumbnailTile(
                 Icon(
                     painter = painterResource(id = R.drawable.triangle),
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(THUMBNAIL_CARET_SIZE)
-                        .align(Alignment.BottomEnd),
-                    tint = when (postType) {
-                        PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
-                        else -> MaterialTheme.jerboaColorScheme.imageHighlight
-                    },
+                    modifier =
+                        Modifier
+                            .size(THUMBNAIL_CARET_SIZE)
+                            .align(Alignment.BottomEnd),
+                    tint =
+                        when (postType) {
+                            PostType.Video -> MaterialTheme.jerboaColorScheme.videoHighlight
+                            else -> MaterialTheme.jerboaColorScheme.imageHighlight
+                        },
                 )
             }
         }
@@ -1474,10 +1500,11 @@ fun PostListingCard(
     postActionbarMode: Int,
 ) {
     Column(
-        modifier = Modifier
-            .padding(vertical = MEDIUM_PADDING)
-            .clickable { onPostClick(postView) }
-            .testTag("jerboa:post"),
+        modifier =
+            Modifier
+                .padding(vertical = MEDIUM_PADDING)
+                .clickable { onPostClick(postView) }
+                .testTag("jerboa:post"),
         // see https://stackoverflow.com/questions/77010371/prevent-popup-from-adding-padding-in-a-column-with-arrangement-spacedbylarge-p
         // verticalArrangement = Arrangement.spacedBy(LARGE_PADDING),
     ) {
@@ -1556,9 +1583,10 @@ fun PostListingHeaderPreview() {
 fun MetadataCard(post: Post) {
     OutlinedCard(
         shape = MaterialTheme.shapes.medium,
-        modifier = Modifier
-            .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .padding(vertical = MEDIUM_PADDING, horizontal = MEDIUM_PADDING)
+                .fillMaxWidth(),
         content = {
             Column(
                 modifier = Modifier.padding(MEDIUM_PADDING),

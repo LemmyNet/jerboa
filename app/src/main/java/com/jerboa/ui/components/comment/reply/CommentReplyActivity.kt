@@ -51,15 +51,16 @@ fun CommentReplyActivity(
     var reply by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue
-            (""),
+                (""),
         )
     }
 
     val focusManager = LocalFocusManager.current
-    val loading = when (commentReplyViewModel.createCommentRes) {
-        ApiState.Loading -> true
-        else -> false
-    }
+    val loading =
+        when (commentReplyViewModel.createCommentRes) {
+            ApiState.Loading -> true
+            else -> false
+        }
 
     Scaffold(
         topBar = {
@@ -100,26 +101,29 @@ fun CommentReplyActivity(
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
                             isModerator = isModerator,
-                            modifier = Modifier
-                                .padding(padding)
-                                .imePadding(),
+                            modifier =
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                             showScores = siteViewModel.showScores(),
                         )
 
-                    is ReplyItem.PostItem -> PostReply(
-                        postView = replyItem.item,
-                        account = account,
-                        reply = reply,
-                        onReplyChange = { reply = it },
-                        onPersonClick = appState::toProfile,
-                        isModerator = isModerator,
-                        showAvatar = siteViewModel.showAvatar(),
-                        showScores = siteViewModel.showScores(),
-                        modifier = Modifier
-                            .padding(padding)
-                            .imePadding(),
-                    )
+                    is ReplyItem.PostItem ->
+                        PostReply(
+                            postView = replyItem.item,
+                            account = account,
+                            reply = reply,
+                            onReplyChange = { reply = it },
+                            onPersonClick = appState::toProfile,
+                            isModerator = isModerator,
+                            showAvatar = siteViewModel.showAvatar(),
+                            showScores = siteViewModel.showScores(),
+                            modifier =
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
+                        )
 
                     is ReplyItem.CommentReplyItem ->
                         CommentReplyReply(
@@ -128,9 +132,10 @@ fun CommentReplyActivity(
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
-                            modifier = Modifier
-                                .padding(padding)
-                                .imePadding(),
+                            modifier =
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                             showScores = siteViewModel.showScores(),
                         )
@@ -142,9 +147,10 @@ fun CommentReplyActivity(
                             reply = reply,
                             onReplyChange = { reply = it },
                             onPersonClick = appState::toProfile,
-                            modifier = Modifier
-                                .padding(padding)
-                                .imePadding(),
+                            modifier =
+                                Modifier
+                                    .padding(padding)
+                                    .imePadding(),
                             showAvatar = siteViewModel.showAvatar(),
                             showScores = siteViewModel.showScores(),
                         )

@@ -52,9 +52,7 @@ class JerboaAppState(
 ) {
     val linkDropdownExpanded = mutableStateOf<String?>(null)
 
-    fun toPrivateMessageReply(
-        privateMessageView: PrivateMessageView,
-    ) {
+    fun toPrivateMessageReply(privateMessageView: PrivateMessageView) {
         sendReturnForwards(PrivateMessage.PM_VIEW, privateMessageView)
         navController.navigate(Route.PRIVATE_MESSAGE_REPLY)
     }
@@ -82,16 +80,12 @@ class JerboaAppState(
         navController.navigate(Route.ViewArgs.makeRoute(encodedUrl))
     }
 
-    fun toPostEdit(
-        postView: PostView,
-    ) {
+    fun toPostEdit(postView: PostView) {
         sendReturnForwards(PostEditReturn.POST_SEND, postView)
         navController.navigate(Route.POST_EDIT)
     }
 
-    fun toCommentEdit(
-        commentView: CommentView,
-    ) {
+    fun toCommentEdit(commentView: CommentView) {
         sendReturnForwards(CommentEditReturn.COMMENT_SEND, commentView)
         navController.navigate(Route.COMMENT_EDIT)
     }
@@ -110,9 +104,7 @@ class JerboaAppState(
         navController.navigate(Route.CommentArgs.makeRoute(id = "$id"))
     }
 
-    fun toCreatePost(
-        community: Community?,
-    ) {
+    fun toCreatePost(community: Community?) {
         if (community != null) {
             sendReturnForwards(CreatePostReturn.COMMUNITY_SEND, community)
         }
@@ -138,7 +130,10 @@ class JerboaAppState(
         navController.navigate(Route.COMMUNITY_SIDEBAR)
     }
 
-    fun toProfile(id: Int, saved: Boolean = false) {
+    fun toProfile(
+        id: Int,
+        saved: Boolean = false,
+    ) {
         navController.navigate(Route.ProfileFromIdArgs.makeRoute(id = "$id", saved = "$saved"))
     }
 
@@ -150,11 +145,19 @@ class JerboaAppState(
 
     fun navigateUp(): Boolean = navController.navigateUp()
 
-    fun openLinkRaw(url: String, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+    fun openLinkRaw(
+        url: String,
+        useCustomTabs: Boolean,
+        usePrivateTabs: Boolean,
+    ) {
         openLinkRaw(url, navController, useCustomTabs, usePrivateTabs)
     }
 
-    fun openLink(url: String, useCustomTabs: Boolean, usePrivateTabs: Boolean) {
+    fun openLink(
+        url: String,
+        useCustomTabs: Boolean,
+        usePrivateTabs: Boolean,
+    ) {
         // Navigation must be done on the main thread
         coroutineScope.launch(Dispatchers.Main) {
             openLink(url, navController, useCustomTabs, usePrivateTabs)
@@ -168,7 +171,10 @@ class JerboaAppState(
      *
      * When you want to pass a [Parcelable] to the previous screen/activity you came from
      */
-    fun addReturn(key: String, value: Parcelable) {
+    fun addReturn(
+        key: String,
+        value: Parcelable,
+    ) {
         navController.previousBackStackEntry?.savedStateHandle?.set(key, value)
     }
 
@@ -179,7 +185,10 @@ class JerboaAppState(
      *
      * When you want to pass a [Parcelable] to another screen/activity
      */
-    fun sendReturnForwards(key: String, value: Parcelable) {
+    fun sendReturnForwards(
+        key: String,
+        value: Parcelable,
+    ) {
         navController.currentBackStackEntry?.savedStateHandle?.set(key, value)
     }
 
@@ -191,7 +200,10 @@ class JerboaAppState(
         }
     }
 
-    fun toCreatePrivateMessage(id: Int, name: String) {
+    fun toCreatePrivateMessage(
+        id: Int,
+        name: String,
+    ) {
         navController.navigate(Route.CreatePrivateMessageArgs.makeRoute(personId = "$id", personName = name))
     }
 
@@ -209,7 +221,7 @@ class JerboaAppState(
      */
 
     @Composable
-    inline fun<reified T : Parcelable> ConsumeReturn(
+    inline fun <reified T : Parcelable> ConsumeReturn(
         key: String,
         crossinline consumeBlock: (T) -> Unit,
     ) {
@@ -245,9 +257,7 @@ class JerboaAppState(
      * This is important as, we could navigate further up the tree and back again
      * but when you consume on second return it will be gone
      */
-    inline fun <reified T : Parcelable> getPrevReturnNullable(
-        key: String,
-    ): T? {
+    inline fun <reified T : Parcelable> getPrevReturnNullable(key: String): T? {
         val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
 
         if (savedStateHandle?.contains(key) == true) {
@@ -263,7 +273,7 @@ class JerboaAppState(
      *
      */
     @Composable
-    inline fun<reified T : Parcelable> usePrevReturn(
+    inline fun <reified T : Parcelable> usePrevReturn(
         key: String,
         crossinline consumeBlock: (T) -> Unit,
     ) {

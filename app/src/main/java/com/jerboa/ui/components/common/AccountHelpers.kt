@@ -27,16 +27,17 @@ fun getCurrentAccount(accountViewModel: AccountViewModel): Account {
     return acc
 }
 
-val SpecialAccount = Account(
-    id = -2,
-    name = "Don't use this",
-    defaultSortType = 0,
-    jwt = "",
-    defaultListingType = 0,
-    current = false,
-    verificationState = 0,
-    instance = "",
-)
+val SpecialAccount =
+    Account(
+        id = -2,
+        name = "Don't use this",
+        defaultSortType = 0,
+        jwt = "",
+        defaultListingType = 0,
+        current = false,
+        verificationState = 0,
+        instance = "",
+    )
 
 /**
  * This functions only purpose is to be able to differentiate between the initial Account (Placeholder)

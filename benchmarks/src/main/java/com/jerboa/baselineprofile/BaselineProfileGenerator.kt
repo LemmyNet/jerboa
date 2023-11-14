@@ -36,7 +36,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class BaselineProfileGenerator {
-
     @RequiresApi(Build.VERSION_CODES.P)
     @get:Rule
     val rule = BaselineProfileRule()

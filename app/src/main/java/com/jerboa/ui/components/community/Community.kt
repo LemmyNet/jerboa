@@ -38,8 +38,9 @@ fun CommunityTopSection(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth(),
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -71,10 +72,11 @@ fun CommunityTopSection(
             }
             Row {
                 Text(
-                    text = stringResource(
-                        R.string.community_users_month,
-                        communityView.counts.users_active_month,
-                    ),
+                    text =
+                        stringResource(
+                            R.string.community_users_month,
+                            communityView.counts.users_active_month,
+                        ),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground.muted,
                 )
@@ -90,8 +92,9 @@ fun CommunityTopSection(
                             Icon(
                                 imageVector = Icons.Outlined.CheckCircle,
                                 contentDescription = null,
-                                modifier = Modifier
-                                    .height(ACTION_BAR_ICON_SIZE),
+                                modifier =
+                                    Modifier
+                                        .height(ACTION_BAR_ICON_SIZE),
                             )
                         }
                     }
@@ -267,11 +270,12 @@ fun CommunityMoreDropdown(
                             onDismissRequest()
                             onClickPostViewMode(it)
                         },
-                        modifier = if (selectedPostViewMode == it) {
-                            Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-                        } else {
-                            Modifier
-                        }.testTag("jerboa:postviewmode_${it.name}"),
+                        modifier =
+                            if (selectedPostViewMode == it) {
+                                Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                            } else {
+                                Modifier
+                            }.testTag("jerboa:postviewmode_${it.name}"),
                     )
                 }
             },

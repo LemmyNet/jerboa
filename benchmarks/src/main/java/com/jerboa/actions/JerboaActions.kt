@@ -80,7 +80,8 @@ fun MacrobenchmarkScope.doTypicalUserJourney(repeat: Int = 5) {
             // Test is flaky
             try {
                 scrollThroughComments()
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
         closePost()
     }
@@ -90,7 +91,11 @@ fun MacrobenchmarkScope.waitUntilLoadingDone(timeout: Long = 10_000) {
     device.wait(Until.gone(By.res("jerboa:loading")), timeout)
 }
 
-fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(retry: Boolean = true, timeout: Long = 10_000, depth: Int = 0) {
+fun MacrobenchmarkScope.waitUntilPostsActuallyVisible(
+    retry: Boolean = true,
+    timeout: Long = 10_000,
+    depth: Int = 0,
+) {
     device.wait(
         Until.hasObject(By.res("jerboa:posts").hasDescendant(By.res("jerboa:post"))),
         timeout,
@@ -131,6 +136,7 @@ fun MacrobenchmarkScope.clickMostComments() {
 }
 
 val postViewModes = listOf("SmallCard", "Card", "List")
+
 fun MacrobenchmarkScope.setPostViewMode(postViewMode: String) {
     openMoreOptions()
     device.findOrFailTimeout("jerboa:postviewmode").click()

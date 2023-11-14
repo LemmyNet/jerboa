@@ -17,7 +17,6 @@ import okhttp3.Request
 class AppSettingsRepository(
     private val appSettingsDao: AppSettingsDao,
 ) {
-
     private val _changelog = MutableStateFlow("")
     val changelog = _changelog.asStateFlow()
 

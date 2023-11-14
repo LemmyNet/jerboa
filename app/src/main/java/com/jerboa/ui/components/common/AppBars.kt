@@ -127,11 +127,12 @@ fun BottomAppBarAll(
                 icon = {
                     InboxIconAndBadge(
                         iconBadgeCount = if (tab == NavTab.Inbox) unreadCounts else null,
-                        icon = if (selected) {
-                            tab.iconFilled
-                        } else {
-                            tab.iconOutlined
-                        },
+                        icon =
+                            if (selected) {
+                                tab.iconFilled
+                            } else {
+                                tab.iconOutlined
+                            },
                         contentDescription = stringResource(tab.contentDescriptionId),
                     )
                 },
@@ -220,18 +221,19 @@ fun CommentOrPostNodeHeader(
     FlowRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                top = LARGE_PADDING,
-                bottom = MEDIUM_PADDING,
-            )
-            .combinedClickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onLongClick = onLongCLick,
-                onClick = onClick,
-            ),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = LARGE_PADDING,
+                    bottom = MEDIUM_PADDING,
+                )
+                .combinedClickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onLongClick = onLongCLick,
+                    onClick = onClick,
+                ),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -303,15 +305,16 @@ fun ActionBarButton(
 ) {
     val ctx = LocalContext.current
 
-    val barMod = if (noClick) {
-        modifier
-    } else {
-        modifier.clickable(onClick = {
-            if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
-                onClick()
-            }
-        })
-    }
+    val barMod =
+        if (noClick) {
+            modifier
+        } else {
+            modifier.clickable(onClick = {
+                if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                    onClick()
+                }
+            })
+        }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = barMod,
@@ -361,15 +364,16 @@ fun ActionBarButtonAndBadge(
 ) {
     val ctx = LocalContext.current
 
-    val barMod = if (noClick) {
-        modifier
-    } else {
-        modifier.clickable(onClick = {
-            if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
-                onClick()
-            }
-        })
-    }
+    val barMod =
+        if (noClick) {
+            modifier
+        } else {
+            modifier.clickable(onClick = {
+                if (!requiresAccount || account.isReadyAndIfNotShowSimplifiedInfoToast(ctx)) {
+                    onClick()
+                }
+            })
+        }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = barMod,
@@ -482,9 +486,10 @@ fun Sidebar(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier
-            .padding(padding)
-            .simpleVerticalScrollbar(listState),
+        modifier =
+            Modifier
+                .padding(padding)
+                .simpleVerticalScrollbar(listState),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         item {
@@ -632,14 +637,13 @@ fun Modifier.simpleVerticalScrollbar(
 }
 
 @Composable
-fun LoadingBar(
-    padding: PaddingValues = PaddingValues(0.dp),
-) {
+fun LoadingBar(padding: PaddingValues = PaddingValues(0.dp)) {
     LinearProgressIndicator(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(padding)
-            .testTag("jerboa:loading"),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(padding)
+                .testTag("jerboa:loading"),
     )
 }
 

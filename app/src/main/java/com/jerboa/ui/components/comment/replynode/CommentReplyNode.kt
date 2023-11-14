@@ -127,9 +127,10 @@ fun CommentReplyNodeInboxFooterLine(
 
     Row(
         horizontalArrangement = Arrangement.End,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = LARGE_PADDING, bottom = SMALL_PADDING),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(XXL_PADDING),
@@ -159,39 +160,47 @@ fun CommentReplyNodeInboxFooterLine(
                 account = account,
             )
             ActionBarButton(
-                icon = if (commentReplyView.comment_reply.read) {
-                    Icons.Outlined.MarkChatRead
-                } else {
-                    Icons.Outlined.MarkChatUnread
-                },
-                contentDescription = if (commentReplyView.comment_reply.read) {
-                    stringResource(R.string.markUnread)
-                } else {
-                    stringResource(R.string.markRead)
-                },
+                icon =
+                    if (commentReplyView.comment_reply.read) {
+                        Icons.Outlined.MarkChatRead
+                    } else {
+                        Icons.Outlined.MarkChatUnread
+                    },
+                contentDescription =
+                    if (commentReplyView.comment_reply.read) {
+                        stringResource(R.string.markUnread)
+                    } else {
+                        stringResource(R.string.markRead)
+                    },
                 onClick = { onMarkAsReadClick(commentReplyView) },
-                contentColor = if (commentReplyView.comment_reply.read) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground.muted
-                },
+                contentColor =
+                    if (commentReplyView.comment_reply.read) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground.muted
+                    },
                 account = account,
             )
             ActionBarButton(
-                icon = if (commentReplyView.saved) { Icons.Filled.Bookmark } else {
-                    Icons.Outlined.BookmarkBorder
-                },
-                contentDescription = if (commentReplyView.saved) {
-                    stringResource(R.string.comment_unsave)
-                } else {
-                    stringResource(R.string.comment_save)
-                },
+                icon =
+                    if (commentReplyView.saved) {
+                        Icons.Filled.Bookmark
+                    } else {
+                        Icons.Outlined.BookmarkBorder
+                    },
+                contentDescription =
+                    if (commentReplyView.saved) {
+                        stringResource(R.string.comment_unsave)
+                    } else {
+                        stringResource(R.string.comment_save)
+                    },
                 onClick = { onSaveClick(commentReplyView) },
-                contentColor = if (commentReplyView.saved) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onBackground.muted
-                },
+                contentColor =
+                    if (commentReplyView.saved) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground.muted
+                    },
                 account = account,
             )
             // Don't let you respond to your own comment.

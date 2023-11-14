@@ -75,18 +75,20 @@ fun MyTextField(
         label = { Text(text = label) },
         singleLine = true,
         placeholder = { placeholder?.let { Text(text = it) } },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            capitalization = KeyboardCapitalization.None,
-            keyboardType = KeyboardType.Text,
-            autoCorrect = false,
-        ),
-        modifier = modifier
-            .width(OutlinedTextFieldDefaults.MinWidth)
-            .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-            .onAutofill(LocalAutofillTree.current, LocalAutofill.current, autofillTypes) {
-                onValueChange(it)
-                wasAutofilled = true
-            },
+        keyboardOptions =
+            KeyboardOptions.Default.copy(
+                capitalization = KeyboardCapitalization.None,
+                keyboardType = KeyboardType.Text,
+                autoCorrect = false,
+            ),
+        modifier =
+            modifier
+                .width(OutlinedTextFieldDefaults.MinWidth)
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(LocalAutofillTree.current, LocalAutofill.current, autofillTypes) {
+                    onValueChange(it)
+                    wasAutofilled = true
+                },
     )
 }
 
@@ -101,17 +103,18 @@ fun PasswordField(
     var passwordVisibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        modifier = modifier
-            .width(OutlinedTextFieldDefaults.MinWidth)
-            .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
-            .onAutofill(
-                LocalAutofillTree.current,
-                LocalAutofill.current,
-                persistentListOf(AutofillType.Password),
-            ) {
-                onValueChange(it)
-                wasAutofilled = true
-            },
+        modifier =
+            modifier
+                .width(OutlinedTextFieldDefaults.MinWidth)
+                .background(if (wasAutofilled) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent)
+                .onAutofill(
+                    LocalAutofillTree.current,
+                    LocalAutofill.current,
+                    persistentListOf(AutofillType.Password),
+                ) {
+                    onValueChange(it)
+                    wasAutofilled = true
+                },
         value = password,
         onValueChange = onValueChange,
         singleLine = true,
@@ -119,11 +122,12 @@ fun PasswordField(
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
-            val image = if (passwordVisibility) {
-                Icons.Outlined.Visibility
-            } else {
-                Icons.Outlined.VisibilityOff
-            }
+            val image =
+                if (passwordVisibility) {
+                    Icons.Outlined.Visibility
+                } else {
+                    Icons.Outlined.VisibilityOff
+                }
 
             IconButton(onClick = {
                 passwordVisibility = !passwordVisibility
@@ -136,7 +140,12 @@ fun PasswordField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InstancePicker(expanded: Boolean, setExpanded: ((Boolean) -> Unit), instance: String, setInstance: ((String) -> Unit)) {
+fun InstancePicker(
+    expanded: Boolean,
+    setExpanded: ((Boolean) -> Unit),
+    instance: String,
+    setInstance: ((String) -> Unit),
+) {
     val filteringOptions = DEFAULT_LEMMY_INSTANCES.filter { it.contains(instance, ignoreCase = true) }
     val expand = filteringOptions.isNotEmpty() && expanded
 
@@ -145,9 +154,10 @@ fun InstancePicker(expanded: Boolean, setExpanded: ((Boolean) -> Unit), instance
         onExpandedChange = setExpanded,
     ) {
         OutlinedTextField(
-            modifier = Modifier
-                .menuAnchor()
-                .width(OutlinedTextFieldDefaults.MinWidth),
+            modifier =
+                Modifier
+                    .menuAnchor()
+                    .width(OutlinedTextFieldDefaults.MinWidth),
             label = { Text(stringResource(R.string.login_instance)) },
             placeholder = { Text(stringResource(R.string.login_instance_placeholder)) },
             value = instance,
@@ -202,16 +212,18 @@ fun LoginForm(
     val isValid =
         instance.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()
 
-    val form = Login(
-        username_or_email = username.trim(),
-        password = password.take(60),
-        totp_2fa_token = totp.ifBlank { null },
-    )
+    val form =
+        Login(
+            username_or_email = username.trim(),
+            password = password.take(60),
+            totp_2fa_token = totp.ifBlank { null },
+        )
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .imePadding(),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .imePadding(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -258,9 +270,7 @@ fun LoginFormPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginHeader(
-    onClickBack: () -> Unit,
-) {
+fun LoginHeader(onClickBack: () -> Unit) {
     TopAppBar(
         title = {
             Text(

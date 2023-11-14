@@ -18,17 +18,14 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class TypicalUserJourneyBenchmarks {
-
     @get:Rule
     val rule = MacrobenchmarkRule()
 
     @Test
-    fun startUserJourneyCompilationNone() =
-        benchmark(CompilationMode.None())
+    fun startUserJourneyCompilationNone() = benchmark(CompilationMode.None())
 
     @Test
-    fun startUserJourneyCompilationBaselineProfiles() =
-        benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
+    fun startUserJourneyCompilationBaselineProfiles() = benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
 
     private fun benchmark(compilationMode: CompilationMode) {
         rule.measureRepeated(

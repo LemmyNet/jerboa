@@ -97,44 +97,50 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         page -= 1
     }
 
-    fun getPosts(form: GetPosts, state: ApiState<GetPostsResponse> = ApiState.Loading) {
+    fun getPosts(
+        form: GetPosts,
+        state: ApiState<GetPostsResponse> = ApiState.Loading,
+    ) {
         viewModelScope.launch {
             postsRes = state
-            postsRes = apiWrapper(
-                API.getInstance().getPosts(form.serializeToMap()),
-            )
+            postsRes =
+                apiWrapper(
+                    API.getInstance().getPosts(form.serializeToMap()),
+                )
         }
     }
 
     fun appendPosts(jwt: String?) {
         viewModelScope.launch {
             val oldRes = postsRes
-            postsRes = when (oldRes) {
-                is ApiState.Appending -> return@launch
-                is ApiState.Holder -> ApiState.Appending(oldRes.data)
-                else -> return@launch
-            }
+            postsRes =
+                when (oldRes) {
+                    is ApiState.Appending -> return@launch
+                    is ApiState.Holder -> ApiState.Appending(oldRes.data)
+                    else -> return@launch
+                }
 
             nextPage()
             val newRes = apiWrapper(API.getInstance().getPosts(getForm(jwt).serializeToMap()))
 
-            postsRes = when (newRes) {
-                is ApiState.Success -> {
-                    ApiState.Success(
-                        GetPostsResponse(
-                            mergePosts(
-                                oldRes.data.posts,
-                                newRes.data.posts,
+            postsRes =
+                when (newRes) {
+                    is ApiState.Success -> {
+                        ApiState.Success(
+                            GetPostsResponse(
+                                mergePosts(
+                                    oldRes.data.posts,
+                                    newRes.data.posts,
+                                ),
                             ),
-                        ),
-                    )
-                }
+                        )
+                    }
 
-                else -> {
-                    prevPage()
-                    ApiState.AppendingFailure(oldRes.data)
+                    else -> {
+                        prevPage()
+                        ApiState.AppendingFailure(oldRes.data)
+                    }
                 }
-            }
         }
     }
 
@@ -181,7 +187,10 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun blockCommunity(form: BlockCommunity, ctx: Context) {
+    fun blockCommunity(
+        form: BlockCommunity,
+        ctx: Context,
+    ) {
         viewModelScope.launch {
             blockCommunityRes = ApiState.Loading
             blockCommunityRes =
@@ -190,7 +199,10 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun blockPerson(form: BlockPerson, ctx: Context) {
+    fun blockPerson(
+        form: BlockPerson,
+        ctx: Context,
+    ) {
         viewModelScope.launch {
             blockPersonRes = ApiState.Loading
             blockPersonRes = apiWrapper(API.getInstance().blockPerson(form))
@@ -259,10 +271,11 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
     }
 
     companion object {
-        val Factory = viewModelFactory {
-            initializer {
-                HomeViewModel(jerboaApplication().container.accountRepository)
+        val Factory =
+            viewModelFactory {
+                initializer {
+                    HomeViewModel(jerboaApplication().container.accountRepository)
+                }
             }
-        }
     }
 }

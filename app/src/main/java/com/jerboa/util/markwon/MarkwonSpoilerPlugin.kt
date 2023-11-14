@@ -14,6 +14,7 @@ import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.image.AsyncDrawableScheduler
 
 data class SpoilerTitleSpan(val title: CharSequence)
+
 class SpoilerCloseSpan
 
 class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlugin() {
@@ -26,7 +27,11 @@ class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlug
     }
 
     private class SpoilerTextAddedListener : CorePlugin.OnTextAddedListener {
-        override fun onTextAdded(visitor: MarkwonVisitor, text: String, start: Int) {
+        override fun onTextAdded(
+            visitor: MarkwonVisitor,
+            text: String,
+            start: Int,
+        ) {
             val spoilerTitleRegex = Regex("(:::\\s+spoiler\\s+)(.*)")
             // Find all spoiler "start" lines
             val spoilerTitles = spoilerTitleRegex.findAll(text)
@@ -80,10 +85,11 @@ class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlug
 
                 val spoilerTitle = getSpoilerTitle(false)
 
-                val spoilerContent = spanned.subSequence(
-                    spanned.getSpanEnd(spoilerTitleSpan) + 1,
-                    spoilerEnd - 3,
-                ) as SpannableStringBuilder
+                val spoilerContent =
+                    spanned.subSequence(
+                        spanned.getSpanEnd(spoilerTitleSpan) + 1,
+                        spoilerEnd - 3,
+                    ) as SpannableStringBuilder
 
                 // Remove spoiler content from span
                 spanned.replace(spoilerStart, spoilerEnd, spoilerTitle)
@@ -95,35 +101,36 @@ class MarkwonSpoilerPlugin(val enableInteraction: Boolean) : AbstractMarkwonPlug
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
                 )
 
-                val wrapper = object : ClickableSpan() {
-                    override fun onClick(p0: View) {
-                        if (enableInteraction) {
-                            textView.cancelPendingInputEvents()
-                            open = !open
+                val wrapper =
+                    object : ClickableSpan() {
+                        override fun onClick(p0: View) {
+                            if (enableInteraction) {
+                                textView.cancelPendingInputEvents()
+                                open = !open
 
-                            spanned.replace(
-                                spoilerStart,
-                                spoilerStart + spoilerTitle.length,
-                                getSpoilerTitle(open),
-                            )
-                            if (open) {
-                                spanned.insert(spoilerStart + spoilerTitle.length, spoilerContent)
-                            } else {
                                 spanned.replace(
+                                    spoilerStart,
                                     spoilerStart + spoilerTitle.length,
-                                    spoilerStart + spoilerTitle.length + spoilerContent.length,
-                                    "",
+                                    getSpoilerTitle(open),
                                 )
-                            }
+                                if (open) {
+                                    spanned.insert(spoilerStart + spoilerTitle.length, spoilerContent)
+                                } else {
+                                    spanned.replace(
+                                        spoilerStart + spoilerTitle.length,
+                                        spoilerStart + spoilerTitle.length + spoilerContent.length,
+                                        "",
+                                    )
+                                }
 
-                            textView.text = spanned
-                            AsyncDrawableScheduler.schedule(textView)
+                                textView.text = spanned
+                                AsyncDrawableScheduler.schedule(textView)
+                            }
+                        }
+
+                        override fun updateDrawState(ds: TextPaint) {
                         }
                     }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                    }
-                }
 
                 // Set spoiler block type as ClickableSpan
                 spanned.setSpan(

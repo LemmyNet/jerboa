@@ -23,7 +23,6 @@ class StartupProfileGenerator {
             packageName = "com.jerboa",
             maxIterations = 15,
             includeInStartupProfile = true,
-
         ) {
             pressHome()
             startActivityAndWait()

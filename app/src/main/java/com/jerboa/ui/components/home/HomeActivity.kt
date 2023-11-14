@@ -115,9 +115,10 @@ fun HomeActivity(
     }
 
     Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .semantics { testTagsAsResourceId = true },
+        modifier =
+            Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .semantics { testTagsAsResourceId = true },
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },
         topBar = {
             MainTopBar(
@@ -219,12 +220,13 @@ fun MainPostListingsContent(
 
     ReportDrawn()
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = homeViewModel.postsRes.isRefreshing(),
-        onRefresh = {
-            homeViewModel.refreshPosts(account)
-        },
-    )
+    val pullRefreshState =
+        rememberPullRefreshState(
+            refreshing = homeViewModel.postsRes.isRefreshing(),
+            onRefresh = {
+                homeViewModel.refreshPosts(account)
+            },
+        )
 
     Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
         // zIndex needed bc some elements of a post get drawn above it.
@@ -241,14 +243,15 @@ fun MainPostListingsContent(
             LoadingBar(padding = padding)
         }
 
-        val posts = when (val postsRes = homeViewModel.postsRes) {
-            is ApiState.Failure -> {
-                apiErrorToast(ctx, postsRes.msg)
-                persistentListOf()
+        val posts =
+            when (val postsRes = homeViewModel.postsRes) {
+                is ApiState.Failure -> {
+                    apiErrorToast(ctx, postsRes.msg)
+                    persistentListOf()
+                }
+                is ApiState.Holder -> postsRes.data.posts.toImmutableList()
+                else -> persistentListOf()
             }
-            is ApiState.Holder -> postsRes.data.posts.toImmutableList()
-            else -> persistentListOf()
-        }
 
         PostListings(
             listState = postListState,
@@ -267,10 +270,11 @@ fun MainPostListingsContent(
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score = newVote(
-                                currentVote = postView.my_vote,
-                                voteType = VoteType.Upvote,
-                            ),
+                            score =
+                                newVote(
+                                    currentVote = postView.my_vote,
+                                    voteType = VoteType.Upvote,
+                                ),
                             auth = it.jwt,
                         ),
                     )
@@ -287,10 +291,11 @@ fun MainPostListingsContent(
                     homeViewModel.likePost(
                         CreatePostLike(
                             post_id = postView.post.id,
-                            score = newVote(
-                                currentVote = postView.my_vote,
-                                voteType = VoteType.Downvote,
-                            ),
+                            score =
+                                newVote(
+                                    currentVote = postView.my_vote,
+                                    voteType = VoteType.Downvote,
+                                ),
                             auth = it.jwt,
                         ),
                     )

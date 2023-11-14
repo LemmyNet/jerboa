@@ -21,6 +21,7 @@ import com.jerboa.db.entity.Account
 import com.jerboa.ui.components.common.MarkdownTextField
 import com.jerboa.ui.theme.LARGE_PADDING
 import com.jerboa.ui.theme.MEDIUM_PADDING
+
 @Composable
 fun RepliedPrivateMessage(
     privateMessageView: PrivateMessageView,

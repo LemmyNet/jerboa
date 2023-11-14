@@ -10,7 +10,8 @@ data class SaveUserSettings(
     val show_nsfw: Boolean? = null,
     val show_scores: Boolean? = null,
     val theme: String? = null,
-    val default_sort_type: SortType? /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" | "TopHour" | "TopSixHour" | "TopTwelveHour" */ = null,
+    val default_sort_type: SortType? /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" | "TopHour" | "TopSixHour" | "TopTwelveHour" */ =
+        null,
     val default_listing_type: ListingType? /* "All" | "Local" | "Subscribed" */ = null,
     val interface_language: String? = null,
     val avatar: String? = null,

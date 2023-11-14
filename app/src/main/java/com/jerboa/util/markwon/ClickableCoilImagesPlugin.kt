@@ -19,8 +19,10 @@ import io.noties.markwon.image.ImageProps
 import io.noties.markwon.image.ImageSpanFactory
 import org.commonmark.node.Image
 
-class ClickableCoilImagesPlugin(coil: CoilStore, imageLoader: ImageLoader, private val appState: JerboaAppState) : CoilImagesPlugin(coil, imageLoader) {
-
+class ClickableCoilImagesPlugin(coil: CoilStore, imageLoader: ImageLoader, private val appState: JerboaAppState) : CoilImagesPlugin(
+    coil,
+    imageLoader,
+) {
     companion object {
         fun create(
             context: Context,
@@ -59,15 +61,18 @@ class ClickableCoilImagesPlugin(coil: CoilStore, imageLoader: ImageLoader, priva
 }
 
 internal class ClickableImageFactory(val appState: JerboaAppState) : HttpsImageSpanFactory() {
-
-    override fun getSpans(configuration: MarkwonConfiguration, props: RenderProps): Any {
+    override fun getSpans(
+        configuration: MarkwonConfiguration,
+        props: RenderProps,
+    ): Any {
         val image = super.getSpans(configuration, props) as AsyncDrawableSpan
-        val clickSpan = object : URLSpan(image.drawable.destination) {
-            override fun onClick(view: View) {
-                view.cancelPendingInputEvents()
-                appState.openImageViewer(image.drawable.destination)
+        val clickSpan =
+            object : URLSpan(image.drawable.destination) {
+                override fun onClick(view: View) {
+                    view.cancelPendingInputEvents()
+                    appState.openImageViewer(image.drawable.destination)
+                }
             }
-        }
 
         return arrayOf(image, clickSpan)
     }
@@ -77,7 +82,10 @@ internal class ClickableImageFactory(val appState: JerboaAppState) : HttpsImageS
  * Custom implementation of [ImageSpanFactory] that rewrites all http:// links to https://
  */
 internal open class HttpsImageSpanFactory : SpanFactory {
-    override fun getSpans(configuration: MarkwonConfiguration, props: RenderProps): Any? {
+    override fun getSpans(
+        configuration: MarkwonConfiguration,
+        props: RenderProps,
+    ): Any? {
         return AsyncDrawableSpan(
             configuration.theme(),
             AsyncDrawable(

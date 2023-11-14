@@ -6,7 +6,6 @@ import okhttp3.Response
 import java.io.IOException
 
 class DownloadProgressInterceptor(private val downloadFlow: MutableStateFlow<ProgressEvent>) : Interceptor {
-
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse = chain.proceed(chain.request())
@@ -14,11 +13,12 @@ class DownloadProgressInterceptor(private val downloadFlow: MutableStateFlow<Pro
 
         val downloadIdentifier = originalResponse.request.url.toString()
 
-        val downloadResponseBody = DownloadProgressResponseBody(
-            downloadIdentifier,
-            originalResponse.body,
-            downloadFlow,
-        )
+        val downloadResponseBody =
+            DownloadProgressResponseBody(
+                downloadIdentifier,
+                originalResponse.body,
+                downloadFlow,
+            )
 
         responseBuilder.body(downloadResponseBody)
         return responseBuilder.build()

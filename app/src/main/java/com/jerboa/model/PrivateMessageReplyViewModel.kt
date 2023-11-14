@@ -15,7 +15,6 @@ import com.jerboa.db.entity.Account
 import kotlinx.coroutines.launch
 
 class PrivateMessageReplyViewModel : ViewModel() {
-
     var createMessageRes: ApiState<PrivateMessageResponse> by mutableStateOf(ApiState.Empty)
         private set
 
@@ -27,12 +26,12 @@ class PrivateMessageReplyViewModel : ViewModel() {
         focusManager: FocusManager,
     ) {
         viewModelScope.launch {
-            val form = CreatePrivateMessage(
-                content = content,
-                recipient_id = recipientId,
-                auth = account.jwt,
-
-            )
+            val form =
+                CreatePrivateMessage(
+                    content = content,
+                    recipient_id = recipientId,
+                    auth = account.jwt,
+                )
             createMessageRes = ApiState.Loading
             createMessageRes = apiWrapper(API.getInstance().createPrivateMessage(form))
 

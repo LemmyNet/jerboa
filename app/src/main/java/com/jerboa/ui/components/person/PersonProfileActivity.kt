@@ -178,11 +178,12 @@ fun PersonProfileActivity(
                     val person = profileRes.data.person_view.person
                     PersonProfileHeader(
                         scrollBehavior = scrollBehavior,
-                        personName = if (savedMode) {
-                            ctx.getString(R.string.bookmarks_activity_saved)
-                        } else {
-                            person.name
-                        },
+                        personName =
+                            if (savedMode) {
+                                ctx.getString(R.string.bookmarks_activity_saved)
+                            } else {
+                                person.name
+                            },
                         myProfile = account.id == person.id,
                         selectedSortType = personProfileViewModel.sortType,
                         onClickSortType = { sortType ->
@@ -300,41 +301,43 @@ fun UserTabs(
     showScores: Boolean,
     postActionbarMode: Int,
 ) {
-    val tabTitles = if (savedMode) {
-        listOf(
-            getLocalizedStringForUserTab(ctx, UserTab.Posts),
-            getLocalizedStringForUserTab(ctx, UserTab.Comments),
-        )
-    } else {
-        UserTab.entries.map { getLocalizedStringForUserTab(ctx, it) }
-    }
+    val tabTitles =
+        if (savedMode) {
+            listOf(
+                getLocalizedStringForUserTab(ctx, UserTab.Posts),
+                getLocalizedStringForUserTab(ctx, UserTab.Comments),
+            )
+        } else {
+            UserTab.entries.map { getLocalizedStringForUserTab(ctx, it) }
+        }
     val pagerState = rememberPagerState { tabTitles.size }
 
     val loading = personProfileViewModel.personDetailsRes.isLoading()
 
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, personProfileViewModel::updatePost)
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
-        onRefresh = {
-            when (val profileRes = personProfileViewModel.personDetailsRes) {
-                is ApiState.Success -> {
-                    personProfileViewModel.resetPage()
-                    personProfileViewModel.getPersonDetails(
-                        GetPersonDetails(
-                            person_id = profileRes.data.person_view.person.id,
-                            sort = personProfileViewModel.sortType,
-                            page = personProfileViewModel.page,
-                            saved_only = personProfileViewModel.savedOnly,
-                            auth = account.getJWT(),
-                        ),
-                        ApiState.Refreshing,
-                    )
+    val pullRefreshState =
+        rememberPullRefreshState(
+            refreshing = personProfileViewModel.personDetailsRes.isRefreshing(),
+            onRefresh = {
+                when (val profileRes = personProfileViewModel.personDetailsRes) {
+                    is ApiState.Success -> {
+                        personProfileViewModel.resetPage()
+                        personProfileViewModel.getPersonDetails(
+                            GetPersonDetails(
+                                person_id = profileRes.data.person_view.person.id,
+                                sort = personProfileViewModel.sortType,
+                                page = personProfileViewModel.page,
+                                saved_only = personProfileViewModel.savedOnly,
+                                auth = account.getJWT(),
+                            ),
+                            ApiState.Refreshing,
+                        )
+                    }
+                    else -> {}
                 }
-                else -> {}
-            }
-        },
-    )
+            },
+        )
 
     Column(
         modifier = Modifier.padding(padding),
@@ -368,11 +371,12 @@ fun UserTabs(
             modifier = Modifier.fillMaxSize(),
         ) { tabIndex ->
             // Need an offset for the saved mode, which doesn't show about
-            val tabI = if (!savedMode) {
-                tabIndex
-            } else {
-                tabIndex + 1
-            }
+            val tabI =
+                if (!savedMode) {
+                    tabIndex
+                } else {
+                    tabIndex + 1
+                }
             when (tabI) {
                 UserTab.About.ordinal -> {
                     when (val profileRes = personProfileViewModel.personDetailsRes) {
@@ -384,9 +388,10 @@ fun UserTabs(
 
                             LazyColumn(
                                 state = listState,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .simpleVerticalScrollbar(listState),
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .simpleVerticalScrollbar(listState),
                             ) {
                                 item(contentType = "topSection") {
                                     PersonProfileTopSection(
@@ -428,9 +433,10 @@ fun UserTabs(
 
                 UserTab.Posts.ordinal -> {
                     Box(
-                        modifier = Modifier
-                            .pullRefresh(pullRefreshState)
-                            .fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .pullRefresh(pullRefreshState)
+                                .fillMaxSize(),
                     ) {
                         JerboaPullRefreshIndicator(
                             personProfileViewModel.personDetailsRes.isRefreshing(),
@@ -461,10 +467,11 @@ fun UserTabs(
                                             personProfileViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
-                                                    score = newVote(
-                                                        pv.my_vote,
-                                                        VoteType.Upvote,
-                                                    ),
+                                                    score =
+                                                        newVote(
+                                                            pv.my_vote,
+                                                            VoteType.Upvote,
+                                                        ),
                                                     auth = it.jwt,
                                                 ),
                                             )
@@ -481,10 +488,11 @@ fun UserTabs(
                                             personProfileViewModel.likePost(
                                                 CreatePostLike(
                                                     post_id = pv.post.id,
-                                                    score = newVote(
-                                                        pv.my_vote,
-                                                        VoteType.Downvote,
-                                                    ),
+                                                    score =
+                                                        newVote(
+                                                            pv.my_vote,
+                                                            VoteType.Downvote,
+                                                        ),
                                                     auth = it.jwt,
                                                 ),
                                             )
@@ -667,9 +675,10 @@ fun UserTabs(
                             }
 
                             Box(
-                                modifier = Modifier
-                                    .pullRefresh(pullRefreshState)
-                                    .fillMaxSize(),
+                                modifier =
+                                    Modifier
+                                        .pullRefresh(pullRefreshState)
+                                        .fillMaxSize(),
                             ) {
                                 JerboaPullRefreshIndicator(
                                     personProfileViewModel.personDetailsRes.isRefreshing(),

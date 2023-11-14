@@ -13,19 +13,20 @@ import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class MigrationsTest {
-    private val TEST_DB = "migration-test"
+    private val testDB = "migration-test"
 
     @get:Rule
-    val helper: MigrationTestHelper = MigrationTestHelper(
-        InstrumentationRegistry.getInstrumentation(),
-        AppDB::class.java,
-    )
+    val helper: MigrationTestHelper =
+        MigrationTestHelper(
+            InstrumentationRegistry.getInstrumentation(),
+            AppDB::class.java,
+        )
 
     @Test
     @Throws(IOException::class)
     fun migrateAll() {
         // Create earliest version of the database.
-        helper.createDatabase(TEST_DB, 1).apply {
+        helper.createDatabase(testDB, 1).apply {
             close()
         }
 
@@ -34,7 +35,7 @@ class MigrationsTest {
         databaseBuilder(
             InstrumentationRegistry.getInstrumentation().targetContext,
             AppDB::class.java,
-            TEST_DB,
+            testDB,
         ).addMigrations(*MIGRATIONS_LIST).build().apply {
             openHelper.writableDatabase.close()
         }

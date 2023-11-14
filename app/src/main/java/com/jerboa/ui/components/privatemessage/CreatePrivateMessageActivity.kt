@@ -72,17 +72,18 @@ fun CreatePrivateMessageActivity(
                             var res: ApiState<PrivateMessageResponse> = ApiState.Empty
 
                             while (res !is ApiState.Success) {
-                                res = apiWrapper(
-                                    withContext(Dispatchers.IO) {
-                                        API.getInstance().createPrivateMessage(
-                                            CreatePrivateMessage(
-                                                textBody.text,
-                                                personId,
-                                                account.jwt,
-                                            ),
-                                        )
-                                    },
-                                )
+                                res =
+                                    apiWrapper(
+                                        withContext(Dispatchers.IO) {
+                                            API.getInstance().createPrivateMessage(
+                                                CreatePrivateMessage(
+                                                    textBody.text,
+                                                    personId,
+                                                    account.jwt,
+                                                ),
+                                            )
+                                        },
+                                    )
                                 if (res is ApiState.Failure) {
                                     Toast.makeText(ctx, R.string.private_message_failed, Toast.LENGTH_SHORT).show()
                                 }
@@ -103,10 +104,11 @@ fun CreatePrivateMessageActivity(
             val scrollState = rememberScrollState()
 
             Column(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .padding(padding)
-                    .imePadding(),
+                modifier =
+                    Modifier
+                        .verticalScroll(scrollState)
+                        .padding(padding)
+                        .imePadding(),
             ) {
                 MarkdownTextField(
                     text = textBody,

@@ -50,15 +50,17 @@ fun SettingsTextField(
         OutlinedTextField(
             value = text,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .padding(top = MEDIUM_PADDING)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .padding(top = MEDIUM_PADDING)
+                    .fillMaxWidth(),
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                capitalization = KeyboardCapitalization.None,
-                keyboardType = KeyboardType.Text,
-                autoCorrect = false,
-            ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    capitalization = KeyboardCapitalization.None,
+                    keyboardType = KeyboardType.Text,
+                    autoCorrect = false,
+                ),
         )
     }
 }
@@ -73,11 +75,11 @@ fun ImageWithClose(
         IconButton(
             onClick = onClick,
             // Hard to see close button without a contrasting background
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.surface.muted,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-            ),
-
+            colors =
+                IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surface.muted,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                ),
         ) {
             Icon(
                 imageVector = Icons.Outlined.Close,
@@ -93,10 +95,11 @@ fun SettingsForm(
     account: Account,
     padding: PaddingValues,
 ) {
-    val luv = when (val siteRes = siteViewModel.siteRes) {
-        is ApiState.Success -> siteRes.data.my_user?.local_user_view
-        else -> null
-    }
+    val luv =
+        when (val siteRes = siteViewModel.siteRes) {
+            is ApiState.Success -> siteRes.data.my_user?.local_user_view
+            else -> null
+        }
 
     val scope = rememberCoroutineScope()
     val ctx = LocalContext.current
@@ -131,38 +134,40 @@ fun SettingsForm(
     val enable2FA = rememberBooleanSettingState(curr2FAEnabled)
     val sortTypeNames = remember { supportedSortTypes.map { ctx.getString(it.shortForm) } }
 
-    siteViewModel.saveUserSettings = SaveUserSettings(
-        display_name = displayName,
-        bio = bio.text,
-        email = email,
-        auth = account.jwt,
-        avatar = avatar,
-        banner = banner,
-        matrix_user_id = matrixUserId,
-        interface_language = interfaceLang,
-        bot_account = botAccount.value,
-        default_sort_type = supportedSortTypes[defaultSortType.value],
-        send_notifications_to_email = sendNotificationsToEmail.value,
-        show_avatars = showAvatars.value,
-        show_bot_accounts = showBotAccount.value,
-        show_nsfw = showNsfw.value,
-        default_listing_type = ListingType.entries[defaultListingType.value],
-        show_new_post_notifs = showNewPostNotifs.value,
-        show_read_posts = showReadPosts.value,
-        theme = theme,
-        show_scores = showScores.value,
-        discussion_languages = null,
-        // True -> generates a new 2FA token, False -> removes current, null -> do nothing
-        generate_totp_2fa = if (curr2FAEnabled == enable2FA.value) null else enable2FA.value,
-    )
+    siteViewModel.saveUserSettings =
+        SaveUserSettings(
+            display_name = displayName,
+            bio = bio.text,
+            email = email,
+            auth = account.jwt,
+            avatar = avatar,
+            banner = banner,
+            matrix_user_id = matrixUserId,
+            interface_language = interfaceLang,
+            bot_account = botAccount.value,
+            default_sort_type = supportedSortTypes[defaultSortType.value],
+            send_notifications_to_email = sendNotificationsToEmail.value,
+            show_avatars = showAvatars.value,
+            show_bot_accounts = showBotAccount.value,
+            show_nsfw = showNsfw.value,
+            default_listing_type = ListingType.entries[defaultListingType.value],
+            show_new_post_notifs = showNewPostNotifs.value,
+            show_read_posts = showReadPosts.value,
+            theme = theme,
+            show_scores = showScores.value,
+            discussion_languages = null,
+            // True -> generates a new 2FA token, False -> removes current, null -> do nothing
+            generate_totp_2fa = if (curr2FAEnabled == enable2FA.value) null else enable2FA.value,
+        )
     var isUploadingAvatar by rememberSaveable { mutableStateOf(false) }
     var isUploadingBanner by rememberSaveable { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
-            .padding(padding)
-            .imePadding()
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            Modifier
+                .padding(padding)
+                .imePadding()
+                .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         SettingsTextField(
@@ -180,8 +185,9 @@ fun SettingsForm(
                 account = account,
                 outlined = true,
                 focusImmediate = false,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             )
         }
 
@@ -238,11 +244,12 @@ fun SettingsForm(
         SettingsListDropdown(
             state = defaultListingType,
             title = { Text(text = stringResource(R.string.account_settings_default_listing_type)) },
-            items = listOf(
-                stringResource(R.string.account_settings_all),
-                stringResource(R.string.account_settings_local),
-                stringResource(R.string.account_settings_subscribed),
-            ),
+            items =
+                listOf(
+                    stringResource(R.string.account_settings_all),
+                    stringResource(R.string.account_settings_local),
+                    stringResource(R.string.account_settings_subscribed),
+                ),
         )
         SettingsListDropdown(
             state = defaultSortType,
@@ -317,7 +324,6 @@ fun SettingsForm(
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(luv!!.local_user.totp_2fa_url))
                         ctx.startActivitySafe(intent)
                     },
-
                 ) {
                     Text(stringResource(R.string.settings_2fa_link))
                 }

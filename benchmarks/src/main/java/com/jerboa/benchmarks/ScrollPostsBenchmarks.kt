@@ -17,17 +17,14 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class ScrollPostsBenchmarks {
-
     @get:Rule
     val rule = MacrobenchmarkRule()
 
     @Test
-    fun scrollPostsCompilationNone() =
-        benchmark(CompilationMode.None())
+    fun scrollPostsCompilationNone() = benchmark(CompilationMode.None())
 
     @Test
-    fun scrollPostsCompilationBaselineProfiles() =
-        benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
+    fun scrollPostsCompilationBaselineProfiles() = benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
 
     private fun benchmark(compilationMode: CompilationMode) {
         rule.measureRepeated(

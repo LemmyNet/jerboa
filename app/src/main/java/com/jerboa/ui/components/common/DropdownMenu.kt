@@ -44,7 +44,6 @@ fun SortOptionsDropdown(
     siteVersion: String,
     onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
-
 ) {
     CascadeDropdownMenu(
         expanded = expanded,
@@ -56,20 +55,22 @@ fun SortOptionsDropdown(
                 text = { Text(stringResource(it.longForm)) },
                 leadingIcon = { Icon(it.icon, contentDescription = null) },
                 onClick = { onClickSortType(it) },
-                modifier = Modifier.ifDo(selectedSortType == it) {
-                    this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-                },
+                modifier =
+                    Modifier.ifDo(selectedSortType == it) {
+                        this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                    },
             )
         }
 
         DropdownMenuItem(
             text = { Text(stringResource(R.string.dialogs_top)) },
             leadingIcon = { Icon(Icons.Outlined.BarChart, contentDescription = null) },
-            modifier = if (isTopSort(selectedSortType)) {
-                Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-            } else {
-                Modifier
-            },
+            modifier =
+                if (isTopSort(selectedSortType)) {
+                    Modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                } else {
+                    Modifier
+                },
             children = {
                 SortType.getSupportedSortTypes(siteVersion).filter(isTopSort).forEach {
                     DropdownMenuItem(
@@ -78,13 +79,13 @@ fun SortOptionsDropdown(
                             onDismissRequest()
                             onClickSortType(it)
                         },
-                        modifier = Modifier.ifDo(selectedSortType == it) {
-                            this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-                        },
+                        modifier =
+                            Modifier.ifDo(selectedSortType == it) {
+                                this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                            },
                     )
                 }
             },
-
         )
     }
 }
@@ -109,10 +110,10 @@ fun CommentSortOptionsDropdown(
                     onDismissRequest()
                     onClickSortType(it)
                 },
-                modifier = Modifier.ifDo(selectedSortType == it) {
-                    this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-                },
-
+                modifier =
+                    Modifier.ifDo(selectedSortType == it) {
+                        this.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+                    },
             )
         }
     }
@@ -183,11 +184,12 @@ fun MenuItem(
         text = text,
         icon = icon,
         onClick = onClick,
-        modifier = if (highlight) {
-            modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
-        } else {
-            modifier
-        },
+        modifier =
+            if (highlight) {
+                modifier.background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f))
+            } else {
+                modifier
+            },
     )
 }
 
@@ -267,9 +269,10 @@ fun CenteredPopupMenu(
                 shadowElevation = 6.dp,
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth(POPUP_MENU_WIDTH_RATIO)
-                        .padding(vertical = LARGE_PADDING),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(POPUP_MENU_WIDTH_RATIO)
+                            .padding(vertical = LARGE_PADDING),
                     content = content,
                 )
             }

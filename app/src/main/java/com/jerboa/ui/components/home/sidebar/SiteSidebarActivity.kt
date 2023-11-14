@@ -19,10 +19,13 @@ fun SiteSidebarActivity(
 ) {
     Log.d("jerboa", "got to site sidebar activity")
 
-    val title = when (val siteRes = siteViewModel.siteRes) {
-        is ApiState.Success -> "${siteRes.data.site_view.site.name} Info"
-        else -> { "Loading..." }
-    }
+    val title =
+        when (val siteRes = siteViewModel.siteRes) {
+            is ApiState.Success -> "${siteRes.data.site_view.site.name} Info"
+            else -> {
+                "Loading..."
+            }
+        }
 
     Scaffold(
         topBar = {

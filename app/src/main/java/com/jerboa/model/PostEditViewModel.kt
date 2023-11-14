@@ -14,7 +14,6 @@ import com.jerboa.datatypes.types.PostView
 import kotlinx.coroutines.launch
 
 class PostEditViewModel : ViewModel() {
-
     var editPostRes: ApiState<PostResponse> by mutableStateOf(ApiState.Empty)
         private set
 

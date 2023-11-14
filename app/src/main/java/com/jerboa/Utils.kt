@@ -103,7 +103,10 @@ inline fun <I, reified O> I.convert(): O {
 }
 
 // / This should be done in a UI wrapper
-fun toastException(ctx: Context, error: Exception) {
+fun toastException(
+    ctx: Context,
+    error: Exception,
+) {
     Log.e("jerboa", "error", error)
     Toast.makeText(ctx, error.message, Toast.LENGTH_SHORT).show()
 }
@@ -117,21 +120,27 @@ enum class VoteType {
     Downvote,
 }
 
-fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType): InstantScores {
-    val newVote = newVote(
-        currentVote = instantScores.myVote,
-        voteType = voteType,
-    )
-    val score = newScore(
-        instantScores.score,
-        instantScores.myVote,
-        voteType,
-    )
-    val votes = newVoteCount(
-        Pair(instantScores.upvotes, instantScores.downvotes),
-        instantScores.myVote,
-        voteType,
-    )
+fun calculateNewInstantScores(
+    instantScores: InstantScores,
+    voteType: VoteType,
+): InstantScores {
+    val newVote =
+        newVote(
+            currentVote = instantScores.myVote,
+            voteType = voteType,
+        )
+    val score =
+        newScore(
+            instantScores.score,
+            instantScores.myVote,
+            voteType,
+        )
+    val votes =
+        newVoteCount(
+            Pair(instantScores.upvotes, instantScores.downvotes),
+            instantScores.myVote,
+            voteType,
+        )
 
     return InstantScores(
         myVote = newVote,
@@ -144,7 +153,10 @@ fun calculateNewInstantScores(instantScores: InstantScores, voteType: VoteType):
 /*
  * User changed their vote, so calculate score difference given this user's new vote.
  */
-fun newVote(currentVote: Int?, voteType: VoteType): Int {
+fun newVote(
+    currentVote: Int?,
+    voteType: VoteType,
+): Int {
     return if (voteType == VoteType.Upvote) {
         if (currentVote == 1) {
             0
@@ -163,7 +175,11 @@ fun newVote(currentVote: Int?, voteType: VoteType): Int {
 /*
  * Calculate the new score after the user votes.
  */
-fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
+fun newScore(
+    currentScore: Int,
+    currentVote: Int?,
+    voteType: VoteType,
+): Int {
     return if (voteType == VoteType.Upvote) {
         when (currentVote) {
             1 -> {
@@ -195,7 +211,11 @@ fun newScore(currentScore: Int, currentVote: Int?, voteType: VoteType): Int {
     }
 }
 
-fun newVoteCount(votes: Pair<Int, Int>, currentVote: Int?, voteType: VoteType): Pair<Int, Int> {
+fun newVoteCount(
+    votes: Pair<Int, Int>,
+    currentVote: Int?,
+    voteType: VoteType,
+): Pair<Int, Int> {
     return if (voteType == VoteType.Upvote) {
         when (currentVote) {
             1 -> {
@@ -250,6 +270,7 @@ sealed class CommentNodeData(
     var parent: CommentNodeData? = null,
 ) {
     abstract fun getId(): Int
+
     abstract fun getPath(): String
 }
 
@@ -260,6 +281,7 @@ class CommentNode(
     parent: CommentNodeData? = null,
 ) : CommentNodeData(depth, children, parent) {
     override fun getId() = commentView.comment.id
+
     override fun getPath() = commentView.comment.path
 }
 
@@ -270,12 +292,11 @@ class MissingCommentNode(
     parent: CommentNodeData? = null,
 ) : CommentNodeData(depth, children, parent) {
     override fun getId() = missingCommentView.commentId
+
     override fun getPath() = missingCommentView.path
 }
 
-fun commentsToFlatNodes(
-    comments: List<CommentView>,
-): ImmutableList<CommentNode> {
+fun commentsToFlatNodes(comments: List<CommentView>): ImmutableList<CommentNode> {
     return comments.map { c -> CommentNode(c, depth = 0) }.toImmutableList()
 }
 
@@ -295,11 +316,12 @@ fun buildCommentsTree(
     val map = LinkedHashMap<Number, CommentNodeData>()
     val firstComment = comments.firstOrNull()?.comment
 
-    val depthOffset = if (isCommentView && firstComment != null) {
-        getCommentIdDepthFromPath(firstComment.path, rootCommentId!!)
-    } else {
-        0
-    }
+    val depthOffset =
+        if (isCommentView && firstComment != null) {
+            getCommentIdDepthFromPath(firstComment.path, rootCommentId!!)
+        } else {
+            0
+        }
 
     comments.forEach { cv ->
         val depth = getDepthFromComment(cv.comment).minus(depthOffset)
@@ -323,8 +345,8 @@ fun buildCommentsTree(
  * This function is given a node and adds it to the parent's children
  * If the parent doesn't exist it is missing, then it creates a placeholder node
  * and passes it to this function again so that it can be added to the parent's children (recursively)
+ * TODO: Remove this once missing comments issue is fixed by Lemmy, see https://github.com/dessalines/jerboa/pull/1240
  */
-// TODO: Remove this once missing comments issue is fixed by Lemmy, see https://github.com/dessalines/jerboa/pull/1240
 fun recCreateAndGenMissingCommentData(
     map: LinkedHashMap<Number, CommentNodeData>,
     tree: MutableList<CommentNodeData>,
@@ -347,10 +369,11 @@ fun recCreateAndGenMissingCommentData(
             }
 
             val parentPath = getParentPath(currCommentPath)
-            val missingNode = MissingCommentNode(
-                MissingCommentView(parentId, parentPath),
-                currCommentNodeData.depth - 1,
-            )
+            val missingNode =
+                MissingCommentNode(
+                    MissingCommentView(parentId, parentPath),
+                    currCommentNodeData.depth - 1,
+                )
 
             map[parentId] = missingNode
             missingNode.children.add(currCommentNodeData)
@@ -448,7 +471,12 @@ fun looksLikeUserUrl(url: String): Pair<String, String>? {
 // Current logic is that if the url matches a community url or user url then it confirms
 // if the host is an actual lemmy instance unless it was originally formatted in a user/community format
 
-suspend fun openLink(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
+suspend fun openLink(
+    url: String,
+    navController: NavController,
+    useCustomTab: Boolean,
+    usePrivateTab: Boolean,
+) {
     val (formatted, parsedUrl) = parseUrl(url) ?: return
 
     val userUrl = looksLikeUserUrl(parsedUrl)
@@ -465,16 +493,22 @@ suspend fun openLink(url: String, navController: NavController, useCustomTab: Bo
     }
 }
 
-fun openLinkRaw(url: String, navController: NavController, useCustomTab: Boolean, usePrivateTab: Boolean) {
-    val extras = Intent().apply {
-        if (usePrivateTab) {
-            // In non CustomTab mode this causes it to not open the link in Chrome
-            if (useCustomTab) {
-                putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+fun openLinkRaw(
+    url: String,
+    navController: NavController,
+    useCustomTab: Boolean,
+    usePrivateTab: Boolean,
+) {
+    val extras =
+        Intent().apply {
+            if (usePrivateTab) {
+                // In non CustomTab mode this causes it to not open the link in Chrome
+                if (useCustomTab) {
+                    putExtra("com.google.android.apps.chrome.EXTRA_OPEN_NEW_INCOGNITO_TAB", true)
+                }
+                putExtra("private_browsing_mode", true)
             }
-            putExtra("private_browsing_mode", true)
         }
-    }
 
     if (useCustomTab) {
         val intent = CustomTabsIntent.Builder().build()
@@ -490,7 +524,11 @@ fun openLinkRaw(url: String, navController: NavController, useCustomTab: Boolean
 var prettyTime = PrettyTime(Locale.getDefault())
 var prettyTimeEnglish = PrettyTime(Locale.ENGLISH)
 val invalidPrettyDateRegex = "^[0123456789 ]+$".toRegex()
-fun formatDuration(date: Date, longTimeFormat: Boolean = false): String {
+
+fun formatDuration(
+    date: Date,
+    longTimeFormat: Boolean = false,
+): String {
     if (prettyTime.locale != Locale.getDefault()) {
         prettyTime = PrettyTime(Locale.getDefault())
     }
@@ -528,7 +566,10 @@ fun prettyTimeShortener(timeString: String): String {
     }
 }
 
-fun pictrsImageThumbnail(src: String, thumbnailSize: Int): String {
+fun pictrsImageThumbnail(
+    src: String,
+    thumbnailSize: Int,
+): String {
     // sample url:
     // http://localhost:8535/pictrs/image/file.png?thumbnail=256&format=jpg
 
@@ -558,9 +599,10 @@ fun getPostType(url: String): PostType {
     return if (isImage(url)) PostType.Image else PostType.Link
 }
 
-val imageRegex = Regex(
-    pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",
-)
+val imageRegex =
+    Regex(
+        pattern = "(http)?s?:?(//[^\"']*\\.(?:jpg|jpeg|gif|png|svg|webp))",
+    )
 
 fun closeDrawer(
     scope: CoroutineScope,
@@ -571,7 +613,10 @@ fun closeDrawer(
     }
 }
 
-fun personNameShown(person: Person, federatedName: Boolean = false): String {
+fun personNameShown(
+    person: Person,
+    federatedName: Boolean = false,
+): String {
     return if (!federatedName) {
         person.display_name ?: person.name
     } else {
@@ -613,7 +658,10 @@ fun unreadOrAllFromBool(b: Boolean): UnreadOrAll {
     }
 }
 
-fun appendMarkdownImage(text: String, url: String): String {
+fun appendMarkdownImage(
+    text: String,
+    url: String,
+): String {
     return "$text\n\n![]($url)"
 }
 
@@ -630,21 +678,20 @@ fun Modifier.border(
     top: Border? = null,
     end: Border? = null,
     bottom: Border? = null,
-) =
-    drawBehind {
-        start?.let {
-            drawStartBorder(it, shareTop = top != null, shareBottom = bottom != null)
-        }
-        top?.let {
-            drawTopBorder(it, shareStart = start != null, shareEnd = end != null)
-        }
-        end?.let {
-            drawEndBorder(it, shareTop = top != null, shareBottom = bottom != null)
-        }
-        bottom?.let {
-            drawBottomBorder(border = it, shareStart = start != null, shareEnd = end != null)
-        }
+) = drawBehind {
+    start?.let {
+        drawStartBorder(it, shareTop = top != null, shareBottom = bottom != null)
     }
+    top?.let {
+        drawTopBorder(it, shareStart = start != null, shareEnd = end != null)
+    }
+    end?.let {
+        drawEndBorder(it, shareTop = top != null, shareBottom = bottom != null)
+    }
+    bottom?.let {
+        drawBottomBorder(border = it, shareStart = start != null, shareEnd = end != null)
+    }
+}
 
 private fun DrawScope.drawTopBorder(
     border: Border,
@@ -732,7 +779,10 @@ fun isPostCreator(commentView: CommentView): Boolean {
     return commentView.creator.id == commentView.post.creator_id
 }
 
-fun isModerator(person: Person, moderators: List<CommunityModeratorView>): Boolean {
+fun isModerator(
+    person: Person,
+    moderators: List<CommunityModeratorView>,
+): Boolean {
     return moderators.map { it.moderator.id }.contains(person.id)
 }
 
@@ -805,11 +855,17 @@ fun siFormat(num: Int): String {
     }
 }
 
-fun imageInputStreamFromUri(ctx: Context, uri: Uri): InputStream {
+fun imageInputStreamFromUri(
+    ctx: Context,
+    uri: Uri,
+): InputStream {
     return ctx.contentResolver.openInputStream(uri)!!
 }
 
-fun decodeUriToBitmap(ctx: Context, uri: Uri): Bitmap? {
+fun decodeUriToBitmap(
+    ctx: Context,
+    uri: Uri,
+): Bitmap? {
     Log.d("jerboa", "decodeUriToBitmap INPUT: $uri")
     return if (SDK_INT < 28) {
         @Suppress("DEPRECATION")
@@ -848,11 +904,12 @@ fun showSnackbar(
 }
 
 // https://stackoverflow.com/questions/69234880/how-to-get-intent-data-in-a-composable
-fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
-}
+fun Context.findActivity(): Activity? =
+    when (this) {
+        is Activity -> this
+        is ContextWrapper -> baseContext.findActivity()
+        else -> null
+    }
 
 enum class ThemeMode(val mode: Int) {
     System(R.string.look_and_feel_theme_system),
@@ -937,11 +994,15 @@ enum class PostType {
     }
 }
 
-fun isSameInstance(url: String, instance: String): Boolean {
+fun isSameInstance(
+    url: String,
+    instance: String,
+): Boolean {
     return hostName(url) == instance
 }
 
 fun getCommentParentId(comment: Comment): Int? = getCommentParentId(comment.path)
+
 fun getCommentParentId(commentPath: String): Int? {
     val split = commentPath.split(".").toMutableList()
     // remove the 0
@@ -966,7 +1027,10 @@ fun getDepthFromComment(commentPath: String): Int {
 
 fun getDepthFromComment(comment: Comment): Int = getDepthFromComment(comment.path)
 
-fun getCommentIdDepthFromPath(commentPath: String, commentId: Int): Int {
+fun getCommentIdDepthFromPath(
+    commentPath: String,
+    commentId: Int,
+): Int {
     val split = commentPath.split(".").toMutableList()
     return split.indexOf(commentId.toString()).minus(1)
 }
@@ -984,21 +1048,23 @@ fun saveMediaQ(
     displayName: String,
     mediaType: PostType,
 ): Uri {
-    val values = ContentValues().apply {
-        put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
-        put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-        put(MediaStore.MediaColumns.RELATIVE_PATH, mediaType.toMediaDir() + "/Jerboa")
-    }
+    val values =
+        ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+            put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+            put(MediaStore.MediaColumns.RELATIVE_PATH, mediaType.toMediaDir() + "/Jerboa")
+        }
 
     val resolver = ctx.contentResolver
     var uri: Uri? = null
 
     try {
-        val insert = when (mediaType) {
-            PostType.Image -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            PostType.Video -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-            PostType.Link -> MediaStore.Downloads.EXTERNAL_CONTENT_URI
-        }
+        val insert =
+            when (mediaType) {
+                PostType.Image -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                PostType.Video -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                PostType.Link -> MediaStore.Downloads.EXTERNAL_CONTENT_URI
+            }
 
         uri = resolver.insert(insert, values)
             ?: throw IOException("Failed to create new MediaStore record.")
@@ -1045,68 +1111,91 @@ fun saveMediaP(
 /**
  * Converts a scalable pixel (sp) to an actual pixel (px)
  */
-fun convertSpToPx(sp: TextUnit, ctx: Context): Int {
+fun convertSpToPx(
+    sp: TextUnit,
+    ctx: Context,
+): Int {
     return (sp.value * ctx.resources.displayMetrics.scaledDensity).toInt()
 }
 
 /**
  * Returns localized Strings for UserTab Enum
  */
-fun getLocalizedStringForUserTab(ctx: Context, tab: UserTab): String {
-    val returnString = when (tab) {
-        UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
-        UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
-        UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
-    }
+fun getLocalizedStringForUserTab(
+    ctx: Context,
+    tab: UserTab,
+): String {
+    val returnString =
+        when (tab) {
+            UserTab.About -> ctx.getString(R.string.person_profile_activity_about)
+            UserTab.Posts -> ctx.getString(R.string.person_profile_activity_posts)
+            UserTab.Comments -> ctx.getString(R.string.person_profile_activity_comments)
+        }
     return returnString
 }
 
 /**
  * Returns localized Strings for ListingType Enum
  */
-fun getLocalizedListingTypeName(ctx: Context, listingType: ListingType): String {
-    val returnString = when (listingType) {
-        ListingType.All -> ctx.getString(R.string.home_all)
-        ListingType.Local -> ctx.getString(R.string.home_local)
-        ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
-    }
+fun getLocalizedListingTypeName(
+    ctx: Context,
+    listingType: ListingType,
+): String {
+    val returnString =
+        when (listingType) {
+            ListingType.All -> ctx.getString(R.string.home_all)
+            ListingType.Local -> ctx.getString(R.string.home_local)
+            ListingType.Subscribed -> ctx.getString(R.string.home_subscribed)
+        }
     return returnString
 }
 
 /**
  * Returns localized Strings for CommentSortType Enum
  */
-fun getLocalizedCommentSortTypeName(ctx: Context, commentSortType: CommentSortType): String {
-    val returnString = when (commentSortType) {
-        CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
-        CommentSortType.New -> ctx.getString(R.string.sorttype_new)
-        CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
-        CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
-        CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
-    }
+fun getLocalizedCommentSortTypeName(
+    ctx: Context,
+    commentSortType: CommentSortType,
+): String {
+    val returnString =
+        when (commentSortType) {
+            CommentSortType.Hot -> ctx.getString(R.string.sorttype_hot)
+            CommentSortType.New -> ctx.getString(R.string.sorttype_new)
+            CommentSortType.Old -> ctx.getString(R.string.sorttype_old)
+            CommentSortType.Top -> ctx.getString(R.string.dialogs_top)
+            CommentSortType.Controversial -> ctx.getString(R.string.sorttype_controversial)
+        }
     return returnString
 }
 
 /**
  * Returns localized Strings for UnreadOrAll Enum
  */
-fun getLocalizedUnreadOrAllName(ctx: Context, unreadOrAll: UnreadOrAll): String {
-    val returnString = when (unreadOrAll) {
-        UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
-        UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
-    }
+fun getLocalizedUnreadOrAllName(
+    ctx: Context,
+    unreadOrAll: UnreadOrAll,
+): String {
+    val returnString =
+        when (unreadOrAll) {
+            UnreadOrAll.Unread -> ctx.getString(R.string.dialogs_unread)
+            UnreadOrAll.All -> ctx.getString(R.string.dialogs_all)
+        }
     return returnString
 }
 
 /**
  * Returns localized Strings for InboxTab Enum
  */
-fun getLocalizedStringForInboxTab(ctx: Context, tab: InboxTab): String {
-    val returnString = when (tab) {
-        InboxTab.Replies -> ctx.getString(R.string.inbox_activity_replies)
-        InboxTab.Mentions -> ctx.getString(R.string.inbox_activity_mentions)
-        InboxTab.Messages -> ctx.getString(R.string.inbox_activity_messages)
-    }
+fun getLocalizedStringForInboxTab(
+    ctx: Context,
+    tab: InboxTab,
+): String {
+    val returnString =
+        when (tab) {
+            InboxTab.Replies -> ctx.getString(R.string.inbox_activity_replies)
+            InboxTab.Mentions -> ctx.getString(R.string.inbox_activity_mentions)
+            InboxTab.Messages -> ctx.getString(R.string.inbox_activity_messages)
+        }
     return returnString
 }
 
@@ -1114,9 +1203,10 @@ fun findAndUpdatePrivateMessage(
     messages: List<PrivateMessageView>,
     updated: PrivateMessageView,
 ): List<PrivateMessageView> {
-    val foundIndex = messages.indexOfFirst {
-        it.private_message.id == updated.private_message.id
-    }
+    val foundIndex =
+        messages.indexOfFirst {
+            it.private_message.id == updated.private_message.id
+        }
     return if (foundIndex != -1) {
         val mutable = messages.toMutableList()
         mutable[foundIndex] = updated
@@ -1126,7 +1216,10 @@ fun findAndUpdatePrivateMessage(
     }
 }
 
-fun showBlockPersonToast(blockPersonRes: ApiState<BlockPersonResponse>, ctx: Context) {
+fun showBlockPersonToast(
+    blockPersonRes: ApiState<BlockPersonResponse>,
+    ctx: Context,
+) {
     when (blockPersonRes) {
         is ApiState.Success -> {
             Toast.makeText(
@@ -1141,7 +1234,10 @@ fun showBlockPersonToast(blockPersonRes: ApiState<BlockPersonResponse>, ctx: Con
     }
 }
 
-fun showBlockCommunityToast(blockCommunityRes: ApiState<BlockCommunityResponse>, ctx: Context) {
+fun showBlockCommunityToast(
+    blockCommunityRes: ApiState<BlockCommunityResponse>,
+    ctx: Context,
+) {
     when (blockCommunityRes) {
         is ApiState.Success -> {
             Toast.makeText(
@@ -1172,17 +1268,19 @@ fun findAndUpdatePersonMention(
     mentions: List<PersonMentionView>,
     updatedCommentView: CommentView,
 ): List<PersonMentionView> {
-    val foundIndex = mentions.indexOfFirst {
-        it.person_mention.comment_id == updatedCommentView.comment.id
-    }
+    val foundIndex =
+        mentions.indexOfFirst {
+            it.person_mention.comment_id == updatedCommentView.comment.id
+        }
     return if (foundIndex != -1) {
         val mutable = mentions.toMutableList()
-        mutable[foundIndex] = mentions[foundIndex].copy(
-            my_vote = updatedCommentView.my_vote,
-            counts = updatedCommentView.counts,
-            saved = updatedCommentView.saved,
-            comment = updatedCommentView.comment,
-        )
+        mutable[foundIndex] =
+            mentions[foundIndex].copy(
+                my_vote = updatedCommentView.my_vote,
+                counts = updatedCommentView.counts,
+                saved = updatedCommentView.saved,
+                comment = updatedCommentView.comment,
+            )
         mutable.toList()
     } else {
         mentions
@@ -1193,9 +1291,10 @@ fun findAndUpdateMention(
     mentions: List<PersonMentionView>,
     updated: PersonMentionView,
 ): List<PersonMentionView> {
-    val foundIndex = mentions.indexOfFirst {
-        it.person_mention.id == updated.person_mention.id
-    }
+    val foundIndex =
+        mentions.indexOfFirst {
+            it.person_mention.id == updated.person_mention.id
+        }
     return if (foundIndex != -1) {
         val mutable = mentions.toMutableList()
         mutable[foundIndex] = updated
@@ -1205,10 +1304,14 @@ fun findAndUpdateMention(
     }
 }
 
-fun findAndUpdateComment(comments: List<CommentView>, updated: CommentView): List<CommentView> {
-    val foundIndex = comments.indexOfFirst {
-        it.comment.id == updated.comment.id
-    }
+fun findAndUpdateComment(
+    comments: List<CommentView>,
+    updated: CommentView,
+): List<CommentView> {
+    val foundIndex =
+        comments.indexOfFirst {
+            it.comment.id == updated.comment.id
+        }
     return if (foundIndex != -1) {
         val mutable = comments.toMutableList()
         mutable[foundIndex] = updated
@@ -1222,24 +1325,29 @@ fun findAndUpdateCommentReply(
     replies: List<CommentReplyView>,
     updatedCommentView: CommentView,
 ): List<CommentReplyView> {
-    val foundIndex = replies.indexOfFirst {
-        it.comment_reply.comment_id == updatedCommentView.comment.id
-    }
+    val foundIndex =
+        replies.indexOfFirst {
+            it.comment_reply.comment_id == updatedCommentView.comment.id
+        }
     return if (foundIndex != -1) {
         val mutable = replies.toMutableList()
-        mutable[foundIndex] = replies[foundIndex].copy(
-            my_vote = updatedCommentView.my_vote,
-            counts = updatedCommentView.counts,
-            saved = updatedCommentView.saved,
-            comment = updatedCommentView.comment,
-        )
+        mutable[foundIndex] =
+            replies[foundIndex].copy(
+                my_vote = updatedCommentView.my_vote,
+                counts = updatedCommentView.counts,
+                saved = updatedCommentView.saved,
+                comment = updatedCommentView.comment,
+            )
         mutable.toList()
     } else {
         replies
     }
 }
 
-fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
+fun calculateCommentOffset(
+    depth: Int,
+    multiplier: Int,
+): Dp {
     return if (depth == 0) {
         0.dp
     } else {
@@ -1247,10 +1355,14 @@ fun calculateCommentOffset(depth: Int, multiplier: Int): Dp {
     }
 }
 
-fun findAndUpdatePost(posts: List<PostView>, updatedPostView: PostView): List<PostView> {
-    val foundIndex = posts.indexOfFirst {
-        it.post.id == updatedPostView.post.id
-    }
+fun findAndUpdatePost(
+    posts: List<PostView>,
+    updatedPostView: PostView,
+): List<PostView> {
+    val foundIndex =
+        posts.indexOfFirst {
+            it.post.id == updatedPostView.post.id
+        }
     return if (foundIndex != -1) {
         val mutable = posts.toMutableList()
         mutable[foundIndex] = updatedPostView
@@ -1289,9 +1401,7 @@ fun scrollToPreviousParentComment(
 /**
  * Accepts a string that MAY be an URL, trims any protocol and extracts only the host, removing anything after a :, / or ?
  */
-fun getHostFromInstanceString(
-    input: String,
-): String {
+fun getHostFromInstanceString(input: String): String {
     if (input.isBlank()) {
         return input
     }
@@ -1310,7 +1420,10 @@ fun getHostFromInstanceString(
  * but it ignores anything it doesn't understand. Since we're highly confident that these verisons
  * will be properly formed, this is safe enough without overcomplicating it.
  */
-fun compareVersions(a: String, b: String): Int {
+fun compareVersions(
+    a: String,
+    b: String,
+): Int {
     val versionA: List<Int> = a.split('.').mapNotNull { it.toIntOrNull() }
     val versionB: List<Int> = b.split('.').mapNotNull { it.toIntOrNull() }
 
@@ -1330,7 +1443,11 @@ fun compareVersions(a: String, b: String): Int {
  *
  * @return true if successful, false otherwise
  */
-fun copyToClipboard(context: Context, textToCopy: CharSequence, clipLabel: CharSequence): Boolean {
+fun copyToClipboard(
+    context: Context,
+    textToCopy: CharSequence,
+    clipLabel: CharSequence,
+): Boolean {
     val activity = context.findActivity()
     activity?.let {
         val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -1427,7 +1544,10 @@ inline fun <reified T : Enum<T>> Int.toEnumSafe(): T {
     return if (vals.size >= this) vals[this] else vals[0]
 }
 
-fun matchLoginErrorMsgToStringRes(ctx: Context, e: Throwable): String {
+fun matchLoginErrorMsgToStringRes(
+    ctx: Context,
+    e: Throwable,
+): String {
     return when (e.message) {
         "incorrect_login" -> ctx.getString(R.string.login_view_model_incorrect_login)
         "email_not_verified" -> ctx.getString(R.string.login_view_model_email_not_verified)
@@ -1483,9 +1603,10 @@ fun Context.getInputStream(url: String): InputStream {
     }
 }
 
-val videoRgx = Regex(
-    pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov))",
-)
+val videoRgx =
+    Regex(
+        pattern = "(http)?s?:?(//[^\"']*\\.(?:mp4|mp3|ogg|flv|m4a|3gp|mkv|mpeg|mov))",
+    )
 
 fun isVideo(url: String): Boolean {
     return url.matches(videoRgx)
@@ -1508,7 +1629,10 @@ fun Context.startActivitySafe(intent: Intent) {
     }
 }
 
-fun <T> appendData(existing: List<T>, more: List<T>): List<T> {
+fun <T> appendData(
+    existing: List<T>,
+    more: List<T>,
+): List<T> {
     val appended = existing.toMutableList()
     appended.addAll(more)
     return appended.toList()
@@ -1523,11 +1647,18 @@ fun <T> getDeduplicatedList(
     return uniqueNewList.filterNot { mapIds.contains(getId(it)) }
 }
 
-fun <T> getDeduplicateMerge(oldItems: List<T>, newItems: List<T>, getId: (T) -> Int): List<T> {
+fun <T> getDeduplicateMerge(
+    oldItems: List<T>,
+    newItems: List<T>,
+    getId: (T) -> Int,
+): List<T> {
     return appendData(oldItems, getDeduplicatedList(oldItems, newItems, getId))
 }
 
-fun mergePosts(old: List<PostView>, new: List<PostView>): List<PostView> {
+fun mergePosts(
+    old: List<PostView>,
+    new: List<PostView>,
+): List<PostView> {
     return appendData(old, getDeduplicatedList(old, new) { it.post.id })
 }
 

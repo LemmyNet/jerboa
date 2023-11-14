@@ -70,14 +70,15 @@ fun CreateEditPostBody(
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .imePadding()
-            .padding(
-                vertical = padding.calculateTopPadding(),
-                horizontal = MEDIUM_PADDING,
-            )
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .verticalScroll(scrollState)
+                .imePadding()
+                .padding(
+                    vertical = padding.calculateTopPadding(),
+                    horizontal = MEDIUM_PADDING,
+                )
+                .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(MEDIUM_PADDING),
     ) {
         /**
@@ -198,8 +199,9 @@ fun PostCommunitySelector(
                         contentDescription = stringResource(R.string.createPost_selectCommunity),
                     )
                 },
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             )
         } ?: run {
             OutlinedTextField(
@@ -208,18 +210,20 @@ fun PostCommunitySelector(
                 label = {
                     Text(stringResource(R.string.create_post_community))
                 },
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             )
         }
         // A box to draw over the textview and override clicks
         Box(
-            modifier = Modifier
-                .height(60.dp)
-                .fillMaxWidth()
-                .clickable {
-                    onClickCommunityList()
-                },
+            modifier =
+                Modifier
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        onClickCommunityList()
+                    },
         )
     }
 }

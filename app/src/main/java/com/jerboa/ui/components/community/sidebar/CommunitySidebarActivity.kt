@@ -27,11 +27,12 @@ fun CommunitySidebarActivity(
     Scaffold(
         topBar = {
             SimpleTopAppBar(
-                text = stringResource(
-                    R.string.actionbar_info_header,
-                    view.community.name,
-                    hostName(view.community.actor_id) ?: "invalid_actor_id",
-                ),
+                text =
+                    stringResource(
+                        R.string.actionbar_info_header,
+                        view.community.name,
+                        hostName(view.community.actor_id) ?: "invalid_actor_id",
+                    ),
                 onClickBack = onClickBack,
             )
         },
