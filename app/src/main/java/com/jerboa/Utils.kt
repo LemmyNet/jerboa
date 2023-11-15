@@ -19,6 +19,7 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.util.TypedValue
 import android.webkit.MimeTypeMap.getFileExtensionFromUrl
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -483,10 +484,15 @@ suspend fun openLink(
     val communityUrl = looksLikeCommunityUrl(parsedUrl)
 
     if (userUrl != null && (formatted || checkIfLemmyInstance(url))) {
-        val route = Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
+        val route =
+            Route.ProfileFromUrlArgs.makeRoute(instance = userUrl.first, name = userUrl.second)
         navController.navigate(route)
     } else if (communityUrl != null && (formatted || checkIfLemmyInstance(url))) {
-        val route = Route.CommunityFromUrlArgs.makeRoute(instance = communityUrl.first, name = communityUrl.second)
+        val route =
+            Route.CommunityFromUrlArgs.makeRoute(
+                instance = communityUrl.first,
+                name = communityUrl.second,
+            )
         navController.navigate(route)
     } else {
         openLinkRaw(url, navController, useCustomTab, usePrivateTab)
@@ -777,13 +783,6 @@ private fun DrawScope.drawEndBorder(
 
 fun isPostCreator(commentView: CommentView): Boolean {
     return commentView.creator.id == commentView.post.creator_id
-}
-
-fun isModerator(
-    person: Person,
-    moderators: List<CommunityModeratorView>,
-): Boolean {
-    return moderators.map { it.moderator.id }.contains(person.id)
 }
 
 data class InputField(
@@ -1115,7 +1114,7 @@ fun convertSpToPx(
     sp: TextUnit,
     ctx: Context,
 ): Int {
-    return (sp.value * ctx.resources.displayMetrics.scaledDensity).toInt()
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp.value, ctx.getResources().getDisplayMetrics()).toInt()
 }
 
 /**
@@ -1450,7 +1449,8 @@ fun copyToClipboard(
 ): Boolean {
     val activity = context.findActivity()
     activity?.let {
-        val clipboard: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard: ClipboardManager =
+            it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(clipLabel, textToCopy)
         clipboard.setPrimaryClip(clip)
         return true

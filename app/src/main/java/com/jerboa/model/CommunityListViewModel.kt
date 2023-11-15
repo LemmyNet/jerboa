@@ -46,7 +46,6 @@ class CommunityListViewModel(communities: ImmutableList<CommunityFollowerView>) 
                     blocked = false,
                     counts =
                         CommunityAggregates(
-                            id = 0,
                             community_id = cfv.community.id,
                             subscribers = 0,
                             posts = 0,
@@ -56,7 +55,6 @@ class CommunityListViewModel(communities: ImmutableList<CommunityFollowerView>) 
                             users_active_week = 0,
                             users_active_month = 0,
                             users_active_half_year = 0,
-                            hot_rank = 0,
                         ),
                 )
             }

@@ -312,7 +312,6 @@ fun InboxTabs(
                                 MarkCommentReplyAsRead(
                                     comment_reply_id = crv.comment_reply.id,
                                     read = !crv.comment_reply.read,
-                                    auth = it.jwt,
                                 ),
                                 onSuccess = {
                                     siteViewModel.updateUnreadCounts(dReplies = if (crv.comment_reply.read) 1 else -1)
@@ -364,7 +363,6 @@ fun InboxTabs(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Upvote),
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -381,7 +379,6 @@ fun InboxTabs(
                                                         CreateCommentLike(
                                                             comment_id = cr.comment.id,
                                                             score = newVote(cr.my_vote, VoteType.Downvote),
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -389,7 +386,6 @@ fun InboxTabs(
                                             onReplyClick = { cr ->
                                                 appState.toCommentReply(
                                                     replyItem = ReplyItem.CommentReplyItem(cr),
-                                                    isModerator = false,
                                                 )
                                             },
                                             onSaveClick = { cr ->
@@ -404,7 +400,6 @@ fun InboxTabs(
                                                         SaveComment(
                                                             comment_id = cr.comment.id,
                                                             save = !cr.saved,
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -439,7 +434,6 @@ fun InboxTabs(
                                                         BlockPerson(
                                                             person_id = person.id,
                                                             block = true,
-                                                            auth = it.jwt,
                                                         ),
                                                         ctx,
                                                     )
@@ -564,7 +558,6 @@ fun InboxTabs(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
                                                             score = newVote(pm.my_vote, VoteType.Upvote),
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -581,7 +574,6 @@ fun InboxTabs(
                                                         CreateCommentLike(
                                                             comment_id = pm.comment.id,
                                                             score = newVote(pm.my_vote, VoteType.Downvote),
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -589,7 +581,6 @@ fun InboxTabs(
                                             onReplyClick = { pm ->
                                                 appState.toCommentReply(
                                                     replyItem = ReplyItem.MentionReplyItem(pm),
-                                                    isModerator = false,
                                                 )
                                             },
                                             onSaveClick = { pm ->
@@ -604,7 +595,6 @@ fun InboxTabs(
                                                         SaveComment(
                                                             comment_id = pm.comment.id,
                                                             save = !pm.saved,
-                                                            auth = it.jwt,
                                                         ),
                                                     )
                                                 }
@@ -621,7 +611,6 @@ fun InboxTabs(
                                                         MarkPersonMentionAsRead(
                                                             person_mention_id = pm.person_mention.id,
                                                             read = !pm.person_mention.read,
-                                                            auth = it.jwt,
                                                         ),
                                                         onSuccess = {
                                                             siteViewModel.updateUnreadCounts(
@@ -659,7 +648,6 @@ fun InboxTabs(
                                                         BlockPerson(
                                                             person_id = person.id,
                                                             block = true,
-                                                            auth = it.jwt,
                                                         ),
                                                         ctx,
                                                     )
@@ -777,7 +765,6 @@ fun InboxTabs(
                                                     MarkPrivateMessageAsRead(
                                                         private_message_id = pm.private_message.id,
                                                         read = !pm.private_message.read,
-                                                        auth = account.jwt,
                                                     ),
                                                     onSuccess = {
                                                         siteViewModel.updateUnreadCounts(dMessages = if (pm.private_message.read) 1 else -1)

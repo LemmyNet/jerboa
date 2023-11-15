@@ -275,7 +275,6 @@ fun MainPostListingsContent(
                                     currentVote = postView.my_vote,
                                     voteType = VoteType.Upvote,
                                 ),
-                            auth = it.jwt,
                         ),
                     )
                 }
@@ -296,7 +295,6 @@ fun MainPostListingsContent(
                                     currentVote = postView.my_vote,
                                     voteType = VoteType.Downvote,
                                 ),
-                            auth = it.jwt,
                         ),
                     )
                 }
@@ -316,7 +314,6 @@ fun MainPostListingsContent(
                         SavePost(
                             post_id = postView.post.id,
                             save = !postView.saved,
-                            auth = it.jwt,
                         ),
                     )
                 }
@@ -332,7 +329,6 @@ fun MainPostListingsContent(
                     homeViewModel.blockCommunity(
                         BlockCommunity(
                             community_id = community.id,
-                            auth = it.jwt,
                             block = true,
                         ),
                         ctx = ctx,
@@ -351,7 +347,6 @@ fun MainPostListingsContent(
                         BlockPerson(
                             person_id = creator.id,
                             block = true,
-                            auth = it.jwt,
                         ),
                         ctx = ctx,
                     )
@@ -374,7 +369,6 @@ fun MainPostListingsContent(
                         DeletePost(
                             post_id = postView.post.id,
                             deleted = !postView.post.deleted,
-                            auth = it.jwt,
                         ),
                     )
                 }
@@ -405,7 +399,6 @@ fun MainPostListingsContent(
                         MarkPostAsRead(
                             post_id = postView.post.id,
                             read = true,
-                            auth = account.jwt,
                         ),
                         appState,
                     )

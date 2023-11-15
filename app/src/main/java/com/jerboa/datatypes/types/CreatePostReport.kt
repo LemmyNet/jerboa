@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class CreatePostReport(
     val post_id: PostId,
     val reason: String,
-    val auth: String,
 ) : Parcelable

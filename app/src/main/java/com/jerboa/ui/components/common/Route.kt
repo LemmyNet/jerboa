@@ -26,7 +26,7 @@ object Route {
 
     val POST = PostArgs.route
     val COMMENT = CommentArgs.route
-    val COMMENT_REPLY = CommentReplyArgs.route
+    const val COMMENT_REPLY = "commentReply"
 
     const val SITE_SIDEBAR = "siteSidebar"
     const val COMMENT_EDIT = "commentEdit"
@@ -166,20 +166,6 @@ object Route {
             fun makeRoute(id: String) = "comment/$id"
 
             internal val route by lazy { makeRoute(id = "{$ID}") }
-        }
-    }
-
-    class CommentReplyArgs(val isModerator: Boolean) {
-        constructor(navBackStackEntry: NavBackStackEntry) :
-            this(isModerator = navBackStackEntry.arguments?.getBoolean(IS_MODERATOR)!!)
-
-        companion object {
-            const val IS_MODERATOR = "isModerator"
-            val IS_MODERATOR_TYPE = NavType.BoolType
-
-            fun makeRoute(isModerator: String) = "commentReply?isModerator=$isModerator"
-
-            internal val route by lazy { makeRoute(isModerator = "{$IS_MODERATOR}") }
         }
     }
 

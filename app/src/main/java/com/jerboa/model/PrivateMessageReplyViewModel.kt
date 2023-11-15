@@ -30,7 +30,6 @@ class PrivateMessageReplyViewModel : ViewModel() {
                 CreatePrivateMessage(
                     content = content,
                     recipient_id = recipientId,
-                    auth = account.jwt,
                 )
             createMessageRes = ApiState.Loading
             createMessageRes = apiWrapper(API.getInstance().createPrivateMessage(form))

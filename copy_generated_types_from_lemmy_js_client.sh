@@ -96,8 +96,6 @@ done
 
 # Remove weird lib.es files
 rm lib.*
-rm Sensitive.kt
-rm others.kt
 
 # Remove all these weird module files
 rm *.module_lemmy-js-client.kt

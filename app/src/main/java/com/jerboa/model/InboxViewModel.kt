@@ -178,7 +178,6 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
                     unread_only = unreadOnly,
                     sort = CommentSortType.New,
                     page = pageMentions,
-                    auth = jwt,
                 )
 
             val newRes = apiWrapper(API.getInstance().getPersonMentions(form.serializeToMap()))
@@ -226,7 +225,6 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
                 GetPrivateMessages(
                     unread_only = unreadOnly,
                     page = pageMessages,
-                    auth = jwt,
                 )
 
             val newRes = apiWrapper(API.getInstance().getPrivateMessages(form.serializeToMap()))
@@ -531,7 +529,6 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             unread_only = unreadOnly,
             sort = CommentSortType.New,
             page = pageReplies,
-            auth = jwt,
         )
     }
 
@@ -540,7 +537,6 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             unread_only = unreadOnly,
             sort = CommentSortType.New,
             page = pageMentions,
-            auth = jwt,
         )
     }
 
@@ -548,7 +544,6 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         return GetPrivateMessages(
             unread_only = unreadOnly,
             page = pageMessages,
-            auth = jwt,
         )
     }
 

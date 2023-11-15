@@ -5,7 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SiteAggregates(
-    val id: Int,
     val site_id: SiteId,
     val users: Int,
     val posts: Int,

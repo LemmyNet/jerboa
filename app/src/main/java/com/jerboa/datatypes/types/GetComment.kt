@@ -6,5 +6,4 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class GetComment(
     val id: CommentId,
-    val auth: String? = null,
 ) : Parcelable

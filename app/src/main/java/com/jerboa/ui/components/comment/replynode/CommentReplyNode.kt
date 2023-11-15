@@ -65,6 +65,7 @@ fun CommentReplyNodeHeader(
         onPersonClick = onPersonClick,
         isPostCreator = false,
         isModerator = false,
+        isAdmin = false,
         isCommunityBanned = commentReplyView.creator_banned_from_community,
         onClick = onClick,
         onLongCLick = onLongClick,

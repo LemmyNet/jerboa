@@ -31,7 +31,6 @@ class CommentEditViewModel : ViewModel() {
                 EditComment(
                     content = content,
                     comment_id = commentView.comment.id,
-                    auth = account.jwt,
                 )
 
             editCommentRes = ApiState.Loading

@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class DeletePost(
     val post_id: PostId,
     val deleted: Boolean,
-    val auth: String,
 ) : Parcelable

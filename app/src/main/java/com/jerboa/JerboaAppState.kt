@@ -92,12 +92,9 @@ class JerboaAppState(
 
     fun toSiteSideBar() = navController.navigate(Route.SITE_SIDEBAR)
 
-    fun toCommentReply(
-        replyItem: ReplyItem,
-        isModerator: Boolean,
-    ) {
+    fun toCommentReply(replyItem: ReplyItem) {
         sendReturnForwards(CommentReplyReturn.COMMENT_SEND, replyItem)
-        navController.navigate(Route.CommentReplyArgs.makeRoute(isModerator = "$isModerator"))
+        navController.navigate(Route.COMMENT_REPLY)
     }
 
     fun toComment(id: Int) {
@@ -119,6 +116,7 @@ class JerboaAppState(
 
     fun toHome() = navController.navigate(Route.HOME) { popUpTo(navController.graph.id) }
 
+    // TODO why is this unused?
     fun toInbox() = navController.navigate(Route.INBOX)
 
     fun toCommunity(id: Int) {

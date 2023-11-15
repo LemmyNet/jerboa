@@ -210,6 +210,7 @@ fun CommentOrPostNodeHeader(
     onPersonClick: (personId: Int) -> Unit,
     isPostCreator: Boolean,
     isModerator: Boolean,
+    isAdmin: Boolean,
     isCommunityBanned: Boolean,
     onClick: () -> Unit,
     onLongCLick: () -> Unit,
@@ -254,6 +255,7 @@ fun CommentOrPostNodeHeader(
                 showTags = true,
                 isPostCreator = isPostCreator,
                 isModerator = isModerator,
+                isAdmin = isAdmin,
                 isCommunityBanned = isCommunityBanned,
                 showAvatar = showAvatar,
             )
@@ -283,6 +285,7 @@ fun CommentOrPostNodeHeaderPreview() {
         onPersonClick = {},
         isPostCreator = true,
         isModerator = true,
+        isAdmin = false,
         isCommunityBanned = false,
         onClick = {},
         onLongCLick = {},

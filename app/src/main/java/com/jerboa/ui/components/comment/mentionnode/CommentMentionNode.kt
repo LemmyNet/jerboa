@@ -65,6 +65,7 @@ fun CommentMentionNodeHeader(
         onPersonClick = onPersonClick,
         isPostCreator = false,
         isModerator = false,
+        isAdmin = false,
         isCommunityBanned = personMentionView.creator_banned_from_community,
         onClick = onClick,
         onLongCLick = onLongClick,

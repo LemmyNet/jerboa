@@ -62,6 +62,12 @@ interface API {
     ): Response<LoginResponse>
 
     /**
+     * Validate an auth
+     */
+    @GET("user/validate_auth")
+    suspend fun validateAuth(): Response<SuccessResponse>
+
+    /**
      * Like / vote on a post.
      */
     @POST("post/like")

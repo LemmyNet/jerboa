@@ -229,7 +229,6 @@ fun onSubmitClick(
                 community_id = it,
                 url = urlOut,
                 body = bodyOut,
-                auth = account.jwt,
                 nsfw = isNsfw,
             ),
             onSuccess = onSuccess,

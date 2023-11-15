@@ -15,7 +15,6 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
-import com.jerboa.datatypes.types.GetPersonMentions
 import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.db.entity.Account
@@ -156,7 +155,7 @@ suspend fun checkIfJWTValid(
 ): CheckState {
     return withContext(Dispatchers.IO) {
         // I could use any API endpoint that correctly checks the auth (there are some that don't ex: /site)
-        val resp = api.getPersonMentions(GetPersonMentions(auth = account.jwt).serializeToMap())
+        val resp = api.validateAuth()
 
         return@withContext if (resp.isSuccessful) {
             CheckState.Passed

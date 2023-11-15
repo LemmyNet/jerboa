@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class SaveComment(
     val comment_id: CommentId,
     val save: Boolean,
-    val auth: String,
 ) : Parcelable

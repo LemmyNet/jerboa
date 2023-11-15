@@ -155,7 +155,6 @@ fun onSubmitClick(
                 name = nameOut,
                 url = urlOut,
                 body = bodyOut,
-                auth = account.jwt,
                 nsfw = isNsfw,
             ),
     ) { postView ->

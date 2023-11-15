@@ -34,7 +34,6 @@ import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdateComment
 import com.jerboa.findAndUpdatePost
 import com.jerboa.getDeduplicateMerge
@@ -77,7 +76,6 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
                 person_id = personId,
                 username = personName,
                 sort = SortType.New,
-                auth = account.getJWT(),
                 saved_only = savedMode,
             ),
         )
@@ -136,7 +134,6 @@ class PersonProfileViewModel(personArg: Either<PersonId, String>, savedMode: Boo
                     sort = sortType,
                     page = page,
                     saved_only = savedOnly,
-                    auth = jwt,
                 )
             val newRes = apiWrapper(API.getInstance().getPersonDetails(form.serializeToMap()))
 

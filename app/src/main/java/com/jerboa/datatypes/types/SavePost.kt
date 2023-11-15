@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class SavePost(
     val post_id: PostId,
     val save: Boolean,
-    val auth: String,
 ) : Parcelable

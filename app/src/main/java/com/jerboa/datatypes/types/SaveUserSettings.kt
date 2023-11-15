@@ -8,11 +8,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class SaveUserSettings(
     val show_nsfw: Boolean? = null,
+    val blur_nsfw: Boolean? = null,
+    val auto_expand: Boolean? = null,
     val show_scores: Boolean? = null,
     val theme: String? = null,
-    val default_sort_type: SortType? /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" | "TopHour" | "TopSixHour" | "TopTwelveHour" */ =
-        null,
-    val default_listing_type: ListingType? /* "All" | "Local" | "Subscribed" */ = null,
+    val default_sort_type: SortType? /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" | "TopHour" | "TopSixHour" | "TopTwelveHour" | "TopThreeMonths" | "TopSixMonths" | "TopNineMonths" | "Controversial" | "Scaled" */ = null,
+    val default_listing_type: ListingType? /* "All" | "Local" | "Subscribed" | "ModeratorView" */ = null,
     val interface_language: String? = null,
     val avatar: String? = null,
     val banner: String? = null,
@@ -25,8 +26,11 @@ data class SaveUserSettings(
     val bot_account: Boolean? = null,
     val show_bot_accounts: Boolean? = null,
     val show_read_posts: Boolean? = null,
-    val show_new_post_notifs: Boolean? = null,
     val discussion_languages: List<LanguageId>? = null,
-    val generate_totp_2fa: Boolean? = null,
-    val auth: String,
+    val open_links_in_new_tab: Boolean? = null,
+    val infinite_scroll_enabled: Boolean? = null,
+    val post_listing_mode: String? /* "List" | "Card" | "SmallCard" */ = null,
+    val enable_keyboard_navigation: Boolean? = null,
+    val enable_animated_images: Boolean? = null,
+    val collapse_bot_comments: Boolean? = null,
 ) : Parcelable

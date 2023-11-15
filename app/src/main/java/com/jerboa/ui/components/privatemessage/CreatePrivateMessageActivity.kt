@@ -79,7 +79,6 @@ fun CreatePrivateMessageActivity(
                                                 CreatePrivateMessage(
                                                     textBody.text,
                                                     personId,
-                                                    account.jwt,
                                                 ),
                                             )
                                         },

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,7 +32,6 @@ import com.jerboa.ui.theme.MEDIUM_PADDING
 fun RepliedComment(
     commentView: CommentView,
     onPersonClick: (personId: Int) -> Unit,
-    isModerator: Boolean,
     showAvatar: Boolean,
     showScores: Boolean,
 ) {
@@ -43,7 +41,6 @@ fun RepliedComment(
             onPersonClick = onPersonClick,
             score = commentView.counts.score,
             myVote = commentView.my_vote,
-            isModerator = isModerator,
             collapsedCommentsCount = 0,
             isExpanded = true,
             onClick = {},
@@ -110,7 +107,6 @@ fun RepliedMentionReply(
 fun RepliedCommentPreview() {
     RepliedComment(
         commentView = sampleCommentView,
-        isModerator = false,
         onPersonClick = {},
         showAvatar = true,
         showScores = true,
@@ -121,7 +117,6 @@ fun RepliedCommentPreview() {
 fun RepliedPost(
     postView: PostView,
     onPersonClick: (personId: Int) -> Unit,
-    isModerator: Boolean,
     showAvatar: Boolean,
     showScores: Boolean,
 ) {
@@ -131,7 +126,6 @@ fun RepliedPost(
             myVote = postView.my_vote,
             score = postView.counts.score,
             onPersonClick = onPersonClick,
-            isModerator = isModerator,
             showAvatar = showAvatar,
             showScores = showScores,
         )
@@ -148,7 +142,6 @@ fun CommentReply(
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    isModerator: Boolean,
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
@@ -162,7 +155,6 @@ fun CommentReply(
         RepliedComment(
             commentView = commentView,
             onPersonClick = onPersonClick,
-            isModerator = isModerator,
             showAvatar = showAvatar,
             showScores = showScores,
         )
@@ -246,7 +238,6 @@ fun PostReply(
     reply: TextFieldValue,
     onReplyChange: (TextFieldValue) -> Unit,
     onPersonClick: (personId: Int) -> Unit,
-    isModerator: Boolean,
     account: Account,
     modifier: Modifier = Modifier,
     showAvatar: Boolean,
@@ -260,7 +251,6 @@ fun PostReply(
         RepliedPost(
             postView = postView,
             onPersonClick = onPersonClick,
-            isModerator = isModerator,
             showAvatar = showAvatar,
             showScores = showScores,
         )

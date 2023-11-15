@@ -33,7 +33,6 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdatePost
 import com.jerboa.mergePosts
 import com.jerboa.serializeToMap
@@ -122,7 +121,6 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                     community_id = id,
                     page = page,
                     sort = sortType,
-                    auth = jwt,
                 )
 
             val newRes = apiWrapper(API.getInstance().getPosts(form.serializeToMap()))
@@ -306,7 +304,6 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                 GetCommunity(
                     id = communityId,
                     name = communityName,
-                    auth = account.getJWT(),
                 ),
         )
         this.getPosts(
@@ -316,7 +313,6 @@ class CommunityViewModel(account: Account, communityArg: Either<CommunityId, Str
                     community_name = communityName,
                     page = this.page,
                     sort = this.sortType,
-                    auth = account.getJWT(),
                 ),
         )
     }

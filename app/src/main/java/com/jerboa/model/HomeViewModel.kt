@@ -32,7 +32,6 @@ import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
-import com.jerboa.db.entity.getJWT
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.findAndUpdatePost
 import com.jerboa.jerboaApplication
@@ -228,7 +227,6 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
             GetPosts(
                 sort = sortType,
                 type_ = listingType,
-                auth = account.getJWT(),
             ),
         )
     }
@@ -240,7 +238,6 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
                 page = page,
                 sort = sortType,
                 type_ = listingType,
-                auth = account.getJWT(),
             ),
             ApiState.Refreshing,
         )
@@ -251,7 +248,6 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
             page = page,
             sort = sortType,
             type_ = listingType,
-            auth = jwt,
         )
     }
 

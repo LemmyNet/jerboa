@@ -12,5 +12,4 @@ data class CreateCustomEmoji(
     val image_url: String,
     val alt_text: String,
     val keywords: List<String>,
-    val auth: String,
 ) : Parcelable

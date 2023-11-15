@@ -7,5 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class DeleteCommunity(
     val community_id: CommunityId,
     val deleted: Boolean,
-    val auth: String,
 ) : Parcelable

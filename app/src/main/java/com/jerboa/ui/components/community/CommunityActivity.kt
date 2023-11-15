@@ -123,7 +123,6 @@ fun CommunityActivity(
                                     community_id = communityRes.data.community_view.community.id,
                                     page = communityViewModel.page,
                                     sort = communityViewModel.sortType,
-                                    auth = account.getJWT(),
                                 ),
                             ApiState.Refreshing,
                         )
@@ -164,7 +163,6 @@ fun CommunityActivity(
                                         community_id = communityId,
                                         page = communityViewModel.page,
                                         sort = communityViewModel.sortType,
-                                        auth = account.getJWT(),
                                     ),
                                 )
                             },
@@ -180,7 +178,6 @@ fun CommunityActivity(
                                         community_id = communityId,
                                         page = communityViewModel.page,
                                         sort = communityViewModel.sortType,
-                                        auth = account.getJWT(),
                                     ),
                                 )
                             },
@@ -196,7 +193,6 @@ fun CommunityActivity(
                                     communityViewModel.blockCommunity(
                                         BlockCommunity(
                                             community_id = communityId,
-                                            auth = it.jwt,
                                             block = !communityRes.data.community_view.blocked,
                                         ),
                                         ctx = ctx,
@@ -256,7 +252,6 @@ fun CommunityActivity(
                                                             FollowCommunity(
                                                                 community_id = cfv.community.id,
                                                                 follow = cfv.subscribed == SubscribedType.NotSubscribed,
-                                                                auth = it.jwt,
                                                             ),
                                                         onSuccess = {
                                                             siteViewModel.getSite(
@@ -294,7 +289,6 @@ fun CommunityActivity(
                                                         currentVote = postView.my_vote,
                                                         voteType = VoteType.Upvote,
                                                     ),
-                                                auth = it.jwt,
                                             ),
                                     )
                                 }
@@ -317,7 +311,6 @@ fun CommunityActivity(
                                                         currentVote = postView.my_vote,
                                                         voteType = VoteType.Downvote,
                                                     ),
-                                                auth = it.jwt,
                                             ),
                                     )
                                 }
@@ -339,7 +332,6 @@ fun CommunityActivity(
                                             SavePost(
                                                 post_id = postView.post.id,
                                                 save = !postView.saved,
-                                                auth = it.jwt,
                                             ),
                                     )
                                 }
@@ -362,7 +354,6 @@ fun CommunityActivity(
                                         DeletePost(
                                             post_id = postView.post.id,
                                             deleted = !postView.post.deleted,
-                                            auth = it.jwt,
                                         ),
                                     )
                                 }
@@ -392,7 +383,6 @@ fun CommunityActivity(
                                                     BlockCommunity(
                                                         community_id = communityRes.data.community_view.community.id,
                                                         block = !communityRes.data.community_view.blocked,
-                                                        auth = it.jwt,
                                                     ),
                                                 ctx = ctx,
                                             )
@@ -416,7 +406,6 @@ fun CommunityActivity(
                                             BlockPerson(
                                                 person_id = person.id,
                                                 block = true,
-                                                auth = it.jwt,
                                             ),
                                         ctx = ctx,
                                     )
@@ -454,7 +443,6 @@ fun CommunityActivity(
                                         MarkPostAsRead(
                                             post_id = postView.post.id,
                                             read = true,
-                                            auth = account.jwt,
                                         ),
                                         appState,
                                     )

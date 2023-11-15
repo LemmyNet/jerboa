@@ -67,6 +67,7 @@ fun PersonProfileLink(
     showTags: Boolean = false,
     isPostCreator: Boolean = false,
     isModerator: Boolean = false,
+    isAdmin: Boolean = false,
     isCommunityBanned: Boolean = false,
     color: Color = MaterialTheme.colorScheme.tertiary,
     showAvatar: Boolean,
@@ -97,7 +98,7 @@ fun PersonProfileLink(
                     tint = MaterialTheme.colorScheme.tertiary,
                 )
             }
-            if (person.admin) {
+            if (isAdmin) {
                 Icon(
                     imageVector = Icons.Outlined.Shield,
                     contentDescription = stringResource(R.string.person_iconAdmin),

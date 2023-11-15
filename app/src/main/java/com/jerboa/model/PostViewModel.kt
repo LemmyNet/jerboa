@@ -37,7 +37,6 @@ import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SaveComment
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.db.entity.Account
-import com.jerboa.db.entity.getJWT
 import com.jerboa.findAndUpdateComment
 import com.jerboa.serializeToMap
 import com.jerboa.showBlockCommunityToast
@@ -84,9 +83,9 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
             // Set the commentId for the right case
             val postForm =
                 id.fold({
-                    GetPost(id = it, auth = account.getJWT())
+                    GetPost(id = it)
                 }, {
-                    GetPost(comment_id = it, auth = account.getJWT())
+                    GetPost(comment_id = it)
                 })
 
             postRes = state
@@ -98,7 +97,6 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         post_id = it,
-                        auth = account.getJWT(),
                         sort = sortType,
                     )
                 }, {
@@ -106,7 +104,6 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
                         max_depth = COMMENTS_DEPTH_MAX,
                         type_ = ListingType.All,
                         parent_id = it,
-                        auth = account.getJWT(),
                         sort = sortType,
                     )
                 })
@@ -136,7 +133,6 @@ class PostViewModel(val id: Either<PostId, CommentId>, account: Account) : ViewM
                     parent_id = commentView.comment.id,
                     max_depth = COMMENTS_DEPTH_MAX,
                     type_ = ListingType.All,
-                    auth = account.getJWT(),
                 )
 
             val moreComments =

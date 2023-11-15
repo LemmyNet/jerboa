@@ -196,7 +196,6 @@ fun PersonProfileActivity(
                                     sort = personProfileViewModel.sortType,
                                     page = personProfileViewModel.page,
                                     saved_only = personProfileViewModel.savedOnly,
-                                    auth = account.getJWT(),
                                 ),
                             )
                         },
@@ -213,7 +212,6 @@ fun PersonProfileActivity(
                                     BlockPerson(
                                         person_id = person.id,
                                         block = true,
-                                        auth = it.jwt,
                                     ),
                                     ctx,
                                 )
@@ -329,7 +327,6 @@ fun UserTabs(
                                 sort = personProfileViewModel.sortType,
                                 page = personProfileViewModel.page,
                                 saved_only = personProfileViewModel.savedOnly,
-                                auth = account.getJWT(),
                             ),
                             ApiState.Refreshing,
                         )
@@ -472,7 +469,6 @@ fun UserTabs(
                                                             pv.my_vote,
                                                             VoteType.Upvote,
                                                         ),
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -493,7 +489,6 @@ fun UserTabs(
                                                             pv.my_vote,
                                                             VoteType.Downvote,
                                                         ),
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -513,7 +508,6 @@ fun UserTabs(
                                                 SavePost(
                                                     post_id = pv.post.id,
                                                     save = !pv.saved,
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -535,7 +529,6 @@ fun UserTabs(
                                                 DeletePost(
                                                     post_id = pv.post.id,
                                                     deleted = !pv.post.deleted,
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -559,7 +552,6 @@ fun UserTabs(
                                                 BlockCommunity(
                                                     community_id = community.id,
                                                     block = true,
-                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
@@ -577,7 +569,6 @@ fun UserTabs(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = it.jwt,
                                                 ),
                                                 ctx = ctx,
                                             )
@@ -607,7 +598,6 @@ fun UserTabs(
                                                 MarkPostAsRead(
                                                     post_id = it.post.id,
                                                     read = true,
-                                                    auth = account.jwt,
                                                 ),
                                                 appState,
                                             )
@@ -716,7 +706,6 @@ fun UserTabs(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
                                                     score = newVote(cv.my_vote, VoteType.Upvote),
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -733,7 +722,6 @@ fun UserTabs(
                                                 CreateCommentLike(
                                                     comment_id = cv.comment.id,
                                                     score = newVote(cv.my_vote, VoteType.Downvote),
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -741,7 +729,6 @@ fun UserTabs(
                                     onReplyClick = { cv ->
                                         appState.toCommentReply(
                                             replyItem = ReplyItem.CommentItem(cv),
-                                            isModerator = false,
                                         )
                                     },
                                     onSaveClick = { cv ->
@@ -756,7 +743,6 @@ fun UserTabs(
                                                 SaveComment(
                                                     comment_id = cv.comment.id,
                                                     save = !cv.saved,
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -787,7 +773,6 @@ fun UserTabs(
                                                 DeleteComment(
                                                     comment_id = cv.comment.id,
                                                     deleted = !cv.comment.deleted,
-                                                    auth = it.jwt,
                                                 ),
                                             )
                                         }
@@ -811,7 +796,6 @@ fun UserTabs(
                                                 BlockPerson(
                                                     person_id = person.id,
                                                     block = true,
-                                                    auth = it.jwt,
                                                 ),
                                                 ctx,
                                             )
@@ -824,7 +808,6 @@ fun UserTabs(
                                         showActionBarByDefault xor commentsWithToggledActionBar.contains(commentId)
                                     },
                                     account = account,
-                                    isModerator = { false },
                                     enableDownVotes = enableDownVotes,
                                     showAvatar = showAvatar,
                                     blurNSFW = blurNSFW,
