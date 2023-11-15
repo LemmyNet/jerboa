@@ -22,7 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import kotlinx.collections.immutable.ImmutableList
 
-inline fun Modifier.ifDo(predicate: Boolean, modifier: Modifier.() -> Modifier): Modifier {
+inline fun Modifier.ifDo(
+    predicate: Boolean,
+    modifier: Modifier.() -> Modifier,
+): Modifier {
     return if (predicate) modifier() else this
 }
 
@@ -48,10 +51,11 @@ fun Modifier.onAutofill(
     autofillTypes: ImmutableList<AutofillType>,
     onFill: (String) -> Unit,
 ): Modifier {
-    val autofillNode = AutofillNode(
-        autofillTypes = autofillTypes,
-        onFill = onFill,
-    )
+    val autofillNode =
+        AutofillNode(
+            autofillTypes = autofillTypes,
+            onFill = onFill,
+        )
     tree += autofillNode
 
     return this
@@ -74,43 +78,47 @@ fun Modifier.pagerTabIndicatorOffset2(
     pagerState: PagerState,
     tabPositions: List<TabPosition>,
     pageIndexMapping: (Int) -> Int = { it },
-): Modifier = layout { measurable, constraints ->
-    if (tabPositions.isEmpty()) {
-        // If there are no pages, nothing to show
-        layout(constraints.maxWidth, 0) {}
-    } else {
-        val currentPage = minOf(tabPositions.lastIndex, pageIndexMapping(pagerState.currentPage))
-        val currentTab = tabPositions[currentPage]
-        val previousTab = tabPositions.getOrNull(currentPage - 1)
-        val nextTab = tabPositions.getOrNull(currentPage + 1)
-        val fraction = pagerState.currentPageOffsetFraction
-        val indicatorWidth = if (fraction > 0 && nextTab != null) {
-            lerp(currentTab.width, nextTab.width, fraction).roundToPx()
-        } else if (fraction < 0 && previousTab != null) {
-            lerp(currentTab.width, previousTab.width, -fraction).roundToPx()
+): Modifier =
+    layout { measurable, constraints ->
+        if (tabPositions.isEmpty()) {
+            // If there are no pages, nothing to show
+            layout(constraints.maxWidth, 0) {}
         } else {
-            currentTab.width.roundToPx()
-        }
-        val indicatorOffset = if (fraction > 0 && nextTab != null) {
-            lerp(currentTab.left, nextTab.left, fraction).roundToPx()
-        } else if (fraction < 0 && previousTab != null) {
-            lerp(currentTab.left, previousTab.left, -fraction).roundToPx()
-        } else {
-            currentTab.left.roundToPx()
-        }
-        val placeable = measurable.measure(
-            Constraints(
-                minWidth = indicatorWidth,
-                maxWidth = indicatorWidth,
-                minHeight = 0,
-                maxHeight = constraints.maxHeight,
-            ),
-        )
-        layout(constraints.maxWidth, maxOf(placeable.height, constraints.minHeight)) {
-            placeable.placeRelative(
-                indicatorOffset,
-                maxOf(constraints.minHeight - placeable.height, 0),
-            )
+            val currentPage = minOf(tabPositions.lastIndex, pageIndexMapping(pagerState.currentPage))
+            val currentTab = tabPositions[currentPage]
+            val previousTab = tabPositions.getOrNull(currentPage - 1)
+            val nextTab = tabPositions.getOrNull(currentPage + 1)
+            val fraction = pagerState.currentPageOffsetFraction
+            val indicatorWidth =
+                if (fraction > 0 && nextTab != null) {
+                    lerp(currentTab.width, nextTab.width, fraction).roundToPx()
+                } else if (fraction < 0 && previousTab != null) {
+                    lerp(currentTab.width, previousTab.width, -fraction).roundToPx()
+                } else {
+                    currentTab.width.roundToPx()
+                }
+            val indicatorOffset =
+                if (fraction > 0 && nextTab != null) {
+                    lerp(currentTab.left, nextTab.left, fraction).roundToPx()
+                } else if (fraction < 0 && previousTab != null) {
+                    lerp(currentTab.left, previousTab.left, -fraction).roundToPx()
+                } else {
+                    currentTab.left.roundToPx()
+                }
+            val placeable =
+                measurable.measure(
+                    Constraints(
+                        minWidth = indicatorWidth,
+                        maxWidth = indicatorWidth,
+                        minHeight = 0,
+                        maxHeight = constraints.maxHeight,
+                    ),
+                )
+            layout(constraints.maxWidth, maxOf(placeable.height, constraints.minHeight)) {
+                placeable.placeRelative(
+                    indicatorOffset,
+                    maxOf(constraints.minHeight - placeable.height, 0),
+                )
+            }
         }
     }
-}

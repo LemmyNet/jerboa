@@ -39,64 +39,69 @@ fun JerboaTheme(
     val android12OrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     // Dynamic schemes crash on lower than android 12
-    val dynamicPair = if (android12OrLater) {
-        val jerboaImageHighlight = Color(0xCCD1D1D1)
-        val jerboaVideoHighlight = Color(0xCCC20000)
-        Pair(
-            JerboaColorScheme(
-                material = dynamicLightColorScheme(ctx),
-                videoHighlight = jerboaVideoHighlight,
-                imageHighlight = jerboaImageHighlight,
-            ),
-            JerboaColorScheme(
-                material = dynamicDarkColorScheme(ctx),
-                videoHighlight = jerboaVideoHighlight,
-                imageHighlight = jerboaImageHighlight,
-            ),
-        )
-    } else {
-        pink()
-    }
+    val dynamicPair =
+        if (android12OrLater) {
+            val jerboaImageHighlight = Color(0xCCD1D1D1)
+            val jerboaVideoHighlight = Color(0xCCC20000)
+            Pair(
+                JerboaColorScheme(
+                    material = dynamicLightColorScheme(ctx),
+                    videoHighlight = jerboaVideoHighlight,
+                    imageHighlight = jerboaImageHighlight,
+                ),
+                JerboaColorScheme(
+                    material = dynamicDarkColorScheme(ctx),
+                    videoHighlight = jerboaVideoHighlight,
+                    imageHighlight = jerboaImageHighlight,
+                ),
+            )
+        } else {
+            pink()
+        }
 
-    val colorPair = when (themeColor) {
-        ThemeColor.Dynamic -> dynamicPair
-        ThemeColor.Beach -> beach()
-        ThemeColor.Blue -> blue()
-        ThemeColor.Crimson -> crimson()
-        ThemeColor.Green -> green()
-        ThemeColor.Grey -> grey()
-        ThemeColor.Pink -> pink()
-        ThemeColor.Purple -> purple()
-        ThemeColor.Woodland -> woodland()
-        ThemeColor.Dracula -> dracula()
-    }
+    val colorPair =
+        when (themeColor) {
+            ThemeColor.Dynamic -> dynamicPair
+            ThemeColor.Beach -> beach()
+            ThemeColor.Blue -> blue()
+            ThemeColor.Crimson -> crimson()
+            ThemeColor.Green -> green()
+            ThemeColor.Grey -> grey()
+            ThemeColor.Pink -> pink()
+            ThemeColor.Purple -> purple()
+            ThemeColor.Woodland -> woodland()
+            ThemeColor.Dracula -> dracula()
+        }
 
     fun makeBlack(darkTheme: JerboaColorScheme): JerboaColorScheme {
         return darkTheme.copy(
-            material = darkTheme.material.copy(
-                background = Color(0xFF000000),
-                surface = Color(0xFF000000),
-            ),
+            material =
+                darkTheme.material.copy(
+                    background = Color(0xFF000000),
+                    surface = Color(0xFF000000),
+                ),
         )
     }
 
-    val systemTheme = if (!isSystemInDarkTheme()) {
-        colorPair.first
-    } else {
-        if (themeMode == ThemeMode.SystemBlack) {
-            makeBlack(colorPair.second)
+    val systemTheme =
+        if (!isSystemInDarkTheme()) {
+            colorPair.first
         } else {
-            colorPair.second
+            if (themeMode == ThemeMode.SystemBlack) {
+                makeBlack(colorPair.second)
+            } else {
+                colorPair.second
+            }
         }
-    }
 
-    val colors = when (themeMode) {
-        ThemeMode.System -> systemTheme
-        ThemeMode.SystemBlack -> systemTheme
-        ThemeMode.Light -> colorPair.first
-        ThemeMode.Dark -> colorPair.second
-        ThemeMode.Black -> makeBlack(colorPair.second)
-    }
+    val colors =
+        when (themeMode) {
+            ThemeMode.System -> systemTheme
+            ThemeMode.SystemBlack -> systemTheme
+            ThemeMode.Light -> colorPair.first
+            ThemeMode.Dark -> colorPair.second
+            ThemeMode.Black -> makeBlack(colorPair.second)
+        }
 
     val typography = generateTypography(fontSize)
 
@@ -105,11 +110,12 @@ fun JerboaTheme(
     val window = (view.context as Activity).window
     val insets = WindowCompat.getInsetsController(window, view)
 
-    val isLight = when (themeMode) {
-        ThemeMode.Black, ThemeMode.Dark -> false
-        ThemeMode.System, ThemeMode.SystemBlack -> !isSystemInDarkTheme()
-        else -> true
-    }
+    val isLight =
+        when (themeMode) {
+            ThemeMode.Black, ThemeMode.Dark -> false
+            ThemeMode.System, ThemeMode.SystemBlack -> !isSystemInDarkTheme()
+            else -> true
+        }
 
     if (appSettings.secureWindow) {
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -145,14 +151,15 @@ val MaterialTheme.jerboaColorScheme: JerboaColorScheme
     @ReadOnlyComposable
     get() = LocalColorScheme.current
 
-val colorList = listOf(
-    hsl(0f),
-    hsl(100f),
-    hsl(150f),
-    hsl(200f),
-    hsl(250f),
-    hsl(300f),
-)
+val colorList =
+    listOf(
+        hsl(0f),
+        hsl(100f),
+        hsl(150f),
+        hsl(200f),
+        hsl(250f),
+        hsl(300f),
+    )
 
 fun hsl(num: Float): Color {
     return Color(ColorUtils.HSLToColor(floatArrayOf(num, .35f, .5f)))

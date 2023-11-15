@@ -25,37 +25,42 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun testGetSite() = runBlocking {
-        val api = API.getInstance()
-        val form = GetSite(null)
-        val out = api.getSite(form.serializeToMap()).body()!!
+    fun testGetSite() =
+        runBlocking {
+            val api = API.getInstance()
+            val form = GetSite(null)
+            val out = api.getSite(form.serializeToMap()).body()!!
 
-        assertEquals("Lemmy", out.site_view.site.name)
-    }
-
-    @Test
-    fun testGetPosts() = runBlocking {
-        // TODO
-        val api = API.getInstance()
-        val form = GetPosts(
-            ListingType.All,
-            SortType.Active,
-        )
-        val out = api.getPosts(form.serializeToMap()).body()!!
-        println(out.posts[0])
-        assertNotNull(out.posts)
-    }
+            assertEquals("Lemmy", out.site_view.site.name)
+        }
 
     @Test
-    fun testGetPost() = runBlocking {
-        val api = API.getInstance()
-        val form = GetPost(
-            id = 139549,
-            auth = null,
-        )
-        val out = api.getPost(form.serializeToMap()).body()!!
-        assertNotNull(out)
-    }
+    fun testGetPosts() =
+        runBlocking {
+            // TODO
+            val api = API.getInstance()
+            val form =
+                GetPosts(
+                    ListingType.All,
+                    SortType.Active,
+                )
+            val out = api.getPosts(form.serializeToMap()).body()!!
+            println(out.posts[0])
+            assertNotNull(out.posts)
+        }
+
+    @Test
+    fun testGetPost() =
+        runBlocking {
+            val api = API.getInstance()
+            val form =
+                GetPost(
+                    id = 139549,
+                    auth = null,
+                )
+            val out = api.getPost(form.serializeToMap()).body()!!
+            assertNotNull(out)
+        }
 
 /*
     @Test

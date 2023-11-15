@@ -90,7 +90,10 @@ fun InboxHeader(
 }
 
 @Composable
-fun InboxHeaderTitle(selectedUnreadOrAll: UnreadOrAll, unreadCount: Int? = null) {
+fun InboxHeaderTitle(
+    selectedUnreadOrAll: UnreadOrAll,
+    unreadCount: Int? = null,
+) {
     var title = stringResource(R.string.inbox_inbox)
     val ctx = LocalContext.current
     if (unreadCount != null && unreadCount > 0) {

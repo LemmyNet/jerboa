@@ -40,7 +40,12 @@ class LemmyLinkPluginTest {
 
     @Test
     @Parameters(method = "userSuccessCases")
-    fun testUserValid(pattern: String, fullMatch: String, user: String, instance: String?) {
+    fun testUserValid(
+        pattern: String,
+        fullMatch: String,
+        user: String,
+        instance: String?,
+    ) {
         val matcher = lemmyUserPattern.matcher(pattern)
 
         assertTrue(matcher.find())
@@ -61,19 +66,21 @@ class LemmyLinkPluginTest {
         assertFalse(lemmyUserPattern.matcher(pattern).find())
     }
 
-    fun communitySuccessCases() = listOf(
-        listOf("!community", "!community", "community", null),
-        listOf(" !community.", "!community", "community", null),
-        listOf("!community@instance.ml", "!community@instance.ml", "community", "instance.ml"),
-        listOf(" !community@instance.ml", "!community@instance.ml", "community", "instance.ml"),
-        listOf("!community@instance.ml!", "!community@instance.ml", "community", "instance.ml"),
-    )
+    fun communitySuccessCases() =
+        listOf(
+            listOf("!community", "!community", "community", null),
+            listOf(" !community.", "!community", "community", null),
+            listOf("!community@instance.ml", "!community@instance.ml", "community", "instance.ml"),
+            listOf(" !community@instance.ml", "!community@instance.ml", "community", "instance.ml"),
+            listOf("!community@instance.ml!", "!community@instance.ml", "community", "instance.ml"),
+        )
 
-    fun userSuccessCases() = listOf(
-        listOf("@user", "@user", "user", null),
-        listOf(" @user.", "@user", "user", null),
-        listOf("@user@instance.ml", "@user@instance.ml", "user", "instance.ml"),
-        listOf(" @user@instance.ml", "@user@instance.ml", "user", "instance.ml"),
-        listOf("@user@instance.ml!", "@user@instance.ml", "user", "instance.ml"),
-    )
+    fun userSuccessCases() =
+        listOf(
+            listOf("@user", "@user", "user", null),
+            listOf(" @user.", "@user", "user", null),
+            listOf("@user@instance.ml", "@user@instance.ml", "user", "instance.ml"),
+            listOf(" @user@instance.ml", "@user@instance.ml", "user", "instance.ml"),
+            listOf("@user@instance.ml!", "@user@instance.ml", "user", "instance.ml"),
+        )
 }

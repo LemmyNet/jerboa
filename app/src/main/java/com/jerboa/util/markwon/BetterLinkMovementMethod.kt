@@ -23,7 +23,6 @@ import com.jerboa.R
  * @author Maarten Vercruysse
  */
 open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod() {
-
     private var onLinkClickListener: OnLinkClickListener? = null
     private var onLinkLongClickListener: OnLinkLongClickListener? = null
     private val touchedLineBounds = RectF()
@@ -38,6 +37,7 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
 
         open class LongPressTimer : Runnable {
             private lateinit var onTimerReachedListener: OnTimerReachedListener
+
             interface OnTimerReachedListener {
                 fun onTimerReached()
             }
@@ -68,15 +68,19 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
             }
 
             companion object {
-                fun ofSpan(textView: TextView, span: ClickableSpan): ClickableSpanWithText {
+                fun ofSpan(
+                    textView: TextView,
+                    span: ClickableSpan,
+                ): ClickableSpanWithText {
                     val s = textView.text as Spanned
-                    val text: String = if (span is URLSpan) {
-                        span.url
-                    } else {
-                        val start = s.getSpanStart(span)
-                        val end = s.getSpanEnd(span)
-                        s.subSequence(start, end).toString()
-                    }
+                    val text: String =
+                        if (span is URLSpan) {
+                            span.url
+                        } else {
+                            val start = s.getSpanStart(span)
+                            val end = s.getSpanEnd(span)
+                            s.subSequence(start, end).toString()
+                        }
                     return ClickableSpanWithText(span, text)
                 }
             }
@@ -96,7 +100,10 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
          * @param url      The clicked URL.
          * @return True if this click was handled. False to let Android handle the URL.
          */
-        fun onClick(textView: TextView, url: String): Boolean
+        fun onClick(
+            textView: TextView,
+            url: String,
+        ): Boolean
     }
 
     interface OnLinkLongClickListener {
@@ -105,7 +112,10 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
          * @param url      The long-clicked URL.
          * @return True if this long-click was handled. False to let Android handle the URL (as a short-click).
          */
-        fun onLongClick(textView: TextView, url: String): Boolean
+        fun onLongClick(
+            textView: TextView,
+            url: String,
+        ): Boolean
     }
 
     /**
@@ -148,7 +158,11 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         return this
     }
 
-    override fun onTouchEvent(textView: TextView, text: Spannable, event: MotionEvent): Boolean {
+    override fun onTouchEvent(
+        textView: TextView,
+        text: Spannable,
+        event: MotionEvent,
+    ): Boolean {
         if (activeTextViewHashcode != textView.hashCode()) {
             // Bug workaround: TextView stops calling onTouchEvent() once any URL is highlighted.
             // A hacky solution is to reset any "autoLink" property set in XML. But we also want
@@ -168,15 +182,16 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
                     highlightUrl(textView, clickableSpanUnderTouch, text)
 
                     if (touchStartedOverAClickableSpan && onLinkLongClickListener != null) {
-                        val longClickListener: LongPressTimer.OnTimerReachedListener = object :
-                            LongPressTimer.OnTimerReachedListener {
-                            override fun onTimerReached() {
-                                wasLongPressRegistered = true
-                                textView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                                removeUrlHighlightColor(textView)
-                                dispatchUrlLongClick(textView, clickableSpanUnderTouch)
+                        val longClickListener: LongPressTimer.OnTimerReachedListener =
+                            object :
+                                LongPressTimer.OnTimerReachedListener {
+                                override fun onTimerReached() {
+                                    wasLongPressRegistered = true
+                                    textView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                                    removeUrlHighlightColor(textView)
+                                    dispatchUrlLongClick(textView, clickableSpanUnderTouch)
+                                }
                             }
-                        }
                         startTimerForRegisteringLongClick(textView, longClickListener)
                     }
                 }
@@ -186,7 +201,11 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
 
             MotionEvent.ACTION_UP -> {
                 // Register a click only if the touch started and ended on the same URL.
-                if (clickableSpanUnderTouch != null && !wasLongPressRegistered && touchStartedOverAClickableSpan && clickableSpanUnderTouch === clickableSpanUnderTouchOnActionDown) {
+                if (clickableSpanUnderTouch != null &&
+                    !wasLongPressRegistered &&
+                    touchStartedOverAClickableSpan &&
+                    clickableSpanUnderTouch === clickableSpanUnderTouchOnActionDown
+                ) {
                     dispatchUrlClick(textView, clickableSpanUnderTouch)
                 }
                 cleanupOnTouchUp(textView)
@@ -232,7 +251,11 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
      *
      * @return The touched ClickableSpan or null.
      */
-    protected fun findClickableSpanUnderTouch(textView: TextView, text: Spannable, event: MotionEvent): ClickableSpan? {
+    protected fun findClickableSpanUnderTouch(
+        textView: TextView,
+        text: Spannable,
+        event: MotionEvent,
+    ): ClickableSpan? {
         // So we need to find the location in text where touch was made, regardless of whether the TextView
         // has scrollable text. That is, not the entire text is currently visible.
         var touchX = event.x.toInt()
@@ -271,7 +294,11 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
     /**
      * Adds a background color span at <var>clickableSpan</var>'s location.
      */
-    protected fun highlightUrl(textView: TextView, clickableSpan: ClickableSpan?, text: Spannable) {
+    protected fun highlightUrl(
+        textView: TextView,
+        clickableSpan: ClickableSpan?,
+        text: Spannable,
+    ) {
         if (isUrlHighlighted) {
             return
         }
@@ -299,7 +326,10 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
     }
 
     // This is the crude fix, increase timeout
-    protected fun startTimerForRegisteringLongClick(textView: TextView, longClickListener: LongPressTimer.OnTimerReachedListener) {
+    protected fun startTimerForRegisteringLongClick(
+        textView: TextView,
+        longClickListener: LongPressTimer.OnTimerReachedListener,
+    ) {
         ongoingLongPressTimer = LongPressTimer()
         ongoingLongPressTimer!!.setOnTimerReachedListener(longClickListener)
         textView.postDelayed(ongoingLongPressTimer, ViewConfiguration.getLongPressTimeout().toLong() + 100L)
@@ -315,7 +345,10 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         }
     }
 
-    protected fun dispatchUrlClick(textView: TextView, clickableSpan: ClickableSpan) {
+    protected fun dispatchUrlClick(
+        textView: TextView,
+        clickableSpan: ClickableSpan,
+    ) {
         val clickableSpanWithText: ClickableSpanWithText = ClickableSpanWithText.ofSpan(textView, clickableSpan)
         val handled =
             onLinkClickListener != null && onLinkClickListener!!.onClick(textView, clickableSpanWithText.text())
@@ -325,12 +358,17 @@ open class BetterLinkMovementMethod internal constructor() : LinkMovementMethod(
         }
     }
 
-    protected open fun dispatchUrlLongClick(textView: TextView, clickableSpan: ClickableSpan) {
+    protected open fun dispatchUrlLongClick(
+        textView: TextView,
+        clickableSpan: ClickableSpan,
+    ) {
         val clickableSpanWithText: ClickableSpanWithText = ClickableSpanWithText.ofSpan(textView, clickableSpan)
-        val handled = onLinkLongClickListener != null && onLinkLongClickListener!!.onLongClick(
-            textView,
-            clickableSpanWithText.text(),
-        )
+        val handled =
+            onLinkLongClickListener != null &&
+                onLinkLongClickListener!!.onLongClick(
+                    textView,
+                    clickableSpanWithText.text(),
+                )
         if (!handled) {
             // Let Android handle this long click as a short-click.
             clickableSpanWithText.span().onClick(textView)

@@ -10,7 +10,8 @@ data class LocalUser(
     val email: String? = null,
     val show_nsfw: Boolean,
     val theme: String,
-    val default_sort_type: SortType /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" | "TopHour" | "TopSixHour" | "TopTwelveHour" */,
+    val default_sort_type:
+        SortType /* "Active" | "Hot" | "New" | "Old" | "TopDay" | "TopWeek" | "TopMonth" | "TopYear" | "TopAll" | "MostComments" | "NewComments" | "TopHour" | "TopSixHour" | "TopTwelveHour" */,
     val default_listing_type: ListingType /* "All" | "Local" | "Subscribed" */,
     val interface_language: String,
     val show_avatars: Boolean,

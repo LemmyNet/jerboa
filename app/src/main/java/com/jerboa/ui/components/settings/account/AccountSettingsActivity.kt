@@ -31,10 +31,11 @@ fun AccountSettingsActivity(
     val account = getCurrentAccount(accountViewModel = accountViewModel)
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val loading = when (accountSettingsViewModel.saveUserSettingsRes) {
-        ApiState.Loading -> true
-        else -> false
-    }
+    val loading =
+        when (accountSettingsViewModel.saveUserSettingsRes) {
+            ApiState.Loading -> true
+            else -> false
+        }
 
     Scaffold(
         snackbarHost = { JerboaSnackbarHost(snackbarHostState) },

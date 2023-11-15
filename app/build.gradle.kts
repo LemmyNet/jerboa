@@ -179,7 +179,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    testImplementation("org.mockito:mockito-core:5.6.0")
+    testImplementation("org.mockito:mockito-core:5.7.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
 
     implementation("androidx.browser:browser:1.6.0")

@@ -38,10 +38,11 @@ fun CreateCommentReportActivity(
     val createReportViewModel: CreateReportViewModel = viewModel()
 
     var reason by rememberSaveable(stateSaver = TextFieldValue.Saver) { mutableStateOf(TextFieldValue("")) }
-    val loading = when (createReportViewModel.commentReportRes) {
-        ApiState.Loading -> true
-        else -> false
-    }
+    val loading =
+        when (createReportViewModel.commentReportRes) {
+            ApiState.Loading -> true
+            else -> false
+        }
 
     val focusManager = LocalFocusManager.current
     Scaffold(

@@ -52,30 +52,30 @@ import java.util.regex.Pattern
 /**
  * pattern that matches all valid communities; intended to be loose
  */
-const val communityPatternFragment: String = """[a-zA-Z0-9_]{3,}"""
+const val COMMUNITY_PATTERN_FRAGMENT: String = """[a-zA-Z0-9_]{3,}"""
 
 /**
  * pattern to match all valid instances
  */
-const val instancePatternFragment: String =
+const val INSTANCE_PATTERN_FRAGMENT: String =
     """([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}"""
 
 /**
  * pattern to match all valid usernames
  */
-const val userPatternFragment: String = """[a-zA-Z0-9_]{3,}"""
+const val USER_PATTERN_FRAGMENT: String = """[a-zA-Z0-9_]{3,}"""
 
 /**
  * Pattern to match lemmy's unique community pattern, e.g. !commmunity[@instance]
  */
 val lemmyCommunityPattern: Pattern =
-    Pattern.compile("(?<!\\S)!($communityPatternFragment)(?:@($instancePatternFragment))?\\b")
+    Pattern.compile("(?<!\\S)!($COMMUNITY_PATTERN_FRAGMENT)(?:@($INSTANCE_PATTERN_FRAGMENT))?\\b")
 
 /**
  * Pattern to match lemmy's unique user pattern, e.g. @user[@instance]
  */
 val lemmyUserPattern: Pattern =
-    Pattern.compile("(?<!\\S)@($userPatternFragment)(?:@($instancePatternFragment))?\\b")
+    Pattern.compile("(?<!\\S)@($USER_PATTERN_FRAGMENT)(?:@($INSTANCE_PATTERN_FRAGMENT))?\\b")
 
 object MarkdownHelper {
     private var markwon: Markwon? = null
@@ -90,52 +90,58 @@ object MarkdownHelper {
         val context = appState.navController.context
         val loader = context.imageLoader
         // main markdown parser has coil + html on
-        markwon = Markwon.builder(context)
-            .usePlugin(ForceHttpsPlugin())
-            // email urls interfere with lemmy links
-            .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
-            .usePlugin(MarkwonLemmyLinkPlugin())
-            .usePlugin(MarkwonSpoilerPlugin(true))
-            .usePlugin(StrikethroughPlugin.create())
-            .usePlugin(TablePlugin.create(context))
-            .usePlugin(ClickableCoilImagesPlugin.create(context, loader, appState))
-            .usePlugin(HtmlPlugin.create())
-            // use TableAwareLinkMovementMethod to handle clicks inside tables,
-            // wraps LinkMovementMethod internally
-            .usePlugin(
-                MovementMethodPlugin.create(
-                    TableAwareMovementMethod(
-                        BetterLinkMovementMethod.newInstance().setOnLinkLongClickListener(onLongClick),
+        markwon =
+            Markwon.builder(context)
+                .usePlugin(ForceHttpsPlugin())
+                // email urls interfere with lemmy links
+                .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
+                .usePlugin(MarkwonLemmyLinkPlugin())
+                .usePlugin(MarkwonSpoilerPlugin(true))
+                .usePlugin(StrikethroughPlugin.create())
+                .usePlugin(TablePlugin.create(context))
+                .usePlugin(ClickableCoilImagesPlugin.create(context, loader, appState))
+                .usePlugin(HtmlPlugin.create())
+                // use TableAwareLinkMovementMethod to handle clicks inside tables,
+                // wraps LinkMovementMethod internally
+                .usePlugin(
+                    MovementMethodPlugin.create(
+                        TableAwareMovementMethod(
+                            BetterLinkMovementMethod.newInstance().setOnLinkLongClickListener(onLongClick),
+                        ),
                     ),
-                ),
-            )
-            .usePlugin(object : AbstractMarkwonPlugin() {
-                override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                    builder.linkResolver { view, link ->
-                        // Previously when openLink wasn't suspending it was somehow preventing the click from propagating
-                        // Now it doesn't anymore and we have to do it manually
-                        view.cancelPendingInputEvents()
-                        appState.openLink(link, useCustomTabs, usePrivateTabs)
-                    }
-                }
-            })
-            .build()
+                )
+                .usePlugin(
+                    object : AbstractMarkwonPlugin() {
+                        override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+                            builder.linkResolver { view, link ->
+                                // Previously when openLink wasn't suspending it was somehow preventing the click from propagating
+                                // Now it doesn't anymore and we have to do it manually
+                                view.cancelPendingInputEvents()
+                                appState.openLink(link, useCustomTabs, usePrivateTabs)
+                            }
+                        }
+                    },
+                )
+                .build()
 
         // no image parser has html off
-        previewMarkwon = Markwon.builder(context)
-            // email urls interfere with lemmy links
-            .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
-            .usePlugin(MarkwonLemmyLinkPlugin())
-            .usePlugin(StrikethroughPlugin.create())
-            .usePlugin(TablePlugin.create(context))
-            .usePlugin(HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) })
-            .usePlugin(object : AbstractMarkwonPlugin() {
-                override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                    builder.linkResolver { _, _ -> }
-                }
-            })
-            .usePlugin(MarkwonSpoilerPlugin(false))
-            .build()
+        previewMarkwon =
+            Markwon.builder(context)
+                // email urls interfere with lemmy links
+                .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
+                .usePlugin(MarkwonLemmyLinkPlugin())
+                .usePlugin(StrikethroughPlugin.create())
+                .usePlugin(TablePlugin.create(context))
+                .usePlugin(HtmlPlugin.create { plugin -> plugin.addHandler(TagHandlerNoOp.create("img")) })
+                .usePlugin(
+                    object : AbstractMarkwonPlugin() {
+                        override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+                            builder.linkResolver { _, _ -> }
+                        }
+                    },
+                )
+                .usePlugin(MarkwonSpoilerPlugin(false))
+                .build()
     }
 
     /*
@@ -199,13 +205,14 @@ object MarkdownHelper {
         onLongClick: ((View) -> Boolean)? = null,
     ): TextView {
         val textColor = color.takeOrElse { style.color.takeOrElse { defaultColor } }
-        val mergedStyle = style.merge(
-            TextStyle(
-                color = textColor,
-                fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
-                textAlign = textAlign,
-            ),
-        )
+        val mergedStyle =
+            style.merge(
+                TextStyle(
+                    color = textColor,
+                    fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
+                    textAlign = textAlign,
+                ),
+            )
         return TextView(context).apply {
             onClick?.let { setOnClickListener { onClick() } }
             onLongClick?.let { setOnLongClickListener(it) }
@@ -218,12 +225,13 @@ object MarkdownHelper {
 
             viewId?.let { id = viewId }
             textAlign?.let { align ->
-                textAlignment = when (align) {
-                    TextAlign.Left, TextAlign.Start -> View.TEXT_ALIGNMENT_TEXT_START
-                    TextAlign.Right, TextAlign.End -> View.TEXT_ALIGNMENT_TEXT_END
-                    TextAlign.Center -> View.TEXT_ALIGNMENT_CENTER
-                    else -> View.TEXT_ALIGNMENT_TEXT_START
-                }
+                textAlignment =
+                    when (align) {
+                        TextAlign.Left, TextAlign.Start -> View.TEXT_ALIGNMENT_TEXT_START
+                        TextAlign.Right, TextAlign.End -> View.TEXT_ALIGNMENT_TEXT_END
+                        TextAlign.Center -> View.TEXT_ALIGNMENT_CENTER
+                        else -> View.TEXT_ALIGNMENT_TEXT_START
+                    }
             }
 
             fontResource?.let { font ->
@@ -269,12 +277,13 @@ object MarkdownHelper {
         onClick: (() -> Unit)? = null,
     ): TextView {
         val textColor = color.takeOrElse { style.color.takeOrElse { defaultColor } }
-        val mergedStyle = style.merge(
-            TextStyle(
-                color = textColor,
-                fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
-            ),
-        )
+        val mergedStyle =
+            style.merge(
+                TextStyle(
+                    color = textColor,
+                    fontSize = if (fontSize != TextUnit.Unspecified) fontSize else style.fontSize,
+                ),
+            )
         return TextView(context).apply {
             onClick?.let { setOnClickListener { onClick() } }
             setTextColor(textColor.toArgb())

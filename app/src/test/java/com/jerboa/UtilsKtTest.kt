@@ -24,7 +24,6 @@ import java.util.Locale
 
 @RunWith(JUnitParamsRunner::class)
 class UtilsKtTest {
-
     @JvmField
     @Rule
     val rule: MockitoRule = MockitoJUnit.rule()
@@ -97,9 +96,10 @@ class UtilsKtTest {
 
     @Test
     fun testValidatePostName() {
-        val ctx = mock<Context> {
-            on { getString(anyInt()) } doReturn ""
-        }
+        val ctx =
+            mock<Context> {
+                on { getString(anyInt()) } doReturn ""
+            }
 
         assertTrue(validatePostName(ctx, "").hasError)
         assertTrue(validatePostName(ctx, "a").hasError)
@@ -111,10 +111,11 @@ class UtilsKtTest {
 
     @Test
     fun testValidateUrl() {
-        val ctx = mock<Context> {
-            on { getString(R.string.url) } doReturn "url"
-            on { getString(R.string.url_invalid) } doReturn "url_invalid"
-        }
+        val ctx =
+            mock<Context> {
+                on { getString(R.string.url) } doReturn "url"
+                on { getString(R.string.url_invalid) } doReturn "url_invalid"
+            }
 
         assertTrue(validateUrl(ctx, "nonsense").hasError)
         assertSame("url_invalid", validateUrl(ctx, "nonsense").label)
@@ -164,47 +165,53 @@ class UtilsKtTest {
 
     @Test
     fun testGetHostFromInstanceString() {
-        val cases = mapOf(
-            "" to "",
-            "localhost" to "localhost",
-            "something useless" to "something useless",
-            "https://localhost" to "localhost",
-            "http://localhost" to "localhost",
-            "https://localhost:443" to "localhost",
-            "https://localhost:443/path" to "localhost",
-            "https://localhost:443/path?param" to "localhost",
-            "https://host.tld" to "host.tld",
-        )
+        val cases =
+            mapOf(
+                "" to "",
+                "localhost" to "localhost",
+                "something useless" to "something useless",
+                "https://localhost" to "localhost",
+                "http://localhost" to "localhost",
+                "https://localhost:443" to "localhost",
+                "https://localhost:443/path" to "localhost",
+                "https://localhost:443/path?param" to "localhost",
+                "https://host.tld" to "host.tld",
+            )
         cases.forEach { (instanceString, exp) -> assertEquals(exp, getHostFromInstanceString(instanceString)) }
     }
 
     @Test
     @Parameters(method = "siFormatCases")
-    fun testSiFormat(expected: String, input: Int) {
+    fun testSiFormat(
+        expected: String,
+        input: Int,
+    ) {
         assertEquals(expected, siFormat(input))
     }
 
-    fun siFormatCases() = listOf(
-        listOf("0", 0),
-        listOf("1K", 1000),
-        listOf("1.1K", 1100),
-        listOf("1M", 1000000),
-        listOf("1.2M", 1234500),
-        listOf("12M", 12345000),
-    )
+    fun siFormatCases() =
+        listOf(
+            listOf("0", 0),
+            listOf("1K", 1000),
+            listOf("1.1K", 1100),
+            listOf("1M", 1000000),
+            listOf("1.2M", 1234500),
+            listOf("12M", 12345000),
+        )
 
     @Test
     fun testParseUrl() {
-        val cases = mapOf(
-            "https://feddit.de" to "https://feddit.de",
-            "http://example.com" to "http://example.com",
-            "/c/community" to "https://${API.currentInstance}/c/community",
-            "/c/community@instance.ml" to "https://instance.ml/c/community",
-            "!community@instance.ml" to "https://instance.ml/c/community",
-            "!community" to "https://${API.currentInstance}/c/community",
-            "/u/user@instance.ml" to "https://instance.ml/u/user",
-            "@user@instance.ml" to "https://instance.ml/u/user",
-        )
+        val cases =
+            mapOf(
+                "https://feddit.de" to "https://feddit.de",
+                "http://example.com" to "http://example.com",
+                "/c/community" to "https://${API.currentInstance}/c/community",
+                "/c/community@instance.ml" to "https://instance.ml/c/community",
+                "!community@instance.ml" to "https://instance.ml/c/community",
+                "!community" to "https://${API.currentInstance}/c/community",
+                "/u/user@instance.ml" to "https://instance.ml/u/user",
+                "@user@instance.ml" to "https://instance.ml/u/user",
+            )
 
         cases.forEach { (url, exp) -> assertEquals(exp, parseUrl(url)?.second) }
     }

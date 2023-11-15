@@ -99,30 +99,33 @@ fun CreatePostActivity(
     LaunchedEffect(initialUrl) {
         if (initialUrl.isNotEmpty()) {
             fetchSiteMetadataJob?.cancel()
-            fetchSiteMetadataJob = scope.launch {
-                delay(DEBOUNCE_DELAY)
-                if (Patterns.WEB_URL.matcher(initialUrl).matches()) {
-                    createPostViewModel.getSiteMetadata(GetSiteMetadata(initialUrl))
+            fetchSiteMetadataJob =
+                scope.launch {
+                    delay(DEBOUNCE_DELAY)
+                    if (Patterns.WEB_URL.matcher(initialUrl).matches()) {
+                        createPostViewModel.getSiteMetadata(GetSiteMetadata(initialUrl))
+                    }
                 }
-            }
         }
     }
 
-    val (suggestedTitle, suggestedTitleLoading) = when (val res = createPostViewModel.siteMetadataRes) {
-        ApiState.Empty -> MetaDataRes(null, false)
-        ApiState.Loading -> MetaDataRes(null, true)
-        is ApiState.Success ->
-            MetaDataRes(res.data.metadata.title, false)
-        else -> MetaDataRes(null, false)
-    }
+    val (suggestedTitle, suggestedTitleLoading) =
+        when (val res = createPostViewModel.siteMetadataRes) {
+            ApiState.Empty -> MetaDataRes(null, false)
+            ApiState.Loading -> MetaDataRes(null, true)
+            is ApiState.Success ->
+                MetaDataRes(res.data.metadata.title, false)
+            else -> MetaDataRes(null, false)
+        }
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             topBar = {
                 Column {
-                    val loading = when (createPostViewModel.createPostRes) {
-                        ApiState.Loading -> true
-                        else -> false
-                    }
+                    val loading =
+                        when (createPostViewModel.createPostRes) {
+                            ApiState.Loading -> true
+                            else -> false
+                        }
                     ActionTopBar(
                         formValid = formValid,
                         loading = loading,
@@ -140,11 +143,12 @@ fun CreatePostActivity(
                                 )
                             }
                         },
-                        actionIcon = if (formValid) {
-                            Icons.Filled.Send
-                        } else {
-                            Icons.Outlined.Send
-                        },
+                        actionIcon =
+                            if (formValid) {
+                                Icons.Filled.Send
+                            } else {
+                                Icons.Outlined.Send
+                            },
                         actionText = R.string.form_submit,
                         title = stringResource(R.string.create_post_create_post),
                         onBackClick = appState::popBackStack,
@@ -166,12 +170,13 @@ fun CreatePostActivity(
                     onUrlChange = { cUrl ->
                         url = cUrl
                         fetchSiteMetadataJob?.cancel()
-                        fetchSiteMetadataJob = scope.launch {
-                            delay(DEBOUNCE_DELAY)
-                            if (Patterns.WEB_URL.matcher(cUrl).matches()) {
-                                createPostViewModel.getSiteMetadata(GetSiteMetadata(cUrl))
+                        fetchSiteMetadataJob =
+                            scope.launch {
+                                delay(DEBOUNCE_DELAY)
+                                if (Patterns.WEB_URL.matcher(cUrl).matches()) {
+                                    createPostViewModel.getSiteMetadata(GetSiteMetadata(cUrl))
+                                }
                             }
-                        }
                     },
                     suggestedTitle = suggestedTitle,
                     suggestedTitleLoading = suggestedTitleLoading,

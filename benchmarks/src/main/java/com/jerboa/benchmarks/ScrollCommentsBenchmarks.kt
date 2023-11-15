@@ -23,7 +23,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class ScrollCommentsBenchmarks {
-
     @get:Rule
     val rule = MacrobenchmarkRule()
 
@@ -31,8 +30,7 @@ class ScrollCommentsBenchmarks {
     fun scrollCommentsCompilationNone() = benchmark(CompilationMode.None())
 
     @Test
-    fun scrollCommentsCompilationBaselineProfiles() =
-        benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
+    fun scrollCommentsCompilationBaselineProfiles() = benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
 
     private fun benchmark(compilationMode: CompilationMode) {
         rule.measureRepeated(

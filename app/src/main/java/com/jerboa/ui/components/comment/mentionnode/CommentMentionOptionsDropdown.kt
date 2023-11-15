@@ -94,11 +94,12 @@ fun CommentMentionsOptionsDropdown(
         }
 
         PopupMenuItem(
-            text = if (viewSource) {
-                stringResource(R.string.comment_node_view_original)
-            } else {
-                stringResource(R.string.comment_node_view_source)
-            },
+            text =
+                if (viewSource) {
+                    stringResource(R.string.comment_node_view_original)
+                } else {
+                    stringResource(R.string.comment_node_view_source)
+                },
             icon = Icons.Outlined.Description,
             onClick = {
                 onDismissRequest()

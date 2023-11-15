@@ -63,10 +63,13 @@ import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
 import me.saket.telephoto.zoomable.rememberZoomableState
 
-const val backFadeTime = 300
+const val BACK_FADE_TIME = 300
 
 @Composable
-fun ImageViewer(url: String, appState: JerboaAppState) {
+fun ImageViewer(
+    url: String,
+    appState: JerboaAppState,
+) {
     val ctx = LocalContext.current
     val backColor = MaterialTheme.colorScheme.scrim
     var showTopBar by remember { mutableStateOf(true) }
@@ -120,16 +123,17 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
         mutableStateOf(ImageState.LOADING)
     }
 
-    val image = remember {
-        ImageRequest.Builder(ctx)
-            .placeholder(null)
-            .data(url)
-            .setParameter("retry_hash", retryHash, memoryCacheKey = null)
-            .listener(
-                onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
-                onError = { _, _ -> imageState = ImageState.FAILED },
-            ).build()
-    }
+    val image =
+        remember {
+            ImageRequest.Builder(ctx)
+                .placeholder(null)
+                .data(url)
+                .setParameter("retry_hash", retryHash, memoryCacheKey = null)
+                .listener(
+                    onSuccess = { _, _ -> imageState = ImageState.SUCCESS },
+                    onError = { _, _ -> imageState = ImageState.FAILED },
+                ).build()
+        }
 
     val zoomableState = rememberZoomableState(ZoomSpec(20F, preventOverOrUnderZoom = false))
     val zoomableImageState = rememberZoomableImageState(zoomableState)
@@ -153,7 +157,6 @@ fun ImageViewer(url: String, appState: JerboaAppState) {
                             },
                         Arrangement.Center,
                         Alignment.CenterHorizontally,
-
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.ErrorOutline,
@@ -210,7 +213,7 @@ fun ViewerHeader(
 ) {
     val topBarAlpha by animateFloatAsState(
         targetValue = if (showTopBar) 1f else 0f,
-        animationSpec = tween(backFadeTime),
+        animationSpec = tween(BACK_FADE_TIME),
         label = "topBarAlpha",
     )
 

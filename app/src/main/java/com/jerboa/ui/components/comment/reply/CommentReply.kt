@@ -134,7 +134,6 @@ fun RepliedPost(
             isModerator = isModerator,
             showAvatar = showAvatar,
             showScores = showScores,
-
         )
         val text = postView.post.body ?: run { postView.post.name }
         SelectionContainer {

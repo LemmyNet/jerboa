@@ -8,7 +8,8 @@ object DownloadProgress {
 
     val downloadProgressFlow = MutableStateFlow(initProgress)
 
-    val downloadProgressHttpClient = API.httpClient.newBuilder()
-        .addInterceptor(DownloadProgressInterceptor(downloadProgressFlow))
-        .build()
+    val downloadProgressHttpClient =
+        API.httpClient.newBuilder()
+            .addInterceptor(DownloadProgressInterceptor(downloadProgressFlow))
+            .build()
 }

@@ -66,11 +66,12 @@ fun PersonProfileTopSection(
                 PictrsBannerImage(
                     url = it,
                     contentDescription = stringResource(R.string.personProfile_viewBanner),
-                    modifier = Modifier
-                        .height(PROFILE_BANNER_SIZE)
-                        .clickable {
-                            openImageViewer(personView.person.banner)
-                        },
+                    modifier =
+                        Modifier
+                            .height(PROFILE_BANNER_SIZE)
+                            .clickable {
+                                openImageViewer(personView.person.banner)
+                            },
                 )
             }
             Box(modifier = Modifier.padding(MEDIUM_PADDING)) {
@@ -79,9 +80,10 @@ fun PersonProfileTopSection(
                         LargerCircularIcon(
                             icon = it,
                             contentDescription = stringResource(R.string.personProfile_viewAvatar),
-                            modifier = Modifier.clickable {
-                                openImageViewer(personView.person.avatar)
-                            },
+                            modifier =
+                                Modifier.clickable {
+                                    openImageViewer(personView.person.avatar)
+                                },
                         )
                     }
                 }
@@ -239,11 +241,12 @@ fun PersonProfileHeader(
                             showMoreOptions = false
                             onMessagePersonClick()
                         },
-                        openMatrix = matrixId?.let {
-                            {
-                                openMatrix(matrixId, ctx)
-                            }
-                        },
+                        openMatrix =
+                            matrixId?.let {
+                                {
+                                    openMatrix(matrixId, ctx)
+                                }
+                            },
                     )
                 }
             }

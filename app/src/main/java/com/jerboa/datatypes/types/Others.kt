@@ -273,7 +273,6 @@ enum class CommentSortType(val text: Int, val icon: ImageVector, val version: St
  * The different listing types for post and comment fetches.
  */
 enum class ListingType {
-
     @SerializedName("All")
     All,
 

@@ -44,9 +44,7 @@ import java.time.Instant
 import java.util.Date
 
 @Composable
-fun CrashLogsActivity(
-    onClickBack: () -> Unit,
-) {
+fun CrashLogsActivity(onClickBack: () -> Unit) {
     Log.d("jerboa", "Got to Crash log activity")
 
     CrashLogs(onClickBack = onClickBack)
@@ -56,11 +54,12 @@ fun CrashLogsActivity(
 @Composable
 fun CrashLogs(onClickBack: () -> Unit) {
     val scope = rememberCoroutineScope()
-    val logs = remember {
-        (CrashyReporter.getLogFiles() ?: listOf())
-            .sortedByDescending { it.lastModified() }
-            .toMutableStateList()
-    }
+    val logs =
+        remember {
+            (CrashyReporter.getLogFiles() ?: listOf())
+                .sortedByDescending { it.lastModified() }
+                .toMutableStateList()
+        }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val deleteMessage = stringResource(R.string.crash_logs_all_deleted)
@@ -96,9 +95,10 @@ fun CrashLogs(onClickBack: () -> Unit) {
         },
         content = { padding ->
             Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(padding),
+                modifier =
+                    Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(padding),
             ) {
                 logs.map {
                     CrashLog(crash = it.readText(), modified = it.lastModified())
@@ -109,15 +109,19 @@ fun CrashLogs(onClickBack: () -> Unit) {
 }
 
 @Composable
-fun CrashLog(crash: String, modified: Long) {
+fun CrashLog(
+    crash: String,
+    modified: Long,
+) {
     var expanded by remember { mutableStateOf(false) }
     val textModifier = Modifier.clickable(onClick = { expanded = !expanded })
     val ctx = LocalContext.current
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(MEDIUM_PADDING),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(MEDIUM_PADDING),
     ) {
         Column(
             modifier = Modifier.padding(MEDIUM_PADDING),

@@ -53,10 +53,11 @@ fun PrivateMessageReplyActivity(
 
     val focusManager = LocalFocusManager.current
 
-    val loading = when (privateMessageReplyViewModel.createMessageRes) {
-        ApiState.Loading -> true
-        else -> false
-    }
+    val loading =
+        when (privateMessageReplyViewModel.createMessageRes) {
+            ApiState.Loading -> true
+            else -> false
+        }
 
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
@@ -90,9 +91,10 @@ fun PrivateMessageReplyActivity(
                         reply = reply,
                         onReplyChange = { reply = it },
                         onPersonClick = onProfile,
-                        modifier = Modifier
-                            .padding(padding)
-                            .imePadding(),
+                        modifier =
+                            Modifier
+                                .padding(padding)
+                                .imePadding(),
                         showAvatar = siteViewModel.showAvatar(),
                     )
                 }

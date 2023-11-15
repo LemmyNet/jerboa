@@ -47,9 +47,10 @@ fun TimeAgo(
         return
     }
 
-    val afterPreceding = precedingString?.let {
-        stringResource(R.string.time_ago_ago, it, publishedPretty)
-    } ?: run { publishedPretty }
+    val afterPreceding =
+        precedingString?.let {
+            stringResource(R.string.time_ago_ago, it, publishedPretty)
+        } ?: run { publishedPretty }
 
     Row {
         Text(
@@ -86,7 +87,10 @@ fun TimeAgo(
  * @param longTimeFormat If true, use a long time format like "2 hours, 3 minutes ago"
  * @return The pretty string, or null if the date string could not be parsed
  */
-fun dateStringToPretty(dateStr: String, longTimeFormat: Boolean = false): String? {
+fun dateStringToPretty(
+    dateStr: String,
+    longTimeFormat: Boolean = false,
+): String? {
     return try {
         // TODO: v0.18.4_deprecated Remove this hack once backward API compatibility is implemented
         // pre 0.19 Datetimes didn't have a timezone, so we add one here
@@ -148,7 +152,10 @@ fun ScoreAndTimePreview() {
 }
 
 @Composable
-fun CollapsedIndicator(visible: Boolean, descendants: Int) {
+fun CollapsedIndicator(
+    visible: Boolean,
+    descendants: Int,
+) {
     AnimatedVisibility(
         visible = visible && descendants > 0,
         enter = fadeIn(),
@@ -156,10 +163,11 @@ fun CollapsedIndicator(visible: Boolean, descendants: Int) {
     ) {
         Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
             Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(horizontal = SMALL_PADDING),
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.secondary)
+                        .padding(horizontal = SMALL_PADDING),
             ) {
                 Text(
                     text = "+$descendants",
@@ -186,10 +194,11 @@ fun NsfwBadge(visible: Boolean) {
     ) {
         Column(modifier = Modifier.wrapContentSize(Alignment.Center)) {
             Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(horizontal = SMALL_PADDING),
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.secondary)
+                        .padding(horizontal = SMALL_PADDING),
             ) {
                 Text(
                     text = "NSFW",

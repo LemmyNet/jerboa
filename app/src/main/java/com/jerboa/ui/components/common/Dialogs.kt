@@ -26,7 +26,8 @@ import com.jerboa.R
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.model.AppSettingsViewModel
 
-val DONATION_MARKDOWN = """
+val DONATION_MARKDOWN =
+    """
     ### Support Jerboa
     
     Jerboa is free, open-source software, meaning no advertising, monetizing, or venture capital, 
@@ -36,7 +37,7 @@ val DONATION_MARKDOWN = """
     - [Support on Patreon](https://www.patreon.com/dessalines).
     - [Support on OpenCollective](https://opencollective.com/lemmy).
 
-""".trimIndent()
+    """.trimIndent()
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -59,9 +60,10 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
             AlertDialog(
                 text = {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .verticalScroll(scrollState),
                     ) {
                         MyMarkdownText(
                             markdown = DONATION_MARKDOWN + markdown,
@@ -91,7 +93,10 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
 }
 
 @Composable
-fun ShowOutdatedServerDialog(siteVersion: String, onConfirm: () -> Unit) {
+fun ShowOutdatedServerDialog(
+    siteVersion: String,
+    onConfirm: () -> Unit,
+) {
     AlertDialog(
         text = {
             Text(

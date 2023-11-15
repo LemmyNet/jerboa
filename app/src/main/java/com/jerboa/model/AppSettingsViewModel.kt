@@ -10,31 +10,35 @@ import com.jerboa.jerboaApplication
 import kotlinx.coroutines.launch
 
 class AppSettingsViewModel(private val repository: AppSettingsRepository) : ViewModel() {
-
     val appSettings = repository.appSettings
     val changelog = repository.changelog
 
-    fun update(appSettings: AppSettings) = viewModelScope.launch {
-        repository.update(appSettings)
-    }
+    fun update(appSettings: AppSettings) =
+        viewModelScope.launch {
+            repository.update(appSettings)
+        }
 
-    fun markChangelogViewed() = viewModelScope.launch {
-        repository.markChangelogViewed()
-    }
+    fun markChangelogViewed() =
+        viewModelScope.launch {
+            repository.markChangelogViewed()
+        }
 
-    fun updatedPostViewMode(postViewMode: Int) = viewModelScope.launch {
-        repository.updatePostViewMode(postViewMode)
-    }
+    fun updatedPostViewMode(postViewMode: Int) =
+        viewModelScope.launch {
+            repository.updatePostViewMode(postViewMode)
+        }
 
-    fun updateChangelog() = viewModelScope.launch {
-        repository.updateChangelog()
-    }
+    fun updateChangelog() =
+        viewModelScope.launch {
+            repository.updateChangelog()
+        }
 }
 
 object AppSettingsViewModelFactory {
-    val Factory = viewModelFactory {
-        initializer {
-            AppSettingsViewModel(jerboaApplication().container.appSettingsRepository)
+    val Factory =
+        viewModelFactory {
+            initializer {
+                AppSettingsViewModel(jerboaApplication().container.appSettingsRepository)
+            }
         }
-    }
 }
