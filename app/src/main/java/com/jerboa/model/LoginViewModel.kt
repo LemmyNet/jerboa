@@ -66,8 +66,9 @@ class LoginViewModel : ViewModel() {
             try {
                 when (val siteRes = siteViewModel.siteRes) {
                     is ApiState.Failure -> {
-                        Toast.makeText(ctx, siteRes.msg.message, Toast.LENGTH_SHORT).show()
-                        throw RuntimeException(siteRes.msg.message)
+                        val txt = siteRes.msg.message ?: "FAILURE: NO MESSAGE, probably that version not supported"
+                        Toast.makeText(ctx, txt, Toast.LENGTH_SHORT).show()
+                        throw RuntimeException(txt)
                     }
 
                     is ApiState.Success -> {
