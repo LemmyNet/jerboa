@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -26,11 +25,11 @@ import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.GetPostsResponse
 import com.jerboa.datatypes.types.ListingType
 import com.jerboa.datatypes.types.MarkPostAsRead
+import com.jerboa.datatypes.types.PaginationCursor
 import com.jerboa.datatypes.types.PostResponse
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SortType
-import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.AnonAccount
 import com.jerboa.db.repository.AccountRepository
 import com.jerboa.findAndUpdatePost
@@ -59,8 +58,7 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         private set
     var listingType by mutableStateOf(ListingType.Local)
         private set
-    var page by mutableIntStateOf(1)
-        private set
+    private var pageCursor: PaginationCursor? by mutableStateOf(null)
 
     init {
         viewModelScope.launch {
@@ -70,8 +68,8 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
                 .collect { account ->
                     updateSortType(account.defaultSortType.toEnumSafe())
                     updateListingType(account.defaultListingType.toEnumSafe())
-                    Log.d("jerboa", "Fetching posts")
-                    resetPosts(account)
+                    Log.d("homeviewmodel", "Fetching posts")
+                    resetPosts()
                 }
         }
     }
@@ -84,19 +82,11 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         this.listingType = listingType
     }
 
-    fun resetPage() {
-        page = 1
+    private fun resetPage() {
+        pageCursor = null
     }
 
-    fun nextPage() {
-        page += 1
-    }
-
-    fun prevPage() {
-        page -= 1
-    }
-
-    fun getPosts(
+    private fun getPosts(
         form: GetPosts,
         state: ApiState<GetPostsResponse> = ApiState.Loading,
     ) {
@@ -109,34 +99,40 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun appendPosts(jwt: String?) {
+    fun appendPosts() {
         viewModelScope.launch {
             val oldRes = postsRes
             postsRes =
                 when (oldRes) {
                     is ApiState.Appending -> return@launch
-                    is ApiState.Holder -> ApiState.Appending(oldRes.data)
+                    is ApiState.Holder -> {
+                        ApiState.Appending(oldRes.data)
+                    }
                     else -> return@launch
                 }
 
-            nextPage()
-            val newRes = apiWrapper(API.getInstance().getPosts(getForm(jwt).serializeToMap()))
+            // Update the page cursor before fetching again
+            pageCursor = oldRes.data.next_page
+            val newRes = apiWrapper(API.getInstance().getPosts(getForm().serializeToMap()))
 
             postsRes =
                 when (newRes) {
                     is ApiState.Success -> {
-                        ApiState.Success(
+                        val res =
                             GetPostsResponse(
-                                mergePosts(
-                                    oldRes.data.posts,
-                                    newRes.data.posts,
-                                ),
-                            ),
+                                posts =
+                                    mergePosts(
+                                        oldRes.data.posts,
+                                        newRes.data.posts,
+                                    ),
+                                next_page = newRes.data.next_page,
+                            )
+                        ApiState.Success(
+                            res,
                         )
                     }
 
                     else -> {
-                        prevPage()
                         ApiState.AppendingFailure(oldRes.data)
                     }
                 }
@@ -221,21 +217,22 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         }
     }
 
-    fun resetPosts(account: Account) {
+    fun resetPosts() {
         resetPage()
         getPosts(
             GetPosts(
+                page_cursor = pageCursor,
                 sort = sortType,
                 type_ = listingType,
             ),
         )
     }
 
-    fun refreshPosts(account: Account) {
+    fun refreshPosts() {
         resetPage()
         getPosts(
             GetPosts(
-                page = page,
+                page_cursor = pageCursor,
                 sort = sortType,
                 type_ = listingType,
             ),
@@ -243,9 +240,9 @@ class HomeViewModel(private val accountRepository: AccountRepository) : ViewMode
         )
     }
 
-    fun getForm(jwt: String?): GetPosts {
+    private fun getForm(): GetPosts {
         return GetPosts(
-            page = page,
+            page_cursor = pageCursor,
             sort = sortType,
             type_ = listingType,
         )

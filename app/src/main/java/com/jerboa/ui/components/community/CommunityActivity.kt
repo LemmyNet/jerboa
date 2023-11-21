@@ -40,12 +40,10 @@ import com.jerboa.datatypes.types.CommunityId
 import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.FollowCommunity
-import com.jerboa.datatypes.types.GetPosts
 import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
 import com.jerboa.datatypes.types.SubscribedType
-import com.jerboa.db.entity.getJWT
 import com.jerboa.db.entity.isAnon
 import com.jerboa.feat.BlurTypes
 import com.jerboa.feat.doIfReadyElseDisplayInfo
@@ -98,7 +96,7 @@ fun CommunityActivity(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val communityViewModel: CommunityViewModel =
-        viewModel(factory = CommunityViewModel.Companion.Factory(account, communityArg))
+        viewModel(factory = CommunityViewModel.Companion.Factory(communityArg))
 
     appState.ConsumeReturn<PostView>(PostEditReturn.POST_VIEW, communityViewModel::updatePost)
     appState.ConsumeReturn<PostView>(PostViewReturn.POST_VIEW, communityViewModel::updatePost)
@@ -113,22 +111,7 @@ fun CommunityActivity(
         rememberPullRefreshState(
             refreshing = communityViewModel.postsRes.isRefreshing(),
             onRefresh = {
-                when (val communityRes = communityViewModel.communityRes) {
-                    is ApiState.Success -> {
-                        communityViewModel.resetPage()
-                        communityViewModel.getPosts(
-                            form =
-                                GetPosts(
-                                    community_id = communityRes.data.community_view.community.id,
-                                    page = communityViewModel.page,
-                                    sort = communityViewModel.sortType,
-                                ),
-                            ApiState.Refreshing,
-                        )
-                    }
-
-                    else -> {}
-                }
+                communityViewModel.refreshPosts()
             },
         )
 
@@ -156,29 +139,15 @@ fun CommunityActivity(
                             selectedSortType = communityViewModel.sortType,
                             onClickRefresh = {
                                 scrollToTop(scope, postListState)
-                                communityViewModel.resetPage()
-                                communityViewModel.getPosts(
-                                    GetPosts(
-                                        community_id = communityId,
-                                        page = communityViewModel.page,
-                                        sort = communityViewModel.sortType,
-                                    ),
-                                )
+                                communityViewModel.resetPosts()
                             },
                             onClickPostViewMode = {
                                 appSettingsViewModel.updatedPostViewMode(it.ordinal)
                             },
                             onClickSortType = { sortType ->
-                                communityViewModel.updateSortType(sortType)
-                                communityViewModel.resetPage()
                                 scrollToTop(scope, postListState)
-                                communityViewModel.getPosts(
-                                    GetPosts(
-                                        community_id = communityId,
-                                        page = communityViewModel.page,
-                                        sort = communityViewModel.sortType,
-                                    ),
-                                )
+                                communityViewModel.updateSortType(sortType)
+                                communityViewModel.resetPosts()
                             },
                             onBlockCommunityClick = {
                                 account.doIfReadyElseDisplayInfo(
@@ -405,16 +374,7 @@ fun CommunityActivity(
                                 }
                             },
                             loadMorePosts = {
-                                when (val communityRes = communityViewModel.communityRes) {
-                                    is ApiState.Success -> {
-                                        communityViewModel.appendPosts(
-                                            communityRes.data.community_view.community.id,
-                                            account.getJWT(),
-                                        )
-                                    }
-
-                                    else -> {}
-                                }
+                                communityViewModel.appendPosts()
                             },
                             account = account,
                             showCommunityName = false,

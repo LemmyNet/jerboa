@@ -132,7 +132,6 @@ fun HomeActivity(
                 },
                 homeViewModel = homeViewModel,
                 appSettingsViewModel = appSettingsViewModel,
-                account = account,
                 scrollBehavior = scrollBehavior,
                 onClickSiteInfo = appState::toSiteSideBar,
             )
@@ -223,7 +222,7 @@ fun MainPostListingsContent(
         rememberPullRefreshState(
             refreshing = homeViewModel.postsRes.isRefreshing(),
             onRefresh = {
-                homeViewModel.refreshPosts(account)
+                homeViewModel.refreshPosts()
             },
         )
 
@@ -380,7 +379,7 @@ fun MainPostListingsContent(
             },
             onPersonClick = appState::toProfile,
             loadMorePosts = {
-                homeViewModel.appendPosts(account.jwt)
+                homeViewModel.appendPosts()
             },
             account = account,
             enableDownVotes = siteViewModel.enableDownvotes(),
@@ -418,7 +417,6 @@ fun MainTopBar(
     openDrawer: () -> Unit,
     homeViewModel: HomeViewModel,
     appSettingsViewModel: AppSettingsViewModel,
-    account: Account,
     onClickSiteInfo: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
@@ -432,19 +430,19 @@ fun MainTopBar(
             onClickSortType = { sortType ->
                 scrollToTop()
                 homeViewModel.updateSortType(sortType)
-                homeViewModel.resetPosts(account)
+                homeViewModel.resetPosts()
             },
             onClickListingType = { listingType ->
                 scrollToTop()
                 homeViewModel.updateListingType(listingType)
-                homeViewModel.resetPosts(account)
+                homeViewModel.resetPosts()
             },
             onClickPostViewMode = {
                 appSettingsViewModel.updatedPostViewMode(it.ordinal)
             },
             onClickRefresh = {
                 scrollToTop()
-                homeViewModel.resetPosts(account)
+                homeViewModel.resetPosts()
             },
             onClickSiteInfo = onClickSiteInfo,
         )
