@@ -160,7 +160,6 @@ fun PersonProfileHeader(
     scrollBehavior: TopAppBarScrollBehavior,
     onBack: (() -> Unit)? = null,
     isLoggedIn: () -> Boolean,
-    siteVersion: String,
     matrixId: String?,
 ) {
     val ctx = LocalContext.current
@@ -212,7 +211,6 @@ fun PersonProfileHeader(
                         onClickSortType(it)
                     },
                     selectedSortType = selectedSortType,
-                    siteVersion = siteVersion,
                 )
             }
 

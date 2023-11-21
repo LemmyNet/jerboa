@@ -143,7 +143,6 @@ fun CommunityHeader(
     onClickCommunityShare: () -> Unit,
     onClickBack: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    siteVersion: String,
     isBlocked: Boolean,
 ) {
     var showSortOptions by remember { mutableStateOf(false) }
@@ -184,7 +183,6 @@ fun CommunityHeader(
                         onClickSortType(it)
                     },
                     selectedSortType = selectedSortType,
-                    siteVersion = siteVersion,
                 )
             }
 

@@ -10,17 +10,13 @@ import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material.icons.outlined.Moving
 import androidx.compose.material.icons.outlined.NewReleases
+import androidx.compose.material.icons.outlined.Scale
 import androidx.compose.material.icons.outlined.ThumbsUpDown
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.gson.annotations.SerializedName
 import com.jerboa.R
-import com.jerboa.api.MINIMUM_API_VERSION
-import com.jerboa.compareVersions
 import kotlinx.parcelize.Parcelize
-
-const val MINIMUM_CONTROVERSIAL_SORT_API_VERSION: String = "0.19"
-const val MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION: String = "0.18.1"
 
 enum class RegistrationMode {
     @SerializedName("Closed")
@@ -40,7 +36,6 @@ enum class SortType(
     @StringRes val shortForm: Int,
     @StringRes val longForm: Int,
     val icon: ImageVector,
-    val version: String = MINIMUM_API_VERSION,
 ) {
     /**
      * Posts sorted by the most recent comment.
@@ -60,6 +55,16 @@ enum class SortType(
         R.string.sorttype_hot,
         R.string.sorttype_hot,
         Icons.Outlined.LocalFireDepartment,
+    ),
+
+    /**
+     * Posts sorted by scaled rank
+     */
+    @SerializedName("Scaled")
+    Scaled(
+        R.string.sorttype_scaled,
+        R.string.sorttype_scaled,
+        Icons.Outlined.Scale,
     ),
 
     @SerializedName("New")
@@ -87,7 +92,6 @@ enum class SortType(
         R.string.sorttype_controversial,
         R.string.sorttype_controversial,
         Icons.Outlined.ThumbsUpDown,
-        MINIMUM_CONTROVERSIAL_SORT_API_VERSION,
     ),
 
     /**
@@ -198,7 +202,6 @@ enum class SortType(
         R.string.sorttype_topthreemonths,
         R.string.dialogs_top_three_month,
         Icons.Outlined.BarChart,
-        MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION,
     ),
 
     /**
@@ -209,7 +212,6 @@ enum class SortType(
         R.string.sorttype_topsixmonths,
         R.string.dialogs_top_six_month,
         Icons.Outlined.BarChart,
-        MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION,
     ),
 
     /**
@@ -220,19 +222,13 @@ enum class SortType(
         R.string.sorttype_topninemonths,
         R.string.dialogs_top_nine_month,
         Icons.Outlined.BarChart,
-        MINIMUM_TOP_X_MONTHLY_SORT_API_VERSION,
     ),
-    ;
-
-    companion object {
-        val getSupportedSortTypes = { siteVersion: String -> entries.filter { compareVersions(siteVersion, it.version) >= 0 } }
-    }
 }
 
 /**
  * Different comment sort types used in lemmy.
  */
-enum class CommentSortType(val text: Int, val icon: ImageVector, val version: String = MINIMUM_API_VERSION) {
+enum class CommentSortType(val text: Int, val icon: ImageVector) {
     /**
      * Comments sorted by a decaying rank.
      */
@@ -261,12 +257,8 @@ enum class CommentSortType(val text: Int, val icon: ImageVector, val version: St
      * Posts sorted by controversy rank.
      */
     @SerializedName("Controversial")
-    Controversial(R.string.sorttype_controversial, Icons.Outlined.ThumbsUpDown, MINIMUM_CONTROVERSIAL_SORT_API_VERSION),
-    ;
+    Controversial(R.string.sorttype_controversial, Icons.Outlined.ThumbsUpDown),
 
-    companion object {
-        val getSupportedSortTypes = { siteVersion: String -> entries.filter { compareVersions(siteVersion, it.version) >= 0 } }
-    }
 }
 
 /**

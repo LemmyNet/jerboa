@@ -12,7 +12,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.api.apiWrapper
-import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.LoginResponse
 import com.jerboa.datatypes.types.SaveUserSettings
 import com.jerboa.db.entity.Account
@@ -41,9 +40,7 @@ class AccountSettingsViewModel(
 
             when (val res = saveUserSettingsRes) {
                 is ApiState.Success -> {
-                    siteViewModel.getSite(
-                        GetSite(auth = account.jwt),
-                    )
+                    siteViewModel.getSite()
 
                     maybeUpdateAccountSettings(account, form)
                     onSuccess()

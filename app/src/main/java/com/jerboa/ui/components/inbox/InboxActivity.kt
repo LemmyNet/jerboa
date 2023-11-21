@@ -45,8 +45,6 @@ import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.BlockPerson
 import com.jerboa.datatypes.types.CommentReplyView
 import com.jerboa.datatypes.types.CreateCommentLike
-import com.jerboa.datatypes.types.GetUnreadCount
-import com.jerboa.datatypes.types.MarkAllAsRead
 import com.jerboa.datatypes.types.MarkCommentReplyAsRead
 import com.jerboa.datatypes.types.MarkPersonMentionAsRead
 import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
@@ -124,13 +122,13 @@ fun InboxActivity(
                         inboxViewModel.resetPages()
                         inboxViewModel.updateUnreadOnly(unreadOrAll == UnreadOrAll.Unread)
                         inboxViewModel.getReplies(
-                            inboxViewModel.getFormReplies(it.jwt),
+                            inboxViewModel.getFormReplies(),
                         )
                         inboxViewModel.getMentions(
-                            inboxViewModel.getFormMentions(it.jwt),
+                            inboxViewModel.getFormMentions(),
                         )
                         inboxViewModel.getMessages(
-                            inboxViewModel.getFormMessages(it.jwt),
+                            inboxViewModel.getFormMessages(),
                         )
                     }
                 },
@@ -144,24 +142,17 @@ fun InboxActivity(
                         accountViewModel,
                     ) {
                         inboxViewModel.markAllAsRead(
-                            MarkAllAsRead(
-                                auth = it.jwt,
-                            ),
                             onComplete = {
-                                siteViewModel.fetchUnreadCounts(
-                                    GetUnreadCount(
-                                        auth = it.jwt,
-                                    ),
-                                )
+                                siteViewModel.fetchUnreadCounts()
                                 inboxViewModel.resetPages()
                                 inboxViewModel.getReplies(
-                                    inboxViewModel.getFormReplies(account.jwt),
+                                    inboxViewModel.getFormReplies(),
                                 )
                                 inboxViewModel.getMentions(
-                                    inboxViewModel.getFormMentions(account.jwt),
+                                    inboxViewModel.getFormMentions(),
                                 )
                                 inboxViewModel.getMessages(
-                                    inboxViewModel.getFormMessages(account.jwt),
+                                    inboxViewModel.getFormMessages(),
                                 )
                             },
                         )
@@ -260,9 +251,7 @@ fun InboxTabs(
                                 scope,
                                 siteViewModel,
                             ) {
-                                inboxViewModel.appendReplies(
-                                    it.jwt,
-                                )
+                                inboxViewModel.appendReplies()
                             }
                         }
                     }
@@ -282,10 +271,10 @@ fun InboxTabs(
                                 ) {
                                     inboxViewModel.resetPageReplies()
                                     inboxViewModel.getReplies(
-                                        inboxViewModel.getFormReplies(it.jwt),
+                                        inboxViewModel.getFormReplies(),
                                         ApiState.Refreshing,
                                     )
-                                    siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
+                                    siteViewModel.fetchUnreadCounts()
                                 }
                             },
                         )
@@ -479,9 +468,7 @@ fun InboxTabs(
                                 scope,
                                 siteViewModel,
                             ) {
-                                inboxViewModel.appendMentions(
-                                    it.jwt,
-                                )
+                                inboxViewModel.appendMentions()
                             }
                         }
                     }
@@ -503,10 +490,10 @@ fun InboxTabs(
                                 ) {
                                     inboxViewModel.resetPageMentions()
                                     inboxViewModel.getMentions(
-                                        inboxViewModel.getFormMentions(it.jwt),
+                                        inboxViewModel.getFormMentions(),
                                         ApiState.Refreshing,
                                     )
-                                    siteViewModel.fetchUnreadCounts(GetUnreadCount(it.jwt))
+                                    siteViewModel.fetchUnreadCounts()
                                 }
                             },
                         )
@@ -688,9 +675,7 @@ fun InboxTabs(
                                 scope,
                                 siteViewModel,
                             ) {
-                                inboxViewModel.appendMessages(
-                                    it.jwt,
-                                )
+                                inboxViewModel.appendMessages()
                             }
                         }
                     }
@@ -711,10 +696,10 @@ fun InboxTabs(
                                 ) {
                                     inboxViewModel.resetPageMessages()
                                     inboxViewModel.getMessages(
-                                        inboxViewModel.getFormMessages(it.jwt),
+                                        inboxViewModel.getFormMessages(),
                                         ApiState.Refreshing,
                                     )
-                                    siteViewModel.fetchUnreadCounts(GetUnreadCount(it.jwt))
+                                    siteViewModel.fetchUnreadCounts()
                                 }
                             },
                         )

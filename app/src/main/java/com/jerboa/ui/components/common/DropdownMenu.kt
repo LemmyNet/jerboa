@@ -41,7 +41,6 @@ val isTopSort = { sort: SortType -> sort.name.startsWith("Top") }
 fun SortOptionsDropdown(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    siteVersion: String,
     onClickSortType: (SortType) -> Unit,
     selectedSortType: SortType,
 ) {
@@ -50,7 +49,7 @@ fun SortOptionsDropdown(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.semantics { testTagsAsResourceId = true },
     ) {
-        SortType.getSupportedSortTypes(siteVersion).filter { !isTopSort(it) }.forEach {
+        SortType.entries.filter { !isTopSort(it) }.forEach {
             DropdownMenuItem(
                 text = { Text(stringResource(it.longForm)) },
                 leadingIcon = { Icon(it.icon, contentDescription = null) },
@@ -72,7 +71,7 @@ fun SortOptionsDropdown(
                     Modifier
                 },
             children = {
-                SortType.getSupportedSortTypes(siteVersion).filter(isTopSort).forEach {
+                SortType.entries.filter(isTopSort).forEach {
                     DropdownMenuItem(
                         text = { Text(stringResource(it.longForm)) },
                         onClick = {
@@ -96,13 +95,12 @@ fun CommentSortOptionsDropdown(
     onDismissRequest: () -> Unit,
     onClickSortType: (CommentSortType) -> Unit,
     selectedSortType: CommentSortType,
-    siteVersion: String,
 ) {
     CascadeDropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
     ) {
-        CommentSortType.getSupportedSortTypes(siteVersion).forEach {
+        CommentSortType.entries.forEach {
             DropdownMenuItem(
                 text = { Text(stringResource(it.text)) },
                 leadingIcon = { Icon(imageVector = it.icon, contentDescription = null) },

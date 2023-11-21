@@ -41,7 +41,6 @@ import com.jerboa.datatypes.types.CreatePostLike
 import com.jerboa.datatypes.types.DeletePost
 import com.jerboa.datatypes.types.FollowCommunity
 import com.jerboa.datatypes.types.GetPosts
-import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.MarkPostAsRead
 import com.jerboa.datatypes.types.PostView
 import com.jerboa.datatypes.types.SavePost
@@ -204,7 +203,6 @@ fun CommunityActivity(
                             onClickBack = appState::navigateUp,
                             selectedPostViewMode = getPostViewMode(appSettingsViewModel),
                             isBlocked = communityRes.data.community_view.blocked,
-                            siteVersion = siteViewModel.siteVersion(),
                         )
                     }
 
@@ -254,12 +252,7 @@ fun CommunityActivity(
                                                                 follow = cfv.subscribed == SubscribedType.NotSubscribed,
                                                             ),
                                                         onSuccess = {
-                                                            siteViewModel.getSite(
-                                                                form =
-                                                                    GetSite(
-                                                                        auth = it.jwt,
-                                                                    ),
-                                                            )
+                                                            siteViewModel.getSite()
                                                         },
                                                     )
                                                 }

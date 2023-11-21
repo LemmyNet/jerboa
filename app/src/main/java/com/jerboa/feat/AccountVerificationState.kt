@@ -15,7 +15,6 @@ import com.jerboa.api.API
 import com.jerboa.api.ApiState
 import com.jerboa.datatypes.types.GetPersonDetails
 import com.jerboa.datatypes.types.GetPersonDetailsResponse
-import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.GetSiteResponse
 import com.jerboa.db.entity.Account
 import com.jerboa.db.entity.isAnon
@@ -183,7 +182,7 @@ suspend fun checkIfSiteRetrievalSucceeded(
             }
         }
         else -> {
-            siteViewModel.getSite(GetSite(auth = account.jwt)).join()
+            siteViewModel.getSite().join()
             when (val res2 = siteViewModel.siteRes) {
                 is ApiState.Success -> Pair(CheckState.Passed, res2)
                 else -> Pair(CheckState.Failed, null)

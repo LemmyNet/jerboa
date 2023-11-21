@@ -14,13 +14,11 @@ import com.jerboa.api.ApiState
 import com.jerboa.api.MINIMUM_API_VERSION
 import com.jerboa.api.apiWrapper
 import com.jerboa.api.retrofitErrorHandler
-import com.jerboa.compareVersions
-import com.jerboa.datatypes.types.GetSite
 import com.jerboa.datatypes.types.Login
 import com.jerboa.db.entity.Account
 import com.jerboa.getHostFromInstanceString
 import com.jerboa.matchLoginErrorMsgToStringRes
-import com.jerboa.serializeToMap
+import io.github.z4kn4fein.semver.toVersion
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
@@ -36,13 +34,13 @@ class LoginViewModel : ViewModel() {
         ctx: Context,
     ) {
         val newInstance = getHostFromInstanceString(instance)
-        val api = API.createTempInstance(newInstance)
+        val tempAPI = API.createTempInstance(newInstance)
         var jwt: String
 
         viewModelScope.launch {
             loading = true
             try {
-                jwt = retrofitErrorHandler(api.login(form = form)).jwt!!
+                jwt = retrofitErrorHandler(tempAPI.login(form = form)).jwt!!
             } catch (e: java.net.UnknownHostException) {
                 loading = false
                 val msg =
@@ -50,7 +48,7 @@ class LoginViewModel : ViewModel() {
                         R.string.login_view_model_is_not_a_lemmy_instance,
                         instance,
                     )
-                Log.d("login", msg, e)
+                Log.e("login", msg, e)
                 Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
                 return@launch
             } catch (e: Exception) {
@@ -59,9 +57,13 @@ class LoginViewModel : ViewModel() {
                 Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
                 return@launch
             }
+            // Login was sucessful after this point
+
+            // Change the lemmy instance to the new one
+            API.changeLemmyInstance(instance, jwt)
 
             // Fetch the site to get your name and id
-            siteViewModel.siteRes = apiWrapper(api.getSite(GetSite(auth = jwt).serializeToMap()))
+            siteViewModel.siteRes = apiWrapper(API.getInstance().getSite())
 
             try {
                 when (val siteRes = siteViewModel.siteRes) {
@@ -71,8 +73,8 @@ class LoginViewModel : ViewModel() {
                     }
 
                     is ApiState.Success -> {
-                        val siteVersion = siteRes.data.version
-                        if (compareVersions(siteVersion, MINIMUM_API_VERSION) < 0) {
+                        val siteVersion = siteRes.data.version.toVersion()
+                        if (siteVersion < MINIMUM_API_VERSION) {
                             val message =
                                 ctx.resources.getString(
                                     R.string.dialogs_server_version_outdated_short,
@@ -107,11 +109,11 @@ class LoginViewModel : ViewModel() {
 
                         // Remove the default account
                         accountViewModel.removeCurrent()
+
                         // Save that info in the DB
                         accountViewModel.insert(account)
 
                         loading = false
-                        API.changeLemmyInstance(newInstance)
                         onGoHome()
                     }
 

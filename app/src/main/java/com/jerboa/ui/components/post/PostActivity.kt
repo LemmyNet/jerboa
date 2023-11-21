@@ -258,7 +258,6 @@ fun PostActivity(
                                 selectedSortType = selectedSortType,
                                 onDismissRequest = { showSortOptions = false },
                                 onClickSortType = onClickSortType,
-                                siteVersion = siteViewModel.siteVersion(),
                             )
                         }
                     },

@@ -25,8 +25,6 @@ import com.jerboa.datatypes.types.GetPersonMentionsResponse
 import com.jerboa.datatypes.types.GetPrivateMessages
 import com.jerboa.datatypes.types.GetReplies
 import com.jerboa.datatypes.types.GetRepliesResponse
-import com.jerboa.datatypes.types.GetUnreadCount
-import com.jerboa.datatypes.types.MarkAllAsRead
 import com.jerboa.datatypes.types.MarkCommentReplyAsRead
 import com.jerboa.datatypes.types.MarkPersonMentionAsRead
 import com.jerboa.datatypes.types.MarkPrivateMessageAsRead
@@ -82,11 +80,11 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
     private var blockPersonRes: ApiState<BlockPersonResponse> by
         mutableStateOf(ApiState.Empty)
 
-    var pageReplies by mutableIntStateOf(1)
+    private var pageReplies by mutableIntStateOf(1)
         private set
-    var pageMentions by mutableIntStateOf(1)
+    private var pageMentions by mutableIntStateOf(1)
         private set
-    var pageMessages by mutableIntStateOf(1)
+    private var pageMessages by mutableIntStateOf(1)
         private set
     var unreadOnly by mutableStateOf(true)
         private set
@@ -123,7 +121,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun appendReplies(jwt: String) {
+    fun appendReplies() {
         viewModelScope.launch {
             val oldRes = repliesRes
             when (oldRes) {
@@ -132,7 +130,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
             }
 
             pageReplies += 1
-            val newRes = apiWrapper(API.getInstance().getReplies(getFormReplies(jwt).serializeToMap()))
+            val newRes = apiWrapper(API.getInstance().getReplies(getFormReplies().serializeToMap()))
 
             repliesRes =
                 when (newRes) {
@@ -164,7 +162,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun appendMentions(jwt: String) {
+    fun appendMentions() {
         viewModelScope.launch {
             val oldRes = mentionsRes
             when (oldRes) {
@@ -212,7 +210,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun appendMessages(jwt: String) {
+    fun appendMessages() {
         viewModelScope.launch {
             val oldRes = messagesRes
             when (oldRes) {
@@ -483,13 +481,10 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun markAllAsRead(
-        form: MarkAllAsRead,
-        onComplete: () -> Unit,
-    ) {
+    fun markAllAsRead(onComplete: () -> Unit) {
         viewModelScope.launch {
             markAllAsReadRes = ApiState.Loading
-            markAllAsReadRes = apiWrapper(API.getInstance().markAllAsRead(form))
+            markAllAsReadRes = apiWrapper(API.getInstance().markAllAsRead())
 
             when (val replies = repliesRes) {
                 is ApiState.Success -> {
@@ -524,7 +519,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         }
     }
 
-    fun getFormReplies(jwt: String): GetReplies {
+    fun getFormReplies(): GetReplies {
         return GetReplies(
             unread_only = unreadOnly,
             sort = CommentSortType.New,
@@ -532,7 +527,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         )
     }
 
-    fun getFormMentions(jwt: String): GetPersonMentions {
+    fun getFormMentions(): GetPersonMentions {
         return GetPersonMentions(
             unread_only = unreadOnly,
             sort = CommentSortType.New,
@@ -540,7 +535,7 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         )
     }
 
-    fun getFormMessages(jwt: String): GetPrivateMessages {
+    fun getFormMessages(): GetPrivateMessages {
         return GetPrivateMessages(
             unread_only = unreadOnly,
             page = pageMessages,
@@ -551,15 +546,15 @@ class InboxViewModel(account: Account, siteViewModel: SiteViewModel) : ViewModel
         if (!account.isAnon()) {
             this.resetPages()
             this.getReplies(
-                this.getFormReplies(account.jwt),
+                this.getFormReplies(),
             )
             this.getMentions(
-                this.getFormMentions(account.jwt),
+                this.getFormMentions(),
             )
             this.getMessages(
-                this.getFormMessages(account.jwt),
+                this.getFormMessages(),
             )
-            siteViewModel.fetchUnreadCounts(GetUnreadCount(account.jwt))
+            siteViewModel.fetchUnreadCounts()
         }
     }
 
